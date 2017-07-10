@@ -1,0 +1,482 @@
+/* Frederik De Ceuster - University College London                                               */
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+/*                                                                                               */
+/* read_data: Read the data files                                                                */
+/*                                                                                               */
+/* (based on read_input in 3D-PDR)                                                               */
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+
+/* get_nlev: get number of energy levels from data file in LAMBDA/RADEX format                   */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_nlev(char *datafile)
+{
+
+  int l;                                                     /* index of a text line in the file */
+  int nlev=0;                                                                /* number of levels */
+
+
+  /* Open data file */
+
+  FILE *data1 = fopen(datafile, "r");
+
+
+  /* Skip first 5 lines */
+
+  for (l=0; l<5; l++){
+
+    fscanf(data1, "%*[^\n]\n");
+  }
+
+
+  /* Read the number of energy levels */
+
+  fscanf(data1, "%d \n", &nlev);
+
+
+  fclose(data1);
+
+  return nlev;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* get_nrad: get number of radiative transitions from data file in LAMBDA/RADEX format           */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_nrad(char *datafile)
+{
+
+  int l;                                                     /* index of a text line in the file */
+  int nrad=0;                                                 /* number of radiative transitions */
+
+  int nlev = get_nlev(datafile);                                             /* number of levels */
+
+
+  /* Open data file */
+
+  FILE *data2 = fopen(datafile, "r");
+
+
+  /* Skip first 8+nlev lines */
+
+  for (l=0; l<8+nlev; l++){
+
+    fscanf(data2, "%*[^\n]\n");
+  }
+
+
+  /* Read the number of radiative transitions */
+
+  fscanf(data2, "%d \n", &nrad);
+
+
+  fclose(data2);
+
+  return nrad;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* get_ncolpar: get number of collision partners from data file in LAMBDA/RADEX format           */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_ncolpar(char *datafile)
+{
+
+  int l;                                                     /* index of a text line in the file */
+  int ncolpar=0;                                                 /* number of collision partners */
+
+  int nlev = get_nlev(datafile);                                             /* number of levels */
+  int nrad = get_nrad(datafile);                              /* number of radiative transitions */
+
+
+  /* Open data file */
+
+  FILE *data3 = fopen(datafile, "r");
+
+
+  /* Skip first 11+nlev+nrad lines */
+
+  for (l=0; l<11+nlev+nrad; l++){
+
+    fscanf(data3, "%*[^\n]\n");
+  }
+
+
+  /* Read the number of collision partners */
+
+  fscanf(data3, "%d \n", &ncolpar);
+
+
+  fclose(data3);
+
+  return ncolpar;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* get_ncoltran: get number of collisional transitions from data file in LAMBDA/RADEX format     */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_ncoltran(char *datafile, int *ncoltran, int lspec)
+{
+
+  int l;                                                     /* index of a text line in the file */
+  int loc_ncoltran=0;                                            /* number of collision partners */
+  int par;                                                      /* index for a collision partner */
+
+/*  int nlev = get_nlev(datafile);                                           /* number of levels */
+/*  int nrad = get_nrad(datafile);                            /* number of radiative transitions */
+/*  int ncolpar = get_ncolpar(datafile);                         /* number of collision partners */
+
+
+  /* Open data file */
+
+  FILE *data4 = fopen(datafile, "r");
+
+
+  /* Skip first 15+nlev+nrad lines */
+
+  for (l=0; l<15+nlev[lspec]+nrad[lspec]; l++){
+
+    fscanf(data4, "%*[^\n]\n");
+  }
+
+
+  /* Skip the collision partners that are already done */
+
+  for (par=0; par<ncolpar[lspec]; par++){
+
+    if (ncoltran[SPECPAR(lspec,par)] > 0){
+
+      /* Skip next 9+ncoltran lines */
+
+      for (l=0; l<9+ncoltran[SPECPAR(lspec,par)]; l++){
+
+        fscanf(data4, "%*[^\n]\n");
+      }
+    }
+  }
+
+
+  /* Read the number of collisional transitions */
+
+  fscanf(data4, "%d \n", &loc_ncoltran);
+
+
+  fclose(data4);
+
+  return loc_ncoltran;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* get_ncoltemp: get number of collisional temperatures from data file in LAMBDA/RADEX format    */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_ncoltemp(char *datafile, int *ncoltran, int partner, int lspec)
+{
+
+  int l;                                                     /* index of a text line in the file */
+  int ncoltemp=0;                                                /* number of collision partners */
+  int par;                                                      /* index for a collision partner */
+
+  int nlev = get_nlev(datafile);                                             /* number of levels */
+  int nrad = get_nrad(datafile);                              /* number of radiative transitions */
+  int ncolpar = get_ncolpar(datafile);                           /* number of collision partners */
+
+
+  /* Open data file */
+
+  FILE *data5 = fopen(datafile, "r");
+
+
+  /* Skip first 17+nlev+nrad lines */
+
+  for (l=0; l<17+nlev+nrad; l++){
+
+    fscanf(data5, "%*[^\n]\n");
+  }
+
+
+  /* Skip the collision partners before "partner" */
+
+  for (par=0; par<partner; par++){
+
+
+    /* Skip next 9+ncoltran lines */
+
+    for (l=0; l<9+ncoltran[SPECPAR(lspec,par)]; l++){
+
+      fscanf(data5, "%*[^\n]\n");
+    }
+   
+  }
+
+
+  /* Read the number of collisional temperatures */
+
+  fscanf(data5, "%d \n", &ncoltemp);
+
+
+  fclose(data5);
+
+  return ncoltemp;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* read_data: read data files in LAMBDA/RADEX format                                             */
+/*-----------------------------------------------------------------------------------------------*/
+  
+void read_data( char *datafile,
+                /*int *nlev, int *nrad,*/ int *irad, int *jrad, double *energy, double *weight,
+                double *frequency, double *A_coeff, double *B_coeff,
+                /*int *ncolpar, int *ncoltran, int *cum_ncoltran, int *tot_ncoltran,
+                int *ncoltemp, int *cum_ncoltemp, int tot_ncoltemp,
+                int *cum_ncoltrantemp, int *tot_ncoltrantemp,*/ double *coltemp,
+                double *C_data, int *icol, int *jcol, int lspec )
+{
+
+
+  int l;                                                     /* index of a text line in the file */
+  int par1, par2, par3, par4;                                   /* index for a collision partner */
+  int tindex1, tindex2;                                                     /* temperature index */
+
+  int n;                                                                         /* helper index */
+  int i, j;                                                                     /* level indices */
+
+  char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
+
+  double buff1, buff2, buff3, buff4;                                 /* buffers to load the data */
+
+
+
+  /* Open data file */
+
+  FILE *data = fopen(datafile, "r");
+
+
+  /* Skip first 7 lines */
+
+  for (l=0; l<7; l++){
+
+    fscanf(data, "%*[^\n]\n");
+  }
+
+
+  /* Read energy levels */
+
+  for (l=0; l<nlev[lspec]; l++){
+
+    fscanf( data, "%d %lf %lf %*[^\n]\n", &n, &buff1, &buff2 );
+
+    energy[SPECLEV(lspec,l)] = buff1;
+    weight[SPECLEV(lspec,l)] = buff2; 
+
+    // printf( "(read_data): level energy and weight are %f \t %.1f \n",
+    //         energy[SPECLEV(lspec,l)], weight[SPECLEV(lspec,l)] );
+
+  }
+
+
+  /* Skip the next 3 lines */
+
+  for (l=0; l<3; l++){
+
+    fscanf(data, "%*[^\n]\n");
+  }
+
+
+  /* Read transitions and Einstein A coefficients */
+
+  for (l=0; l<nrad[lspec]; l++){
+
+    fgets(buffer, BUFFER_SIZE, data);
+    sscanf( buffer, "%d %d %d %lE %lE %*[^\n] \n", &n, &i, &j, &buff1, &buff2 );
+
+    irad[SPECRAD(lspec,l)] = i-1;           /* shift levels down by 1 to have the usual indexing */
+    jrad[SPECRAD(lspec,l)] = j-1;           /* shift levels down by 1 to have the usual indexing */
+
+    A_coeff[SPECLEVLEV(lspec,i-1,j-1)] = buff1;
+
+    frequency[SPECLEVLEV(lspec,i-1,j-1)] = buff2;
+
+    // printf( "(read_data): i, j, A_ij and frequency are %d \t %d \t %lE \t %lE \n",
+    //         i-1, j-1, A_coeff[SPECLEVLEV(lspec,irad[SPECRAD(lspec,l)],jrad[SPECRAD(lspec,l)])],
+    //                 frequency[SPECLEVLEV(lspec,irad[SPECRAD(lspec,l)],jrad[SPECRAD(lspec,l)])] );
+
+  }
+
+
+  /* Skip the next 9 lines */
+
+  for (l=0; l<9; l++){
+
+    fscanf(data, "%*[^\n]\n");
+  }
+
+
+  /* For each collision partner */
+
+  for (par4=0; par4<ncolpar[lspec]; par4++){
+
+
+    /* Read the collision temperatures */
+
+    for (tindex1=0; tindex1<ncoltemp[SPECPAR(lspec,par4)]; tindex1++){
+
+      fscanf( data, "\t %lf \t", &buff3 );
+      coltemp[SPECPARTEMP(lspec,par4,tindex1)] = buff3;
+
+      // printf( "(read_data): collisional temperature %*.2lf K\n", MAX_WIDTH,
+      //         coltemp[SPECPARTEMP(lspec,par4,tindex1)] );
+
+    }
+
+
+    /* Go to the next line (previous fscanf() did not do that!) */
+
+    fscanf(data, "%*[^\n]\n");
+
+
+    /* Read the collision rates */
+
+    // printf("(read_data): C_data\n");
+
+    for (l=0; l<ncoltran[SPECPAR(lspec,par4)]; l++){
+
+
+      /* Read first 3 entries of the line containing the transition level indices */
+
+      fscanf( data, "%d \t %d \t %d \t", &n, &i, &j );
+
+      icol[SPECPARTRAN(lspec,par4,l)] = i-1; /* shift levels down by 1 to have the usual indexing */
+      jcol[SPECPARTRAN(lspec,par4,l)] = j-1; /* shift levels down by 1 to have the usual indexing */
+
+      // printf( "\t i = %d   j = %d \n",
+      //         icol[SPECPARTRAN(lspec,par4,l)], jcol[SPECPARTRAN(lspec,par4,l)] );
+
+
+
+      /* Read the rest of the line containing the C_data */
+
+      for (tindex2=0; tindex2<ncoltemp[SPECPAR(lspec,par4)]; tindex2++){
+
+        fscanf( data, "%lf", &buff4 );
+        C_data[SPECPARTRANTEMP(lspec,par4,l,tindex2)] = buff4;
+
+        // printf("  %.2lE", C_data[SPECPARTRANTEMP(lspec,par4,l,tindex2)]);
+
+      }
+
+
+      /* Go to the next line (previous fscanf() did not do that!) */
+
+      fgets(buffer, BUFFER_SIZE, data);
+
+      // printf("\n");
+
+    }
+
+    // printf("\n");
+
+
+    /* If it is not the last collision partner, skip the next 7 lines */
+
+    if (par4<ncolpar[lspec]-1){
+
+      for (l=0; l<7; l++){
+
+        fgets(buffer, BUFFER_SIZE, data);
+      }
+    }
+
+  } /* end of par4 loop over collision partners */
+
+
+  fclose(data);
+
+
+
+  /* Use data to calculate all coefficients in proper units */
+
+  for (l=0; l<nrad[lspec]; l++){
+
+    i = irad[SPECRAD(lspec,l)];
+    j = jrad[SPECRAD(lspec,l)];
+
+
+    /* Frequency is in GHz, convert to Hz */
+
+    frequency[SPECLEVLEV(lspec,i,j)] = 1.0E9*frequency[SPECLEVLEV(lspec,i,j)];
+
+
+    /* Energy/frequency of the transition is symmetric */
+
+    frequency[SPECLEVLEV(lspec,j,i)] = frequency[SPECLEVLEV(lspec,i,j)];
+
+
+    /* Calculate the Einstein B coefficients */
+
+    B_coeff[SPECLEVLEV(lspec,i,j)] = A_coeff[SPECLEVLEV(lspec,i,j)] * pow(CC, 2)
+                                     / ( 2.0*HH*pow(frequency[SPECLEVLEV(lspec,i,j)] , 3) );
+
+    B_coeff[SPECLEVLEV(lspec,j,i)] = weight[SPECLEV(lspec,i)] / weight[SPECLEV(lspec,j)]
+                                     * B_coeff[SPECLEVLEV(lspec,i,j)];
+
+    printf( "(read_data): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
+            A_coeff[SPECLEVLEV(lspec,i,j)], B_coeff[SPECLEVLEV(lspec,i,j)],
+            B_coeff[SPECLEVLEV(lspec,j,i)] );
+
+  }
+
+  // printf("(read_data): intput C_data = \n");
+
+  // for (int par=0; par<ncolpar[lspec]; par++){
+
+  //   for (int ctran=0; ctran<ncoltran[SPECPAR(lspec,par)]; ctran++){
+  
+  //     for (int ctemp=0; ctemp<ncoltemp[SPECPAR(lspec,par)]; ctemp++){
+
+  //       printf( "  %.2lE", C_data[SPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
+  //     }
+  
+  //     printf("\n");
+  //   }
+
+  //   printf("\n");
+  // }
+
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
