@@ -14,6 +14,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "spline.cpp"
+
 
 
 /* rate_PHOTD: returns rate coefficient for photodesorption                                      */
@@ -176,36 +178,38 @@ double rate_CO_photodissociation( REACTIONS *reaction, int reac, double *rad_sur
   RT_max = reaction[reac].RT_max;
 
 
-  /* Calculate the mean wavelength (in Å) of the 33 dissociating bands,
-     weighted by their fractional contribution to the total shielding
-     van Dishoeck & Black (1988, ApJ, 334, 771, Equation 4) */
-
-  double u = log10(1.0 + column_CO); /* ??? WHY THE + 1.0 ??? */
-  double v = log10(1.0 + column_H2); /* ??? WHY THE + 1.0 ??? */
-
-  lambda = (5675.0 - 200.6*W) - (571.6 - 24.09*W)*U + (18.22 - 0.7664*W)*U*U;
-
-
-  /* lambda cannot be larger than the wavelength of band 33 (1076.1Å)
-     and cannot be smaller than the wavelength of band 1 (913.6Å) */
-
-  if ( lambda > 1076.1 ) {
-    lambda = 1076.1;
-  }
-
-  if ( lambda < 913.6 ){
-
-    lambda = 913.6;
-  }
-
-
-  double self_shielding_CO( double column_H2, double column_CO);
-  double dust_scattering( double AV_ray, double lambda );
-
-
   /* Now lambda is calculated */
 
   for (ray=0; ray<NRAYS; ray++){
+
+
+    /* Calculate the mean wavelength (in Å) of the 33 dissociating bands,
+       weighted by their fractional contribution to the total shielding
+       van Dishoeck & Black (1988, ApJ, 334, 771, Equation 4) */
+
+    double u = log10(1.0 + column_CO[ray]); /* ??? WHY THE + 1.0 ??? */
+    double w = log10(1.0 + column_H2[ray]); /* ??? WHY THE + 1.0 ??? */
+
+    lambda = (5675.0 - 200.6*w) - (571.6 - 24.09*w)*u + (18.22 - 0.7664*w)*u*u;
+
+
+    /* lambda cannot be larger than the wavelength of band 33 (1076.1Å)
+       and cannot be smaller than the wavelength of band 1 (913.6Å) */
+
+    if ( lambda > 1076.1 ) {
+
+      lambda = 1076.1;
+    }
+
+    if ( lambda < 913.6 ){
+
+      lambda = 913.6;
+    }
+
+
+    double self_shielding_CO( double column_H2, double column_CO);
+    double dust_scattering( double AV_ray, double lambda );
+
 
     k = k + alpha * rad_surface[ray] * self_shielding_CO(column_CO[ray], column_H2[ray])
             * dust_scattering(AV[ray], lambda) / 2.0;
@@ -257,8 +261,8 @@ double rate_CI_photoionization( REACTIONS *reaction, int reac, double temperatur
     /* Calculate the optical depth in the CI absorption band, accounting
        for grain extinction and shielding by CI and overlapping H2 lines */
 
-    tau_C = gamma*AV[ray]
-            + 1.1E-17*column_CI + (0.9 * pow(temperature_gas,0.27) * pow(column_H2/1.59E21, 0.45));
+    tau_C = gamma*AV[ray] + 1.1E-17*column_CI[ray]
+            + (0.9 * pow(temperature_gas,0.27) * pow(column_H2[ray]/1.59E21, 0.45));
 
 
     /* Calculate the CI photoionization rate */
@@ -396,8 +400,8 @@ double self_shielding_H2( double column_H2, double doppler_width, double radiati
 
     double sqrt_PI = 1.772453851;                                           /* square root of PI */
     double r  = radiation_width / (sqrt_PI*doppler_width);  /* (equation A2 in Federman's paper) */
-    double t1 = 3.02 * pow(R*1.0E3,-0.064);                 /* (equation A6 in Federman's paper) */
-    double u1 = sqrt(tau_D*R) / T;                          /* (equation A6 in Federman's paper) */
+    double t1 = 3.02 * pow(r*1.0E3,-0.064);                 /* (equation A6 in Federman's paper) */
+    double u1 = sqrt(tau_D*r) / t1;                          /* (equation A6 in Federman's paper) */
 
     J_R = r / ( t1 * sqrt(sqrt_PI/2.0 + u1*u1) );
   }
@@ -405,7 +409,7 @@ double self_shielding_H2( double column_H2, double doppler_width, double radiati
 
   /* Calculate the total self-shielding function */
 
-  return self_shielding = JD + JR;
+  return self_shielding = J_D + J_R;
 
 
 }
@@ -425,7 +429,7 @@ double self_shielding_CO( double column_H2, double column_CO)
   double self_shielding;                                        /* total self-shielding function */
 
 
-
+  return self_shielding;
 
 }
 
@@ -471,7 +475,9 @@ double dust_scattering( double AV_ray, double lambda )
 
   /* Convert the optical depth to that at the desired wavelength */
 
-  tau = tau_visual * XLAMBDA(lambda);
+  double X_lambda(double lambda);
+
+  tau_lambda = tau_visual * X_lambda(lambda);
 
 
   /* Calculate the attenuation due to scattering by dust */
@@ -500,7 +506,112 @@ double dust_scattering( double AV_ray, double lambda )
     }
   }
 
-  return dust_scatter
+  return dust_scatter;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* X_lambda: Retuns ratio of optical depths at given lambda w.r.t. the visual wavelenght         */
+/*-----------------------------------------------------------------------------------------------*/
+
+double X_lambda(double lambda)
+{
+
+  /* Determine the ratio of the optical depth at a given wavelength to
+     that at visual wavelength (λ=5500Å) using the extinction curve of
+     Savage & Mathis (1979, ARA&A, 17, 73, Table 2) */
+
+  const long n = 30;
+
+  double lambda_grid[n] = {  910.0E0,   950.0E0,  1000.0E0,  1050.0E0, 1110.0E0, \
+                            1180.0E0,  1250.0E0,  1390.0E0,  1490.0E0, 1600.0E0, \
+                            1700.0E0,  1800.0E0,  1900.0E0,  2000.0E0, 2100.0E0, \
+                            2190.0E0,  2300.0E0,  2400.0E0,  2500.0E0, 2740.0E0, \
+                            3440.0E0,  4000.0E0,  4400.0E0,  5500.0E0, 7000.0E0, \
+                            9000.0E0, 12500.0E0, 22000.0E0, 34000.0E0,    1.0E9   };
+
+  double X_grid[n] = { 5.76E0, 5.18E0, 4.65E0, 4.16E0, 3.73E0, \
+                       3.40E0, 3.11E0, 2.74E0, 2.63E0, 2.62E0, \
+                       2.54E0, 2.50E0, 2.58E0, 2.78E0, 3.01E0, \
+                       3.12E0, 2.86E0, 2.58E0, 2.35E0, 2.00E0, \
+                       1.58E0, 1.42E0, 1.32E0, 1.00E0, 0.75E0, \
+                       0.48E0, 0.28E0, 0.12E0, 0.05E0, 1.00E-50 };
+
+  double yp0 = 1.0E30;                                               /* lower boundary condition */
+  double ypn = 1.0E30;                                               /* upper boundary condition */
+
+  double d2logX[n];                                   /* second order derivative of the function */
+
+  double logX_result;                                      /* Resulting interpolated value for X */
+
+
+  /* Scale the grids to get a better spline interpolation */
+  /* The transformation was empirically determined */
+
+  double loglambda = log(lambda);
+
+  double loglambda_grid[n];
+  double logX_grid[n];
+
+  for (int i=0; i<n; i++){
+
+    loglambda_grid[i] = log(lambda_grid[i]);
+    logX_grid[i]      = log(X_grid[i]);
+  }
+
+
+  /* Write the X_lambda values to a text file (for testing) */
+
+  // FILE *xl = fopen("X_lambda.txt", "w");
+
+  // if (xl == NULL){
+
+  //     printf("Error opening file!\n");
+  //     exit(1);
+  //   }
+
+  // for (int i=0; i<n; i++){
+
+  //   fprintf(xl, "%lE\t%lE\n", lambda_grid[i], X_grid[i] );
+  // }
+
+  // fclose(xl);
+
+
+
+  /* Calculate the cubic splines */
+
+  void spline( double *loglambda_grid, double *logX_grid, long n,
+               double yp0, double ypn, double *d2logX);
+
+  spline(loglambda_grid, logX_grid, n, yp0, ypn, d2logX);
+
+
+  if (loglambda < loglambda_grid[0]){
+
+    loglambda = loglambda_grid[0];
+  }
+
+  if (loglambda > loglambda_grid[n-1]){
+
+    loglambda = loglambda_grid[n-1];
+  }
+
+
+  /* Evaluate the spline function to get the interpolation */
+
+  void splint( double *loglambda_grid, double *logX_grid, double *d2logX,
+               long n, double loglambda, double *logX_result );
+
+  splint( loglambda_grid, logX_grid, d2logX, n, loglambda, &logX_result );
+
+
+  return exp(logX_result);
 
 }
 

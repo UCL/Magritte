@@ -11,6 +11,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <string>
 #include <string.h>
 #include <math.h>
 
@@ -24,7 +25,8 @@
 
 void reaction_rates( REACTIONS *reaction, double temperature_gas, double temperature_dust,
                      double metallicity, double gas2dust, double *rad_surface, double *AV,
-                     double column_H2, double v_turb ){
+                     double *column_H2, double *column_HD, double *column_CI, double *column_CO,
+                     double v_turb ){
 
 
   int reac, rc;                                                                /* reaction index */
@@ -225,7 +227,7 @@ void reaction_rates( REACTIONS *reaction, double temperature_gas, double tempera
     else if ( R1 == "H2"  &&  R2 == ""  &&  R3 == "" ){
 
       double rate_H2_photodissociation( REACTIONS *reaction, int reac, double *rad_surface,
-                                        double *AV, double *column_H2, double v_turb )
+                                        double *AV, double *column_H2, double v_turb );
 
       reaction[reac].k = rate_H2_photodissociation( reaction, reac, rad_surface,
                                                     AV, column_H2, v_turb );
@@ -237,9 +239,10 @@ void reaction_rates( REACTIONS *reaction, double temperature_gas, double tempera
     else if ( R1 == "HD"  &&  R2 == ""  &&  R3 == "" ){
 
       double rate_H2_photodissociation( REACTIONS *reaction, int reac, double *rad_surface,
-                                        double *AV, double *column_HD )
+                                        double *AV, double *column_HD, double v_turb );
 
-      reaction[reac].k = rate_H2_photodissociation( reaction, reac, rad_surface, AV, column_HD );
+      reaction[reac].k = rate_H2_photodissociation( reaction, reac, rad_surface,
+                                                    AV, column_HD, v_turb );
     }
 
 
@@ -314,12 +317,12 @@ void reaction_rates( REACTIONS *reaction, double temperature_gas, double tempera
       printf("(reaction_rates): ERROR, negative rate for reaction %d \n", reac);
     }
 
-    else if (reaction[reac].k > 1.0 && strcmp(R2, "#") != 0 ){
+    else if (reaction[reac].k > 1.0  &&  R2 != "#"){
 
       printf("(reaction_rates): WARNING, rate too large for reaction %d \n", reac);
       printf("(reaction_rates): WARNING, rate is set to 1.0 \n");
 
-      reaction[reac].k = 1.0
+      reaction[reac].k = 1.0;
     }
 
     else if ( reaction[reac].k < 1.0E-99 ){

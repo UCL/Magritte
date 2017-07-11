@@ -61,7 +61,6 @@ void main(){
 
 
 
-
   void read_species(string specdatafile, SPECIES *species);
 
   read_species(specdatafile, species);
@@ -90,53 +89,63 @@ void main(){
             reaction[reac].RT_min, reaction[reac].RT_max,
             reaction[reac].dup );
   }
-  // 
-  // double temperature_gas = 1.0;
-  // double temperature_dust = 0.1;
-  // double gas2dust = 100.0;
-  // double metallicity = 1.0;
+  
+  double temperature_gas = 1.0;
+  double temperature_dust = 0.1;
+  double gas2dust = 100.0;
+  double metallicity = 1.0;
 
-  // double v_turb=1.0E-4;                                            /* turbulent speed of the gas */
+  double v_turb=1.0E-4;                                            /* turbulent speed of the gas */
 
-  // double *rad_surface;
-  // rad_surface = (double*) malloc( NRAYS*sizeof(double) );
+  double *rad_surface;
+  rad_surface = (double*) malloc( NRAYS*sizeof(double) );
 
-  // double *AV;
-  // AV = (double*) malloc( NRAYS*sizeof(double) );
+  double *AV;
+  AV = (double*) malloc( NRAYS*sizeof(double) );
 
-  // double *column_H2;
-  // column_H2 = (double*) malloc( NRAYS*sizeof(double) );
+  double *column_H2;
+  column_H2 = (double*) malloc( NRAYS*sizeof(double) );
 
-  // for (ray=0; ray<NRAYS; ray++){
+  double *column_HD;
+  column_HD = (double*) malloc( NRAYS*sizeof(double) );
 
-  //   rad_surface[ray] = 1.0;
-  //   AV[ray]          = 1.0;
-  //   column_H2[ray]   = 1.0;
-  // }
+  double *column_CI;
+  column_CI = (double*) malloc( NRAYS*sizeof(double) );
 
-  // /* Calculate the reaction k coefficients from the reaction data */
-
-  // void reaction_rates( REACTIONS *reaction, double temperature_gas, double temperature_dust,
-  //                      double metallicity, double gas2dust, double *rad_surface, double *AV,
-  //                      double *column_H2, double v_turb );
-
-  // reaction_rates( reaction, temperature_gas, temperature_dust, metallicity, gas2dust,
-  //                 rad_surface, AV, v_turb );
+  double *column_CO;
+  column_CO = (double*) malloc( NRAYS*sizeof(double) );
 
 
-  // double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
-  // abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
+  for (ray=0; ray<NRAYS; ray++){
 
-  // for (n=0; n<ngrid; n++){
+    rad_surface[ray] = 1.0;
+    AV[ray]          = 1.0;
+    column_H2[ray]   = 1.0;
+    column_HD[ray]   = 1.0;
+    column_CI[ray]   = 1.0;
+    column_CO[ray]   = 1.0;
+  }
 
-  //   for (spec=0; spec<nspec; spec++){
+  /* Calculate the reaction k coefficients from the reaction data */
 
-  //     abundance[SINDEX(n, spec)] = 1.0;
-  //   }
-  // }
+  void reaction_rates( REACTIONS *reaction, double temperature_gas, double temperature_dust,
+                       double metallicity, double gas2dust, double *rad_surface, double *AV,
+                       double *column_H2, double *column_HD, double *column_CI, double *column_CO,
+                       double v_turb );
+
+  reaction_rates( reaction, temperature_gas, temperature_dust, metallicity, gas2dust,
+                  rad_surface, AV, column_H2, column_HD, column_CI, column_CO, v_turb );
 
 
+  double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
+  abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
 
-  // free(species);
+  for (n=0; n<ngrid; n++){
+
+    for (spec=0; spec<nspec; spec++){
+
+      abundance[SINDEX(n, spec)] = 1.0;
+    }
+  }
 
 }

@@ -12,6 +12,8 @@
 
 
 
+
+
 /* Numerical constants */
 
 #define PI 3.141592653589793238462643383279502884197                                       /* pi */
@@ -245,7 +247,7 @@ int tot_cum_tot_ncoltrantemp;
 
 typedef struct SPECIES {
 
-  string sym;                                                                 /* chemical symbol */
+  std::string sym;                                                                 /* chemical symbol */
 
   double abn;                                                                       /* abundance */
 
@@ -257,14 +259,14 @@ typedef struct SPECIES {
 
 typedef struct REACTIONS {
 
-  string   R1;                                                                     /* reactant 1 */
-  string   R2;                                                                     /* reactant 2 */
-  string   R3;                                                                     /* reactant 3 */
+  std::string   R1;                                                                     /* reactant 1 */
+  std::string   R2;                                                                     /* reactant 2 */
+  std::string   R3;                                                                     /* reactant 3 */
 
-  string   P1;                                                             /* reaction product 1 */
-  string   P2;                                                             /* reaction product 2 */
-  string   P3;                                                             /* reaction product 3 */
-  string   P4;                                                             /* reaction product 4 */
+  std::string   P1;                                                             /* reaction product 1 */
+  std::string   P2;                                                             /* reaction product 2 */
+  std::string   P3;                                                             /* reaction product 3 */
+  std::string   P4;                                                             /* reaction product 4 */
 
 
 double alpha;                               /* alpha coefficient to calculate rate coefficient k */

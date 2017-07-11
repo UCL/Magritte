@@ -6,28 +6,28 @@ Log for test_ray_tracing
 (ray_tracing): number of HEALPix rays              192
 (ray_tracing): critical angle theta_crit          1.00
 (ray_tracing): equivalent ray distance        0.00E+00
-(ray_tracing): time in dividing evaluation points 1499704231.537185 sec
-(ray_tracing): time in making the key             0.001292 sec
-(ray_tracing): time in heapsort routine           1499704231.488237 sec
-(ray_tracing): succes rate 0.88(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+(ray_tracing): time in dividing evaluation points 0.036924 sec
+(ray_tracing): time in making the key             0.001348 sec
+(ray_tracing): time in heapsort routine           0.028377 sec
+(ray_tracing): succes rate 0.86(# eval. points)/ ((# grid points)^2 - (# grid points)) 
 (ray_tracing): number of grid points               150
 (ray_tracing): number of HEALPix sides               4
 (ray_tracing): number of HEALPix rays              192
 (ray_tracing): critical angle theta_crit          1.00
 (ray_tracing): equivalent ray distance        0.00E+00
-(ray_tracing): time in dividing evaluation points -1499704231.595417 sec
-(ray_tracing): time in making the key             -1499704231.633857 sec
-(ray_tracing): time in heapsort routine           2999408463.275908 sec
-(ray_tracing): succes rate 0.81(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+(ray_tracing): time in dividing evaluation points 0.058547 sec
+(ray_tracing): time in making the key             0.001351 sec
+(ray_tracing): time in heapsort routine           0.019458 sec
+(ray_tracing): succes rate 0.47(# eval. points)/ ((# grid points)^2 - (# grid points)) 
 (ray_tracing): number of grid points               150
 (ray_tracing): number of HEALPix sides               4
 (ray_tracing): number of HEALPix rays              192
 (ray_tracing): critical angle theta_crit          1.00
 (ray_tracing): equivalent ray distance        0.00E+00
-(ray_tracing): time in dividing evaluation points -1499704231.736571 sec
-(ray_tracing): time in making the key             1499704231.773588 sec
-(ray_tracing): time in heapsort routine           2999408463.543736 sec
-(ray_tracing): succes rate 0.79(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+(ray_tracing): time in dividing evaluation points -1499786643.662149 sec
+(ray_tracing): time in making the key             1499786643.739243 sec
+(ray_tracing): time in heapsort routine           2999573287.477455 sec
+(ray_tracing): succes rate 0.78(# eval. points)/ ((# grid points)^2 - (# grid points)) 
 ===============================================================================
 All tests passed (67050 assertions in 1 test case)
 
