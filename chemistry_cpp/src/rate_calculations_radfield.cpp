@@ -16,6 +16,8 @@
 
 #include "spline.cpp"
 
+#define IND(r,c) ((c)+(r)*n)
+
 
 
 /* rate_PHOTD: returns rate coefficient for photodesorption                                      */
@@ -423,13 +425,117 @@ double self_shielding_H2( double column_H2, double doppler_width, double radiati
 /* self_shielding_CO: Returns CO self-shielding function                                         */
 /*-----------------------------------------------------------------------------------------------*/
 
-double self_shielding_CO( double column_H2, double column_CO)
+double self_shielding_CO( double column_CO, double column_H2)
 {
 
-  double self_shielding;                                        /* total self-shielding function */
+  /*  12CO line shielding, using the computed values listed in
+      van Dishoeck & Black (1988, ApJ, 334, 771, Table 5)
+
+      Appropriate shielding factors are determined by performing a  2-dimensional spline
+      interpolation over the values listed in Table 5 of van Dishoeck & Black, which include
+      contributions from self-shielding and H2 screening  */
 
 
-  return self_shielding;
+  long i, j;                                                                          /* indices */
+
+  double log10shield;                                           /* total self-shielding function */
+
+  const long m = 8;
+  const long n = 6;
+
+  double log10column_CO_grid[m] = {12.0E0, 13.0E0, 14.0E0, 15.0E0, 16.0E0, 17.0E0, 18.0E0, 19.0E0};
+  double log10column_H2_grid[n] = {18.0E0, 19.0E0, 20.0E0, 21.0E0, 22.0E0, 23.0E0 };
+
+  double log10shield_CO_grid[n*m] 
+         = { 0.000E+00, -8.539E-02, -1.451E-01, -4.559E-01, -1.303E+00, -3.883E+00, \
+            -1.408E-02, -1.015E-01, -1.612E-01, -4.666E-01, -1.312E+00, -3.888E+00, \
+            -1.099E-01, -2.104E-01, -2.708E-01, -5.432E-01, -1.367E+00, -3.936E+00, \
+            -4.400E-01, -5.608E-01, -6.273E-01, -8.665E-01, -1.676E+00, -4.197E+00, \
+            -1.154E+00, -1.272E+00, -1.355E+00, -1.602E+00, -2.305E+00, -4.739E+00, \
+            -1.888E+00, -1.973E+00, -2.057E+00, -2.303E+00, -3.034E+00, -5.165E+00, \
+            -2.760E+00, -2.818E+00, -2.902E+00, -3.146E+00, -3.758E+00, -5.441E+00, \
+            -4.001E+00, -4.055E+00, -4.122E+00, -4.421E+00, -5.077E+00, -6.446E+00  };
+
+  double *d2log10shield;
+  d2log10shield = (double*) malloc( m*n*sizeof(double) );
+
+
+
+  /* Write the shield_CO values to a text file (for testing) */
+
+  FILE *sCO = fopen("self_shielding_CO_table.txt", "w");
+
+  if (sCO == NULL){
+
+      printf("Error opening file!\n");
+      exit(1);
+    }
+
+  for (i=0; i<m; i++){
+
+    for (j=0; j<n; j++){
+
+      fprintf(sCO, "%lE\t%lE\t%lE\n", log10column_CO_grid[i],
+                                      log10column_H2_grid[j],
+                                      log10shield_CO_grid[IND(i,j)] );
+    }
+  }
+
+  fclose(sCO);
+
+
+
+  /* Calculate the splines for the rows (spline.cpp) */
+
+  void splie2( double *log10column_CO_grid, double *log10column_H2_grid,
+               double *log10shield_CO_grid, long m, long n, double *d2log10shield );
+
+  splie2( log10column_CO_grid, log10column_H2_grid, log10shield_CO_grid, m, n, d2log10shield );
+
+
+
+  /* Scale the variables to get a better spline interpolation */
+
+  double log10column_CO = log10(column_CO+1.0);
+  double log10column_H2 = log10(column_H2+1.0);
+
+
+
+  /* Enforce the variables to be in the range of the interpolating function */
+
+  if (log10column_CO < log10column_CO_grid[0]){
+
+    log10column_CO = log10column_CO_grid[0];
+  }
+
+  if (log10column_H2 < log10column_H2_grid[0]){
+
+    log10column_H2 = log10column_H2_grid[0];
+  }
+
+  if (log10column_CO > log10column_CO_grid[m-1]){
+
+    log10column_CO = log10column_CO_grid[m-1];
+  }
+
+  if (log10column_H2 > log10column_H2_grid[n-1]){
+
+    log10column_H2 = log10column_H2_grid[n-1];
+  }
+
+
+
+  /* Evaluate the spline function to get the bicubic interpolation (spline.cpp) */
+
+  void splin2( double *log10column_CO_grid, double *log10column_H2_grid,
+               double *log10shield_CO_grid, double *d2log10shield, long m, long n,
+               double log10column_CO, double log10column_H2, double *log10shield );
+
+  splin2( log10column_CO_grid, log10column_H2_grid, log10shield_CO_grid, d2log10shield, m, n,
+          log10column_CO, log10column_H2, &log10shield );
+
+
+  return pow(10.0, log10shield);
 
 }
 
@@ -526,6 +632,8 @@ double X_lambda(double lambda)
      that at visual wavelength (λ=5500Å) using the extinction curve of
      Savage & Mathis (1979, ARA&A, 17, 73, Table 2) */
 
+  long i;                                                                               /* index */
+
   const long n = 30;
 
   double lambda_grid[n] = {  910.0E0,   950.0E0,  1000.0E0,  1050.0E0, 1110.0E0, \
@@ -558,7 +666,7 @@ double X_lambda(double lambda)
   double loglambda_grid[n];
   double logX_grid[n];
 
-  for (int i=0; i<n; i++){
+  for (i=0; i<n; i++){
 
     loglambda_grid[i] = log(lambda_grid[i]);
     logX_grid[i]      = log(X_grid[i]);
@@ -584,13 +692,15 @@ double X_lambda(double lambda)
 
 
 
-  /* Calculate the cubic splines */
+  /* Calculate the cubic splines (spline.cpp) */
 
   void spline( double *loglambda_grid, double *logX_grid, long n,
                double yp0, double ypn, double *d2logX);
 
   spline(loglambda_grid, logX_grid, n, yp0, ypn, d2logX);
 
+
+  /* Enforce the variables to be in the range of the interpolating function */
 
   if (loglambda < loglambda_grid[0]){
 
@@ -603,7 +713,7 @@ double X_lambda(double lambda)
   }
 
 
-  /* Evaluate the spline function to get the interpolation */
+  /* Evaluate the spline function to get the interpolation (spline.cpp) */
 
   void splint( double *loglambda_grid, double *logX_grid, double *d2logX,
                long n, double loglambda, double *logX_result );

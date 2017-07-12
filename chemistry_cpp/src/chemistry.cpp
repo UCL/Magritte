@@ -115,6 +115,14 @@ void main(){
   double *column_CO;
   column_CO = (double*) malloc( NRAYS*sizeof(double) );
 
+  double *UV_field;
+  UV_field = (double*) malloc( ngrid*sizeof(double) );
+
+
+
+
+  /* TEMPORARY: write proper version when coupling to transfer code */
+  /* -------------------------------------------------------------- */
 
   for (ray=0; ray<NRAYS; ray++){
 
@@ -125,6 +133,23 @@ void main(){
     column_CI[ray]   = 1.0;
     column_CO[ray]   = 1.0;
   }
+
+  for (n=0; n<ngrid; n++){
+
+    UV_field[n] = 1.0;
+  }
+
+  /* -------------------------------------------------------------- */
+
+
+
+
+  /* Calculate the dust temperature */
+
+  void dust_temperature_calculation( double *UV_field, double *rad_surface,
+                                     double *temperature_dust );
+
+
 
   /* Calculate the reaction k coefficients from the reaction data */
 
@@ -137,14 +162,25 @@ void main(){
                   rad_surface, AV, column_H2, column_HD, column_CI, column_CO, v_turb );
 
 
+
   double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
   abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
+
 
   for (n=0; n<ngrid; n++){
 
     for (spec=0; spec<nspec; spec++){
 
-      abundance[SINDEX(n, spec)] = 1.0;
+      if ( (species[spec].sym == "H2")  ||  (species[spec].sym == "H")
+           ||  (species[spec].sym == "He") ||  (species[spec].sym == "e-") ){
+
+        abundance[SINDEX(n, spec)] = species[spec].abn;
+      }
+
+      else {
+
+        abundance[SINDEX(n, spec)] = species[spec].abn * metallicity;
+      }
     }
   }
 

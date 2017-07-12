@@ -405,6 +405,9 @@ double rate_ELFRZE( REACTIONS *reaction, int reac, double temperature_gas)
   RT_max = reaction[reac].RT_max;
 
 
+  /* Following Roberts et al. 2007 */
+  /* equation (6) */
+
   if ( beta == 0.0 ){
 
     C_ion = 1.0;

@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Solves the equilibrium equation for the level populations                                     */
+/* level_population_solver: Solves the equilibrium equation for the level populations            */
 /*                                                                                               */
 /* (based on the Gauss-Jordan solver in Numerical Recipes, Press et al.)                         */
 /*                                                                                               */

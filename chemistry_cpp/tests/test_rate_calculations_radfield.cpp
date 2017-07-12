@@ -95,6 +95,8 @@ TEST_CASE("Test rate_calculations_radfield functions"){
 
     double X_lambda(double lambda);
 
+    int n = 250;                                               /* number of interpolating points */
+
 
 
     /* Write the X_lambda values to a text file (for testing) */
@@ -107,11 +109,11 @@ TEST_CASE("Test rate_calculations_radfield functions"){
       exit(1);
     }
 
-    for (int i=0; i<250; i++){
+    for (int i=0; i<n; i++){
 
-      lambda = (35000.0-800.0)/250.0*i + 800.0;
+      lambda = (35000.0-800.0)/n*i + 800.0;
 
-      fprintf(xl, "%lE\t%lE\n", lambda, X_lambda(lambda) );
+      fprintf( xl, "%lE\t%lE\n", lambda, X_lambda(lambda) );
     }
 
     fclose(xl);
@@ -119,6 +121,51 @@ TEST_CASE("Test rate_calculations_radfield functions"){
 
     CHECK( 1==1 );
   }
+
+
+
+  /* Test self_shielding_CO */
+
+  SECTION("Test self_shielding_CO"){
+
+    double column_CO;
+    double column_H2;;
+
+    double self_shielding_CO(double column_CO, double column_H2);
+
+    int n = 20;                                                /* number of interpolating points */
+
+
+
+    /* Write the self_shielding_CO values to a text file (for testing) */
+
+    FILE *sCO = fopen("self_shielding_CO_spline.txt", "w");
+
+    if (sCO == NULL){
+
+      printf("Error opening file!\n");
+      exit(1);
+    }
+
+    for (int i=0; i<n; i++){
+
+      for (int j=0; j<n; j++){
+
+        column_CO = pow(10.0, (19.0-12.0)/n*i + 12.0 );
+        column_H2 = pow(10.0, (23.0-18.0)/n*j + 18.0 );
+
+        fprintf( sCO, "%lE\t%lE\t%lE\n", log10(column_CO),
+                                         log10(column_H2),
+                                         log10(self_shielding_CO(column_CO, column_H2)) );
+      }
+    }
+
+    fclose(sCO);
+
+
+    CHECK( 1==1 );
+  }
+
 
 }
 

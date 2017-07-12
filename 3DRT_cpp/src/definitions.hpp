@@ -104,6 +104,10 @@
                              third is collisional transition and fourth is collision temperature */
 
 
+#define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*nspec
+               /* when the first index is a grid point, the second a species and the third a ray */
+
+
 
 /* Data types */
 
