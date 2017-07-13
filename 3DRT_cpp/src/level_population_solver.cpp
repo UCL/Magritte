@@ -21,8 +21,8 @@
 
 
 
-void level_population_solver( double *R, double *pop, double *dpop,
-                              double *density, long gridp, int lspec )
+void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, double *dpop,
+                              long gridp, int lspec )
 {
 
   int i, j;                                       /* indices for the population level n_i or n_j */
@@ -65,7 +65,7 @@ void level_population_solver( double *R, double *pop, double *dpop,
     dpop[SPECGRIDLEV(lspec,gridp,i)] = pop[SPECGRIDLEV(lspec,gridp,i)];
   }
 
-  b[nlev[lspec]-1] = 1.0E-8 * density[gridp];
+  b[nlev[lspec]-1] = 1.0E-8 * gridpoint[gridp].density;
 
   
 

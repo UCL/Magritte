@@ -89,8 +89,13 @@ void read_species(string specdatafile, SPECIES *species){
     sscanf( buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff );
     
     species[l].sym  = sym_buff;
-    species[l].abn  = abn_buff;
     species[l].mass = mass_buff;
+
+
+    for (n=0; n<ngrid; n++){
+
+      species[l].abn[n] = abn_buff;
+    }
   }
 
 
@@ -139,7 +144,7 @@ int get_nreac(string reacdatafile)
 /* read_reactions: read the reactoins from the (CSV) data file                                                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_reactions(string reacdatafile, REACTIONS * reaction){
+void read_reactions(string reacdatafile, REACTIONS *reaction){
 
 
   char *buffer;                                                     /* buffer for a line of data */

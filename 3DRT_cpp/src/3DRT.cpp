@@ -18,6 +18,9 @@
 #include <omp.h>
 /*#include <mpi.h>*/
 
+#include <string>
+using namespace std;
+
 #include "definitions.hpp"
 #include "read_input.cpp"
 #include "create_healpixvectors.cpp"
@@ -25,6 +28,7 @@
 #include "read_data.cpp"
 #include "calc_C_coeff.cpp"
 #include "level_populations.cpp"
+#include "column_density_calculator.cpp"
 #include "write_output.cpp"
 
 
@@ -77,12 +81,12 @@ void main()
 
   /* Specify the input file */
 
-  char inputfile[100] = "input/grid_1D_regular.txt";
+  string inputfile = "input/grid_1D_regular.txt";
 
 
   /* Count number of grid points in input file input/ingrid.txt */
 
-  long get_ngrid(char *inputfile);                                    /* defined in read_input.c */
+  long get_ngrid(string inputfile);                                    /* defined in read_input.c */
 
   ngrid = get_ngrid(inputfile);                       /* number of grid points in the input file */
 
@@ -138,7 +142,7 @@ void main()
 
   /* Read input file */
 
-  void read_input(char *inputfile, long ngrid, GRIDPOINT *gridpoint );
+  void read_input(string inputfile, long ngrid, GRIDPOINT *gridpoint );
 
   read_input(inputfile, ngrid, gridpoint);
 
@@ -176,60 +180,65 @@ void main()
 
 
   /* --- CHEMISTRY --- */
-  /*-------------------*/
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
   /*--- TEMPORARY CHEMISTRY ---*/
 
-  int nspec = 10;                                             /* number of (chemical) species */
+  nspec = 10;                                                    /* number of (chemical) species */
 
-  double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
-  abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
+  // double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
+  // abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
 
-  for (n=0; n<ngrid; n++){
 
-    for (spec=0; spec<nspec; spec++){
+  // SPECIES *species;
+  species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
 
-      abundance[SINDEX(n, spec)] = 1.0;
+
+  for (spec=0; spec<nspec; spec++){
+
+    for (n=0; n<ngrid; n++){
+
+      species[spec].abn[n] = 1.0;
     }
   }
 
-  char *species;
-  species = (char*) malloc( 15*nspec*sizeof(char) );
 
-
-  int lspec=0;                                  /* index of the line species under consideration */
+  int lspec;                                    /* index of the line species under consideration */
 
   /*---------------------------*/
 
 
-/* TEMPORARY CHECK */
+  /* TEMPORARY CHECK */
 
-double *temperature;
-temperature = (double*) malloc( ngrid*sizeof(double) );
+  double *temperature;
+  temperature = (double*) malloc( ngrid*sizeof(double) );
 
-double *density;
-density = (double*) malloc( ngrid*sizeof(double) );
 
-for (n=0; n<ngrid; n++){
+  for (n=0; n<ngrid; n++){
 
-  temperature[n] = 10.0; // 10.0*(100.0 + n/ngrid);
-  density[n] = 10.0;
-}
+    temperature[n] = 10.0; // 10.0*(100.0 + n/ngrid);
+    gridpoint[n].density = 10.0;
+  }
 
-/*----------------*/
+  /*----------------*/
+
+
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
 
 
   /* Read data files */
 
   nline_species = 1;
 
-  char datafile[nline_species][100];
+  string datafile[nline_species];
 
-  strcpy(datafile[0], "data/12c.dat");
-  // strcpy(datafile[1], "data/12c+.dat");
-  // strcpy(datafile[0], "data/12co.dat");
-  // strcpy(datafile[0], "data/16o.dat");
+  // datafile[0] = "data/12c.dat";
+  datafile[0] = "data/12c+.dat";
+  // datafile[0] = "data/12co.dat";
+  // datafile[0] = "data/16o.dat";
 
 
   /* Define and allocate memory for the data */
@@ -470,7 +479,7 @@ for (n=0; n<ngrid; n++){
 
     tot_ncoltrantemp[lspec] = cum_ncoltrantemp[SPECPAR(lspec,ncolpar[lspec]-1)]
                               + ( ncoltran[SPECPAR(lspec,ncolpar[lspec]-1)]
-         	       		  *ncoltemp[SPECPAR(lspec,ncolpar[lspec]-1)] );
+         	                  		  *ncoltemp[SPECPAR(lspec,ncolpar[lspec]-1)] );
 /*
     printf("(3D-RT): tot_ncoltran %d\n", tot_ncoltran[lspec]);
     printf("(3D-RT): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);
@@ -523,6 +532,8 @@ for (n=0; n<ngrid; n++){
   jcol = (int*) malloc( tot_cum_tot_ncoltran*sizeof(int) );
                                                            /* [nline_species][ncolpar][ncoltran] */
 
+  // int *spec_par;                   /* number of the species corresponding to a collision partner */
+  spec_par = (int*) malloc( tot_ncolpar*sizeof(int) );
 
 
   /* Initializing data */
@@ -575,15 +586,15 @@ for (n=0; n<ngrid; n++){
   }
 
 
-  void read_data( char *datafile, int *irad, int *jrad, double *energy, double *weight,
+  void read_data( string datafile, int *irad, int *jrad, double *energy, double *weight,
                   double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                  double *C_data, int *icol, int *jcol, int lspec );
+                  double *C_data, int *icol, int *jcol, int lspec, int *spec_par );
 
 
   for(lspec=0; lspec<nline_species; lspec++){
 
     read_data( datafile[lspec], irad, jrad, energy, weight, frequency,
-               A_coeff, B_coeff, coltemp, C_data, icol, jcol, lspec );
+               A_coeff, B_coeff, coltemp, C_data, icol, jcol, lspec, spec_par );
   }
 
 
@@ -629,17 +640,15 @@ for (n=0; n<ngrid; n++){
                           double *B_coeff, double *C_coeff, double *P_intensity,
                           double *R, double *pop, double *dpop, double *C_data,
                           double *coltemp, int *icol, int *jcol, double *temperature,
-                          double *weight, double *energy, double *abundance, int nspec,
-                          double *density, int lspec, bool sobolev );
+                          double *weight, double *energy, int lspec, bool sobolev );
 
   time_lp -= omp_get_wtime();
 
   for (lspec=0; lspec<nline_species; lspec++){
 
     level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
-                       A_coeff, B_coeff, C_coeff, P_intensity, R, pop, dpop,
-                       C_data, coltemp, icol, jcol, temperature, weight, energy,
-                       abundance, nspec, density, lspec, sobolev );
+                       A_coeff, B_coeff, C_coeff, P_intensity, R, pop, dpop, C_data,
+                       coltemp, icol, jcol, temperature, weight, energy, lspec, sobolev );
   }
 
   time_lp += omp_get_wtime();
@@ -648,6 +657,28 @@ for (n=0; n<ngrid; n++){
   printf("\n(3D-RT): time in level_populations: %lf sec\n", time_lp);
   printf("(3D-RT): transfer done\n\n");
 
+  printf("(3D-RT): Calculate column densities\n");
+  
+
+  printf("(3D-RT): Column densities calculated\n");
+
+
+
+  double *column_density;               /* column densities for each species, ray and grid point */
+  column_density = (double*) malloc( ngrid*nspec*NRAYS*sizeof(double) );
+
+  double *rad_surface;
+  rad_surface = (double*) malloc( NRAYS*sizeof(double) );
+
+  double *AV;
+  AV = (double*) malloc( NRAYS*sizeof(double) );
+
+
+
+  void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                                  double *column_density );
+
+  column_density_calculator( gridpoint, evalpoint, column_density );
 
 
   printf("(3D-RT): writing output\n");
@@ -674,10 +705,9 @@ for (n=0; n<ngrid; n++){
   free( key );
   free( raytot );
   free( P_intensity );
-  free( abundance );
+  // free( abundance );
   free( species );
   free( temperature );
-  free( density );
   free( nlev );
   free( cum_nlev );
   free( cum_nlev2 );

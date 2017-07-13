@@ -12,8 +12,6 @@
 
 
 
-
-
 /* Numerical constants */
 
 #define PI 3.141592653589793238462643383279502884197                                       /* pi */
@@ -106,32 +104,33 @@
                              third is collisional transition and fourth is collision temperature */
 
 
-
 /* Data types */
 
-// typedef struct GRIDPOINTS {
+typedef struct GRIDPOINTS {
 
-//   double x, y, z;                                     /* x, y and z coordinate of the grid point */
-//   double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
+  double x, y, z;                                     /* x, y and z coordinate of the grid point */
+  double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
 
-// } GRIDPOINT;
+  double density;                                                   /* density at the grid point */
+
+} GRIDPOINT;
 
 
 
-// typedef struct EVALPOINTS {
+typedef struct EVALPOINTS {
 
-//   bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
+  bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
 
-//   long   ray;                               /* number of the ray the evaluation point belongs to */
-//   long    nr;                                    /* number of the evaluation point along the ray */
+  long   ray;                               /* number of the ray the evaluation point belongs to */
+  long   nr;                                     /* number of the evaluation point along the ray */
 
-//   long   eqp;                                                         /* point on equivalent ray */
+  long   eqp;                                                         /* point on equivalent ray */
 
-//   double  dZ;                                                /* distance increment along the ray */
-//   double   Z;                                    /* distance between evaluation point and origin */
-//   double vol;                  /* velocity along the ray between grid point and evaluation point */
+  double dZ;                                                 /* distance increment along the ray */
+  double Z;                                      /* distance between evaluation point and origin */
+  double vol;                  /* velocity along the ray between grid point and evaluation point */
 
-// } EVALPOINT;
+} EVALPOINT;
 
 
 
@@ -239,19 +238,23 @@ int tot_cum_tot_ncoltrantemp;
 
 
 
-/* ADDITIONS for the chemistry code */
-/* -------------------------------- */
+
+
+/* ----- ADDITIONS for the chemistry code -----                                                  */
+/* --------------------------------------------------------------------------------------------- */
 
 #define AU 1.66053878E-24                                                    /* atomic mass unit */
+
+#define MAX_NGRID 1000                                          /* maximal number of grid points */
 
 
 typedef struct SPECIES {
 
-  std::string sym;                                                                 /* chemical symbol */
-
-  double abn;                                                                       /* abundance */
+  string sym;                                                                 /* chemical symbol */
 
   double mass;                                                                       /* mol mass */
+
+  double abn[MAX_NGRID];                                                            /* abundance */
 
 } SPECIES;
 
@@ -259,27 +262,27 @@ typedef struct SPECIES {
 
 typedef struct REACTIONS {
 
-  std::string   R1;                                                                     /* reactant 1 */
-  std::string   R2;                                                                     /* reactant 2 */
-  std::string   R3;                                                                     /* reactant 3 */
+  string   R1;                                                                     /* reactant 1 */
+  string   R2;                                                                     /* reactant 2 */
+  string   R3;                                                                     /* reactant 3 */
 
-  std::string   P1;                                                             /* reaction product 1 */
-  std::string   P2;                                                             /* reaction product 2 */
-  std::string   P3;                                                             /* reaction product 3 */
-  std::string   P4;                                                             /* reaction product 4 */
-
-
-double alpha;                               /* alpha coefficient to calculate rate coefficient k */
-double beta;                                 /* beta coefficient to calculate rate coefficient k */
-double gamma;                               /* gamma coefficient to calculate rate coefficient k */
-
-double RT_min;                             /* RT_min coefficient to calculate rate coefficient k */
-double RT_max;                             /* RT_max coefficient to calculate rate coefficient k */
+  string   P1;                                                             /* reaction product 1 */
+  string   P2;                                                             /* reaction product 2 */
+  string   P3;                                                             /* reaction product 3 */
+  string   P4;                                                             /* reaction product 4 */
 
 
-double k;                                                           /* reaction rate coefficient */
+  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
+  double beta;                               /* beta coefficient to calculate rate coefficient k */
+  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-int    dup;                                             /* Number of duplicates of this reaction */
+  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
+  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+
+
+  double k;                                                         /* reaction rate coefficient */
+
+  int    dup;                                           /* Number of duplicates of this reaction */
 
 } REACTIONS;
 
@@ -290,7 +293,11 @@ int nspec;
 extern int nreac;                        /* number of chemical reactions in the chemical network */
 int nreac;
 
-/* -------------------------------- */
+
+
+#define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*nspec
+               /* when the first index is a grid point, the second a species and the third a ray */
+
 
 
 

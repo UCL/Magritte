@@ -29,8 +29,7 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
                         double *B_coeff, double *C_coeff, double *P_intensity,
                         double *R, double *pop, double *dpop, double *C_data,
                         double *coltemp, int *icol, int *jcol, double *temperature,
-                        double *weight, double *energy, double *abundance, int nspec,
-                        double *density, int lspec, bool sobolev )
+                        double *weight, double *energy, int lspec, bool sobolev )
 {
 
   int n;                                                                     /* grid point index */
@@ -81,13 +80,10 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
     /* Calculate collisional (C) coefficients for current temperature */
 
-    void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol,
-                       double *temperature, double *weight, double *energy,
-                       double *abundance, int nspec, double *C_coeff,
-                       long n, int lspec );
+    void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double *temperature,
+                       double *weight, double *energy, double *C_coeff, long n, int lspec );
 
-    calc_C_coeff( C_data, coltemp, icol, jcol, temperature, weight, energy,
-                  abundance, nspec, C_coeff, n, lspec );
+    calc_C_coeff( C_data, coltemp, icol, jcol, temperature, weight, energy, C_coeff, n, lspec );
 
 
     /* Initialize transition matrix R_ij with terms that do not depend on level populations */
@@ -246,10 +242,10 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
       /* Solve the radiative balance equation for the level populations */
 
-      void level_population_solver( double *R, double *pop, double *dpop,
-                                    double *density, long n3, int lspec);
+      void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, double *dpop,
+                                    long n3, int lspec);
 
-      level_population_solver( R, pop, dpop, density, n3, lspec);
+      level_population_solver( gridpoint, R, pop, dpop, n3, lspec );
 
 
       /* Check for convergence */

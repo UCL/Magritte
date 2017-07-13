@@ -163,9 +163,6 @@ void main(){
 
 
 
-  double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
-  abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
-
 
   for (n=0; n<ngrid; n++){
 
@@ -174,12 +171,12 @@ void main(){
       if ( (species[spec].sym == "H2")  ||  (species[spec].sym == "H")
            ||  (species[spec].sym == "He") ||  (species[spec].sym == "e-") ){
 
-        abundance[SINDEX(n, spec)] = species[spec].abn;
+        species[spec].abn[n] = species[spec].abn[n];
       }
 
       else {
 
-        abundance[SINDEX(n, spec)] = species[spec].abn * metallicity;
+        species[spec].abn[n] = species[spec].abn[n] * metallicity;
       }
     }
   }

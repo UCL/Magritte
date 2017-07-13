@@ -16,12 +16,17 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <string>
+using namespace std;
+
+#include "species_tools.cpp"
+
 
 
 /* get_nlev: get number of energy levels from data file in LAMBDA/RADEX format                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_nlev(char *datafile)
+int get_nlev(string datafile)
 {
 
   int l;                                                     /* index of a text line in the file */
@@ -30,7 +35,7 @@ int get_nlev(char *datafile)
 
   /* Open data file */
 
-  FILE *data1 = fopen(datafile, "r");
+  FILE *data1 = fopen(datafile.c_str(), "r");
 
 
   /* Skip first 5 lines */
@@ -59,7 +64,7 @@ int get_nlev(char *datafile)
 /* get_nrad: get number of radiative transitions from data file in LAMBDA/RADEX format           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_nrad(char *datafile)
+int get_nrad(string datafile)
 {
 
   int l;                                                     /* index of a text line in the file */
@@ -70,7 +75,7 @@ int get_nrad(char *datafile)
 
   /* Open data file */
 
-  FILE *data2 = fopen(datafile, "r");
+  FILE *data2 = fopen(datafile.c_str(), "r");
 
 
   /* Skip first 8+nlev lines */
@@ -99,7 +104,7 @@ int get_nrad(char *datafile)
 /* get_ncolpar: get number of collision partners from data file in LAMBDA/RADEX format           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_ncolpar(char *datafile)
+int get_ncolpar(string datafile)
 {
 
   int l;                                                     /* index of a text line in the file */
@@ -111,7 +116,7 @@ int get_ncolpar(char *datafile)
 
   /* Open data file */
 
-  FILE *data3 = fopen(datafile, "r");
+  FILE *data3 = fopen(datafile.c_str(), "r");
 
 
   /* Skip first 11+nlev+nrad lines */
@@ -140,7 +145,7 @@ int get_ncolpar(char *datafile)
 /* get_ncoltran: get number of collisional transitions from data file in LAMBDA/RADEX format     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_ncoltran(char *datafile, int *ncoltran, int lspec)
+int get_ncoltran(string datafile, int *ncoltran, int lspec)
 {
 
   int l;                                                     /* index of a text line in the file */
@@ -154,7 +159,7 @@ int get_ncoltran(char *datafile, int *ncoltran, int lspec)
 
   /* Open data file */
 
-  FILE *data4 = fopen(datafile, "r");
+  FILE *data4 = fopen(datafile.c_str(), "r");
 
 
   /* Skip first 15+nlev+nrad lines */
@@ -199,7 +204,7 @@ int get_ncoltran(char *datafile, int *ncoltran, int lspec)
 /* get_ncoltemp: get number of collisional temperatures from data file in LAMBDA/RADEX format    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_ncoltemp(char *datafile, int *ncoltran, int partner, int lspec)
+int get_ncoltemp(string datafile, int *ncoltran, int partner, int lspec)
 {
 
   int l;                                                     /* index of a text line in the file */
@@ -213,7 +218,7 @@ int get_ncoltemp(char *datafile, int *ncoltran, int partner, int lspec)
 
   /* Open data file */
 
-  FILE *data5 = fopen(datafile, "r");
+  FILE *data5 = fopen(datafile.c_str(), "r");
 
 
   /* Skip first 17+nlev+nrad lines */
@@ -254,16 +259,73 @@ int get_ncoltemp(char *datafile, int *ncoltran, int partner, int lspec)
 
 
 
+
+
+/* read_data: read data files in LAMBDA/RADEX format                                             */
+/*-----------------------------------------------------------------------------------------------*/
+
+void extract_spec_par(char *buffer, int *spec_par)
+{
+
+  int n;                                                                                /* index */
+
+  char buffer2[BUFFER_SIZE];                                 /* possibly modified copy of buffer */
+
+  int cursor, cursor2;                                          /* index of position in a string */
+
+  char string1[10], string2[10], string3[10];          /* buffers for the symbols of the species */
+
+
+
+  /* Addapt for inconsistencies in specification of collision partners */
+
+    cursor2=0;
+    buffer2[cursor2] = buffer[0];
+    cursor2++;
+
+    for (cursor=1; cursor<BUFFER_SIZE/3; cursor++ ){
+
+      if ( (buffer[cursor] == '-') && (buffer[cursor-1] != 'o') && (buffer[cursor-1] != 'p') ){
+
+        buffer2[cursor2] = ' ';
+        cursor2++;
+        buffer2[cursor2] = '-';
+        cursor2++;
+        buffer2[cursor2] = ' ';
+        cursor2++;
+      }  
+
+      else {
+        buffer2[cursor2] = buffer[cursor];
+        cursor2++;
+      }
+    }
+
+    sscanf( buffer2, "%d %s %s %s %*[^\n] \n", &n, &string1, &string2, &string3 );
+
+    printf(" %s \t %s \t %s \n", string1, string2, string3);
+
+
+    /* string3 contains the name of the collision partner */
+
+    /* NOW LOOK FOR IT WITH get_species_nr */
+    // get_species_nr()
+
+}
+
+
+/*-----------------------------------------------------------------------------------------------*/
+  
+
+
+
+
 /* read_data: read data files in LAMBDA/RADEX format                                             */
 /*-----------------------------------------------------------------------------------------------*/
   
-void read_data( char *datafile,
-                /*int *nlev, int *nrad,*/ int *irad, int *jrad, double *energy, double *weight,
-                double *frequency, double *A_coeff, double *B_coeff,
-                /*int *ncolpar, int *ncoltran, int *cum_ncoltran, int *tot_ncoltran,
-                int *ncoltemp, int *cum_ncoltemp, int tot_ncoltemp,
-                int *cum_ncoltrantemp, int *tot_ncoltrantemp,*/ double *coltemp,
-                double *C_data, int *icol, int *jcol, int lspec )
+void read_data( string datafile, int *irad, int *jrad, double *energy, double *weight,
+                double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
+                double *C_data, int *icol, int *jcol, int lspec, int *spec_par )
 {
 
 
@@ -279,10 +341,9 @@ void read_data( char *datafile,
   double buff1, buff2, buff3, buff4;                                 /* buffers to load the data */
 
 
-
   /* Open data file */
 
-  FILE *data = fopen(datafile, "r");
+  FILE *data = fopen(datafile.c_str(), "r");
 
 
   /* Skip first 7 lines */
@@ -337,12 +398,29 @@ void read_data( char *datafile,
   }
 
 
-  /* Skip the next 9 lines */
 
-  for (l=0; l<9; l++){
+  /* Skip the next 3 lines */
+
+  for (l=0; l<3; l++){
 
     fscanf(data, "%*[^\n]\n");
   }
+
+
+  /* Extract the species corresponding to the collision partner */
+
+  fgets(buffer, BUFFER_SIZE, data);
+
+  extract_spec_par(buffer, spec_par);
+  
+
+  /* Skip the next 5 lines */
+
+  for (l=0; l<5; l++){
+
+    fscanf(data, "%*[^\n]\n");
+  }
+
 
 
   /* For each collision partner */
@@ -410,11 +488,26 @@ void read_data( char *datafile,
     // printf("\n");
 
 
-    /* If it is not the last collision partner, skip the next 7 lines */
+    /* If it is not the last collision partner */
 
     if (par4<ncolpar[lspec]-1){
 
-      for (l=0; l<7; l++){
+
+      /* skip 1 line */
+
+      fgets(buffer, BUFFER_SIZE, data);
+
+
+      /* Extract the species corresponding to the collision partner */
+
+      fgets(buffer, BUFFER_SIZE, data);
+
+      extract_spec_par(buffer, spec_par);
+
+
+      /* skip the next 5 lines */
+
+      for (l=0; l<5; l++){
 
         fgets(buffer, BUFFER_SIZE, data);
       }
@@ -453,9 +546,9 @@ void read_data( char *datafile,
     B_coeff[SPECLEVLEV(lspec,j,i)] = weight[SPECLEV(lspec,i)] / weight[SPECLEV(lspec,j)]
                                      * B_coeff[SPECLEVLEV(lspec,i,j)];
 
-    printf( "(read_data): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
-            A_coeff[SPECLEVLEV(lspec,i,j)], B_coeff[SPECLEVLEV(lspec,i,j)],
-            B_coeff[SPECLEVLEV(lspec,j,i)] );
+    // printf( "(read_data): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
+    //         A_coeff[SPECLEVLEV(lspec,i,j)], B_coeff[SPECLEVLEV(lspec,i,j)],
+    //         B_coeff[SPECLEVLEV(lspec,j,i)] );
 
   }
 

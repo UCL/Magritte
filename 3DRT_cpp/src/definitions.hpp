@@ -77,7 +77,7 @@
 #define TINDEX(r,c) ((c)+(r)*nrad[lspec])         /* when second index are radiative transitions */
 #define L2INDEX(r,c) ((c)+(r)*nlev[lspec]*nlev[lspec])       /* when second index is LINDEX(i,j) */
 
-#define SINDEX(r,c) ((c)+(r)*nspec)                  /* when second index are (chemical) species */
+// #define SINDEX(r,c) ((c)+(r)*nspec)                  /* when second index are (chemical) species */
 
 #define GRIDLEVLEV(g,i,j) (L2INDEX((g),LINDEX((i),(j)))) /* for a grid point and 2 level indices */
 
@@ -104,17 +104,14 @@
                              third is collisional transition and fourth is collision temperature */
 
 
-#define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*nspec
-               /* when the first index is a grid point, the second a species and the third a ray */
-
-
-
 /* Data types */
 
 typedef struct GRIDPOINTS {
 
   double x, y, z;                                     /* x, y and z coordinate of the grid point */
   double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
+
+  double density;                                                   /* density at the grid point */
 
 } GRIDPOINT;
 
@@ -125,12 +122,12 @@ typedef struct EVALPOINTS {
   bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
 
   long   ray;                               /* number of the ray the evaluation point belongs to */
-  long    nr;                                    /* number of the evaluation point along the ray */
+  long   nr;                                     /* number of the evaluation point along the ray */
 
   long   eqp;                                                         /* point on equivalent ray */
 
-  double  dZ;                                                /* distance increment along the ray */
-  double   Z;                                    /* distance between evaluation point and origin */
+  double dZ;                                                 /* distance increment along the ray */
+  double Z;                                      /* distance between evaluation point and origin */
   double vol;                  /* velocity along the ray between grid point and evaluation point */
 
 } EVALPOINT;
@@ -238,5 +235,77 @@ int tot_cum_tot_ncoltemp;
 
 extern int tot_cum_tot_ncoltrantemp;  /* tot. cum. of tot. ntran*ntemp over species and partners */
 int tot_cum_tot_ncoltrantemp;
+
+
+
+
+
+/* ----- ADDITIONS for the chemistry code -----                                                  */
+/* --------------------------------------------------------------------------------------------- */
+
+#define AU 1.66053878E-24                                                    /* atomic mass unit */
+
+#define MAX_NGRID 1000                                          /* maximal number of grid points */
+
+
+typedef struct SPECIES {
+
+  string sym;                                                                 /* chemical symbol */
+
+  double mass;                                                                       /* mol mass */
+
+  double abn[MAX_NGRID];                                                            /* abundance */
+
+} SPECIES;
+
+
+
+typedef struct REACTIONS {
+
+  string   R1;                                                                     /* reactant 1 */
+  string   R2;                                                                     /* reactant 2 */
+  string   R3;                                                                     /* reactant 3 */
+
+  string   P1;                                                             /* reaction product 1 */
+  string   P2;                                                             /* reaction product 2 */
+  string   P3;                                                             /* reaction product 3 */
+  string   P4;                                                             /* reaction product 4 */
+
+
+  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
+  double beta;                               /* beta coefficient to calculate rate coefficient k */
+  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+
+  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
+  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+
+
+  double k;                                                         /* reaction rate coefficient */
+
+  int    dup;                                           /* Number of duplicates of this reaction */
+
+} REACTIONS;
+
+
+extern int nspec;                                                /* number of (chemical) species */
+int nspec;
+
+extern int nreac;                        /* number of chemical reactions in the chemical network */
+int nreac;
+
+
+
+extern SPECIES *species;
+SPECIES *species;
+
+extern int *spec_par;              /* number of the species corresponding to a collision partner */
+int *spec_par;
+
+
+#define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*nspec
+               /* when the first index is a grid point, the second a species and the third a ray */
+
+
+
 
 /*-----------------------------------------------------------------------------------------------*/

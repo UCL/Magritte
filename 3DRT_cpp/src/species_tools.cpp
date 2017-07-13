@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* read_input: read the input files                                                              */
+/* species_tools: Some useful functions to find species                                          */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -14,67 +14,37 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <string>
 using namespace std;
 
 
 
-/* get_ngrid: Count number of grid points in input file input/ingrid.txt                         */
+/* get_species_nr: get the number corresponding to the given species symbol                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-long get_ngrid(string inputfile)
+int get_species_nr(string name)
 {
 
-  long   ngrid=0;                                                       /* number of grid points */
+  int spec;                                                                     /* species index */
 
 
-  FILE *input1 = fopen(inputfile.c_str(), "r");
+  /* For all species */
 
-  while ( !feof(input1) && EOF ){
+  for (spec=0; spec<nspec; spec++){
 
-    int ch = fgetc(input1);
+    if ( species[spec].sym == name ){
 
-    if (ch == '\n'){
-
-      ngrid++;
+      return spec;
     }
 
   }
 
-  fclose(input1);
 
-  return ngrid;
+  /* If the function did not return yet, no match was found */
 
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* read_input: read the input file input/ingrid.txt                                              */
-/*-----------------------------------------------------------------------------------------------*/
-
-void read_input(string inputfile, long ngrid, GRIDPOINT *gridpoint )
-{
-
-  /* Read input file */
-
-  FILE *input2 = fopen(inputfile.c_str(), "r");
-
-  for (int n=0; n<ngrid; n++){
-
-    if (feof(input2)){
-
-      break;
-    }
-
-    fscanf( input2, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
-            &(gridpoint[n].x), &(gridpoint[n].y), &(gridpoint[n].z),
-            &(gridpoint[n].vx), &(gridpoint[n].vy), &(gridpoint[n].vz) );
-  }
-
-  fclose(input2);
+  printf("ERROR : there is no species with symbol %s \n", name.c_str() );
 
 }
 

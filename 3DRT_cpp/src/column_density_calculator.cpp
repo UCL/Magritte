@@ -18,34 +18,28 @@
 
 
 
-/* column_density_calculator: calculates the column density for each ray at each grid point      */
+/* column_density_calculator: calculates column density for each species, ray and grid point     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void column_density_calculator( EVALPOINT *evalpoint, double *column_density )
+void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                                double *column_density )
 {
 
-  long n1, n2;                                                               /* grid point index */
+  long n;                                                                    /* grid point index */
 
   long r;                                                                           /* ray index */
-
-  long e;                                                              /* evaluation point index */
 
   long spec;                                                                    /* species index */
 
 
-
-  /* Initialize the UV_field */
-
-  for (n1=0; n1<ngrid; n1++){
-
-    UV_field[n1] = 0.0;
-  }
+  double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                          long gridp, int spec, long ray );
 
 
 
   /* For all grid points */
 
-  for (n2=0; n2<ngrid; n2++){
+  for (n=0; n<ngrid; n++){
 
 
     /* For all rays */
@@ -57,34 +51,57 @@ void column_density_calculator( EVALPOINT *evalpoint, double *column_density )
 
       for (spec=0; spec<nspec; spec++){
 
-          evnr = GP_NR_OF_EVALP(n2,r,1);
-
-          column_density[GRADSPECRAY(n2,spec,r)] = column_density[GRADSPECRAY(n2,spec,r)]
-                                                   + evalpoint[GINDEX(n2,evnr)].dZ
-                                                     *( density[n2]*abundance[n2]
-                                                        + density[evnr]*abundance[evnr] )/2.0;
-
-
-        /* For every evaluation point along the ray (line of sight) */
-
-        for (e=1; e<raytot[RINDEX(n2,r)]; e++){
-
-          evnr = GP_NR_OF_EVALP(n2,r,e);
-
-          column_density[GRADSPECRAY(n2,spec,r)] = column_density[GRADSPECRAY(n2,spec,r)]
-                                                   + evalpoint[GINDEX(n2,evnr)].dZ
-                                                     *( density[evnr-1]*abundance[evnr-1]
-                                                        + density[evnr]*abundance[evnr] )/2.0;
-
-
-
-        } /* end of e loop over evaluation points */
+        column_density[GRIDSPECRAY(n,spec,r)] = column_density_(gridpoint, evalpoint ,n, spec, r);
 
       } /* end of spec loop over species */
 
     } /* end of r loop over rays */
 
   } /* end of n2 loop over grid points */
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* column_density: calculates the column density for one species along one ray                   */
+/*-----------------------------------------------------------------------------------------------*/
+
+double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                        long gridp, int spec, long ray )
+{
+
+  double column_density_res = 0.0;                                   /* resulting column density */
+
+  long e, evnr;                                                        /* evaluation point index */
+
+
+
+  evnr = GP_NR_OF_EVALP(gridp,ray,0);
+
+  column_density_res = evalpoint[GINDEX(gridp,evnr)].dZ
+                       *( gridpoint[gridp].density*species[spec].abn[gridp]
+                          + gridpoint[evnr].density*species[spec].abn[evnr] ) / 2.0;
+
+
+  /* Numerical integration along the ray (line of sight) */
+
+  for (e=1; e<raytot[RINDEX(gridp,ray)]; e++){
+
+    evnr = GP_NR_OF_EVALP(gridp,ray,e);
+
+    column_density_res = column_density_res
+                         + evalpoint[GINDEX(gridp,evnr)].dZ
+                           * ( gridpoint[evnr-1].density*species[spec].abn[evnr-1]
+                               + gridpoint[evnr].density*species[spec].abn[evnr] ) / 2.0;
+
+  } /* end of e loop over evaluation points */
+
+
+  return column_density_res;
 
 }
 
