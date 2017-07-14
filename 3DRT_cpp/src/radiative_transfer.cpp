@@ -48,8 +48,8 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
   long temp_sc;
   long temp_nsc;
 
-  i = irad[SPECRAD(lspec,kr)];                   /* i level index corresponding to transition kr */
-  j = jrad[SPECRAD(lspec,kr)];                   /* j level index corresponding to transition kr */
+  i = irad[LSPECRAD(lspec,kr)];                   /* i level index corresponding to transition kr */
+  j = jrad[LSPECRAD(lspec,kr)];                   /* j level index corresponding to transition kr */
 
   
 

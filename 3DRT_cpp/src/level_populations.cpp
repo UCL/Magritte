@@ -92,8 +92,8 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
        for (j=0; j<nlev[lspec]; j++){
 
-         R_temp[GRIDLEVLEV(n,i,j)] = A_coeff[SPECLEVLEV(lspec,i,j)]
-                                     + C_coeff[SPECLEVLEV(lspec,i,j)] ;
+         R_temp[GRIDLEVLEV(n,i,j)] = A_coeff[LSPECLEVLEV(lspec,i,j)]
+                                     + C_coeff[LSPECLEVLEV(lspec,i,j)] ;
        }
     }
   }
@@ -117,7 +117,7 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
         for (j=0; j<nlev[lspec]; j++){
 
-          R[SPECGRIDLEVLEV(lspec,n,i,j)] = R_temp[GRIDLEVLEV(n,i,j)];
+          R[LSPECGRIDLEVLEV(lspec,n,i,j)] = R_temp[GRIDLEVLEV(n,i,j)];
         }
       }
     }
@@ -129,24 +129,24 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
       for (kr=0; kr<nrad[lspec]; kr++){
 
-        i = irad[SPECRAD(lspec,kr)];                   /* i index corresponding to transition kr */
-        j = jrad[SPECRAD(lspec,kr)];                   /* j index corresponding to transition kr */
+        i = irad[LSPECRAD(lspec,kr)];                   /* i index corresponding to transition kr */
+        j = jrad[LSPECRAD(lspec,kr)];                   /* j index corresponding to transition kr */
 
-        hv_4pi = HH * frequency[SPECLEVLEV(lspec,i,j)] / 4.0 / PI;
+        hv_4pi = HH * frequency[LSPECLEVLEV(lspec,i,j)] / 4.0 / PI;
 
         Source[TINDEX(n1,kr)] = 0.0;
         opacity[TINDEX(n1,kr)] = 0.0;
 
 
-        if (pop[SPECGRIDLEV(lspec,n1,j)] > 1.0E-30 || pop[SPECGRIDLEV(lspec,n1,i)] > 1.0E-30){
+        if (pop[LSPECGRIDLEV(lspec,n1,j)] > 1.0E-30 || pop[LSPECGRIDLEV(lspec,n1,i)] > 1.0E-30){
 
-          Source[TINDEX(n1,kr)] = ( A_coeff[SPECLEVLEV(lspec,i,j)] * pop[SPECLEVLEV(lspec,n1,i)] )
-                                  /(pop[SPECGRIDLEV(lspec,n1,j)]*B_coeff[SPECLEVLEV(lspec,j,i)]
-                                    - pop[SPECGRIDLEV(lspec,n1,i)]*B_coeff[SPECLEVLEV(lspec,i,j)]) ;
+          Source[TINDEX(n1,kr)] = ( A_coeff[LSPECLEVLEV(lspec,i,j)] * pop[LSPECLEVLEV(lspec,n1,i)] )
+                                  /(pop[LSPECGRIDLEV(lspec,n1,j)]*B_coeff[LSPECLEVLEV(lspec,j,i)]
+                                    - pop[LSPECGRIDLEV(lspec,n1,i)]*B_coeff[LSPECLEVLEV(lspec,i,j)]) ;
 
           opacity[TINDEX(n1,kr)] = hv_4pi
-                                   *(pop[SPECGRIDLEV(lspec,n1,j)]*B_coeff[SPECLEVLEV(lspec,j,i)]
-                                     -pop[SPECGRIDLEV(lspec,n1,i)]*B_coeff[SPECLEVLEV(lspec,i,j)]) ;
+                                   *(pop[LSPECGRIDLEV(lspec,n1,j)]*B_coeff[LSPECLEVLEV(lspec,j,i)]
+                                     -pop[LSPECGRIDLEV(lspec,n1,i)]*B_coeff[LSPECLEVLEV(lspec,i,j)]) ;
         }
 
 
@@ -177,8 +177,8 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
     for (kr=0; kr<nrad[lspec]; kr++){
 
-      i = irad[SPECRAD(lspec,kr)];               /* i level index corresponding to transition kr */
-      j = jrad[SPECRAD(lspec,kr)];               /* j level index corresponding to transition kr */
+      i = irad[LSPECRAD(lspec,kr)];               /* i level index corresponding to transition kr */
+      j = jrad[LSPECRAD(lspec,kr)];               /* j level index corresponding to transition kr */
 
 
       /* Initialize intensities */
@@ -215,15 +215,15 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
         /* Fill the i>j part (since we loop over the transitions i -> j) */
 
-        R[SPECGRIDLEVLEV(lspec,n2,i,j)] = R[SPECGRIDLEVLEV(lspec,n2,i,j)]
-                                          + B_coeff[SPECLEVLEV(lspec,i,j)]
+        R[LSPECGRIDLEVLEV(lspec,n2,i,j)] = R[LSPECGRIDLEVLEV(lspec,n2,i,j)]
+                                          + B_coeff[LSPECLEVLEV(lspec,i,j)]
                                             *mean_intensity[GINDEX(kr,n2)];
 
 
         /* Add the j>i part */
 
-        R[SPECGRIDLEVLEV(lspec,n2,j,i)] = R[SPECGRIDLEVLEV(lspec,n2,j,i)]
-                                          + B_coeff[SPECLEVLEV(lspec,j,i)]
+        R[LSPECGRIDLEVLEV(lspec,n2,j,i)] = R[LSPECGRIDLEVLEV(lspec,n2,j,i)]
+                                          + B_coeff[LSPECLEVLEV(lspec,j,i)]
                                             *mean_intensity[GINDEX(kr,n2)];
 
         // printf("Mean intensity is %lE \n", mean_intensity[GINDEX(kr,n2)]);
@@ -255,15 +255,15 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
         /* Avoid too small numbers */
 
-        if (pop[SPECGRIDLEV(lspec,n3,i)] < 1.0E-18){
+        if (pop[LSPECGRIDLEV(lspec,n3,i)] < 1.0E-18){
 
-          pop[SPECGRIDLEV(lspec,n3,i)] = 0.0;
+          pop[LSPECGRIDLEV(lspec,n3,i)] = 0.0;
         }
 
 
-        if ( pop[SPECGRIDLEV(lspec,n3,i)] != 0.0 ){
+        if ( pop[LSPECGRIDLEV(lspec,n3,i)] != 0.0 ){
 
-          dpoprel = dpop[SPECGRIDLEV(lspec,n3,i)] / (pop[SPECGRIDLEV(lspec,n3,i)]+dpop[SPECGRIDLEV(lspec,n3,i)]);
+          dpoprel = dpop[LSPECGRIDLEV(lspec,n3,i)] / (pop[LSPECGRIDLEV(lspec,n3,i)]+dpop[LSPECGRIDLEV(lspec,n3,i)]);
 
           // printf("(level_populations): dpop/pop is %.2lE for grid point %ld \n", dpoprel, n3);
 

@@ -440,13 +440,13 @@ void main()
 
     for (par1=0; par1<ncolpar[lspec]; par1++){
 
-      ncoltran[SPECPAR(lspec,par1)] = 0;
-      cum_ncoltran[SPECPAR(lspec,par1)] = 0;
+      ncoltran[LSPECPAR(lspec,par1)] = 0;
+      cum_ncoltran[LSPECPAR(lspec,par1)] = 0;
 
-      ncoltemp[SPECPAR(lspec,par1)] = 0;
-      cum_ncoltemp[SPECPAR(lspec,par1)] = 0;
+      ncoltemp[LSPECPAR(lspec,par1)] = 0;
+      cum_ncoltemp[LSPECPAR(lspec,par1)] = 0;
 
-      cum_ncoltrantemp[SPECPAR(lspec,par1)] = 0;
+      cum_ncoltrantemp[LSPECPAR(lspec,par1)] = 0;
     }
   }
 
@@ -463,20 +463,20 @@ void main()
 
       /* Get the number of collisional transitions */
 
-      ncoltran[SPECPAR(lspec,par2)] = get_ncoltran(datafile[lspec], ncoltran, lspec);
+      ncoltran[LSPECPAR(lspec,par2)] = get_ncoltran(datafile[lspec], ncoltran, lspec);
 /*
       printf( "(read_linedata): number of collisional transitions for partner %d is %d\n",
-              par2, ncoltran[SPECPAR(lspec,par2)] );
+              par2, ncoltran[LSPECPAR(lspec,par2)] );
 */
 
 
       /* Get the number of collision temperatures */
 
-      ncoltemp[SPECPAR(lspec,par2)] = get_ncoltemp(datafile[lspec], ncoltran, par2, lspec);
+      ncoltemp[LSPECPAR(lspec,par2)] = get_ncoltemp(datafile[lspec], ncoltran, par2, lspec);
 
 /*
       printf( "(read_linedata): number of collisional temperatures for partner %d is %d\n",
-              par2, ncoltemp[SPECPAR(lspec,par2)] );
+              par2, ncoltemp[LSPECPAR(lspec,par2)] );
 */
     } /* end of par2 loop over collision partners */
 
@@ -489,20 +489,20 @@ void main()
 
     for (par3=1; par3<ncolpar[lspec]; par3++){
 
-      cum_ncoltran[SPECPAR(lspec,par3)] = cum_ncoltran[SPECPAR(lspec,par3-1)]
-                                             + ncoltran[SPECPAR(lspec,par3-1)];
+      cum_ncoltran[LSPECPAR(lspec,par3)] = cum_ncoltran[LSPECPAR(lspec,par3-1)]
+                                             + ncoltran[LSPECPAR(lspec,par3-1)];
 
-      cum_ncoltemp[SPECPAR(lspec,par3)] = cum_ncoltemp[SPECPAR(lspec,par3-1)]
-                                             + ncoltemp[SPECPAR(lspec,par3-1)];
+      cum_ncoltemp[LSPECPAR(lspec,par3)] = cum_ncoltemp[LSPECPAR(lspec,par3-1)]
+                                             + ncoltemp[LSPECPAR(lspec,par3-1)];
 
-      cum_ncoltrantemp[SPECPAR(lspec,par3)] = cum_ncoltrantemp[SPECPAR(lspec,par3-1)]
-                                                 + ( ncoltran[SPECPAR(lspec,par3-1)]
-                                                     *ncoltemp[SPECPAR(lspec,par3-1)] );
+      cum_ncoltrantemp[LSPECPAR(lspec,par3)] = cum_ncoltrantemp[LSPECPAR(lspec,par3-1)]
+                                                 + ( ncoltran[LSPECPAR(lspec,par3-1)]
+                                                     *ncoltemp[LSPECPAR(lspec,par3-1)] );
 /*
-      printf("(3D-RT): cum_ncoltran[%d] = %d \n", par3, cum_ncoltran[SPECPAR(lspec,par3)]);
-      printf("(3D-RT): cum_ncoltemp[%d] = %d \n", par3, cum_ncoltemp[SPECPAR(lspec,par3)]);
+      printf("(3D-RT): cum_ncoltran[%d] = %d \n", par3, cum_ncoltran[LSPECPAR(lspec,par3)]);
+      printf("(3D-RT): cum_ncoltemp[%d] = %d \n", par3, cum_ncoltemp[LSPECPAR(lspec,par3)]);
       printf( "(3D-RT): cum_ncoltrantemp[%d] = %d \n",
-              par3, cum_ncoltrantemp[SPECPAR(lspec,par3)] );
+              par3, cum_ncoltrantemp[LSPECPAR(lspec,par3)] );
 */
     }
   }
@@ -510,15 +510,15 @@ void main()
 
   for (lspec=0; lspec<nline_species; lspec++){
 
-    tot_ncoltran[lspec] = cum_ncoltran[SPECPAR(lspec,ncolpar[lspec]-1)]
-                          + ncoltran[SPECPAR(lspec,ncolpar[lspec]-1)];
+    tot_ncoltran[lspec] = cum_ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
+                          + ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)];
 
-    tot_ncoltemp[lspec] = cum_ncoltemp[SPECPAR(lspec,ncolpar[lspec]-1)]
-                           + ncoltemp[SPECPAR(lspec,ncolpar[lspec]-1)];
+    tot_ncoltemp[lspec] = cum_ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
+                           + ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)];
 
-    tot_ncoltrantemp[lspec] = cum_ncoltrantemp[SPECPAR(lspec,ncolpar[lspec]-1)]
-                              + ( ncoltran[SPECPAR(lspec,ncolpar[lspec]-1)]
-         	                  		  *ncoltemp[SPECPAR(lspec,ncolpar[lspec]-1)] );
+    tot_ncoltrantemp[lspec] = cum_ncoltrantemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
+                              + ( ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
+         	                  		  *ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)] );
 /*
     printf("(3D-RT): tot_ncoltran %d\n", tot_ncoltran[lspec]);
     printf("(3D-RT): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);
@@ -592,20 +592,20 @@ void main()
 
     for (i=0; i<nlev[lspec]; i++){
 
-      weight[SPECLEV(lspec,i)] = 0.0;
-      energy[SPECLEV(lspec,i)] = 0.0;
+      weight[LSPECLEV(lspec,i)] = 0.0;
+      energy[LSPECLEV(lspec,i)] = 0.0;
 
       for (j=0; j<nlev[lspec]; j++){
 
-	A_coeff[SPECLEVLEV(lspec,i,j)] = 0.0;
-	B_coeff[SPECLEVLEV(lspec,i,j)] = 0.0;
-	C_coeff[SPECLEVLEV(lspec,i,j)] = 0.0;
+	A_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
+	B_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
+	C_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
 
-	frequency[SPECLEVLEV(lspec,i,j)] = 0.0;
+	frequency[LSPECLEVLEV(lspec,i,j)] = 0.0;
 
 	for (n=0; n<ngrid; n++){
 
-	  R[SPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
+	  R[LSPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
 	}
       }
     }
@@ -620,7 +620,7 @@ void main()
 
         for (j=0; j<nlev[lspec]; j++){
 
-	  R[SPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
+	  R[LSPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
 	}
       }
     }
@@ -630,8 +630,8 @@ void main()
 
     for (kr=0; kr<nrad[lspec]; kr++){
 
-      irad[SPECRAD(lspec,kr)] = 0;
-      jrad[SPECRAD(lspec,kr)] = 0;
+      irad[LSPECRAD(lspec,kr)] = 0;
+      jrad[LSPECRAD(lspec,kr)] = 0;
     }
   }
 
@@ -651,7 +651,7 @@ void main()
 
   // for(int ind=0; ind<ncolpar[0]; ind++){
 
-  //   cout << "spec_par[" << ind << "] = " << spec_par[SPECPAR(0,ind)] << " (o/p?)" << ortho_para[SPECPAR(0,ind)] << " \n" ;
+  //   cout << "spec_par[" << ind << "] = " << spec_par[LSPECPAR(0,ind)] << " (o/p?)" << ortho_para[LSPECPAR(0,ind)] << " \n" ;
   // }
 
 
@@ -664,9 +664,9 @@ void main()
 
       for (i=0; i<nlev[lspec]; i++){
 
-        pop[SPECGRIDLEV(lspec,n,i)] = exp(-HH*CC*energy[SPECLEV(lspec,i)]/(KB*temperature[n]));
+        pop[LSPECGRIDLEV(lspec,n,i)] = exp(-HH*CC*energy[LSPECLEV(lspec,i)]/(KB*temperature[n]));
 
-        if(n==5){printf("pop %lE energy %lE \n", pop[SPECGRIDLEV(lspec,n,i)], energy[SPECLEV(lspec,i)] );}
+        if(n==5){printf("pop %lE energy %lE \n", pop[LSPECGRIDLEV(lspec,n,i)], energy[LSPECLEV(lspec,i)] );}
       }
     }
   }

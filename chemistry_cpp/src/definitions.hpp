@@ -18,7 +18,7 @@
 #define CC 2.99792458E+10                                         /* speed of light in cgs units */
 #define HH 6.62606896E-27                                      /* Planck's constant in cgs units */
 #define KB 1.38065040E-16                                   /* Boltzmann's constant in cgs units */
-
+#define EV 1.60217646E-12                                                /* electron Volt in erg */
 
 /* Helper constants */
 

@@ -18,6 +18,8 @@
 #define CC 2.99792458E+10                                         /* speed of light in cgs units */
 #define HH 6.62606896E-27                                      /* Planck's constant in cgs units */
 #define KB 1.38065040E-16                                   /* Boltzmann's constant in cgs units */
+#define EV 1.60217646E-12                                                /* electron Volt in erg */
+
 
 
 /* Helper constants */
@@ -55,21 +57,21 @@
 
 /* Level population related index definitions */
 
-#define SPECLEV(lspec,i)   ( (i) + cum_nlev[(lspec)] )                                            \
+#define LSPECLEV(lspec,i)   ( (i) + cum_nlev[(lspec)] )                                           \
                                /* when first index is line producing species and second is level */
 
-#define SPECLEVLEV(lspec,i,j)   ( (j) + (i)*nlev[(lspec)] + cum_nlev2[(lspec)] )                  \
+#define LSPECLEVLEV(lspec,i,j)   ( (j) + (i)*nlev[(lspec)] + cum_nlev2[(lspec)] )                 \
                    /* when first index is line producing species and second and third are levels */
 
-#define SPECGRIDLEVLEV(lspec,gridp,i,j)   ( (j) + (i)*nlev[(lspec)]                               \
+#define LSPECGRIDLEVLEV(lspec,gridp,i,j)   ( (j) + (i)*nlev[(lspec)]                              \
                                              + (gridp)*nlev[(lspec)]*nlev[(lspec)]                \
                                              + ngrid*cum_nlev2[(lspec)] )                         \
 /* when first index is line producing species, second is grid point, third and fourth are levels */
 
-#define SPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + ngrid*cum_nlev[lspec] )      \
+#define LSPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + ngrid*cum_nlev[lspec] )     \
           /* when first index is line producing species, second is grid point and third is level */
 
-#define SPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                          \
+#define LSPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                          \
                 /* when first index is line producing species and second is radiative transition */
 
 
@@ -84,22 +86,22 @@
 
 /* Collision rate related indices */
 
-#define SPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                     \
+#define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \
                    /* when first index is line producing species and second is collision partner */
 
-#define SPECPARTRAN(lspec,par,ctran)   ( (ctran) + cum_ncoltran[SPECPAR((lspec),(par))]      \
-				          + cum_tot_ncoltran[(lspec)] )                           \
+#define LSPECPARTRAN(lspec,par,ctran)   ( (ctran) + cum_ncoltran[LSPECPAR((lspec),(par))]         \
+				                                  + cum_tot_ncoltran[(lspec)] )                           \
                                   /* when first index line producing species, second is collision \
                                                      partner and third is collisional transition */
 
-#define SPECPARTEMP(lspec,par,ctemp)   ( (ctemp) + cum_ncoltemp[SPECPAR((lspec),(par))]      \
-                                          + cum_tot_ncoltemp[(lspec)] )		                  \
+#define LSPECPARTEMP(lspec,par,ctemp)   ( (ctemp) + cum_ncoltemp[LSPECPAR((lspec),(par))]         \
+                                          + cum_tot_ncoltemp[(lspec)] )		                        \
                                /* when first index is line producing species, second is collision \
                                                      partner and second is collision temperature */
 
-#define SPECPARTRANTEMP(lspec,par,ctran,ctemp)                                                    \
-        ( (ctemp) + (ctran)*ncoltemp[SPECPAR((lspec),(par))]                                 \
-	   + cum_ncoltrantemp[SPECPAR((lspec),(par))] + cum_tot_ncoltrantemp[(lspec)] )      \
+#define LSPECPARTRANTEMP(lspec,par,ctran,ctemp)                                                   \
+        ( (ctemp) + (ctran)*ncoltemp[LSPECPAR((lspec),(par))]                                     \
+	   + cum_ncoltrantemp[LSPECPAR((lspec),(par))] + cum_tot_ncoltrantemp[(lspec)] )                \
                       /* when first index is line producing species, second is collision partner, \
                              third is collisional transition and fourth is collision temperature */
 

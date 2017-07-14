@@ -189,7 +189,7 @@ void write_output( double *unit_healpixvector, long *antipod,
 
       for (i=0; i<nlev[lspec]; i++){
 
-        fprintf(levelpops, "%lE\t", pop[SPECGRIDLEV(lspec,n, i)]);
+        fprintf(levelpops, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
       }
 
       fprintf(levelpops, "\n");

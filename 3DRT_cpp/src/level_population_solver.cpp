@@ -47,9 +47,9 @@ void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, doub
 
     for (j=0; j<nlev[lspec]; j++){
 
-      out = out + R[SPECGRIDLEVLEV(lspec,gridp,i,j)];
+      out = out + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
 
-      a[LINDEX(i,j)] = R[SPECGRIDLEVLEV(lspec,gridp,j,i)];
+      a[LINDEX(i,j)] = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
     }
 
     a[LINDEX(i,i)] = -out;
@@ -62,7 +62,7 @@ void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, doub
     b[i] = 0.0;
     a[LINDEX(nlev[lspec]-1, i)] = 1.0E-8;
 
-    dpop[SPECGRIDLEV(lspec,gridp,i)] = pop[SPECGRIDLEV(lspec,gridp,i)];
+    dpop[LSPECGRIDLEV(lspec,gridp,i)] = pop[LSPECGRIDLEV(lspec,gridp,i)];
   }
 
   b[nlev[lspec]-1] = 1.0E-8 * gridpoint[gridp].density;
@@ -107,10 +107,10 @@ void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, doub
 
   for (i=0; i<nlev[lspec]; i++){
 
-    pop[SPECGRIDLEV(lspec,gridp,i)] =  b[i];
+    pop[LSPECGRIDLEV(lspec,gridp,i)] =  b[i];
 
-    dpop[SPECGRIDLEV(lspec,gridp,i)] = fabs( dpop[SPECGRIDLEV(lspec,gridp,i)]
-                                             - pop[SPECGRIDLEV(lspec,gridp,i)] );
+    dpop[LSPECGRIDLEV(lspec,gridp,i)] = fabs( dpop[LSPECGRIDLEV(lspec,gridp,i)]
+                                             - pop[LSPECGRIDLEV(lspec,gridp,i)] );
 
     if( isnan(b[i]) ){
 
@@ -121,7 +121,7 @@ void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, doub
   }
 
 /*
-  printf( "(level_population_solver): dpop is %.2lE \n", dpop[SPECGRIDLEV(lspec,gridp,i)] );
+  printf( "(level_population_solver): dpop is %.2lE \n", dpop[LSPECGRIDLEV(lspec,gridp,i)] );
 */
 
 /*

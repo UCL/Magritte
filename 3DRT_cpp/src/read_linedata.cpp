@@ -173,11 +173,11 @@ int get_ncoltran(string datafile, int *ncoltran, int lspec)
 
   for (par=0; par<ncolpar[lspec]; par++){
 
-    if (ncoltran[SPECPAR(lspec,par)] > 0){
+    if (ncoltran[LSPECPAR(lspec,par)] > 0){
 
       /* Skip next 9+ncoltran lines */
 
-      for (l=0; l<9+ncoltran[SPECPAR(lspec,par)]; l++){
+      for (l=0; l<9+ncoltran[LSPECPAR(lspec,par)]; l++){
 
         fscanf(data4, "%*[^\n]\n");
       }
@@ -235,7 +235,7 @@ int get_ncoltemp(string datafile, int *ncoltran, int partner, int lspec)
 
     /* Skip next 9+ncoltran lines */
 
-    for (l=0; l<9+ncoltran[SPECPAR(lspec,par)]; l++){
+    for (l=0; l<9+ncoltran[LSPECPAR(lspec,par)]; l++){
 
       fscanf(data5, "%*[^\n]\n");
     }
@@ -312,12 +312,12 @@ void extract_spec_par(char *buffer, int lspec, int par)
 
     int get_species_nr(string name);
 
-    spec_par[SPECPAR(lspec,par)] = get_species_nr(name);
+    spec_par[LSPECPAR(lspec,par)] = get_species_nr(name);
 
 
     char check_ortho_para(string name);
 
-    ortho_para[SPECPAR(lspec,par)] = check_ortho_para(name);
+    ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
 
 }
 
@@ -368,11 +368,11 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
     fscanf( data, "%d %lf %lf %*[^\n]\n", &n, &buff1, &buff2 );
 
-    energy[SPECLEV(lspec,l)] = buff1;
-    weight[SPECLEV(lspec,l)] = buff2; 
+    energy[LSPECLEV(lspec,l)] = buff1;
+    weight[LSPECLEV(lspec,l)] = buff2; 
 
     // printf( "(read_linedata): level energy and weight are %f \t %.1f \n",
-    //         energy[SPECLEV(lspec,l)], weight[SPECLEV(lspec,l)] );
+    //         energy[LSPECLEV(lspec,l)], weight[LSPECLEV(lspec,l)] );
 
   }
 
@@ -392,16 +392,16 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
     fgets(buffer, BUFFER_SIZE, data);
     sscanf( buffer, "%d %d %d %lE %lE %*[^\n] \n", &n, &i, &j, &buff1, &buff2 );
 
-    irad[SPECRAD(lspec,l)] = i-1;           /* shift levels down by 1 to have the usual indexing */
-    jrad[SPECRAD(lspec,l)] = j-1;           /* shift levels down by 1 to have the usual indexing */
+    irad[LSPECRAD(lspec,l)] = i-1;           /* shift levels down by 1 to have the usual indexing */
+    jrad[LSPECRAD(lspec,l)] = j-1;           /* shift levels down by 1 to have the usual indexing */
 
-    A_coeff[SPECLEVLEV(lspec,i-1,j-1)] = buff1;
+    A_coeff[LSPECLEVLEV(lspec,i-1,j-1)] = buff1;
 
-    frequency[SPECLEVLEV(lspec,i-1,j-1)] = buff2;
+    frequency[LSPECLEVLEV(lspec,i-1,j-1)] = buff2;
 
     // printf( "(read_linedata): i, j, A_ij and frequency are %d \t %d \t %lE \t %lE \n",
-    //         i-1, j-1, A_coeff[SPECLEVLEV(lspec,irad[SPECRAD(lspec,l)],jrad[SPECRAD(lspec,l)])],
-    //                 frequency[SPECLEVLEV(lspec,irad[SPECRAD(lspec,l)],jrad[SPECRAD(lspec,l)])] );
+    //         i-1, j-1, A_coeff[LSPECLEVLEV(lspec,irad[LSPECRAD(lspec,l)],jrad[LSPECRAD(lspec,l)])],
+    //                 frequency[LSPECLEVLEV(lspec,irad[LSPECRAD(lspec,l)],jrad[LSPECRAD(lspec,l)])] );
 
   }
 
@@ -446,13 +446,13 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
     /* Read the collision temperatures */
 
-    for (tindex1=0; tindex1<ncoltemp[SPECPAR(lspec,par4)]; tindex1++){
+    for (tindex1=0; tindex1<ncoltemp[LSPECPAR(lspec,par4)]; tindex1++){
 
       fscanf( data, "\t %lf \t", &buff3 );
-      coltemp[SPECPARTEMP(lspec,par4,tindex1)] = buff3;
+      coltemp[LSPECPARTEMP(lspec,par4,tindex1)] = buff3;
 
       // printf( "(read_linedata): collisional temperature %*.2lf K\n", MAX_WIDTH,
-      //         coltemp[SPECPARTEMP(lspec,par4,tindex1)] );
+      //         coltemp[LSPECPARTEMP(lspec,par4,tindex1)] );
 
     }
 
@@ -466,29 +466,29 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
     // printf("(read_linedata): C_data\n");
 
-    for (l=0; l<ncoltran[SPECPAR(lspec,par4)]; l++){
+    for (l=0; l<ncoltran[LSPECPAR(lspec,par4)]; l++){
 
 
       /* Read first 3 entries of the line containing the transition level indices */
 
       fscanf( data, "%d \t %d \t %d \t", &n, &i, &j );
 
-      icol[SPECPARTRAN(lspec,par4,l)] = i-1; /* shift levels down by 1 to have the usual indexing */
-      jcol[SPECPARTRAN(lspec,par4,l)] = j-1; /* shift levels down by 1 to have the usual indexing */
+      icol[LSPECPARTRAN(lspec,par4,l)] = i-1; /* shift levels down by 1 to have the usual indexing */
+      jcol[LSPECPARTRAN(lspec,par4,l)] = j-1; /* shift levels down by 1 to have the usual indexing */
 
       // printf( "\t i = %d   j = %d \n",
-      //         icol[SPECPARTRAN(lspec,par4,l)], jcol[SPECPARTRAN(lspec,par4,l)] );
+      //         icol[LSPECPARTRAN(lspec,par4,l)], jcol[LSPECPARTRAN(lspec,par4,l)] );
 
 
 
       /* Read the rest of the line containing the C_data */
 
-      for (tindex2=0; tindex2<ncoltemp[SPECPAR(lspec,par4)]; tindex2++){
+      for (tindex2=0; tindex2<ncoltemp[LSPECPAR(lspec,par4)]; tindex2++){
 
         fscanf( data, "%lf", &buff4 );
-        C_data[SPECPARTRANTEMP(lspec,par4,l,tindex2)] = buff4;
+        C_data[LSPECPARTRANTEMP(lspec,par4,l,tindex2)] = buff4;
 
-        // printf("  %.2lE", C_data[SPECPARTRANTEMP(lspec,par4,l,tindex2)]);
+        // printf("  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par4,l,tindex2)]);
 
       }
 
@@ -515,31 +515,31 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
   for (l=0; l<nrad[lspec]; l++){
 
-    i = irad[SPECRAD(lspec,l)];
-    j = jrad[SPECRAD(lspec,l)];
+    i = irad[LSPECRAD(lspec,l)];
+    j = jrad[LSPECRAD(lspec,l)];
 
 
     /* Frequency is in GHz, convert to Hz */
 
-    frequency[SPECLEVLEV(lspec,i,j)] = 1.0E9*frequency[SPECLEVLEV(lspec,i,j)];
+    frequency[LSPECLEVLEV(lspec,i,j)] = 1.0E9*frequency[LSPECLEVLEV(lspec,i,j)];
 
 
     /* Energy/frequency of the transition is symmetric */
 
-    frequency[SPECLEVLEV(lspec,j,i)] = frequency[SPECLEVLEV(lspec,i,j)];
+    frequency[LSPECLEVLEV(lspec,j,i)] = frequency[LSPECLEVLEV(lspec,i,j)];
 
 
     /* Calculate the Einstein B coefficients */
 
-    B_coeff[SPECLEVLEV(lspec,i,j)] = A_coeff[SPECLEVLEV(lspec,i,j)] * pow(CC, 2)
-                                     / ( 2.0*HH*pow(frequency[SPECLEVLEV(lspec,i,j)] , 3) );
+    B_coeff[LSPECLEVLEV(lspec,i,j)] = A_coeff[LSPECLEVLEV(lspec,i,j)] * pow(CC, 2)
+                                     / ( 2.0*HH*pow(frequency[LSPECLEVLEV(lspec,i,j)] , 3) );
 
-    B_coeff[SPECLEVLEV(lspec,j,i)] = weight[SPECLEV(lspec,i)] / weight[SPECLEV(lspec,j)]
-                                     * B_coeff[SPECLEVLEV(lspec,i,j)];
+    B_coeff[LSPECLEVLEV(lspec,j,i)] = weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)]
+                                     * B_coeff[LSPECLEVLEV(lspec,i,j)];
 
     // printf( "(read_linedata): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
-    //         A_coeff[SPECLEVLEV(lspec,i,j)], B_coeff[SPECLEVLEV(lspec,i,j)],
-    //         B_coeff[SPECLEVLEV(lspec,j,i)] );
+    //         A_coeff[LSPECLEVLEV(lspec,i,j)], B_coeff[LSPECLEVLEV(lspec,i,j)],
+    //         B_coeff[LSPECLEVLEV(lspec,j,i)] );
 
   }
 
@@ -547,11 +547,11 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
   // for (int par=0; par<ncolpar[lspec]; par++){
 
-  //   for (int ctran=0; ctran<ncoltran[SPECPAR(lspec,par)]; ctran++){
+  //   for (int ctran=0; ctran<ncoltran[LSPECPAR(lspec,par)]; ctran++){
   
-  //     for (int ctemp=0; ctemp<ncoltemp[SPECPAR(lspec,par)]; ctemp++){
+  //     for (int ctemp=0; ctemp<ncoltemp[LSPECPAR(lspec,par)]; ctemp++){
 
-  //       printf( "  %.2lE", C_data[SPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
+  //       printf( "  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
   //     }
   
   //     printf("\n");
