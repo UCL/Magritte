@@ -294,6 +294,12 @@ extern int nreac;                        /* number of chemical reactions in the 
 int nreac;
 
 
+extern SPECIES *species;
+SPECIES *species;
+
+extern int *spec_par;              /* number of the species corresponding to a collision partner */
+int *spec_par;
+
 
 #define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*nspec
                /* when the first index is a grid point, the second a species and the third a ray */

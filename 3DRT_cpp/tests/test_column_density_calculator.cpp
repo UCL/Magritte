@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* test_column_density_calculator: tests the column_density_calculator function                                              */
+/* test_column_density_calculator: tests the column_density_calculator function                  */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */

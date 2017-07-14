@@ -67,7 +67,9 @@ TEST_CASE("Test rate_calculations_radfield functions"){
 
   /* Declare the species and reactions */
 
-  SPECIES species[nspec];     /* species has a symbol (.sym), mass (.mass), and abundance (.abn) */
+  // SPECIES species[nspec];     /* species has a symbol (.sym), mass (.mass), and abundance (.abn) */
+
+  species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
 
 
   REACTIONS reaction[nreac];         /* reaction has reactants (.R1, .R2, .R3), reaction products \
@@ -76,9 +78,9 @@ TEST_CASE("Test rate_calculations_radfield functions"){
 
 
 
-  void read_species(string specdatafile, SPECIES *species);
+  void read_species(string specdatafile);
 
-  read_species(specdatafile, species);
+  read_species(specdatafile);
 
 
   void read_reactions(string reacdatafile, REACTIONS *reaction);

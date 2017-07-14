@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* read_data: Read the data files                                                                */
+/* read_linedata: Read the data files containing the line information                            */
 /*                                                                                               */
 /* (based on read_input in 3D-PDR)                                                               */
 /*                                                                                               */
@@ -17,9 +17,8 @@
 #include <math.h>
 
 #include <string>
+#include <iostream>
 using namespace std;
-
-#include "species_tools.cpp"
 
 
 
@@ -261,10 +260,10 @@ int get_ncoltemp(string datafile, int *ncoltran, int partner, int lspec)
 
 
 
-/* read_data: read data files in LAMBDA/RADEX format                                             */
+/* extract_spec_par: extract the species corresponding to the collision partner                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void extract_spec_par(char *buffer, int *spec_par)
+void extract_spec_par(char *buffer, int lspec, int par)
 {
 
   int n;                                                                                /* index */
@@ -303,13 +302,22 @@ void extract_spec_par(char *buffer, int *spec_par)
 
     sscanf( buffer2, "%d %s %s %s %*[^\n] \n", &n, &string1, &string2, &string3 );
 
-    printf(" %s \t %s \t %s \n", string1, string2, string3);
+
+    /* Note: string3 contains the name of the collision partner */
+
+    string name = string3;
+    
+
+    /* Use one of the species_tools to find the corresponding species nr */
+
+    int get_species_nr(string name);
+
+    spec_par[SPECPAR(lspec,par)] = get_species_nr(name);
 
 
-    /* string3 contains the name of the collision partner */
+    char check_ortho_para(string name);
 
-    /* NOW LOOK FOR IT WITH get_species_nr */
-    // get_species_nr()
+    ortho_para[SPECPAR(lspec,par)] = check_ortho_para(name);
 
 }
 
@@ -320,12 +328,12 @@ void extract_spec_par(char *buffer, int *spec_par)
 
 
 
-/* read_data: read data files in LAMBDA/RADEX format                                             */
+/* read_linedata: read data files containing the line information in LAMBDA/RADEX format         */
 /*-----------------------------------------------------------------------------------------------*/
-  
-void read_data( string datafile, int *irad, int *jrad, double *energy, double *weight,
-                double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                double *C_data, int *icol, int *jcol, int lspec, int *spec_par )
+ 
+void read_linedata( string datafile, int *irad, int *jrad, double *energy, double *weight,
+                    double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
+                    double *C_data, int *icol, int *jcol, int lspec )
 {
 
 
@@ -363,7 +371,7 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
     energy[SPECLEV(lspec,l)] = buff1;
     weight[SPECLEV(lspec,l)] = buff2; 
 
-    // printf( "(read_data): level energy and weight are %f \t %.1f \n",
+    // printf( "(read_linedata): level energy and weight are %f \t %.1f \n",
     //         energy[SPECLEV(lspec,l)], weight[SPECLEV(lspec,l)] );
 
   }
@@ -391,7 +399,7 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
 
     frequency[SPECLEVLEV(lspec,i-1,j-1)] = buff2;
 
-    // printf( "(read_data): i, j, A_ij and frequency are %d \t %d \t %lE \t %lE \n",
+    // printf( "(read_linedata): i, j, A_ij and frequency are %d \t %d \t %lE \t %lE \n",
     //         i-1, j-1, A_coeff[SPECLEVLEV(lspec,irad[SPECRAD(lspec,l)],jrad[SPECRAD(lspec,l)])],
     //                 frequency[SPECLEVLEV(lspec,irad[SPECRAD(lspec,l)],jrad[SPECRAD(lspec,l)])] );
 
@@ -399,24 +407,9 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
 
 
 
-  /* Skip the next 3 lines */
+  /* Skip the next 2 lines */
 
-  for (l=0; l<3; l++){
-
-    fscanf(data, "%*[^\n]\n");
-  }
-
-
-  /* Extract the species corresponding to the collision partner */
-
-  fgets(buffer, BUFFER_SIZE, data);
-
-  extract_spec_par(buffer, spec_par);
-  
-
-  /* Skip the next 5 lines */
-
-  for (l=0; l<5; l++){
+  for (l=0; l<2; l++){
 
     fscanf(data, "%*[^\n]\n");
   }
@@ -428,6 +421,29 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
   for (par4=0; par4<ncolpar[lspec]; par4++){
 
 
+    /* Skip the next line */
+
+    fscanf(data, "%*[^\n]\n");
+
+
+    /* Extract the species corresponding to the collision partner */
+
+    fgets(buffer, BUFFER_SIZE, data);
+
+  
+    void extract_spec_par(char *buffer, int lspec, int par4);                   /* defined above */
+
+    extract_spec_par(buffer, lspec, par4);
+  
+
+    /* Skip the next 5 lines */
+
+    for (l=0; l<5; l++){
+
+      fscanf(data, "%*[^\n]\n");
+    }
+
+
     /* Read the collision temperatures */
 
     for (tindex1=0; tindex1<ncoltemp[SPECPAR(lspec,par4)]; tindex1++){
@@ -435,7 +451,7 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
       fscanf( data, "\t %lf \t", &buff3 );
       coltemp[SPECPARTEMP(lspec,par4,tindex1)] = buff3;
 
-      // printf( "(read_data): collisional temperature %*.2lf K\n", MAX_WIDTH,
+      // printf( "(read_linedata): collisional temperature %*.2lf K\n", MAX_WIDTH,
       //         coltemp[SPECPARTEMP(lspec,par4,tindex1)] );
 
     }
@@ -448,7 +464,7 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
 
     /* Read the collision rates */
 
-    // printf("(read_data): C_data\n");
+    // printf("(read_linedata): C_data\n");
 
     for (l=0; l<ncoltran[SPECPAR(lspec,par4)]; l++){
 
@@ -488,31 +504,6 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
     // printf("\n");
 
 
-    /* If it is not the last collision partner */
-
-    if (par4<ncolpar[lspec]-1){
-
-
-      /* skip 1 line */
-
-      fgets(buffer, BUFFER_SIZE, data);
-
-
-      /* Extract the species corresponding to the collision partner */
-
-      fgets(buffer, BUFFER_SIZE, data);
-
-      extract_spec_par(buffer, spec_par);
-
-
-      /* skip the next 5 lines */
-
-      for (l=0; l<5; l++){
-
-        fgets(buffer, BUFFER_SIZE, data);
-      }
-    }
-
   } /* end of par4 loop over collision partners */
 
 
@@ -546,13 +537,13 @@ void read_data( string datafile, int *irad, int *jrad, double *energy, double *w
     B_coeff[SPECLEVLEV(lspec,j,i)] = weight[SPECLEV(lspec,i)] / weight[SPECLEV(lspec,j)]
                                      * B_coeff[SPECLEVLEV(lspec,i,j)];
 
-    // printf( "(read_data): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
+    // printf( "(read_linedata): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
     //         A_coeff[SPECLEVLEV(lspec,i,j)], B_coeff[SPECLEVLEV(lspec,i,j)],
     //         B_coeff[SPECLEVLEV(lspec,j,i)] );
 
   }
 
-  // printf("(read_data): intput C_data = \n");
+  // printf("(read_linedata): intput C_data = \n");
 
   // for (int par=0; par<ncolpar[lspec]; par++){
 

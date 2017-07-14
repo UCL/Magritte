@@ -16,11 +16,14 @@
 #include <math.h>
 
 
+
 void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double *temperature,
                    double *weight, double *energy, double *C_coeff, long gridp, int lspec )
 {
 
   int par;                                                      /* index for a collision partner */
+
+  int H2_nr;                                                   /* species nr corresponding to H2 */
 
   int spec;                                                                     /* species index */
 
@@ -34,6 +37,8 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
   double frac_H2_para;                                                    /* fraction of para-H2 */
   double frac_H2_ortho;                                                  /* fraction of ortho-H2 */
+
+  double abundance;                                        /* abundance of the collision partner */
 
   double step;                                                    /* (linear) interpolation step */
 
@@ -63,18 +68,21 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
 
 
+  /* Use species_tools to find the number corresponding to H2 */
+
+  int get_species_nr(string name);
+
+  H2_nr = get_species_nr("H2");
+
+
+
   /* Calculate H2 ortho/para fraction at equilibrium for given temperature */
   
   frac_H2_para = 0.0;
   frac_H2_ortho = 0.0;
 
 
-
-  /* Use species_tools to find the number of H2 */
-  /* ...                                        */
-
-
-  if (species[2].abn[gridp] > 0){
+  if (species[H2_nr].abn[gridp] > 0){
 
     frac_H2_para = 1.0 / (1.0 + 9.0*exp(-170.5/temperature[gridp]));
     frac_H2_ortho = 1.0 - frac_H2_para;
@@ -173,8 +181,19 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
       /* Weigh contributions to C by abundance */
 
-      C_coeff[SPECLEVLEV(lspec,i,j)] = C_coeff[SPECLEVLEV(lspec,i,j)]
-                                       + C_tmp*species[spec].abn[gridp];
+      abundance = species[spec].abn[gridp];
+
+      if ( ortho_para[SPECPAR(lspec,par)] == 'o' ){
+
+        abundance = abundance * frac_H2_ortho;
+      }
+
+      else if ( ortho_para[SPECPAR(lspec,par)] == 'p' ){
+
+        abundance = abundance * frac_H2_para;
+      }
+
+      C_coeff[SPECLEVLEV(lspec,i,j)] = C_coeff[SPECLEVLEV(lspec,i,j)] + C_tmp*abundance;
     }
 
   }

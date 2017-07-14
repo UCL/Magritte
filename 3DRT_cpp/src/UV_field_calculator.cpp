@@ -16,29 +16,18 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "column_density_calculator.cpp"
   
-
 
 /* UV_field_calculator: calculates the UV radiation field at each grid point                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void UV_field_calculator(double *UV_field, double *AV)
+void UV_field_calculator(double *G_external, double *UV_field, double *rad_surface)
 {
 
   long n;                                                                    /* grid point index */
 
   long r;                                                                           /* ray index */
 
-  double A_V0 = 6.289E-22*metallicity;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
-
-
-  /* Initialize the UV_field */
-
-  for (n=0; n<ngrid; n++){
-
-    UV_field[n] = 0.0;
-  }
 
 
   /* For all grid points */
@@ -46,16 +35,16 @@ void UV_field_calculator(double *UV_field, double *AV)
   for (n=0; n<ngrid; n++){
 
 
-  
-
     /* For all rays */
 
     for (r=0; r<NRAYS; r++){
 
+      UV_field[RINDEX(n,r)] = 0.0;
       
+      rad_surface[RINDEX(n,r)] = G_external[0] / (double) NRAYS; 
     }
-
   }
+
 }
 
 /*-----------------------------------------------------------------------------------------------*/

@@ -19,16 +19,21 @@
 /*#include <mpi.h>*/
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 #include "definitions.hpp"
+#include "species_tools.cpp"
+
 #include "read_input.cpp"
+#include "read_chemdata.cpp"
 #include "create_healpixvectors.cpp"
 #include "ray_tracing.cpp"
-#include "read_data.cpp"
+#include "read_linedata.cpp"
 #include "calc_C_coeff.cpp"
 #include "level_populations.cpp"
 #include "column_density_calculator.cpp"
+#include "UV_field_calculator.cpp"
 #include "write_output.cpp"
 
 
@@ -76,6 +81,13 @@ void main()
   /*----------------------------------------------*/
 
 
+
+
+
+  /*   READ INPUT GRID                                                                           */ 
+  /*_____________________________________________________________________________________________*/
+
+
   printf("(3D-RT): reading grid input\n");
 
 
@@ -86,7 +98,7 @@ void main()
 
   /* Count number of grid points in input file input/ingrid.txt */
 
-  long get_ngrid(string inputfile);                                    /* defined in read_input.c */
+  long get_ngrid(string inputfile);                                   /* defined in read_input.c */
 
   ngrid = get_ngrid(inputfile);                       /* number of grid points in the input file */
 
@@ -147,6 +159,59 @@ void main()
   read_input(inputfile, ngrid, gridpoint);
 
 
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+  /*   READ INPUT CHEMISTRY                                                                      */
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+
+  /* Read chemical data */
+
+
+
+  /* --- CHEMISTRY --- */
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+  
+
+  /* Specify the file containing the species */
+
+  string specdatafile = "data/species_reduced.d";    /* path to data file containing the species */
+
+
+  /* Get the number of species from the species data file */
+
+  nspec = get_nspec(specdatafile);
+  printf("(read_chemdata): number of species   %*d\n", MAX_WIDTH, nspec);
+
+
+  species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
+
+
+
+
+  int lspec;                                    /* index of the line species under consideration */
+
+  
+  /* Read the species and their abundances */
+
+  void read_species(string specdatafile);
+
+  read_species(specdatafile);
+
+
+
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
   /* Setup the (unit) HEALPix vectors */
 
   void create_healpixvectors(double *unit_healpixvector, long *antipod);
@@ -183,32 +248,6 @@ void main()
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  /*--- TEMPORARY CHEMISTRY ---*/
-
-  nspec = 10;                                                    /* number of (chemical) species */
-
-  // double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
-  // abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
-
-
-  // SPECIES *species;
-  species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
-
-
-  for (spec=0; spec<nspec; spec++){
-
-    for (n=0; n<ngrid; n++){
-
-      species[spec].abn[n] = 1.0;
-    }
-  }
-
-
-  int lspec;                                    /* index of the line species under consideration */
-
-  /*---------------------------*/
-
-
   /* TEMPORARY CHECK */
 
   double *temperature;
@@ -235,8 +274,8 @@ void main()
 
   string datafile[nline_species];
 
-  // datafile[0] = "data/12c.dat";
-  datafile[0] = "data/12c+.dat";
+  datafile[0] = "data/12c.dat";
+  // datafile[0] = "data/12c+.dat";
   // datafile[0] = "data/12co.dat";
   // datafile[0] = "data/16o.dat";
 
@@ -268,7 +307,7 @@ void main()
 
     cum_nlev2[lspec] = 0;
 
-    printf("(read_data): number of energy levels %d\n", nlev[lspec]);
+    printf("(read_linedata): number of energy levels %d\n", nlev[lspec]);
   }
 
 
@@ -284,7 +323,7 @@ void main()
 
     cum_nrad[lspec] = 0;
 
-    printf("(read_data): number of radiative transitions %d\n", nrad[lspec]);
+    printf("(read_linedata): number of radiative transitions %d\n", nrad[lspec]);
   }
 
 
@@ -356,7 +395,7 @@ void main()
 
     cum_ncolpar[lspec] = 0;
 
-    printf("(read_data): number of collisional partners %d\n", ncolpar[lspec]);
+    printf("(read_linedata): number of collisional partners %d\n", ncolpar[lspec]);
   }
 
 
@@ -426,7 +465,7 @@ void main()
 
       ncoltran[SPECPAR(lspec,par2)] = get_ncoltran(datafile[lspec], ncoltran, lspec);
 /*
-      printf( "(read_data): number of collisional transitions for partner %d is %d\n",
+      printf( "(read_linedata): number of collisional transitions for partner %d is %d\n",
               par2, ncoltran[SPECPAR(lspec,par2)] );
 */
 
@@ -436,7 +475,7 @@ void main()
       ncoltemp[SPECPAR(lspec,par2)] = get_ncoltemp(datafile[lspec], ncoltran, par2, lspec);
 
 /*
-      printf( "(read_data): number of collisional temperatures for partner %d is %d\n",
+      printf( "(read_linedata): number of collisional temperatures for partner %d is %d\n",
               par2, ncoltemp[SPECPAR(lspec,par2)] );
 */
     } /* end of par2 loop over collision partners */
@@ -536,6 +575,17 @@ void main()
   spec_par = (int*) malloc( tot_ncolpar*sizeof(int) );
 
 
+  ortho_para = (char*) malloc( tot_ncolpar*sizeof(char) );
+
+
+  for(int ind=0; ind<tot_ncolpar; ind++){
+
+    spec_par[ind] = 0;
+
+    ortho_para[ind] = 'i';
+  }
+
+
   /* Initializing data */
 
   for(lspec=0; lspec<nline_species; lspec++){
@@ -586,16 +636,23 @@ void main()
   }
 
 
-  void read_data( string datafile, int *irad, int *jrad, double *energy, double *weight,
-                  double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                  double *C_data, int *icol, int *jcol, int lspec, int *spec_par );
+  void read_linedata( string datafile, int *irad, int *jrad, double *energy, double *weight,
+                      double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
+                      double *C_data, int *icol, int *jcol, int lspec );
 
 
   for(lspec=0; lspec<nline_species; lspec++){
 
-    read_data( datafile[lspec], irad, jrad, energy, weight, frequency,
-               A_coeff, B_coeff, coltemp, C_data, icol, jcol, lspec, spec_par );
+    read_linedata( datafile[lspec], irad, jrad, energy, weight, frequency,
+                   A_coeff, B_coeff, coltemp, C_data, icol, jcol, lspec );
   }
+
+
+
+  // for(int ind=0; ind<ncolpar[0]; ind++){
+
+  //   cout << "spec_par[" << ind << "] = " << spec_par[SPECPAR(0,ind)] << " (o/p?)" << ortho_para[SPECPAR(0,ind)] << " \n" ;
+  // }
 
 
 
@@ -668,20 +725,61 @@ void main()
   column_density = (double*) malloc( ngrid*nspec*NRAYS*sizeof(double) );
 
   double *rad_surface;
-  rad_surface = (double*) malloc( NRAYS*sizeof(double) );
+  rad_surface = (double*) malloc( ngrid*NRAYS*sizeof(double) );
 
-  double *AV;
-  AV = (double*) malloc( NRAYS*sizeof(double) );
+  double *AV;                                   /* Visual extinction (only takes into account H) */
+  AV = (double*) malloc( ngrid*NRAYS*sizeof(double) );
 
+  metallicity = 1.0;
+
+  double *UV_field;
+  UV_field = (double*) malloc( ngrid*NRAYS*sizeof(double) );
+
+
+  /* Initialization */
+
+  for (n=0; n<ngrid; n++){
+
+    for (r=0; r<NRAYS; r++){
+
+      UV_field[RINDEX(n,r)]    = 0.0;
+      rad_surface[RINDEX(n,r)] = 0.0;
+
+      for (spec=0; spec<nspec; spec++){
+
+        column_density[GRIDSPECRAY(n,spec,r)] = 0.0;
+      }
+
+    }
+  }
 
 
   void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                  double *column_density );
+                                  double *column_density, double *AV );
 
-  column_density_calculator( gridpoint, evalpoint, column_density );
+  column_density_calculator( gridpoint, evalpoint, column_density, AV );
 
 
-  printf("(3D-RT): writing output\n");
+  double G_external[3];                                              /* external radiation field */
+
+  G_external[0] = 0.0;
+  G_external[1] = 0.0;
+  G_external[2] = 0.0;
+
+
+  void UV_field_calculator(double *G_external, double *UV_field, double *rad_surface);
+
+  UV_field_calculator(G_external, UV_field, rad_surface);
+
+
+
+
+
+  /*   WRITE OUTPUT                                                                              */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(3D-RT): writing output \n");
 
 
   /* Write the output file  */
@@ -692,7 +790,11 @@ void main()
   write_output( unit_healpixvector, antipod, gridpoint, evalpoint, pop, weight, energy );
 
 
-  printf("(3D-RT): output written\n\n");
+  printf("(3D-RT): output written \n\n");
+
+
+  /*_____________________________________________________________________________________________*/
+
 
 
   /* Free the allocated memory for temporary variables */
@@ -705,8 +807,9 @@ void main()
   free( key );
   free( raytot );
   free( P_intensity );
-  // free( abundance );
   free( species );
+  free( spec_par );
+  free( ortho_para );
   free( temperature );
   free( nlev );
   free( cum_nlev );

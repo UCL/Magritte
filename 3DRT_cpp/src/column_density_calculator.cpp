@@ -22,7 +22,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                double *column_density )
+                                double *column_density, double *AV )
 {
 
   long n;                                                                    /* grid point index */
@@ -34,6 +34,12 @@ void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                           long gridp, int spec, long ray );
+
+  int get_species_nr(string name);
+
+  int H_nr = get_species_nr("H");                               /* species nr corresponding to H */ 
+
+  double A_V0 = 6.289E-22*metallicity;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
 
 
 
@@ -52,6 +58,11 @@ void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       for (spec=0; spec<nspec; spec++){
 
         column_density[GRIDSPECRAY(n,spec,r)] = column_density_(gridpoint, evalpoint ,n, spec, r);
+
+        if ( spec == H_nr ){
+
+          AV[RINDEX(n,r)] = A_V0 * column_density[GRIDSPECRAY(n,spec,r)];
+        }
 
       } /* end of spec loop over species */
 

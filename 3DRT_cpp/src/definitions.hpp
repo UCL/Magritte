@@ -301,6 +301,13 @@ SPECIES *species;
 extern int *spec_par;              /* number of the species corresponding to a collision partner */
 int *spec_par;
 
+extern char *ortho_para;                              /* stores whether it is ortho or para H2 */
+char *ortho_para;
+
+
+extern double metallicity;
+double metallicity;
+
 
 #define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*nspec
                /* when the first index is a grid point, the second a species and the third a ray */
