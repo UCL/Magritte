@@ -33,7 +33,7 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
   double Habing_field = 1.68 * UV_field;                         /* UV radiation field in Habing */
 
-
+  double electron_density = species[e_nr].abn[gridp] * gridpoint[gridp].density;    /* e density */
 
 
 
@@ -78,8 +78,6 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   double x_k = KB*temperature_gas/(hnu_H*EV) 
   double x_d = hnu_d/hnu_H;
 
-  double electron_density = species[e_nr].abn[gridp] * gridpoint[gridp].density;
-
   double gamma = 2.9E-4 * Y * sqrt(temperature_gas) * Habing_field / electron_density;
 
   double delta = x_k - x_d + gamma;
@@ -120,18 +118,40 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   /*_____________________________________________________________________________________________*/
 
 
-  /* Grain + PAH photoelectric heating (MRN size distribution; r = 3-100 Å)
+  /*  Grain + PAH photoelectric heating (MRN size distribution; r = 3-100 Å)
 
-     Use the treatment of Bakes & Tielens (1994, ApJ, 427, 822) with the modifications suggested
-     by Wolfire et al. (2003, ApJ, 587, 278) to account for the revised PAH abundance estimate
-     from Spitzer data.
+      Use the treatment of Bakes & Tielens (1994, ApJ, 427, 822) with the modifications suggested
+      by Wolfire et al. (2003, ApJ, 587, 278) to account for the revised PAH abundance estimate
+      from Spitzer data.
 
-     See also:
-     Wolfire et al. (1995, ApJ, 443, 152)
-     Le Page, Snow & Bierbaum (2001, ApJS, 132, 233)  */
+      See also:
+      Wolfire et al. (1995, ApJ, 443, 152)
+      Le Page, Snow & Bierbaum (2001, ApJS, 132, 233)  */
 
 
+  double heating_PhEPAH;
 
+  double phi_PAH = 1.0;
+
+  double alpha = 0.944;
+  
+  double beta = 0.735 * pow(temperature_gas, 0.068);
+  
+  double delta = Habing_field * sqrt(temperature_gas) / (electron_density * phi_PAH);
+
+  double epsilon = 4.87E-2/(1.0 + 4.0E-3*pow(delta, 0.73))
+                   + 3.65E-2*pow(temperature_gas/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
+
+
+  double PAH_heating = 1.3E-24 * epsilon * Habing_field * gridpoint[gridp].density;
+
+  double PAH_cooling = 4.65E-30 * pow(temperature_gas, alpha) * pow(delta, beta) 
+                       * electron_density * phi_PAH * gridpoint[gridp].density;
+
+
+  /* Assume the PE heating rate scales linearly with metallicity */
+
+  double heating_PhEPAH = (PAH_heating - PAH_cooling)*metallicity;
 
 
   /*_____________________________________________________________________________________________*/
@@ -140,7 +160,42 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
 
 
-  heating_total = heating_PhED;
+  /*   WEINGARTNER HEATING                                                                       */
+  /*_____________________________________________________________________________________________*/
+
+
+  /*  Weingartner & Draine, 2001, ApJS, 134, 263
+
+      Includes photoelectric heating due to PAHs, VSGs and larger grains, assumes a gas-to-dust
+      mass ratio of 100:1  */
+
+
+  double heating_Weingartner;
+
+  double C0 = 5.72E+0;
+  double C1 = 3.35E-2;
+  double C2 = 7.08E-3;
+  double C3 = 1.98E-2;
+  double C4 = 4.95E-1;
+  double C5 = 6.92E-1;
+  double C6 = 5.20E-1;
+
+
+  heating_Weingartner = 1.0E-26 * metallicity * (Habing_field * gridpoint[gridp].density) 
+                        *(C0 + C1*pow(temperature_gas, C4))
+                        /(1.0 + C2*pow(Habing_field*sqrt(temperature_gas)/electron_density,C5)
+                        *(1.0 + C3*pow(Habing_field*sqrt(temperature_gas)/electron_density,C6) ));
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /* Sum all contributions to the heating */
+
+  heating_total = heating_PhED + heating_PhEPAH + heating_Weingartner;
 
   return heating_total; 
 
