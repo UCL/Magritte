@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC   -shared -Wl,-soname,libsundials_fnvecserial.so.2 -o libsundials_fnvecserial.so.2.7.0 CMakeFiles/sundials_fnvecserial_shared.dir/fnvector_serial.c.o 

@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/kinFerTron_dns.dir/kinFerTron_dns.c.o  -o kinFerTron_dns -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/kinsol:/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/nvec_ser ../../../src/kinsol/libsundials_kinsol.so.2.9.0 ../../../src/nvec_ser/libsundials_nvecserial.so.2.7.0 -lm -lrt 

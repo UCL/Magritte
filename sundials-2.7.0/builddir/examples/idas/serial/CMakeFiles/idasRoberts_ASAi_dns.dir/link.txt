@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/idasRoberts_ASAi_dns.dir/idasRoberts_ASAi_dns.c.o  -o idasRoberts_ASAi_dns -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/idas:/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/nvec_ser ../../../src/idas/libsundials_idas.so.1.3.0 ../../../src/nvec_ser/libsundials_nvecserial.so.2.7.0 -lm -lrt 

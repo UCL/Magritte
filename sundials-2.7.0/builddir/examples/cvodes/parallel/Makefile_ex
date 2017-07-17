@@ -1,0 +1,87 @@
+# -----------------------------------------------------------------
+# $Revision: 4958 $
+# $Date: 2016-09-23 14:02:13 -0700 (Fri, 23 Sep 2016) $
+# -----------------------------------------------------------------
+# Programmer: Radu Serban @ LLNL
+# -----------------------------------------------------------------
+# Copyright (c) 2007, The Regents of the University of California.
+# Produced at the Lawrence Livermore National Laboratory.
+# All rights reserved.
+# For details, see the LICENSE file.
+# -----------------------------------------------------------------
+# Makefile for CVODES parallel examples
+#
+# This file is generated from a template using various variables
+# set at configuration time. It can be used as a template for
+# other user Makefiles.
+#
+# Note: if the solver was successfully configured with Blas/Lapack
+# support, the Blas/Lapack libraries are specified through the 
+# variable LIBRARIES_BL. Otherwise, this variable should contain
+# an empty string. We include LIBRARIES_BL in the link line for
+# all examples, even the parallel ones which obviously cannot 
+# use the Lapack linear solver modules simply to address the case 
+# in which the SUNDIALS libraries are shared objects. In that case, 
+# the solver library references Lapack  symbols which must be 
+# always resolved by linking against the Blas/Lapack libraries. 
+# If only static SUNDIALS libraries have been built, it is not 
+# required to link the Blas/Lapack libraries for the parallel 
+# examples...
+# -----------------------------------------------------------------
+
+SHELL = sh
+
+prefix       = /home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/instdir
+exec_prefix  = /home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/instdir
+includedir   = /home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/instdir/include
+libdir       = /home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/instdir/lib
+
+CPP         = /usr/bin/cc
+CPPFLAGS    = -O3 -DNDEBUG
+CC          = /usr/bin/cc
+CFLAGS      = -O3 -DNDEBUG
+LDFLAGS     = 
+LIBS        =  -lm /usr/lib/x86_64-linux-gnu/librt.so
+LINKFLAGS = -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/instdir/lib
+MPICC       = /opt/intel/compilers_and_libraries_2017.2.174/linux/mpi/intel64/bin/mpicc
+MPI_INC_DIR = .
+MPI_LIB_DIR = .
+MPI_LIBS    = 
+MPI_FLAGS   = 
+
+INCLUDES = -I${includedir} -I${MPI_INC_DIR}
+LIBRARIES = -lsundials_cvodes -lsundials_nvecparallel ${LIBS}
+LIBRARIES_BL = 
+LIBRARIES_SLUMT = 
+LIBRARIES_KLU = 
+LIBRARIES_PETSC = 
+
+EXAMPLES =  cvsAdvDiff_ASAp_non_p cvsAdvDiff_FSA_non_p cvsAdvDiff_FSA_non_p cvsAdvDiff_non_p cvsAtmDisp_ASAi_kry_bbd_p cvsDiurnal_FSA_kry_p cvsDiurnal_FSA_kry_p cvsDiurnal_kry_bbd_p cvsDiurnal_kry_p
+EXAMPLES_DEPENDENCIES = 
+
+OBJECTS = ${EXAMPLES:=.o}
+OBJECTS_DEPENDENCIES = ${EXAMPLES_DEPENDENCIES:=.o}
+
+# -----------------------------------------------------------------------------------------
+
+.SUFFIXES : .o .c
+
+.c.o :
+	${MPICC} ${CPPFLAGS} ${CFLAGS} ${MPI_FLAGS} ${INCLUDES} -c $<
+
+# -----------------------------------------------------------------------------------------
+
+all: ${OBJECTS}
+	@for i in ${EXAMPLES} ; do \
+	  echo "${MPICC} -o $${i} $${i}.o ${OBJECTS_DEPENDENCIES} ${MPI_FLAGS} ${CFLAGS} ${LDFLAGS} ${INCLUDES} -L${libdir} ${LIBRARIES} -L${MPI_LIB_DIR} ${MPI_LIBS} ${LIBRARIES_BL} ${LIBRARIES_SLUMT} ${LIBRARIES_KLU} ${LIBRARIES_PETSC} ${LINKFLAGS}" ; \
+	  ${MPICC} -o $${i} $${i}.o ${OBJECTS_DEPENDENCIES} ${MPI_FLAGS} ${CFLAGS} ${LDFLAGS} ${INCLUDES} -L${libdir} ${LIBRARIES} -L${MPI_LIB_DIR} ${MPI_LIBS} ${LIBRARIES_BL} ${LIBRARIES_SLUMT} ${LIBRARIES_KLU} ${LIBRARIES_PETSC} ${LINKFLAGS} ; \
+	done
+
+${OBJECTS}: ${OBJECTS_DEPENDENCIES}
+
+clean:
+	rm -f ${OBJECTS_DEPENDENCIES}
+	rm -f ${OBJECTS}
+	rm -f ${EXAMPLES}
+
+# -----------------------------------------------------------------------------------------

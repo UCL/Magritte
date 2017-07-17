@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsundials_fnvecparallel.a  CMakeFiles/sundials_fnvecparallel_static.dir/fnvector_parallel.c.o
+/usr/bin/ranlib libsundials_fnvecparallel.a

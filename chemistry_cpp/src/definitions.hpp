@@ -305,6 +305,15 @@ int *spec_par;
                /* when the first index is a grid point, the second a species and the third a ray */
 
 
+extern int C_ionization_nr;
+int C_ionization_nr;
+
+extern int H2_formation_nr;
+int H2_formation_nr;
+
+extern int H2_photodissociation_nr;
+int H2_photodissociation_nr;
+
 
 
 /*-----------------------------------------------------------------------------------------------*/

@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/idaSlCrank_dns.dir/idaSlCrank_dns.c.o  -o idaSlCrank_dns -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/ida:/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/nvec_ser ../../../src/ida/libsundials_ida.so.2.9.0 -lm -lrt ../../../src/nvec_ser/libsundials_nvecserial.so.2.7.0 -lm -lrt 

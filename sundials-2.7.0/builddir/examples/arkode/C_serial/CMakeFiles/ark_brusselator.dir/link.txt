@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/ark_brusselator.dir/ark_brusselator.c.o  -o ark_brusselator -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/arkode:/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/nvec_ser ../../../src/arkode/libsundials_arkode.so.1.1.0 ../../../src/nvec_ser/libsundials_nvecserial.so.2.7.0 -lm -lrt 

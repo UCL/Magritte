@@ -74,6 +74,8 @@ void reaction_rates( REACTIONS *reaction, double temperature_gas, double tempera
          &&   P1 == "H2"
          && ( P2 == "" || P2 == "#" ) ){
 
+      H2_formation_nr = reac;
+
       double rate_H2_formation( REACTIONS *reaction, int reac, double temperature_gas,
                                 double temperature_dust, double metallicity, double gas2dust );
 
@@ -226,6 +228,8 @@ void reaction_rates( REACTIONS *reaction, double temperature_gas, double tempera
 
     else if ( R1 == "H2"  &&  R2 == ""  &&  R3 == "" ){
 
+      H2_photodissociation_nr = reac;
+
       double rate_H2_photodissociation( REACTIONS *reaction, int reac, double *rad_surface,
                                         double *AV, double *column_H2, double v_turb );
 
@@ -265,6 +269,8 @@ void reaction_rates( REACTIONS *reaction, double temperature_gas, double tempera
 
     else if ( R1 == "C"  &&  R2 == ""  &&  R3 == ""
               && ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) ){
+
+      C_ionization_nr = reac;
 
       double rate_CI_photoionization( REACTIONS *reaction, int reac, double temperature_gas,
                                       double *rad_surface, double *AV,

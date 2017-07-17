@@ -27,32 +27,35 @@
 // #include <sys/time.h>
 
 
-
-/* Peter's time function */
-/* --------------------- */
-
-double dsecond(void) {
-  struct timeval tv;
-  gettimeofday(&tv,NULL);
-  return 1.0*tv.tv_sec + 1.0e-6*tv.tv_usec;
-}
-
-/* --------------------- */
-
-
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
 /* Header files with descriptions of the contents used */
 
-#include <cvode/cvode.h>             /* CVODE functions and constants */
-#include <cvode/cvode_dense.h>       /* Prototype for CVDense solver */
-#include <nvector/nvector_serial.h>  /* Serial N_Vector types, functions, macros */
-#include <sundials/sundials_dense.h> /* Definition of type DlsMat (dense matrix) */
-#include <sundials/sundials_types.h> /* Definition of type realtype */
+#include <cvode/cvode.h>                                        /* CVODE functions and constants */
+#include <cvode/cvode_dense.h>                                   /* Prototype for CVDense solver */
+#include <nvector/nvector_serial.h>                  /* Serial N_Vector types, functions, macros */
+#include <sundials/sundials_dense.h>                 /* Definition of type DlsMat (dense matrix) */
+#include <sundials/sundials_types.h>                              /* Definition of type realtype */
 
-/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* Peter's time function                                                                         */
+/* --------------------------------------------------------------------------------------------- */
+
+double dsecond(void
+{
+
+  struct timeval tv;
+
+  gettimeofday(&tv,NULL);
+
+  return 1.0*tv.tv_sec + 1.0e-6*tv.tv_usec;
+
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+
+
 
 
 /* Functions called by the CVODE solver */
@@ -81,7 +84,6 @@ static void PrintFinalOutput(realtype *abundance, int ngrid, int nspec);
 
 /* Private function to print final statistics */
 
-
 static void PrintFinalStatistics(void *cvode_mem);
 
 
@@ -104,7 +106,7 @@ int calculate_abundances_(realtype *abundance, realtype *rate, realtype *density
   int neq = *nspec-1;                                            /* Number of ODEs in the system */
   
   realtype t0, t, tout;                                     /* Initial, current and output times */
-  realtype *data;                               /* Array pointer to access data stored in vectors*/
+  realtype *data;                              /* Array pointer to access data stored in vectors */
   
   N_Vector y;                            /* Vector of dependent variables that CVODE is to solve */
   
@@ -134,7 +136,7 @@ int calculate_abundances_(realtype *abundance, realtype *rate, realtype *density
   realtype abstol = chemistry_module_mp_absolute_abundance_tolerance_;
   realtype start_time = maincode_module_mp_start_time_;
   realtype end_time = maincode_module_mp_end_time_;
-  realtype seconds_in_year = RCONST(3.1556926e7);               /* Convert from years to seconds */
+  realtype seconds_in_year = RCONST(3.1556926E7);               /* Convert from years to seconds */
   int nelect = global_module_mp_nelect_-1;
 
   double cpu_start, cpu_end;                                                        /* CPU times */
