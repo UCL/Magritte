@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsundials_nvecopenmp.a  CMakeFiles/sundials_nvecopenmp_static.dir/nvector_openmp.c.o CMakeFiles/sundials_nvecopenmp_static.dir/__/sundials/sundials_math.c.o
+/usr/bin/ranlib libsundials_nvecopenmp.a

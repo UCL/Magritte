@@ -6,9 +6,7 @@ cd ..
 
 export OMP_NUM_THREADS=1
 
-icc -g -fopenmp -o 3DRT src/3DRT.cpp -lm
-
-./3DRT
+./3D-RT
 
 #cd output
 #python levelplot.py

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsundials_fkinsol.a  CMakeFiles/sundials_fkinsol_static.dir/fkinband.c.o CMakeFiles/sundials_fkinsol_static.dir/fkinbbd.c.o CMakeFiles/sundials_fkinsol_static.dir/fkindense.c.o CMakeFiles/sundials_fkinsol_static.dir/fkinjtimes.c.o CMakeFiles/sundials_fkinsol_static.dir/fkinpreco.c.o CMakeFiles/sundials_fkinsol_static.dir/fkinsol.c.o
-/usr/bin/ranlib libsundials_fkinsol.a

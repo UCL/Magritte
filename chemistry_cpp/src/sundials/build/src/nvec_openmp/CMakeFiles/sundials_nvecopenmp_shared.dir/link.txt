@@ -1,0 +1,1 @@
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc  -fPIC  -qopenmp  -shared -Wl,-soname,libsundials_nvecopenmp.so.2 -o libsundials_nvecopenmp.so.2.7.0 CMakeFiles/sundials_nvecopenmp_shared.dir/nvector_openmp.c.o CMakeFiles/sundials_nvecopenmp_shared.dir/__/sundials/sundials_math.c.o 

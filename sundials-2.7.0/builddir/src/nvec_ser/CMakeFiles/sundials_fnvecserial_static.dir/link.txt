@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsundials_fnvecserial.a  CMakeFiles/sundials_fnvecserial_static.dir/fnvector_serial.c.o
-/usr/bin/ranlib libsundials_fnvecserial.a

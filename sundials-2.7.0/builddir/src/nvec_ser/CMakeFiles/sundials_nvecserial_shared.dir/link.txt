@@ -1,1 +1,0 @@
-/usr/bin/cc -fPIC   -shared -Wl,-soname,libsundials_nvecserial.so.2 -o libsundials_nvecserial.so.2.7.0 CMakeFiles/sundials_nvecserial_shared.dir/nvector_serial.c.o CMakeFiles/sundials_nvecserial_shared.dir/__/sundials/sundials_math.c.o 

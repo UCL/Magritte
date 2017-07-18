@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsundials_fida.a  CMakeFiles/sundials_fida_static.dir/fidaband.c.o CMakeFiles/sundials_fida_static.dir/fidabbd.c.o CMakeFiles/sundials_fida_static.dir/fida.c.o CMakeFiles/sundials_fida_static.dir/fidadense.c.o CMakeFiles/sundials_fida_static.dir/fidaewt.c.o CMakeFiles/sundials_fida_static.dir/fidajtimes.c.o CMakeFiles/sundials_fida_static.dir/fidapreco.c.o CMakeFiles/sundials_fida_static.dir/fidaroot.c.o
-/usr/bin/ranlib libsundials_fida.a

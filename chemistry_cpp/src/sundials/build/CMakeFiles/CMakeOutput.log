@@ -1,0 +1,193 @@
+The system is: Linux - 4.8.0-58-generic - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is Intel, found in "/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/3.5.1/CompilerIdC/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6f827/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6f827.dir/build.make CMakeFiles/cmTC_6f827.dir/build
+make[1]: Entering directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6f827.dir/testCCompiler.c.o
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc     -o CMakeFiles/cmTC_6f827.dir/testCCompiler.c.o   -c /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_6f827
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6f827.dir/link.txt --verbose=1
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc       CMakeFiles/cmTC_6f827.dir/testCCompiler.c.o  -o cmTC_6f827 -rdynamic 
+make[1]: Leaving directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_867c4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_867c4.dir/build.make CMakeFiles/cmTC_867c4.dir/build
+make[1]: Entering directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc     -o CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_867c4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_867c4.dir/link.txt --verbose=1
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc      -v CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o  -o cmTC_867c4 -rdynamic  
+icc version 17.0.4 (gcc version 5.0.0 compatibility)
+/opt/intel/compilers_and_libraries_2017.4.196/linux/bin/intel64/mcpcom    -mGLOB_em64t=TRUE -mP1OPT_version=17.0-intel64 -mGLOB_diag_file=CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.diag -mGLOB_long_size_64 -mGLOB_routine_pointer_size_64 -mP1OPT_print_version=FALSE -mCG_use_gas_got_workaround=F -mP2OPT_align_option_used=TRUE -mGLOB_gcc_version=500 "-mGLOB_options_string=-v -o cmTC_867c4 -rdynamic" -mGLOB_cxx_limited_range=FALSE -mCG_extend_parms=FALSE -mGLOB_compiler_bin_directory=/opt/intel/compilers_and_libraries_2017.4.196/linux/bin/intel64 -mGLOB_as_output_backup_file_name=/tmp/iccgMt6a7as_.s -mGLOB_dashboard_use_source_name -mIPOPT_activate -mGLOB_product_id_code=0x22006d91 -mP3OPT_use_mspp_call_convention -mP2OPT_subs_out_of_bound=FALSE -mP2OPT_disam_type_based_disam=2 -mP2OPT_disam_assume_ansi_c -mP2OPT_checked_disam_ansi_alias=TRUE -mGLOB_ansi_alias -mPGOPTI_value_profile_use=T -mGLOB_opt_report_use_source_name -mP2OPT_il0_array_sections=TRUE -mGLOB_offload_mode=1 -mP2OPT_offload_unique_var_string=icc1042099701ZLVQ6V -mP2OPT_hlo -mP2OPT_hpo_rtt_control=0 -mIPOPT_args_in_regs=0 -mP2OPT_disam_assume_nonstd_intent_in=FALSE -mGLOB_imf_mapping_library=/opt/intel/compilers_and_libraries_2017.4.196/linux/bin/intel64/libiml_attr.so -mPGOPTI_gen_threadsafe_level=0 -mIPOPT_link -mIPOPT_ipo_activate -mIPOPT_mo_activate -mIPOPT_source_files_list=/tmp/iccsliswfEOmU -mIPOPT_mo_global_data -mIPOPT_link_script_file=/tmp/iccscriptoBsTXD "-mIPOPT_cmdline_link="/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o" "/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o" "/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o" "-export-dynamic" "--eh-frame-hdr" "--build-id" "-dynamic-linker" "/lib64/ld-linux-x86-64.so.2" "-m" "elf_x86_64" "-o" "cmTC_867c4" "-L/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin" "-L/usr/lib/gcc/x86_64-linux-gnu/5/" "-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/" "-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/" "-L/lib/x86_64-linux-gnu/" "-L/lib/../lib64" "-L/lib/../lib/" "-L/usr/lib/x86_64-linux-gnu/" "-L/usr/lib/../lib/" "-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../" "-L/lib64" "-L/lib/" "-L/usr/lib" "CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o" "-Bdynamic" "-Bstatic" "-limf" "-lsvml" "-lirng" "-Bdynamic" "-lm" "-Bstatic" "-lipgo" "-ldecimal" "--as-needed" "-Bdynamic" "-lcilkrts" "-lstdc++" "--no-as-needed" "-lgcc" "-lgcc_s" "-Bstatic" "-lirc" "-lsvml" "-Bdynamic" "-lc" "-lgcc" "-lgcc_s" "-Bstatic" "-lirc_s" "-Bdynamic" "-ldl" "-lc" "/usr/lib/gcc/x86_64-linux-gnu/5/crtend.o" "/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o"" -mIPOPT_il_in_obj -mIPOPT_ipo_activate_warn=FALSE -mIPOPT_obj_output_file_name=/tmp/ipo_iccl6suMu.o -mIPOPT_whole_archive_fixup_file_name=/tmp/iccwarchBt3O3j -mGLOB_linker_version=2.26.1 -mGLOB_driver_tempfile_name=/tmp/icctempfileDqjyH3 -mP3OPT_asm_target=P3OPT_ASM_TARGET_GAS -mGLOB_async_unwind_tables=TRUE -mGLOB_obj_output_file=/tmp/ipo_iccl6suMu.o -mGLOB_source_dialect=GLOB_SOURCE_DIALECT_NONE -mP1OPT_source_file_name=ipo_out.c CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o -mIPOPT_object_files=T -mIPOPT_assembly_files=/tmp/iccalisMl8yYX -mIPOPT_generated_tempfiles=/tmp/iccelisH4lCzH -mIPOPT_embedded_object_base_name=/tmp/icceobjSO5Far -mIPOPT_cmdline_link_new_name=/tmp/iccllisRKbKLa
+ld    /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -export-dynamic --eh-frame-hdr --build-id -dynamic-linker /lib64/ld-linux-x86-64.so.2 -m elf_x86_64 -o cmTC_867c4 -L/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin -L/usr/lib/gcc/x86_64-linux-gnu/5/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/ -L/lib/x86_64-linux-gnu/ -L/lib/../lib64 -L/lib/../lib/ -L/usr/lib/x86_64-linux-gnu/ -L/usr/lib/../lib/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../ -L/lib64 -L/lib/ -L/usr/lib CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o -Bdynamic -Bstatic -limf -lsvml -lirng -Bdynamic -lm -Bstatic -lipgo -ldecimal --as-needed -Bdynamic -lcilkrts -lstdc++ --no-as-needed -lgcc -lgcc_s -Bstatic -lirc -lsvml -Bdynamic -lc -lgcc -lgcc_s -Bstatic -lirc_s -Bdynamic -ldl -lc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+make[1]: Leaving directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_867c4/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_867c4.dir/build.make CMakeFiles/cmTC_867c4.dir/build]
+  ignore line: [make[1]: Entering directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc     -o CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_867c4]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_867c4.dir/link.txt --verbose=1]
+  ignore line: [/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc      -v CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o  -o cmTC_867c4 -rdynamic  ]
+  ignore line: [icc version 17.0.4 (gcc version 5.0.0 compatibility)]
+  ignore line: [/opt/intel/compilers_and_libraries_2017.4.196/linux/bin/intel64/mcpcom    -mGLOB_em64t=TRUE -mP1OPT_version=17.0-intel64 -mGLOB_diag_file=CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.diag -mGLOB_long_size_64 -mGLOB_routine_pointer_size_64 -mP1OPT_print_version=FALSE -mCG_use_gas_got_workaround=F -mP2OPT_align_option_used=TRUE -mGLOB_gcc_version=500 "-mGLOB_options_string=-v -o cmTC_867c4 -rdynamic" -mGLOB_cxx_limited_range=FALSE -mCG_extend_parms=FALSE -mGLOB_compiler_bin_directory=/opt/intel/compilers_and_libraries_2017.4.196/linux/bin/intel64 -mGLOB_as_output_backup_file_name=/tmp/iccgMt6a7as_.s -mGLOB_dashboard_use_source_name -mIPOPT_activate -mGLOB_product_id_code=0x22006d91 -mP3OPT_use_mspp_call_convention -mP2OPT_subs_out_of_bound=FALSE -mP2OPT_disam_type_based_disam=2 -mP2OPT_disam_assume_ansi_c -mP2OPT_checked_disam_ansi_alias=TRUE -mGLOB_ansi_alias -mPGOPTI_value_profile_use=T -mGLOB_opt_report_use_source_name -mP2OPT_il0_array_sections=TRUE -mGLOB_offload_mode=1 -mP2OPT_offload_unique_var_string=icc1042099701ZLVQ6V -mP2OPT_hlo -mP2OPT_hpo_rtt_control=0 -mIPOPT_args_in_regs=0 -mP2OPT_disam_assume_nonstd_intent_in=FALSE -mGLOB_imf_mapping_library=/opt/intel/compilers_and_libraries_2017.4.196/linux/bin/intel64/libiml_attr.so -mPGOPTI_gen_threadsafe_level=0 -mIPOPT_link -mIPOPT_ipo_activate -mIPOPT_mo_activate -mIPOPT_source_files_list=/tmp/iccsliswfEOmU -mIPOPT_mo_global_data -mIPOPT_link_script_file=/tmp/iccscriptoBsTXD "-mIPOPT_cmdline_link="/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o" "/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o" "/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o" "-export-dynamic" "--eh-frame-hdr" "--build-id" "-dynamic-linker" "/lib64/ld-linux-x86-64.so.2" "-m" "elf_x86_64" "-o" "cmTC_867c4" "-L/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin" "-L/usr/lib/gcc/x86_64-linux-gnu/5/" "-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/" "-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/" "-L/lib/x86_64-linux-gnu/" "-L/lib/../lib64" "-L/lib/../lib/" "-L/usr/lib/x86_64-linux-gnu/" "-L/usr/lib/../lib/" "-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../" "-L/lib64" "-L/lib/" "-L/usr/lib" "CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o" "-Bdynamic" "-Bstatic" "-limf" "-lsvml" "-lirng" "-Bdynamic" "-lm" "-Bstatic" "-lipgo" "-ldecimal" "--as-needed" "-Bdynamic" "-lcilkrts" "-lstdc++" "--no-as-needed" "-lgcc" "-lgcc_s" "-Bstatic" "-lirc" "-lsvml" "-Bdynamic" "-lc" "-lgcc" "-lgcc_s" "-Bstatic" "-lirc_s" "-Bdynamic" "-ldl" "-lc" "/usr/lib/gcc/x86_64-linux-gnu/5/crtend.o" "/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o"" -mIPOPT_il_in_obj -mIPOPT_ipo_activate_warn=FALSE -mIPOPT_obj_output_file_name=/tmp/ipo_iccl6suMu.o -mIPOPT_whole_archive_fixup_file_name=/tmp/iccwarchBt3O3j -mGLOB_linker_version=2.26.1 -mGLOB_driver_tempfile_name=/tmp/icctempfileDqjyH3 -mP3OPT_asm_target=P3OPT_ASM_TARGET_GAS -mGLOB_async_unwind_tables=TRUE -mGLOB_obj_output_file=/tmp/ipo_iccl6suMu.o -mGLOB_source_dialect=GLOB_SOURCE_DIALECT_NONE -mP1OPT_source_file_name=ipo_out.c CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o -mIPOPT_object_files=T -mIPOPT_assembly_files=/tmp/iccalisMl8yYX -mIPOPT_generated_tempfiles=/tmp/iccelisH4lCzH -mIPOPT_embedded_object_base_name=/tmp/icceobjSO5Far -mIPOPT_cmdline_link_new_name=/tmp/iccllisRKbKLa]
+  link line: [ld    /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -export-dynamic --eh-frame-hdr --build-id -dynamic-linker /lib64/ld-linux-x86-64.so.2 -m elf_x86_64 -o cmTC_867c4 -L/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin -L/usr/lib/gcc/x86_64-linux-gnu/5/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/ -L/lib/x86_64-linux-gnu/ -L/lib/../lib64 -L/lib/../lib/ -L/usr/lib/x86_64-linux-gnu/ -L/usr/lib/../lib/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../ -L/lib64 -L/lib/ -L/usr/lib CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o -Bdynamic -Bstatic -limf -lsvml -lirng -Bdynamic -lm -Bstatic -lipgo -ldecimal --as-needed -Bdynamic -lcilkrts -lstdc++ --no-as-needed -lgcc -lgcc_s -Bstatic -lirc -lsvml -Bdynamic -lc -lgcc -lgcc_s -Bstatic -lirc_s -Bdynamic -ldl -lc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
+    arg [ld] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_867c4] ==> ignore
+    arg [-L/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin] ==> dir [/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/]
+    arg [-L/lib/x86_64-linux-gnu/] ==> dir [/lib/x86_64-linux-gnu/]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+    arg [-L/lib/../lib/] ==> dir [/lib/../lib/]
+    arg [-L/usr/lib/x86_64-linux-gnu/] ==> dir [/usr/lib/x86_64-linux-gnu/]
+    arg [-L/usr/lib/../lib/] ==> dir [/usr/lib/../lib/]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../]
+    arg [-L/lib64] ==> dir [/lib64]
+    arg [-L/lib/] ==> dir [/lib/]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_867c4.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-Bstatic] ==> ignore
+    arg [-limf] ==> lib [imf]
+    arg [-lsvml] ==> lib [svml]
+    arg [-lirng] ==> lib [irng]
+    arg [-Bdynamic] ==> ignore
+    arg [-lm] ==> lib [m]
+    arg [-Bstatic] ==> ignore
+    arg [-lipgo] ==> lib [ipgo]
+    arg [-ldecimal] ==> lib [decimal]
+    arg [--as-needed] ==> ignore
+    arg [-Bdynamic] ==> ignore
+    arg [-lcilkrts] ==> lib [cilkrts]
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [--no-as-needed] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-Bstatic] ==> ignore
+    arg [-lirc] ==> lib [irc]
+    arg [-lsvml] ==> lib [svml]
+    arg [-Bdynamic] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-Bstatic] ==> ignore
+    arg [-lirc_s] ==> lib [irc_s]
+    arg [-Bdynamic] ==> ignore
+    arg [-ldl] ==> lib [dl]
+    arg [-lc] ==> lib [c]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtend.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  collapse library dir [/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin] ==> [/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/] ==> [/usr/lib/gcc/x86_64-linux-gnu/5]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/] ==> [/usr/lib]
+  collapse library dir [/lib/x86_64-linux-gnu/] ==> [/lib/x86_64-linux-gnu]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
+  collapse library dir [/lib/../lib/] ==> [/lib]
+  collapse library dir [/usr/lib/x86_64-linux-gnu/] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/../lib/] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../] ==> [/usr/lib]
+  collapse library dir [/lib64] ==> [/lib64]
+  collapse library dir [/lib/] ==> [/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
+  implicit libs: [imf;svml;irng;m;ipgo;decimal;cilkrts;stdc++;irc;svml;c;irc_s;dl;c]
+  implicit dirs: [/opt/intel/compilers_and_libraries_2017.4.196/linux/compiler/lib/intel64_lin;/usr/lib/gcc/x86_64-linux-gnu/5;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib64;/lib]
+  implicit fwks: []
+
+
+Determining if the _POSIX_TIMERS exist passed with the following output:
+Change Dir: /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_bdd31/fast"
+/usr/bin/make -f CMakeFiles/cmTC_bdd31.dir/build.make CMakeFiles/cmTC_bdd31.dir/build
+make[1]: Entering directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_bdd31.dir/CheckSymbolExists.c.o
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc     -o CMakeFiles/cmTC_bdd31.dir/CheckSymbolExists.c.o   -c /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_bdd31
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bdd31.dir/link.txt --verbose=1
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc       CMakeFiles/cmTC_bdd31.dir/CheckSymbolExists.c.o  -o cmTC_bdd31 -rdynamic -lrt 
+make[1]: Leaving directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+
+File /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+#include <time.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _POSIX_TIMERS
+  return ((int*)(&_POSIX_TIMERS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Performing C SOURCE FILE Test OpenMP_FLAG_DETECTED succeeded with the following output:
+Change Dir: /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_99849/fast"
+/usr/bin/make -f CMakeFiles/cmTC_99849.dir/build.make CMakeFiles/cmTC_99849.dir/build
+make[1]: Entering directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_99849.dir/src.c.o
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc    -DOpenMP_FLAG_DETECTED -qopenmp   -o CMakeFiles/cmTC_99849.dir/src.c.o   -c /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_99849
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_99849.dir/link.txt --verbose=1
+/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc   -DOpenMP_FLAG_DETECTED -qopenmp    CMakeFiles/cmTC_99849.dir/src.c.o  -o cmTC_99849 -rdynamic 
+make[1]: Leaving directory '/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#include <omp.h>
+int main() {
+#ifdef _OPENMP
+  return 0;
+#else
+  breaks_on_purpose
+#endif
+}
+

@@ -1,0 +1,12 @@
+!# bin/bash
+
+# Commands used to run CMake end make
+# (This file can be executed as a bash script)
+
+# The Makefile is produced using the following CMake command
+
+cmake . -DCMAKE_CXX_COMPILER=icc -DCMAKE_CC_COMPILER=icc
+
+# The following command simply executes the Makefile
+
+make

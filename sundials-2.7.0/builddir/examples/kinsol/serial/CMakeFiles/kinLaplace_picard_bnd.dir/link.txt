@@ -1,1 +1,0 @@
-/usr/bin/cc   -rdynamic CMakeFiles/kinLaplace_picard_bnd.dir/kinLaplace_picard_bnd.c.o  -o kinLaplace_picard_bnd -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/kinsol:/home/frederik/Dropbox/Astro/3D-RT/sundials-2.7.0/builddir/src/nvec_ser ../../../src/kinsol/libsundials_kinsol.so.2.9.0 ../../../src/nvec_ser/libsundials_nvecserial.so.2.7.0 -lm -lrt 

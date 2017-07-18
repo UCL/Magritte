@@ -1,6 +1,0 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
-PROJECT(mpiftest Fortran)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-SET(CMAKE_Fortran_COMPILER /opt/intel/compilers_and_libraries_2017.2.174/linux/mpi/intel64/bin/mpif77)
-SET(CMAKE_Fortran_FLAGS "")
-ADD_EXECUTABLE(mpiftest mpiftest.f)
