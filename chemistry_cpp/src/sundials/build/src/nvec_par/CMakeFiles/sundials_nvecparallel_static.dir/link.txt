@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsundials_nvecparallel.a  CMakeFiles/sundials_nvecparallel_static.dir/nvector_parallel.c.o CMakeFiles/sundials_nvecparallel_static.dir/__/sundials/sundials_math.c.o
-/usr/bin/ranlib libsundials_nvecparallel.a

@@ -1,0 +1,78 @@
+# -----------------------------------------------------------------
+# $Revision: 4958 $
+# $Date: 2016-09-23 14:02:13 -0700 (Fri, 23 Sep 2016) $
+# -----------------------------------------------------------------
+# Programmer: Radu Serban @ LLNL
+# -----------------------------------------------------------------
+# Copyright (c) 2007, The Regents of the University of California.
+# Produced at the Lawrence Livermore National Laboratory.
+# All rights reserved.
+# For details, see the LICENSE file.
+# -----------------------------------------------------------------
+# CMakeLists.txt for CVODE serial examples
+#
+# This file is generated from a template using  various variables
+# set at configuration time. It can be used as a template for
+# other user CMakeLists configuration files.
+#
+# Note: if the solver was successfully configured with Blas/Lapack
+# support, the Blas/Lapack libraries are specified through the 
+# variable LAPACK_LIBRARIES. Otherwise, this variable should contain
+# an empty string or LAPACK_LIBRARIES-NOTFOUND. If this variable 
+# contains a valid library entry, we add it to each example traget
+# whether they use the Lapack module or not. This is done in order
+# to address the case in which the SUNDIALS libraries are shared 
+# objects. In that case, the solver library references Lapack 
+# symbols which must be always resolved by linking against the
+# Blas/Lapack libraries. If only static SUNDIALS libraries have 
+# been built, it is not required to link the Blas/Lapack libraries
+# for examples that do not use that module...
+#
+# -----------------------------------------------------------------
+
+cmake_minimum_required(VERSION 2.8)
+
+# Specify project name
+PROJECT(Chemistry)
+
+MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
+
+# Set the name of the source to be build
+SET(source main)
+
+
+# Specify path to SUNDIALS header files
+SET( SUNDIALS_INC_DIR
+     /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/include
+     CACHE STRING "Location of SUNDIALS header files" )
+
+
+
+# Set search path for SUNDIALS libraries 
+SET( SUNDIALS_LIB_DIR
+     /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/lib )
+
+# Find the SUNDIALS solver's library
+FIND_LIBRARY( SUNDIALS_SOLVER_LIB
+              sundials_cvode ${SUNDIALS_LIB_DIR}
+              DOC "CVODE library" )
+
+# Find the NVECTOR library
+FIND_LIBRARY( SUNDIALS_NVEC_LIB
+              sundials_nvecserial ${SUNDIALS_LIB_DIR}
+              DOC "NVECTOR library" )
+
+# Set additional libraries
+SET( SUNDIALS_EXTRA_LIB
+     -lm /usr/lib/x86_64-linux-gnu/librt.so
+     CACHE STRING "Additional libraries")
+
+# List of all libraries
+SET(SUNDIALS_LIBS ${SUNDIALS_SOLVER_LIB} ${SUNDIALS_NVEC_LIB} ${SUNDIALS_EXTRA_LIB})
+
+
+# Build each example one by one
+ADD_EXECUTABLE(../${source} ../src/${source}.cpp)
+TARGET_LINK_LIBRARIES(../${source} ${SUNDIALS_LIBS})
+
+ 

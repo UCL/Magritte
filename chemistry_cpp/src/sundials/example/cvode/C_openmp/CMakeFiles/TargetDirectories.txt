@@ -1,3 +1,0 @@
-/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/example/cvode/C_openmp/CMakeFiles/edit_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/example/cvode/C_openmp/CMakeFiles/rebuild_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/example/cvode/C_openmp/CMakeFiles/cvAdvDiff_bnd_omp.dir

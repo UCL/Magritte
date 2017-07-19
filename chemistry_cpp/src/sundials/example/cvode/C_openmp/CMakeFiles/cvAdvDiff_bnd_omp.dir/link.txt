@@ -1,1 +1,0 @@
-/usr/bin/cc   -fopenmp   -fopenmp CMakeFiles/cvAdvDiff_bnd_omp.dir/cvAdvDiff_bnd_omp.c.o  -o cvAdvDiff_bnd_omp -rdynamic /usr/local/lib/libsundials_cvode.a /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/lib/libsundials_nvecopenmp.so -lm -lrt -Wl,-rpath,/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/lib 

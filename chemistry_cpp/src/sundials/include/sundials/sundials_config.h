@@ -79,7 +79,7 @@
  * otherwise
  *      #define SUNDIALS_MPI_COMM_F2C 0
  */
-#define SUNDIALS_MPI_COMM_F2C 1
+
 
 /* Mark SUNDIALS API functions for export/import
  * When building shared SUNDIALS libraries under Windows, use

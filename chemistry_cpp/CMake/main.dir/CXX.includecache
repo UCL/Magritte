@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp
+stdio.h
+-
+sundials/rate_equation_solver.c
+/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/rate_equation_solver.c
+
+/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/rate_equation_solver.c
+stdio.h
+-
+cvode/cvode.h
+-
+nvector/nvector_serial.h
+-
+cvode/cvode_dense.h
+-
+sundials/sundials_dense.h
+-
+sundials/sundials_types.h
+-
+

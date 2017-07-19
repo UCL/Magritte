@@ -1,0 +1,3 @@
+/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles/edit_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles/rebuild_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles/../main.dir
