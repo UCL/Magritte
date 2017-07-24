@@ -1,0 +1,1 @@
+/usr/bin/c++   -fopenmp    -rdynamic CMakeFiles/../3D-RT.dir/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3DRT.cpp.o  -o ../3D-RT 

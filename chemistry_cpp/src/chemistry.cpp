@@ -15,13 +15,14 @@ using namespace std;
 #include "definitions.hpp"
 #include "read_chemdata.cpp"
 #include "reaction_rates.cpp"
+#include "abundance.cpp"
 
 
 
 
   /*--- TEMPORARY CHEMISTRY ---*/
 
-void main(){
+int main(){
 
   ngrid = 10;
 
@@ -57,10 +58,10 @@ void main(){
   species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
 
 
-  REACTIONS reaction[nreac];         /* reaction has reactants (.R1, .R2, .R3), reaction products \
+  // REACTIONS reaction[nreac];         /* reaction has reactants (.R1, .R2, .R3), reaction products \
                                 (.P1, .P2, .P3, .P4), alpha (.alpha), beta (.beta), gamma (.gamma)\
                                 minimal temperature (.RT_min) and maximal temperature (RT_max) */
-
+  // reaction = (REACTIONS*) malloc( nreac*sizeof(REACTIONS) );
 
 
   void read_species(string specdatafile);
@@ -76,7 +77,7 @@ void main(){
   for(spec=0; spec<nspec; spec++){
 
     printf( "%s\t%.2lE\t%.1lf\n",
-            species[spec].sym.c_str(), species[spec].abn, species[spec].mass );
+            species[spec].sym.c_str(), species[spec].abn[0], species[spec].mass );
   }
 
   for(reac=0; reac<nreac; reac++){
@@ -183,4 +184,10 @@ void main(){
     }
   }
 
+  void abundance();
+
+  abundance();
+
+
+  return(0);
 }

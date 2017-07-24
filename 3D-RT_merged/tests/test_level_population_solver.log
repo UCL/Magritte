@@ -1,0 +1,33 @@
+Log for test_level_population_solver
+++++++++++++++++++++++++++++++++++++
+                                    
+(ray_tracing): number of grid points               150
+(ray_tracing): number of HEALPix sides               4
+(ray_tracing): number of HEALPix rays              192
+(ray_tracing): critical angle theta_crit          1.00
+(ray_tracing): equivalent ray distance        0.00E+00
+(ray_tracing): time in dividing evaluation points 0.096874 sec
+(ray_tracing): time in making the key             0.001439 sec
+(ray_tracing): time in heapsort routine           2999573287.866173 sec
+(ray_tracing): succes rate 0.86(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+(ray_tracing): number of grid points               150
+(ray_tracing): number of HEALPix sides               4
+(ray_tracing): number of HEALPix rays              192
+(ray_tracing): critical angle theta_crit          1.00
+(ray_tracing): equivalent ray distance        0.00E+00
+(ray_tracing): time in dividing evaluation points 1499786644.152673 sec
+(ray_tracing): time in making the key             2999573288.215901 sec
+(ray_tracing): time in heapsort routine           2999573288.219692 sec
+(ray_tracing): succes rate 0.77(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+(ray_tracing): number of grid points               150
+(ray_tracing): number of HEALPix sides               4
+(ray_tracing): number of HEALPix rays              192
+(ray_tracing): critical angle theta_crit          1.00
+(ray_tracing): equivalent ray distance        0.00E+00
+(ray_tracing): time in dividing evaluation points 0.038885 sec
+(ray_tracing): time in making the key             -2999573288.454762 sec
+(ray_tracing): time in heapsort routine           4499359932.683205 sec
+(ray_tracing): succes rate 0.76(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+===============================================================================
+All tests passed (67050 assertions in 1 test case)
+

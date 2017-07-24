@@ -1,4 +1,4 @@
-#!/bin/bash
+!# bin/bash
 
 # Commands used to run CMake end make
 # (This file can be executed as a bash script)

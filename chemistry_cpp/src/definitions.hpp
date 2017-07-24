@@ -297,6 +297,11 @@ int nreac;
 extern SPECIES *species;
 SPECIES *species;
 
+#define MAX_NREAC 1000
+
+extern REACTIONS reaction[MAX_NREAC];
+REACTIONS reaction[MAX_NREAC];
+
 extern int *spec_par;              /* number of the species corresponding to a collision partner */
 int *spec_par;
 
@@ -314,6 +319,7 @@ int H2_formation_nr;
 extern int H2_photodissociation_nr;
 int H2_photodissociation_nr;
 
-
+extern double x_e;
+double x_e;
 
 /*-----------------------------------------------------------------------------------------------*/

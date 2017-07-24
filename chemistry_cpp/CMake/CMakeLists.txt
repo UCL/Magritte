@@ -38,7 +38,7 @@ PROJECT(Chemistry)
 MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 # Set the name of the source to be build
-SET(source main)
+SET(source chemistry)
 
 
 # Specify path to SUNDIALS header files

@@ -60,39 +60,39 @@ CMAKE_SOURCE_DIR = /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake
 CMAKE_BINARY_DIR = /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake
 
 #=============================================================================
-# Target rules for target CMakeFiles/../main.dir
+# Target rules for target CMakeFiles/../chemistry.dir
 
 # All Build rule for target.
-CMakeFiles/../main.dir/all:
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/depend
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles --progress-num=1,2 "Built target ../main"
-.PHONY : CMakeFiles/../main.dir/all
+CMakeFiles/../chemistry.dir/all:
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/depend
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles --progress-num=1,2 "Built target ../chemistry"
+.PHONY : CMakeFiles/../chemistry.dir/all
 
 # Include target in all.
-all: CMakeFiles/../main.dir/all
+all: CMakeFiles/../chemistry.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/../main.dir/rule: cmake_check_build_system
+CMakeFiles/../chemistry.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/../main.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/../chemistry.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/CMake/CMakeFiles 0
-.PHONY : CMakeFiles/../main.dir/rule
+.PHONY : CMakeFiles/../chemistry.dir/rule
 
 # Convenience name for target.
-../main: CMakeFiles/../main.dir/rule
+../chemistry: CMakeFiles/../chemistry.dir/rule
 
-.PHONY : ../main
-
-# clean rule for target.
-CMakeFiles/../main.dir/clean:
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/clean
-.PHONY : CMakeFiles/../main.dir/clean
+.PHONY : ../chemistry
 
 # clean rule for target.
-clean: CMakeFiles/../main.dir/clean
+CMakeFiles/../chemistry.dir/clean:
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/clean
+.PHONY : CMakeFiles/../chemistry.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/../chemistry.dir/clean
 
 .PHONY : clean
 

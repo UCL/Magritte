@@ -111,44 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named ../main
+# Target rules for targets named ../chemistry
 
 # Build rule for target.
-../main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 ../main
-.PHONY : ../main
+../chemistry: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ../chemistry
+.PHONY : ../chemistry
 
 # fast build rule for target.
-../main/fast:
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/build
-.PHONY : ../main/fast
+../chemistry/fast:
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/build
+.PHONY : ../chemistry/fast
 
-home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.o: home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.o
+home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.o: home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.o
 
-.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.o
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.o
 
 # target to build an object file
-home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.o
-.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.o
+home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.o:
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.o
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.o
 
-home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.i: home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.i
+home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.i: home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.i
 
-.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.i
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.i
 
 # target to preprocess a source file
-home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.i
-.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.i
+home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.i:
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.i
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.i
 
-home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.s: home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.s
+home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.s: home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.s
 
-.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.s
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.s
 
 # target to generate assembly for a file
-home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/../main.dir/build.make CMakeFiles/../main.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.s
-.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.s
+home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.s:
+	$(MAKE) -f CMakeFiles/../chemistry.dir/build.make CMakeFiles/../chemistry.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.s
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.cpp.s
 
 # Help Target
 help:
@@ -158,10 +158,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... ../main"
-	@echo "... home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.o"
-	@echo "... home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.i"
-	@echo "... home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.s"
+	@echo "... ../chemistry"
+	@echo "... home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.o"
+	@echo "... home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.i"
+	@echo "... home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/chemistry.s"
 .PHONY : help
 
 
