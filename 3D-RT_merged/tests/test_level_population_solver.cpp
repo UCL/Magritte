@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <string>
+#include <iostream>
+using namespace std;
+
 #include "catch.hpp"
 
 #include "../src/definitions.hpp"
@@ -29,8 +33,11 @@
 TEST_CASE("Testing the matrix solver"){
 
 
-  /* --- Set up the test data --- */
-  /* -----------------------------*/
+
+
+
+  /*   SET UP TEST DATA                                                                          */
+  /*_____________________________________________________________________________________________*/
 
 
   long n = 5;                                     /* number of the grid point we are considering */
@@ -57,8 +64,15 @@ TEST_CASE("Testing the matrix solver"){
   b[0]=0.0; b[1]=0.0; b[2]=0.0; b[3]=0.0; b[4]=1.0;
 
 
-  /* Test Gauss Jordan matrix solver */
-  /*---------------------------------*/
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /*   TEST GAUSS JORDAN MATRIX SOLVER                                                           */
+  /*_____________________________________________________________________________________________*/
+
 
   void GaussJordan(int n, int m, double *a, double *b);
 
@@ -72,5 +86,12 @@ TEST_CASE("Testing the matrix solver"){
   CHECK( Approx(b[2]).epsilon(EPS) == 16.0669013491144   );
   CHECK( Approx(b[3]).epsilon(EPS) == 32.126760469431076 );
   CHECK( Approx(b[4]).epsilon(EPS) == -32.52816891519062 );
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
 
 }

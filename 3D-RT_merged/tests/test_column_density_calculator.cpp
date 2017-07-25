@@ -13,6 +13,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
+
+#include <string>
+#include <iostream>
+using namespace std;
 
 #include "catch.hpp"
 
@@ -20,7 +25,11 @@
 #include "../src/read_input.cpp"
 #include "../src/create_healpixvectors.cpp"
 #include "../src/ray_tracing.cpp"
+#include "../src/species_tools.cpp"
+#include "../src/data_tools.cpp"
+#include "../src/read_chemdata.cpp"
 #include "../src/column_density_calculator.cpp"
+
 
 #define EPS 1.0E-7
 
@@ -29,59 +38,43 @@ TEST_CASE("1D regular grid"){
 
 
 
-  /* --- Set up the test data --- */
-  /* -----------------------------*/
+
+
+  /*   SET UP TEST DATA                                                                          */
+  /*_____________________________________________________________________________________________*/
 
 
   double theta_crit=1.0;           /* critical angle to include a grid point as evaluation point */
  
   double ray_separation2=0.00;    /* rays closer than the sqrt of this are considered equivalent */
 
-  nsides = 4;                                         /* Defined in HEALPix, NRAYS = 12*nsides^2 */
+  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+
+  long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  double *unit_healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
-  unit_healpixvector = (double*) malloc( 3*NRAYS*sizeof(double) );
 
-  long   *antipod;                                           /* gives antipodal ray for each ray */
-  antipod = (long*) malloc( NRAYS*sizeof(long) );
+  /* Since the executables are now in the directory /tests, we have to change the paths */
 
-
-  /* Specify the input file */
-
-  char inputfile[100] = "../input/grid_1D_regular.txt";
+  grid_inputfile   = "../" + grid_inputfile;
+  spec_datafile    = "../" + spec_datafile;
+  line_datafile[0] = "../" + line_datafile[0];
 
 
-  /* Count number of grid points in input file input/ingrid.txt */
 
-  long get_ngrid(char *inputfile);                                    /* defined in read_input.c */
+  /* Define grid (using types defined in definitions.h) */
 
-  ngrid = get_ngrid(inputfile);                       /* number of grid points in the input file */
+  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
-
-  /* Define and allocate memory for grid (using types defined in definitions.h)*/
-
-  GRIDPOINT *gridpoint;                                                           /* grid points */
-  gridpoint = (GRIDPOINT*) malloc( ngrid*sizeof(GRIDPOINT) );
-
-  EVALPOINT *evalpoint;                                 /* evaluation points for each grid point */
-  evalpoint = (EVALPOINT*) malloc( ngrid*ngrid*sizeof(EVALPOINT) );
+  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
 
-  /* Allocate memory for the variables needed to efficiently store the evalpoints */
 
-  cum_raytot = (long*) malloc( ngrid*NRAYS*sizeof(long) );
+  /* Initialize */
 
-  key = (long*) malloc( ngrid*ngrid*sizeof(long) );
+  for (long n1=0; n1<NGRID; n1++){
 
-  raytot = (long*) malloc( ngrid*NRAYS*sizeof(long) );
-
-
-  /* Initialise (remove garbage out of the variables) */
-
-  for (long n1=0; n1<ngrid; n1++){
-
-    for (long n2=0; n2<ngrid; n2++){
+    for (long n2=0; n2<NGRID; n2++){
 
       evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
       evalpoint[GINDEX(n1,n2)].Z   = 0.0;
@@ -101,7 +94,6 @@ TEST_CASE("1D regular grid"){
 
       raytot[RINDEX(n1,r)]      = 0;
       cum_raytot[RINDEX(n1,r)]  = 0;
-
     }
 
   }
@@ -109,9 +101,18 @@ TEST_CASE("1D regular grid"){
 
   /* Read input file */
 
-  void read_input(char *inputfile, long ngrid, GRIDPOINT *gridpoint );
+  void read_input(string grid_inputfile, GRIDPOINT *gridpoint );
 
-  read_input(inputfile, ngrid, gridpoint);
+  read_input(grid_inputfile, gridpoint);
+
+
+
+  /* Read the species and their abundances */
+
+  void read_species(string spec_datafile);
+
+  read_species(spec_datafile);
+
 
 
   /* Setup the (unit) HEALPix vectors */
@@ -119,6 +120,7 @@ TEST_CASE("1D regular grid"){
   void create_healpixvectors(double *unit_healpixvector, long *antipod);
 
   create_healpixvectors(unit_healpixvector, antipod);
+
 
 
   /* Trace the rays */
@@ -130,50 +132,43 @@ TEST_CASE("1D regular grid"){
 
 
 
-  /*--- TEMPORARY CHEMISTRY ---*/
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  /* Test the column_density_calculator */
 
-  int nspec = 10;                                                /* number of (chemical) species */
+  double column_density[NGRID*NSPEC*NRAYS];       /* column density for each spec, ray and gridp */
 
-  double *abundance;                                  /* relative abundances w.r.t. hydrogen (H) */
-  abundance = (double*) malloc( nspec*ngrid*sizeof(double) );
+  double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
 
-  for (int n=0; n<ngrid; n++){
+  metallicity = 1.0;
 
-    for (int spec=0; spec<nspec; spec++){
 
-      abundance[SINDEX(n, spec)] = 1.0;
+  /* Initialization */
+
+  for (int n=0; n<NGRID; n++){
+
+    for (int r=0; r<NRAYS; r++){
+
+      for (int spec=0; spec<NSPEC; spec++){
+
+        column_density[GRIDSPECRAY(n,spec,r)] = 0.0;
+      }
+
     }
   }
 
-  double *density;
-  density = (double*) malloc( ngrid*sizeof(double) );
 
-  for (int n=0; n<ngrid; n++){
-
-    gridpoint[n].density = 10.0;
-  }
-
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  /*_____________________________________________________________________________________________*/
 
 
 
-  /* Test the column_density_calculator */
-
-  double *column_density;               /* column densities for each species, ray and grid point */
-  column_density = (double*) malloc( ngrid*nspec*NRAYS*sizeof(double) );
 
 
-  void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, double *abundance,
-                                  double *column_density );
+  void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                                  double *column_density, double *AV );
 
-  column_density_calculator( gridpoint, evalpoint, abundance, column_density );
+  column_density_calculator( gridpoint, evalpoint, column_density, AV );
 
 
   CHECK( 1==1 );
-
-
-
 
 }
 

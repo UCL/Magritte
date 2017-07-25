@@ -24,10 +24,12 @@ using namespace std;
 
 #include "definitions.hpp"
 #include "species_tools.cpp"
+#include "data_tools.cpp"
 
 #include "read_input.cpp"
 #include "read_chemdata.cpp"
 #include "create_healpixvectors.cpp"
+#include "setup_data_structures.cpp"
 #include "ray_tracing.cpp"
 #include "read_linedata.cpp"
 #include "calc_C_coeff.cpp"
@@ -59,20 +61,19 @@ int main()
 
 
 
-  printf("                             \n");
-  printf("3D-RT : 3D Radiative Transfer\n");
-  printf("-----------------------------\n");
-  printf("                             \n");
+  printf("                              \n");
+  printf("3D-RT : 3D Radiative Transfer \n");
+  printf("----------------------------- \n");
+  printf("                              \n");
 
 
 
 
-  /*   READ INPUT GRID                                                                           */ 
+  /*   READ GRID INPUT                                                                           */ 
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): reading grid input\n");
-
+  printf("(3D-RT): reading grid input \n");
 
 
   /* Define grid (using types defined in definitions.h)*/
@@ -82,7 +83,8 @@ int main()
   EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
 
-  /* Initialise (remove garbage from the variables) */
+
+  /* Initialize */
 
   for (n1=0; n1<NGRID; n1++){
 
@@ -119,6 +121,9 @@ int main()
   read_input(grid_inputfile, gridpoint);
 
 
+  printf("(3D-RT): grid input read \n\n");
+
+
   /*_____________________________________________________________________________________________*/
 
 
@@ -128,6 +133,9 @@ int main()
   /*   READ INPUT CHEMISTRY                                                                      */
   /*_____________________________________________________________________________________________*/
 
+
+  printf("(3D-RT): reading chemistry input \n");
+
   
   /* Read the species and their abundances */
 
@@ -136,10 +144,23 @@ int main()
   read_species(spec_datafile);
 
 
+  printf("(3D-RT): chemistry input read \n\n");
+
+
+  /*_____________________________________________________________________________________________*/
 
 
 
-  /* Setup the (unit) HEALPix vectors */
+
+
+  /*   CREATE HEALPIX VEXTORS AND FIND ANTIPODAL PAIRS                                           */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(3D-RT): creating HEALPix vectors \n");
+
+
+  /* Create the (unit) HEALPix vectors and find antipodal pairs */
 
   double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
 
@@ -151,9 +172,20 @@ int main()
   create_healpixvectors(unit_healpixvector, antipod);
 
 
+  printf("(3D-RT): HEALPix vectors creatied \n\n");
 
-  printf("(3D-RT): input read\n");
-  printf("(3D-RT): start ray tracing\n\n");
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /*   RAY TRACING                                                                               */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(3D-RT): ray tracing \n");
 
 
   /* Execute ray_tracing */
@@ -167,10 +199,17 @@ int main()
 
   time_rt += omp_get_wtime();
 
-  printf("\n(3D-RT): time in ray_tracing: %lf sec\n", time_rt);
-  printf("(3D-RT): rays traced\n\n");
+  printf("\n(3D-RT): time in ray_tracing: %lf sec \n", time_rt);
 
-  printf("(3D-RT): reading radiative data files\n\n");
+
+  printf("(3D-RT): rays traced \n\n");
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
 
 
 
@@ -189,7 +228,6 @@ int main()
   for (n=0; n<NGRID; n++){
 
     temperature[n] = 10.0; // 10.0*(100.0 + n/NGRID);
-    gridpoint[n].density = 10.0;
   }
 
   /*----------------*/
@@ -197,6 +235,12 @@ int main()
 
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+
+  /* Setup data structures */
+
+  void setup_data_structures();
+
+  setup_data_structures();
 
 
 
@@ -217,46 +261,8 @@ int main()
   int lspec;                                    /* index of the line species under consideration */
 
 
-  /* Get the number of levels and cumulatives for each line producing species */
 
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    nlev[lspec] = get_nlev(line_datafile[lspec]);
-
-    cum_nlev[lspec] = 0;
-
-    cum_nlev2[lspec] = 0;
-
-    printf("(read_linedata): number of energy levels %d\n", nlev[lspec]);
-  }
-
-
-  /* Get the number of radiative transitions and cumulatives for each line producing species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    nrad[lspec] = get_nrad(line_datafile[lspec]);
-
-    cum_nrad[lspec] = 0;
-
-    printf("(read_linedata): number of radiative transitions %d\n", nrad[lspec]);
-  }
-
-
-  /* Calculate the cumulatives for nlev and nrad (needed for indexing, see definitions.h) */
-
-  for (lspec=1; lspec<NLSPEC; lspec++){
-
-    cum_nlev[lspec] = cum_nlev[lspec-1] + nlev[lspec-1];
-
-    cum_nrad[lspec] = cum_nrad[lspec-1] + nrad[lspec-1];
-
-    cum_nlev2[lspec] = cum_nlev2[lspec-1] + nlev[lspec-1]*nlev[lspec-1];
-  }
-
-
-
-  /* Allocate memory based on nlev and nrad */
+  /* Declare line related variables */
 
   int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
 
@@ -282,140 +288,7 @@ int main()
 
 
 
-  /* Get the number of collision partners for each species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    ncolpar[lspec] = get_ncolpar(line_datafile[lspec]);
-
-    cum_ncolpar[lspec] = 0;
-
-    printf("(read_linedata): number of collisional partners %d\n", ncolpar[lspec]);
-  }
-
-
-  /* Calculate the cumulative for ncolpar (needed for indexing, see definitions.h) */
-
-  for (lspec=1; lspec<NLSPEC; lspec++){
-
-    cum_ncolpar[lspec] = cum_ncolpar[lspec-1] + ncolpar[lspec-1];
-  }
-
-
-
-  /* Initialize the allocated memory */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    for (par1=0; par1<ncolpar[lspec]; par1++){
-
-      ncoltran[LSPECPAR(lspec,par1)] = 0;
-      cum_ncoltran[LSPECPAR(lspec,par1)] = 0;
-
-      ncoltemp[LSPECPAR(lspec,par1)] = 0;
-      cum_ncoltemp[LSPECPAR(lspec,par1)] = 0;
-
-      cum_ncoltrantemp[LSPECPAR(lspec,par1)] = 0;
-    }
-  }
-
-
-  /* For each line producing species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-
-    /* For each collision partner */
-
-    for (par2=0; par2<ncolpar[lspec]; par2++){
-
-
-      /* Get the number of collisional transitions */
-
-      ncoltran[LSPECPAR(lspec,par2)] = get_ncoltran(line_datafile[lspec], ncoltran, lspec);
-/*
-      printf( "(read_linedata): number of collisional transitions for partner %d is %d\n",
-              par2, ncoltran[LSPECPAR(lspec,par2)] );
-*/
-
-
-      /* Get the number of collision temperatures */
-
-      ncoltemp[LSPECPAR(lspec,par2)] = get_ncoltemp(line_datafile[lspec], ncoltran, par2, lspec);
-
-/*
-      printf( "(read_linedata): number of collisional temperatures for partner %d is %d\n",
-              par2, ncoltemp[LSPECPAR(lspec,par2)] );
-*/
-    } /* end of par2 loop over collision partners */
-
-  } /* end of lspec loop over line producing species */
-
-
-  /* Calculate the cumulatives (needed for indexing, see definitions.h) */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    for (par3=1; par3<ncolpar[lspec]; par3++){
-
-      cum_ncoltran[LSPECPAR(lspec,par3)] = cum_ncoltran[LSPECPAR(lspec,par3-1)]
-                                             + ncoltran[LSPECPAR(lspec,par3-1)];
-
-      cum_ncoltemp[LSPECPAR(lspec,par3)] = cum_ncoltemp[LSPECPAR(lspec,par3-1)]
-                                             + ncoltemp[LSPECPAR(lspec,par3-1)];
-
-      cum_ncoltrantemp[LSPECPAR(lspec,par3)] = cum_ncoltrantemp[LSPECPAR(lspec,par3-1)]
-                                                 + ( ncoltran[LSPECPAR(lspec,par3-1)]
-                                                     *ncoltemp[LSPECPAR(lspec,par3-1)] );
-/*
-      printf("(3D-RT): cum_ncoltran[%d] = %d \n", par3, cum_ncoltran[LSPECPAR(lspec,par3)]);
-      printf("(3D-RT): cum_ncoltemp[%d] = %d \n", par3, cum_ncoltemp[LSPECPAR(lspec,par3)]);
-      printf( "(3D-RT): cum_ncoltrantemp[%d] = %d \n",
-              par3, cum_ncoltrantemp[LSPECPAR(lspec,par3)] );
-*/
-    }
-  }
-
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    tot_ncoltran[lspec] = cum_ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                          + ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)];
-
-    tot_ncoltemp[lspec] = cum_ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                           + ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)];
-
-    tot_ncoltrantemp[lspec] = cum_ncoltrantemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                              + ( ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
-         	                  		  *ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)] );
-/*
-    printf("(3D-RT): tot_ncoltran %d\n", tot_ncoltran[lspec]);
-    printf("(3D-RT): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);
-    printf("(3D-RT): tot_ncoltrantemp %d\n", tot_ncoltrantemp[lspec]);
-*/
-
-    cum_tot_ncoltran[lspec] = 0;
-
-    cum_tot_ncoltemp[lspec] = 0;
-
-    cum_tot_ncoltrantemp[lspec] = 0;
-  }
-
-
-  /* Calculate the cumulatives of the cumulatives (also needed for indexing, see definitions.h) */
-
-  for (lspec=1; lspec<NLSPEC; lspec++){
-
-    cum_tot_ncoltran[lspec] = cum_tot_ncoltran[lspec-1] + tot_ncoltran[lspec-1];
-
-    cum_tot_ncoltemp[lspec] = cum_tot_ncoltemp[lspec-1] + tot_ncoltemp[lspec-1];
-
-    cum_tot_ncoltrantemp[lspec] = cum_tot_ncoltrantemp[lspec-1] + tot_ncoltrantemp[lspec-1];
-  }
-
-
-
-  /* Define and allocate the collision related variables */
+  /* Define the collision related variables */
 
   double coltemp[TOT_CUM_TOT_NCOLTEMP];              /* Collision temperatures for each partner */
                                                                   /*[NLSPEC][ncolpar][ncoltemp] */
@@ -430,16 +303,6 @@ int main()
 
 
 
-
-
-  for(int ind=0; ind<TOT_NCOLPAR; ind++){
-
-    spec_par[ind] = 0;
-
-    ortho_para[ind] = 'i';
-  }
-
-
   /* Initializing data */
 
   for(lspec=0; lspec<NLSPEC; lspec++){
@@ -451,36 +314,19 @@ int main()
 
       for (j=0; j<nlev[lspec]; j++){
 
-	A_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
-	B_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
-	C_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
+	      A_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
+	      B_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
+	      C_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
 
-	frequency[LSPECLEVLEV(lspec,i,j)] = 0.0;
+	      frequency[LSPECLEVLEV(lspec,i,j)] = 0.0;
 
-	for (n=0; n<NGRID; n++){
+	      for (n=0; n<NGRID; n++){
 
-	  R[LSPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
-	}
+	        R[LSPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
+	      }
       }
     }
-  }
 
-
-  for(lspec=0; lspec<NLSPEC; lspec++){
-
-    for (n=0; n<NGRID; n++){
-
-      for (i=0; i<nlev[lspec]; i++){
-
-        for (j=0; j<nlev[lspec]; j++){
-
-	  R[LSPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
-	}
-      }
-    }
-  }
-
-   for(lspec=0; lspec<NLSPEC; lspec++){
 
     for (kr=0; kr<nrad[lspec]; kr++){
 
@@ -488,6 +334,24 @@ int main()
       jrad[LSPECRAD(lspec,kr)] = 0;
     }
   }
+
+
+  /* Initialize */
+
+  for(int ind=0; ind<TOT_NCOLPAR; ind++){
+
+    spec_par[ind] = 0;
+
+    ortho_para[ind] = 'i';
+  }
+
+
+
+  /*   READ LINE DATA FOR EACH LINE PRODUCING SPECIES                                            */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(3D-RT): reading line data \n");
 
 
   void read_linedata( string line_datafile, int *irad, int *jrad, double *energy, double *weight,
@@ -502,12 +366,20 @@ int main()
   }
 
 
+  printf("(3D-RT): line data read \n");
 
-  // for(int ind=0; ind<ncolpar[0]; ind++){
 
-  //   cout << "spec_par[" << ind << "] = " << spec_par[LSPECPAR(0,ind)] << " (o/p?)" << ortho_para[LSPECPAR(0,ind)] << " \n" ;
-  // }
+  /*_____________________________________________________________________________________________*/
 
+
+
+
+
+  /*   CALCULATE LEVEL POPULATIONS                                                               */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(3D-RT): calculating level populations \n");
 
 
   /* Initializing populations */
@@ -519,13 +391,12 @@ int main()
       for (i=0; i<nlev[lspec]; i++){
 
         pop[LSPECGRIDLEV(lspec,n,i)] = exp(-HH*CC*energy[LSPECLEV(lspec,i)]/(KB*temperature[n]));
-
-        if(n==5){printf("pop %lE energy %lE \n", pop[LSPECGRIDLEV(lspec,n,i)], energy[LSPECLEV(lspec,i)] );}
       }
     }
   }
 
 
+  /* Declare and initialize P_intensity for each ray through a grid point */
 
   double P_intensity[NGRID*NRAYS];                                   /* Feautrier's mean intensity for a ray */
 
@@ -539,11 +410,7 @@ int main()
   }
 
 
-
-  printf("\n(3D-RT): start radiative transfer\n\n");
-
-
-  /* Radiative Transfer: calculate level populations */
+  /* Calculate level populations for each line producing species */
 
   void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                           int *irad, int*jrad, double *frequency, double *A_coeff,
@@ -552,7 +419,11 @@ int main()
                           double *coltemp, int *icol, int *jcol, double *temperature,
                           double *weight, double *energy, int lspec, bool sobolev );
 
+
   time_lp -= omp_get_wtime();
+
+
+  /* For each line producing species */
 
   for (lspec=0; lspec<NLSPEC; lspec++){
 
@@ -561,11 +432,22 @@ int main()
                        coltemp, icol, jcol, temperature, weight, energy, lspec, sobolev );
   }
 
+
   time_lp += omp_get_wtime();
 
 
   printf("\n(3D-RT): time in level_populations: %lf sec\n", time_lp);
-  printf("(3D-RT): transfer done\n\n");
+
+
+  printf("(3D-RT): level populations calculated \n\n");
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
 
   printf("(3D-RT): Calculate column densities\n");
   
@@ -650,7 +532,7 @@ int main()
 
 
 
-  printf("(3D-RT): done\n");
+  printf("(3D-RT): done \n\n");
 
 
   return(0);

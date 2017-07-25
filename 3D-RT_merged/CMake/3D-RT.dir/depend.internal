@@ -11,6 +11,7 @@
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/calc_C_coeff.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/column_density_calculator.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/create_healpixvectors.cpp
+ /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/data_tools.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/definitions.hpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/exact_feautrier.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/heapsort.cpp
@@ -21,5 +22,6 @@
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_chemdata.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_input.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_linedata.cpp
+ /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/setup_data_structures.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/species_tools.cpp
  /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/write_output.cpp

@@ -25,12 +25,16 @@ definitions.hpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/definitions.hpp
 species_tools.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/species_tools.cpp
+data_tools.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/data_tools.cpp
 read_input.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_input.cpp
 read_chemdata.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_chemdata.cpp
 create_healpixvectors.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/create_healpixvectors.cpp
+setup_data_structures.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/setup_data_structures.cpp
 ray_tracing.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/ray_tracing.cpp
 read_linedata.cpp
@@ -101,6 +105,14 @@ stdlib.h
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/create_healpixvectors.cpp
 HEALPix/pix2vec_nest.c
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/HEALPix/pix2vec_nest.c
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/data_tools.cpp
+stdio.h
+-
+stdlib.h
+-
+string
+-
 
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/definitions.hpp
 
@@ -188,6 +200,16 @@ stdio.h
 stdlib.h
 -
 math.h
+-
+string
+-
+iostream
+-
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/setup_data_structures.cpp
+stdio.h
+-
+stdlib.h
 -
 string
 -

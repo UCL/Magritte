@@ -56,17 +56,13 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
   double dpoprel;                          /* relative change in the level population (dpop/pop) */
 
-  double *Source;                                                             /* source function */
-  Source = (double*) malloc( NGRID*nrad[lspec]*sizeof(double) );
+  double Source[NGRID*TOT_NRAD];                                              /* source function */
 
-  double *opacity;                                                                    /* opacity */
-  opacity = (double*) malloc( NGRID*nrad[lspec]*sizeof(double) );
+  double opacity[NGRID*TOT_NRAD];                                                     /* opacity */
 
-  double *R_temp;                                     /* temporary storage the transition matrix */
-  R_temp = (double*) malloc( NGRID*nlev[lspec]*nlev[lspec]*sizeof(double) );
+  double R_temp[NGRID*TOT_NLEV2];                     /* temporary storage the transition matrix */
 
-  double *mean_intensity;                                            /* mean intensity for a ray */
-  mean_intensity = (double*) malloc( nrad[lspec]*NGRID*sizeof(double) );
+  double mean_intensity[NGRID*TOT_NRAD];                             /* mean intensity for a ray */
 
 
   double hv_4pi;                                                      /* photon energy over 4 pi */
@@ -92,8 +88,8 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
        for (j=0; j<nlev[lspec]; j++){
 
-         R_temp[GRIDLEVLEV(n,i,j)] = A_coeff[LSPECLEVLEV(lspec,i,j)]
-                                     + C_coeff[LSPECLEVLEV(lspec,i,j)] ;
+         R_temp[LSPECGRIDLEVLEV(lspec,n,i,j)] = A_coeff[LSPECLEVLEV(lspec,i,j)]
+                                                + C_coeff[LSPECLEVLEV(lspec,i,j)] ;
        }
     }
   }
@@ -117,7 +113,7 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
         for (j=0; j<nlev[lspec]; j++){
 
-          R[LSPECGRIDLEVLEV(lspec,n,i,j)] = R_temp[GRIDLEVLEV(n,i,j)];
+          R[LSPECGRIDLEVLEV(lspec,n,i,j)] = R_temp[LSPECGRIDLEVLEV(lspec,n,i,j)];
         }
       }
     }
@@ -134,25 +130,26 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
         hv_4pi = HH * frequency[LSPECLEVLEV(lspec,i,j)] / 4.0 / PI;
 
-        Source[TINDEX(n1,kr)] = 0.0;
-        opacity[TINDEX(n1,kr)] = 0.0;
+        Source[LSPECGRIDRAD(lspec,n1,kr)] = 0.0;
+        opacity[LSPECGRIDRAD(lspec,n1,kr)] = 0.0;
 
 
         if (pop[LSPECGRIDLEV(lspec,n1,j)] > 1.0E-30 || pop[LSPECGRIDLEV(lspec,n1,i)] > 1.0E-30){
 
-          Source[TINDEX(n1,kr)] = ( A_coeff[LSPECLEVLEV(lspec,i,j)] * pop[LSPECLEVLEV(lspec,n1,i)] )
-                                  /(pop[LSPECGRIDLEV(lspec,n1,j)]*B_coeff[LSPECLEVLEV(lspec,j,i)]
-                                    - pop[LSPECGRIDLEV(lspec,n1,i)]*B_coeff[LSPECLEVLEV(lspec,i,j)]) ;
+          Source[LSPECGRIDRAD(lspec,n1,kr)]
+                = ( A_coeff[LSPECLEVLEV(lspec,i,j)] * pop[LSPECLEVLEV(lspec,n1,i)] )
+                  /( pop[LSPECGRIDLEV(lspec,n1,j)]*B_coeff[LSPECLEVLEV(lspec,j,i)]
+                     - pop[LSPECGRIDLEV(lspec,n1,i)]*B_coeff[LSPECLEVLEV(lspec,i,j)] ) ;
 
-          opacity[TINDEX(n1,kr)] = hv_4pi
-                                   *(pop[LSPECGRIDLEV(lspec,n1,j)]*B_coeff[LSPECLEVLEV(lspec,j,i)]
-                                     -pop[LSPECGRIDLEV(lspec,n1,i)]*B_coeff[LSPECLEVLEV(lspec,i,j)]) ;
+          opacity[LSPECGRIDRAD(lspec,n1,kr)]
+                 =  hv_4pi * ( pop[LSPECGRIDLEV(lspec,n1,j)]*B_coeff[LSPECLEVLEV(lspec,j,i)]
+                               - pop[LSPECGRIDLEV(lspec,n1,i)]*B_coeff[LSPECLEVLEV(lspec,i,j)] );
         }
 
 
-        Source[TINDEX(n1,kr)] = Source[TINDEX(n1,kr)] + 0.0E-20;
+        Source[LSPECGRIDRAD(lspec,n1,kr)] = Source[LSPECGRIDRAD(lspec,n1,kr)] + 0.0E-20;
 
-        opacity[TINDEX(n1,kr)] = opacity[TINDEX(n1,kr)] + 1.0E-1;
+        opacity[LSPECGRIDRAD(lspec,n1,kr)] = opacity[LSPECGRIDRAD(lspec,n1,kr)] + 1.0E-1;
 
 
       }
@@ -160,9 +157,9 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
     } /* end of n1 loop over gridpoints */
 
 
-Source[TINDEX(20,0)] = 1.0E-5;
-Source[TINDEX(20,1)] = 1.0E-5;
-Source[TINDEX(20,2)] = 1.0E-5;
+Source[LSPECGRIDRAD(0,20,0)] = 1.0E-5;
+Source[LSPECGRIDRAD(0,20,1)] = 1.0E-5;
+Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
 
 
 
@@ -199,7 +196,7 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
       for (n2=0; n2<NGRID; n2++){
 
-        mean_intensity[GINDEX(kr,n2)] = 0.0;
+        mean_intensity[LSPECGRIDRAD(lspec,n2,kr)] = 0.0;
 
 
         /* Calculate the mean intensity */
@@ -216,17 +213,17 @@ Source[TINDEX(20,2)] = 1.0E-5;
         /* Fill the i>j part (since we loop over the transitions i -> j) */
 
         R[LSPECGRIDLEVLEV(lspec,n2,i,j)] = R[LSPECGRIDLEVLEV(lspec,n2,i,j)]
-                                          + B_coeff[LSPECLEVLEV(lspec,i,j)]
-                                            *mean_intensity[GINDEX(kr,n2)];
+                                           + B_coeff[LSPECLEVLEV(lspec,i,j)]
+                                             *mean_intensity[LSPECGRIDRAD(lspec,n2,kr)];
 
 
         /* Add the j>i part */
 
         R[LSPECGRIDLEVLEV(lspec,n2,j,i)] = R[LSPECGRIDLEVLEV(lspec,n2,j,i)]
-                                          + B_coeff[LSPECLEVLEV(lspec,j,i)]
-                                            *mean_intensity[GINDEX(kr,n2)];
+                                           + B_coeff[LSPECLEVLEV(lspec,j,i)]
+                                             *mean_intensity[LSPECGRIDRAD(lspec,n2,kr)];
 
-        // printf("Mean intensity is %lE \n", mean_intensity[GINDEX(kr,n2)]);
+        // printf("Mean intensity is %lE \n", mean_intensity[LSPECGRIDRAD(lspec,n2,kr)]);
 
 
       } /* end of n2 loop over grid points */
@@ -309,7 +306,7 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
     for (n=0; n<NGRID; n++){
 
-      fprintf( meanintensity, "%lE\t", mean_intensity[GINDEX(kr,n)] );
+      fprintf( meanintensity, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
     }
 
     fprintf( meanintensity, "\n" );
@@ -317,15 +314,6 @@ Source[TINDEX(20,2)] = 1.0E-5;
 
   fclose(meanintensity);
 
-
-
-
-  /* Free the allocated memory for temporary variables */
-
-  free( Source );
-  free( opacity );
-  free( R_temp );
-  free( mean_intensity );
 
 
   printf( "(level_populations): nshortcuts = %ld, nno_shortcuts = %ld \n",

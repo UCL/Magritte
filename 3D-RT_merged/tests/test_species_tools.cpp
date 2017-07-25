@@ -19,18 +19,36 @@
 #include <string>
 using namespace std;
 
+
+
+#define NGRID 10                                                        /* number of grid points */
+
+#define NSPEC  5                                                 /* number of (chemical) species */
+
+
+
+typedef struct SPECIES {
+
+  string sym;                                                                 /* chemical symbol */
+
+  double mass;                                                                       /* mol mass */
+
+  double abn[NGRID];                                                                /* abundance */
+
+} SPECIES;
+
+extern SPECIES species[NSPEC];
+SPECIES species[NSPEC];
+
+
+
 #include "catch.hpp"
 
-#include "../src/definitions.hpp"
 #include "../src/species_tools.cpp"
 
 
 
 TEST_CASE("Test species_tools"){
-
-  nspec = 5;                                                     /* number of (chemical) species */
-
-  species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
 
   species[0].sym = "H";
   species[1].sym = "H2";
@@ -67,9 +85,6 @@ TEST_CASE("Test species_tools"){
   list[0] = check_ortho_para("B");
 
   cout << list[0] << "\n";
-
-
-  free(species);
 
 }
 

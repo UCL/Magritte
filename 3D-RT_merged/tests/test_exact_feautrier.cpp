@@ -14,6 +14,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
+
+#include <string>
+#include <iostream>
+using namespace std;
 
 #include "catch.hpp"
 
@@ -29,59 +34,43 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
 
 
-  /* --- Set up the test data --- */
-  /* -----------------------------*/
+
+
+  /*   SET UP TEST DATA                                                                          */
+  /*_____________________________________________________________________________________________*/
 
 
   double theta_crit=1.0;           /* critical angle to include a grid point as evaluation point */
  
   double ray_separation2=0.00;    /* rays closer than the sqrt of this are considered equivalent */
 
-  nsides = 4;                                         /* Defined in HEALPix, NRAYS = 12*nsides^2 */
+  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+
+  long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  double *unit_healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
-  unit_healpixvector = (double*) malloc( 3*NRAYS*sizeof(double) );
 
-  long   *antipod;                                           /* gives antipodal ray for each ray */
-  antipod = (long*) malloc( NRAYS*sizeof(long) );
+  /* Define grid (using types defined in definitions.h) */
 
+  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
-  /* Specify the input file */
-
-  char inputfile[100] = "../input/grid_1D_regular.txt";
+  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
 
-  /* Count number of grid points in input file input/ingrid.txt */
 
-  long get_ngrid(char *inputfile);                                    /* defined in read_input.c */
+  /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  ngrid = get_ngrid(inputfile);                       /* number of grid points in the input file */
-
-
-  /* Define and allocate memory for grid (using types defined in definitions.h)*/
-
-  GRIDPOINT *gridpoint;                                                           /* grid points */
-  gridpoint = (GRIDPOINT*) malloc( ngrid*sizeof(GRIDPOINT) );
-
-  EVALPOINT *evalpoint;                                 /* evaluation points for each grid point */
-  evalpoint = (EVALPOINT*) malloc( ngrid*ngrid*sizeof(EVALPOINT) );
+  grid_inputfile   = "../" + grid_inputfile;
+  spec_datafile    = "../" + spec_datafile;
+  line_datafile[0] = "../" + line_datafile[0];
 
 
-  /* Allocate memory for the variables needed to efficiently store the evalpoints */
 
-  cum_raytot = (long*) malloc( ngrid*NRAYS*sizeof(long) );
+  /* Initialize */
 
-  key = (long*) malloc( ngrid*ngrid*sizeof(long) );
+  for (long n1=0; n1<NGRID; n1++){
 
-  raytot = (long*) malloc( ngrid*NRAYS*sizeof(long) );
-
-
-  /* Initialise (remove garbage out of the variables) */
-
-  for (long n1=0; n1<ngrid; n1++){
-
-    for (long n2=0; n2<ngrid; n2++){
+    for (long n2=0; n2<NGRID; n2++){
 
       evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
       evalpoint[GINDEX(n1,n2)].Z   = 0.0;
@@ -101,17 +90,17 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
       raytot[RINDEX(n1,r)]      = 0;
       cum_raytot[RINDEX(n1,r)]  = 0;
-
     }
-
   }
+
 
 
   /* Read input file */
 
-  void read_input(char *inputfile, long ngrid, GRIDPOINT *gridpoint );
+  void read_input(string grid_inputfile, GRIDPOINT *gridpoint );
 
-  read_input(inputfile, ngrid, gridpoint);
+  read_input(grid_inputfile, gridpoint);
+
 
 
   /* Setup the (unit) HEALPix vectors */
@@ -119,6 +108,7 @@ TEST_CASE("Feautrier solver on 14 depth points"){
   void create_healpixvectors(double *unit_healpixvector, long *antipod);
 
   create_healpixvectors(unit_healpixvector, antipod);
+
 
 
   /* Ray tracing */
@@ -130,17 +120,15 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
 
 
-  long ndep=ngrid-1;
+  long ndep=NGRID-1;
 
-  double *S;
-  S = (double*) malloc( ndep*sizeof(double) );
+  double S[ndep];
 
-  double *dtau;
-  dtau = (double*) malloc( ndep*sizeof(double) );
-
+  double dtau[ndep];
 
     dtau[0] = 1.0E-1;
     S[0]    = 1.0E-1;
+
 
   for (int n3=1; n3<ndep; n3++){
 
@@ -149,8 +137,19 @@ TEST_CASE("Feautrier solver on 14 depth points"){
   }
 
 
-  double *P_intensity;                                   /* Feautrier's mean intensity for a ray */
-  P_intensity = (double*) malloc( ngrid*NRAYS*sizeof(double) );
+  double P_intensity[NGRID*NRAYS];                       /* Feautrier's mean intensity for a ray */
+
+
+  /* Initialization */
+
+  for (long n1=0; n1<NGRID; n1++){
+
+    for (long r=0; r<NRAYS; r++){
+
+      P_intensity[RINDEX(n1,r)] = 0.0;
+    }
+  }
+
 
   long gridp=0;
 
@@ -158,15 +157,9 @@ TEST_CASE("Feautrier solver on 14 depth points"){
   long ar1=173;
 
 
-  /* Initialization */
+  /*_____________________________________________________________________________________________*/
 
-  for (long n1=0; n1<ngrid; n1++){
 
-    for (long r=0; r<NRAYS; r++){
-
-      P_intensity[RINDEX(n1,r)] = 0.0;
-    }
-  }
 
 
 

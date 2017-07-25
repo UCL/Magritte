@@ -22,41 +22,6 @@ using namespace std;
 
 
 
-
-/* get_NSPEC: get the number of species in the data file                                         */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_NSPEC(string specdatafile)
-{
-
-  int nspec = 0;                                                            /* number of species */
-
-
-  /* Open species data file */
-
-  FILE *specdata1 = fopen(specdatafile.c_str(), "r");
-
-  while ( !feof(specdata1) && EOF ){
-
-    int ch = fgetc(specdata1);
-
-    if (ch == '\n'){
-
-      nspec++;
-    }
-
-  }
-
-  fclose(specdata1);
-
-  return nspec;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
 /* read_species: read the species from the data file                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -107,38 +72,6 @@ void read_species(string specdatafile){
 
 
 
-/* get_nreac: get the number of chemical reactions in the data file                              */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_nreac(string reacdatafile)
-{
-
-  int nreac=0;                                                              /* number of species */
-
-
-  /* Open species data file */
-
-  FILE *reacdata1 = fopen(reacdatafile.c_str(), "r");
-
-  while ( !feof(reacdata1) && EOF ){
-
-    int ch = fgetc(reacdata1);
-
-    if (ch == '\n'){
-
-      nreac++;
-    }
-
-  }
-
-  fclose(reacdata1);
-
-  return nreac;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
 
 
 /* read_reactions: read the reactoins from the (CSV) data file                                                  */
@@ -157,7 +90,7 @@ void read_reactions(string reacdatafile, REACTIONS *reaction){
 
   int reac;                                                                    /* reaction index */
 
-  int nreac = get_nreac(reacdatafile);                                    /* number of reactions */
+  int get_NREAC(string reacdatafile);
 
   int n;
 
@@ -182,7 +115,7 @@ void read_reactions(string reacdatafile, REACTIONS *reaction){
 
   FILE *reacdata2 = fopen(reacdatafile.c_str(), "r");
 
-  for (l=0; l<nreac; l++){
+  for (l=0; l<NREAC; l++){
 
 
     fgets(buffer, BUFFER_SIZE, reacdata2);

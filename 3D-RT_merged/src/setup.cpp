@@ -20,6 +20,8 @@
 using namespace std;
 
 #include "definitions.hpp"
+#include "setup_data_structures.cpp"
+#include "data_tools.cpp"
 
 
 
@@ -39,17 +41,25 @@ int main(){
 
 
   string get_file(int nr);
+
   int get_nr(int nr);
+
   int get_nlev(string);
+
   int get_nrad(string);
+
   int get_ncolpar(string);
+
   int get_ncoltran(string, int*, int);
+
   int get_ncoltemp(string, int*, int, int);
 
 
-  cout << "\n Setup for 3D-RT \n\n";
+  cout << "                \n";
+  cout << "Setup for 3D-RT \n";
+  cout << "--------------- \n\n";
 
-  cout << "Reading the parameters.txt file \n";
+  cout << "(setup): reading the parameters.txt file \n";
 
 
 
@@ -114,55 +124,29 @@ int main(){
   int nreac = get_NREAC(reac_datafile);
 
 
+  cout << "(setup): parameters.txt file read \n\n";
 
 
-  /* Get all parameters for the line data files */
+  /*_____________________________________________________________________________________________*/
 
 
 
 
 
-  int i,j;                                                                      /* level indices */
-
-  int par1, par2, par3;                                         /* index for a collision partner */
-
-  int lspec;                                    /* index of the line species under consideration */
+  /*   EXTRACT PARAMETERS FROM THE LINE DATA                                                     */
+  /*_____________________________________________________________________________________________*/
 
 
-  /* Get the number of levels and cumulatives for each line producing species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    nlev[lspec] = get_nlev(line_datafile[lspec]);
-
-    cum_nlev[lspec] = 0;
-
-    cum_nlev2[lspec] = 0;
-
-    printf("(read_linedata): number of energy levels %d\n", nlev[lspec]);
-  }
+  cout << "(setup): extracting parameters from line data \n";
 
 
-  /* Get the number of radiative transitions and cumulatives for each line producing species */
+  /* Setup data structures */
 
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  void setup_data_structures();
 
-    nrad[lspec] = get_nrad(line_datafile[lspec]);
-
-    cum_nrad[lspec] = 0;
-  }
+  setup_data_structures();
 
 
-  /* Calculate the cumulatives for nlev and nrad (needed for indexing, see definitions.h) */
-
-  for (lspec=1; lspec<NLSPEC; lspec++){
-
-    cum_nlev[lspec] = cum_nlev[lspec-1] + nlev[lspec-1];
-
-    cum_nrad[lspec] = cum_nrad[lspec-1] + nrad[lspec-1];
-
-    cum_nlev2[lspec] = cum_nlev2[lspec-1] + nlev[lspec-1]*nlev[lspec-1];
-  }
 
   int tot_nlev = cum_nlev[NLSPEC-1] + nlev[NLSPEC-1];                      /* tot. nr. of levels */
 
@@ -172,168 +156,32 @@ int main(){
                                                                /* tot of squares of nr of levels */
 
 
-
-  /* Get the number of collision partners for each species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    ncolpar[lspec] = get_ncolpar(line_datafile[lspec]);
-
-    cum_ncolpar[lspec] = 0;
-  }
-
-
-  /* Calculate the cumulative for ncolpar (needed for indexing, see definitions.h) */
-
-  for (lspec=1; lspec<NLSPEC; lspec++){
-
-    cum_ncolpar[lspec] = cum_ncolpar[lspec-1] + ncolpar[lspec-1];
-  }
-
   int tot_ncolpar = cum_ncolpar[NLSPEC-1] + ncolpar[NLSPEC-1];
 
 
-
-  /* Initialize the allocated memory */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    for (par1=0; par1<ncolpar[lspec]; par1++){
-
-      ncoltran[LSPECPAR(lspec,par1)] = 0;
-      cum_ncoltran[LSPECPAR(lspec,par1)] = 0;
-
-      ncoltemp[LSPECPAR(lspec,par1)] = 0;
-      cum_ncoltemp[LSPECPAR(lspec,par1)] = 0;
-
-      cum_ncoltrantemp[LSPECPAR(lspec,par1)] = 0;
-    }
-  }
-
-
-  /* For each line producing species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-
-    /* For each collision partner */
-
-    for (par2=0; par2<ncolpar[lspec]; par2++){
-
-
-      /* Get the number of collisional transitions */
-
-      ncoltran[LSPECPAR(lspec,par2)] = get_ncoltran(line_datafile[lspec], ncoltran, lspec);
-/*
-      printf( "(read_linedata): number of collisional transitions for partner %d is %d\n",
-              par2, ncoltran[LSPECPAR(lspec,par2)] );
-*/
-
-
-      /* Get the number of collision temperatures */
-
-      ncoltemp[LSPECPAR(lspec,par2)] = get_ncoltemp(line_datafile[lspec], ncoltran, par2, lspec);
-
-/*
-      printf( "(read_linedata): number of collisional temperatures for partner %d is %d\n",
-              par2, ncoltemp[LSPECPAR(lspec,par2)] );
-*/
-    } /* end of par2 loop over collision partners */
-
-  } /* end of lspec loop over line producing species */
-
-
-  /* Calculate the cumulatives (needed for indexing, see definitions.h) */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    for (par3=1; par3<ncolpar[lspec]; par3++){
-
-      cum_ncoltran[LSPECPAR(lspec,par3)] = cum_ncoltran[LSPECPAR(lspec,par3-1)]
-                                             + ncoltran[LSPECPAR(lspec,par3-1)];
-
-      cum_ncoltemp[LSPECPAR(lspec,par3)] = cum_ncoltemp[LSPECPAR(lspec,par3-1)]
-                                             + ncoltemp[LSPECPAR(lspec,par3-1)];
-
-      cum_ncoltrantemp[LSPECPAR(lspec,par3)] = cum_ncoltrantemp[LSPECPAR(lspec,par3-1)]
-                                                 + ( ncoltran[LSPECPAR(lspec,par3-1)]
-                                                     *ncoltemp[LSPECPAR(lspec,par3-1)] );
-/*
-      printf("(3D-RT): cum_ncoltran[%d] = %d \n", par3, cum_ncoltran[LSPECPAR(lspec,par3)]);
-      printf("(3D-RT): cum_ncoltemp[%d] = %d \n", par3, cum_ncoltemp[LSPECPAR(lspec,par3)]);
-      printf( "(3D-RT): cum_ncoltrantemp[%d] = %d \n",
-              par3, cum_ncoltrantemp[LSPECPAR(lspec,par3)] );
-*/
-    }
-  }
-
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
-
-    tot_ncoltran[lspec] = cum_ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                          + ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)];
-
-    tot_ncoltemp[lspec] = cum_ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                           + ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)];
-
-    tot_ncoltrantemp[lspec] = cum_ncoltrantemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                              + ( ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                                  *ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)] );
-/*
-    printf("(3D-RT): tot_ncoltran %d\n", tot_ncoltran[lspec]);
-    printf("(3D-RT): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);
-    printf("(3D-RT): tot_ncoltrantemp %d\n", tot_ncoltrantemp[lspec]);
-*/
-
-    cum_tot_ncoltran[lspec] = 0;
-
-    cum_tot_ncoltemp[lspec] = 0;
-
-    cum_tot_ncoltrantemp[lspec] = 0;
-  }
-
-
-  /* Calculate the cumulatives of the cumulatives (also needed for indexing, see definitions.h) */
-
-  for (lspec=1; lspec<NLSPEC; lspec++){
-
-    cum_tot_ncoltran[lspec] = cum_tot_ncoltran[lspec-1] + tot_ncoltran[lspec-1];
-
-    cum_tot_ncoltemp[lspec] = cum_tot_ncoltemp[lspec-1] + tot_ncoltemp[lspec-1];
-
-    cum_tot_ncoltrantemp[lspec] = cum_tot_ncoltrantemp[lspec-1] + tot_ncoltrantemp[lspec-1];
-  }
-
   int tot_cum_tot_ncoltran = cum_tot_ncoltran[NLSPEC-1] + tot_ncoltran[NLSPEC-1];
-                                                        /* total over the line prodcing species */
+                                                         /* total over the line prodcing species */
   int tot_cum_tot_ncoltemp = cum_tot_ncoltemp[NLSPEC-1] + tot_ncoltemp[NLSPEC-1];
-                                                        /* total over the line prodcing species */
+                                                         /* total over the line prodcing species */
   int tot_cum_tot_ncoltrantemp = cum_tot_ncoltrantemp[NLSPEC-1]
                                    + tot_ncoltrantemp[NLSPEC-1];
-                                                        /* total over the line prodcing species */
+                                                         /* total over the line prodcing species */
 
 
 
+  cout << "(setup): grid file      : " << grid_inputfile << "\n";
+  cout << "(setup): species file   : " << spec_datafile << "\n";
+  cout << "(setup): line file      : " << line_datafile[0] << "\n";
+  cout << "(setup): reactions file : " << reac_datafile << "\n";
+  cout << "(setup): ngrid          : " << ngrid << "\n";
+  cout << "(setup): nsides         : " << nsides << "\n";
+  cout << "(setup): nlspec         : " << nlspec << "\n";
+  cout << "(setup): nspec          : " << nspec << "\n";
+
+  cout << "(setup): parameters from line data extracted \n\n";
 
 
-
-
-  cout << "grid file      : " << grid_inputfile << "\n";
-  cout << "species file   : " << spec_datafile << "\n";
-  cout << "line file      : " << line_datafile << "\n";
-  cout << "reactions file : " << reac_datafile << "\n";
-  cout << "ngrid          : " << ngrid << "\n";
-  cout << "nsides         : " << nsides << "\n";
-  cout << "nlspec         : " << nlspec << "\n";
-  cout << "nspec          : " << nspec << "\n";
-
-  cout << "\nSetting up definitions.hpp \n";
-
-
-
-
-
-
+  /*_____________________________________________________________________________________________*/
 
 
 
@@ -342,6 +190,8 @@ int main(){
   /*   WRITE DEFINITIONS                                                                         */
   /*_____________________________________________________________________________________________*/
 
+
+  cout << "(setup): setting up definitions.hpp \n";
 
 
   char buffer1[BUFFER_SIZE];
@@ -376,7 +226,6 @@ int main(){
   fprintf( def_new, "#define SPEC_DATAFILE  \"%s\" \n\n", spec_datafile.c_str() );
 
   fprintf( def_new, "#define LINE_DATAFILE  \"%s\" \n\n", line_datafile[0].c_str() );
-
 
 
   fprintf( def_new, "#define NGRID %ld \n\n", ngrid );
@@ -424,7 +273,16 @@ int main(){
   fclose(def_new);
 
 
-  cout << "\nSetup done, 3D-RT can now be compiled \n\n";
+  cout << "(setup): definitions.hpp are set up \n\n";
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  cout << "(setup): done, 3D-RT can now be compiled \n\n";
 
   return(0);
 
@@ -511,357 +369,6 @@ long get_nr(int line)
 
 
   return nr;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_NGRID: Count number of grid points in input file input/iNGRID.txt                         */
-/*-----------------------------------------------------------------------------------------------*/
-
-long get_NGRID(string grid_inputfile)
-{
-
-  long ngrid=0;                                                         /* number of grid points */
-
-
-  FILE *input1 = fopen(grid_inputfile.c_str(), "r");
-
-  while ( !feof(input1) ){
-
-    int ch = fgetc(input1);
-
-    if (ch == '\n'){
-
-      ngrid++;
-    }
-
-  }
-
-  fclose(input1);
-
-  return ngrid;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_NSPEC: get the number of species in the data file                                         */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_NSPEC(string spec_datafile)
-{
-
-  int nspec = 0;                                                            /* number of species */
-
-
-  /* Open species data file */
-
-  FILE *specdata1 = fopen(spec_datafile.c_str(), "r");
-
-  while ( !feof(specdata1) ){
-
-    int ch = fgetc(specdata1);
-
-    if (ch == '\n'){
-
-      nspec++;
-    }
-
-  }
-
-  fclose(specdata1);
-
-  return nspec;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_NREAC: get the number of chemical reactions in the data file                              */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_NREAC(string reac_datafile)
-{
-
-  int nreac=0;                                                              /* number of species */
-
-
-  /* Open species data file */
-
-  FILE *reacdata1 = fopen(reac_datafile.c_str(), "r");
-
-  while ( !feof(reacdata1) && EOF ){
-
-    int ch = fgetc(reacdata1);
-
-    if (ch == '\n'){
-
-      nreac++;
-    }
-
-  }
-
-  fclose(reacdata1);
-
-  return nreac;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-/* get_nlev: get number of energy levels from data file in LAMBDA/RADEX format                   */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_nlev(string datafile)
-{
-
-  int l;                                                     /* index of a text line in the file */
-  int nlev=0;                                                                /* number of levels */
-
-
-  /* Open data file */
-
-  FILE *data1 = fopen(datafile.c_str(), "r");
-
-
-  /* Skip first 5 lines */
-
-  for (l=0; l<5; l++){
-
-    fscanf(data1, "%*[^\n]\n");
-  }
-
-
-  /* Read the number of energy levels */
-
-  fscanf(data1, "%d \n", &nlev);
-
-
-  fclose(data1);
-
-  return nlev;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_nrad: get number of radiative transitions from data file in LAMBDA/RADEX format           */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_nrad(string datafile)
-{
-
-  int l;                                                     /* index of a text line in the file */
-  int nrad=0;                                                 /* number of radiative transitions */
-
-  int nlev = get_nlev(datafile);                                             /* number of levels */
-
-
-  /* Open data file */
-
-  FILE *data2 = fopen(datafile.c_str(), "r");
-
-
-  /* Skip first 8+nlev lines */
-
-  for (l=0; l<8+nlev; l++){
-
-    fscanf(data2, "%*[^\n]\n");
-  }
-
-
-  /* Read the number of radiative transitions */
-
-  fscanf(data2, "%d \n", &nrad);
-
-
-  fclose(data2);
-
-  return nrad;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_ncolpar: get number of collision partners from data file in LAMBDA/RADEX format           */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_ncolpar(string datafile)
-{
-
-  int l;                                                     /* index of a text line in the file */
-  int ncolpar=0;                                                 /* number of collision partners */
-
-  int nlev = get_nlev(datafile);                                             /* number of levels */
-  int nrad = get_nrad(datafile);                              /* number of radiative transitions */
-
-
-  /* Open data file */
-
-  FILE *data3 = fopen(datafile.c_str(), "r");
-
-
-  /* Skip first 11+nlev+nrad lines */
-
-  for (l=0; l<11+nlev+nrad; l++){
-
-    fscanf(data3, "%*[^\n]\n");
-  }
-
-
-  /* Read the number of collision partners */
-
-  fscanf(data3, "%d \n", &ncolpar);
-
-
-  fclose(data3);
-
-  return ncolpar;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_ncoltran: get number of collisional transitions from data file in LAMBDA/RADEX format     */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_ncoltran(string datafile, int *ncoltran, int lspec)
-{
-
-  int l;                                                     /* index of a text line in the file */
-  int loc_ncoltran=0;                                            /* number of collision partners */
-  int par;                                                      /* index for a collision partner */
-
-/*  int nlev = get_nlev(datafile);                                           /* number of levels */
-/*  int nrad = get_nrad(datafile);                            /* number of radiative transitions */
-/*  int ncolpar = get_ncolpar(datafile);                         /* number of collision partners */
-
-
-  /* Open data file */
-
-  FILE *data4 = fopen(datafile.c_str(), "r");
-
-
-  /* Skip first 15+nlev+nrad lines */
-
-  for (l=0; l<15+nlev[lspec]+nrad[lspec]; l++){
-
-    fscanf(data4, "%*[^\n]\n");
-  }
-
-
-  /* Skip the collision partners that are already done */
-
-  for (par=0; par<ncolpar[lspec]; par++){
-
-    if (ncoltran[LSPECPAR(lspec,par)] > 0){
-
-      /* Skip next 9+ncoltran lines */
-
-      for (l=0; l<9+ncoltran[LSPECPAR(lspec,par)]; l++){
-
-        fscanf(data4, "%*[^\n]\n");
-      }
-    }
-  }
-
-
-  /* Read the number of collisional transitions */
-
-  fscanf(data4, "%d \n", &loc_ncoltran);
-
-
-  fclose(data4);
-
-  return loc_ncoltran;
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_ncoltemp: get number of collisional temperatures from data file in LAMBDA/RADEX format    */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_ncoltemp(string datafile, int *ncoltran, int partner, int lspec)
-{
-
-  int l;                                                     /* index of a text line in the file */
-  int ncoltemp=0;                                                /* number of collision partners */
-  int par;                                                      /* index for a collision partner */
-
-  int nlev = get_nlev(datafile);                                             /* number of levels */
-  int nrad = get_nrad(datafile);                              /* number of radiative transitions */
-  int ncolpar = get_ncolpar(datafile);                           /* number of collision partners */
-
-
-  /* Open data file */
-
-  FILE *data5 = fopen(datafile.c_str(), "r");
-
-
-  /* Skip first 17+nlev+nrad lines */
-
-  for (l=0; l<17+nlev+nrad; l++){
-
-    fscanf(data5, "%*[^\n]\n");
-  }
-
-
-  /* Skip the collision partners before "partner" */
-
-  for (par=0; par<partner; par++){
-
-
-    /* Skip next 9+ncoltran lines */
-
-    for (l=0; l<9+ncoltran[LSPECPAR(lspec,par)]; l++){
-
-      fscanf(data5, "%*[^\n]\n");
-    }
-   
-  }
-
-
-  /* Read the number of collisional temperatures */
-
-  fscanf(data5, "%d \n", &ncoltemp);
-
-
-  fclose(data5);
-
-  return ncoltemp;
 
 }
 

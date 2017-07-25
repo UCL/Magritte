@@ -11,8 +11,14 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
+
+#include <string>
+#include <iostream>
+using namespace std;
 
 #include "catch.hpp"
 
@@ -21,66 +27,50 @@
 #include "../src/create_healpixvectors.cpp"
 #include "../src/ray_tracing.cpp"
 
-#define EPS 1.0E-7
+#define EPS 1.0E-5
 
 
 TEST_CASE("1D regular grid"){
 
 
 
-  /* --- Set up the test data --- */
-  /* -----------------------------*/
+
+
+  /*   SET UP TEST DATA                                                                          */
+  /*_____________________________________________________________________________________________*/
 
 
   double theta_crit=1.0;           /* critical angle to include a grid point as evaluation point */
  
   double ray_separation2=0.00;    /* rays closer than the sqrt of this are considered equivalent */
 
-  nsides = 4;                                         /* Defined in HEALPix, NRAYS = 12*nsides^2 */
+  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+
+  long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
+
+  
+
+  /* Define grid (using types defined in definitions.h) */
+
+  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+
+  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
 
-  double *unit_healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
-  unit_healpixvector = (double*) malloc( 3*NRAYS*sizeof(double) );
 
-  long   *antipod;                                           /* gives antipodal ray for each ray */
-  antipod = (long*) malloc( NRAYS*sizeof(long) );
+  /* Since the executables are now in the directory /tests, we have to change the paths */
 
-
-  /* Specify the input file */
-
-  char inputfile[100] = "../input/grid_1D_regular.txt";
+  grid_inputfile   = "../" + grid_inputfile;
+  spec_datafile    = "../" + spec_datafile;
+  line_datafile[0] = "../" + line_datafile[0];
 
 
-  /* Count number of grid points in input file input/ingrid.txt */
 
-  long get_ngrid(char *inputfile);                                    /* defined in read_input.c */
+  /* Initialize */
 
-  ngrid = get_ngrid(inputfile);                       /* number of grid points in the input file */
+  for (long n1=0; n1<NGRID; n1++){
 
-
-  /* Define and allocate memory for grid (using types defined in definitions.h)*/
-
-  GRIDPOINT *gridpoint;                                                           /* grid points */
-  gridpoint = (GRIDPOINT*) malloc( ngrid*sizeof(GRIDPOINT) );
-
-  EVALPOINT *evalpoint;                                 /* evaluation points for each grid point */
-  evalpoint = (EVALPOINT*) malloc( ngrid*ngrid*sizeof(EVALPOINT) );
-
-
-  /* Allocate memory for the variables needed to efficiently store the evalpoints */
-
-  cum_raytot = (long*) malloc( ngrid*NRAYS*sizeof(long) );
-
-  key = (long*) malloc( ngrid*ngrid*sizeof(long) );
-
-  raytot = (long*) malloc( ngrid*NRAYS*sizeof(long) );
-
-
-  /* Initialise (remove garbage out of the variables) */
-
-  for (long n1=0; n1<ngrid; n1++){
-
-    for (long n2=0; n2<ngrid; n2++){
+    for (long n2=0; n2<NGRID; n2++){
 
       evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
       evalpoint[GINDEX(n1,n2)].Z   = 0.0;
@@ -100,17 +90,18 @@ TEST_CASE("1D regular grid"){
 
       raytot[RINDEX(n1,r)]      = 0;
       cum_raytot[RINDEX(n1,r)]  = 0;
-
     }
 
   }
 
 
+
   /* Read input file */
 
-  void read_input(char *inputfile, long ngrid, GRIDPOINT *gridpoint );
+  void read_input(string grid_inputfile, GRIDPOINT *gridpoint );
 
-  read_input(inputfile, ngrid, gridpoint);
+  read_input(grid_inputfile, gridpoint);
+
 
 
   /* Setup the (unit) HEALPix vectors */
@@ -120,27 +111,28 @@ TEST_CASE("1D regular grid"){
   create_healpixvectors(unit_healpixvector, antipod);
 
 
-
-  /* -----------------------------*/
-
+  /*_____________________________________________________________________________________________*/
 
 
-  /* --- Test ray_tracing --- */
-  /*--------------------------*/
+
+
+
+  /*   TEST RAY TRACING                                                                          */
+  /*_____________________________________________________________________________________________*/
+
 
   void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpixvector,
                     GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
 
   ray_tracing(theta_crit, ray_separation2, unit_healpixvector, gridpoint, evalpoint);
 
-  /*--------------------------*/
 
 
+  SECTION( "Ordering tests" ){
 
+    /* "Check for zero dZ increments" */
 
-  SECTION( "Check for zero dZ increments" ){
-
-    for (int n=0; n<ngrid; n++){
+    for (int n=0; n<NGRID; n++){
 
       for (int r=0; r<NRAYS; r++){
 
@@ -150,27 +142,26 @@ TEST_CASE("1D regular grid"){
         }
       }
     }
-  }
+  
 
 
-  SECTION( "Check whether all grid points are on a ray (only true in 1D)" ){
+    /* "Check whether all grid points are on a ray (only true in 1D)" */
 
-    for (int n1=0; n1<ngrid; n1++){
+    for (int n1=0; n1<NGRID; n1++){
 
-      for (int n2=0; n2<ngrid; n2++){
+      for (int n2=0; n2<NGRID; n2++){
 
         if (n1 != n2){
           CHECK( evalpoint[GINDEX(n1,n2)].onray == true );
         }
       }
     }
-  }
+  
 
 
-
-  SECTION( "Check the order of the evaluation points" ){
+    /* "Check the order of the evaluation points" */
    
-    for (int n=0; n<ngrid; n++){
+    for (int n=0; n<NGRID; n++){
 
       for (int r=0; r<NRAYS; r++){
 
@@ -183,5 +174,10 @@ TEST_CASE("1D regular grid"){
   }
 
 
-}
+  /*_____________________________________________________________________________________________*/
 
+
+
+
+
+}

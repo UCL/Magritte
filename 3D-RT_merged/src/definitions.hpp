@@ -14,7 +14,7 @@
 
 
 
-/*   Input before compilation                                                                    */
+/*   Input before compilation, placed here by setup (src/setup.cpp)                              */
 /*_______________________________________________________________________________________________*/
 
 
@@ -24,7 +24,7 @@
 
 #define LINE_DATAFILE  "data/12c.dat" 
 
-#define NGRID 150 
+#define NGRID 15 
 
 #define NSIDES 4 
 
@@ -132,6 +132,9 @@ string line_datafile[NLSPEC];
 #define LSPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                          \
                 /* when first index is line producing species and second is radiative transition */
 
+#define LSPECGRIDRAD(lspec,gridp,kr)   ( (kr) + (gridp)*nrad[(lspec)] + NGRID*cum_nlev[(lspec)] )
+/* when first index is line producing species, second is grid point and third is rad. transition */
+
 
 #define LINDEX(i,j) ((j)+(i)*nlev[lspec])                        /* when second index are levels */
 #define TINDEX(r,c) ((c)+(r)*nrad[lspec])         /* when second index are radiative transitions */
@@ -162,6 +165,7 @@ string line_datafile[NLSPEC];
 	   + cum_ncoltrantemp[LSPECPAR((lspec),(par))] + cum_tot_ncoltrantemp[(lspec)] )                \
                       /* when first index is line producing species, second is collision partner, \
                              third is collisional transition and fourth is collision temperature */
+
 
 
 /* Data types */
