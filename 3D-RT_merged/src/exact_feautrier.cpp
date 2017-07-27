@@ -104,7 +104,7 @@ double exact_feautrier( long ndep, double *S, double *dtau, long etot1, long eto
   Fd2[ndep-1] = 1.0 + 2.0*A[ndep-1] + 2.0*A[ndep-1]*A[ndep-1];
   Fd3[ndep-1] = 0.0;
 
-  P[ndep-1]   = S[ndep-1] + 2.0*IBC*exp(-dtau[ndep-1]) / dtau[ndep-1];
+  P[ndep-1]   = S[ndep-1] + 2.0*IBC*exp(-dtau[0]) / dtau[ndep-1];
 
 
   /* Solve the Feautrier recursion relation */
@@ -127,7 +127,7 @@ double exact_feautrier( long ndep, double *S, double *dtau, long etot1, long eto
 
   /* Back substitution */
 
-  for (n=ndep-2; n>0; n--){
+  for (n=ndep-2; n>=0; n--){
 
     P[n] = P[n] - D[n+1]*P[n+1];
   }
@@ -182,9 +182,7 @@ double exact_feautrier( long ndep, double *S, double *dtau, long etot1, long eto
 
   /* Calculate return value */
 
-  J = (P[etot1-1] + P[etot1-2]) / 2.0;
-
-  // printf("this is P %lE\n",J );
+  J = (P[etot1-1] + P[etot1]) / 2.0;
 
 
 

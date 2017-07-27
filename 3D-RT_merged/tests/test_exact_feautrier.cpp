@@ -29,7 +29,7 @@ using namespace std;
 #include "../src/exact_feautrier.cpp"
 
 
-#define EPS 1.0E-19
+#define EPS 1.0E-21
 
 
 
@@ -188,19 +188,22 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
     /* Check the directly returned values */
 
-    for (int n=0; n<ndep; n++){
+    for (int n=1; n<ndep; n++){
 
       long  etot1 = raytot[RINDEX(n, ar1)];
       long  etot2 = raytot[RINDEX(n, r1)];
 
-      printf( "%lE\n", exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)
-                       /P_test[n] );
+      // printf( "etot1 and etot2 are %d and %d with %lE\n", etot1, etot2,
+      //         exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)/P_test[n] );
 
       CHECK( exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)
-             == Approx(P_test[n]).epsilon(EPS) );
+             == Approx( (P_test[n]+P_test[n-1])/2.0 ).epsilon(EPS) );
 
     }
 
+
+
+    /* Check values stored in P_intensity */
 
     long etot1 = raytot[RINDEX(2, ar1)];
     long etot2 = raytot[RINDEX(2, r1)];
@@ -210,38 +213,14 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
     for (int n=0; n<etot1; n++){
 
-      printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,ar1)]);
+      // printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,ar1)]);
     }
+
     for (int n=0; n<etot2; n++){
 
-      printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,r1)]);
+      // printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,r1)]);
     }
 
-
-    // /* Write the result */
-
-    // FILE *result = fopen("../output/result.txt", "w");
-
-    // if (result == NULL){
-
-    //   printf("Error opening file!\n");
-    //   exit(1);
-    // }
-
-
-    // for (int n=0; n<ndep; n++){
-
-    //   long  etot1 = raytot[RINDEX(n, ar1)];
-    //   long  etot2 = raytot[RINDEX(n, r1)];
-
-    //   fprintf( result, "%lE\n",
-    //            exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1) );
-    // }
-
-    // fclose(result);
-
-
-    CHECK( 1==1 );
 
   }
 
