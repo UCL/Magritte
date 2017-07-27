@@ -1,1 +1,1 @@
-/usr/bin/c++   -fopenmp    -rdynamic CMakeFiles/../3D-RT.dir/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3DRT.cpp.o  -o ../3D-RT 
+/usr/bin/c++    -fopenmp    CMakeFiles/../3D-RT.dir/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3D-RT.cpp.o  -o ../3D-RT -rdynamic /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/lib/libsundials_cvode.a /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/lib/libsundials_nvecserial.a -lm -lrt 

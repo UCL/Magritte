@@ -22,6 +22,8 @@
 
 #define SPEC_DATAFILE  "data/species_reduced.d" 
 
+#define REAC_DATAFILE  "data/rates_reduced.d" 
+
 #define LINE_DATAFILE  "data/12c.dat" 
 
 #define NGRID 101 
@@ -62,6 +64,9 @@ string grid_inputfile = GRID_INPUTFILE;
 
 extern string spec_datafile;                         /* path to data file containing the species */
 string spec_datafile = SPEC_DATAFILE;
+
+extern string reac_datafile;                       /* path to data file containing the reactions */
+string reac_datafile = REAC_DATAFILE;
 
 extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
 string line_datafile[NLSPEC];
@@ -325,6 +330,11 @@ typedef struct REACTIONS {
 extern SPECIES species[NSPEC];
 SPECIES species[NSPEC];
 
+extern REACTIONS reaction[NREAC];
+REACTIONS reaction[NREAC];
+
+
+
 extern int spec_par[TOT_NCOLPAR];  /* number of the species corresponding to a collision partner */
 int spec_par[TOT_NCOLPAR];
 
@@ -340,6 +350,18 @@ double metallicity;
                /* when the first index is a grid point, the second a species and the third a ray */
 
 
+
+extern int C_ionization_nr;
+int C_ionization_nr;
+
+extern int H2_formation_nr;
+int H2_formation_nr;
+
+extern int H2_photodissociation_nr;
+int H2_photodissociation_nr;
+
+extern double x_e;
+double x_e;
 
 
 /*-----------------------------------------------------------------------------------------------*/

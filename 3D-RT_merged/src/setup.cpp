@@ -225,6 +225,8 @@ int main(){
 
   fprintf( def_new, "#define SPEC_DATAFILE  \"%s\" \n\n", spec_datafile.c_str() );
 
+  fprintf( def_new, "#define REAC_DATAFILE  \"%s\" \n\n", reac_datafile.c_str() );
+
   fprintf( def_new, "#define LINE_DATAFILE  \"%s\" \n\n", line_datafile[0].c_str() );
 
 

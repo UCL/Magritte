@@ -1,0 +1,1023 @@
+Log for test_spline
++++++++++++++++++++
+                   
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test_spline is a Catch v1.9.5 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+Spline interpolations
+-------------------------------------------------------------------------------
+test_spline.cpp:58
+...............................................................................
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 18.9873178157 ) == 17.7514792899
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 17.9787008591 ) == 15.9574468085
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 16.9782143579 ) == 14.4927536232
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 15.9899235398 ) == 13.2743362832
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 15.0178936323 ) == 12.2448979592
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 14.0661898633 ) == 11.3636363636
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 13.1388774604 ) == 10.6007067138
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 12.2400216514 ) == 9.9337748344
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 11.3736876637 ) == 9.3457943925
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 10.5439407253 ) == 8.8235294118
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 9.7548460637 ) == 8.356545961
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 9.0104689067 ) == 7.9365079365
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 8.3148744818 ) == 7.556675063
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 7.6721280169 ) == 7.2115384615
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 7.0862947396 ) == 6.8965517241
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 6.5654614612 ) == 6.6079295154
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 6.1222887597 ) == 6.3424947146
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.7378213538 ) == 6.0975609756
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.4075302136 ) == 5.8708414873
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.1268863091 ) == 5.6603773585
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.8913606103 ) == 5.4644808743
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.6964240872 ) == 5.2816901408
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.53754771 ) == 5.1107325383
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.4102024487 ) == 4.9504950495
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.3098592732 ) == 4.8
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.2319891537 ) == 4.6583850932
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.1720630601 ) == 4.5248868778
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.1255519626 ) == 4.3988269795
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.0879268311 ) == 4.2796005706
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.0546586357 ) == 4.1666666667
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.0212183465 ) == 4.0595399188
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.97929551 ) == 3.9577836412
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.9252664556 ) == 3.861003861
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.8650458411 ) == 3.7688442211
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.7994300013 ) == 3.6809815951
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.729215271 ) == 3.5971223022
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.655197985 ) == 3.5169988277
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.5781744782 ) == 3.4403669725
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.4989410853 ) == 3.367003367
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.4182941412 ) == 3.2967032967
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.3370299806 ) == 3.2292787944
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.2559449384 ) == 3.164556962
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.1758353494 ) == 3.1023784902
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.0974975483 ) == 3.0425963489
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.0217278701 ) == 2.9850746269
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.9493226495 ) == 2.9296875
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.8810782213 ) == 2.8763183126
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.8151657434 ) == 2.8248587571
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.7527844116 ) == 2.7752081406
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.6951210219 ) == 2.7272727273
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.6418491594 ) == 2.6809651475
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.5926424093 ) == 2.6362038664
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.5471743567 ) == 2.5929127053
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.5051185867 ) == 2.5510204082
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.4661486844 ) == 2.510460251
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.429938235 ) == 2.471169687
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.3961608236 ) == 2.4330900243
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.3644900354 ) == 2.3961661342
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.3345994554 ) == 2.3603461841
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.3061626687 ) == 2.3255813953
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.2788532606 ) == 2.2918258212
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.2523448161 ) == 2.2590361446
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.170525664 ) == 2.1660649819
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.1426965848 ) == 2.1367521368
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.1150889884 ) == 2.1082220661
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.0877468171 ) == 2.080443828
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.0607140131 ) == 2.0533880903
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.0340345184 ) == 2.027027027
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.0077522753 ) == 2.0013342228
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.9819112258 ) == 1.976284585
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.9565553122 ) == 1.9518542615
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.9317284766 ) == 1.9280205656
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.7733647625 ) == 1.7761989343
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.7526539051 ) == 1.756440281
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.7326355259 ) == 1.7371163868
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.7132775409 ) == 1.7182130584
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.6945478665 ) == 1.6997167139
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.6764144188 ) == 1.6816143498
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.6588451141 ) == 1.6638935108
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.6418078684 ) == 1.6465422613
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.625270598 ) == 1.6295491581
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.6092012192 ) == 1.6129032258
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.593567648 ) == 1.5965939329
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.1123943131 ) == 1.1705033164
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.0202357304 ) == 1.1618900077
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.9316731474 ) == 1.1534025375
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8487462836 ) == 1.1450381679
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7734948585 ) == 1.1367942402
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7079585914 ) == 1.1286681716
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6541772018 ) == 1.1206574524
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6141904092 ) == 1.1127596439
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.590037933 ) == 1.1049723757
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.5837594927 ) == 1.0972933431
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.5973948077 ) == 1.0897203055
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6329835974 ) == 1.0822510855
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6925655814 ) == 1.0748835798
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.778180479 ) == 1.0676158409
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8918680097 ) == 1.0604465601
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.035667893 ) == 1.0533775616
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.3619896102 ) == 1.0464251147
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.7325167782 ) == 1.0396649983
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.1227628781 ) == 1.0333892524
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.5260526571 ) == 1.0285784803
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.9357108622 ) == 1.0281192125
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.3450622407 ) == 1.0394327295
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.7474315398 ) == 1.0790440843
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.1361435066 ) == 1.1783699667
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.5045228884 ) == 1.3871049183
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.8458944322 ) == 1.7671244005
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.1535828852 ) == 2.3696884243
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.4209129947 ) == 3.1967837235
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.6412095078 ) == 4.1633555237
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.8077971717 ) == 5.0899254793
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.9140007335 ) == 5.7479926628
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.8276059246 ) == 5.6298495918
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.6467526277 ) == 4.8852492048
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.4095265774 ) == 3.9202720719
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 5.1238408917 ) == 2.9595076702
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.7976086888 ) == 2.1644266334
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.4387430868 ) == 1.5996565587
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 4.0551572038 ) == 1.2492695728
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.6547641579 ) == 1.0569553641
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 3.2454770673 ) == 0.9621377057
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.8352090501 ) == 0.9189055088
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.4318732244 ) == 0.8994226164
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 2.0433827083 ) == 0.8895481505
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.6776506199 ) == 0.8831251943
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.3425900774 ) == 0.8778258853
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 1.0461141989 ) == 0.8728793149
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7959600067 ) == 0.8680602809
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.5955141035 ) == 0.8633101525
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.4415018305 ) == 0.8586148899
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.3297596108 ) == 0.8539709816
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.2561238677 ) == 0.8493771255
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.2164310242 ) == 0.8448324418
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.2065175035 ) == 0.8403361345
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.2222197287 ) == 0.8358874338
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.259374123 ) == 0.8314855876
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.3138171096 ) == 0.8271298594
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.3813851115 ) == 0.8228195283
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.4579145519 ) == 0.8185538881
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.539241854 ) == 0.8143322476
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6212034409 ) == 0.8101539292
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6996357357 ) == 0.8060182697
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7703751617 ) == 0.8019246191
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8292176664 ) == 0.7978723404
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8747598567 ) == 0.7938608097
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.9081748456 ) == 0.7898894155
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.930577386 ) == 0.7859575583
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.9430822307 ) == 0.7820646507
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.9468041328 ) == 0.7782101167
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.942857845 ) == 0.7743933918
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.9323581203 ) == 0.7706139224
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.9164197116 ) == 0.7668711656
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8961573718 ) == 0.7631645892
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8726858537 ) == 0.7594936709
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8471199103 ) == 0.7558578987
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.8205742946 ) == 0.7522567703
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7941637593 ) == 0.7486897929
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7690030574 ) == 0.7451564829
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7462069418 ) == 0.7416563659
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7265794335 ) == 0.7381889764
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.7104224548 ) == 0.7347538575
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6975182593 ) == 0.7313505607
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6875675039 ) == 0.727978646
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6802708451 ) == 0.7246376812
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6753289399 ) == 0.7213272421
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6724424449 ) == 0.7180469124
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6713120169 ) == 0.7147962831
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6716383127 ) == 0.7115749526
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6731219889 ) == 0.7083825266
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6754637023 ) == 0.7052186178
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6783641097 ) == 0.7020828458
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6815238679 ) == 0.6989748369
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6846436335 ) == 0.6958942241
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6874240633 ) == 0.6928406467
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6905642418 ) == 0.6868131868
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6906700351 ) == 0.6838386141
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6899772941 ) == 0.6808896959
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.688565738 ) == 0.6779661017
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6865150862 ) == 0.6750675068
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.683905058 ) == 0.6721935918
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6808153726 ) == 0.6693440428
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6773257495 ) == 0.6665185514
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6735159078 ) == 0.6637168142
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6694655668 ) == 0.6609385327
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.665254446 ) == 0.6581834138
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6609622646 ) == 0.6554511689
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6566687418 ) == 0.6527415144
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.652453597 ) == 0.6500541712
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6372451422 ) == 0.6395224899
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6339973621 ) == 0.6369426752
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6309858833 ) == 0.6343835906
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6281889674 ) == 0.6318449874
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6255848763 ) == 0.6293266205
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6231518715 ) == 0.6268282491
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6208682147 ) == 0.6243496358
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6187121676 ) == 0.6218905473
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.616661992 ) == 0.6194507537
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6146959493 ) == 0.6170300288
+
+test_spline.cpp:111: FAILED:
+  CHECK( Approx(y_test[i]).epsilon(1.0E-3) == f_test(x_test[i]) )
+with expansion:
+  Approx( 0.6127923015 ) == 0.61462815
+
+===============================================================================
+test cases:   1 |  0 passed |   1 failed
+assertions: 300 | 99 passed | 201 failed
+

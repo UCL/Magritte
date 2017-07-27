@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3DRT.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3D-RT.cpp
 stdio.h
 -
 stdlib.h
@@ -39,6 +39,10 @@ ray_tracing.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/ray_tracing.cpp
 read_linedata.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_linedata.cpp
+reaction_rates.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/reaction_rates.cpp
+abundance.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/abundance.cpp
 calc_C_coeff.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/calc_C_coeff.cpp
 level_populations.cpp
@@ -87,6 +91,14 @@ math.h
 -
 stdlib.h
 -
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/abundance.cpp
+stdio.h
+-
+stdlib.h
+-
+sundials/rate_equation_solver.c
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/rate_equation_solver.c
 
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/calc_C_coeff.cpp
 stdio.h
@@ -158,6 +170,24 @@ math.h
 exact_feautrier.cpp
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/exact_feautrier.cpp
 
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/rate_calculations.cpp
+stdio.h
+-
+string.h
+-
+math.h
+-
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/rate_calculations_radfield.cpp
+stdio.h
+-
+string.h
+-
+math.h
+-
+spline.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/spline.cpp
+
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/ray_tracing.cpp
 stdio.h
 -
@@ -173,6 +203,20 @@ HEALPix/vec2ang.c
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/HEALPix/vec2ang.c
 HEALPix/ang2pix_nest.c
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/HEALPix/ang2pix_nest.c
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/reaction_rates.cpp
+stdio.h
+-
+string
+-
+string.h
+-
+math.h
+-
+rate_calculations.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/rate_calculations.cpp
+rate_calculations_radfield.cpp
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/rate_calculations_radfield.cpp
 
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/read_chemdata.cpp
 stdio.h
@@ -227,6 +271,38 @@ iostream
 -
 string
 -
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/spline.cpp
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/jacobian.c
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/rate_equation_solver.c
+stdio.h
+-
+cvode/cvode.h
+-
+nvector/nvector_serial.h
+-
+cvode/cvode_dense.h
+-
+sundials/sundials_dense.h
+-
+sundials/sundials_types.h
+-
+jacobian.c
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/jacobian.c
+rate_equations.c
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/rate_equations.c
+
+/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/sundials/rate_equations.c
 
 /home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/write_output.cpp
 

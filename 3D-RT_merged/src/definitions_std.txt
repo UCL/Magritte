@@ -13,6 +13,9 @@ string grid_inputfile = GRID_INPUTFILE;
 extern string spec_datafile;                         /* path to data file containing the species */
 string spec_datafile = SPEC_DATAFILE;
 
+extern string reac_datafile;                       /* path to data file containing the reactions */
+string reac_datafile = REAC_DATAFILE;
+
 extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
 string line_datafile[NLSPEC];
 
@@ -274,6 +277,11 @@ typedef struct REACTIONS {
 
 extern SPECIES species[NSPEC];
 SPECIES species[NSPEC];
+
+extern REACTIONS reaction[NREAC];
+REACTIONS reaction[NREAC];
+
+
 
 extern int spec_par[TOT_NCOLPAR];  /* number of the species corresponding to a collision partner */
 int spec_par[TOT_NCOLPAR];

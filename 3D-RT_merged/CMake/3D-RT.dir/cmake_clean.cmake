@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/../3D-RT.dir/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3DRT.cpp.o"
+  "CMakeFiles/../3D-RT.dir/home/frederik/Dropbox/Astro/3D-RT/3D-RT_merged/src/3D-RT.cpp.o"
   "../3D-RT.pdb"
   "../3D-RT"
 )

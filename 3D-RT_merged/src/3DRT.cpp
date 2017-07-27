@@ -22,20 +22,25 @@
 #include <iostream>
 using namespace std;
 
+
 #include "definitions.hpp"
 #include "species_tools.cpp"
 #include "data_tools.cpp"
 
 #include "read_input.cpp"
 #include "read_chemdata.cpp"
+#include "read_linedata.cpp"
+
 #include "create_healpixvectors.cpp"
 #include "setup_data_structures.cpp"
 #include "ray_tracing.cpp"
-#include "read_linedata.cpp"
+#include "reaction_rates.cpp"
+#include "abundance.cpp"
 #include "calc_C_coeff.cpp"
 #include "level_populations.cpp"
 #include "column_density_calculator.cpp"
 #include "UV_field_calculator.cpp"
+
 #include "write_output.cpp"
 
 
@@ -137,11 +142,18 @@ int main()
   printf("(3D-RT): reading chemistry input \n");
 
   
-  /* Read the species and their abundances */
+  /* Read the species (and their initial abundances) */
 
   void read_species(string spec_datafile);
 
   read_species(spec_datafile);
+
+
+  /* Read the reactions */
+
+  void read_reactions(string reac_datafile, REACTIONS *reaction);
+
+  read_reactions(reac_datafile, reaction);
 
 
   printf("(3D-RT): chemistry input read \n\n");
@@ -462,10 +474,24 @@ int main()
 
   double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
 
+  double temperature_gas = 1.0;
+
+  double temperature_dust = 0.1;
+
+  double gas2dust = 100.0;
+
+  double v_turb=1.0E-4;                                            /* turbulent speed of the gas */
+
+
 
   metallicity = 1.0;
 
   double UV_field[NGRID*NRAYS];
+
+  double column_H2[NRAYS];
+  double column_HD[NRAYS];
+  double column_CI[NRAYS];
+  double column_CO[NRAYS];
 
 
 
@@ -503,6 +529,42 @@ int main()
   void UV_field_calculator(double *G_external, double *UV_field, double *rad_surface);
 
   UV_field_calculator(G_external, UV_field, rad_surface);
+
+
+
+  /* Calculate the reaction k coefficients from the reaction data */
+
+  void reaction_rates( REACTIONS *reaction, double temperature_gas, double temperature_dust,
+                       double metallicity, double gas2dust, double *rad_surface, double *AV,
+                       double *column_H2, double *column_HD, double *column_CI, double *column_CO,
+                       double v_turb );
+
+  reaction_rates( reaction, temperature_gas, temperature_dust, metallicity, gas2dust,
+                  rad_surface, AV, column_H2, column_HD, column_CI, column_CO, v_turb );
+
+
+
+
+  for (n=0; n<ngrid; n++){
+
+    for (spec=0; spec<nspec; spec++){
+
+      if ( (species[spec].sym == "H2")  ||  (species[spec].sym == "H")
+           ||  (species[spec].sym == "He") ||  (species[spec].sym == "e-") ){
+
+        species[spec].abn[n] = species[spec].abn[n];
+      }
+
+      else {
+
+        species[spec].abn[n] = species[spec].abn[n] * metallicity;
+      }
+    }
+  }
+
+  void abundance();
+
+  abundance();
 
 
 
