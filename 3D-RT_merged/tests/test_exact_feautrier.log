@@ -1,0 +1,138 @@
+Log for test_exact_feautrier
+++++++++++++++++++++++++++++
+                            
+                
+Setup for 3D-RT 
+--------------- 
+
+(setup): reading the parameters.txt file 
+(setup): parameters.txt file read 
+
+(setup): extracting parameters from line data 
+(setup): grid file      : input/grid_1D_regular.txt
+(setup): species file   : data/species_reduced.d
+(setup): line file      : data/12c.dat
+(setup): reactions file : data/rates_reduced.d
+(setup): ngrid          : 101
+(setup): nsides         : 4
+(setup): nlspec         : 1
+(setup): nspec          : 33
+(setup): parameters from line data extracted 
+
+(setup): setting up definitions.hpp 
+(setup): definitions.hpp are set up 
+
+(setup): done, 3D-RT can now be compiled 
+
+(ray_tracing): number of grid points               101
+(ray_tracing): number of HEALPix sides               4
+(ray_tracing): number of HEALPix rays              192
+(ray_tracing): critical angle theta_crit          1.00
+(ray_tracing): equivalent ray distance        3.00E-02
+(ray_tracing): time in dividing evaluation points 1501076107.911823 sec
+(ray_tracing): time in making the key             3002152215.779850 sec
+(ray_tracing): time in heapsort routine           0.008615 sec
+(ray_tracing): succes rate 0.78(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+0.000000E+00
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+-NAN
+===============================================================================
+All tests passed (1 assertion in 1 test case)
+

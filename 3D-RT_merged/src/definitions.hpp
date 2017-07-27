@@ -24,7 +24,7 @@
 
 #define LINE_DATAFILE  "data/12c.dat" 
 
-#define NGRID 15 
+#define NGRID 101 
 
 #define NSIDES 4 
 

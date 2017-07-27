@@ -29,6 +29,9 @@ using namespace std;
 #include "../src/exact_feautrier.cpp"
 
 
+#define EPS 1.0E-19
+
+
 
 TEST_CASE("Feautrier solver on 14 depth points"){
 
@@ -42,7 +45,7 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
   double theta_crit=1.0;           /* critical angle to include a grid point as evaluation point */
  
-  double ray_separation2=0.00;    /* rays closer than the sqrt of this are considered equivalent */
+  double ray_separation2=0.03;    /* rays closer than the sqrt of this are considered equivalent */
 
   double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
 
@@ -120,27 +123,44 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
 
 
+  /* Read the test data (source and optical depth increments) */
+
+  char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
+
+  string testdata = "test_data/intens_1.dat";
+
   long ndep=NGRID-1;
 
   double S[ndep];
 
   double dtau[ndep];
 
-    dtau[0] = 1.0E-1;
-    S[0]    = 1.0E-1;
+  double P_test[ndep];
+
+  int ind;
 
 
-  for (int n3=1; n3<ndep; n3++){
+  /* Read input file */
 
-    dtau[n3] = 1.0E-1;
-    S[n3]    = S[n3-1] + dtau[n3];
+  FILE *data = fopen(testdata.c_str(), "r");
+
+
+  for (int n=0; n<ndep; n++){
+
+    fgets( buffer, BUFFER_SIZE, data );
+
+    sscanf( buffer, "%lf\t%lf\t%lf",
+            &(S[n]), &(dtau[n]), &(P_test[n]) );
   }
 
 
+  fclose(data);
+
+
+  /* Define and initialize the resulting P_intensity array */
+
   double P_intensity[NGRID*NRAYS];                       /* Feautrier's mean intensity for a ray */
 
-
-  /* Initialization */
 
   for (long n1=0; n1<NGRID; n1++){
 
@@ -163,42 +183,62 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
 
 
-  SECTION("Compare with analytic result"){
-
-    for (int n=0; n<ndep; n++){
-
-    long  etot1 = raytot[RINDEX(n, ar1)];
-    long  etot2 = raytot[RINDEX(n, r1)];
-
-    printf("%lE\n", exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1));
+  SECTION("Compare with fortran results in /test_data"){
 
 
-      // REQUIRE( fabs( exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)
-      //                - exp() ) < 1.0E-9 );
-    }
-
-
-    /* Write the result */
-
-    FILE *result = fopen("../output/result.txt", "w");
-
-    if (result == NULL){
-
-      printf("Error opening file!\n");
-      exit(1);
-    }
-
+    /* Check the directly returned values */
 
     for (int n=0; n<ndep; n++){
 
       long  etot1 = raytot[RINDEX(n, ar1)];
       long  etot2 = raytot[RINDEX(n, r1)];
 
-      fprintf( result, "%lE\n",
-               exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1) );
+      printf( "%lE\n", exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)
+                       /P_test[n] );
+
+      CHECK( exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)
+             == Approx(P_test[n]).epsilon(EPS) );
+
     }
 
-    fclose(result);
+
+    long etot1 = raytot[RINDEX(2, ar1)];
+    long etot2 = raytot[RINDEX(2, r1)];
+
+    exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,2,r1,ar1);
+
+
+    for (int n=0; n<etot1; n++){
+
+      printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,ar1)]);
+    }
+    for (int n=0; n<etot2; n++){
+
+      printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,r1)]);
+    }
+
+
+    // /* Write the result */
+
+    // FILE *result = fopen("../output/result.txt", "w");
+
+    // if (result == NULL){
+
+    //   printf("Error opening file!\n");
+    //   exit(1);
+    // }
+
+
+    // for (int n=0; n<ndep; n++){
+
+    //   long  etot1 = raytot[RINDEX(n, ar1)];
+    //   long  etot2 = raytot[RINDEX(n, r1)];
+
+    //   fprintf( result, "%lE\n",
+    //            exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1) );
+    // }
+
+    // fclose(result);
 
 
     CHECK( 1==1 );

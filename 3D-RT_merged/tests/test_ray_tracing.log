@@ -1,33 +1,1866 @@
 Log for test_ray_tracing
 ++++++++++++++++++++++++
                         
-(ray_tracing): number of grid points               150
+                
+Setup for 3D-RT 
+--------------- 
+
+(setup): reading the parameters.txt file 
+(setup): parameters.txt file read 
+
+(setup): extracting parameters from line data 
+(setup): grid file      : input/grid_1D_regular.txt
+(setup): species file   : data/species_reduced.d
+(setup): line file      : data/12c.dat
+(setup): reactions file : data/rates_reduced.d
+(setup): ngrid          : 250
+(setup): nsides         : 4
+(setup): nlspec         : 1
+(setup): nspec          : 33
+(setup): parameters from line data extracted 
+
+(setup): setting up definitions.hpp 
+(setup): definitions.hpp are set up 
+
+(setup): done, 3D-RT can now be compiled 
+
+(ray_tracing): number of grid points               250
 (ray_tracing): number of HEALPix sides               4
 (ray_tracing): number of HEALPix rays              192
 (ray_tracing): critical angle theta_crit          1.00
 (ray_tracing): equivalent ray distance        0.00E+00
-(ray_tracing): time in dividing evaluation points 0.036924 sec
-(ray_tracing): time in making the key             0.001348 sec
-(ray_tracing): time in heapsort routine           0.028377 sec
-(ray_tracing): succes rate 0.86(# eval. points)/ ((# grid points)^2 - (# grid points)) 
-(ray_tracing): number of grid points               150
-(ray_tracing): number of HEALPix sides               4
-(ray_tracing): number of HEALPix rays              192
-(ray_tracing): critical angle theta_crit          1.00
-(ray_tracing): equivalent ray distance        0.00E+00
-(ray_tracing): time in dividing evaluation points 0.058547 sec
-(ray_tracing): time in making the key             0.001351 sec
-(ray_tracing): time in heapsort routine           0.019458 sec
-(ray_tracing): succes rate 0.47(# eval. points)/ ((# grid points)^2 - (# grid points)) 
-(ray_tracing): number of grid points               150
-(ray_tracing): number of HEALPix sides               4
-(ray_tracing): number of HEALPix rays              192
-(ray_tracing): critical angle theta_crit          1.00
-(ray_tracing): equivalent ray distance        0.00E+00
-(ray_tracing): time in dividing evaluation points -1499786643.662149 sec
-(ray_tracing): time in making the key             1499786643.739243 sec
-(ray_tracing): time in heapsort routine           2999573287.477455 sec
-(ray_tracing): succes rate 0.78(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+(ray_tracing): time in dividing evaluation points 0.103245 sec
+(ray_tracing): time in making the key             1501076102.228560 sec
+(ray_tracing): time in heapsort routine           -1501076102.155045 sec
+(ray_tracing): succes rate 0.37(# eval. points)/ ((# grid points)^2 - (# grid points)) 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test_ray_tracing is a Catch v1.9.5 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+1D regular grid
+  Ordering tests
+-------------------------------------------------------------------------------
+test_ray_tracing.cpp:131
+...............................................................................
+
+test_ray_tracing.cpp:155: FAILED:
+  CHECK( evalpoint[( (n2) + (n1)*250 )].onray == true )
+with expansion:
+  false == true
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 0.6840599681 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999977658 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.0000017134 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 5.000005661 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 6.0000017695 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 7.0000004792 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 8.0000044268 ) == 6.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 9.0000083744 ) == 7.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 9.9999992449 ) == 8.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 11.0000031926 ) == 9.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 12.0000055688 ) == 10.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 13.0000001059 ) == 11.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 14.0000024821 ) == 12.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 15.0000048584 ) == 13.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 16.0000072346 ) == 14.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 17.0000017717 ) == 15.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 18.0000041479 ) == 16.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 19.0000033885 ) == 17.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 20.000003413 ) == 18.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 21.0000034375 ) == 19.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 22.000003462 ) == 20.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 23.0000034865 ) == 21.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 24.000003511 ) == 22.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 25.0000035355 ) == 23.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 26.00000356 ) == 24.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 27.0000035845 ) == 25.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 28.000003609 ) == 26.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 29.0000036334 ) == 27.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 30.0000036579 ) == 28.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 31.0000036824 ) == 29.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999452679 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999452679 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999693006 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999693006 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000637564 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000637564 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000476923 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000060423 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999377752 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000060423 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000476923 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 6.0000765899 ) == 6.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999377752 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999452679 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999452679 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 6.0000765899 ) == 6.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000637564 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999565699 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000637564 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999693006 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999693006 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999565699 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999344418 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999452679 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999325372 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999452679 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999325372 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999325372 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999325372 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999292039 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999419346 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999565699 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999693006 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999693006 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999565699 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999419346 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999292039 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999187279 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000510257 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999314586 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999441893 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999588247 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 0.9999715554 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000405497 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999599032 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999471725 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 0.9999715554 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999588247 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999441893 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999314586 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999187279 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000405497 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 6.0000870658 ) == 6.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 6.0000870658 ) == 6.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999221589 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999094282 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999000308 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9998873001 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 0.9999348896 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999221589 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999127615 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999000308 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 0.9999348896 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999221589 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.9999221589 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999094282 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.9999127615 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999000308 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.9999000308 ) == 4.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9998873001 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.0000689943 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 4.9999396798 ) == 5.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 1.000065661 ) == 1.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000529303 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000401996 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 2.0000562636 ) == 2.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
+test_ray_tracing.cpp:170: FAILED:
+  CHECK( Approx(evalpoint[( (key[ ( ((e) + cum_raytot[( ((r)) + ((n))*12*4*4 )]) + ((n))*250 ) ]) + (n)*250 )].Z).epsilon(1.0E-5) == (1.0 + e) )
+with expansion:
+  Approx( 3.0000435329 ) == 3.0
+
 ===============================================================================
-All tests passed (67050 assertions in 1 test case)
+test cases:      1 |      0 passed |   1 failed
+assertions: 186748 | 186385 passed | 363 failed
 

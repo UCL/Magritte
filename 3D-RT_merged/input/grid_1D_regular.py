@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import sys
 
 
 
@@ -18,8 +19,10 @@ def randrange(n, vmin, vmax):
     return (vmax - vmin)*np.random.rand(n) + vmin
 
 
+# Get the desired number of gridpoints form the argument
 
-ngrid = 15 #int(input("How many grid points?"))
+ngrid = int(sys.argv[1])
+
 
 np.random.seed(9001)
 

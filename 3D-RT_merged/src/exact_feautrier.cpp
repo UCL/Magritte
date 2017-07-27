@@ -55,9 +55,9 @@ double exact_feautrier( long ndep, double *S, double *dtau, long etot1, long eto
   double *D;                                                                  /* helper variable */
   D = (double*) malloc( ndep*sizeof(double) );
 
-  double IBC = 0.0;                                            /* boundary conditions */
+  double IBC = 4.4718814518123E-19;                                       /* boundary conditions */
 
-  double bet;
+  double bet;                                                              /* temporary variable */
 
   double J;                                   /* mean intensity at gridpoint under consideration */
 
@@ -127,7 +127,7 @@ double exact_feautrier( long ndep, double *S, double *dtau, long etot1, long eto
 
   /* Back substitution */
 
-  for (n=ndep-2; n>=0; n--){
+  for (n=ndep-2; n>0; n--){
 
     P[n] = P[n] - D[n+1]*P[n+1];
   }
