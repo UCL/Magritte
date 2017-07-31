@@ -77,7 +77,7 @@ void read_species(string specdatafile){
 /* read_reactions: read the reactoins from the (CSV) data file                                                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_reactions(string reacdatafile, REACTIONS *reaction){
+void read_reactions(string reacdatafile){
 
 
   char *buffer;                                                     /* buffer for a line of data */

@@ -23,7 +23,7 @@ double n_H = 1.0;
 
  double loss, form; 
 
-  x_e = Ith(y,0+1)+Ith(y,1+1)+Ith(y,3+1)+Ith(y,4+1)+Ith(y,6+1)+Ith(y,7+1)+Ith(y,8+1)+Ith(y,9+1)+Ith(y,10+1)+Ith(y,12+1)+Ith(y,13+1)+Ith(y,14+1)+Ith(y,15+1)+Ith(y,18+1)+Ith(y,19+1)+Ith(y,22+1)+Ith(y,23+1)+Ith(y,26+1);
+ printf("YES!!!");  x_e = Ith(y,0+1)+Ith(y,1+1)+Ith(y,3+1)+Ith(y,4+1)+Ith(y,6+1)+Ith(y,7+1)+Ith(y,8+1)+Ith(y,9+1)+Ith(y,10+1)+Ith(y,12+1)+Ith(y,13+1)+Ith(y,14+1)+Ith(y,15+1)+Ith(y,18+1)+Ith(y,19+1)+Ith(y,22+1)+Ith(y,23+1)+Ith(y,26+1);
 
   /* The ODEs created by MakeRates begin here... */
   loss = -reaction[67].k*Ith(y,24+1)*n_H-reaction[68].k*Ith(y,20+1)*n_H-reaction[69].k*Ith(y,16+1)*n_H-reaction[70].k*Ith(y,21+1)*n_H-reaction[71].k*Ith(y,29+1)*n_H-reaction[72].k*Ith(y,11+1)*n_H-reaction[73].k*Ith(y,28+1)*n_H-reaction[74].k*Ith(y,17+1)*n_H-reaction[75].k*Ith(y,2+1)*n_H-reaction[76].k*Ith(y,27+1)*n_H-reaction[216].k*x_e*n_H-reaction[217].k*x_e*n_H-reaction[266].k-reaction[267].k;

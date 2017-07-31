@@ -1,0 +1,42 @@
+/* Frederik De Ceuster - University College London                                               */
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+/*                                                                                               */
+/* jacobian: Calculates the Jacobian of the rate equations                                       */
+/*                                                                                               */
+/* ( based on calculate_abundances in 3D-PDR                                                     */
+/*   and the cvRobers_dns example that comes with Sundials )                                     */
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+
+/*
+ * Jacobian routine. Compute J(t,y) = df/dy.
+ */
+
+
+/* User-defined vector and matrix accessor macros: Ith, IJth */
+
+/* These macros are defined in order to write code which exactly matches
+   the mathematical problem description given above.
+
+   Ith(v,i) references the ith component of the vector v, where i is in
+   the range [1..NEQ] and NEQ is defined below. The Ith macro is defined
+   using the N_VIth macro in nvector.h. N_VIth numbers the components of
+   a vector starting from 0.
+
+   IJth(A,i,j) references the (i,j)th element of the dense matrix A, where
+   i and j are in the range [1..NEQ]. The IJth macro is defined using the
+   DENSE_ELEM macro in dense.h. DENSE_ELEM numbers rows and columns of a
+   dense matrix starting from 0. */
+
+#define Ith(v,i)    NV_Ith_S(v,i-1)       /* Ith numbers components 1..NEQ */
+#define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1) /* IJth numbers rows,cols 1..NEQ */
+
+
+
+static int Jac( long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J, void *user_data,
+                N_Vector tmp1, N_Vector tmp2, N_Vector tmp3 )
+{

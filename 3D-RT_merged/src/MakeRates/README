@@ -1,5 +1,5 @@
 Run the Python script in the command line:
 
-python MakeRates.py reactionFile=../../data/rates_reduced.d speciesFile=../../data/species_reduced.d outputPrefix=1 sortSpecies=False logForm=False fileFormat=Rate95 codeFormat=C
+python make_rates.py reactionFile=../../data/rates_reduced.d speciesFile=../../data/species_reduced.d outputPrefix=1 sortSpecies=False logForm=False fileFormat=Rate95 codeFormat=C
 
 Note: the GUI does not work properly so it is disabled.

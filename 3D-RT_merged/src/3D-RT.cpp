@@ -148,9 +148,9 @@ int main()
 
   /* Read the reactions */
 
-  void read_reactions(string reac_datafile, REACTIONS *reaction);
+  void read_reactions(string reac_datafile);
 
-  read_reactions(reac_datafile, reaction);
+  read_reactions(reac_datafile);
 
 
   printf("(3D-RT): chemistry input read \n\n");
@@ -539,6 +539,9 @@ int main()
 
 
 
+  void abundance();
+
+  abundance();
 
 
   printf("(3D-RT): done \n\n");

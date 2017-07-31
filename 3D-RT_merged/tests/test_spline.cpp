@@ -20,7 +20,7 @@
 #include "../src/spline.cpp"
 
 
-#define EPS 1.0E-3                                    /* fractional error allowed in computation */
+#define EPS 1.0E-3                                               /* error allowed in computation */
 
 
 
@@ -52,7 +52,7 @@ double f_test(double x)
 
 
 
-/* Test spline interp[olations                                                                   */
+/* Test spline interpolations                                                                    */
 /*-----------------------------------------------------------------------------------------------*/
 
 TEST_CASE("Spline interpolations"){

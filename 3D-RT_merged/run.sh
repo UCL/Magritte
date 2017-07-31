@@ -20,6 +20,12 @@ g++ -o setup src/setup.cpp
 ./setup
 
 
+# Setup species and rates
+
+cd src/MakeRates
+python make_rates.py reactionFile=../../data/rates_reduced.d speciesFile=../../data/species_reduced.d outputPrefix=1 sortSpecies=False logForm=False fileFormat=Rate95 codeFormat=C
+cd ../..
+
 # Compile and make an executable
 
 cd CMake

@@ -32,7 +32,7 @@
 void abundance()
 {
 
-  long gridp;
+  long gridp =1;
 
   printf(" --- Abundance --- \n");
 

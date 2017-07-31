@@ -20,6 +20,7 @@ using namespace std;
 #include "catch.hpp"
 
 #include "../src/definitions.hpp"
+#include "../src/data_tools.cpp"
 #include "../src/read_chemdata.cpp"
 #include "../src/reaction_rates.cpp"
 
@@ -36,56 +37,17 @@ using namespace std;
 TEST_CASE("Test rate_calculations_radfield functions"){
 
 
-  /* Set up the problem */
-
-  ngrid = 10;
-
   int n, spec, reac, ray;                                                               /* index */
 
 
-  /* Specify the file containing the species */
+  void read_species(string spec_datafile);
 
-  std::string specdatafile = "../data/species_reduced.d"; /* path to data file containing the species */
-
-
-  /* Specify the file containing the reactions */
-
-  std::string reacdatafile = "../data/rates_reduced.d"; /* path to data file containing the reactions */
+  read_species(spec_datafile);
 
 
-  /* Get the number of species from the species data file */
+  void read_reactions(string reac_datafile);
 
-  nspec = get_nspec(specdatafile);
-  printf("(read_chemdata): number of species   %*d\n", MAX_WIDTH, nspec);
-
-
-  /* Get the number of reactions from the reactions data file */
-
-  nreac = get_nreac(reacdatafile);
-  printf("(read_chemdata): number of reactions %*d\n", MAX_WIDTH, nreac);
-
-
-  /* Declare the species and reactions */
-
-  // SPECIES species[nspec];     /* species has a symbol (.sym), mass (.mass), and abundance (.abn) */
-
-  species = (SPECIES*) malloc( nspec*sizeof(SPECIES) );
-
-
-  REACTIONS reaction[nreac];         /* reaction has reactants (.R1, .R2, .R3), reaction products \
-                                (.P1, .P2, .P3, .P4), alpha (.alpha), beta (.beta), gamma (.gamma)\
-                                minimal temperature (.RT_min) and maximal temperature (RT_max) */
-
-
-
-  void read_species(string specdatafile);
-
-  read_species(specdatafile);
-
-
-  void read_reactions(string reacdatafile, REACTIONS *reaction);
-
-  read_reactions(reacdatafile, reaction);
+  read_reactions(reac_datafile);
 
 
 
