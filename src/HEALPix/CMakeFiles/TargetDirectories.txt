@@ -1,0 +1,3 @@
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/CMakeFiles/edit_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/CMakeFiles/rebuild_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/CMakeFiles/HEALPix_library.dir

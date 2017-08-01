@@ -1,1 +1,0 @@
-/usr/bin/c++      CMakeFiles/../main.dir/home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/main.cpp.o  -o ../main -rdynamic /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/lib/libsundials_cvode.a /home/frederik/Dropbox/Astro/3D-RT/chemistry_cpp/src/sundials/lib/libsundials_nvecserial.a -lm -lrt 

@@ -1,7 +1,0 @@
-# CMake creates the make file
-# Type: ccmake .
-# Specify the right paths
-# Type: make
-# Now there should be an executable in the parent folder
-
-# NOTE: Every time the input files are changed, the executable should be made again

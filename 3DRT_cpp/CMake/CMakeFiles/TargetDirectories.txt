@@ -1,3 +1,0 @@
-/home/frederik/Dropbox/Astro/3D-RT/3DRT_cpp/CMake/CMakeFiles/rebuild_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/3DRT_cpp/CMake/CMakeFiles/edit_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/3DRT_cpp/CMake/CMakeFiles/../3D-RT.dir

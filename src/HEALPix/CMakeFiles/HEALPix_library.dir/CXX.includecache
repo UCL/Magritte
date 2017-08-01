@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/ang2pix_nest.cpp
+math.h
+-
+stdio.h
+-
+stdlib.h
+-
+chealpix.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/chealpix.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/chealpix.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/pix2vec_nest.cpp
+math.h
+-
+stdio.h
+-
+stdlib.h
+-
+chealpix.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/chealpix.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/vec2ang.cpp
+math.h
+-
+stdio.h
+-
+stdlib.h
+-
+chealpix.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/chealpix.hpp
+

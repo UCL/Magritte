@@ -1,0 +1,31 @@
+/* Frederik De Ceuster - University College London                                               */
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+/*                                                                                               */
+/* rate_equations: defines the (chemical) rate equations                                         */
+/*                                                                                               */
+/* ( based on odes in 3D-PDR                                                                     */
+/*   and the cvRobers_dns example that comes with Sundials )                                     */
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+/*                                                                                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+#include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts. */
+#include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
+#include <cvode/cvode_dense.h>       /* prototype for CVDense */
+#include <sundials/sundials_dense.h> /* definitions DlsMat DENSE_ELEM */
+#include <sundials/sundials_types.h> /* definition of type realtype */
+
+#include "../declarations.hpp"
+
+
+
+/*
+ * f routine. Compute function f(t,y) in dy = f(t,y).
+ */
+
+static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
+{

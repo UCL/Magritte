@@ -1,0 +1,30 @@
+# Specify path to SUNDIALS header files
+SET( SUNDIALS_INC_DIR
+  /home/frederik/Dropbox/Astro/3D-RT/src/sundials/include
+  CACHE STRING "Location of SUNDIALS header files" )
+
+
+# Set search path for SUNDIALS libraries
+SET( SUNDIALS_LIB_DIR
+  /home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib )
+
+
+# Find the SUNDIALS solver's library
+FIND_LIBRARY( SUNDIALS_SOLVER_LIB
+  sundials_cvode ${SUNDIALS_LIB_DIR}
+  DOC "CVODE library" )
+
+
+# Find the NVECTOR library
+FIND_LIBRARY( SUNDIALS_NVEC_LIB
+  sundials_nvecserial ${SUNDIALS_LIB_DIR}
+  DOC "NVECTOR library" )
+
+
+# Set additional libraries
+SET( SUNDIALS_EXTRA_LIB
+  -lm /usr/lib/x86_64-linux-gnu/librt.so
+  CACHE STRING "Additional libraries")
+
+# List of all libraries
+SET(ALL_LIBS ${3DRT_library} ${HEALPix_library} ${SUNDIALS_SOLVER_LIB} ${SUNDIALS_NVEC_LIB} ${SUNDIALS_EXTRA_LIB} )
