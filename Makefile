@@ -124,43 +124,43 @@ depend:
 .PHONY : 3D-RT/fast
 
 #=============================================================================
-# Target rules for targets named 3DRT_library
+# Target rules for targets named _3DRT
 
 # Build rule for target.
-3DRT_library: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 3DRT_library
-.PHONY : 3DRT_library
+_3DRT: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _3DRT
+.PHONY : _3DRT
 
 # fast build rule for target.
-3DRT_library/fast:
-	$(MAKE) -f src/CMakeFiles/3DRT_library.dir/build.make src/CMakeFiles/3DRT_library.dir/build
-.PHONY : 3DRT_library/fast
+_3DRT/fast:
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/build
+.PHONY : _3DRT/fast
 
 #=============================================================================
-# Target rules for targets named HEALPix_library
+# Target rules for targets named _HEALPix
 
 # Build rule for target.
-HEALPix_library: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 HEALPix_library
-.PHONY : HEALPix_library
+_HEALPix: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _HEALPix
+.PHONY : _HEALPix
 
 # fast build rule for target.
-HEALPix_library/fast:
-	$(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/build
-.PHONY : HEALPix_library/fast
+_HEALPix/fast:
+	$(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/build
+.PHONY : _HEALPix/fast
 
 #=============================================================================
-# Target rules for targets named sundials_library
+# Target rules for targets named _sundials
 
 # Build rule for target.
-sundials_library: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 sundials_library
-.PHONY : sundials_library
+_sundials: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _sundials
+.PHONY : _sundials
 
 # fast build rule for target.
-sundials_library/fast:
-	$(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/build
-.PHONY : sundials_library/fast
+_sundials/fast:
+	$(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/build
+.PHONY : _sundials/fast
 
 src/3D-RT.o: src/3D-RT.cpp.o
 
@@ -198,9 +198,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... 3D-RT"
-	@echo "... 3DRT_library"
-	@echo "... HEALPix_library"
-	@echo "... sundials_library"
+	@echo "... _3DRT"
+	@echo "... _HEALPix"
+	@echo "... _sundials"
 	@echo "... src/3D-RT.o"
 	@echo "... src/3D-RT.i"
 	@echo "... src/3D-RT.s"

@@ -1,0 +1,1 @@
+/usr/bin/c++    -fopenmp    CMakeFiles/setup.dir/src/setup.cpp.o  -o setup -rdynamic 

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsundials_library.a  CMakeFiles/sundials_library.dir/rate_equation_solver.cpp.o CMakeFiles/sundials_library.dir/rate_equations.cpp.o CMakeFiles/sundials_library.dir/jacobian.cpp.o
-/usr/bin/ranlib libsundials_library.a

@@ -47,15 +47,15 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
   long e1, e2;                                                         /* evaluation point index */
   long etot1, etot2;                            /* total number of evaluation points along a ray */
   long ndep;           /* number of depth points along a pair of antipodal rays (=etot1+etot2-2) */
-  long ndepav=0;                       /* average number of depth points used in exact_feautrier */
-  long nav=0;                                     /* number of times ecact_feautrier is executed */
+  long ndepav = 0;                     /* average number of depth points used in exact_feautrier */
+  long nav = 0;                                   /* number of times ecact_feautrier is executed */
 
   long nshortcuts;                                      /* number of times the shortcut is taken */
   long nno_shortcuts;                               /* number of times the shortcut is not taken */
 
-  int niterations=0;                                                     /* number of iterations */
+  int niterations = 0;                                                   /* number of iterations */
 
-  bool not_converged=true;         /* is true when the level population have not converged (yet) */
+  bool populations_not_converged = true;   /* true when level population are not converged (yet) */
 
   double dpoprel;                          /* relative change in the level population (dpop/pop) */
 
@@ -101,9 +101,9 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
   /* Iterate until the level populations converge */
 
-  while( not_converged ){
+  while( populations_not_converged ){
 
-    not_converged = false;
+    populations_not_converged = false;
 
     niterations = niterations + 1;
 
@@ -271,7 +271,7 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
 
           if (dpoprel > POP_PREC){
 
-            not_converged = true;
+            populations_not_converged = true;
 
              // printf("(level_populations): dpop/pop is %.2lE for grid point %ld \n", dpoprel, n3);
 
@@ -286,7 +286,8 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
     /* Limit the number of iterations */
 
     if (niterations >= MAX_NITERATIONS){
-      not_converged = false;
+      
+      populations_not_converged = false;
     }
 
   } /* end of while loop of iterations */

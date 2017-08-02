@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/setup.dir/setup.cpp.o  -o setup -rdynamic lib_setup.a 

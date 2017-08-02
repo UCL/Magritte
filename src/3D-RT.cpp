@@ -51,18 +51,26 @@ using namespace std;
 int main()
 {
 
-  long   n, n1, n2, r, kr;                                                              /* index */
+  long   n     = 0;                                                          /* grid point index */
+  long   n1    = 0;                                                          /* grid point index */
+  long   n2    = 0;                                                          /* grid point index */
+  long   r     = 0;                                                                 /* ray index */
 
-  int    spec;                                                      /* index of chemical species */
+  int    i     = 0;                                                    /* population level index */
+  int    j     = 0;                                                    /* population level index */
+  int    kr    = 0;                                             /* index of radiative transition */
+  int    spec  = 0;                                                 /* index of chemical species */
+  int    lspec = 0;                                                     /* index of line species */
+  int    par   = 0;                                                /* index of collision partner */
 
-  double theta_crit=1.0;           /* critical angle to include a grid point as evaluation point */
+  double theta_crit = 1.0;         /* critical angle to include a grid point as evaluation point */
 
-  double ray_separation2=0.00;    /* rays closer than the sqrt of this are considered equivalent */
+  double ray_separation2 = 0.00;  /* rays closer than the sqrt of this are considered equivalent */
 
   bool   sobolev=false;               /* Use the Sobolev (large velocity gradient approximation) */
 
-  double time_rt=0.0;                                                     /* time in ray_tracing */
-  double time_lp=0.0;                                               /* time in level_populations */
+  double time_rt = 0.0;                                                   /* time in ray_tracing */
+  double time_lp = 0.0;                                /* time for level_populations to converge */
 
 
 
@@ -70,6 +78,7 @@ int main()
   printf("3D-RT : 3D Radiative Transfer \n");
   printf("----------------------------- \n");
   printf("                              \n");
+
 
 
 
@@ -121,8 +130,6 @@ int main()
 
   /* Read input file */
 
-  void read_input(string grid_inputfile, GRIDPOINT *gridpoint );
-
   read_input(grid_inputfile, gridpoint);
 
 
@@ -144,14 +151,10 @@ int main()
 
   /* Read the species (and their initial abundances) */
 
-  void read_species(string spec_datafile);
-
   read_species(spec_datafile);
 
 
   /* Read the reactions */
-
-  void read_reactions(string reac_datafile);
 
   read_reactions(reac_datafile);
 
@@ -179,8 +182,6 @@ int main()
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  void create_healpixvectors(double *unit_healpixvector, long *antipod);
-
   create_healpixvectors(unit_healpixvector, antipod);
 
 
@@ -202,14 +203,12 @@ int main()
 
   /* Execute ray_tracing */
 
-  void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpixvector,
-                    GRIDPOINT *gridpoint, EVALPOINT *evalpoint);
-
   time_rt -= omp_get_wtime();
 
   ray_tracing( theta_crit, ray_separation2, unit_healpixvector, gridpoint, evalpoint);
 
   time_rt += omp_get_wtime();
+
 
   printf("\n(3D-RT): time in ray_tracing: %lf sec \n", time_rt);
 
@@ -223,11 +222,7 @@ int main()
 
 
 
-
-
-
-
-  /* --- CHEMISTRY --- */
+  /*   CHEMISTRY ITERATIONS   */
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
@@ -241,6 +236,13 @@ int main()
 
     temperature[n] = 10.0; // 10.0*(100.0 + n/NGRID);
   }
+
+
+
+
+
+
+
 
   /*----------------*/
 
@@ -256,25 +258,7 @@ int main()
 
 
 
-  /* Read data files */
-
-  line_datafile[0] = LINE_DATAFILE;
-  // line_datafile[0] = "data/12c+.dat";
-  // line_datafile[0] = "data/12co.dat";
-  // line_datafile[0] = "data/16o.dat";
-
-
-  /* Define and allocate memory for the data */
-
-  int i,j;                                                                      /* level indices */
-
-  int par1, par2, par3;                                         /* index for a collision partner */
-
-  int lspec;                                    /* index of the line species under consideration */
-
-
-
-  /* Declare line related variables */
+  /* Define line related variables */
 
   int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
 
@@ -302,17 +286,17 @@ int main()
 
   /* Define the collision related variables */
 
-  double coltemp[TOT_CUM_TOT_NCOLTEMP];              /* Collision temperatures for each partner */
-                                                                  /*[NLSPEC][ncolpar][ncoltemp] */
+  double coltemp[TOT_CUM_TOT_NCOLTEMP];               /* Collision temperatures for each partner */
+                                                                   /*[NLSPEC][ncolpar][ncoltemp] */
 
-  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];          /* C_data for each partner, tran. and temp. */
-                                                       /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
+  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];           /* C_data for each partner, tran. and temp. */
+                                                        /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
 
-  int icol[TOT_CUM_TOT_NCOLTRAN];    /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                 /* [NLSPEC][ncolpar][ncoltran] */
+  int icol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
+                                                                  /* [NLSPEC][ncolpar][ncoltran] */
 
-  int jcol[TOT_CUM_TOT_NCOLTRAN];    /* level index corresp. to col. transition [0..ncoltran-1] */
-
+  int jcol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
+                                                                  /* [NLSPEC][ncolpar][ncoltran] */
 
 
   /* Initializing data */
@@ -350,11 +334,11 @@ int main()
 
   /* Initialize */
 
-  for(int ind=0; ind<TOT_NCOLPAR; ind++){
+  for(par=0; par<TOT_NCOLPAR; par++){
 
-    spec_par[ind] = 0;
+    spec_par[par] = 0;
 
-    ortho_para[ind] = 'i';
+    ortho_para[par] = 'i';
   }
 
 
@@ -410,7 +394,7 @@ int main()
 
   /* Declare and initialize P_intensity for each ray through a grid point */
 
-  double P_intensity[NGRID*NRAYS];                                   /* Feautrier's mean intensity for a ray */
+  double P_intensity[NGRID*NRAYS];                       /* Feautrier's mean intensity for a ray */
 
 
   for (n1=0; n1<NGRID; n1++){
@@ -542,9 +526,6 @@ int main()
 
 
 
-  void abundance();
-
-  abundance();
 
 
   printf("(3D-RT): done \n\n");

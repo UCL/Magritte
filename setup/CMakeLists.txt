@@ -1,0 +1,18 @@
+# CMakeLists.txt for 3D-RT setup
+# ------------------------------
+
+
+
+# Create setup library
+
+add_library( _setup   setup_tools.cpp ../src/setup_data_structures.cpp ../src/data_tools.cpp )
+
+
+# Create executable for setup
+
+add_executable( setup   setup.cpp )
+
+
+# Link the setup library to the executable
+
+target_link_libraries( setup   _setup )

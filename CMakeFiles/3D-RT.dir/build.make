@@ -90,9 +90,9 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o.provides.build: CMakeFiles/3D-RT.dir/src/3D
 
 3D-RT: CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o
 3D-RT: CMakeFiles/3D-RT.dir/build.make
-3D-RT: src/lib3DRT_library.a
-3D-RT: src/HEALPix/libHEALPix_library.a
-3D-RT: src/sundials/libsundials_library.a
+3D-RT: src/lib_3DRT.a
+3D-RT: src/HEALPix/lib_HEALPix.a
+3D-RT: src/sundials/lib_sundials.a
 3D-RT: src/sundials/lib/libsundials_cvode.a
 3D-RT: src/sundials/lib/libsundials_nvecserial.a
 3D-RT: /usr/lib/x86_64-linux-gnu/librt.so

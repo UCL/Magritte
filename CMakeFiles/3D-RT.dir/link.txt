@@ -1,1 +1,1 @@
-/usr/bin/c++    -fopenmp    CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o  -o 3D-RT -rdynamic src/lib3DRT_library.a src/HEALPix/libHEALPix_library.a src/sundials/libsundials_library.a src/sundials/lib/libsundials_cvode.a src/sundials/lib/libsundials_nvecserial.a -lm -lrt 
+/usr/bin/c++    -fopenmp    CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o  -o 3D-RT -rdynamic src/lib_3DRT.a src/HEALPix/lib_HEALPix.a src/sundials/lib_sundials.a src/sundials/lib/libsundials_cvode.a src/sundials/lib/libsundials_nvecserial.a -lm -lrt 

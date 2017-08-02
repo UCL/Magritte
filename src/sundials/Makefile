@@ -111,46 +111,19 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/sundials/CMakeFiles/sundials_library.dir/rule:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f CMakeFiles/Makefile2 src/sundials/CMakeFiles/sundials_library.dir/rule
-.PHONY : src/sundials/CMakeFiles/sundials_library.dir/rule
+src/sundials/CMakeFiles/_sundials.dir/rule:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f CMakeFiles/Makefile2 src/sundials/CMakeFiles/_sundials.dir/rule
+.PHONY : src/sundials/CMakeFiles/_sundials.dir/rule
 
 # Convenience name for target.
-sundials_library: src/sundials/CMakeFiles/sundials_library.dir/rule
+_sundials: src/sundials/CMakeFiles/_sundials.dir/rule
 
-.PHONY : sundials_library
+.PHONY : _sundials
 
 # fast build rule for target.
-sundials_library/fast:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/build
-.PHONY : sundials_library/fast
-
-jacobian.o: jacobian.cpp.o
-
-.PHONY : jacobian.o
-
-# target to build an object file
-jacobian.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/jacobian.cpp.o
-.PHONY : jacobian.cpp.o
-
-jacobian.i: jacobian.cpp.i
-
-.PHONY : jacobian.i
-
-# target to preprocess a source file
-jacobian.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/jacobian.cpp.i
-.PHONY : jacobian.cpp.i
-
-jacobian.s: jacobian.cpp.s
-
-.PHONY : jacobian.s
-
-# target to generate assembly for a file
-jacobian.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/jacobian.cpp.s
-.PHONY : jacobian.cpp.s
+_sundials/fast:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/build
+.PHONY : _sundials/fast
 
 rate_equation_solver.o: rate_equation_solver.cpp.o
 
@@ -158,7 +131,7 @@ rate_equation_solver.o: rate_equation_solver.cpp.o
 
 # target to build an object file
 rate_equation_solver.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/rate_equation_solver.cpp.o
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/rate_equation_solver.cpp.o
 .PHONY : rate_equation_solver.cpp.o
 
 rate_equation_solver.i: rate_equation_solver.cpp.i
@@ -167,7 +140,7 @@ rate_equation_solver.i: rate_equation_solver.cpp.i
 
 # target to preprocess a source file
 rate_equation_solver.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/rate_equation_solver.cpp.i
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/rate_equation_solver.cpp.i
 .PHONY : rate_equation_solver.cpp.i
 
 rate_equation_solver.s: rate_equation_solver.cpp.s
@@ -176,35 +149,8 @@ rate_equation_solver.s: rate_equation_solver.cpp.s
 
 # target to generate assembly for a file
 rate_equation_solver.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/rate_equation_solver.cpp.s
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/rate_equation_solver.cpp.s
 .PHONY : rate_equation_solver.cpp.s
-
-rate_equations.o: rate_equations.cpp.o
-
-.PHONY : rate_equations.o
-
-# target to build an object file
-rate_equations.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/rate_equations.cpp.o
-.PHONY : rate_equations.cpp.o
-
-rate_equations.i: rate_equations.cpp.i
-
-.PHONY : rate_equations.i
-
-# target to preprocess a source file
-rate_equations.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/rate_equations.cpp.i
-.PHONY : rate_equations.cpp.i
-
-rate_equations.s: rate_equations.cpp.s
-
-.PHONY : rate_equations.s
-
-# target to generate assembly for a file
-rate_equations.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/rate_equations.cpp.s
-.PHONY : rate_equations.cpp.s
 
 # Help Target
 help:
@@ -214,16 +160,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... sundials_library"
-	@echo "... jacobian.o"
-	@echo "... jacobian.i"
-	@echo "... jacobian.s"
+	@echo "... _sundials"
 	@echo "... rate_equation_solver.o"
 	@echo "... rate_equation_solver.i"
 	@echo "... rate_equation_solver.s"
-	@echo "... rate_equations.o"
-	@echo "... rate_equations.i"
-	@echo "... rate_equations.s"
 .PHONY : help
 
 

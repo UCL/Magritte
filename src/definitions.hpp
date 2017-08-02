@@ -28,7 +28,15 @@ string spec_datafile = SPEC_DATAFILE;                /* path to data file contai
 
 string reac_datafile = REAC_DATAFILE;              /* path to data file containing the reactions */
 
-string line_datafile[NLSPEC];                      /* path to data file containing the line data */
+
+/* --- Addition by pre_setup --- */
+
+
+string line_datafile[NLSPEC] = { LINE_DATAFILE0 }; 
+ 
+
+/* --- End of addition by pre_setup --- */
+
 
 
 /* Declaration of external variables */
@@ -122,3 +130,5 @@ double x_e;
 #endif /* __DEFINITIONS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/
+
+

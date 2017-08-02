@@ -22,38 +22,39 @@ using namespace std;
 
 /*   Input before compilation, placed here by setup (src/setup.cpp)                              */
 /*_______________________________________________________________________________________________*/
-/*_______________________________________________________________________________________________*/
-#define GRID_INPUTFILE "input/grid_1D_regular.txt"
 
-#define SPEC_DATAFILE  "data/species_reduced.d"
 
-#define REAC_DATAFILE  "data/rates_reduced.d"
+#define GRID_INPUTFILE "input/grid_1D_regular.txt" 
 
-#define LINE_DATAFILE  "data/12c.dat"
+#define SPEC_DATAFILE  "data/species_reduced.d" 
 
-#define NGRID 101
+#define REAC_DATAFILE  "data/rates_reduced.d" 
 
-#define NSIDES 4
+#define LINE_DATAFILE0  "data/12c+.dat" 
 
-#define NSPEC 33
+#define NGRID 101 
 
-#define NREAC 329
+#define NSIDES 4 
 
-#define NLSPEC 1
+#define NSPEC 33 
 
-#define TOT_NLEV 5
+#define NREAC 329 
 
-#define TOT_NRAD 7
+#define NLSPEC 1 
 
-#define TOT_NLEV2 25
+#define TOT_NLEV 5 
 
-#define TOT_NCOLPAR 6
+#define TOT_NRAD 9 
 
-#define TOT_CUM_TOT_NCOLTRAN 60
+#define TOT_NLEV2 25 
 
-#define TOT_CUM_TOT_NCOLTEMP 141
+#define TOT_NCOLPAR 4 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 1410
+#define TOT_CUM_TOT_NCOLTRAN 40 
+
+#define TOT_CUM_TOT_NCOLTEMP 61 
+
+#define TOT_CUM_TOT_NCOLTRANTEMP 610 
 
 
 /*_______________________________________________________________________________________________*/

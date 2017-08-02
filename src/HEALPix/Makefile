@@ -111,19 +111,19 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/HEALPix/CMakeFiles/HEALPix_library.dir/rule:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f CMakeFiles/Makefile2 src/HEALPix/CMakeFiles/HEALPix_library.dir/rule
-.PHONY : src/HEALPix/CMakeFiles/HEALPix_library.dir/rule
+src/HEALPix/CMakeFiles/_HEALPix.dir/rule:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f CMakeFiles/Makefile2 src/HEALPix/CMakeFiles/_HEALPix.dir/rule
+.PHONY : src/HEALPix/CMakeFiles/_HEALPix.dir/rule
 
 # Convenience name for target.
-HEALPix_library: src/HEALPix/CMakeFiles/HEALPix_library.dir/rule
+_HEALPix: src/HEALPix/CMakeFiles/_HEALPix.dir/rule
 
-.PHONY : HEALPix_library
+.PHONY : _HEALPix
 
 # fast build rule for target.
-HEALPix_library/fast:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/build
-.PHONY : HEALPix_library/fast
+_HEALPix/fast:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/build
+.PHONY : _HEALPix/fast
 
 ang2pix_nest.o: ang2pix_nest.cpp.o
 
@@ -131,7 +131,7 @@ ang2pix_nest.o: ang2pix_nest.cpp.o
 
 # target to build an object file
 ang2pix_nest.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/ang2pix_nest.cpp.o
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/ang2pix_nest.cpp.o
 .PHONY : ang2pix_nest.cpp.o
 
 ang2pix_nest.i: ang2pix_nest.cpp.i
@@ -140,7 +140,7 @@ ang2pix_nest.i: ang2pix_nest.cpp.i
 
 # target to preprocess a source file
 ang2pix_nest.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/ang2pix_nest.cpp.i
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/ang2pix_nest.cpp.i
 .PHONY : ang2pix_nest.cpp.i
 
 ang2pix_nest.s: ang2pix_nest.cpp.s
@@ -149,7 +149,7 @@ ang2pix_nest.s: ang2pix_nest.cpp.s
 
 # target to generate assembly for a file
 ang2pix_nest.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/ang2pix_nest.cpp.s
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/ang2pix_nest.cpp.s
 .PHONY : ang2pix_nest.cpp.s
 
 pix2vec_nest.o: pix2vec_nest.cpp.o
@@ -158,7 +158,7 @@ pix2vec_nest.o: pix2vec_nest.cpp.o
 
 # target to build an object file
 pix2vec_nest.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/pix2vec_nest.cpp.o
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/pix2vec_nest.cpp.o
 .PHONY : pix2vec_nest.cpp.o
 
 pix2vec_nest.i: pix2vec_nest.cpp.i
@@ -167,7 +167,7 @@ pix2vec_nest.i: pix2vec_nest.cpp.i
 
 # target to preprocess a source file
 pix2vec_nest.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/pix2vec_nest.cpp.i
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/pix2vec_nest.cpp.i
 .PHONY : pix2vec_nest.cpp.i
 
 pix2vec_nest.s: pix2vec_nest.cpp.s
@@ -176,7 +176,7 @@ pix2vec_nest.s: pix2vec_nest.cpp.s
 
 # target to generate assembly for a file
 pix2vec_nest.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/pix2vec_nest.cpp.s
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/pix2vec_nest.cpp.s
 .PHONY : pix2vec_nest.cpp.s
 
 vec2ang.o: vec2ang.cpp.o
@@ -185,7 +185,7 @@ vec2ang.o: vec2ang.cpp.o
 
 # target to build an object file
 vec2ang.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/vec2ang.cpp.o
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/vec2ang.cpp.o
 .PHONY : vec2ang.cpp.o
 
 vec2ang.i: vec2ang.cpp.i
@@ -194,7 +194,7 @@ vec2ang.i: vec2ang.cpp.i
 
 # target to preprocess a source file
 vec2ang.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/vec2ang.cpp.i
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/vec2ang.cpp.i
 .PHONY : vec2ang.cpp.i
 
 vec2ang.s: vec2ang.cpp.s
@@ -203,7 +203,7 @@ vec2ang.s: vec2ang.cpp.s
 
 # target to generate assembly for a file
 vec2ang.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/vec2ang.cpp.s
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/vec2ang.cpp.s
 .PHONY : vec2ang.cpp.s
 
 # Help Target
@@ -214,7 +214,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... HEALPix_library"
+	@echo "... _HEALPix"
 	@echo "... ang2pix_nest.o"
 	@echo "... ang2pix_nest.i"
 	@echo "... ang2pix_nest.s"

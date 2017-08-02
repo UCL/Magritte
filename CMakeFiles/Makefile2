@@ -63,9 +63,9 @@ CMAKE_BINARY_DIR = /home/frederik/Dropbox/Astro/3D-RT
 # Target rules for target CMakeFiles/3D-RT.dir
 
 # All Build rule for target.
-CMakeFiles/3D-RT.dir/all: src/HEALPix/CMakeFiles/HEALPix_library.dir/all
-CMakeFiles/3D-RT.dir/all: src/sundials/CMakeFiles/sundials_library.dir/all
-CMakeFiles/3D-RT.dir/all: src/CMakeFiles/3DRT_library.dir/all
+CMakeFiles/3D-RT.dir/all: src/CMakeFiles/_3DRT.dir/all
+CMakeFiles/3D-RT.dir/all: src/HEALPix/CMakeFiles/_HEALPix.dir/all
+CMakeFiles/3D-RT.dir/all: src/sundials/CMakeFiles/_sundials.dir/all
 	$(MAKE) -f CMakeFiles/3D-RT.dir/build.make CMakeFiles/3D-RT.dir/depend
 	$(MAKE) -f CMakeFiles/3D-RT.dir/build.make CMakeFiles/3D-RT.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=1,2 "Built target 3D-RT"
@@ -78,7 +78,7 @@ all: CMakeFiles/3D-RT.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/3D-RT.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 33
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 31
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/3D-RT.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
 .PHONY : CMakeFiles/3D-RT.dir/rule
@@ -102,14 +102,14 @@ clean: CMakeFiles/3D-RT.dir/clean
 # Directory level rules for directory src
 
 # Convenience name for "all" pass in the directory.
-src/all: src/CMakeFiles/3DRT_library.dir/all
+src/all: src/CMakeFiles/_3DRT.dir/all
 src/all: src/HEALPix/all
 src/all: src/sundials/all
 
 .PHONY : src/all
 
 # Convenience name for "clean" pass in the directory.
-src/clean: src/CMakeFiles/3DRT_library.dir/clean
+src/clean: src/CMakeFiles/_3DRT.dir/clean
 src/clean: src/HEALPix/clean
 src/clean: src/sundials/clean
 
@@ -122,40 +122,40 @@ src/preinstall: src/sundials/preinstall
 .PHONY : src/preinstall
 
 #=============================================================================
-# Target rules for target src/CMakeFiles/3DRT_library.dir
+# Target rules for target src/CMakeFiles/_3DRT.dir
 
 # All Build rule for target.
-src/CMakeFiles/3DRT_library.dir/all: src/HEALPix/CMakeFiles/HEALPix_library.dir/all
-src/CMakeFiles/3DRT_library.dir/all: src/sundials/CMakeFiles/sundials_library.dir/all
-	$(MAKE) -f src/CMakeFiles/3DRT_library.dir/build.make src/CMakeFiles/3DRT_library.dir/depend
-	$(MAKE) -f src/CMakeFiles/3DRT_library.dir/build.make src/CMakeFiles/3DRT_library.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25 "Built target 3DRT_library"
-.PHONY : src/CMakeFiles/3DRT_library.dir/all
+src/CMakeFiles/_3DRT.dir/all: src/HEALPix/CMakeFiles/_HEALPix.dir/all
+src/CMakeFiles/_3DRT.dir/all: src/sundials/CMakeFiles/_sundials.dir/all
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/depend
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25 "Built target _3DRT"
+.PHONY : src/CMakeFiles/_3DRT.dir/all
 
 # Include target in all.
-all: src/CMakeFiles/3DRT_library.dir/all
+all: src/CMakeFiles/_3DRT.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-src/CMakeFiles/3DRT_library.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 31
-	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/3DRT_library.dir/all
+src/CMakeFiles/_3DRT.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 29
+	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/_3DRT.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
-.PHONY : src/CMakeFiles/3DRT_library.dir/rule
+.PHONY : src/CMakeFiles/_3DRT.dir/rule
 
 # Convenience name for target.
-3DRT_library: src/CMakeFiles/3DRT_library.dir/rule
+_3DRT: src/CMakeFiles/_3DRT.dir/rule
 
-.PHONY : 3DRT_library
-
-# clean rule for target.
-src/CMakeFiles/3DRT_library.dir/clean:
-	$(MAKE) -f src/CMakeFiles/3DRT_library.dir/build.make src/CMakeFiles/3DRT_library.dir/clean
-.PHONY : src/CMakeFiles/3DRT_library.dir/clean
+.PHONY : _3DRT
 
 # clean rule for target.
-clean: src/CMakeFiles/3DRT_library.dir/clean
+src/CMakeFiles/_3DRT.dir/clean:
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/clean
+.PHONY : src/CMakeFiles/_3DRT.dir/clean
+
+# clean rule for target.
+clean: src/CMakeFiles/_3DRT.dir/clean
 
 .PHONY : clean
 
@@ -163,12 +163,12 @@ clean: src/CMakeFiles/3DRT_library.dir/clean
 # Directory level rules for directory src/HEALPix
 
 # Convenience name for "all" pass in the directory.
-src/HEALPix/all: src/HEALPix/CMakeFiles/HEALPix_library.dir/all
+src/HEALPix/all: src/HEALPix/CMakeFiles/_HEALPix.dir/all
 
 .PHONY : src/HEALPix/all
 
 # Convenience name for "clean" pass in the directory.
-src/HEALPix/clean: src/HEALPix/CMakeFiles/HEALPix_library.dir/clean
+src/HEALPix/clean: src/HEALPix/CMakeFiles/_HEALPix.dir/clean
 
 .PHONY : src/HEALPix/clean
 
@@ -178,39 +178,39 @@ src/HEALPix/preinstall:
 .PHONY : src/HEALPix/preinstall
 
 #=============================================================================
-# Target rules for target src/HEALPix/CMakeFiles/HEALPix_library.dir
+# Target rules for target src/HEALPix/CMakeFiles/_HEALPix.dir
 
 # All Build rule for target.
-src/HEALPix/CMakeFiles/HEALPix_library.dir/all:
-	$(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/depend
-	$(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=26,27,28,29 "Built target HEALPix_library"
-.PHONY : src/HEALPix/CMakeFiles/HEALPix_library.dir/all
+src/HEALPix/CMakeFiles/_HEALPix.dir/all:
+	$(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/depend
+	$(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=26,27,28,29 "Built target _HEALPix"
+.PHONY : src/HEALPix/CMakeFiles/_HEALPix.dir/all
 
 # Include target in all.
-all: src/HEALPix/CMakeFiles/HEALPix_library.dir/all
+all: src/HEALPix/CMakeFiles/_HEALPix.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-src/HEALPix/CMakeFiles/HEALPix_library.dir/rule: cmake_check_build_system
+src/HEALPix/CMakeFiles/_HEALPix.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 4
-	$(MAKE) -f CMakeFiles/Makefile2 src/HEALPix/CMakeFiles/HEALPix_library.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 src/HEALPix/CMakeFiles/_HEALPix.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
-.PHONY : src/HEALPix/CMakeFiles/HEALPix_library.dir/rule
+.PHONY : src/HEALPix/CMakeFiles/_HEALPix.dir/rule
 
 # Convenience name for target.
-HEALPix_library: src/HEALPix/CMakeFiles/HEALPix_library.dir/rule
+_HEALPix: src/HEALPix/CMakeFiles/_HEALPix.dir/rule
 
-.PHONY : HEALPix_library
-
-# clean rule for target.
-src/HEALPix/CMakeFiles/HEALPix_library.dir/clean:
-	$(MAKE) -f src/HEALPix/CMakeFiles/HEALPix_library.dir/build.make src/HEALPix/CMakeFiles/HEALPix_library.dir/clean
-.PHONY : src/HEALPix/CMakeFiles/HEALPix_library.dir/clean
+.PHONY : _HEALPix
 
 # clean rule for target.
-clean: src/HEALPix/CMakeFiles/HEALPix_library.dir/clean
+src/HEALPix/CMakeFiles/_HEALPix.dir/clean:
+	$(MAKE) -f src/HEALPix/CMakeFiles/_HEALPix.dir/build.make src/HEALPix/CMakeFiles/_HEALPix.dir/clean
+.PHONY : src/HEALPix/CMakeFiles/_HEALPix.dir/clean
+
+# clean rule for target.
+clean: src/HEALPix/CMakeFiles/_HEALPix.dir/clean
 
 .PHONY : clean
 
@@ -218,12 +218,12 @@ clean: src/HEALPix/CMakeFiles/HEALPix_library.dir/clean
 # Directory level rules for directory src/sundials
 
 # Convenience name for "all" pass in the directory.
-src/sundials/all: src/sundials/CMakeFiles/sundials_library.dir/all
+src/sundials/all: src/sundials/CMakeFiles/_sundials.dir/all
 
 .PHONY : src/sundials/all
 
 # Convenience name for "clean" pass in the directory.
-src/sundials/clean: src/sundials/CMakeFiles/sundials_library.dir/clean
+src/sundials/clean: src/sundials/CMakeFiles/_sundials.dir/clean
 
 .PHONY : src/sundials/clean
 
@@ -233,39 +233,39 @@ src/sundials/preinstall:
 .PHONY : src/sundials/preinstall
 
 #=============================================================================
-# Target rules for target src/sundials/CMakeFiles/sundials_library.dir
+# Target rules for target src/sundials/CMakeFiles/_sundials.dir
 
 # All Build rule for target.
-src/sundials/CMakeFiles/sundials_library.dir/all:
-	$(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/depend
-	$(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=30,31,32,33 "Built target sundials_library"
-.PHONY : src/sundials/CMakeFiles/sundials_library.dir/all
+src/sundials/CMakeFiles/_sundials.dir/all:
+	$(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/depend
+	$(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=30,31 "Built target _sundials"
+.PHONY : src/sundials/CMakeFiles/_sundials.dir/all
 
 # Include target in all.
-all: src/sundials/CMakeFiles/sundials_library.dir/all
+all: src/sundials/CMakeFiles/_sundials.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-src/sundials/CMakeFiles/sundials_library.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 4
-	$(MAKE) -f CMakeFiles/Makefile2 src/sundials/CMakeFiles/sundials_library.dir/all
+src/sundials/CMakeFiles/_sundials.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 src/sundials/CMakeFiles/_sundials.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
-.PHONY : src/sundials/CMakeFiles/sundials_library.dir/rule
+.PHONY : src/sundials/CMakeFiles/_sundials.dir/rule
 
 # Convenience name for target.
-sundials_library: src/sundials/CMakeFiles/sundials_library.dir/rule
+_sundials: src/sundials/CMakeFiles/_sundials.dir/rule
 
-.PHONY : sundials_library
-
-# clean rule for target.
-src/sundials/CMakeFiles/sundials_library.dir/clean:
-	$(MAKE) -f src/sundials/CMakeFiles/sundials_library.dir/build.make src/sundials/CMakeFiles/sundials_library.dir/clean
-.PHONY : src/sundials/CMakeFiles/sundials_library.dir/clean
+.PHONY : _sundials
 
 # clean rule for target.
-clean: src/sundials/CMakeFiles/sundials_library.dir/clean
+src/sundials/CMakeFiles/_sundials.dir/clean:
+	$(MAKE) -f src/sundials/CMakeFiles/_sundials.dir/build.make src/sundials/CMakeFiles/_sundials.dir/clean
+.PHONY : src/sundials/CMakeFiles/_sundials.dir/clean
+
+# clean rule for target.
+clean: src/sundials/CMakeFiles/_sundials.dir/clean
 
 .PHONY : clean
 

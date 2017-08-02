@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib_setup.a  CMakeFiles/_setup.dir/setup_tools.cpp.o CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o
+/usr/bin/ranlib lib_setup.a

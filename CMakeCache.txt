@@ -199,6 +199,15 @@ SUNDIALS_NVEC_LIB:FILEPATH=/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/l
 SUNDIALS_SOLVER_LIB:FILEPATH=/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_cvode.a
 
 //Dependencies for the target
+_3DRT_LIB_DEPENDS:STATIC=general;_HEALPix;general;_sundials;
+
+//Dependencies for target
+_HEALPix_LIB_DEPENDS:STATIC=
+
+//Dependencies for the target
+_sundials_LIB_DEPENDS:STATIC=general;/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_cvode.a;general;/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_nvecserial.a;general;-lm;general;/usr/lib/x86_64-linux-gnu/librt.so;
+
+//Dependencies for the target
 sundials_library_LIB_DEPENDS:STATIC=general;/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_cvode.a;general;/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_nvecserial.a;general;-lm;general;/usr/lib/x86_64-linux-gnu/librt.so;
 
 

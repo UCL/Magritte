@@ -21,42 +21,38 @@ using namespace std;
 
 #include "declarations.hpp"
 #include "setup_data_structures.hpp"
+#include "data_tools.hpp"
 
 
 
-/* setup_data_structures: set up the different datastructures                                    */
+/* setup_data_structures: set up all the different datastructures                                */
 /*-----------------------------------------------------------------------------------------------*/
 
 void setup_data_structures()
 {
 
+  setup_data_structures1();
+  setup_data_structures2();
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* setup_data_structures1: set up the first part of the different datastructures                 */
+/*-----------------------------------------------------------------------------------------------*/
+
+void setup_data_structures1()
+{
+
   int i,j;                                                                      /* level indices */
-
   int par1, par2, par3;                                         /* index for a collision partner */
-
   int lspec;                                    /* index of the line species under consideration */
 
 
-  int get_nlev(string);
-
-  int get_nrad(string);
-
-  int get_ncolpar(string);
-
-  int get_ncoltran(string, int*, int);
-
-  int get_ncoltemp(string, int*, int, int);
-
-
-  /* Read data files */
-
-  line_datafile[0] = LINE_DATAFILE;
-  // line_datafile[0] = "data/12c+.dat";
-  // line_datafile[0] = "data/12co.dat";
-  // line_datafile[0] = "data/16o.dat";
-
-
-/* P1 */
 
  /* Get the number of levels and cumulatives for each line producing species */
 
@@ -72,6 +68,7 @@ void setup_data_structures()
   }
 
 
+
   /* Get the number of radiative transitions and cumulatives for each line producing species */
 
   for (lspec=0; lspec<NLSPEC; lspec++){
@@ -82,6 +79,7 @@ void setup_data_structures()
 
     // printf("(read_linedata): number of radiative transitions %d\n", nrad[lspec]);
   }
+
 
 
   /* Calculate the cumulatives for nlev and nrad (needed for indexing, see definitions.h) */
@@ -96,7 +94,7 @@ void setup_data_structures()
   }
 
 
-  /* P2 */
+
 
    /* Get the number of collision partners for each species */
 
@@ -110,12 +108,32 @@ void setup_data_structures()
   }
 
 
+
   /* Calculate the cumulative for ncolpar (needed for indexing, see definitions.h) */
 
   for (lspec=1; lspec<NLSPEC; lspec++){
 
     cum_ncolpar[lspec] = cum_ncolpar[lspec-1] + ncolpar[lspec-1];
   }
+
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* setup_data_structures2: set up the second part of the different datastructures                */
+/*-----------------------------------------------------------------------------------------------*/
+
+void setup_data_structures2()
+{
+
+  int i,j;                                                                      /* level indices */
+  int par1, par2, par3;                                         /* index for a collision partner */
+  int lspec;
 
 
 

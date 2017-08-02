@@ -14,9 +14,9 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/3DRT_library.dir/DependInfo.cmake"
-  "/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/CMakeFiles/HEALPix_library.dir/DependInfo.cmake"
-  "/home/frederik/Dropbox/Astro/3D-RT/src/sundials/CMakeFiles/sundials_library.dir/DependInfo.cmake"
+  "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/DependInfo.cmake"
+  "/home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/CMakeFiles/_HEALPix.dir/DependInfo.cmake"
+  "/home/frederik/Dropbox/Astro/3D-RT/src/sundials/CMakeFiles/_sundials.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
