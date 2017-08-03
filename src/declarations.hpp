@@ -30,11 +30,17 @@ using namespace std;
 
 #define REAC_DATAFILE  "data/rates_reduced.d" 
 
-#define LINE_DATAFILE0  "data/12c+.dat" 
+#define LINE_DATAFILE0  "data/12c.dat" 
 
 #define NGRID 101 
 
 #define NSIDES 4 
+
+#define THETA_CRIT 1.100000 
+
+#define RAY_SEPARATION2 0.000000 
+
+#define SOBOLEV false 
 
 #define NSPEC 33 
 
@@ -44,17 +50,17 @@ using namespace std;
 
 #define TOT_NLEV 5 
 
-#define TOT_NRAD 9 
+#define TOT_NRAD 7 
 
 #define TOT_NLEV2 25 
 
-#define TOT_NCOLPAR 4 
+#define TOT_NCOLPAR 6 
 
-#define TOT_CUM_TOT_NCOLTRAN 40 
+#define TOT_CUM_TOT_NCOLTRAN 60 
 
-#define TOT_CUM_TOT_NCOLTEMP 61 
+#define TOT_CUM_TOT_NCOLTEMP 141 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 610 
+#define TOT_CUM_TOT_NCOLTRANTEMP 1410 
 
 
 /*_______________________________________________________________________________________________*/

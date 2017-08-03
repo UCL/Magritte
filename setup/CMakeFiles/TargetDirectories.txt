@@ -1,4 +1,5 @@
 /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/edit_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/setup.dir
-/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/rebuild_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/PRE_SETUP.dir
 /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/_setup.dir
+/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/rebuild_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles/setup.dir

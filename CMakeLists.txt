@@ -19,6 +19,19 @@ set(3DRT_VERSION_MAJOR 0)
 set(3DRT_VERSION_MINOR 0)
 
 
+# Make the setup executable
+
+add_custom_target( MAKE_SETUP ALL
+                   COMMAND make
+                   WORKING_DIRECTORY /home/frederik/Dropbox/Astro/3D-RT/setup )
+
+
+# Execute setup
+
+add_custom_target( SETUP ALL
+                   COMMAND ./setup
+                   WORKING_DIRECTORY /home/frederik/Dropbox/Astro/3D-RT/setup )
+
 
 # Specify the subdirectory containing the source code
 
@@ -39,6 +52,7 @@ endif()
 # Create executable for 3D-RT main code
 
 add_executable( 3D-RT   src/3D-RT.cpp )
+
 
 
 # Link the library of the /src directory to the 3D-RT main code

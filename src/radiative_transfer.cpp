@@ -29,7 +29,7 @@
 void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensity,
                          double *mean_intensity, double *Source, double *opacity,
                          int *irad, int*jrad, long gridp, int lspec, int kr,
-                         long *nshortcuts, long *nno_shortcuts, bool sobolev )
+                         long *nshortcuts, long *nno_shortcuts )
 {
 
   int i, j;                                       /* indices for the population level n_i or n_j */
@@ -184,9 +184,9 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
 
         /* (to compare with 3D-PDR) */
 
-        /* NOTE: Make sure ray_separation2=0.0 when sobolev=true !!! */
+        /* NOTE: Make sure RAY_SEPARATION2=0.0 when SOBOLEV=true !!! */
 
-        if (sobolev == true){
+        if (SOBOLEV == true){
 
           for (n=0; n<ndep; n++){
 

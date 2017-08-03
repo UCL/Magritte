@@ -63,12 +63,6 @@ int main()
   int    lspec = 0;                                                     /* index of line species */
   int    par   = 0;                                                /* index of collision partner */
 
-  double theta_crit = 1.0;         /* critical angle to include a grid point as evaluation point */
-
-  double ray_separation2 = 0.00;  /* rays closer than the sqrt of this are considered equivalent */
-
-  bool   sobolev=false;               /* Use the Sobolev (large velocity gradient approximation) */
-
   double time_rt = 0.0;                                                   /* time in ray_tracing */
   double time_lp = 0.0;                                /* time for level_populations to converge */
 
@@ -205,7 +199,7 @@ int main()
 
   time_rt -= omp_get_wtime();
 
-  ray_tracing( theta_crit, ray_separation2, unit_healpixvector, gridpoint, evalpoint);
+  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
 
   time_rt += omp_get_wtime();
 
@@ -413,7 +407,7 @@ int main()
                           double *B_coeff, double *C_coeff, double *P_intensity,
                           double *R, double *pop, double *dpop, double *C_data,
                           double *coltemp, int *icol, int *jcol, double *temperature,
-                          double *weight, double *energy, int lspec, bool sobolev );
+                          double *weight, double *energy, int lspec );
 
 
   time_lp -= omp_get_wtime();
@@ -425,7 +419,7 @@ int main()
 
     level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
                        A_coeff, B_coeff, C_coeff, P_intensity, R, pop, dpop, C_data,
-                       coltemp, icol, jcol, temperature, weight, energy, lspec, sobolev );
+                       coltemp, icol, jcol, temperature, weight, energy, lspec );
   }
 
 

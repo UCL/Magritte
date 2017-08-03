@@ -60,6 +60,80 @@ CMAKE_SOURCE_DIR = /home/frederik/Dropbox/Astro/3D-RT
 CMAKE_BINARY_DIR = /home/frederik/Dropbox/Astro/3D-RT
 
 #=============================================================================
+# Target rules for target CMakeFiles/MAKE_SETUP.dir
+
+# All Build rule for target.
+CMakeFiles/MAKE_SETUP.dir/all:
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/depend
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num= "Built target MAKE_SETUP"
+.PHONY : CMakeFiles/MAKE_SETUP.dir/all
+
+# Include target in all.
+all: CMakeFiles/MAKE_SETUP.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/MAKE_SETUP.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/MAKE_SETUP.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
+.PHONY : CMakeFiles/MAKE_SETUP.dir/rule
+
+# Convenience name for target.
+MAKE_SETUP: CMakeFiles/MAKE_SETUP.dir/rule
+
+.PHONY : MAKE_SETUP
+
+# clean rule for target.
+CMakeFiles/MAKE_SETUP.dir/clean:
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/clean
+.PHONY : CMakeFiles/MAKE_SETUP.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/MAKE_SETUP.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/SETUP.dir
+
+# All Build rule for target.
+CMakeFiles/SETUP.dir/all:
+	$(MAKE) -f CMakeFiles/SETUP.dir/build.make CMakeFiles/SETUP.dir/depend
+	$(MAKE) -f CMakeFiles/SETUP.dir/build.make CMakeFiles/SETUP.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num= "Built target SETUP"
+.PHONY : CMakeFiles/SETUP.dir/all
+
+# Include target in all.
+all: CMakeFiles/SETUP.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/SETUP.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/SETUP.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/CMakeFiles 0
+.PHONY : CMakeFiles/SETUP.dir/rule
+
+# Convenience name for target.
+SETUP: CMakeFiles/SETUP.dir/rule
+
+.PHONY : SETUP
+
+# clean rule for target.
+CMakeFiles/SETUP.dir/clean:
+	$(MAKE) -f CMakeFiles/SETUP.dir/build.make CMakeFiles/SETUP.dir/clean
+.PHONY : CMakeFiles/SETUP.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/SETUP.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/3D-RT.dir
 
 # All Build rule for target.

@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named setup
+# Target rules for targets named PRE_SETUP
 
 # Build rule for target.
-setup: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 setup
-.PHONY : setup
+PRE_SETUP: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 PRE_SETUP
+.PHONY : PRE_SETUP
 
 # fast build rule for target.
-setup/fast:
-	$(MAKE) -f CMakeFiles/setup.dir/build.make CMakeFiles/setup.dir/build
-.PHONY : setup/fast
+PRE_SETUP/fast:
+	$(MAKE) -f CMakeFiles/PRE_SETUP.dir/build.make CMakeFiles/PRE_SETUP.dir/build
+.PHONY : PRE_SETUP/fast
 
 #=============================================================================
 # Target rules for targets named _setup
@@ -135,6 +135,19 @@ _setup: cmake_check_build_system
 _setup/fast:
 	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/build
 .PHONY : _setup/fast
+
+#=============================================================================
+# Target rules for targets named setup
+
+# Build rule for target.
+setup: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 setup
+.PHONY : setup
+
+# fast build rule for target.
+setup/fast:
+	$(MAKE) -f CMakeFiles/setup.dir/build.make CMakeFiles/setup.dir/build
+.PHONY : setup/fast
 
 home/frederik/Dropbox/Astro/3D-RT/src/data_tools.o: home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o
 
@@ -251,9 +264,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... setup"
-	@echo "... rebuild_cache"
+	@echo "... PRE_SETUP"
 	@echo "... _setup"
+	@echo "... rebuild_cache"
+	@echo "... setup"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/data_tools.o"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/data_tools.i"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/data_tools.s"

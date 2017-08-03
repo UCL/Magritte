@@ -32,7 +32,7 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
                         double *B_coeff, double *C_coeff, double *P_intensity,
                         double *R, double *pop, double *dpop, double *C_data,
                         double *coltemp, int *icol, int *jcol, double *temperature,
-                        double *weight, double *energy, int lspec, bool sobolev )
+                        double *weight, double *energy, int lspec )
 {
 
   int n;                                                                     /* grid point index */
@@ -207,10 +207,10 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
         void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensity,
                                  double *mean_intensity, double *Source, double *opacity,
                                  int *irad, int*jrad, long n2, int lspec, int kr,
-                                 long *nshortcuts, long *nno_shortcuts, bool sobolev );
+                                 long *nshortcuts, long *nno_shortcuts );
 
         radiative_transfer( antipod, evalpoint, P_intensity, mean_intensity, Source, opacity,
-                            irad, jrad, n2, lspec, kr, &nshortcuts, &nno_shortcuts, sobolev );
+                            irad, jrad, n2, lspec, kr, &nshortcuts, &nno_shortcuts );
 
 
         /* Fill the i>j part (since we loop over the transitions i -> j) */
@@ -286,7 +286,7 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
     /* Limit the number of iterations */
 
     if (niterations >= MAX_NITERATIONS){
-      
+
       populations_not_converged = false;
     }
 

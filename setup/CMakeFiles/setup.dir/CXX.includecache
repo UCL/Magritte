@@ -23,6 +23,8 @@ stdio.h
 -
 stdlib.h
 -
+math.h
+-
 string
 -
 iostream

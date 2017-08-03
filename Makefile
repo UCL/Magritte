@@ -111,6 +111,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named MAKE_SETUP
+
+# Build rule for target.
+MAKE_SETUP: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MAKE_SETUP
+.PHONY : MAKE_SETUP
+
+# fast build rule for target.
+MAKE_SETUP/fast:
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/build
+.PHONY : MAKE_SETUP/fast
+
+#=============================================================================
+# Target rules for targets named SETUP
+
+# Build rule for target.
+SETUP: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 SETUP
+.PHONY : SETUP
+
+# fast build rule for target.
+SETUP/fast:
+	$(MAKE) -f CMakeFiles/SETUP.dir/build.make CMakeFiles/SETUP.dir/build
+.PHONY : SETUP/fast
+
+#=============================================================================
 # Target rules for targets named 3D-RT
 
 # Build rule for target.
@@ -196,8 +222,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... rebuild_cache"
+	@echo "... MAKE_SETUP"
+	@echo "... SETUP"
 	@echo "... 3D-RT"
+	@echo "... rebuild_cache"
 	@echo "... _3DRT"
 	@echo "... _HEALPix"
 	@echo "... _sundials"

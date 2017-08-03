@@ -22,8 +22,8 @@ using namespace std;
 
 /* Definitions of external variables */
 
-
 string line_datafile[NLSPEC];
+
 
 int *nlev;                                                  /* number of levels for this species */
 
@@ -62,8 +62,6 @@ int *cum_ncoltrantemp;                    /* cumulative of ntran*ntemp over spec
 int *tot_ncoltrantemp;                         /* total of ntran*ntemp over species and partners */
 
 int *cum_tot_ncoltrantemp;              /* cum. of tot. of ntran*ntemp over species and partners */
-
-
 
 
 

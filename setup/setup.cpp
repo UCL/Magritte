@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <string>
 #include <iostream>
@@ -48,9 +49,29 @@ int main(){
   cout << "(setup): reading the parameters.txt file \n";
 
 
-  /* Get nsides from line 11 in parameters.txt */
+  /* Get nrays from line 11 in parameters.txt */
 
-  long nsides = get_nr(11);
+  long nrays = get_nr(11);
+
+  long nsides = (long) sqrt(nrays/12.0);
+
+
+
+  /* Get theta_crit from line 13 in parameters.txt */
+
+  double theta_crit = get_nr(13);
+
+
+
+  /* Get ray_separation2 from line 15 in parameters.txt */
+
+  double ray_separation2 = get_nr(15);
+
+
+
+  /* Get sobolev from line 17 in parameters.txt */
+
+  string sobolev = get_string(17);
 
 
 
@@ -101,6 +122,28 @@ int main(){
   cout << "(setup): parameters.txt file read \n\n";
 
 
+  cout << "(setup): PARAMETERS: \n";
+  cout << "(setup): nrays           : " << nrays << "\n";
+  cout << "(setup): theta_crit      : " << theta_crit << "\n";
+  cout << "(setup): ray_separation2 : " << ray_separation2 << "\n";
+  cout << "(setup): sobolev         : " << sobolev << "\n";
+
+  cout << "(setup): grid file       : " << grid_inputfile << "\n";
+  cout << "(setup): species file    : " << spec_datafile << "\n";
+  cout << "(setup): reactions file  : " << reac_datafile << "\n";
+
+  cout << "(setup): NLSPEC          : " << NLSPEC << "\n";
+
+  for (int l=0; l<NLSPEC; l++){
+
+    cout << "(setup): line file " << l << "     : " << line_datafile[l] << "\n";
+  }
+
+  cout << "(setup): ngrid           : " << ngrid << "\n";
+  cout << "(setup): nsides          : " << nsides << " ( = sqrt(nrays/12) ) \n";
+  cout << "(setup): nspec           : " << nspec << "\n\n";
+
+
   /*_____________________________________________________________________________________________*/
 
 
@@ -131,8 +174,6 @@ int main(){
 
 
   setup_data_structures1();
-
-
 
 
   int tot_nlev = cum_nlev[NLSPEC-1] + nlev[NLSPEC-1];                      /* tot. nr. of levels */
@@ -171,21 +212,6 @@ int main(){
                                    + tot_ncoltrantemp[NLSPEC-1];
                                                          /* total over the line prodcing species */
 
-
-
-  cout << "(setup): grid file      : " << grid_inputfile << "\n";
-  cout << "(setup): species file   : " << spec_datafile << "\n";
-
-  for (int l=0; l<NLSPEC; l++){
-
-    cout << "(setup): line file " << l << "    : " << line_datafile[l] << "\n";
-  }
-
-  cout << "(setup): reactions file : " << reac_datafile << "\n";
-  cout << "(setup): ngrid          : " << ngrid << "\n";
-  cout << "(setup): nsides         : " << nsides << "\n";
-  cout << "(setup): NLSPEC         : " << NLSPEC << "\n";
-  cout << "(setup): nspec          : " << nspec << "\n";
 
   cout << "(setup): parameters from line data extracted \n\n";
 
@@ -257,6 +283,12 @@ int main(){
   fprintf( dec_new, "#define NGRID %ld \n\n", ngrid );
 
   fprintf( dec_new, "#define NSIDES %ld \n\n", nsides );
+
+  fprintf( dec_new, "#define THETA_CRIT %lf \n\n", theta_crit );
+
+  fprintf( dec_new, "#define RAY_SEPARATION2 %lf \n\n", ray_separation2 );
+
+  fprintf( dec_new, "#define SOBOLEV %s \n\n", sobolev.c_str() );
 
   fprintf( dec_new, "#define NSPEC %d \n\n", nspec );
 
@@ -346,7 +378,7 @@ int main(){
 
     for (int l=1; l<NLSPEC-1; l++){
 
-      line_datafile[l]  = line_datafile[l].erase(0,3);     /* Subtract "../" part of the filenames */
+      line_datafile[l]  = line_datafile[l].erase(0,3);   /* Subtract "../" part of the filenames */
 
       fprintf( def_new, "                                 LINE_DATAFILE%d, \\\n", l );
     }

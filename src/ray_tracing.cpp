@@ -28,8 +28,7 @@
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpixvector,
-                  GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
+void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 {
 
   long   n;                                                                             /* index */
@@ -68,8 +67,8 @@ void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpi
   printf("(ray_tracing): number of grid points     %*d\n", MAX_WIDTH, NGRID);
   printf("(ray_tracing): number of HEALPix sides   %*d\n", MAX_WIDTH, NSIDES);
   printf("(ray_tracing): number of HEALPix rays    %*d\n", MAX_WIDTH, NRAYS);
-  printf("(ray_tracing): critical angle theta_crit %*.2lf\n", MAX_WIDTH, theta_crit);
-  printf("(ray_tracing): equivalent ray distance   %*.2lE\n", MAX_WIDTH, ray_separation2);
+  printf("(ray_tracing): critical angle THETA_CRIT %*.2lf\n", MAX_WIDTH, THETA_CRIT);
+  printf("(ray_tracing): equivalent ray distance   %*.2lE\n", MAX_WIDTH, RAY_SEPARATION2);
 
 
 
@@ -92,7 +91,7 @@ void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpi
    private( n1, n2, n3, n4, ra2, rb, origin, rvec, theta, phi, radius, ipix, rvec_dot_uhpv, angle, \
             vp, r5, r6, start, stop, healpixvector, distance_to_ray2, Z, nr, ray ) \
    shared( gridpoint, unit_healpixvector, key, \
-           evalpoint, raytot, succes, ray_separation2, theta_crit, time_sort, time_de, cum_raytot, time_key ) \
+           evalpoint, raytot, succes, time_sort, time_de, cum_raytot, time_key ) \
    default( none )
   {
 
@@ -207,9 +206,9 @@ void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpi
       printf("(ray-tracing): angle %lf\n", angle);
 */
 
-      /* If angle < theta_crit add the new evaluation point */
+      /* If angle < THETA_CRIT add the new evaluation point */
 
-      if (angle < theta_crit){
+      if (angle < THETA_CRIT){
 
         vp = (gridpoint[rb[n3]].vx - gridpoint[n1].vx)*unit_healpixvector[VINDEX(ipix,0)]
              + (gridpoint[rb[n3]].vy - gridpoint[n1].vy)*unit_healpixvector[VINDEX(ipix,1)]
@@ -234,7 +233,7 @@ void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpi
 
         distance_to_ray2 = ra2[n3] - rvec_dot_uhpv * rvec_dot_uhpv;
 
-        if (distance_to_ray2 < ray_separation2){
+        if (distance_to_ray2 < RAY_SEPARATION2){
 
           evalpoint[GINDEX(n1,rb[n3])].eqp = n1;
         }

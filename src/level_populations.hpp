@@ -27,7 +27,7 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
                         double *B_coeff, double *C_coeff, double *P_intensity,
                         double *R, double *pop, double *dpop, double *C_data,
                         double *coltemp, int *icol, int *jcol, double *temperature,
-                        double *weight, double *energy, int lspec, bool sobolev );
+                        double *weight, double *energy, int lspec );
 
 /*-----------------------------------------------------------------------------------------------*/
 

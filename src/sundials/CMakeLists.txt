@@ -13,7 +13,8 @@ set( SUNDIALS_INC_DIR
 # Set search path for SUNDIALS libraries
 
 set( SUNDIALS_LIB_DIR
-     /home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib )
+     /home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib
+     CACHE STRING "Location of SUNDIALS library files" )
 
 
 # Find the SUNDIALS solver's library

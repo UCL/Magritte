@@ -29,6 +29,11 @@ using namespace std;
 int main(){
 
 
+  cout << "                    \n";
+  cout << "Pre-setup for 3D-RT \n";
+  cout << "------------------- \n\n";
+
+
   /* Get nlspec from line 32 in parameters.txt */
 
   int nlspec = get_nr(32);
@@ -41,6 +46,11 @@ int main(){
   fprintf( nlspec_file, "#define NLSPEC %d", nlspec );
 
   fclose(nlspec_file);
+
+  cout << "(pre-setup): NLSPEC : " << nlspec << "\n\n";
+
+
+  cout << "(pre-setup): done, setup can now be compiled \n\n";
 
 }
 

@@ -25,8 +25,8 @@
 
 void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensity,
                          double *mean_intensity, double *Source, double *opacity,
-                         int *irad, int*jrad, long gridp, int lspec, int kr, 
-                         long *nshortcuts, long *nno_shortcuts, bool sobolev );
+                         int *irad, int*jrad, long gridp, int lspec, int kr,
+                         long *nshortcuts, long *nno_shortcuts );
 
 /*-----------------------------------------------------------------------------------------------*/
 

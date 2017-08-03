@@ -40,15 +40,11 @@ TEST_CASE("1D regular grid"){
   /*_____________________________________________________________________________________________*/
 
 
-  double theta_crit=1.0;           /* critical angle to include a grid point as evaluation point */
- 
-  double ray_separation2=0.00;    /* rays closer than the sqrt of this are considered equivalent */
-
   double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
 
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
-  
+
 
   /* Define grid (using types defined in definitions.h) */
 
@@ -121,10 +117,9 @@ TEST_CASE("1D regular grid"){
   /*_____________________________________________________________________________________________*/
 
 
-  void ray_tracing( double theta_crit, double ray_separation2, double *unit_healpixvector,
-                    GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
+  void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
 
-  ray_tracing(theta_crit, ray_separation2, unit_healpixvector, gridpoint, evalpoint);
+  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
 
 
 
@@ -142,7 +137,7 @@ TEST_CASE("1D regular grid"){
         }
       }
     }
-  
+
 
 
     /* "Check whether all grid points are on a ray (only true in 1D)" */
@@ -156,11 +151,11 @@ TEST_CASE("1D regular grid"){
         }
       }
     }
-  
+
 
 
     /* "Check the order of the evaluation points" */
-   
+
     for (int n=0; n<NGRID; n++){
 
       for (int r=0; r<NRAYS; r++){
