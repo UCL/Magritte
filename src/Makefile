@@ -287,6 +287,33 @@ data_tools.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/data_tools.cpp.s
 .PHONY : data_tools.cpp.s
 
+dust_temperature_calculation.o: dust_temperature_calculation.cpp.o
+
+.PHONY : dust_temperature_calculation.o
+
+# target to build an object file
+dust_temperature_calculation.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o
+.PHONY : dust_temperature_calculation.cpp.o
+
+dust_temperature_calculation.i: dust_temperature_calculation.cpp.i
+
+.PHONY : dust_temperature_calculation.i
+
+# target to preprocess a source file
+dust_temperature_calculation.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.i
+.PHONY : dust_temperature_calculation.cpp.i
+
+dust_temperature_calculation.s: dust_temperature_calculation.cpp.s
+
+.PHONY : dust_temperature_calculation.s
+
+# target to generate assembly for a file
+dust_temperature_calculation.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.s
+.PHONY : dust_temperature_calculation.cpp.s
+
 exact_feautrier.o: exact_feautrier.cpp.o
 
 .PHONY : exact_feautrier.o
@@ -746,6 +773,9 @@ help:
 	@echo "... data_tools.o"
 	@echo "... data_tools.i"
 	@echo "... data_tools.s"
+	@echo "... dust_temperature_calculation.o"
+	@echo "... dust_temperature_calculation.i"
+	@echo "... dust_temperature_calculation.s"
 	@echo "... exact_feautrier.o"
 	@echo "... exact_feautrier.i"
 	@echo "... exact_feautrier.s"

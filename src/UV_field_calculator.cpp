@@ -37,12 +37,12 @@ void UV_field_calculator(double *G_external, double *UV_field, double *rad_surfa
 
   for (n=0; n<NGRID; n++){
 
+      UV_field[n] = 0.0;
+
 
     /* For all rays */
 
     for (r=0; r<NRAYS; r++){
-
-      UV_field[RINDEX(n,r)] = 0.0;
 
       rad_surface[RINDEX(n,r)] = G_external[0] / (double) NRAYS;
     }

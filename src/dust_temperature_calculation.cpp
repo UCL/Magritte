@@ -41,6 +41,10 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "declarations.hpp"
+#include "dust_temperature_calculation.hpp"
+
+
 
 /* dust_temperature_calculation: calculate dust temparatures                                     */
 /*-----------------------------------------------------------------------------------------------*/
@@ -62,7 +66,7 @@ void dust_temperature_calculation( double *UV_field, double *rad_surface,
 
   double tau_100 = 1.0E-3;                               /* emission optical depth at 100 micron */
 
-  double nu_0 = 2.65E15                                /* parameter in the absorption efficiency */
+  double nu_0 = 2.65E15;                               /* parameter in the absorption efficiency */
 
 
   /* For all grid points */
@@ -72,7 +76,7 @@ void dust_temperature_calculation( double *UV_field, double *rad_surface,
 
     /* Contribution to the dust temperature from the local FUV flux and the CMB background */
 
-    temperature_dust[n] = 8.9E-11*nu_0*(1.71E0*UV_field[n])+pow(T_CMB, 5);
+    temperature_dust[n] = 8.9E-11*nu_0*(1.71*UV_field[n])+pow(T_CMB, 5);
 
 
     for (r=0; r<NRAYS; r++){

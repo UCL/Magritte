@@ -19,6 +19,12 @@ set(3DRT_VERSION_MAJOR 0)
 set(3DRT_VERSION_MINOR 0)
 
 
+# Resize the stack to 128 Mb (UNIX version)
+
+add_custom_target( RESIZE_STACK ALL
+                   COMMAND ulimit -S -s 131072 )
+
+
 # Make the setup executable
 
 add_custom_target( MAKE_SETUP ALL
@@ -52,7 +58,6 @@ endif()
 # Create executable for 3D-RT main code
 
 add_executable( 3D-RT   src/3D-RT.cpp )
-
 
 
 # Link the library of the /src directory to the 3D-RT main code

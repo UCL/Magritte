@@ -74,9 +74,9 @@ char ortho_para[TOT_NCOLPAR];                           /* stores whether it is 
 
 
 
-double metallicity = 1.0;
+double metallicity;
 
-double gas2dust = 100.0;
+double gas2dust;
 
 
 int C_ionization_nr;

@@ -26,6 +26,10 @@ src/CMakeFiles/_3DRT.dir/data_tools.cpp.o: src/data_tools.cpp
 src/CMakeFiles/_3DRT.dir/data_tools.cpp.o: src/data_tools.hpp
 src/CMakeFiles/_3DRT.dir/data_tools.cpp.o: src/declarations.hpp
 
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/dust_temperature_calculation.cpp
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/dust_temperature_calculation.hpp
+
 src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o: src/declarations.hpp
 src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o: src/exact_feautrier.cpp
 src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o: src/exact_feautrier.hpp

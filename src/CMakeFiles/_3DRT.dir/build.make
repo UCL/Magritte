@@ -561,9 +561,33 @@ src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o.provides: src/CMakeFiles/_3DR
 src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o
 
 
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/dust_temperature_calculation.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.cpp
+
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.i"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.cpp > CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.i
+
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.s"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.cpp -o CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.s
+
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.requires:
+
+.PHONY : src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.requires
+
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.provides: src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.provides.build
+.PHONY : src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.provides
+
+src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o
+
+
 src/CMakeFiles/_3DRT.dir/write_output.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/write_output.cpp.o: src/write_output.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object src/CMakeFiles/_3DRT.dir/write_output.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object src/CMakeFiles/_3DRT.dir/write_output.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/write_output.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/write_output.cpp
 
 src/CMakeFiles/_3DRT.dir/write_output.cpp.i: cmake_force
@@ -608,6 +632,7 @@ _3DRT_OBJECTS = \
 "CMakeFiles/_3DRT.dir/level_population_solver.cpp.o" \
 "CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o" \
 "CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o" \
+"CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o" \
 "CMakeFiles/_3DRT.dir/write_output.cpp.o"
 
 # External object files for target _3DRT
@@ -634,10 +659,11 @@ src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o
+src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/write_output.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/build.make
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Linking CXX static library lib_3DRT.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Linking CXX static library lib_3DRT.a"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && $(CMAKE_COMMAND) -P CMakeFiles/_3DRT.dir/cmake_clean_target.cmake
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/_3DRT.dir/link.txt --verbose=$(VERBOSE)
 
@@ -667,6 +693,7 @@ src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o.requires
+src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/write_output.cpp.o.requires
 
 .PHONY : src/CMakeFiles/_3DRT.dir/requires

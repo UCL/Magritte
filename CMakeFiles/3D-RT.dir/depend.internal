@@ -10,6 +10,7 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/definitions.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/ray_tracing.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/reaction_rates.hpp

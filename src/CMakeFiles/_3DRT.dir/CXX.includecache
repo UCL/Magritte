@@ -90,6 +90,18 @@ string
 string
 -
 
+/home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.cpp
+stdio.h
+-
+math.h
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+dust_temperature_calculation.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/exact_feautrier.cpp
 stdio.h
 -
