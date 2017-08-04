@@ -6,6 +6,22 @@
 
 #IncludeRegexTransform: 
 
+/home/frederik/Dropbox/Astro/3D-RT/src/AV_calculator.cpp
+stdio.h
+-
+math.h
+-
+stdlib.h
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+AV_calculator.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/AV_calculator.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/AV_calculator.hpp
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/chealpix.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/UV_field_calculator.cpp
@@ -164,6 +180,22 @@ level_population_solver.hpp
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 
+/home/frederik/Dropbox/Astro/3D-RT/src/rad_surface_calculator.cpp
+stdio.h
+-
+math.h
+-
+stdlib.h
+-
+string
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+rad_surface_calculator.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/rad_surface_calculator.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/rad_surface_calculator.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/radiative_transfer.cpp
 stdio.h
 -
@@ -301,10 +333,12 @@ string
 -
 iostream
 -
-read_linedata.hpp
-/home/frederik/Dropbox/Astro/3D-RT/src/read_linedata.hpp
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+read_linedata.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/read_linedata.hpp
+species_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/species_tools.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/read_linedata.hpp
 string

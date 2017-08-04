@@ -124,19 +124,6 @@ RESIZE_STACK/fast:
 .PHONY : RESIZE_STACK/fast
 
 #=============================================================================
-# Target rules for targets named SETUP
-
-# Build rule for target.
-SETUP: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 SETUP
-.PHONY : SETUP
-
-# fast build rule for target.
-SETUP/fast:
-	$(MAKE) -f CMakeFiles/SETUP.dir/build.make CMakeFiles/SETUP.dir/build
-.PHONY : SETUP/fast
-
-#=============================================================================
 # Target rules for targets named MAKE_SETUP
 
 # Build rule for target.
@@ -235,11 +222,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... rebuild_cache"
 	@echo "... RESIZE_STACK"
-	@echo "... SETUP"
 	@echo "... MAKE_SETUP"
 	@echo "... 3D-RT"
+	@echo "... rebuild_cache"
 	@echo "... _3DRT"
 	@echo "... _HEALPix"
 	@echo "... _sundials"

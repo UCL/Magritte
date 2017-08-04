@@ -220,12 +220,12 @@ double rate_CO_photodissociation( int reac, double *rad_surface,
 
 
 
-/* rate_CI_photoionization: returns rate coefficient for CI photoionization                      */
+/* rate_C_photoionization: returns rate coefficient for C photoionization                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-double rate_CI_photoionization( int reac, double temperature_gas,
-                                double *rad_surface, double *AV,
-                                double *column_CI, double *column_H2 )
+double rate_C_photoionization( int reac, double temperature_gas,
+                               double *rad_surface, double *AV,
+                               double *column_C, double *column_H2 )
 {
 
   long   ray;                                                                       /* ray index */
@@ -238,7 +238,7 @@ double rate_CI_photoionization( int reac, double temperature_gas,
   double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
   double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
 
-  double tau_C;                                       /* optical depth in the CI absorption band */
+  double tau_C;                                        /* optical depth in the C absorption band */
 
   double k;                                                              /* reaction coefficient */
 
@@ -254,14 +254,14 @@ double rate_CI_photoionization( int reac, double temperature_gas,
   for (ray=0; ray<NRAYS; ray++){
 
 
-    /* Calculate the optical depth in the CI absorption band, accounting
-       for grain extinction and shielding by CI and overlapping H2 lines */
+    /* Calculate the optical depth in the C absorption band, accounting
+       for grain extinction and shielding by C and overlapping H2 lines */
 
-    tau_C = gamma*AV[ray] + 1.1E-17*column_CI[ray]
+    tau_C = gamma*AV[ray] + 1.1E-17*column_C[ray]
             + (0.9 * pow(temperature_gas,0.27) * pow(column_H2[ray]/1.59E21, 0.45));
 
 
-    /* Calculate the CI photoionization rate */
+    /* Calculate the C photoionization rate */
 
     k = k + alpha * rad_surface[ray] * exp(-tau_C) / 2.0;
   }

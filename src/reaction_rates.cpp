@@ -29,7 +29,7 @@
 
 void reaction_rates( double temperature_gas, double temperature_dust,
                      double *rad_surface, double *AV,
-                     double *column_H2, double *column_HD, double *column_CI, double *column_CO,
+                     double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double v_turb )
 {
 
@@ -234,15 +234,15 @@ void reaction_rates( double temperature_gas, double temperature_dust,
 
 
 
-    /* CI photoionization */
+    /* C photoionization */
 
     else if ( R1 == "C"  &&  R2 == ""  &&  R3 == ""
               && ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) ){
 
       C_ionization_nr = reac;
 
-      reaction[reac].k = rate_CI_photoionization( reac, temperature_gas, rad_surface, AV,
-                                                  column_CI, column_H2 );
+      reaction[reac].k = rate_C_photoionization( reac, temperature_gas, rad_surface, AV,
+                                                 column_C, column_H2 );
     }
 
 

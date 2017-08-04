@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for read_linedata.cpp                                                                     */
+/* Header for heating.cpp                                                                        */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,36 +10,42 @@
 
 
 
-#ifndef __READ_LINEDATA_HPP_INCLUDED__
-#define __READ_LINEDATA_HPP_INCLUDED__
+#ifndef __HEATING_HPP_INCLUDED__
+#define __HEATING_HPP_INCLUDED__
+
+#include "declarations.hpp"
 
 
 
-#include <string>
-using namespace std;
-
-
-
-/* read_linedata: read data files containing the line information in LAMBDA/RADEX format         */
+/* heating: calculate the total heating                                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_linedata( string datafile, int *irad, int *jrad, double *energy, double *weight,
-                    double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                    double *C_data, int *icol, int *jcol, int lspec );
+double heating( GRIDPOINT *gridpoint,
+                double *temperature_gas, double *temperature_dust,
+                double *UV_field, double v_turb );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* extract_spec_par: extract the species corresponding to the collision partner                  */
+/* F: mathematical function used in photoelectric dust heating                                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void extract_spec_par(char *buffer, int lspec, int par);
+double F(double x, double delta, double gamma);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __READ_LINEDATA_HPP_INCLUDED__ */
+/* dF: defivative w.r.t. x of the function F defined above                                       */
+/*-----------------------------------------------------------------------------------------------*/
+
+double dF(double x, double delta);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+#endif /* __HEATING_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

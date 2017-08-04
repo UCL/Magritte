@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/frederik/Dropbox/Astro/3D-RT
 include CMakeFiles/MAKE_SETUP.dir/progress.make
 
 CMakeFiles/MAKE_SETUP:
-	cd /home/frederik/Dropbox/Astro/3D-RT/setup && make
+	cd /home/frederik/Dropbox/Astro/3D-RT/setup && make && ./setup
 
 MAKE_SETUP: CMakeFiles/MAKE_SETUP
 MAKE_SETUP: CMakeFiles/MAKE_SETUP.dir/build.make

@@ -21,7 +21,17 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                double *column_density, double *AV );
+                                double *column_density, int spec );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* column_density: calculates the column density for one species along one ray                   */
+/*-----------------------------------------------------------------------------------------------*/
+
+double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                        long gridp, int spec, long ray );
 
 /*-----------------------------------------------------------------------------------------------*/
 

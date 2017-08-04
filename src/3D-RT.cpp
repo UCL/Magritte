@@ -36,7 +36,9 @@ using namespace std;
 #include "create_healpixvectors.hpp"
 #include "ray_tracing.hpp"
 
+#include "rad_surface_calculator.hpp"
 #include "column_density_calculator.hpp"
+#include "AV_calculator.hpp"
 #include "UV_field_calculator.hpp"
 #include "dust_temperature_calculation.hpp"
 #include "reaction_rates.hpp"
@@ -159,6 +161,20 @@ int main()
   /* Read the species (and their initial abundances) */
 
   read_species(spec_datafile);
+
+
+  e_nr    = get_species_nr("e-");                       /* species nr corresponding to electrons */
+  H2_nr   = get_species_nr("H2");                              /* species nr corresponding to H2 */
+  HD_nr   = get_species_nr("HD");                              /* species nr corresponding to HD */
+  C_nr    = get_species_nr("C");                                /* species nr corresponding to C */
+  H_nr    = get_species_nr("H");                                /* species nr corresponding to H */
+  H2x_nr  = get_species_nr("H2+");                            /* species nr corresponding to H2+ */
+  HCOx_nr = get_species_nr("HCO+");                          /* species nr corresponding to HCO+ */
+  H3x_nr  = get_species_nr("H3+");                            /* species nr corresponding to H3+ */
+  H3Ox_nr = get_species_nr("H3O+");                          /* species nr corresponding to H3O+ */
+  Hex_nr  = get_species_nr("He+");                            /* species nr corresponding to He+ */
+  CO_nr   = get_species_nr("CO");                              /* species nr corresponding to CO */
+
 
 
   /* Read the reactions */
@@ -352,6 +368,42 @@ int main()
 
 
 
+  /*   CALCULATE THE EXTERNAL RADIATION FIELD                                                    */
+  /*_____________________________________________________________________________________________*/
+
+
+  double G_external[3];                                       /* external radiation field vector */
+
+  double rad_surface[NGRID*NRAYS];
+
+
+  /* Initialize */
+
+  G_external[0] = 0.0;
+  G_external[1] = 0.0;
+  G_external[2] = 0.0;
+
+
+  for (n=0; n<NGRID; n++){
+
+    for (r=0; r<NRAYS; r++){
+
+      rad_surface[RINDEX(n,r)] = 0.0;
+    }
+  }
+
+
+  /* Calculate the radiation surface */
+
+  rad_surface_calculator(G_external, unit_healpixvector, rad_surface);
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
   /*   CALCULATE THERMAL BALANCE (ITERATIVELY)                                                   */
   /*_____________________________________________________________________________________________*/
 
@@ -359,17 +411,16 @@ int main()
   bool no_thermal_balance = true;
 
   double temperature_gas[NGRID];                    /* temperature of the gas at each grid point */
-  double temperature_dust[NGRID];                   /* temperature of the dust at each grid point */
+  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
 
-  double column_density[NGRID*NSPEC*NRAYS];       /* column density for each spec, ray and gridp */
-
-  double rad_surface[NGRID*NRAYS];
+  double column_H2[NGRID*NRAYS];                /* H2 column density for each ray and grid point */
+  double column_HD[NGRID*NRAYS];                /* HD column density for each ray and grid point */
+  double column_C[NGRID*NRAYS];                  /* C column density for each ray and grid point */
+  double column_CO[NGRID*NRAYS];                /* CO column density for each ray and grid point */
 
   double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
 
   double UV_field[NGRID];
-
-  double G_external[3];                                              /* external radiation field */
 
 
   for (n=0; n<NGRID; n++){
@@ -377,9 +428,6 @@ int main()
     temperature_gas[n] = 10.0;
   }
 
-  G_external[0] = 0.0;
-  G_external[1] = 0.0;
-  G_external[2] = 0.0;
 
 
   /* Initialization */
@@ -390,30 +438,36 @@ int main()
 
     for (r=0; r<NRAYS; r++){
 
-      rad_surface[RINDEX(n,r)] = 0.0;
-
-      for (spec=0; spec<NSPEC; spec++){
-
-        column_density[GRIDSPECRAY(n,spec,r)] = 0.0;
-      }
+      column_H2[RINDEX(n,r)] = 0.0;
+      column_HD[RINDEX(n,r)] = 0.0;
+      column_C[RINDEX(n,r)]  = 0.0;
+      column_CO[RINDEX(n,r)] = 0.0;
     }
   }
-
-
-  /* Calculate column densities */
-
-  column_density_calculator(gridpoint, evalpoint, column_density, AV);
-
-
-  /* Calculcate the UV field */
-
-  UV_field_calculator(G_external, UV_field, rad_surface);
 
 
 
   /* Thermal balance iterations */
 
   while (no_thermal_balance){
+
+
+    /* Calculate column densities */
+
+    column_density_calculator(gridpoint, evalpoint, column_H2, H2_nr);
+    // column_density_calculator(gridpoint, evalpoint, column_HD, HD_nr);
+    column_density_calculator(gridpoint, evalpoint, column_C, C_nr);
+    column_density_calculator(gridpoint, evalpoint, column_CO, CO_nr);
+
+
+    /* Calculate the visual extinction */
+
+    AV_calculator(column_H2, AV);
+
+
+    /* Calculcate the UV field and radiation surface */
+
+    UV_field_calculator(AV, rad_surface, UV_field);
 
 
     /* Calculate the dust temperature */
@@ -431,10 +485,10 @@ int main()
     printf("(3D-RT): calculating chemical abundances \n");
 
 
-    // /* Calculate the reaction rates */
-    //
+    /* Calculate the reaction rates */
+
     // reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-    //                 column_H2, column_HD, column_CI, column_CO, v_turb );
+                    // column_H2, column_HD, column_C, column_CO, v_turb );
 
 
     /* Calculate the chemical abundances by solving the rate equations */

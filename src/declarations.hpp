@@ -42,6 +42,8 @@ using namespace std;
 
 #define SOBOLEV false 
 
+#define FIELD_FORM "ISO" 
+
 #define NSPEC 33 
 
 #define NREAC 329 
@@ -337,11 +339,40 @@ extern double gas2dust;
 
 
 
+/* Species numbers */
+
+extern int e_nr;                                        /* species nr corresponding to electrons */
+
+extern int H2_nr;                                              /* species nr corresponding to H2 */
+
+extern int HD_nr;                                              /* species nr corresponding to HD */
+
+extern int C_nr;                                                /* species nr corresponding to C */
+
+extern int H_nr;                                                /* species nr corresponding to H */
+
+extern int H2x_nr;                                            /* species nr corresponding to H2+ */
+
+extern int HCOx_nr;                                          /* species nr corresponding to HCO+ */
+
+extern int H3x_nr;                                            /* species nr corresponding to H3+ */
+
+extern int H3Ox_nr;                                          /* species nr corresponding to H3O+ */
+
+extern int Hex_nr;                                            /* species nr corresponding to He+ */
+
+extern int CO_nr;                                              /* species nr corresponding to CO */
+
+
+/* Reaction numbers */
+
 extern int C_ionization_nr;
 
 extern int H2_formation_nr;
 
 extern int H2_photodissociation_nr;
+
+
 
 extern double x_e;
 

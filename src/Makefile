@@ -125,6 +125,33 @@ _3DRT/fast:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/build
 .PHONY : _3DRT/fast
 
+AV_calculator.o: AV_calculator.cpp.o
+
+.PHONY : AV_calculator.o
+
+# target to build an object file
+AV_calculator.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o
+.PHONY : AV_calculator.cpp.o
+
+AV_calculator.i: AV_calculator.cpp.i
+
+.PHONY : AV_calculator.i
+
+# target to preprocess a source file
+AV_calculator.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.i
+.PHONY : AV_calculator.cpp.i
+
+AV_calculator.s: AV_calculator.cpp.s
+
+.PHONY : AV_calculator.s
+
+# target to generate assembly for a file
+AV_calculator.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.s
+.PHONY : AV_calculator.cpp.s
+
 UV_field_calculator.o: UV_field_calculator.cpp.o
 
 .PHONY : UV_field_calculator.o
@@ -421,6 +448,33 @@ level_populations.s: level_populations.cpp.s
 level_populations.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/level_populations.cpp.s
 .PHONY : level_populations.cpp.s
+
+rad_surface_calculator.o: rad_surface_calculator.cpp.o
+
+.PHONY : rad_surface_calculator.o
+
+# target to build an object file
+rad_surface_calculator.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o
+.PHONY : rad_surface_calculator.cpp.o
+
+rad_surface_calculator.i: rad_surface_calculator.cpp.i
+
+.PHONY : rad_surface_calculator.i
+
+# target to preprocess a source file
+rad_surface_calculator.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.i
+.PHONY : rad_surface_calculator.cpp.i
+
+rad_surface_calculator.s: rad_surface_calculator.cpp.s
+
+.PHONY : rad_surface_calculator.s
+
+# target to generate assembly for a file
+rad_surface_calculator.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.s
+.PHONY : rad_surface_calculator.cpp.s
 
 radiative_transfer.o: radiative_transfer.cpp.o
 
@@ -755,6 +809,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... _3DRT"
+	@echo "... AV_calculator.o"
+	@echo "... AV_calculator.i"
+	@echo "... AV_calculator.s"
 	@echo "... UV_field_calculator.o"
 	@echo "... UV_field_calculator.i"
 	@echo "... UV_field_calculator.s"
@@ -788,6 +845,9 @@ help:
 	@echo "... level_populations.o"
 	@echo "... level_populations.i"
 	@echo "... level_populations.s"
+	@echo "... rad_surface_calculator.o"
+	@echo "... rad_surface_calculator.i"
+	@echo "... rad_surface_calculator.s"
 	@echo "... radiative_transfer.o"
 	@echo "... radiative_transfer.i"
 	@echo "... radiative_transfer.s"

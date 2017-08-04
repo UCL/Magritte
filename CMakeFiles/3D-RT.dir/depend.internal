@@ -3,6 +3,7 @@
 
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/3D-RT.cpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/AV_calculator.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/UV_field_calculator.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/abundance.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/column_density_calculator.hpp
@@ -12,6 +13,7 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/definitions.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/rad_surface_calculator.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/ray_tracing.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/reaction_rates.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.hpp

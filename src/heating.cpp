@@ -20,11 +20,15 @@
 #include <string>
 using namespace std;
 
+#include "declarations.hpp"
+#include "heating.hpp"
+
+
 
 /* heating: calculate the total heating                                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
+double heating( GRIDPOINT *gridpoint,
                 double *temperature_gas, double *temperature_dust,
                 double *UV_field, double v_turb )
 {
@@ -32,27 +36,6 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   double heating_total                                                          /* total heating */
 
   double Habing_field = 1.68 * UV_field;                         /* UV radiation field in Habing */
-
-  int e_nr = get_species_nr("e-");                      /* species nr corresponding to electrons */
-
-  int H2_nr = get_species_nr("H2");                            /* species nr corresponding to H2 */
-
-  int C_nr = get_species_nr("C");                               /* species nr corresponding to C */
-
-  int H_nr = get_species_nr("H");                               /* species nr corresponding to H */
-
-  int H2x_nr = get_species_nr("H2+");                         /* species nr corresponding to H2+ */
- 
-  int HCOx_nr = get_species_nr("HCO+");                      /* species nr corresponding to HCO+ */
-
-  int H3x_nr = get_species_nr("H3+");                         /* species nr corresponding to H3+ */
-
-  int H3Ox_nr = get_species_nr("H3O+");                      /* species nr corresponding to H3O+ */
-
-  int Hex_nr = get_species_nr("He+");                         /* species nr corresponding to He+ */
-
-  int CO_nr = get_species_nr("CO");                            /* species nr corresponding to CO */
-
 
   double electron_density = species[e_nr].abn[gridp] * gridpoint[gridp].density;    /* e density */
 
@@ -64,18 +47,18 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
   /*  Dust photoelectric heating using the treatment of Tielens & Hollenbach, 1985, ApJ, 291,
       722, which follows de Jong (1977,1980)
-  
+
       The charge of a dust grain can be found by equating the rate of photo-ejection of
       electrons from the dust grain to the rate of recombination of electrons with the dust
       grain (Spitzer)
-  
+
       The various parameter values are taken from Table 2 of the paper  */
 
 
   double heating_dust;                                   /* resulting photoelectric dust heating */
 
   int iteration;                                /* iteration count for the Newton-Raphson solver */
-  
+
   int max_iterations;                                            /* maximal number of iterations */
 
   const double precision = 1.0E-2;                     /* precision of the Newton-Raphson method */
@@ -86,7 +69,7 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
   double delta_d  = 1.0;
   double delta_UV = 1.8;
-  
+
   double Y = 0.1;
 
   double hnu_d =  6.0;
@@ -95,7 +78,7 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
   /* Derived parameters */
 
-  double x_k = KB*temperature_gas/(hnu_H*EV) 
+  double x_k = KB*temperature_gas/(hnu_H*EV)
   double x_d = hnu_d/hnu_H;
 
   double gamma = 2.9E-4 * Y * sqrt(temperature_gas) * Habing_field / electron_density;
@@ -110,10 +93,6 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   x = 0.5;
 
   iteration = 0;
-
-  double F(double x, double delta, double gamma);
-
-  double dF(double x, double delta);
 
 
   while( (iteration<max_iterations)  &&  (F_x > precision) ){
@@ -158,9 +137,9 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   double phi_PAH = 1.0;
 
   double alpha = 0.944;
-  
+
   double beta = 0.735 * pow(temperature_gas, 0.068);
-  
+
   double delta = Habing_field * sqrt(temperature_gas) / (electron_density * phi_PAH);
 
   double epsilon = 4.87E-2/(1.0 + 4.0E-3*pow(delta, 0.73))
@@ -169,7 +148,7 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
   double PAH_heating = 1.3E-24 * epsilon * Habing_field * gridpoint[gridp].density;
 
-  double PAH_cooling = 4.65E-30 * pow(temperature_gas, alpha) * pow(delta, beta) 
+  double PAH_cooling = 4.65E-30 * pow(temperature_gas, alpha) * pow(delta, beta)
                        * electron_density * phi_PAH * gridpoint[gridp].density;
 
 
@@ -205,7 +184,7 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   double C6 = 5.20E-1;
 
 
-  heating_Weingartner = 1.0E-26 * metallicity * (Habing_field * gridpoint[gridp].density) 
+  heating_Weingartner = 1.0E-26 * metallicity * (Habing_field * gridpoint[gridp].density)
                         *(C0 + C1*pow(temperature_gas, C4))
                         /(1.0 + C2*pow(Habing_field*sqrt(temperature_gas)/electron_density,C5)
                         *(1.0 + C3*pow(Habing_field*sqrt(temperature_gas)/electron_density,C6) ));
@@ -368,9 +347,9 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   /*  Clavel et al., 1978, A&A, 65, 435
 
       Recombination reactions: HCO+ (7.51 eV); H3+ (4.76+9.23 eV); H3O+ (1.16+5.63+6.27 eV)
-      
+
       Ion-neutral reactions  : He+ + H2 (6.51 eV); He+ + CO (2.22 eV)
-      
+
       For each reaction, the heating rate should be: n(1) * n(2) * K * E with n(1) and n(2)
       the densities, K the rate coefficient [cm^3.s^-1], and E the energy [erg]  */
 
@@ -389,10 +368,10 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
                      + species[HCOx_nr].abn[gridp] * gridpoint[gridp].density     /* HCO+  +  e- */
                        * electron_density
-                       * reaction[240].k * (7.51*EV) 
+                       * reaction[240].k * (7.51*EV)
 
                      + species[H3x_nr].abn[gridp] * gridpoint[gridp].density       /* H3+  +  e- */
-                       * electron_density 
+                       * electron_density
                        * ( reaction[217].k * (4.76*EV) + reaction[218].k * (9.23*EV) )
 
                      + species[H3Ox_nr].abn[gridp]*gridpoint[gridp].density       /* H3O+  +  e- */
@@ -402,8 +381,8 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
                      + species[Hex_nr].abn[gridp] * gridpoint[gridp].density        /* He+  + H2 */
                        * species[H2_nr].abn[gridp] * gridpoint[gridp]
-                       * ( reaction[50].k * (6.51*EV) + reaction[170] * (6.51*EV) )                 
-                    
+                       * ( reaction[50].k * (6.51*EV) + reaction[170] * (6.51*EV) )
+
                      + species[Hex_nr].abn[gridp] * gridpoint[gridp].density       /* He+  +  CO */
                        * species[CO_nr].abn[gridp] *gridpoint[gridp].density
                        * ( reaction[89].k * (2.22*EV) + reaction[90].k * (2.22*EV)
@@ -422,19 +401,19 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
 
   /*  Use the treatment of Burke & Hollenbach, 1983, ApJ, 265, 223, and
       accommodation fitting formula of Groenewegen, 1994, A&A, 290, 531
- 
+
       Other relevant references:
- 
+
       Hollenbach & McKee, 1979, ApJS, 41,555
       Tielens & Hollenbach, 1985, ApJ, 291,722
       Goldsmith, 2001, ApJ, 557, 736
- 
+
       This process is insignificant for the energy balance of the dust but can influence the gas
       temperature. If the dust temperature is lower than the gas temperature, this becomes a
       cooling mechanism
- 
+
       In Burke & Hollenbach (1983) the factor:
- 
+
       (8*kb/(pi*mass_proton))**0.5*2*kb = 4.003D-12
 
       This value has been used in the expression below  */
@@ -464,7 +443,7 @@ double heating( GRIDPOINT *gridpoint, SPECIES *species, REACTIONS *reaction,
   heating_total = heating_dust + heating_PAH + heating_Weingartner + heating_C_ionization
                   + heating_H2_photodissociation + heating_H2_FUV_pumping + heating_cosmic_rays;
 
-  return heating_total; 
+  return heating_total;
 
 }
 

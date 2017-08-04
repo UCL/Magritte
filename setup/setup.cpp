@@ -74,10 +74,14 @@ int main(){
   string sobolev = get_string(17);
 
 
+  /* Get field form from line 19 in parameters.txt */
 
-  /* Get the grid input file from line 25 in parameters.txt */
+  string field_form = get_string(19);
 
-  string grid_inputfile = get_file(25);
+
+  /* Get the grid input file from line 27 in parameters.txt */
+
+  string grid_inputfile = get_file(27);
 
 
 
@@ -87,9 +91,9 @@ int main(){
 
 
 
-  /* Get the species data file from line 27 in parameters.txt */
+  /* Get the species data file from line 29 in parameters.txt */
 
-  string spec_datafile = get_file(27);
+  string spec_datafile = get_file(29);
 
 
 
@@ -99,17 +103,17 @@ int main(){
 
 
 
-  /* Get the reaction data file from line 29 in parameters.txt */
+  /* Get the reaction data file from line 31 in parameters.txt */
 
-  string reac_datafile = get_file(29);
+  string reac_datafile = get_file(31);
 
 
 
-  /* Get the line data files starting from line 35 in parameters.txt */
+  /* Get the line data files starting from line 37 in parameters.txt */
 
   for (int l=0; l<NLSPEC; l++){
 
-    line_datafile[l] = get_file(35+2*l);
+    line_datafile[l] = get_file(37+2*l);
   }
 
 
@@ -127,6 +131,7 @@ int main(){
   cout << "(setup): theta_crit      : " << theta_crit << "\n";
   cout << "(setup): ray_separation2 : " << ray_separation2 << "\n";
   cout << "(setup): sobolev         : " << sobolev << "\n";
+  cout << "(setup): field_form      : " << field_form << "\n";
 
   cout << "(setup): grid file       : " << grid_inputfile << "\n";
   cout << "(setup): species file    : " << spec_datafile << "\n";
@@ -289,6 +294,8 @@ int main(){
   fprintf( dec_new, "#define RAY_SEPARATION2 %lf \n\n", ray_separation2 );
 
   fprintf( dec_new, "#define SOBOLEV %s \n\n", sobolev.c_str() );
+
+  fprintf( dec_new, "#define FIELD_FORM \"%s\" \n\n", field_form.c_str() );
 
   fprintf( dec_new, "#define NSPEC %d \n\n", nspec );
 

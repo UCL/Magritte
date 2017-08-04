@@ -74,14 +74,6 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
 
 
-  /* Use species_tools to find the number corresponding to H2 */
-
-  int get_species_nr(string name);
-
-  H2_nr = get_species_nr("H2");
-
-
-
   /* Calculate H2 ortho/para fraction at equilibrium for given temperature */
 
   frac_H2_para = 0.0;

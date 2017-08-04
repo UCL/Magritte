@@ -44,12 +44,12 @@ double rate_CO_photodissociation( int reac, double *rad_surface,
 
 
 
-/* rate_CI_photoionization: returns rate coefficient for CI photoionization                      */
+/* rate_C_photoionization: returns rate coefficient for C photoionization                        */
 /*-----------------------------------------------------------------------------------------------*/
 
-double rate_CI_photoionization( int reac, double temperature_gas,
-                                double *rad_surface, double *AV,
-                                double *column_CI, double *column_H2 );
+double rate_C_photoionization( int reac, double temperature_gas,
+                               double *rad_surface, double *AV,
+                               double *column_C, double *column_H2 );
 
 /*-----------------------------------------------------------------------------------------------*/
 

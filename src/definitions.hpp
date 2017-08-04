@@ -116,11 +116,41 @@ double metallicity;
 double gas2dust;
 
 
+
+/* Species numbers */
+
+int e_nr;                                               /* species nr corresponding to electrons */
+
+int H2_nr;                                                     /* species nr corresponding to H2 */
+
+int HD_nr;                                                     /* species nr corresponding to HD */
+
+int C_nr;                                                       /* species nr corresponding to C */
+
+int H_nr;                                                       /* species nr corresponding to H */
+
+int H2x_nr;                                                   /* species nr corresponding to H2+ */
+
+int HCOx_nr;                                                 /* species nr corresponding to HCO+ */
+
+int H3x_nr;                                                   /* species nr corresponding to H3+ */
+
+int H3Ox_nr;                                                 /* species nr corresponding to H3O+ */
+
+int Hex_nr;                                                   /* species nr corresponding to He+ */
+
+int CO_nr;                                                     /* species nr corresponding to CO */
+
+
+/* Reaction numbers */
+
 int C_ionization_nr;
 
 int H2_formation_nr;
 
 int H2_photodissociation_nr;
+
+
 
 double x_e;
 

@@ -28,14 +28,7 @@ add_custom_target( RESIZE_STACK ALL
 # Make the setup executable
 
 add_custom_target( MAKE_SETUP ALL
-                   COMMAND make
-                   WORKING_DIRECTORY /home/frederik/Dropbox/Astro/3D-RT/setup )
-
-
-# Execute setup
-
-add_custom_target( SETUP ALL
-                   COMMAND ./setup
+                   COMMAND make && ./setup
                    WORKING_DIRECTORY /home/frederik/Dropbox/Astro/3D-RT/setup )
 
 

@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* culumn_density_calculator: Calculates the UV radiation field at each grid point                     */
+/* culumn_density_calculator: Calculates the column density along each ray at each grid point    */
 /*                                                                                               */
 /* (based on 3DPDR in 3D-PDR)                                                                    */
 /*                                                                                               */
@@ -25,53 +25,24 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                double *column_density, double *AV )
+                                double *column_density, int spec )
 {
 
   long n;                                                                    /* grid point index */
 
   long r;                                                                           /* ray index */
 
-  long spec;                                                                    /* species index */
-
-
-  double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                          long gridp, int spec, long ray );
-
-  int get_species_nr(string name);
-
-  int H_nr = get_species_nr("H");                               /* species nr corresponding to H */
-
-  double A_V0 = 6.289E-22*metallicity;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
-
-
-
-  /* For all grid points */
+  /* For all grid points n and rays r */
 
   for (n=0; n<NGRID; n++){
 
-
-    /* For all rays */
-
     for (r=0; r<NRAYS; r++){
 
+      column_density[RINDEX(n,r)] = column_density_(gridpoint, evalpoint, n, spec, r);
 
-      /* For all species */
+    }
+  }
 
-      for (spec=0; spec<NSPEC; spec++){
-
-        column_density[GRIDSPECRAY(n,spec,r)] = column_density_(gridpoint, evalpoint ,n, spec, r);
-
-        if ( spec == H_nr ){
-
-          AV[RINDEX(n,r)] = A_V0 * column_density[GRIDSPECRAY(n,spec,r)];
-        }
-
-      } /* end of spec loop over species */
-
-    } /* end of r loop over rays */
-
-  } /* end of n2 loop over grid points */
 
 }
 

@@ -20,76 +20,9 @@
 #include <iostream>
 using namespace std;
 
-#include "read_linedata.hpp"
 #include "declarations.hpp"
-
-
-
-/* extract_spec_par: extract the species corresponding to the collision partner                  */
-/*-----------------------------------------------------------------------------------------------*/
-
-void extract_spec_par(char *buffer, int lspec, int par)
-{
-
-  int n;                                                                                /* index */
-
-  char buffer2[BUFFER_SIZE];                                 /* possibly modified copy of buffer */
-
-  int cursor, cursor2;                                          /* index of position in a string */
-
-  char string1[10], string2[10], string3[10];          /* buffers for the symbols of the species */
-
-
-
-  /* Addapt for inconsistencies in specification of collision partners */
-
-    cursor2=0;
-    buffer2[cursor2] = buffer[0];
-    cursor2++;
-
-    for (cursor=1; cursor<BUFFER_SIZE/3; cursor++ ){
-
-      if ( (buffer[cursor] == '-') && (buffer[cursor-1] != 'o') && (buffer[cursor-1] != 'p') ){
-
-        buffer2[cursor2] = ' ';
-        cursor2++;
-        buffer2[cursor2] = '-';
-        cursor2++;
-        buffer2[cursor2] = ' ';
-        cursor2++;
-      }
-
-      else {
-        buffer2[cursor2] = buffer[cursor];
-        cursor2++;
-      }
-    }
-
-    sscanf( buffer2, "%d %s %s %s %*[^\n] \n", &n, string1, string2, string3 );
-
-
-    /* Note: string3 contains the name of the collision partner */
-
-    string name = string3;
-
-
-    /* Use one of the species_tools to find the corresponding species nr */
-
-    int get_species_nr(string name);
-
-    spec_par[LSPECPAR(lspec,par)] = get_species_nr(name);
-
-
-    char check_ortho_para(string name);
-
-    ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
-
-}
-
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
+#include "read_linedata.hpp"
+#include "species_tools.hpp"
 
 
 
@@ -196,7 +129,7 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
     fgets(buffer, BUFFER_SIZE, data);
 
 
-    void extract_spec_par(char *buffer, int lspec, int par4);                   /* defined above */
+    /* Use the function defined below to extract the collision partner species */
 
     extract_spec_par(buffer, lspec, par4);
 
@@ -327,5 +260,71 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
 
 }
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* extract_spec_par: extract the species corresponding to the collision partner                  */
+/*-----------------------------------------------------------------------------------------------*/
+
+void extract_spec_par(char *buffer, int lspec, int par)
+{
+
+  int n;                                                                                /* index */
+
+  char buffer2[BUFFER_SIZE];                                 /* possibly modified copy of buffer */
+
+  int cursor, cursor2;                                          /* index of position in a string */
+
+  char string1[10], string2[10], string3[10];          /* buffers for the symbols of the species */
+
+
+
+  /* Addapt for inconsistencies in specification of collision partners */
+
+    cursor2=0;
+    buffer2[cursor2] = buffer[0];
+    cursor2++;
+
+    for (cursor=1; cursor<BUFFER_SIZE/3; cursor++ ){
+
+      if ( (buffer[cursor] == '-') && (buffer[cursor-1] != 'o') && (buffer[cursor-1] != 'p') ){
+
+        buffer2[cursor2] = ' ';
+        cursor2++;
+        buffer2[cursor2] = '-';
+        cursor2++;
+        buffer2[cursor2] = ' ';
+        cursor2++;
+      }
+
+      else {
+        buffer2[cursor2] = buffer[cursor];
+        cursor2++;
+      }
+    }
+
+    sscanf( buffer2, "%d %s %s %s %*[^\n] \n", &n, string1, string2, string3 );
+
+
+    /* Note: string3 contains the name of the collision partner */
+
+    string name = string3;
+
+
+    /* Use one of the species_tools to find species nr corresponding to coll. partner */
+
+    spec_par[LSPECPAR(lspec,par)] = get_species_nr(name);
+
+
+    /* Check whether the collision partner is ortho- or para- H2 (or something else) */
+
+    ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
+
+}
+
 
 /*-----------------------------------------------------------------------------------------------*/

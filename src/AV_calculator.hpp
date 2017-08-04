@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for UV_field_calculator.cpp                                                            */
+/* Header for column_density_calculator.cpp                                                      */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,20 +10,22 @@
 
 
 
-#ifndef __UV_FIELD_CALCULATOR_HPP_INCLUDED__
-#define __UV_FIELD_CALCULATOR_HPP_INCLUDED__
+#ifndef __AV_CALCULATOR_HPP_INCLUDED__
+#define __AV_CALCULATOR_HPP_INCLUDED__
+
+#include "declarations.hpp"
 
 
 
-/* UV_field_calculator: calculates the UV radiation field at each grid point                     */
+/* AV_calculator: calculates the visual extinction along a ray ray at a grid point               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void UV_field_calculator(double *AV, double *rad_surface, double *UV_field );
+void AV_calculator( double *column_H2, double *AV );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __UV_FIELD_CALCULATOR_HPP_INCLUDED__ */
+#endif /* __AV_CALCULATOR_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/
