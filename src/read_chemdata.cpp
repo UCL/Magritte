@@ -47,12 +47,23 @@ void read_species(string specdatafile)
 
 
 
+  /* The first species is a dummy for when a species is not found */
+
+  species[0].sym = "dummy";
+
+  for (n=0; n<NGRID; n++){
+
+    species[0].abn[n] = 0.0;
+  }
+
+
+
   /* Open species data file */
 
   FILE *specdata2 = fopen(specdatafile.c_str(), "r");
 
 
-  for (l=0; l<nspec; l++){
+  for (l=1; l<nspec; l++){
 
     fgets(buffer, BUFFER_SIZE, specdata2);
     sscanf( buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff );

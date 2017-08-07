@@ -455,7 +455,7 @@ int main()
     /* Calculate column densities */
 
     column_density_calculator(gridpoint, evalpoint, column_H2, H2_nr);
-    // column_density_calculator(gridpoint, evalpoint, column_HD, HD_nr);
+    column_density_calculator(gridpoint, evalpoint, column_HD, HD_nr);
     column_density_calculator(gridpoint, evalpoint, column_C, C_nr);
     column_density_calculator(gridpoint, evalpoint, column_CO, CO_nr);
 

@@ -83,6 +83,12 @@ int get_NSPEC(string spec_datafile)
 
   fclose(specdata1);
 
+
+  /* Add one place for the dummy when a species is not found */
+
+  nspec = nspec + 1;
+
+
   return nspec;
 
 }

@@ -44,7 +44,7 @@ using namespace std;
 
 #define FIELD_FORM "ISO" 
 
-#define NSPEC 33 
+#define NSPEC 34 
 
 #define NREAC 329 
 

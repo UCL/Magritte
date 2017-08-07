@@ -86,7 +86,17 @@ int get_species_nr(string name)
 
   /* If the function did not return yet, no match was found */
 
-  cout << "ERROR : there is no species with symbol " << name << "\n";
+  cout << "\n WARNING : there is no species with symbol " << name << "\n";
+
+
+  /* Set the not found species to be the dummy (zeroth species) */
+
+  spec = 0;
+
+  cout << "\n WARNING : the species " << name
+       << " is set to the \"dummy\" reference with abundance 0.0 \n\n";
+
+  return spec;
 
 }
 
