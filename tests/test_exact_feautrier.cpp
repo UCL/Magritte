@@ -22,11 +22,12 @@ using namespace std;
 
 #include "catch.hpp"
 
+#include "../src/declarations.hpp"
 #include "../src/definitions.hpp"
-#include "../src/read_input.cpp"
-#include "../src/create_healpixvectors.cpp"
-#include "../src/ray_tracing.cpp"
-#include "../src/exact_feautrier.cpp"
+#include "../src/read_input.hpp"
+#include "../src/create_healpixvectors.hpp"
+#include "../src/ray_tracing.hpp"
+#include "../src/exact_feautrier.hpp"
 
 
 #define EPS 1.0E-21
