@@ -6,17 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/frederik/Dropbox/Astro/3D-RT/setup/NLSPEC.hpp
-
 /home/frederik/Dropbox/Astro/3D-RT/setup/pre_setup_declarations.hpp
 string
 -
-NLSPEC.hpp
-/home/frederik/Dropbox/Astro/3D-RT/setup/NLSPEC.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/setup/pre_setup_definitions.hpp
 string
 -
+
+/home/frederik/Dropbox/Astro/3D-RT/setup/pre_setup_parameters.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/setup/setup.cpp
 stdio.h
@@ -29,6 +27,8 @@ string
 -
 iostream
 -
+pre_setup_parameters.hpp
+/home/frederik/Dropbox/Astro/3D-RT/setup/pre_setup_parameters.hpp
 pre_setup_declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/setup/pre_setup_declarations.hpp
 pre_setup_definitions.hpp
@@ -41,6 +41,8 @@ setup_tools.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
 
 /home/frederik/Dropbox/Astro/3D-RT/setup/setup_tools.hpp
+string
+-
 
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
 stdio.h

@@ -25,10 +25,10 @@ add_custom_target( RESIZE_STACK ALL
                    COMMAND ulimit -S -s 131072 )
 
 
-# Make the setup executable
+# Make the setup executable and execute setup
 
 add_custom_target( MAKE_SETUP ALL
-                   COMMAND make && ./setup
+                   COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup
                    WORKING_DIRECTORY /home/frederik/Dropbox/Astro/3D-RT/setup )
 
 

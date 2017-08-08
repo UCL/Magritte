@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/frederik/Dropbox/Astro/3D-RT/setup
 include CMakeFiles/PRE_SETUP.dir/progress.make
 
 CMakeFiles/PRE_SETUP:
-	./pre_setup
+	./pre_setup ${PARAMETERS_FILE}
 
 PRE_SETUP: CMakeFiles/PRE_SETUP
 PRE_SETUP: CMakeFiles/PRE_SETUP.dir/build.make

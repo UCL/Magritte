@@ -20,6 +20,7 @@
 #include <iostream>
 using namespace std;
 
+#include "pre_setup_parameters.hpp"
 #include "pre_setup_declarations.hpp"
 #include "pre_setup_definitions.hpp"
 #include "setup_tools.hpp"
@@ -46,42 +47,42 @@ int main(){
   /*_____________________________________________________________________________________________*/
 
 
-  cout << "(setup): reading the parameters.txt file \n";
+  cout << "(setup): reading the PARAMETERS_FILE \n";
 
 
-  /* Get nrays from line 11 in parameters.txt */
+  /* Get nrays from line 11 in PARAMETERS_FILE */
 
-  long nrays = get_nr(11);
+  long nrays = get_nr(PARAMETERS_FILE, 11);
 
   long nsides = (long) sqrt(nrays/12.0);
 
 
 
-  /* Get theta_crit from line 13 in parameters.txt */
+  /* Get theta_crit from line 13 in PARAMETERS_FILE */
 
-  double theta_crit = get_nr(13);
-
-
-
-  /* Get ray_separation2 from line 15 in parameters.txt */
-
-  double ray_separation2 = get_nr(15);
+  double theta_crit = get_nr(PARAMETERS_FILE, 13);
 
 
 
-  /* Get sobolev from line 17 in parameters.txt */
+  /* Get ray_separation2 from line 15 in PARAMETERS_FILE */
 
-  string sobolev = get_string(17);
-
-
-  /* Get field form from line 19 in parameters.txt */
-
-  string field_form = get_string(19);
+  double ray_separation2 = get_nr(PARAMETERS_FILE, 15);
 
 
-  /* Get the grid input file from line 27 in parameters.txt */
 
-  string grid_inputfile = get_file(27);
+  /* Get sobolev from line 17 in PARAMETERS_FILE */
+
+  string sobolev = get_string(PARAMETERS_FILE, 17);
+
+
+  /* Get field form from line 19 in PARAMETERS_FILE */
+
+  string field_form = get_string(PARAMETERS_FILE, 19);
+
+
+  /* Get the grid input file from line 27 in PARAMETERS_FILE */
+
+  string grid_inputfile = get_file(PARAMETERS_FILE, 27);
 
 
 
@@ -91,9 +92,9 @@ int main(){
 
 
 
-  /* Get the species data file from line 29 in parameters.txt */
+  /* Get the species data file from line 29 in PARAMETERS_FILE */
 
-  string spec_datafile = get_file(29);
+  string spec_datafile = get_file(PARAMETERS_FILE, 29);
 
 
 
@@ -103,17 +104,17 @@ int main(){
 
 
 
-  /* Get the reaction data file from line 31 in parameters.txt */
+  /* Get the reaction data file from line 31 in PARAMETERS_FILE */
 
-  string reac_datafile = get_file(31);
+  string reac_datafile = get_file(PARAMETERS_FILE, 31);
 
 
 
-  /* Get the line data files starting from line 37 in parameters.txt */
+  /* Get the line data files starting from line 37 in PARAMETERS_FILE */
 
   for (int l=0; l<NLSPEC; l++){
 
-    line_datafile[l] = get_file(37+2*l);
+    line_datafile[l] = get_file(PARAMETERS_FILE, 37+2*l);
   }
 
 
@@ -123,7 +124,7 @@ int main(){
   int nreac = get_NREAC(reac_datafile);
 
 
-  cout << "(setup): parameters.txt file read \n\n";
+  cout << "(setup): PARAMETERS_FILE file read \n\n";
 
 
   cout << "(setup): PARAMETERS: \n";

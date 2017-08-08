@@ -13,30 +13,33 @@
 #ifndef __SETUP_TOOLS_HPP_INCLUDED__
 #define __SETUP_TOOLS_HPP_INCLUDED__
 
+#include <string>
+using namespace std;
 
 
-/* get_file: get the input file name from parameters.txt                                         */
+
+/* get_file: get the input file name from file                                                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-string get_file(int line);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* get_nr: get the input number from parameters.txt                                              */
-/*-----------------------------------------------------------------------------------------------*/
-
-double get_nr(int line);
+string get_file(string file, int line);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* get_string: get the string at the given line in parameters.txt                                */
+/* get_nr: get the input number from file                                                        */
 /*-----------------------------------------------------------------------------------------------*/
 
-string get_string(int line);
+double get_nr(string file, int line);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* get_string: get the string at the given line in file                                          */
+/*-----------------------------------------------------------------------------------------------*/
+
+string get_string(string file, int line);
 
 /*-----------------------------------------------------------------------------------------------*/
 

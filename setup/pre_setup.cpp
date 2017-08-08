@@ -26,7 +26,7 @@ using namespace std;
 /* main: Sets up the definitions.hpp file                                                        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int main(){
+int main(int argc, char *argv[]){
 
 
   cout << "                    \n";
@@ -34,18 +34,25 @@ int main(){
   cout << "------------------- \n\n";
 
 
-  /* Get nlspec from line 32 in parameters.txt */
+  string parameters_file = argv[1];
 
-  int nlspec = get_nr(34);
+
+  /* Get nlspec from line 34 in PARAMETERS_FILE */
+
+  int nlspec = get_nr(parameters_file, 34);
 
 
   /* Write NLSPEC file */
 
-  FILE *nlspec_file = fopen("NLSPEC.hpp", "w");
+  FILE *psp_file = fopen("pre_setup_parameters.hpp", "w");
 
-  fprintf( nlspec_file, "#define NLSPEC %d", nlspec );
+  fprintf( psp_file, "#define PARAMETERS_FILE \"%s\" \n", parameters_file.c_str() );
+  fprintf( psp_file, "#define NLSPEC %d", nlspec );
 
-  fclose(nlspec_file);
+  fclose(psp_file);
+
+
+  cout << "(pre-setup): PARAMETERS_FILE = " << parameters_file << "\n";
 
   cout << "(pre-setup): NLSPEC : " << nlspec << "\n\n";
 

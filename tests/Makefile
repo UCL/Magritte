@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/frederik/Dropbox/Astro/3D-RT/tests
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,17 +111,30 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named _main
+# Target rules for targets named test_column_density_calculator
 
 # Build rule for target.
-_main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 _main
-.PHONY : _main
+test_column_density_calculator: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_column_density_calculator
+.PHONY : test_column_density_calculator
 
 # fast build rule for target.
-_main/fast:
-	$(MAKE) -f CMakeFiles/_main.dir/build.make CMakeFiles/_main.dir/build
-.PHONY : _main/fast
+test_column_density_calculator/fast:
+	$(MAKE) -f CMakeFiles/test_column_density_calculator.dir/build.make CMakeFiles/test_column_density_calculator.dir/build
+.PHONY : test_column_density_calculator/fast
+
+#=============================================================================
+# Target rules for targets named test_rate_calculations_radfield
+
+# Build rule for target.
+test_rate_calculations_radfield: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_rate_calculations_radfield
+.PHONY : test_rate_calculations_radfield
+
+# fast build rule for target.
+test_rate_calculations_radfield/fast:
+	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/build
+.PHONY : test_rate_calculations_radfield/fast
 
 #=============================================================================
 # Target rules for targets named test_exact_feautrier
@@ -136,59 +149,285 @@ test_exact_feautrier/fast:
 	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/build
 .PHONY : test_exact_feautrier/fast
 
-test_exact_feautrier.o: test_exact_feautrier.cpp.o
+#=============================================================================
+# Target rules for targets named MAKE_SETUP
 
-.PHONY : test_exact_feautrier.o
+# Build rule for target.
+MAKE_SETUP: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MAKE_SETUP
+.PHONY : MAKE_SETUP
+
+# fast build rule for target.
+MAKE_SETUP/fast:
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/build
+.PHONY : MAKE_SETUP/fast
+
+#=============================================================================
+# Target rules for targets named RESIZE_STACK
+
+# Build rule for target.
+RESIZE_STACK: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 RESIZE_STACK
+.PHONY : RESIZE_STACK
+
+# fast build rule for target.
+RESIZE_STACK/fast:
+	$(MAKE) -f CMakeFiles/RESIZE_STACK.dir/build.make CMakeFiles/RESIZE_STACK.dir/build
+.PHONY : RESIZE_STACK/fast
+
+#=============================================================================
+# Target rules for targets named test_level_population_solver
+
+# Build rule for target.
+test_level_population_solver: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_level_population_solver
+.PHONY : test_level_population_solver
+
+# fast build rule for target.
+test_level_population_solver/fast:
+	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/build
+.PHONY : test_level_population_solver/fast
+
+#=============================================================================
+# Target rules for targets named test_ray_tracing
+
+# Build rule for target.
+test_ray_tracing: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_ray_tracing
+.PHONY : test_ray_tracing
+
+# fast build rule for target.
+test_ray_tracing/fast:
+	$(MAKE) -f CMakeFiles/test_ray_tracing.dir/build.make CMakeFiles/test_ray_tracing.dir/build
+.PHONY : test_ray_tracing/fast
+
+#=============================================================================
+# Target rules for targets named test_species_tools
+
+# Build rule for target.
+test_species_tools: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_species_tools
+.PHONY : test_species_tools
+
+# fast build rule for target.
+test_species_tools/fast:
+	$(MAKE) -f CMakeFiles/test_species_tools.dir/build.make CMakeFiles/test_species_tools.dir/build
+.PHONY : test_species_tools/fast
+
+#=============================================================================
+# Target rules for targets named test_spline
+
+# Build rule for target.
+test_spline: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_spline
+.PHONY : test_spline
+
+# fast build rule for target.
+test_spline/fast:
+	$(MAKE) -f CMakeFiles/test_spline.dir/build.make CMakeFiles/test_spline.dir/build
+.PHONY : test_spline/fast
+
+#=============================================================================
+# Target rules for targets named _test_main
+
+# Build rule for target.
+_test_main: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _test_main
+.PHONY : _test_main
+
+# fast build rule for target.
+_test_main/fast:
+	$(MAKE) -f test_src/CMakeFiles/_test_main.dir/build.make test_src/CMakeFiles/_test_main.dir/build
+.PHONY : _test_main/fast
+
+test_src/test_column_density_calculator.o: test_src/test_column_density_calculator.cpp.o
+
+.PHONY : test_src/test_column_density_calculator.o
 
 # target to build an object file
-test_exact_feautrier.cpp.o:
-	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/test_exact_feautrier.cpp.o
-.PHONY : test_exact_feautrier.cpp.o
+test_src/test_column_density_calculator.cpp.o:
+	$(MAKE) -f CMakeFiles/test_column_density_calculator.dir/build.make CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o
+.PHONY : test_src/test_column_density_calculator.cpp.o
 
-test_exact_feautrier.i: test_exact_feautrier.cpp.i
+test_src/test_column_density_calculator.i: test_src/test_column_density_calculator.cpp.i
 
-.PHONY : test_exact_feautrier.i
+.PHONY : test_src/test_column_density_calculator.i
 
 # target to preprocess a source file
-test_exact_feautrier.cpp.i:
-	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/test_exact_feautrier.cpp.i
-.PHONY : test_exact_feautrier.cpp.i
+test_src/test_column_density_calculator.cpp.i:
+	$(MAKE) -f CMakeFiles/test_column_density_calculator.dir/build.make CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.i
+.PHONY : test_src/test_column_density_calculator.cpp.i
 
-test_exact_feautrier.s: test_exact_feautrier.cpp.s
+test_src/test_column_density_calculator.s: test_src/test_column_density_calculator.cpp.s
 
-.PHONY : test_exact_feautrier.s
+.PHONY : test_src/test_column_density_calculator.s
 
 # target to generate assembly for a file
-test_exact_feautrier.cpp.s:
-	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/test_exact_feautrier.cpp.s
-.PHONY : test_exact_feautrier.cpp.s
+test_src/test_column_density_calculator.cpp.s:
+	$(MAKE) -f CMakeFiles/test_column_density_calculator.dir/build.make CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.s
+.PHONY : test_src/test_column_density_calculator.cpp.s
 
-test_main.o: test_main.cpp.o
+test_src/test_exact_feautrier.o: test_src/test_exact_feautrier.cpp.o
 
-.PHONY : test_main.o
+.PHONY : test_src/test_exact_feautrier.o
 
 # target to build an object file
-test_main.cpp.o:
-	$(MAKE) -f CMakeFiles/_main.dir/build.make CMakeFiles/_main.dir/test_main.cpp.o
-.PHONY : test_main.cpp.o
+test_src/test_exact_feautrier.cpp.o:
+	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/test_src/test_exact_feautrier.cpp.o
+.PHONY : test_src/test_exact_feautrier.cpp.o
 
-test_main.i: test_main.cpp.i
+test_src/test_exact_feautrier.i: test_src/test_exact_feautrier.cpp.i
 
-.PHONY : test_main.i
+.PHONY : test_src/test_exact_feautrier.i
 
 # target to preprocess a source file
-test_main.cpp.i:
-	$(MAKE) -f CMakeFiles/_main.dir/build.make CMakeFiles/_main.dir/test_main.cpp.i
-.PHONY : test_main.cpp.i
+test_src/test_exact_feautrier.cpp.i:
+	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/test_src/test_exact_feautrier.cpp.i
+.PHONY : test_src/test_exact_feautrier.cpp.i
 
-test_main.s: test_main.cpp.s
+test_src/test_exact_feautrier.s: test_src/test_exact_feautrier.cpp.s
 
-.PHONY : test_main.s
+.PHONY : test_src/test_exact_feautrier.s
 
 # target to generate assembly for a file
-test_main.cpp.s:
-	$(MAKE) -f CMakeFiles/_main.dir/build.make CMakeFiles/_main.dir/test_main.cpp.s
-.PHONY : test_main.cpp.s
+test_src/test_exact_feautrier.cpp.s:
+	$(MAKE) -f CMakeFiles/test_exact_feautrier.dir/build.make CMakeFiles/test_exact_feautrier.dir/test_src/test_exact_feautrier.cpp.s
+.PHONY : test_src/test_exact_feautrier.cpp.s
+
+test_src/test_level_population_solver.o: test_src/test_level_population_solver.cpp.o
+
+.PHONY : test_src/test_level_population_solver.o
+
+# target to build an object file
+test_src/test_level_population_solver.cpp.o:
+	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o
+.PHONY : test_src/test_level_population_solver.cpp.o
+
+test_src/test_level_population_solver.i: test_src/test_level_population_solver.cpp.i
+
+.PHONY : test_src/test_level_population_solver.i
+
+# target to preprocess a source file
+test_src/test_level_population_solver.cpp.i:
+	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.i
+.PHONY : test_src/test_level_population_solver.cpp.i
+
+test_src/test_level_population_solver.s: test_src/test_level_population_solver.cpp.s
+
+.PHONY : test_src/test_level_population_solver.s
+
+# target to generate assembly for a file
+test_src/test_level_population_solver.cpp.s:
+	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.s
+.PHONY : test_src/test_level_population_solver.cpp.s
+
+test_src/test_rate_calculations_radfield.o: test_src/test_rate_calculations_radfield.cpp.o
+
+.PHONY : test_src/test_rate_calculations_radfield.o
+
+# target to build an object file
+test_src/test_rate_calculations_radfield.cpp.o:
+	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/test_src/test_rate_calculations_radfield.cpp.o
+.PHONY : test_src/test_rate_calculations_radfield.cpp.o
+
+test_src/test_rate_calculations_radfield.i: test_src/test_rate_calculations_radfield.cpp.i
+
+.PHONY : test_src/test_rate_calculations_radfield.i
+
+# target to preprocess a source file
+test_src/test_rate_calculations_radfield.cpp.i:
+	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/test_src/test_rate_calculations_radfield.cpp.i
+.PHONY : test_src/test_rate_calculations_radfield.cpp.i
+
+test_src/test_rate_calculations_radfield.s: test_src/test_rate_calculations_radfield.cpp.s
+
+.PHONY : test_src/test_rate_calculations_radfield.s
+
+# target to generate assembly for a file
+test_src/test_rate_calculations_radfield.cpp.s:
+	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/test_src/test_rate_calculations_radfield.cpp.s
+.PHONY : test_src/test_rate_calculations_radfield.cpp.s
+
+test_src/test_ray_tracing.o: test_src/test_ray_tracing.cpp.o
+
+.PHONY : test_src/test_ray_tracing.o
+
+# target to build an object file
+test_src/test_ray_tracing.cpp.o:
+	$(MAKE) -f CMakeFiles/test_ray_tracing.dir/build.make CMakeFiles/test_ray_tracing.dir/test_src/test_ray_tracing.cpp.o
+.PHONY : test_src/test_ray_tracing.cpp.o
+
+test_src/test_ray_tracing.i: test_src/test_ray_tracing.cpp.i
+
+.PHONY : test_src/test_ray_tracing.i
+
+# target to preprocess a source file
+test_src/test_ray_tracing.cpp.i:
+	$(MAKE) -f CMakeFiles/test_ray_tracing.dir/build.make CMakeFiles/test_ray_tracing.dir/test_src/test_ray_tracing.cpp.i
+.PHONY : test_src/test_ray_tracing.cpp.i
+
+test_src/test_ray_tracing.s: test_src/test_ray_tracing.cpp.s
+
+.PHONY : test_src/test_ray_tracing.s
+
+# target to generate assembly for a file
+test_src/test_ray_tracing.cpp.s:
+	$(MAKE) -f CMakeFiles/test_ray_tracing.dir/build.make CMakeFiles/test_ray_tracing.dir/test_src/test_ray_tracing.cpp.s
+.PHONY : test_src/test_ray_tracing.cpp.s
+
+test_src/test_species_tools.o: test_src/test_species_tools.cpp.o
+
+.PHONY : test_src/test_species_tools.o
+
+# target to build an object file
+test_src/test_species_tools.cpp.o:
+	$(MAKE) -f CMakeFiles/test_species_tools.dir/build.make CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o
+.PHONY : test_src/test_species_tools.cpp.o
+
+test_src/test_species_tools.i: test_src/test_species_tools.cpp.i
+
+.PHONY : test_src/test_species_tools.i
+
+# target to preprocess a source file
+test_src/test_species_tools.cpp.i:
+	$(MAKE) -f CMakeFiles/test_species_tools.dir/build.make CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.i
+.PHONY : test_src/test_species_tools.cpp.i
+
+test_src/test_species_tools.s: test_src/test_species_tools.cpp.s
+
+.PHONY : test_src/test_species_tools.s
+
+# target to generate assembly for a file
+test_src/test_species_tools.cpp.s:
+	$(MAKE) -f CMakeFiles/test_species_tools.dir/build.make CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.s
+.PHONY : test_src/test_species_tools.cpp.s
+
+test_src/test_spline.o: test_src/test_spline.cpp.o
+
+.PHONY : test_src/test_spline.o
+
+# target to build an object file
+test_src/test_spline.cpp.o:
+	$(MAKE) -f CMakeFiles/test_spline.dir/build.make CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o
+.PHONY : test_src/test_spline.cpp.o
+
+test_src/test_spline.i: test_src/test_spline.cpp.i
+
+.PHONY : test_src/test_spline.i
+
+# target to preprocess a source file
+test_src/test_spline.cpp.i:
+	$(MAKE) -f CMakeFiles/test_spline.dir/build.make CMakeFiles/test_spline.dir/test_src/test_spline.cpp.i
+.PHONY : test_src/test_spline.cpp.i
+
+test_src/test_spline.s: test_src/test_spline.cpp.s
+
+.PHONY : test_src/test_spline.s
+
+# target to generate assembly for a file
+test_src/test_spline.cpp.s:
+	$(MAKE) -f CMakeFiles/test_spline.dir/build.make CMakeFiles/test_spline.dir/test_src/test_spline.cpp.s
+.PHONY : test_src/test_spline.cpp.s
 
 # Help Target
 help:
@@ -196,16 +435,39 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... _main"
+	@echo "... test_column_density_calculator"
+	@echo "... test_rate_calculations_radfield"
 	@echo "... test_exact_feautrier"
-	@echo "... test_exact_feautrier.o"
-	@echo "... test_exact_feautrier.i"
-	@echo "... test_exact_feautrier.s"
-	@echo "... test_main.o"
-	@echo "... test_main.i"
-	@echo "... test_main.s"
+	@echo "... MAKE_SETUP"
+	@echo "... RESIZE_STACK"
+	@echo "... test_level_population_solver"
+	@echo "... test_ray_tracing"
+	@echo "... test_species_tools"
+	@echo "... test_spline"
+	@echo "... rebuild_cache"
+	@echo "... _test_main"
+	@echo "... test_src/test_column_density_calculator.o"
+	@echo "... test_src/test_column_density_calculator.i"
+	@echo "... test_src/test_column_density_calculator.s"
+	@echo "... test_src/test_exact_feautrier.o"
+	@echo "... test_src/test_exact_feautrier.i"
+	@echo "... test_src/test_exact_feautrier.s"
+	@echo "... test_src/test_level_population_solver.o"
+	@echo "... test_src/test_level_population_solver.i"
+	@echo "... test_src/test_level_population_solver.s"
+	@echo "... test_src/test_rate_calculations_radfield.o"
+	@echo "... test_src/test_rate_calculations_radfield.i"
+	@echo "... test_src/test_rate_calculations_radfield.s"
+	@echo "... test_src/test_ray_tracing.o"
+	@echo "... test_src/test_ray_tracing.i"
+	@echo "... test_src/test_ray_tracing.s"
+	@echo "... test_src/test_species_tools.o"
+	@echo "... test_src/test_species_tools.i"
+	@echo "... test_src/test_species_tools.s"
+	@echo "... test_src/test_spline.o"
+	@echo "... test_src/test_spline.i"
+	@echo "... test_src/test_spline.s"
 .PHONY : help
 
 

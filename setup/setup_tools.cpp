@@ -26,13 +26,13 @@ using namespace std;
 
 
 
-/* get_file: get the input file name from parameters.txt                                         */
+/* get_file: get the input file name from file                                         */
 /*-----------------------------------------------------------------------------------------------*/
 
-string get_file(int line)
+string get_file(string file, int line)
 {
 
-  string filename = "../" + get_string(line);               /* relative path w.r.t /setup folder */
+  string filename = "../" + get_string(file, line);         /* relative path w.r.t /setup folder */
 
   return filename;
 
@@ -44,19 +44,19 @@ string get_file(int line)
 
 
 
-/* get_nr: get the input number from parameters.txt                                              */
+/* get_nr: get the input number from file                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
-double get_nr(int line)
+double get_nr(string file, int line)
 {
 
   char buffer1[BUFFER_SIZE];
   double buffer2;
 
 
-  /* Open the parameters.txt file */
+  /* Open the PARAMETERS_FILE */
 
-  FILE *params = fopen("../parameters.txt", "r");
+  FILE *params = fopen(file.c_str(), "r");
 
 
   /* Skip the lines before the file name */
@@ -86,19 +86,19 @@ double get_nr(int line)
 
 
 
-/* get_string: get the string at the given line in parameters.txt                                */
+/* get_string: get the string at the given line in file                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-string get_string(int line)
+string get_string(string file, int line)
 {
 
   char buffer1[BUFFER_SIZE];
   char buffer2[BUFFER_SIZE];
 
 
-  /* Open the parameters.txt file */
+  /* Open the PARAMETERS_FILE */
 
-  FILE *params = fopen("../parameters.txt", "r");
+  FILE *params = fopen(file.c_str(), "r");
 
 
   /* Skip the lines before the file name */

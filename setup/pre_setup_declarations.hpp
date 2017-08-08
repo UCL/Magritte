@@ -18,8 +18,6 @@
 #include <string>
 using namespace std;
 
-#include "NLSPEC.hpp"
-
 
 
 /* Input and data files */

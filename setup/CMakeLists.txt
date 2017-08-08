@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 2.8)
 # Execute the pre-setup
 
 add_custom_target( PRE_SETUP ALL
-                   COMMAND ./pre_setup )
+                   COMMAND ./pre_setup \${PARAMETERS_FILE} )
 
 # Create setup library
 
