@@ -99,9 +99,11 @@ static int check_flag(void *flagvalue, const char *funcname, int opt);
 int rate_equation_solver(long gridp)
 {
 
-  int i;                                                                                /* index */
+  long *user_data;
+  user_data = &gridp;
 
-  int e_nr = 32;
+
+  int i;                                                                                /* index */
 
   realtype reltol, t, tout;
   N_Vector y, abstol;

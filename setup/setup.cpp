@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <python2.7/Python.h>
+
 #include <string>
 #include <iostream>
 using namespace std;
@@ -246,7 +248,7 @@ int main(){
 
   /* Write the header */
 
-  FILE *dec_head = fopen("declarations_hd.txt", "r");
+  FILE *dec_head = fopen("standard_code/declarations_hd.txt", "r");
 
 
   while ( !feof(dec_head) ){
@@ -323,7 +325,7 @@ int main(){
 
   /* Write the standard part of definitions */
 
-  FILE *dec_std = fopen("declarations_std.txt", "r");
+  FILE *dec_std = fopen("standard_code/declarations_std.txt", "r");
 
 
   while ( !feof(dec_std) ){
@@ -361,7 +363,7 @@ int main(){
 
   /* Write the header */
 
-  FILE *def_head = fopen("definitions_hd.txt", "r");
+  FILE *def_head = fopen("standard_code/definitions_hd.txt", "r");
 
 
   while ( !feof(def_head) ){
@@ -398,7 +400,7 @@ int main(){
 
   /* Write the standard part of definitions */
 
-  FILE *def_std = fopen("definitions_std.txt", "r");
+  FILE *def_std = fopen("standard_code/definitions_std.txt", "r");
 
 
   while ( !feof(def_std) ){
@@ -415,6 +417,47 @@ int main(){
 
 
   cout << "(setup): definitions.hpp is set up \n\n";
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /*   WRITE sundials/rate_equations.cpp and sundials/jacobian.cpp                               */
+  /*_____________________________________________________________________________________________*/
+
+
+  cout << "(setup): execute make_rates.py \n\n";
+
+
+  int argc = 3;
+
+  char *argv[3];
+
+
+  argv[0] = "make_rates.py";
+  argv[1] = "reactionFile=../data/rates_reduced.d";
+  argv[2] = "speciesFile=../data/species_reduced.d";
+
+
+  Py_SetProgramName(argv[0]);
+
+  Py_Initialize();
+
+  PySys_SetArgv(argc, argv);
+
+  FILE *file = fopen("make_rates.py","r");
+
+  PyRun_SimpleFile(file, "make_rates.py");
+
+  Py_Finalize();
+
+
+  cout << "(setup): make_rates.py is executed \n";
+  cout << "(setup): sundials/rate_equations.cpp is setup \n";
+  cout << "(setup): sundials/jacobian.cpp is setup \n\n";
 
 
   /*_____________________________________________________________________________________________*/

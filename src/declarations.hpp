@@ -309,7 +309,7 @@ typedef struct REACTIONS {
   double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
 
 
-  double k;                                                         /* reaction rate coefficient */
+  double k[NGRID];                                                  /* reaction rate coefficient */
 
   int    dup;                                           /* Number of duplicates of this reaction */
 

@@ -8,6 +8,12 @@
 cmake_minimum_required(VERSION 2.8)
 
 
+# Add Python libraries for make_rates.py
+
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+
 # Execute the pre-setup
 
 add_custom_target( PRE_SETUP ALL
@@ -25,5 +31,5 @@ add_executable( setup   setup.cpp )
 
 # Link the setup library to the executable
 
-target_link_libraries( setup   _setup )
+target_link_libraries( setup   _setup   ${PYTHON_LIBRARIES} )
 

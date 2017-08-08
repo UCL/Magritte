@@ -124,19 +124,6 @@ test_column_density_calculator/fast:
 .PHONY : test_column_density_calculator/fast
 
 #=============================================================================
-# Target rules for targets named test_rate_calculations_radfield
-
-# Build rule for target.
-test_rate_calculations_radfield: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_rate_calculations_radfield
-.PHONY : test_rate_calculations_radfield
-
-# fast build rule for target.
-test_rate_calculations_radfield/fast:
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/build
-.PHONY : test_rate_calculations_radfield/fast
-
-#=============================================================================
 # Target rules for targets named test_exact_feautrier
 
 # Build rule for target.
@@ -161,6 +148,19 @@ MAKE_SETUP: cmake_check_build_system
 MAKE_SETUP/fast:
 	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/build
 .PHONY : MAKE_SETUP/fast
+
+#=============================================================================
+# Target rules for targets named test_radfield_tools
+
+# Build rule for target.
+test_radfield_tools: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_radfield_tools
+.PHONY : test_radfield_tools
+
+# fast build rule for target.
+test_radfield_tools/fast:
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/build
+.PHONY : test_radfield_tools/fast
 
 #=============================================================================
 # Target rules for targets named RESIZE_STACK
@@ -321,32 +321,32 @@ test_src/test_level_population_solver.cpp.s:
 	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.s
 .PHONY : test_src/test_level_population_solver.cpp.s
 
-test_src/test_rate_calculations_radfield.o: test_src/test_rate_calculations_radfield.cpp.o
+test_src/test_radfield_tools.o: test_src/test_radfield_tools.cpp.o
 
-.PHONY : test_src/test_rate_calculations_radfield.o
+.PHONY : test_src/test_radfield_tools.o
 
 # target to build an object file
-test_src/test_rate_calculations_radfield.cpp.o:
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/test_src/test_rate_calculations_radfield.cpp.o
-.PHONY : test_src/test_rate_calculations_radfield.cpp.o
+test_src/test_radfield_tools.cpp.o:
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/test_src/test_radfield_tools.cpp.o
+.PHONY : test_src/test_radfield_tools.cpp.o
 
-test_src/test_rate_calculations_radfield.i: test_src/test_rate_calculations_radfield.cpp.i
+test_src/test_radfield_tools.i: test_src/test_radfield_tools.cpp.i
 
-.PHONY : test_src/test_rate_calculations_radfield.i
+.PHONY : test_src/test_radfield_tools.i
 
 # target to preprocess a source file
-test_src/test_rate_calculations_radfield.cpp.i:
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/test_src/test_rate_calculations_radfield.cpp.i
-.PHONY : test_src/test_rate_calculations_radfield.cpp.i
+test_src/test_radfield_tools.cpp.i:
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/test_src/test_radfield_tools.cpp.i
+.PHONY : test_src/test_radfield_tools.cpp.i
 
-test_src/test_rate_calculations_radfield.s: test_src/test_rate_calculations_radfield.cpp.s
+test_src/test_radfield_tools.s: test_src/test_radfield_tools.cpp.s
 
-.PHONY : test_src/test_rate_calculations_radfield.s
+.PHONY : test_src/test_radfield_tools.s
 
 # target to generate assembly for a file
-test_src/test_rate_calculations_radfield.cpp.s:
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/test_src/test_rate_calculations_radfield.cpp.s
-.PHONY : test_src/test_rate_calculations_radfield.cpp.s
+test_src/test_radfield_tools.cpp.s:
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/test_src/test_radfield_tools.cpp.s
+.PHONY : test_src/test_radfield_tools.cpp.s
 
 test_src/test_ray_tracing.o: test_src/test_ray_tracing.cpp.o
 
@@ -437,9 +437,9 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... test_column_density_calculator"
-	@echo "... test_rate_calculations_radfield"
 	@echo "... test_exact_feautrier"
 	@echo "... MAKE_SETUP"
+	@echo "... test_radfield_tools"
 	@echo "... RESIZE_STACK"
 	@echo "... test_level_population_solver"
 	@echo "... test_ray_tracing"
@@ -456,9 +456,9 @@ help:
 	@echo "... test_src/test_level_population_solver.o"
 	@echo "... test_src/test_level_population_solver.i"
 	@echo "... test_src/test_level_population_solver.s"
-	@echo "... test_src/test_rate_calculations_radfield.o"
-	@echo "... test_src/test_rate_calculations_radfield.i"
-	@echo "... test_src/test_rate_calculations_radfield.s"
+	@echo "... test_src/test_radfield_tools.o"
+	@echo "... test_src/test_radfield_tools.i"
+	@echo "... test_src/test_radfield_tools.s"
 	@echo "... test_src/test_ray_tracing.o"
 	@echo "... test_src/test_ray_tracing.i"
 	@echo "... test_src/test_ray_tracing.s"

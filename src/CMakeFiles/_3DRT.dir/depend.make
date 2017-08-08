@@ -56,6 +56,11 @@ src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o: src/declarations.hpp
 src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o: src/rad_surface_calculator.cpp
 src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o: src/rad_surface_calculator.hpp
 
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o: src/radfield_tools.cpp
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o: src/radfield_tools.hpp
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o: src/spline.hpp
+
 src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o: src/declarations.hpp
 src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o: src/exact_feautrier.hpp
 src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o: src/radiative_transfer.cpp
@@ -66,9 +71,9 @@ src/CMakeFiles/_3DRT.dir/rate_calculations.cpp.o: src/rate_calculations.cpp
 src/CMakeFiles/_3DRT.dir/rate_calculations.cpp.o: src/rate_calculations.hpp
 
 src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o: src/radfield_tools.hpp
 src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o: src/rate_calculations_radfield.cpp
 src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o: src/rate_calculations_radfield.hpp
-src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o: src/spline.hpp
 
 src/CMakeFiles/_3DRT.dir/ray_tracing.cpp.o: src/HEALPix/chealpix.hpp
 src/CMakeFiles/_3DRT.dir/ray_tracing.cpp.o: src/declarations.hpp

@@ -18,7 +18,7 @@ string
 string
 -
 
-/home/frederik/Dropbox/Astro/3D-RT/src/rate_calculations_radfield.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.hpp
 string
@@ -268,12 +268,14 @@ cfloat
 cstdio
 -
 
-/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_rate_calculations_radfield.cpp
+/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_radfield_tools.cpp
 stdio.h
 -
 stdlib.h
 -
 string
+-
+iostream
 -
 catch.hpp
 /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/catch.hpp
@@ -285,6 +287,6 @@ catch.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
 ../../src/read_chemdata.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.hpp
-../../src/rate_calculations_radfield.hpp
-/home/frederik/Dropbox/Astro/3D-RT/src/rate_calculations_radfield.hpp
+../../src/radfield_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
 

@@ -61,6 +61,10 @@ TEST_CASE("1D regular grid"){
   spec_datafile    = "../" + spec_datafile;
   line_datafile[0] = "../" + line_datafile[0];
 
+  /* IMPORTANT NOTE: THIS IS EXECUTED FOR EVERY SECTION. SINCE THE FILE NAMES ARE EXTERNALLY
+                     DEFINED< THE EXTERA PIECE "../" WILL BE APPENDED FOR EVERY SECTION, HENCE
+                     SEGMENTATION FAULTS WHEN INTRODUCING MULTIPLE SECTIONS                      */
+
 
 
   /* Initialize */

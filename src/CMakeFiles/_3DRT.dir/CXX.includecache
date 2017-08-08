@@ -196,6 +196,24 @@ rad_surface_calculator.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/rad_surface_calculator.hpp
 
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+math.h
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+radfield_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
+spline.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/spline.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/radiative_transfer.cpp
 stdio.h
 -
@@ -241,8 +259,8 @@ declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 rate_calculations_radfield.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/rate_calculations_radfield.hpp
-spline.hpp
-/home/frederik/Dropbox/Astro/3D-RT/src/spline.hpp
+radfield_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/rate_calculations_radfield.hpp
 

@@ -465,7 +465,7 @@ int main()
     AV_calculator(column_H2, AV);
 
 
-    /* Calculcate the UV field and radiation surface */
+    /* Calculcate the UV field */
 
     UV_field_calculator(AV, rad_surface, UV_field);
 
@@ -488,12 +488,12 @@ int main()
     /* Calculate the reaction rates */
 
     // reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                    // column_H2, column_HD, column_C, column_CO, v_turb );
+    //                 column_H2, column_HD, column_C, column_CO, v_turb, gridp );
 
 
     /* Calculate the chemical abundances by solving the rate equations */
 
-    abundance();
+    // abundance();
 
 
     printf("(3D-RT): chemical abundances calculated \n");

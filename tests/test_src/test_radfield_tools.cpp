@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* test_spline: Calculate splines for tabulated functions                                        */
+/* test_radfield_tools: teat the radfield tools functions                                        */
 /*                                                                                               */
 /* (based on spline in 3D-PDR)                                                                   */
 /*                                                                                               */
@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 #include "catch.hpp"
@@ -23,7 +24,7 @@ using namespace std;
 #include "../../src/definitions.hpp"
 #include "../../src/data_tools.hpp"
 #include "../../src/read_chemdata.hpp"
-#include "../../src/rate_calculations_radfield.hpp"
+#include "../../src/radfield_tools.hpp"
 
 
 
@@ -33,7 +34,7 @@ using namespace std;
 
 
 
-/* Test rate_calculations_radfield functions                                                     */
+/* Test radfield_tools functions                                                                 */
 /*-----------------------------------------------------------------------------------------------*/
 
 TEST_CASE("Test rate_calculations_radfield functions"){
@@ -42,17 +43,25 @@ TEST_CASE("Test rate_calculations_radfield functions"){
   int n, spec, reac, ray;                                                               /* index */
 
 
-  /* Read the chemical data */
-
-  read_species(spec_datafile);
-
-  read_reactions(reac_datafile);
-
-
 
   /* Test X_lambda */
 
   SECTION("Test X_lambda calculator"){
+
+
+    /* Since the executables are now in the directory /tests, we have to change the paths */
+
+    string spec_datafile1  = "../" + spec_datafile;
+
+    string reac_datafile1  = "../" + reac_datafile;
+
+
+    /* Read the chemical data */
+
+    read_species(spec_datafile1);
+
+    read_reactions(reac_datafile1);
+
 
     double lambda;                                                                 /* wavelength */
 
@@ -89,8 +98,23 @@ TEST_CASE("Test rate_calculations_radfield functions"){
 
   SECTION("Test self_shielding_CO"){
 
-    double column_CO;                                                       /* CO column density */
-    double column_H2;                                                       /* H2 column density */
+
+    /* Since the executables are now in the directory /tests, we have to change the paths */
+
+    string spec_datafile2  = "../" + spec_datafile;
+
+    string reac_datafile2  = "../" + reac_datafile;
+
+
+    /* Read the chemical data */
+
+    read_species(spec_datafile2);
+
+    read_reactions(reac_datafile2);
+
+
+    double column_CO_t;                                                     /* CO column density */
+    double column_H2_t;                                                     /* H2 column density */
 
     int n = 20;                                                /* number of interpolating points */
 
@@ -110,12 +134,12 @@ TEST_CASE("Test rate_calculations_radfield functions"){
 
       for (int j=0; j<n; j++){
 
-        column_CO = pow(10.0, (19.0-12.0)/n*i + 12.0 );
-        column_H2 = pow(10.0, (23.0-18.0)/n*j + 18.0 );
+        column_CO_t = pow(10.0, (19.0-12.0)/n*i + 12.0 );
+        column_H2_t = pow(10.0, (23.0-18.0)/n*j + 18.0 );
 
-        fprintf( sCO, "%lE\t%lE\t%lE\n", log10(column_CO),
-                                         log10(column_H2),
-                                         log10(self_shielding_CO(column_CO, column_H2)) );
+        fprintf( sCO, "%lE\t%lE\t%lE\n", log10(column_CO_t),
+                                         log10(column_H2_t),
+                                         log10(self_shielding_CO(column_CO_t, column_H2_t)) );
       }
     }
 

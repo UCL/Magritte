@@ -45,7 +45,7 @@ double rate_H2_formation( int reac, double temperature_gas, double temperature_d
   /* Copy the reaction data to variables with more convenient names */
 
   alpha = reaction[reac].alpha;
-  beta = reaction[reac].beta;
+  beta  = reaction[reac].beta;
   gamma = reaction[reac].gamma;
 
   RT_min = reaction[reac].RT_min;

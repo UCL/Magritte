@@ -1,2 +1,2 @@
-#define PARAMETERS_FILE "../tests/parameters_for_testing.txt" 
+#define PARAMETERS_FILE "../parameters.txt" 
 #define NLSPEC 1

@@ -97,43 +97,6 @@ clean: CMakeFiles/test_column_density_calculator.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/test_rate_calculations_radfield.dir
-
-# All Build rule for target.
-CMakeFiles/test_rate_calculations_radfield.dir/all: test_src/CMakeFiles/_test_main.dir/all
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/depend
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=9,10 "Built target test_rate_calculations_radfield"
-.PHONY : CMakeFiles/test_rate_calculations_radfield.dir/all
-
-# Include target in all.
-all: CMakeFiles/test_rate_calculations_radfield.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/test_rate_calculations_radfield.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles 4
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_rate_calculations_radfield.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles 0
-.PHONY : CMakeFiles/test_rate_calculations_radfield.dir/rule
-
-# Convenience name for target.
-test_rate_calculations_radfield: CMakeFiles/test_rate_calculations_radfield.dir/rule
-
-.PHONY : test_rate_calculations_radfield
-
-# clean rule for target.
-CMakeFiles/test_rate_calculations_radfield.dir/clean:
-	$(MAKE) -f CMakeFiles/test_rate_calculations_radfield.dir/build.make CMakeFiles/test_rate_calculations_radfield.dir/clean
-.PHONY : CMakeFiles/test_rate_calculations_radfield.dir/clean
-
-# clean rule for target.
-clean: CMakeFiles/test_rate_calculations_radfield.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
 # Target rules for target CMakeFiles/test_exact_feautrier.dir
 
 # All Build rule for target.
@@ -204,6 +167,43 @@ CMakeFiles/MAKE_SETUP.dir/clean:
 
 # clean rule for target.
 clean: CMakeFiles/MAKE_SETUP.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_radfield_tools.dir
+
+# All Build rule for target.
+CMakeFiles/test_radfield_tools.dir/all: test_src/CMakeFiles/_test_main.dir/all
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/depend
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=9,10 "Built target test_radfield_tools"
+.PHONY : CMakeFiles/test_radfield_tools.dir/all
+
+# Include target in all.
+all: CMakeFiles/test_radfield_tools.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_radfield_tools.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles 4
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/test_radfield_tools.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles 0
+.PHONY : CMakeFiles/test_radfield_tools.dir/rule
+
+# Convenience name for target.
+test_radfield_tools: CMakeFiles/test_radfield_tools.dir/rule
+
+.PHONY : test_radfield_tools
+
+# clean rule for target.
+CMakeFiles/test_radfield_tools.dir/clean:
+	$(MAKE) -f CMakeFiles/test_radfield_tools.dir/build.make CMakeFiles/test_radfield_tools.dir/clean
+.PHONY : CMakeFiles/test_radfield_tools.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/test_radfield_tools.dir/clean
 
 .PHONY : clean
 

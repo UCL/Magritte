@@ -1,4 +1,10 @@
 3D-RT: 3D Radiative Transfer
 ----------------------------
 
-(based on 3D-PDR)
+- Specify the parameters in parameters.txt
+  (Data files are stored in the /data folder. Grids are stored in the /input folder.)
+
+- Run make to setup and compile the source code given the specified paremeters.
+  This will create the 3D-RT executable.
+
+- Run the executable to generate the ouput in the /output folder.

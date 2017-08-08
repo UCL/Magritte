@@ -476,6 +476,33 @@ rad_surface_calculator.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.s
 .PHONY : rad_surface_calculator.cpp.s
 
+radfield_tools.o: radfield_tools.cpp.o
+
+.PHONY : radfield_tools.o
+
+# target to build an object file
+radfield_tools.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o
+.PHONY : radfield_tools.cpp.o
+
+radfield_tools.i: radfield_tools.cpp.i
+
+.PHONY : radfield_tools.i
+
+# target to preprocess a source file
+radfield_tools.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.i
+.PHONY : radfield_tools.cpp.i
+
+radfield_tools.s: radfield_tools.cpp.s
+
+.PHONY : radfield_tools.s
+
+# target to generate assembly for a file
+radfield_tools.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.s
+.PHONY : radfield_tools.cpp.s
+
 radiative_transfer.o: radiative_transfer.cpp.o
 
 .PHONY : radiative_transfer.o
@@ -848,6 +875,9 @@ help:
 	@echo "... rad_surface_calculator.o"
 	@echo "... rad_surface_calculator.i"
 	@echo "... rad_surface_calculator.s"
+	@echo "... radfield_tools.o"
+	@echo "... radfield_tools.i"
+	@echo "... radfield_tools.s"
 	@echo "... radiative_transfer.o"
 	@echo "... radiative_transfer.i"
 	@echo "... radiative_transfer.s"

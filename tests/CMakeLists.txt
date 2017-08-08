@@ -85,12 +85,12 @@ target_link_libraries( test_level_population_solver   _test_main   ${3DRT} )
 
 # Create executable to test rate_calculations_radfield
 
-add_executable( test_rate_calculations_radfield   test_src/test_rate_calculations_radfield.cpp )
+add_executable( test_radfield_tools   test_src/test_radfield_tools.cpp )
 
 
 # Link the necessary libraries
 
-target_link_libraries( test_rate_calculations_radfield   _test_main   ${3DRT} )
+target_link_libraries( test_radfield_tools   _test_main   ${3DRT} )
 
 
 # Create executable to test ray_tracing

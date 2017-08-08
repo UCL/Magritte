@@ -22,8 +22,6 @@ import struct
 import sys
 import time
 
-import numpy as np
-
 
 
 useTtk = False
@@ -431,7 +429,7 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
         # else:
             # fileHeader = '/*=======================================================================\n\n User-supplied f (ODEs) routine. Compute the function ydot = f(t,y)\n\n-----------------------------------------------------------------------*/\nstatic int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)\n{\n  realtype *x, *ode, *rate;\n  realtype n_H, x_e, loss, form;\n  User_Data data;\n\n  /* Obtain pointers to the y and ydot vector data arrays */\n  x = NV_DATA_S(y);\n  ode = NV_DATA_S(ydot);\n\n  /* Retrieve the array of reaction rate coefficients and\n   * the total number density from the user-supplied data */\n  data = (User_Data) user_data;\n  rate = data->rate;\n  n_H = data->n_H;\n\n  /* The electron abundance is a conserved quantity, given by the sum\n   * of the abundances of all ionized species in the chemical network */\n'
 
-    with open("rate_equations_header.txt") as header:
+    with open("standard_code/rate_equations_hd.txt") as header:
         data=header.readlines()
     fileHeader = ""
     for line in data:
@@ -439,7 +437,7 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
     output.write(fileHeader)
 
     #TEMPORARY!!!
-    output.write("double n_H = 1.0;\n\n double loss, form; \n\n")
+    output.write("\n\n  long *gridp_pointer = (long*) user_data;\n\n  long gridp = *gridp_pointer;\n\n  double n_H = 1.0;\n\n  double loss, form; \n\n")
 
     # Prepare and write the electron conservation equation
     output.write(conserve_species('e-', constituentList, codeFormat='C'))
@@ -464,9 +462,9 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
         for i in range(nReactions):
             if reactants[i].count(species) > 0:
                 if is_H2_formation(reactants[i], products[i]):
-                    lossString += '-2*reaction['+str(i)+'].k*n_H'
+                    lossString += '-2*reaction['+str(i)+'].k[gridp]*n_H'
                     continue
-                lossString += '-'+multiple(reactants[i].count(species))+'reaction['+str(i)+'].k'
+                lossString += '-'+multiple(reactants[i].count(species))+'reaction['+str(i)+'].k[gridp]'
                 for reactant in speciesList:
                     if reactant == species:
                         for j in range(reactants[i].count(reactant)-1):
@@ -499,9 +497,9 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
             # Formation terms
             if products[i].count(species) > 0:
                 if is_H2_formation(reactants[i], products[i]):
-                    formString += '+reaction['+str(i)+'].k*Ith(y,'+str(speciesList.index('H'))+'+1)*n_H'
+                    formString += '+reaction['+str(i)+'].k[gridp]*Ith(y,'+str(speciesList.index('H'))+'+1)*n_H'
                     continue
-                formString += '+'+multiple(products[i].count(species))+'reaction['+str(i)+'].k'
+                formString += '+'+multiple(products[i].count(species))+'reaction['+str(i)+'].k[gridp]'
                 for reactant in speciesList:
                     for j in range(reactants[i].count(reactant)):
                         formString += '*Ith(y,'+str(speciesList.index(reactant))+'+1)'
@@ -603,7 +601,7 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
     # else:
        # fileHeader = '/*=======================================================================\n\n User-supplied Jacobian routine. Compute the function J(t,y) = df/dy\n\n-----------------------------------------------------------------------*/\nstatic int Jac(long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J,\n               void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)\n{\n  realtype *x, *rate;\n  realtype n_H, x_e;\n  User_Data data;\n\n  /* Obtain a pointer to the y vector data array */\n  x = NV_DATA_S(y);\n\n  /* Retrieve the array of reaction rate coefficients, total number\n   * density and the electron abundance from the user-supplied data */\n  data = (User_Data) user_data;\n  rate = data->rate;\n  n_H = data->n_H;\n  x_e = data->x_e;\n'
 
-    with open("jacobian_header.txt") as header:
+    with open("standard_code/jacobian_hd.txt") as header:
         data=header.readlines()
     fileHeader = ""
     for line in data:
@@ -611,7 +609,7 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
     output.write(fileHeader)
 
     #TEMPORARY!!!
-    output.write("double n_H = 1.0;\n")
+    output.write("\n\n  long *gridp_pointer = (long*) user_data;\n\n  long gridp = *gridp_pointer;\n\n  double n_H = 1.0;\n")
 
     # If X-ray reactions are present, write the additional terms needed to calculate their rate partial derivatives
     if xrayReactions:
@@ -634,9 +632,9 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
             for i in range(nReactions):
                 if reactants[i].count(species1) > 0 and reactants[i].count(species2) > 0:
                     if is_H2_formation(reactants[i], products[i]):
-                        matrixString += '-2*reaction['+str(i)+'].k*n_H'
+                        matrixString += '-2*reaction['+str(i)+'].k[gridp]*n_H'
                         continue
-                    matrixString += '-'+multiple(reactants[i].count(species1))+multiple(reactants[i].count(species1))+'reaction['+str(i)+'].k'
+                    matrixString += '-'+multiple(reactants[i].count(species1))+multiple(reactants[i].count(species1))+'reaction['+str(i)+'].k[gridp]'
                     for reactant in speciesList:
                         if reactant == species2:
                             for j in range(reactants[i].count(reactant)-1):
@@ -654,39 +652,39 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     # X-ray induced secondary ionization
                     if reactants[i].count('XRSEC') == 1:
                         if reactants[i].count('H') == 1:
-                            matrixString = matrixString[:-len('-reaction['+str(i)+'].k')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(indexH) +'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(indexH2)+'+1)*zeta_H*(+1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            matrixString = matrixString[:-len('-reaction['+str(i)+'].k[gridp]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+1)*zeta_H*(+1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
                         elif reactants[i].count('H2') == 1:
-                            matrixString = matrixString[:-len('-reaction['+str(i)+'].k')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(indexH) +'+1)*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(indexH2)+'+1)*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
+                            matrixString = matrixString[:-len('-reaction['+str(i)+'].k[gridp]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+1)*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+1)*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
                         elif reactants[i].count('He') == 1:
                             matrixString += '*zeta_He'
                         else:
                             matrixString += '*zeta_H'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(n)+'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(n)+'+1)*zeta_H*(-1.00/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+1)*zeta_H*(-1.00/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                     if reactants[i].count('XRLYA') == 1:
                         matrixString += '*Ith(y,'+str(indexH)+'+1)*zeta_H'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(n)+'+1)*zeta_H*(-1.89*Ith(y,'+str(indexH)+ '+1)/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(n)+'+1)*zeta_H*(+1.89*Ith(y,'+str(indexH2)+'+1)/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+1)*zeta_H*(-1.89*Ith(y,'+str(indexH)+ '+1)/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+1)*zeta_H*(+1.89*Ith(y,'+str(indexH2)+'+1)/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                     if reactants[i].count('XRPHOT') == 1:
                         matrixString += '*Ith(y,'+str(indexH2)+'+1)*zeta_H2'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(n)+'+1)*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ '+1)/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k*Ith(y,'+str(n)+'+1)*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+'+1)/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+1)*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ '+1)/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+1)*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+'+1)/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
 
             # Formation terms for species1
             for i in range(nReactions):
                 if products[i].count(species1) > 0 and reactants[i].count(species2) > 0:
                     if is_H2_formation(reactants[i], products[i]):
-                        matrixString += '+reaction['+str(i)+'].k*n_H'
+                        matrixString += '+reaction['+str(i)+'].k[gridp]*n_H'
                         continue
-                    matrixString += '+'+multiple(products[i].count(species1))+'reaction['+str(i)+'].k'
+                    matrixString += '+'+multiple(products[i].count(species1))+'reaction['+str(i)+'].k[gridp]'
                     for reactant in speciesList:
                         if reactant == species2:
                             for j in range(reactants[i].count(reactant)-1):
@@ -700,31 +698,31 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     # X-ray induced secondary ionization
                     if reactants[i].count('XRSEC') == 1:
                         if reactants[i].count('H') == 1:
-                            matrixString = matrixString[:-len('+reaction['+str(i)+'].k')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(indexH) +'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(indexH2)+'+1)*zeta_H*(+1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            matrixString = matrixString[:-len('+reaction['+str(i)+'].k[gridp]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+1)*zeta_H*(+1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
                         elif reactants[i].count('H2') == 1:
-                            matrixString = matrixString[:-len('+reaction['+str(i)+'].k')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(indexH) +'+1)*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(indexH2)+'+1)*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
+                            matrixString = matrixString[:-len('+reaction['+str(i)+'].k[gridp]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+1)*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+1)*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+'+1)+0.53*Ith(y,'+str(indexH)+'+1)));\n'
                         elif reactants[i].count('He') == 1:
                             matrixString += '*zeta_He'
                         else:
                             matrixString += '*zeta_H'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(m)+'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(m)+'+1)*zeta_H*(-1.00/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+1)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+1)*zeta_H*(-1.00/(Ith(y,'+str(indexH)+'+1)+1.89*Ith(y,'+str(indexH2)+'+1)));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                     if reactants[i].count('XRLYA') == 1:
                         matrixString += '*Ith(y,'+str(indexH)+'+1)*zeta_H'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(m)+'+1)*zeta_H*(-1.89*Ith(y,'+str(indexH)+ '+1)/(Ith(y'+str(indexH)+'+1)+1.89*Ith(y'+str(indexH2)+'+1)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(m)+'+1)*zeta_H*(+1.89*Ith(y,'+str(indexH2)+'+1)/(Ith(y'+str(indexH)+'+1)+1.89*Ith(y'+str(indexH2)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+1)*zeta_H*(-1.89*Ith(y,'+str(indexH)+ '+1)/(Ith(y'+str(indexH)+'+1)+1.89*Ith(y'+str(indexH2)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+1)*zeta_H*(+1.89*Ith(y,'+str(indexH2)+'+1)/(Ith(y'+str(indexH)+'+1)+1.89*Ith(y'+str(indexH2)+'+1)));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                     if reactants[i].count('XRPHOT') == 1:
                         matrixString += '*Ith(y,'+str(indexH2)+'+1)*zeta_H2'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(m)+'+1)*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ '+1)/(Ith(y'+str(indexH2)+'+1)+0.53*Ith(y'+str(indexH)+'+1)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k*Ith(y,'+str(m)+'+1)*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+'+1)/(Ith(y'+str(indexH2)+'+1)+0.53*Ith(y'+str(indexH)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+1)*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ '+1)/(Ith(y'+str(indexH2)+'+1)+0.53*Ith(y'+str(indexH)+'+1)));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+1,'+str(formatCode % n)+'+1) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+1)*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+'+1)/(Ith(y'+str(indexH2)+'+1)+0.53*Ith(y'+str(indexH)+'+1)));\n'
 
             if matrixString != '':
                 matrixString = '  IJth(J,'+str(formatCode % m)+'+1,'+str(formatCode % n)+'+1) = '+matrixString+';\n'
@@ -763,7 +761,7 @@ keywordValue = [reactionFile,speciesFile,outputPrefix,('True'if sortSpecies else
 
 for n in range(1,len(sys.argv)):
     if sum([sys.argv[n].lower().count(keyword.lower()) for keyword in keywordNames]) == 0:
-        sys.exit('\nERROR! Unrecognised keyword: '+sys.argv[n]+'\n\nUsage: '+usageString)
+        sys.exit('\n  ERROR! Unrecognised keyword: '+sys.argv[n]+'\n\nUsage: '+usageString)
 
     for i, keyword in enumerate(keywordNames):
         if sys.argv[n].lower().count(keyword.lower()) != 0:
@@ -788,81 +786,81 @@ else:
 if keywordValue[3].title() == 'True' or keywordValue[3].title() == 'False':
     sortSpecies = keywordValue[3].title() == 'True'
 else:
-    sys.exit('\nERROR! Unrecognised option for keyword '+keywordNames[3]+': '+keywordValue[3]+'\n\nUsage: '+usageString)
+    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[3]+': '+keywordValue[3]+'\n\nUsage: '+usageString)
 
 if keywordValue[4].title() == 'True' or keywordValue[4].title() == 'False':
     logForm = keywordValue[4].title() == 'True'
 else:
-    sys.exit('\nERROR! Unrecognised option for keyword '+keywordNames[4]+': '+keywordValue[4]+'\n\nUsage: '+usageString)
+    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[4]+': '+keywordValue[4]+'\n\nUsage: '+usageString)
 
 if keywordValue[5].title() == 'Rate95' or keywordValue[5].title() == 'Rate99' or keywordValue[5].title() == 'Rate05':
     fileFormat = keywordValue[5].title()
 else:
-    sys.exit('\nERROR! Unrecognised option for keyword '+keywordNames[5]+': '+keywordValue[5]+'\n\nUsage: '+usageString)
+    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[5]+': '+keywordValue[5]+'\n\nUsage: '+usageString)
 
 if keywordValue[6].upper() == 'F77' or keywordValue[6].upper() == 'F90' or keywordValue[6].upper() == 'C':
     codeFormat = keywordValue[6].upper()
 else:
-    sys.exit('\nERROR! Unrecognised option for keyword '+keywordNames[6]+': '+keywordValue[6]+'\n\nUsage: '+usageString)
+    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[6]+': '+keywordValue[6]+'\n\nUsage: '+usageString)
 
 
 
 if reactionFile != '':
     if not os.path.isfile(reactionFile):
-        sys.exit('\nERROR! Specified reaction file '+reactionFile+' does not exist\n')
+        sys.exit('\n  ERROR! Specified reaction file '+reactionFile+' does not exist\n')
 else:
-    sys.exit('\nERROR! An input reaction file must be specified\n\nUsage: '+usageString)
+    sys.exit('\n  ERROR! An input reaction file must be specified\n\nUsage: '+usageString)
 
 if speciesFile != '':
     if not os.path.isfile(speciesFile):
-        sys.exit('\nERROR! Specified species file '+speciesFile+' does not exist\n')
+        sys.exit('\n  ERROR! Specified species file '+speciesFile+' does not exist\n')
 
 # Read the reactants, products, Arrhenius equation parameters and measurement labels for each reaction
-print '\nReading reaction file...'
+print '\n  Reading reaction file...'
 nReactions, reactants, products, alpha, beta, gamma, labels = read_reaction_file(reactionFile)
 
 # Read the name, abundance and molecular mass for each species
 if speciesFile != '':
-    print 'Reading species file...'
+    print '  Reading species file...'
     nSpecies, speciesList, abundanceList, massList = read_species_file(speciesFile)
 
 # Find the total number and full list of reactions containing only these species
-    print '\nFinding all reactions involving these species...'
+    print '\n  Finding all reactions involving these species...'
     nReactions, reactants, products, alpha, beta, gamma, labels = find_all_reactions(speciesList, reactants, products, alpha, beta, gamma, labels)
 
 # Find the total number and full list of unique species contained in the reactions
 else:
-    print '\nFinding all species involved in the reactions...'
+    print '\n  Finding all species involved in the reactions...'
     nSpecies, speciesList = find_all_species(reactants, products)
     abundanceList = [float(0) for i in range(nSpecies)]
 
-print '\nNumber of reactions:',nReactions
-print 'Number of species:',nSpecies
+print '\n  Number of reactions:',nReactions
+print '  Number of species:',nSpecies
 
 
 # Check for "orphan" species that are either never formed or never destroyed
-print '\nChecking for species without formation/destruction reactions...'
+print '\n  Checking for species without formation/destruction reactions...'
 nFormation, nDestruction, missingList = check_orphan_species(speciesList, reactants, products)
 
 # Sort the species first by number of destruction reactions, then by number of formation reactions
 if sortSpecies:
-    print '\nSorting the species by number of formation reactions...'
+    print '\n  Sorting the species by number of formation reactions...'
     speciesList = sort_species(speciesList, nFormation, nDestruction)
 
 # Calculate the molecular mass and elemental constituents of each species
-print '\nCalculating molecular masses and elemental constituents...'
+print '\n  Calculating molecular masses and elemental constituents...'
 massList, constituentList, elementList = find_constituents(speciesList)
 
 # Write the ODEs in the appropriate language format
 if codeFormat == 'C':
-    print 'Writing system of ODEs in C format...'
-    filename = '../sundials/rate_equations.cpp'
+    print '  Writing system of ODEs in C format...'
+    filename = '../src/sundials/rate_equations.cpp'
     write_odes_c(filename, speciesList, constituentList, reactants, products, logForm=logForm)
 
 # Write the Jacobian matrix in the appropriate language format
 if codeFormat == 'C':
-    print 'Writing Jacobian matrix in C format...'
-    filename = '../sundials/jacobian.cpp'
+    print '  Writing Jacobian matrix in C format...'
+    filename = '../src/sundials/jacobian.cpp'
     write_jac_c(filename, speciesList, reactants, products, logForm=False)
 
-print '\nFinished!'
+print '\n  Finished! \n\n'

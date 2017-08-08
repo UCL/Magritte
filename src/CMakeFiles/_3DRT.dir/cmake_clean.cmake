@@ -12,6 +12,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/_3DRT.dir/reaction_rates.cpp.o"
   "CMakeFiles/_3DRT.dir/rate_calculations.cpp.o"
   "CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o"
+  "CMakeFiles/_3DRT.dir/radfield_tools.cpp.o"
   "CMakeFiles/_3DRT.dir/spline.cpp.o"
   "CMakeFiles/_3DRT.dir/level_populations.cpp.o"
   "CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o"

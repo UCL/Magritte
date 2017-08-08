@@ -369,9 +369,33 @@ src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o.provides: src/CMakeFil
 src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o
 
 
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o: src/radfield_tools.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/radfield_tools.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp
+
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/_3DRT.dir/radfield_tools.cpp.i"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp > CMakeFiles/_3DRT.dir/radfield_tools.cpp.i
+
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/_3DRT.dir/radfield_tools.cpp.s"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp -o CMakeFiles/_3DRT.dir/radfield_tools.cpp.s
+
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.requires:
+
+.PHONY : src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.requires
+
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.provides: src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.provides.build
+.PHONY : src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.provides
+
+src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o
+
+
 src/CMakeFiles/_3DRT.dir/spline.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/spline.cpp.o: src/spline.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object src/CMakeFiles/_3DRT.dir/spline.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/CMakeFiles/_3DRT.dir/spline.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/spline.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/spline.cpp
 
 src/CMakeFiles/_3DRT.dir/spline.cpp.i: cmake_force
@@ -395,7 +419,7 @@ src/CMakeFiles/_3DRT.dir/spline.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/s
 
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/level_populations.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/CMakeFiles/_3DRT.dir/level_populations.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/CMakeFiles/_3DRT.dir/level_populations.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/level_populations.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.cpp
 
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.i: cmake_force
@@ -419,7 +443,7 @@ src/CMakeFiles/_3DRT.dir/level_populations.cpp.o.provides.build: src/CMakeFiles/
 
 src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o: src/calc_C_coeff.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/calc_C_coeff.cpp
 
 src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.i: cmake_force
@@ -443,7 +467,7 @@ src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o.provides.build: src/CMakeFiles/_3DRT
 
 src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o: src/radiative_transfer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/radiative_transfer.cpp
 
 src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.i: cmake_force
@@ -467,7 +491,7 @@ src/CMakeFiles/_3DRT.dir/radiative_transfer.cpp.o.provides.build: src/CMakeFiles
 
 src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o: src/exact_feautrier.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/exact_feautrier.cpp
 
 src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.i: cmake_force
@@ -491,7 +515,7 @@ src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o.provides.build: src/CMakeFiles/_3
 
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o: src/level_population_solver.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/level_population_solver.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/level_population_solver.cpp
 
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.i: cmake_force
@@ -515,7 +539,7 @@ src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o.provides.build: src/CMake
 
 src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o: src/rad_surface_calculator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/rad_surface_calculator.cpp
 
 src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.i: cmake_force
@@ -539,7 +563,7 @@ src/CMakeFiles/_3DRT.dir/rad_surface_calculator.cpp.o.provides.build: src/CMakeF
 
 src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o: src/column_density_calculator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/column_density_calculator.cpp
 
 src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.i: cmake_force
@@ -563,7 +587,7 @@ src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o.provides.build: src/CMa
 
 src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o: src/AV_calculator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/AV_calculator.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/AV_calculator.cpp
 
 src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.i: cmake_force
@@ -587,7 +611,7 @@ src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o.provides.build: src/CMakeFiles/_3DR
 
 src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o: src/UV_field_calculator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/UV_field_calculator.cpp
 
 src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.i: cmake_force
@@ -611,7 +635,7 @@ src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o.provides.build: src/CMakeFile
 
 src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o: src/dust_temperature_calculation.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.cpp
 
 src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.i: cmake_force
@@ -635,7 +659,7 @@ src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o.provides.build: src/
 
 src/CMakeFiles/_3DRT.dir/write_output.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
 src/CMakeFiles/_3DRT.dir/write_output.cpp.o: src/write_output.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object src/CMakeFiles/_3DRT.dir/write_output.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object src/CMakeFiles/_3DRT.dir/write_output.cpp.o"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/write_output.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/write_output.cpp
 
 src/CMakeFiles/_3DRT.dir/write_output.cpp.i: cmake_force
@@ -672,6 +696,7 @@ _3DRT_OBJECTS = \
 "CMakeFiles/_3DRT.dir/reaction_rates.cpp.o" \
 "CMakeFiles/_3DRT.dir/rate_calculations.cpp.o" \
 "CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o" \
+"CMakeFiles/_3DRT.dir/radfield_tools.cpp.o" \
 "CMakeFiles/_3DRT.dir/spline.cpp.o" \
 "CMakeFiles/_3DRT.dir/level_populations.cpp.o" \
 "CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o" \
@@ -701,6 +726,7 @@ src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/heapsort.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/reaction_rates.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/rate_calculations.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o
+src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/spline.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/level_populations.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o
@@ -715,7 +741,7 @@ src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/write_output.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/build.make
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Linking CXX static library lib_3DRT.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Linking CXX static library lib_3DRT.a"
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && $(CMAKE_COMMAND) -P CMakeFiles/_3DRT.dir/cmake_clean_target.cmake
 	cd /home/frederik/Dropbox/Astro/3D-RT/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/_3DRT.dir/link.txt --verbose=$(VERBOSE)
 
@@ -737,6 +763,7 @@ src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/heapsort.cpp.o.requi
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/reaction_rates.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/rate_calculations.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/rate_calculations_radfield.cpp.o.requires
+src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/radfield_tools.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/spline.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/level_populations.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o.requires
