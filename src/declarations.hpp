@@ -24,17 +24,17 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/grid_1D_regular.txt" 
+#define GRID_INPUTFILE "input/grid_null.txt" 
 
-#define SPEC_DATAFILE  "data/species_reduced.d" 
+#define SPEC_DATAFILE  "data/test_species.d" 
 
-#define REAC_DATAFILE  "data/rates_reduced.d" 
+#define REAC_DATAFILE  "data/test_rates.d" 
 
-#define LINE_DATAFILE0  "data/12c.dat" 
+#define LINE_DATAFILE0 "data/12c.dat" 
 
-#define NGRID 101 
+#define NGRID 1 
 
-#define NSIDES 4 
+#define NSIDES 0 
 
 #define THETA_CRIT 1.100000 
 
@@ -44,9 +44,9 @@ using namespace std;
 
 #define FIELD_FORM "ISO" 
 
-#define NSPEC 34 
+#define NSPEC 8 
 
-#define NREAC 329 
+#define NREAC 6 
 
 #define NLSPEC 1 
 
@@ -73,13 +73,13 @@ using namespace std;
 
 /* Input and data files */
 
-extern string grid_inputfile;                   /* path to input file containing the grid points */
+// extern string grid_inputfile;                   /* path to input file containing the grid points */
 
-extern string spec_datafile;                         /* path to data file containing the species */
+// extern string spec_datafile;                         /* path to data file containing the species */
 
-extern string reac_datafile;                       /* path to data file containing the reactions */
+// extern string reac_datafile;                       /* path to data file containing the reactions */
 
-extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
+// extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
 
 
 

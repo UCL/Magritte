@@ -23,7 +23,6 @@
 using namespace std;
 
 #include "pre_setup_parameters.hpp"
-#include "pre_setup_declarations.hpp"
 #include "pre_setup_definitions.hpp"
 #include "setup_tools.hpp"
 #include "../src/setup_data_structures.cpp"
@@ -181,7 +180,7 @@ int main(){
 
 
 
-  setup_data_structures1();
+  setup_data_structures1(line_datafile);
 
 
   int tot_nlev = cum_nlev[NLSPEC-1] + nlev[NLSPEC-1];                      /* tot. nr. of levels */
@@ -209,7 +208,7 @@ int main(){
 
 
 
-  setup_data_structures2();
+  setup_data_structures2(line_datafile);
 
 
   int tot_cum_tot_ncoltran = cum_tot_ncoltran[NLSPEC-1] + tot_ncoltran[NLSPEC-1];
@@ -222,6 +221,54 @@ int main(){
 
 
   cout << "(setup): parameters from line data extracted \n\n";
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /*   WRITE sundials/rate_equations.cpp and sundials/jacobian.cpp                               */
+  /*_____________________________________________________________________________________________*/
+
+
+  cout << "(setup): execute make_rates.py \n\n";
+
+
+  int argc = 3;
+
+  char *argv[3];
+
+  argv[0] = (char*) malloc( sizeof(string) );
+  argv[1] = (char*) malloc( sizeof(string) );
+  argv[2] = (char*) malloc( sizeof(string) );
+
+  string argument1 = "make_rates.py";
+  string argument2 = "reactionFile=" + reac_datafile;
+  string argument3 = "speciesFile=" + spec_datafile;
+
+  strcpy(argv[0],argument1.c_str());
+  strcpy(argv[1],argument2.c_str());
+  strcpy(argv[2],argument3.c_str());
+
+
+  Py_SetProgramName(argv[0]);
+
+  Py_Initialize();
+
+  PySys_SetArgv(argc, argv);
+
+  FILE *file = fopen("make_rates.py","r");
+
+  PyRun_SimpleFile(file, "make_rates.py");
+
+  Py_Finalize();
+
+
+  cout << "(setup): make_rates.py is executed \n";
+  cout << "(setup): sundials/rate_equations.cpp is setup \n";
+  cout << "(setup): sundials/jacobian.cpp is setup \n\n";
 
 
   /*_____________________________________________________________________________________________*/
@@ -285,7 +332,7 @@ int main(){
 
   for (int l=0; l<NLSPEC; l++){
 
-    fprintf( dec_new, "#define LINE_DATAFILE%d  \"%s\" \n\n", l, line_datafile[l].c_str() );
+    fprintf( dec_new, "#define LINE_DATAFILE%d \"%s\" \n\n", l, line_datafile[l].c_str() );
   }
 
   fprintf( dec_new, "#define NGRID %ld \n\n", ngrid );
@@ -417,47 +464,6 @@ int main(){
 
 
   cout << "(setup): definitions.hpp is set up \n\n";
-
-
-  /*_____________________________________________________________________________________________*/
-
-
-
-
-
-  /*   WRITE sundials/rate_equations.cpp and sundials/jacobian.cpp                               */
-  /*_____________________________________________________________________________________________*/
-
-
-  cout << "(setup): execute make_rates.py \n\n";
-
-
-  int argc = 3;
-
-  char *argv[3];
-
-
-  argv[0] = "make_rates.py";
-  argv[1] = "reactionFile=../data/rates_reduced.d";
-  argv[2] = "speciesFile=../data/species_reduced.d";
-
-
-  Py_SetProgramName(argv[0]);
-
-  Py_Initialize();
-
-  PySys_SetArgv(argc, argv);
-
-  FILE *file = fopen("make_rates.py","r");
-
-  PyRun_SimpleFile(file, "make_rates.py");
-
-  Py_Finalize();
-
-
-  cout << "(setup): make_rates.py is executed \n";
-  cout << "(setup): sundials/rate_equations.cpp is setup \n";
-  cout << "(setup): sundials/jacobian.cpp is setup \n\n";
 
 
   /*_____________________________________________________________________________________________*/

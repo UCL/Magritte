@@ -179,32 +179,32 @@ UV_field_calculator.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.s
 .PHONY : UV_field_calculator.cpp.s
 
-abundance.o: abundance.cpp.o
+abundances.o: abundances.cpp.o
 
-.PHONY : abundance.o
+.PHONY : abundances.o
 
 # target to build an object file
-abundance.cpp.o:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundance.cpp.o
-.PHONY : abundance.cpp.o
+abundances.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundances.cpp.o
+.PHONY : abundances.cpp.o
 
-abundance.i: abundance.cpp.i
+abundances.i: abundances.cpp.i
 
-.PHONY : abundance.i
+.PHONY : abundances.i
 
 # target to preprocess a source file
-abundance.cpp.i:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundance.cpp.i
-.PHONY : abundance.cpp.i
+abundances.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundances.cpp.i
+.PHONY : abundances.cpp.i
 
-abundance.s: abundance.cpp.s
+abundances.s: abundances.cpp.s
 
-.PHONY : abundance.s
+.PHONY : abundances.s
 
 # target to generate assembly for a file
-abundance.cpp.s:
-	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundance.cpp.s
-.PHONY : abundance.cpp.s
+abundances.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundances.cpp.s
+.PHONY : abundances.cpp.s
 
 calc_C_coeff.o: calc_C_coeff.cpp.o
 
@@ -842,9 +842,9 @@ help:
 	@echo "... UV_field_calculator.o"
 	@echo "... UV_field_calculator.i"
 	@echo "... UV_field_calculator.s"
-	@echo "... abundance.o"
-	@echo "... abundance.i"
-	@echo "... abundance.s"
+	@echo "... abundances.o"
+	@echo "... abundances.i"
+	@echo "... abundances.s"
 	@echo "... calc_C_coeff.o"
 	@echo "... calc_C_coeff.i"
 	@echo "... calc_C_coeff.s"

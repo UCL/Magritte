@@ -85,7 +85,7 @@ void dust_temperature_calculation( double *UV_field, double *rad_surface,
       /* The minimum dust temperature is related to the incident FUV flux along each ray
          Convert the incident FUV flux from Draine to Habing units by multiplying by 1.71 */
 
-      T_min = 12.2*pow(1.71*rad_surface[r], 0.2);
+      T_min = 12.2*pow(1.71*rad_surface[RINDEX(n,r)], 0.2);
 
 
       /* Add the contribution to the dust temperature from the FUV flux incident along this ray */

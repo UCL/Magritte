@@ -241,22 +241,23 @@ void read_linedata( string datafile, int *irad, int *jrad, double *energy, doubl
 
   }
 
-  printf("(read_linedata): intput C_data = \n");
 
-  for (int par=0; par<ncolpar[lspec]; par++){
-
-    for (int ctran=0; ctran<ncoltran[LSPECPAR(lspec,par)]; ctran++){
-
-      for (int ctemp=0; ctemp<ncoltemp[LSPECPAR(lspec,par)]; ctemp++){
-
-        printf( "  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
-      }
-
-      printf("\n");
-    }
-
-    printf("\n");
-  }
+  // printf("(read_linedata): intput C_data = \n");
+  //
+  // for (int par=0; par<ncolpar[lspec]; par++){
+  //
+  //   for (int ctran=0; ctran<ncoltran[LSPECPAR(lspec,par)]; ctran++){
+  //
+  //     for (int ctemp=0; ctemp<ncoltemp[LSPECPAR(lspec,par)]; ctemp++){
+  //
+  //       printf( "  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
+  //     }
+  //
+  //     printf("\n");
+  //   }
+  //
+  //   printf("\n");
+  // }
 
 
 }

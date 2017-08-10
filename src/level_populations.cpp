@@ -31,7 +31,7 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
                         int *irad, int*jrad, double *frequency, double *A_coeff,
                         double *B_coeff, double *C_coeff, double *P_intensity,
                         double *R, double *pop, double *dpop, double *C_data,
-                        double *coltemp, int *icol, int *jcol, double *temperature,
+                        double *coltemp, int *icol, int *jcol, double *temperature_gas,
                         double *weight, double *energy, int lspec )
 {
 
@@ -77,12 +77,9 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
   for (n=0; n<NGRID; n++){
 
 
-    /* Calculate collisional (C) coefficients for current temperature */
+    /* Calculate collisional (C) coefficients for current temperature_gas */
 
-    void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double *temperature,
-                       double *weight, double *energy, double *C_coeff, long n, int lspec );
-
-    calc_C_coeff( C_data, coltemp, icol, jcol, temperature, weight, energy, C_coeff, n, lspec );
+    calc_C_coeff(C_data, coltemp, icol, jcol, temperature_gas, weight, energy, C_coeff, n, lspec);
 
 
     /* Initialize transition matrix R_ij with terms that do not depend on level populations */
@@ -160,9 +157,9 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
     } /* end of n1 loop over gridpoints */
 
 
-Source[LSPECGRIDRAD(0,20,0)] = 1.0E-5;
-Source[LSPECGRIDRAD(0,20,1)] = 1.0E-5;
-Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
+Source[LSPECGRIDRAD(0,0,0)] = 1.0E-5;
+Source[LSPECGRIDRAD(0,0,1)] = 1.0E-5;
+Source[LSPECGRIDRAD(0,0,2)] = 1.0E-5;
 
 
 
@@ -204,11 +201,6 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
 
         /* Calculate the mean intensity */
 
-        void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensity,
-                                 double *mean_intensity, double *Source, double *opacity,
-                                 int *irad, int*jrad, long n2, int lspec, int kr,
-                                 long *nshortcuts, long *nno_shortcuts );
-
         radiative_transfer( antipod, evalpoint, P_intensity, mean_intensity, Source, opacity,
                             irad, jrad, n2, lspec, kr, &nshortcuts, &nno_shortcuts );
 
@@ -242,9 +234,6 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
 
       /* Solve the radiative balance equation for the level populations */
 
-      void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, double *dpop,
-                                    long n3, int lspec);
-
       level_population_solver( gridpoint, R, pop, dpop, n3, lspec );
 
 
@@ -263,7 +252,8 @@ Source[LSPECGRIDRAD(0,20,2)] = 1.0E-5;
 
         if ( pop[LSPECGRIDLEV(lspec,n3,i)] != 0.0 ){
 
-          dpoprel = dpop[LSPECGRIDLEV(lspec,n3,i)] / (pop[LSPECGRIDLEV(lspec,n3,i)]+dpop[LSPECGRIDLEV(lspec,n3,i)]);
+          dpoprel = dpop[LSPECGRIDLEV(lspec,n3,i)]
+                    / (pop[LSPECGRIDLEV(lspec,n3,i)]+dpop[LSPECGRIDLEV(lspec,n3,i)]);
 
           // printf("(level_populations): dpop/pop is %.2lE for grid point %ld \n", dpoprel, n3);
 

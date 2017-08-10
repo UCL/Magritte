@@ -23,13 +23,11 @@
 /* calc_C_coeff: calculates the collisional coefficients (C_ij) from the line data               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double *temperature,
+void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double *temperature_gas,
                    double *weight, double *energy, double *C_coeff, long gridp, int lspec )
 {
 
   int par;                                                      /* index for a collision partner */
-
-  int H2_nr;                                                   /* species nr corresponding to H2 */
 
   int spec;                                                                     /* species index */
 
@@ -41,18 +39,12 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
   int i, j;                                                                     /* level indices */
 
-  double frac_H2_para;                                                    /* fraction of para-H2 */
-  double frac_H2_ortho;                                                  /* fraction of ortho-H2 */
-
-  double abundance;                                        /* abundance of the collision partner */
-
   double step;                                                    /* (linear) interpolation step */
 
   double C_tmp;                                                         /* temporary value for C */
 
   int max_ncoltran;                   /* maximum number of collisional transitions for a partner */
   int par_max_ncoltran;                /* partner with maximum number of collisional transitions */
-
 
 
   // printf("(calc_C_coeff): intput C_data = \n");
@@ -76,13 +68,13 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
   /* Calculate H2 ortho/para fraction at equilibrium for given temperature */
 
-  frac_H2_para = 0.0;
-  frac_H2_ortho = 0.0;
+  double frac_H2_para = 0.0;                                              /* fraction of para-H2 */
+  double frac_H2_ortho = 0.0;                                            /* fraction of ortho-H2 */
 
 
-  if (species[H2_nr].abn[gridp] > 0){
+  if (species[H2_nr].abn[gridp] > 0.0){
 
-    frac_H2_para = 1.0 / (1.0 + 9.0*exp(-170.5/temperature[gridp]));
+    frac_H2_para = 1.0 / (1.0 + 9.0*exp(-170.5/temperature_gas[gridp]));
     frac_H2_ortho = 1.0 - frac_H2_para;
   }
 
@@ -119,7 +111,7 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
     for (tindex=0; tindex<ncoltemp[LSPECPAR(lspec,par)]; tindex++ ){
 
-      if (temperature[gridp] < coltemp[LSPECPARTEMP(lspec,par,tindex)]){
+      if (temperature_gas[gridp] < coltemp[LSPECPARTEMP(lspec,par,tindex)]){
 
         tindex_low = tindex-1;
         tindex_high  = tindex;
@@ -141,7 +133,6 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
     }
 
 
-
     /* Calculate the (linear) interpolation step */
 
     if (tindex_high == tindex_low){
@@ -150,7 +141,7 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
     }
     else {
 
-      step = (temperature[gridp] - coltemp[LSPECPARTEMP(lspec,par,tindex_low)])
+      step = (temperature_gas[gridp] - coltemp[LSPECPARTEMP(lspec,par,tindex_low)])
               / ( coltemp[LSPECPARTEMP(lspec,par,tindex_high)]
                   - coltemp[LSPECPARTEMP(lspec,par,tindex_low)] );
     }
@@ -179,7 +170,7 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
       /* Weigh contributions to C by abundance */
 
-      abundance = species[spec].abn[gridp];
+      double abundance = species[spec].abn[gridp];
 
       if ( ortho_para[LSPECPAR(lspec,par)] == 'o' ){
 
@@ -209,7 +200,7 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
                                      * weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)]
                                      * exp( -( energy[LSPECLEV(lspec,i)]
                                                -energy[LSPECLEV(lspec,j)] )
-                                             / (KB*temperature[gridp]) );
+                                             / (KB*temperature_gas[gridp]) );
 
   }
 

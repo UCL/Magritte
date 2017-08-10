@@ -11,12 +11,26 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-
+#ifndef __DECLARATIONS_HPP_INCLUDED__
+#define __DECLARATIONS_HPP_INCLUDED__
 #ifndef __DEFINITIONS_HPP_INCLUDED__
 #define __DEFINITIONS_HPP_INCLUDED__
 
 #include <string>
 using namespace std;
+
+
+
+/* Helper constant */
+
+#define BUFFER_SIZE 500                                    /* max number of characters in a line */
+
+
+
+/* Collision rate related indices */
+
+#define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \
+                   /* when first index is line producing species and second is collision partner */
 
 
 
@@ -66,5 +80,6 @@ int *cum_tot_ncoltrantemp;              /* cum. of tot. of ntran*ntemp over spec
 
 
 #endif /* __DEFINITIONS_HPP_INCLUDED__ */
+#endif /* __DECLARATIONS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

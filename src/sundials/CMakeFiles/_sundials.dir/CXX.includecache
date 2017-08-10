@@ -27,6 +27,8 @@ sundials/sundials_types.h
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.cpp
 stdio.h
 -
+stdlib.h
+-
 cvode/cvode.h
 -
 nvector/nvector_serial.h
@@ -47,6 +49,20 @@ rate_equations.cpp
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equations.cpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.hpp
+string
+-
+iostream
+-
+cvode/cvode.h
+-
+nvector/nvector_serial.h
+-
+cvode/cvode_dense.h
+-
+sundials/sundials_dense.h
+-
+sundials/sundials_types.h
+-
 
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equations.cpp
 cvode/cvode.h

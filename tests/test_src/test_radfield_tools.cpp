@@ -22,15 +22,13 @@ using namespace std;
 
 #include "../../src/declarations.hpp"
 #include "../../src/definitions.hpp"
-#include "../../src/data_tools.hpp"
-#include "../../src/read_chemdata.hpp"
-#include "../../src/radfield_tools.hpp"
-
+#include "../../src/data_tools.cpp"
+#include "../../src/read_chemdata.cpp"
+#include "../../src/radfield_tools.cpp"
 
 
 
 #define EPS 1.0E-3                                    /* fractional error allowed in computation */
-
 
 
 

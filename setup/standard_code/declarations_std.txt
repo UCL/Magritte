@@ -7,13 +7,13 @@
 
 /* Input and data files */
 
-extern string grid_inputfile;                   /* path to input file containing the grid points */
+// extern string grid_inputfile;                   /* path to input file containing the grid points */
 
-extern string spec_datafile;                         /* path to data file containing the species */
+// extern string spec_datafile;                         /* path to data file containing the species */
 
-extern string reac_datafile;                       /* path to data file containing the reactions */
+// extern string reac_datafile;                       /* path to data file containing the reactions */
 
-extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
+// extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
 
 
 

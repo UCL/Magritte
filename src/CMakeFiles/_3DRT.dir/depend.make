@@ -9,9 +9,11 @@ src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o: src/UV_field_calculator.cpp
 src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o: src/UV_field_calculator.hpp
 src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o: src/declarations.hpp
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o: src/abundance.cpp
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o: src/declarations.hpp
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o: src/sundials/rate_equation_solver.hpp
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/abundances.cpp
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/abundances.hpp
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/reaction_rates.hpp
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/sundials/rate_equation_solver.hpp
 
 src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o: src/calc_C_coeff.cpp
 src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o: src/calc_C_coeff.hpp

@@ -8,7 +8,7 @@
 Value                               | Constant
 ____________________________________|__________________
                                     |
-192                                 | nrays (12*n^2)
+0                                   | nrays (12*n^2)
                                     |
 1.1                                 | theta_crit
                                     |
@@ -24,11 +24,11 @@ ____________________________________|__________________
 File                                | Content
 ____________________________________|__________________
                                     |
-input/grid_1D_regular.txt           | Grid
+input/grid_null.txt                 | Grid
                                     |
-data/species_reduced.d              | Species
+data/test_species.d              | Species
                                     |
-data/rates_reduced.d                | Reactions
+data/test_rates.d                | Reactions
 ____________________________________|__________________
                                     |
 1                                   | nr. of line files
@@ -40,3 +40,4 @@ data/12c+.dat                       | Lines 1
                                     |
 data/12co.dat                       | Lines 3
 ____________________________________|__________________
+

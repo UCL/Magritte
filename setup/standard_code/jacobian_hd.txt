@@ -48,6 +48,21 @@
 
 
 
+
+
+
+
 static int Jac( long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J, void *user_data,
                 N_Vector tmp1, N_Vector tmp2, N_Vector tmp3 )
 {
+
+
+  USER_DATA data = (USER_DATA) user_data;
+  
+  long gridp = data->gp;
+
+  GRIDPOINT *gridpoint = data->gridpointer;
+
+  double n_H = gridpoint[gridp].density;
+
+

@@ -31,8 +31,6 @@ using namespace std;
 string get_canonical_name(string name)
 {
 
-  string canonical_name;                                    /* name as it appears in species.dat */
-
 
   /* electrons: e- */
 
@@ -76,6 +74,7 @@ int get_species_nr(string name)
 
     if ( species[spec].sym == canonical_name ){
 
+
       // cout << "I'm checking " << name << " and I think it is " << spec << "\n";
 
       return spec;
@@ -86,14 +85,14 @@ int get_species_nr(string name)
 
   /* If the function did not return yet, no match was found */
 
-  cout << "\n WARNING : there is no species with symbol " << name << "\n";
+  cout << "\n WARNING : there is no species with symbol " << canonical_name << "\n";
 
 
   /* Set the not found species to be the dummy (zeroth species) */
 
   spec = 0;
 
-  cout << "\n WARNING : the species " << name
+  cout << "\n WARNING : the species " << canonical_name
        << " is set to the \"dummy\" reference with abundance 0.0 \n\n";
 
   return spec;

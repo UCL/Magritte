@@ -57,28 +57,28 @@ include src/CMakeFiles/_3DRT.dir/progress.make
 # Include the compile flags for this target's objects.
 include src/CMakeFiles/_3DRT.dir/flags.make
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o: src/abundance.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/_3DRT.dir/abundance.cpp.o"
-	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/abundance.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/abundance.cpp
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o: src/abundances.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/_3DRT.dir/abundances.cpp.o"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_3DRT.dir/abundances.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/abundances.cpp
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/_3DRT.dir/abundance.cpp.i"
-	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/src/abundance.cpp > CMakeFiles/_3DRT.dir/abundance.cpp.i
+src/CMakeFiles/_3DRT.dir/abundances.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/_3DRT.dir/abundances.cpp.i"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/src/abundances.cpp > CMakeFiles/_3DRT.dir/abundances.cpp.i
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/_3DRT.dir/abundance.cpp.s"
-	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/src/abundance.cpp -o CMakeFiles/_3DRT.dir/abundance.cpp.s
+src/CMakeFiles/_3DRT.dir/abundances.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/_3DRT.dir/abundances.cpp.s"
+	cd /home/frederik/Dropbox/Astro/3D-RT/src && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/src/abundances.cpp -o CMakeFiles/_3DRT.dir/abundances.cpp.s
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o.requires:
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o.requires:
 
-.PHONY : src/CMakeFiles/_3DRT.dir/abundance.cpp.o.requires
+.PHONY : src/CMakeFiles/_3DRT.dir/abundances.cpp.o.requires
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o.provides: src/CMakeFiles/_3DRT.dir/abundance.cpp.o.requires
-	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundance.cpp.o.provides.build
-.PHONY : src/CMakeFiles/_3DRT.dir/abundance.cpp.o.provides
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o.provides: src/CMakeFiles/_3DRT.dir/abundances.cpp.o.requires
+	$(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/abundances.cpp.o.provides.build
+.PHONY : src/CMakeFiles/_3DRT.dir/abundances.cpp.o.provides
 
-src/CMakeFiles/_3DRT.dir/abundance.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/abundance.cpp.o
+src/CMakeFiles/_3DRT.dir/abundances.cpp.o.provides.build: src/CMakeFiles/_3DRT.dir/abundances.cpp.o
 
 
 src/CMakeFiles/_3DRT.dir/data_tools.cpp.o: src/CMakeFiles/_3DRT.dir/flags.make
@@ -683,7 +683,7 @@ src/CMakeFiles/_3DRT.dir/write_output.cpp.o.provides.build: src/CMakeFiles/_3DRT
 
 # Object files for target _3DRT
 _3DRT_OBJECTS = \
-"CMakeFiles/_3DRT.dir/abundance.cpp.o" \
+"CMakeFiles/_3DRT.dir/abundances.cpp.o" \
 "CMakeFiles/_3DRT.dir/data_tools.cpp.o" \
 "CMakeFiles/_3DRT.dir/species_tools.cpp.o" \
 "CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o" \
@@ -713,7 +713,7 @@ _3DRT_OBJECTS = \
 # External object files for target _3DRT
 _3DRT_EXTERNAL_OBJECTS =
 
-src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/abundance.cpp.o
+src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/abundances.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/data_tools.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/species_tools.cpp.o
 src/lib_3DRT.a: src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o
@@ -750,7 +750,7 @@ src/CMakeFiles/_3DRT.dir/build: src/lib_3DRT.a
 
 .PHONY : src/CMakeFiles/_3DRT.dir/build
 
-src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/abundance.cpp.o.requires
+src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/abundances.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/data_tools.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/species_tools.cpp.o.requires
 src/CMakeFiles/_3DRT.dir/requires: src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o.requires

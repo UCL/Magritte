@@ -6,7 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/frederik/Dropbox/Astro/3D-RT/src/AV_calculator.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/AV_calculator.cpp.o"
   "/home/frederik/Dropbox/Astro/3D-RT/src/UV_field_calculator.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o"
-  "/home/frederik/Dropbox/Astro/3D-RT/src/abundance.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/abundance.cpp.o"
+  "/home/frederik/Dropbox/Astro/3D-RT/src/abundances.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/abundances.cpp.o"
   "/home/frederik/Dropbox/Astro/3D-RT/src/calc_C_coeff.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/calc_C_coeff.cpp.o"
   "/home/frederik/Dropbox/Astro/3D-RT/src/column_density_calculator.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.o"
   "/home/frederik/Dropbox/Astro/3D-RT/src/create_healpixvectors.cpp" "/home/frederik/Dropbox/Astro/3D-RT/src/CMakeFiles/_3DRT.dir/create_healpixvectors.cpp.o"

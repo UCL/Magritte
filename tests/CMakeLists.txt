@@ -121,3 +121,13 @@ add_executable( test_spline   test_src/test_spline.cpp )
 # Link the necessary libraries
 
 target_link_libraries( test_spline   _test_main   ${3DRT} )
+
+
+# Create executable to test spline
+
+add_executable( test_chemistry   test_src/test_chemistry.cpp )
+
+
+# Link the necessary libraries
+
+target_link_libraries( test_chemistry   _test_main   ${3DRT} )

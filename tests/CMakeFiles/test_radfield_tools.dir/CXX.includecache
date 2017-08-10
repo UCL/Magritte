@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
+stdio.h
+-
+stdlib.h
+-
+string
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+data_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
 string
 -
@@ -18,11 +30,43 @@ string
 string
 -
 
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+math.h
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+radfield_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
+spline.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/spline.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
 
-/home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.cpp
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
+-
 string
 -
+iostream
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+data_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/spline.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/catch.hpp
 sstream
@@ -283,10 +327,10 @@ catch.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 ../../src/definitions.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/definitions.hpp
-../../src/data_tools.hpp
-/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
-../../src/read_chemdata.hpp
-/home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.hpp
-../../src/radfield_tools.hpp
-/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.hpp
+../../src/data_tools.cpp
+/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
+../../src/read_chemdata.cpp
+/home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.cpp
+../../src/radfield_tools.cpp
+/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp
 

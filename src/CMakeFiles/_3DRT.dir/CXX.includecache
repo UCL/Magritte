@@ -38,13 +38,19 @@ UV_field_calculator.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/UV_field_calculator.hpp
 
-/home/frederik/Dropbox/Astro/3D-RT/src/abundance.cpp
+/home/frederik/Dropbox/Astro/3D-RT/src/abundances.cpp
 stdio.h
 -
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+abundances.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/abundances.hpp
+reaction_rates.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/reaction_rates.hpp
 sundials/rate_equation_solver.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/abundances.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/calc_C_coeff.cpp
 stdio.h
@@ -317,6 +323,8 @@ string.h
 -
 string
 -
+iostream
+-
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 data_tools.hpp
@@ -379,6 +387,8 @@ data_tools.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
+string
+-
 
 /home/frederik/Dropbox/Astro/3D-RT/src/species_tools.cpp
 stdio.h
@@ -415,6 +425,20 @@ spline.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/spline.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.hpp
+string
+-
+iostream
+-
+cvode/cvode.h
+-
+nvector/nvector_serial.h
+-
+cvode/cvode_dense.h
+-
+sundials/sundials_dense.h
+-
+sundials/sundials_types.h
+-
 
 /home/frederik/Dropbox/Astro/3D-RT/src/write_output.cpp
 stdio.h

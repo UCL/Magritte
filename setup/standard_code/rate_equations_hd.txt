@@ -27,5 +27,19 @@
  * f routine. Compute function f(t,y) in dy = f(t,y).
  */
 
+
+
 static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 {
+
+  USER_DATA data = (USER_DATA) user_data;
+
+  long gridp = data->gp;
+
+  GRIDPOINT *gridpoint = data->gridpointer;
+ 
+  double n_H = gridpoint[gridp].density;
+
+  double loss, form;
+
+

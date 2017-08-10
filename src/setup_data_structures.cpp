@@ -28,11 +28,11 @@ using namespace std;
 /* setup_data_structures: set up all the different datastructures                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures()
+void setup_data_structures(string *line_datafile)
 {
 
-  setup_data_structures1();
-  setup_data_structures2();
+  setup_data_structures1(line_datafile);
+  setup_data_structures2(line_datafile);
 
 }
 
@@ -45,7 +45,7 @@ void setup_data_structures()
 /* setup_data_structures1: set up the first part of the different datastructures                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures1()
+void setup_data_structures1(string *line_datafile)
 {
 
   int i,j;                                                                      /* level indices */
@@ -128,7 +128,7 @@ void setup_data_structures1()
 /* setup_data_structures2: set up the second part of the different datastructures                */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures2()
+void setup_data_structures2(string *line_datafile)
 {
 
   int i,j;                                                                      /* level indices */

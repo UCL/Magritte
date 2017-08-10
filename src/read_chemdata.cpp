@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 #include "declarations.hpp"
@@ -131,10 +132,11 @@ void read_reactions(string reacdatafile)
 
   FILE *reacdata2 = fopen(reacdatafile.c_str(), "r");
 
+
   for (l=0; l<NREAC; l++){
 
-
     fgets(buffer, BUFFER_SIZE, reacdata2);
+
     buffer_cpy = strdup(buffer);
 
 

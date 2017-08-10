@@ -4,7 +4,7 @@
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/3D-RT.cpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/AV_calculator.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/UV_field_calculator.hpp
-CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/abundance.hpp
+CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/abundances.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/column_density_calculator.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/create_healpixvectors.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/data_tools.hpp
@@ -14,7 +14,6 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/dust_temperature_calculation.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/level_populations.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/rad_surface_calculator.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/ray_tracing.hpp
-CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/reaction_rates.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/read_chemdata.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/read_input.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/read_linedata.hpp

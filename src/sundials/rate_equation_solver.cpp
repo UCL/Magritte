@@ -14,14 +14,16 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
+
 
 /* Header files with a description of contents used */
 
-#include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts. */
-#include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
-#include <cvode/cvode_dense.h>       /* prototype for CVDense */
-#include <sundials/sundials_dense.h> /* definitions DlsMat DENSE_ELEM */
-#include <sundials/sundials_types.h> /* definition of type realtype */
+#include <cvode/cvode.h>                                  /* prototypes for CVODE fcts., consts. */
+#include <nvector/nvector_serial.h>                      /* serial N_Vector types, fcts., macros */
+#include <cvode/cvode_dense.h>                                          /* prototype for CVDense */
+#include <sundials/sundials_dense.h>                            /* definitions DlsMat DENSE_ELEM */
+#include <sundials/sundials_types.h>                              /* definition of type realtype */
 
 #include "../declarations.hpp"
 #include "rate_equation_solver.hpp"
@@ -51,56 +53,32 @@
 
 /* Problem Constants */
 
-#define NEQ   NSPEC            /* number of equations  */
-// #define Y1    RCONST(1.0)      /* initial y components */
-// #define Y2    RCONST(0.0)
-// #define Y3    RCONST(0.0)
-#define RTOL  RCONST(1.0e-4)   /* scalar relative tolerance            */
-#define ATOL  RCONST(1.0e-8)   /* vector absolute tolerance components */
-// #define ATOL1 RCONST(1.0e-8)   /* vector absolute tolerance components */
-// #define ATOL2 RCONST(1.0e-14)
-// #define ATOL3 RCONST(1.0e-6)
-#define T0    RCONST(0.0)      /* initial time           */
-#define T1    RCONST(0.1)      /* first output time      */
-#define TMULT RCONST(10.0)     /* output time factor     */
-#define NOUT  1                /* number of output times */
+#define NEQ  NSPEC                                                        /* number of equations */
+#define RTOL RCONST(1.0e-4)                                         /* scalar relative tolerance */
+#define ATOL RCONST(1.0e-8)                              /* vector absolute tolerance components */
+#define T0   RCONST(0.0)                                                         /* initial time */
+#define T1   RCONST(0.1)                                                    /* first output time */
+#define TADD RCONST(10.0)                                                  /* output time factor */
+#define NOUT 500                                                       /* number of output times */
 
-
-
-/* Functions Called by the Solver */
-
-static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data);
-
-static int Jac(long int N, realtype t,
-               N_Vector y, N_Vector fy, DlsMat J, void *user_data,
-               N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
-
-
-/* Private functions to output results */
-
-static void PrintOutput(realtype t, realtype y1, realtype y2, realtype y3);
-static void PrintRootInfo(int root_f1, int root_f2);
-
-
-/* Private function to print final statistics */
-
-static void PrintFinalStats(void *cvode_mem);
-
-
-/* Private function to check function return values */
-
-static int check_flag(void *flagvalue, const char *funcname, int opt);
+#define OINDEX(outp,spe) ( (spe) + NSPEC*(outp) )
 
 
 
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int rate_equation_solver(long gridp)
+int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 {
 
-  long *user_data;
-  user_data = &gridp;
+
+  USER_DATA user_data;                               /* Data to be passed to the solver routines */
+
+  user_data = NULL;
+  user_data = (USER_DATA) malloc( sizeof(*user_data) );
+
+  user_data->gp = gridp;
+  user_data->gridpointer = gridpoint;
 
 
   int i;                                                                                /* index */
@@ -111,10 +89,16 @@ int rate_equation_solver(long gridp)
   int flag, flagr, iout;
   int rootsfound[2];
 
+
+  realtype seconds_in_year = RCONST(3.1556926e7);               /* Convert from years to seconds */
+
+
   y = abstol = NULL;
   cvode_mem = NULL;
 
+
   /* Create serial vector of length NEQ for I.C. and abstol */
+
   y = N_VNew_Serial(NEQ);
   if (check_flag((void *)y, "N_VNew_Serial", 0)) return(1);
   abstol = N_VNew_Serial(NEQ);
@@ -128,12 +112,9 @@ int rate_equation_solver(long gridp)
     Ith(y,i+1) = species[i].abn[gridp];
   }
 
-  // Ith(y,1) = Y1;
-  // Ith(y,2) = Y2;
-  // Ith(y,3) = Y3;
-
 
   /* Set the scalar relative tolerance */
+
   reltol = RTOL;
 
 
@@ -143,10 +124,6 @@ int rate_equation_solver(long gridp)
 
     Ith(abstol,i+1) = ATOL;
   }
-
-  // Ith(abstol,1) = ATOL1;
-  // Ith(abstol,2) = ATOL2;
-  // Ith(abstol,3) = ATOL3;
 
 
 
@@ -166,6 +143,10 @@ int rate_equation_solver(long gridp)
   flag = CVodeSVtolerances(cvode_mem, reltol, abstol);
   if (check_flag(&flag, "CVodeSVtolerances", 1)) return(1);
 
+  /* Specify the user-defined data to be passed to the various routines */
+  flag = CVodeSetUserData(cvode_mem, user_data);
+  if (check_flag(&flag, "CVodeSetUserData", 1)) return(1);
+
   /* Call CVDense to specify the CVDENSE dense linear solver */
   flag = CVDense(cvode_mem, NEQ);
   if (check_flag(&flag, "CVDense", 1)) return(1);
@@ -174,32 +155,76 @@ int rate_equation_solver(long gridp)
   flag = CVDlsSetDenseJacFn(cvode_mem, Jac);
   if (check_flag(&flag, "CVDlsSetDenseJacFn", 1)) return(1);
 
+
+
   /* In loop, call CVode, print results, and test for error.
      Break out of loop when NOUT preset output times have been reached.  */
-  printf(" \n3-species kinetics problem\n\n");
 
+  iout = 0;
+  tout = 0.01;
 
-  iout = 0;  tout = T1;
+  double results[NOUT*NSPEC];
+
+  for(int te=0; te<NOUT*NSPEC; te++){
+    results[te] = 0.0;
+  }
+
 
   while(1) {
 
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
-    PrintOutput(t, Ith(y,1), Ith(y,2), Ith(y,3));
+
+    // PrintOutput(t, Ith(y,1), Ith(y,2), Ith(y,3));
+
+    for (int spe=0; spe<NSPEC; spe++){
+
+      results[OINDEX(iout,spe)] = Ith(y,spe+1);
+    }
+    cout << "iout and t : " << iout << " and " << t << "\n";
+
 
     if (check_flag(&flag, "CVode", 1)) break;
     if (flag == CV_SUCCESS) {
       iout++;
-      tout *= TMULT;
+      tout = tout + 5 / 500.0;
     }
 
-    if (iout == NOUT) break;
+    if (iout >= NOUT) break;
 
   }
+
+
+
+  /* Write the results of the integration */
+
+  FILE *abn_file = fopen("output/abundances_in_time.txt", "w");
+
+  if (abn_file == NULL){
+
+      printf("Error opening file!\n");
+      exit(1);
+  }
+
+
+  for (int outp=0; outp<NOUT; outp++){
+
+    for (int spe=0; spe<NSPEC; spe++){
+
+      fprintf( abn_file, "%lE\t", results[OINDEX(outp,spe)] );
+    }
+
+    fprintf( abn_file, "\n" );
+  }
+
+  fclose(abn_file);
+
+
 
   for (i=0; i<NSPEC; i++){
 
     species[i].abn[gridp] = Ith(y,i+1);
   }
+
 
 
   /* Print some final statistics */
@@ -209,10 +234,13 @@ int rate_equation_solver(long gridp)
   N_VDestroy_Serial(y);
   N_VDestroy_Serial(abstol);
 
+
   /* Free integrator memory */
   CVodeFree(&cvode_mem);
 
+
   return(0);
+
 }
 
 

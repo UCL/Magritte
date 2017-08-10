@@ -41,8 +41,7 @@ using namespace std;
 #include "AV_calculator.hpp"
 #include "UV_field_calculator.hpp"
 #include "dust_temperature_calculation.hpp"
-#include "reaction_rates.hpp"
-#include "abundance.hpp"
+#include "abundances.hpp"
 #include "level_populations.hpp"
 
 #include "write_output.hpp"
@@ -67,8 +66,9 @@ int main()
   int    lspec = 0;                                                     /* index of line species */
   int    par   = 0;                                                /* index of collision partner */
 
-  double time_rt = 0.0;                                                   /* time in ray_tracing */
-  double time_lp = 0.0;                                /* time for level_populations to converge */
+  double time_ray_tracing = 0.0;                                    /* total time in ray_tracing */
+  double time_abundances = 0.0;                                      /* total time in abundances */
+  double time_level_pop = 0.0;                                /* total time in level_populations */
 
 
   /* Temporary */
@@ -176,7 +176,6 @@ int main()
   CO_nr   = get_species_nr("CO");                              /* species nr corresponding to CO */
 
 
-
   /* Read the reactions */
 
   read_reactions(reac_datafile);
@@ -226,14 +225,14 @@ int main()
 
   /* Execute ray_tracing */
 
-  time_rt -= omp_get_wtime();
+  time_ray_tracing -= omp_get_wtime();
 
   ray_tracing(unit_healpixvector, gridpoint, evalpoint);
 
-  time_rt += omp_get_wtime();
+  time_ray_tracing += omp_get_wtime();
 
 
-  printf("\n(3D-RT): time in ray_tracing: %lf sec \n", time_rt);
+  printf("\n(3D-RT): time in ray_tracing: %lf sec \n", time_ray_tracing);
 
 
   printf("(3D-RT): rays traced \n\n");
@@ -249,7 +248,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  setup_data_structures();
+  setup_data_structures(line_datafile);
 
 
 
@@ -282,16 +281,16 @@ int main()
   /* Define the collision related variables */
 
   double coltemp[TOT_CUM_TOT_NCOLTEMP];               /* Collision temperatures for each partner */
-                                                                     /*[NLSPEC][ncolpar][ncoltemp] */
+                                                                   /*[NLSPEC][ncolpar][ncoltemp] */
 
   double C_data[TOT_CUM_TOT_NCOLTRANTEMP];           /* C_data for each partner, tran. and temp. */
-                                                          /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
+                                                        /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
 
   int icol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                    /* [NLSPEC][ncolpar][ncoltran] */
+                                                                  /* [NLSPEC][ncolpar][ncoltran] */
 
   int jcol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                    /* [NLSPEC][ncolpar][ncoltran] */
+                                                                  /* [NLSPEC][ncolpar][ncoltran] */
 
 
   /* Initializing data */
@@ -482,21 +481,23 @@ int main()
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    printf("(3D-RT): calculating chemical abundances \n");
-
-
-    /* Calculate the reaction rates */
-
-    // reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-    //                 column_H2, column_HD, column_C, column_CO, v_turb, gridp );
+    printf("(3D-RT): calculating chemical abundances \n\n");
 
 
     /* Calculate the chemical abundances by solving the rate equations */
 
-    // abundance();
+    time_abundances -= omp_get_wtime();
+
+    abundances( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+                column_H2, column_HD, column_C, column_CO, v_turb );
+
+    time_abundances += omp_get_wtime();
 
 
-    printf("(3D-RT): chemical abundances calculated \n");
+    printf("\n(3D-RT): time in abundances: %lf sec\n", time_abundances);
+
+
+    printf("(3D-RT): chemical abundances calculated \n\n");
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -509,7 +510,7 @@ int main()
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    printf("(3D-RT): calculating level populations \n");
+    printf("(3D-RT): calculating level populations \n\n");
 
 
     /* Initializing populations */
@@ -520,7 +521,8 @@ int main()
 
         for (i=0; i<nlev[lspec]; i++){
 
-          pop[LSPECGRIDLEV(lspec,n,i)] = exp(-HH*CC*energy[LSPECLEV(lspec,i)]/(KB*temperature_gas[n]));
+          pop[LSPECGRIDLEV(lspec,n,i)] = exp( -HH*CC*energy[LSPECLEV(lspec,i)]
+                                               / (KB*temperature_gas[n]) );
         }
       }
     }
@@ -528,7 +530,7 @@ int main()
 
     /* Declare and initialize P_intensity for each ray through a grid point */
 
-    double P_intensity[NGRID*NRAYS];                       /* Feautrier's mean intensity for a ray */
+    double P_intensity[NGRID*NRAYS];                     /* Feautrier's mean intensity for a ray */
 
 
     for (n1=0; n1<NGRID; n1++){
@@ -542,7 +544,7 @@ int main()
 
     /* Calculate level populations for each line producing species */
 
-    time_lp -= omp_get_wtime();
+    time_level_pop -= omp_get_wtime();
 
 
     /* For each line producing species */
@@ -555,10 +557,10 @@ int main()
     }
 
 
-    time_lp += omp_get_wtime();
+    time_level_pop += omp_get_wtime();
 
 
-    printf("\n(3D-RT): time in level_populations: %lf sec\n", time_lp);
+    printf("\n(3D-RT): time in level_populations: %lf sec\n", time_level_pop);
 
 
     printf("(3D-RT): level populations calculated \n\n");

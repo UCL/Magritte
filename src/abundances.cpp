@@ -16,26 +16,49 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
+
 #include <stdio.h>
 
 #include "declarations.hpp"
+#include "abundances.hpp"
+#include "reaction_rates.hpp"
 #include "sundials/rate_equation_solver.hpp"
 
 
 
-/* abundance: calculate abundances for each species at each grid point                           */
+/* abundances: calculate abundances for each species at each grid point                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-void abundance()
+void abundances( GRIDPOINT *gridpoint, double *temperature_gas, double *temperature_dust,
+                 double *rad_surface, double *AV,
+                 double *column_H2, double *column_HD, double *column_C, double *column_CO,
+                 double v_turb )
 {
 
-  long gridp =1;
 
-  printf(" --- Abundance --- \n");
+  long gridp;                                                                /* grid point index */
 
-  int rate_equation_solver(long gridp);
 
-  rate_equation_solver(gridp);
+  printf(" --- Abundances --- \n");
+
+
+
+  /* For all gridpoints */
+
+  for (gridp=0; gridp<NGRID; gridp++){
+
+
+    /* Calculate the reaction rates */
+
+    reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
+                    column_H2, column_HD, column_C, column_CO, v_turb, gridp );
+
+
+    /* Solve the rate equations */
+
+    rate_equation_solver(gridpoint, gridp);
+
+  } /* end of gridp loop over grid points */
 
   printf(" ---           --- \n");
 

@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/_3DRT.dir/abundance.cpp.o"
+  "CMakeFiles/_3DRT.dir/abundances.cpp.o"
   "CMakeFiles/_3DRT.dir/data_tools.cpp.o"
   "CMakeFiles/_3DRT.dir/species_tools.cpp.o"
   "CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o"
