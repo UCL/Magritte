@@ -88,7 +88,6 @@ int get_NSPEC(string spec_datafile)
 
   nspec = nspec + 1;
 
-  printf("NSPEC IS %d\n", nspec );
 
   return nspec;
 

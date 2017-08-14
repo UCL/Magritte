@@ -343,17 +343,17 @@ def conserve_species(species, speciesConstituents, codeFormat='C'):
         for n in range(nSpecies):
             if speciesConstituents[n][indexPos] > 0:
                 if len(conservationEquation) > 0: conservationEquation += '+'
-                if codeFormat == 'C':   conservationEquation += multiple(speciesConstituents[n][indexPos])+'Ith(y,'+str(n)+'+2)'
+                if codeFormat == 'C':   conservationEquation += multiple(speciesConstituents[n][indexPos])+'Ith(y,'+str(n)+')'
 
             if speciesConstituents[n][indexNeg] > 0:
                 conservationEquation += '-'
-                if codeFormat == 'C':   conservationEquation += multiple(speciesConstituents[n][indexNeg])+'Ith(y,'+str(n)+'+2)'
+                if codeFormat == 'C':   conservationEquation += multiple(speciesConstituents[n][indexNeg])+'Ith(y,'+str(n)+')'
     else:
         index = elementList.index(species)
         for n in range(nSpecies):
             if speciesConstituents[n][index] > 0:
                 if len(conservationEquation) > 0: conservationEquation += '+'
-                if codeFormat == 'C':   conservationEquation += multiple(speciesConstituents[n][index])+'Ith(y,'+str(n)+'+2)'
+                if codeFormat == 'C':   conservationEquation += multiple(speciesConstituents[n][index])+'Ith(y,'+str(n)+')'
     if len(conservationEquation) > 0:
         if codeFormat == 'C':   conservationEquation = '  x_e = '+conservationEquation+';\n'
 
@@ -373,7 +373,7 @@ def xray_parameters(speciesList, codeFormat='C'):
 
     # Create the code string to calculate the parameters zeta_H, zeta_H2 and zeta_He,
     # i.e., 1/(W_i.x_i) in equation D.12 of Meijerink & Spaans (2005, A&A, 436, 397)
-    if codeFormat == 'C':   xrayParameterEquations = '\n  /* The X-ray secondary ionization rates depend on the mean energies\n   * required to ionize H or H2 in a neutral gas mixture, 1/(W_i*x_i) */\n  zeta_H  = 1.0/(39.8*(1.0+12.2*pow(x_e,0.866))*(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n  zeta_H2 = 1.0/(41.9*(1.0+6.72*pow((1.83*x_e/(1.0+0.83*x_e)),0.824))*(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n  zeta_He = 1.0/(487.*(1.0+12.5*pow(x_e,0.994))*(Ith(y,'+str(indexHe)+'+2)));\n'
+    if codeFormat == 'C':   xrayParameterEquations = '\n  /* The X-ray secondary ionization rates depend on the mean energies\n   * required to ionize H or H2 in a neutral gas mixture, 1/(W_i*x_i) */\n  zeta_H  = 1.0/(39.8*(1.0+12.2*pow(x_e,0.866))*(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n  zeta_H2 = 1.0/(41.9*(1.0+6.72*pow((1.83*x_e/(1.0+0.83*x_e)),0.824))*(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n  zeta_He = 1.0/(487.*(1.0+12.5*pow(x_e,0.994))*(Ith(y,'+str(indexHe)+')));\n'
     return xrayParameterEquations
 
 
@@ -463,10 +463,10 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
                 for reactant in speciesList:
                     if reactant == species:
                         for j in range(reactants[i].count(reactant)-1):
-                            lossString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                            lossString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                         continue
                     for j in range(reactants[i].count(reactant)):
-                        lossString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                        lossString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                 for j in range(reactants[i].count('e-')):
                     lossString += '*x_e*n_H'
 
@@ -483,21 +483,21 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
 
                 # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                 if reactants[i].count('XRLYA') == 1:
-                    lossString += '*Ith(y,'+str(indexH)+'+2)*zeta_H'
+                    lossString += '*Ith(y,'+str(indexH)+')*zeta_H'
 
                 # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                 if reactants[i].count('XRPHOT') == 1:
-                    lossString += '*Ith(y,'+str(indexH2)+'+2)*zeta_H2'
+                    lossString += '*Ith(y,'+str(indexH2)+')*zeta_H2'
 
             # Formation terms
             if products[i].count(species) > 0:
                 if is_H2_formation(reactants[i], products[i]):
-                    formString += '+reaction['+str(i)+'].k[gridp]*Ith(y,'+str(speciesList.index('H'))+'+2)*n_H'
+                    formString += '+reaction['+str(i)+'].k[gridp]*Ith(y,'+str(speciesList.index('H'))+')*n_H'
                     continue
                 formString += '+'+multiple(products[i].count(species))+'reaction['+str(i)+'].k[gridp]'
                 for reactant in speciesList:
                     for j in range(reactants[i].count(reactant)):
-                        formString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)'
+                        formString += '*Ith(y,'+str(speciesList.index(reactant))+')'
                 for j in range(reactants[i].count('e-')):
                     formString += '*x_e'
                 if sum([speciesList.count(reactant) for reactant in reactants[i]]) > 1 or reactants[i].count('e-') > 0:
@@ -516,11 +516,11 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
 
                 # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                 if reactants[i].count('XRLYA') == 1:
-                    formString += '*Ith(y,'+str(indexH)+'+2)*zeta_H'
+                    formString += '*Ith(y,'+str(indexH)+')*zeta_H'
 
                 # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                 if reactants[i].count('XRPHOT') == 1:
-                    formString += '*Ith(y,'+str(indexH2)+'+2)*zeta_H2'
+                    formString += '*Ith(y,'+str(indexH2)+')*zeta_H2'
 
         if lossString != '':
             lossString = '\n  loss = '+lossString+';\n'
@@ -528,12 +528,12 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
         if formString != '':
             formString = '  form = '+formString+';\n'
             output.write(formString)
-        ydotString = '  Ith(ydot,'+str(n)+'+2) = '
+        ydotString = '  Ith(ydot,'+str(n)+') = '
         if formString != '':
             ydotString += 'form'
             if lossString != '': ydotString += '+'
         if lossString != '':
-            ydotString += 'Ith(y,'+str(n)+'+2)*loss'
+            ydotString += 'Ith(y,'+str(n)+')*loss'
         ydotString += ';\n'
         output.write(ydotString)
 
@@ -542,7 +542,7 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
         output.write('\n')
         output.write('\n  /* Convert the ODEs from dy/dt to d[ln(y)]/dt by dividing each by its abundance */\n')
         for n in range(nSpecies):
-            output.write('  Ith(ydot,'+str(n)+'+2) = Ith(ydot,'+str(n)+'+2)/Ith(y,'+str(n)+'+2);\n')
+            output.write('  Ith(ydot,'+str(n)+') = Ith(ydot,'+str(n)+')/Ith(y,'+str(n)+');\n')
 
     # Write the function footer
     fileFooter = '\n\n  return(0);\n}\n /*-----------------------------------------------------------------------------------------------*/\n\n'
@@ -630,14 +630,14 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     for reactant in speciesList:
                         if reactant == species2:
                             for j in range(reactants[i].count(reactant)-1):
-                                matrixString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                                matrixString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                         else:
                             if reactant == species1:
                                 for j in range(reactants[i].count(reactant)):
-                                    matrixString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                                    matrixString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                             else:
                                 for j in range(reactants[i].count(reactant)):
-                                    matrixString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                                    matrixString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                     for j in range(reactants[i].count('e-')):
                         matrixString += '*x_e*n_H'
 
@@ -645,30 +645,30 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     if reactants[i].count('XRSEC') == 1:
                         if reactants[i].count('H') == 1:
                             matrixString = matrixString[:-len('-reaction['+str(i)+'].k[gridp]')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+2)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+2)*zeta_H*(+1.89/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+')*zeta_H*(+1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
                         elif reactants[i].count('H2') == 1:
                             matrixString = matrixString[:-len('-reaction['+str(i)+'].k[gridp]')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+2)*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+2)*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +')*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+')*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
                         elif reactants[i].count('He') == 1:
                             matrixString += '*zeta_He'
                         else:
                             matrixString += '*zeta_H'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+2)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+2)*zeta_H*(-1.00/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+')*zeta_H*(-1.00/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                     if reactants[i].count('XRLYA') == 1:
-                        matrixString += '*Ith(y,'+str(indexH)+'+2)*zeta_H'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+2)*zeta_H*(-1.89*Ith(y,'+str(indexH)+ '+2)/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+2)*zeta_H*(+1.89*Ith(y,'+str(indexH2)+'+2)/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
+                        matrixString += '*Ith(y,'+str(indexH)+')*zeta_H'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+')*zeta_H*(-1.89*Ith(y,'+str(indexH)+ ')/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+')*zeta_H*(+1.89*Ith(y,'+str(indexH2)+')/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                     if reactants[i].count('XRPHOT') == 1:
-                        matrixString += '*Ith(y,'+str(indexH2)+'+2)*zeta_H2'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+2)*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ '+2)/(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+'+2)*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+'+2)/(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n'
+                        matrixString += '*Ith(y,'+str(indexH2)+')*zeta_H2'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+')*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ ')/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= reaction['+str(i)+'].k[gridp]*Ith(y,'+str(n)+')*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+')/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
 
             # Formation terms for species1
             for i in range(nReactions):
@@ -680,10 +680,10 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     for reactant in speciesList:
                         if reactant == species2:
                             for j in range(reactants[i].count(reactant)-1):
-                                matrixString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                                matrixString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                         else:
                             for j in range(reactants[i].count(reactant)):
-                                matrixString += '*Ith(y,'+str(speciesList.index(reactant))+'+2)*n_H'
+                                matrixString += '*Ith(y,'+str(speciesList.index(reactant))+')*n_H'
                     for j in range(reactants[i].count('e-')):
                         matrixString += '*x_e*n_H'
 
@@ -691,33 +691,33 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     if reactants[i].count('XRSEC') == 1:
                         if reactants[i].count('H') == 1:
                             matrixString = matrixString[:-len('+reaction['+str(i)+'].k[gridp]')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+2)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+2)*zeta_H*(+1.89/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+')*zeta_H*(+1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
                         elif reactants[i].count('H2') == 1:
                             matrixString = matrixString[:-len('+reaction['+str(i)+'].k[gridp]')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +'+2)*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+'+2)*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+'+2)+0.53*Ith(y,'+str(indexH)+'+2)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH) +')*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(indexH2)+')*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
                         elif reactants[i].count('He') == 1:
                             matrixString += '*zeta_He'
                         else:
                             matrixString += '*zeta_H'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+2)*zeta_H*(-1.89/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+2)*zeta_H*(-1.00/(Ith(y,'+str(indexH)+'+2)+1.89*Ith(y,'+str(indexH2)+'+2)));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+')*zeta_H*(-1.00/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                     if reactants[i].count('XRLYA') == 1:
-                        matrixString += '*Ith(y,'+str(indexH)+'+2)*zeta_H'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+2)*zeta_H*(-1.89*Ith(y,'+str(indexH)+ '+2)/(Ith(y'+str(indexH)+'+2)+1.89*Ith(y'+str(indexH2)+'+2)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+2)*zeta_H*(+1.89*Ith(y,'+str(indexH2)+'+2)/(Ith(y'+str(indexH)+'+2)+1.89*Ith(y'+str(indexH2)+'+2)));\n'
+                        matrixString += '*Ith(y,'+str(indexH)+')*zeta_H'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+')*zeta_H*(-1.89*Ith(y,'+str(indexH)+ ')/(Ith(y'+str(indexH)+')+1.89*Ith(y'+str(indexH2)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+')*zeta_H*(+1.89*Ith(y,'+str(indexH2)+')/(Ith(y'+str(indexH)+')+1.89*Ith(y'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                     if reactants[i].count('XRPHOT') == 1:
-                        matrixString += '*Ith(y,'+str(indexH2)+'+2)*zeta_H2'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+2)*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ '+2)/(Ith(y'+str(indexH2)+'+2)+0.53*Ith(y'+str(indexH)+'+2)));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +'+2,'+str(formatCode % n)+'+2) += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+'+2)*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+'+2)/(Ith(y'+str(indexH2)+'+2)+0.53*Ith(y'+str(indexH)+'+2)));\n'
+                        matrixString += '*Ith(y,'+str(indexH2)+')*zeta_H2'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+')*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ ')/(Ith(y'+str(indexH2)+')+0.53*Ith(y'+str(indexH)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += reaction['+str(i)+'].k[gridp]*Ith(y,'+str(m)+')*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+')/(Ith(y'+str(indexH2)+')+0.53*Ith(y'+str(indexH)+')));\n'
 
             if matrixString != '':
-                matrixString = '  IJth(J,'+str(formatCode % m)+'+2,'+str(formatCode % n)+'+2) = '+matrixString+';\n'
+                matrixString = '  IJth(J,'+str(formatCode % m)+','+str(formatCode % n)+') = '+matrixString+';\n'
                 output.write(matrixString)
 
     # If X-ray reactions are present, write their additional partial derivative terms
@@ -730,7 +730,7 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
         for n in range(nSpecies):
             for m in range(nSpecies):
                 if n != m:
-                    output.write('  IJth(J,'+str(formatCode % m)+'+2,'+str(formatCode % n)+'+2) = IJth(J,'+str(m)+'+2,'+str(n)+'+2)*Ith(y,'+str(m)+'+2)/Ith(y,'+str(n)+'+2);\n')
+                    output.write('  IJth(J,'+str(formatCode % m)+','+str(formatCode % n)+') = IJth(J,'+str(m)+','+str(n)+')*Ith(y,'+str(m)+')/Ith(y,'+str(n)+');\n')
 
     # Write the function footer
     fileFooter = '\n  return(0);\n}\n/*-----------------------------------------------------------------------------------------------*/\n\n'

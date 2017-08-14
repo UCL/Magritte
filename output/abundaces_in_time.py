@@ -1,25 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-abundances = np.loadtxt("abundances_in_time.txt")
+data = np.loadtxt("abundances_in_time.txt")
 
-nout  = np.shape(abundances)[0]
-nspec = np.shape(abundances)[1]
+nout  = np.shape(data)[0]
+nspecp1 = np.shape(data)[1]
 
 print "nout is  ", nout
-print "nspec is ", nspec
+print "nspec is ", nspecp1
 
 
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 
-abn = np.zeros(nout)
+abn  = np.zeros(nout)
+time = np.zeros(nout)
 
+for spec in range(1,nspecp1):
 
-for spec in range(nspec):
-
-    for time in range(nout):
-         abn[time] = abundances[time][spec]
+    for t in range(nout):
+         abn[t]  = data[t][spec]
+         time[t] = data[t][0]
 
     ax1.plot(abn, label=spec)
 
@@ -27,6 +28,7 @@ for spec in range(nspec):
 ax1.legend()
 ax1.set_xlabel("time")
 ax1.set_ylabel("abundance")
+ax1.set_xscale("log")
 ax1.set_yscale("log")
 
 plt.show()

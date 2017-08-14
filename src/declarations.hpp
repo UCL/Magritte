@@ -26,9 +26,9 @@ using namespace std;
 
 #define GRID_INPUTFILE "input/grid_null.txt" 
 
-#define SPEC_DATAFILE  "data/test_species.d" 
+#define SPEC_DATAFILE  "data/species_reduced.d" 
 
-#define REAC_DATAFILE  "data/test_rates.d" 
+#define REAC_DATAFILE  "data/rates_reduced.d" 
 
 #define LINE_DATAFILE0 "data/12c.dat" 
 
@@ -44,9 +44,9 @@ using namespace std;
 
 #define FIELD_FORM "ISO" 
 
-#define NSPEC 8 
+#define NSPEC 34 
 
-#define NREAC 6 
+#define NREAC 329 
 
 #define NLSPEC 1 
 
@@ -334,7 +334,7 @@ extern double metallicity;
 extern double gas2dust;
 
 
-#define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC
+#define GRIDSPECRAY(gridp,spec,ray)   ( (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC )
                /* when the first index is a grid point, the second a species and the third a ray */
 
 

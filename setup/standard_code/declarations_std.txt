@@ -268,7 +268,7 @@ extern double metallicity;
 extern double gas2dust;
 
 
-#define GRIDSPECRAY(gridp,spec,ray) (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC
+#define GRIDSPECRAY(gridp,spec,ray)   ( (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC )
                /* when the first index is a grid point, the second a species and the third a ray */
 
 

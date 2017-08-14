@@ -26,9 +26,9 @@ ____________________________________|__________________
                                     |
 input/grid_null.txt                 | Grid
                                     |
-data/test_species.d              | Species
+data/species_reduced.d              | Species
                                     |
-data/test_rates.d                | Reactions
+data/rates_reduced.d                | Reactions
 ____________________________________|__________________
                                     |
 1                                   | nr. of line files
