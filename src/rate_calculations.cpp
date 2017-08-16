@@ -130,7 +130,7 @@ double rate_H2_formation( int reac, double temperature_gas, double temperature_d
 
   return k = 0.5 * thermal_speed
              * (cs_sil*formation_efficiency_sil + cs_gra*formation_efficiency_gra)
-             * sticking_coeff * metallicity * 100.0 / gas2dust;
+             * sticking_coeff * metallicity * 100.0 / gas_to_dust;
 }
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -320,8 +320,8 @@ double rate_FREEZE( int reac, double temperature_gas)
   double sticking_coeff = 0.3;                                /* dust grain sticking coefficient */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
                                       /* = average grain surface area per H atom (devided by PI) */
-  double grain_radius = 1.0E-5;                                     /* radius of the dust grains */
-  // double grain_radius = 1.0E-7;                                     /* radius of the dust grains */
+  double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
+  // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
 
 
   double C_ion;                                   /* Factor taking care of electrostatic effects */
@@ -353,7 +353,7 @@ double rate_FREEZE( int reac, double temperature_gas)
 
     /* For (singly) charged species */
 
-    C_ion = 1.0 + 16.71E-4/(grain_radius*temperature_gas);
+    C_ion = 1.0 + 16.71E-4/(radius_grain*temperature_gas);
   }
 
   else {
@@ -392,8 +392,8 @@ double rate_ELFRZE( int reac, double temperature_gas)
   double sticking_coeff = 0.3;                                /* dust grain sticking coefficient */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
                                       /* = average grain surface area per H atom (devided by PI) */
-  double grain_radius = 1.0E-5;                                     /* radius of the dust grains */
-  // double grain_radius = 1.0E-7;                                     /* radius of the dust grains */
+  double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
+  // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
 
 
   double C_ion;                                   /* Factor taking care of electrostatic effects */
@@ -419,7 +419,7 @@ double rate_ELFRZE( int reac, double temperature_gas)
 
   else if (beta == 1.0 ){
 
-    C_ion = 1.0 + 16.71E-4/(grain_radius*temperature_gas);
+    C_ion = 1.0 + 16.71E-4/(radius_grain*temperature_gas);
   }
 
   else {

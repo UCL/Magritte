@@ -25,6 +25,8 @@ declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 definitions.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/definitions.hpp
+initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 species_tools.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/species_tools.hpp
 data_tools.hpp
@@ -55,6 +57,8 @@ abundances.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/abundances.hpp
 level_populations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
+heating.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/heating.hpp
 write_output.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/write_output.hpp
 
@@ -85,6 +89,12 @@ string
 -
 
 /home/frederik/Dropbox/Astro/3D-RT/src/dust_temperature_calculation.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/heating.hpp
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
 declarations.hpp

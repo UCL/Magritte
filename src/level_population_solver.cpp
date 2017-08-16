@@ -42,23 +42,23 @@ void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, doub
   double *b;
   b = (double*) malloc( n*sizeof(double) );
 
-  double out;
+  double row_tot;
 
 
   /* Fill the matrix a */
 
   for (i=0; i<nlev[lspec]; i++){
 
-    out = 0.0;
+    row_tot = 0.0;
 
     for (j=0; j<nlev[lspec]; j++){
 
-      out = out + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
+      row_tot = row_tot + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
 
       a[LINDEX(i,j)] = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
     }
 
-    a[LINDEX(i,i)] = -out;
+    a[LINDEX(i,i)] = -row_tot;
   }
 
 
@@ -118,7 +118,8 @@ void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, doub
 
     if( isnan(b[i]) ){
 
-      printf( "(level_population_solver): population of level (%d,%d) is NaN at grid point %ld \n",
+      // printf( "\n\n !!! ERROR in level poopulation solver !!!\n\n" );
+      printf( "   [ERROR]: population of level (%d,%d) is NaN at grid point %ld \n",
               lspec, i, gridp );
     }
 

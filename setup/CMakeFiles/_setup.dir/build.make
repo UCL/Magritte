@@ -105,9 +105,33 @@ CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structure
 CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o.provides.build: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o
 
 
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o: CMakeFiles/_setup.dir/flags.make
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp
+
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp > CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i
+
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp -o CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s
+
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.requires:
+
+.PHONY : CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.requires
+
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.provides: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.requires
+	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.provides.build
+.PHONY : CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.provides
+
+CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.provides.build: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o
+
+
 CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o: CMakeFiles/_setup.dir/flags.make
 CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
 
 CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.i: cmake_force
@@ -133,6 +157,7 @@ CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o.pro
 _setup_OBJECTS = \
 "CMakeFiles/_setup.dir/setup_tools.cpp.o" \
 "CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o" \
+"CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o" \
 "CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o"
 
 # External object files for target _setup
@@ -140,10 +165,11 @@ _setup_EXTERNAL_OBJECTS =
 
 lib_setup.a: CMakeFiles/_setup.dir/setup_tools.cpp.o
 lib_setup.a: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o
+lib_setup.a: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o
 lib_setup.a: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o
 lib_setup.a: CMakeFiles/_setup.dir/build.make
 lib_setup.a: CMakeFiles/_setup.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library lib_setup.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library lib_setup.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/_setup.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/_setup.dir/link.txt --verbose=$(VERBOSE)
 
@@ -154,6 +180,7 @@ CMakeFiles/_setup.dir/build: lib_setup.a
 
 CMakeFiles/_setup.dir/requires: CMakeFiles/_setup.dir/setup_tools.cpp.o.requires
 CMakeFiles/_setup.dir/requires: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o.requires
+CMakeFiles/_setup.dir/requires: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o.requires
 CMakeFiles/_setup.dir/requires: CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o.requires
 
 .PHONY : CMakeFiles/_setup.dir/requires

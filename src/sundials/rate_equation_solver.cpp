@@ -79,7 +79,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   realtype time_start = 0.0E0;                               /* start time of chemical evolution */
 
-  realtype time_end = 1.0E7*seconds_in_year;                   /* end time of chemical evolution */
+  realtype time_end = TIME_END_IN_YEARS*seconds_in_year;       /* end time of chemical evolution */
 
   y         = NULL;
   abstol    = NULL;
@@ -119,7 +119,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   for (i=0; i<NEQ; i++){
 
-    Ith(y,i) = species[i+1].abn[gridp];
+    Ith(y,i) = (realtype) species[i+1].abn[gridp];
   }
 
 
@@ -218,14 +218,14 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   iout = 0;
   tout = 1.0E-4*seconds_in_year;
 
-  realtype results[NOUT_MAX*(NEQ+1)];                        /* storage for intermediate results */
+  // realtype results[NOUT_MAX*(NEQ+1)];                        /* storage for intermediate results */
 
   /* Initialize */
 
-  for(int t=0; t<NOUT_MAX*(NEQ+1); t++){
-
-    results[t] = 0.0;
-  }
+  // for(int t=0; t<NOUT_MAX*(NEQ+1); t++){
+  //
+  //   results[t] = 0.0;
+  // }
 
 
 
@@ -236,11 +236,6 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
     /* Call CVode, check the return status and loop */
 
-    for (i=0; i<NEQ; i++){
-
-      cout << "ic : " << Ith(y,i) << "\n";
-    }
-
 
     /* Call CVode */
 
@@ -249,12 +244,12 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
     /* Store intermediate results */
 
-    results[OINDEX(iout,0)] = t;
-
-    for (int spe=0; spe<NEQ; spe++){
-
-      results[OINDEX(iout,spe+1)] = Ith(y,spe);
-    }
+    // results[OINDEX(iout,0)] = t;
+    //
+    // for (int spe=0; spe<NEQ; spe++){
+    //
+    //   results[OINDEX(iout,spe+1)] = Ith(y,spe);
+    // }
 
 
     if (check_flag(&flag, "CVode", 1)){
@@ -286,26 +281,26 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   /* Write the results of the integration */
 
-  FILE *abn_file = fopen("output/abundances_in_time.txt", "w");
-
-  if (abn_file == NULL){
-
-      printf("Error opening file!\n");
-      exit(1);
-  }
-
-
-  for (int outp=0; outp<NOUT_MAX; outp++){
-
-    for (int spe=0; spe<NEQ+1; spe++){
-
-      fprintf( abn_file, "%lE\t", results[OINDEX(outp,spe)] );
-    }
-
-    fprintf( abn_file, "\n" );
-  }
-
-  fclose(abn_file);
+  // FILE *abn_file = fopen("output/abundances_in_time.txt", "w");
+  //
+  // if (abn_file == NULL){
+  //
+  //     printf("Error opening file!\n");
+  //     exit(1);
+  // }
+  //
+  //
+  // for (int outp=0; outp<NOUT_MAX; outp++){
+  //
+  //   for (int spe=0; spe<NEQ+1; spe++){
+  //
+  //     fprintf( abn_file, "%lE\t", results[OINDEX(outp,spe)] );
+  //   }
+  //
+  //   fprintf( abn_file, "\n" );
+  // }
+  //
+  // fclose(abn_file);
 
 
 
@@ -320,7 +315,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   /* Print some final statistics */
 
-  PrintFinalStats(cvode_mem);
+  // PrintFinalStats(cvode_mem);
 
 
   /* Free y and abstol vectors */

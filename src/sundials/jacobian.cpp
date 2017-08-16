@@ -13,11 +13,13 @@
 
 
 
-#include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts. */
-#include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
-#include <cvode/cvode_dense.h>       /* prototype for CVDense */
-#include <sundials/sundials_dense.h> /* definitions DlsMat DENSE_ELEM */
-#include <sundials/sundials_types.h> /* definition of type realtype */
+#include <math.h>
+
+#include <cvode/cvode.h>                                  /* prototypes for CVODE fcts., consts. */
+#include <nvector/nvector_serial.h>                      /* serial N_Vector types, fcts., macros */
+#include <cvode/cvode_dense.h>                                          /* prototype for CVDense */
+#include <sundials/sundials_dense.h>                            /* definitions DlsMat DENSE_ELEM */
+#include <sundials/sundials_types.h>                              /* definition of type realtype */
 
 #include "../declarations.hpp"
 
@@ -47,7 +49,9 @@ static int Jac( long int N, realtype t, N_Vector y, N_Vector fy, DlsMat J, void 
 
   GRIDPOINT *gridpoint = data->gridpointer;
 
-  double n_H = gridpoint[gridp].density;
+  realtype n_H = (realtype) gridpoint[gridp].density;
+
+  realtype zeta_H, zeta_H2, zeta_He;
 
 
 

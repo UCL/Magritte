@@ -176,6 +176,33 @@ home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.s:
 	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.s
 .PHONY : home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.s
 
+home/frederik/Dropbox/Astro/3D-RT/src/initializers.o: home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o
+
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/src/initializers.o
+
+# target to build an object file
+home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o:
+	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o
+
+home/frederik/Dropbox/Astro/3D-RT/src/initializers.i: home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i
+
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/src/initializers.i
+
+# target to preprocess a source file
+home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i:
+	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.i
+
+home/frederik/Dropbox/Astro/3D-RT/src/initializers.s: home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s
+
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/src/initializers.s
+
+# target to generate assembly for a file
+home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s:
+	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s
+.PHONY : home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.s
+
 home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.o: home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp.o
 
 .PHONY : home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.o
@@ -271,6 +298,9 @@ help:
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/data_tools.o"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/data_tools.i"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/data_tools.s"
+	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/initializers.o"
+	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/initializers.i"
+	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/initializers.s"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.o"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.i"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.s"

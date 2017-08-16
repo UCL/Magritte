@@ -174,12 +174,7 @@ void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *e
 
       /* Get ipix ray where rvec belongs to (using HEALPix functions) */
 
-      void vec2ang(double *rvec, double *theta, double *phi);
-
       vec2ang(rvec, &theta, &phi);
-
-
-      void ang2pix_nest( const long nside, double theta, double phi, long *ipix);
 
       ang2pix_nest(NSIDES, theta, phi, &ipix);
 

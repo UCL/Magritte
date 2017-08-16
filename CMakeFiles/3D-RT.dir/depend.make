@@ -11,6 +11,8 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/data_tools.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/declarations.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/definitions.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/dust_temperature_calculation.hpp
+CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/heating.hpp
+CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/initializers.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/level_populations.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/rad_surface_calculator.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/ray_tracing.hpp

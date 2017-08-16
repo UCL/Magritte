@@ -25,6 +25,7 @@ using namespace std;
 #include "declarations.hpp"
 #include "definitions.hpp"
 
+#include "initializers.hpp"
 #include "species_tools.hpp"
 #include "data_tools.hpp"
 #include "setup_data_structures.hpp"
@@ -43,6 +44,7 @@ using namespace std;
 #include "dust_temperature_calculation.hpp"
 #include "abundances.hpp"
 #include "level_populations.hpp"
+#include "heating.hpp"
 
 #include "write_output.hpp"
 
@@ -54,18 +56,6 @@ using namespace std;
 int main()
 {
 
-  long   n     = 0;                                                          /* grid point index */
-  long   n1    = 0;                                                          /* grid point index */
-  long   n2    = 0;                                                          /* grid point index */
-  long   r     = 0;                                                                 /* ray index */
-
-  int    i     = 0;                                                    /* population level index */
-  int    j     = 0;                                                    /* population level index */
-  int    kr    = 0;                                             /* index of radiative transition */
-  int    spec  = 0;                                                 /* index of chemical species */
-  int    lspec = 0;                                                     /* index of line species */
-  int    par   = 0;                                                /* index of collision partner */
-
   double time_ray_tracing = 0.0;                                    /* total time in ray_tracing */
   double time_abundances = 0.0;                                      /* total time in abundances */
   double time_level_pop = 0.0;                                /* total time in level_populations */
@@ -75,7 +65,7 @@ int main()
 
   metallicity = 1.0;
 
-  gas2dust = 100.0;
+  gas_to_dust = 100.0;
 
   double v_turb = 0.0;
 
@@ -103,38 +93,11 @@ int main()
 
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
+  /* NOTE: gridpoint does not have to be initialized a slong as read_input works */
+
   EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
-
-
-  /* Initialize */
-
-  for (n1=0; n1<NGRID; n1++){
-
-    for (n2=0; n2<NGRID; n2++){
-
-      evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
-      evalpoint[GINDEX(n1,n2)].Z   = 0.0;
-      evalpoint[GINDEX(n1,n2)].vol = 0.0;
-
-      evalpoint[GINDEX(n1,n2)].ray = 0;
-      evalpoint[GINDEX(n1,n2)].nr  = 0;
-
-      evalpoint[GINDEX(n1,n2)].eqp = 0;
-
-      evalpoint[GINDEX(n1,n2)].onray = false;
-
-      key[GINDEX(n1,n2)] = 0;
-    }
-
-    for (r=0; r<NRAYS; r++){
-
-      raytot[RINDEX(n1,r)]      = 0;
-      cum_raytot[RINDEX(n1,r)]  = 0;
-    }
-
-  }
-
+  initialize_evalpoint(evalpoint);
 
 
   /* Read input file */
@@ -163,16 +126,28 @@ int main()
   read_species(spec_datafile);
 
 
+  /* Get and store the species numbers of some inportant species */
+
   e_nr    = get_species_nr("e-");                       /* species nr corresponding to electrons */
+
   H2_nr   = get_species_nr("H2");                              /* species nr corresponding to H2 */
+
   HD_nr   = get_species_nr("HD");                              /* species nr corresponding to HD */
+
   C_nr    = get_species_nr("C");                                /* species nr corresponding to C */
+
   H_nr    = get_species_nr("H");                                /* species nr corresponding to H */
+
   H2x_nr  = get_species_nr("H2+");                            /* species nr corresponding to H2+ */
+
   HCOx_nr = get_species_nr("HCO+");                          /* species nr corresponding to HCO+ */
+
   H3x_nr  = get_species_nr("H3+");                            /* species nr corresponding to H3+ */
+
   H3Ox_nr = get_species_nr("H3O+");                          /* species nr corresponding to H3O+ */
+
   Hex_nr  = get_species_nr("He+");                            /* species nr corresponding to He+ */
+
   CO_nr   = get_species_nr("CO");                              /* species nr corresponding to CO */
 
 
@@ -190,7 +165,118 @@ int main()
 
 
 
-  /*   CREATE HEALPIX VEXTORS AND FIND ANTIPODAL PAIRS                                           */
+  /*   SETUP DATA STRUCTURES                                                                     */
+  /*_____________________________________________________________________________________________*/
+
+
+  /* Initialize the data structures which will store the evaluation pointa */
+
+  initialize_long_array(key, NGRID*NGRID);
+
+  initialize_long_array(raytot, NGRID*NRAYS);
+
+  initialize_long_array(cum_raytot, NGRID*NRAYS);
+
+
+  /* Setup the data structures which will store the line data */
+
+  setup_data_structures(line_datafile);
+
+
+  /* Define line related variables */
+
+  int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
+
+  initialize_int_array(irad, TOT_NRAD);
+
+  int jrad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
+
+  initialize_int_array(jrad, TOT_NRAD);
+
+  double energy[TOT_NLEV];                                                /* energy of the level */
+
+  initialize_double_array(energy, TOT_NLEV);
+
+  double weight[TOT_NLEV];                                    /* statistical weight of the level */
+
+  initialize_double_array(weight, TOT_NLEV);
+
+  double frequency[TOT_NLEV2];             /* photon frequency corresponing to i -> j transition */
+
+  initialize_double_array(frequency, TOT_NLEV2);
+
+  double A_coeff[TOT_NLEV2];                                        /* Einstein A_ij coefficient */
+
+  initialize_double_array(A_coeff, TOT_NLEV2);
+
+  double B_coeff[TOT_NLEV2];                                        /* Einstein B_ij coefficient */
+
+  initialize_double_array(B_coeff, TOT_NLEV2);
+
+  double C_coeff[TOT_NLEV2];                                        /* Einstein C_ij coefficient */
+
+  initialize_double_array(C_coeff, TOT_NLEV2);
+
+  double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
+
+  initialize_double_array(R, NGRID*TOT_NLEV2);
+
+
+  /* Define the collision related variables */
+
+  double coltemp[TOT_CUM_TOT_NCOLTEMP];               /* Collision temperatures for each partner */
+                                                                   /*[NLSPEC][ncolpar][ncoltemp] */
+  initialize_double_array(coltemp, TOT_CUM_TOT_NCOLTEMP);
+
+  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];           /* C_data for each partner, tran. and temp. */
+                                                        /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
+  initialize_double_array(C_data, TOT_CUM_TOT_NCOLTRANTEMP);
+
+  int icol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
+                                                                  /* [NLSPEC][ncolpar][ncoltran] */
+  initialize_int_array(icol, TOT_CUM_TOT_NCOLTRAN);
+
+  int jcol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
+                                                                  /* [NLSPEC][ncolpar][ncoltran] */
+  initialize_int_array(jcol, TOT_CUM_TOT_NCOLTRAN);
+
+
+  /* Define the helper arrays specifying the species of the collisiopn partners */
+
+  initialize_int_array(spec_par, TOT_NCOLPAR);
+
+  initialize_char_array(ortho_para, TOT_NCOLPAR);
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /*   READ LINE DATA FOR EACH LINE PRODUCING SPECIES                                            */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(3D-RT): reading line data \n");
+
+
+  /* Read the line data files stored in the list(!) line_data */
+
+  read_linedata( line_datafile, irad, jrad, energy, weight, frequency,
+                 A_coeff, B_coeff, coltemp, C_data, icol, jcol );
+
+
+  printf("(3D-RT): line data read \n");
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
+  /*   CREATE HEALPIX VECTORS AND FIND ANTIPODAL PAIRS                                           */
   /*_____________________________________________________________________________________________*/
 
 
@@ -244,152 +330,20 @@ int main()
 
 
 
-  /*   SETUP DATA STRUCTURES FOR LINE DATA                                                       */
-  /*_____________________________________________________________________________________________*/
-
-
-  setup_data_structures(line_datafile);
-
-
-
-  /* Define line related variables */
-
-  int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
-
-  int jrad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
-
-  double energy[TOT_NLEV];                                                /* energy of the level */
-
-  double weight[TOT_NLEV];                                    /* statistical weight of the level */
-
-  double frequency[TOT_NLEV2];             /* photon frequency corresponing to i -> j transition */
-
-  double A_coeff[TOT_NLEV2];                                        /* Einstein A_ij coefficient */
-
-  double B_coeff[TOT_NLEV2];                                        /* Einstein B_ij coefficient */
-
-  double C_coeff[TOT_NLEV2];                                        /* Einstein C_ij coefficient */
-
-  double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
-
-  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
-
-  double dpop[NGRID*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
-
-
-
-  /* Define the collision related variables */
-
-  double coltemp[TOT_CUM_TOT_NCOLTEMP];               /* Collision temperatures for each partner */
-                                                                   /*[NLSPEC][ncolpar][ncoltemp] */
-
-  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];           /* C_data for each partner, tran. and temp. */
-                                                        /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
-
-  int icol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                  /* [NLSPEC][ncolpar][ncoltran] */
-
-  int jcol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                  /* [NLSPEC][ncolpar][ncoltran] */
-
-
-  /* Initializing data */
-
-  for(lspec=0; lspec<NLSPEC; lspec++){
-
-    for (i=0; i<nlev[lspec]; i++){
-
-      weight[LSPECLEV(lspec,i)] = 0.0;
-      energy[LSPECLEV(lspec,i)] = 0.0;
-
-      for (j=0; j<nlev[lspec]; j++){
-
-        A_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
-        B_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
-        C_coeff[LSPECLEVLEV(lspec,i,j)] = 0.0;
-
-        frequency[LSPECLEVLEV(lspec,i,j)] = 0.0;
-
-        for (n=0; n<NGRID; n++){
-
-          R[LSPECGRIDLEVLEV(lspec,n,i,j)] = 0.0;
-        }
-      }
-    }
-
-
-    for (kr=0; kr<nrad[lspec]; kr++){
-
-      irad[LSPECRAD(lspec,kr)] = 0;
-      jrad[LSPECRAD(lspec,kr)] = 0;
-    }
-  }
-
-
-  /* Initialize */
-
-  for(par=0; par<TOT_NCOLPAR; par++){
-
-    spec_par[par] = 0;
-
-    ortho_para[par] = 'i';
-  }
-
-
-  /*_____________________________________________________________________________________________*/
-
-
-
-
-
-  /*   READ LINE DATA FOR EACH LINE PRODUCING SPECIES                                            */
-  /*_____________________________________________________________________________________________*/
-
-
-  printf("(3D-RT): reading line data \n");
-
-
-  /* For all line producing species */
-
-  for(lspec=0; lspec<NLSPEC; lspec++){
-
-    read_linedata( line_datafile[lspec], irad, jrad, energy, weight, frequency,
-                   A_coeff, B_coeff, coltemp, C_data, icol, jcol, lspec );
-  }
-
-
-  printf("(3D-RT): line data read \n");
-
-
-  /*_____________________________________________________________________________________________*/
-
-
-
-
-
   /*   CALCULATE THE EXTERNAL RADIATION FIELD                                                    */
   /*_____________________________________________________________________________________________*/
 
 
   double G_external[3];                                       /* external radiation field vector */
 
+  G_external[0] = G_EXTERNAL_X;
+  G_external[1] = G_EXTERNAL_Y;
+  G_external[2] = G_EXTERNAL_Z;
+
+
   double rad_surface[NGRID*NRAYS];
 
-
-  /* Initialize */
-
-  G_external[0] = 0.0;
-  G_external[1] = 0.0;
-  G_external[2] = 0.0;
-
-
-  for (n=0; n<NGRID; n++){
-
-    for (r=0; r<NRAYS; r++){
-
-      rad_surface[RINDEX(n,r)] = 0.0;
-    }
-  }
+  initialize_double_array(rad_surface, NGRID*NRAYS);
 
 
   /* Calculate the radiation surface */
@@ -407,42 +361,47 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  bool no_thermal_balance = true;
-
   double temperature_gas[NGRID];                    /* temperature of the gas at each grid point */
+
+  initialize_temperature_gas(temperature_gas);
+
   double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
 
+  initialize_double_array(temperature_dust, NGRID);
+
   double column_H2[NGRID*NRAYS];                /* H2 column density for each ray and grid point */
+
+  initialize_double_array(column_H2, NGRID*NRAYS);
+
   double column_HD[NGRID*NRAYS];                /* HD column density for each ray and grid point */
+
+  initialize_double_array(column_HD, NGRID*NRAYS);
+
   double column_C[NGRID*NRAYS];                  /* C column density for each ray and grid point */
+
+  initialize_double_array(column_C, NGRID*NRAYS);
+
   double column_CO[NGRID*NRAYS];                /* CO column density for each ray and grid point */
+
+  initialize_double_array(column_CO, NGRID*NRAYS);
 
   double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
 
+  initialize_double_array(AV, NGRID*NRAYS);
+
   double UV_field[NGRID];
 
+  initialize_double_array(UV_field, NGRID);
 
-  for (n=0; n<NGRID; n++){
+  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
-    temperature_gas[n] = 10.0;
-  }
+  initialize_level_populations(energy, temperature_gas, pop);
 
+  double dpop[NGRID*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
 
+  initialize_double_array(dpop, NGRID*TOT_NLEV);
 
-  /* Initialization */
-
-  for (n=0; n<NGRID; n++){
-
-    UV_field[n] = 0.0;
-
-    for (r=0; r<NRAYS; r++){
-
-      column_H2[RINDEX(n,r)] = 0.0;
-      column_HD[RINDEX(n,r)] = 0.0;
-      column_C[RINDEX(n,r)]  = 0.0;
-      column_CO[RINDEX(n,r)] = 0.0;
-    }
-  }
+  bool no_thermal_balance = true;
 
 
 
@@ -505,7 +464,6 @@ int main()
 
 
 
-
     /*   CALCULATE LEVEL POPULATIONS (ITERATIVELY)                                               */
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -513,49 +471,13 @@ int main()
     printf("(3D-RT): calculating level populations \n\n");
 
 
-    /* Initializing populations */
-
-    for (lspec=0; lspec<NLSPEC; lspec++){
-
-      for (n=0; n<NGRID; n++){
-
-        for (i=0; i<nlev[lspec]; i++){
-
-          pop[LSPECGRIDLEV(lspec,n,i)] = exp( -HH*CC*energy[LSPECLEV(lspec,i)]
-                                               / (KB*temperature_gas[n]) );
-        }
-      }
-    }
-
-
-    /* Declare and initialize P_intensity for each ray through a grid point */
-
-    double P_intensity[NGRID*NRAYS];                     /* Feautrier's mean intensity for a ray */
-
-
-    for (n1=0; n1<NGRID; n1++){
-
-      for (r=0; r<NRAYS; r++){
-
-        P_intensity[RINDEX(n1,r)] = 0.0;
-      }
-    }
-
-
     /* Calculate level populations for each line producing species */
 
     time_level_pop -= omp_get_wtime();
 
-
-    /* For each line producing species */
-
-    for (lspec=0; lspec<NLSPEC; lspec++){
-
-      level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
-                         A_coeff, B_coeff, C_coeff, P_intensity, R, pop, dpop, C_data,
-                         coltemp, icol, jcol, temperature_gas, weight, energy, lspec );
-    }
-
+    level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
+                       A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
+                       coltemp, icol, jcol, temperature_gas, weight, energy );
 
     time_level_pop += omp_get_wtime();
 
@@ -567,6 +489,32 @@ int main()
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+
+
+    /*   CALCULATE HEATING AND COOLING                                                           */
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+
+    printf("(3D-RT): calculating heating and cooling \n\n");
+
+
+    /* Calculate the thermal balance for each gridpoint */
+
+    for (int n=0; n<NGRID; n++){
+
+      double heating_total = heating( gridpoint, n, temperature_gas, temperature_dust,
+                                      UV_field, v_turb);
+
+                                      
+    }
+
+    printf("(3D-RT): heating and cooling calculated \n\n");
+
+
+    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
 
 
     /* Only one iteration for the moment */

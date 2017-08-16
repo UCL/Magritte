@@ -28,14 +28,14 @@ using namespace std;
 /* heating: calculate the total heating                                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-double heating( GRIDPOINT *gridpoint,
+double heating( GRIDPOINT *gridpoint, long gridp,
                 double *temperature_gas, double *temperature_dust,
                 double *UV_field, double v_turb )
 {
 
-  double heating_total                                                          /* total heating */
+  double heating_total;                                                         /* total heating */
 
-  double Habing_field = 1.68 * UV_field;                         /* UV radiation field in Habing */
+  double Habing_field = 1.68 * UV_field[gridp];                  /* UV radiation field in Habing */
 
   double electron_density = species[e_nr].abn[gridp] * gridpoint[gridp].density;    /* e density */
 
@@ -57,18 +57,14 @@ double heating( GRIDPOINT *gridpoint,
 
   double heating_dust;                                   /* resulting photoelectric dust heating */
 
-  int iteration;                                /* iteration count for the Newton-Raphson solver */
-
-  int max_iterations;                                            /* maximal number of iterations */
-
   const double precision = 1.0E-2;                     /* precision of the Newton-Raphson method */
 
 
 
   /* Parameters */
 
-  double delta_d  = 1.0;
-  double delta_UV = 1.8;
+  double Delta_d  = 1.0;
+  double Delta_UV = 1.8;
 
   double Y = 0.1;
 
@@ -78,26 +74,27 @@ double heating( GRIDPOINT *gridpoint,
 
   /* Derived parameters */
 
-  double x_k = KB*temperature_gas/(hnu_H*EV)
+  double x_k = KB*temperature_gas[gridp]/(hnu_H*EV);
   double x_d = hnu_d/hnu_H;
 
-  double gamma = 2.9E-4 * Y * sqrt(temperature_gas) * Habing_field / electron_density;
+  double gamma = 2.9E-4 * Y * sqrt(temperature_gas[gridp]) * Habing_field / electron_density;
 
-  double delta = x_k - x_d + gamma;
+  double Delta = x_k - x_d + gamma;
 
 
   /* Newton-Raphson iteration to find the zero of F(x) */
 
-  F_x = 1.0;
+  double F_x = 1.0;
 
-  x = 0.5;
+  double x = 0.5;
 
-  iteration = 0;
+  int iteration = 0;                            /* iteration count for the Newton-Raphson solver */
 
 
-  while( (iteration<max_iterations)  &&  (F_x > precision) ){
 
-    x_0 = x - F(x,delta,gamma)/dF(x,delta);
+  while( (iteration < MAX_NITERATIONS)  &&  (F_x > precision) ){
+
+    double x_0 = x - F(x,Delta,gamma)/dF(x,Delta);
 
     F_x = abs(x-x_0);
 
@@ -107,8 +104,8 @@ double heating( GRIDPOINT *gridpoint,
   }
 
 
-  heating_dust = 2.7E-25 * delta_UV * delta_d * gridpoint[gridp].density * Y * Habing_field
-                 * ( pow(1.0-x, 2)/x + x_k*(pow(X, 2) - 1.0)/pow(X, 2)  ) * metallicity;
+  heating_dust = 2.7E-25 * Delta_UV * Delta_d * gridpoint[gridp].density * Y * Habing_field
+                 * ( pow(1.0-x, 2)/x + x_k*(pow(x, 2) - 1.0)/pow(x, 2)  ) * metallicity;
 
 
   /*_____________________________________________________________________________________________*/
@@ -138,23 +135,23 @@ double heating( GRIDPOINT *gridpoint,
 
   double alpha = 0.944;
 
-  double beta = 0.735 * pow(temperature_gas, 0.068);
+  double beta = 0.735 * pow(temperature_gas[gridp], 0.068);
 
-  double delta = Habing_field * sqrt(temperature_gas) / (electron_density * phi_PAH);
+  double delta = Habing_field * sqrt(temperature_gas[gridp]) / (electron_density * phi_PAH);
 
   double epsilon = 4.87E-2/(1.0 + 4.0E-3*pow(delta, 0.73))
-                   + 3.65E-2*pow(temperature_gas/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
+                   + 3.65E-2*pow(temperature_gas[gridp]/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
 
 
   double PAH_heating = 1.3E-24 * epsilon * Habing_field * gridpoint[gridp].density;
 
-  double PAH_cooling = 4.65E-30 * pow(temperature_gas, alpha) * pow(delta, beta)
+  double PAH_cooling = 4.65E-30 * pow(temperature_gas[gridp], alpha) * pow(delta, beta)
                        * electron_density * phi_PAH * gridpoint[gridp].density;
 
 
   /* Assume the PE heating rate scales linearly with metallicity */
 
-  double heating_PAH = (PAH_heating - PAH_cooling)*metallicity;
+  heating_PAH = (PAH_heating - PAH_cooling)*metallicity;
 
 
   /*_____________________________________________________________________________________________*/
@@ -184,10 +181,11 @@ double heating( GRIDPOINT *gridpoint,
   double C6 = 5.20E-1;
 
 
-  heating_Weingartner = 1.0E-26 * metallicity * (Habing_field * gridpoint[gridp].density)
-                        *(C0 + C1*pow(temperature_gas, C4))
-                        /(1.0 + C2*pow(Habing_field*sqrt(temperature_gas)/electron_density,C5)
-                        *(1.0 + C3*pow(Habing_field*sqrt(temperature_gas)/electron_density,C6) ));
+  heating_Weingartner
+    = 1.0E-26 * metallicity * (Habing_field * gridpoint[gridp].density)
+      * ( C0 + C1*pow(temperature_gas[gridp], C4) )
+      / ( 1.0 + C2*pow(Habing_field * sqrt(temperature_gas[gridp]) / electron_density, C5)
+      * ( 1.0 + C3*pow(Habing_field * sqrt(temperature_gas[gridp]) / electron_density, C6) ) );
 
 
   /*_____________________________________________________________________________________________*/
@@ -207,7 +205,7 @@ double heating( GRIDPOINT *gridpoint,
   double heating_C_ionization;
 
 
-  heating_C_ionization = (1.0*EV) * reaction[C_ionization_nr].k
+  heating_C_ionization = (1.0*EV) * reaction[C_ionization_nr].k[gridp]
                          * species[C_nr].abn[gridp] * gridpoint[gridp].density;
 
 
@@ -230,7 +228,7 @@ double heating( GRIDPOINT *gridpoint,
   double heating_H2_formation;
 
 
-  heating_H2_formation = (1.5*EV) * reaction[H2_formation] * gridpoint[gridp].density
+  heating_H2_formation = (1.5*EV) * reaction[H2_formation_nr].k[gridp] * gridpoint[gridp].density
                          * species[H2_nr].abn[gridp] * gridpoint[gridp].density;
 
 
@@ -251,7 +249,7 @@ double heating( GRIDPOINT *gridpoint,
   double heating_H2_photodissociation;
 
 
-  heating_H2_photodissociation = (0.4*EV) * reaction[H2_photodissociation_nr].k
+  heating_H2_photodissociation = (0.4*EV) * reaction[H2_photodissociation_nr].k[gridp]
                                  * species[H2_nr].abn[gridp] * gridpoint[gridp].density;
 
 
@@ -274,11 +272,12 @@ double heating( GRIDPOINT *gridpoint,
 
   double heating_H2_FUV_pumping;
 
-  double critical_density = 1.0E6 / sqrt(temperature_gas)
-                      / ( 1.6*species[H_nr].abn[gridp]*exp(-pow(400.0/temperature_gas, 2))
-                          + 1.4*species[H2_nr].abn[gridp]*exp(-18100.0/(1200.0+temperature_gas)) )
+  double critical_density
+          = 1.0E6 / sqrt(temperature_gas[gridp])
+            /( 1.6 * species[H_nr].abn[gridp] * exp(-pow(400.0/temperature_gas[gridp], 2))
+               + 1.4 * species[H2_nr].abn[gridp] * exp(-18100.0/(1200.0+temperature_gas[gridp])) );
 
-  heating_H2_FUV_pumping = (2.2*EV) * 9.0 * reaction[H2_photodissociation_nr].k
+  heating_H2_FUV_pumping = (2.2*EV) * 9.0 * reaction[H2_photodissociation_nr].k[gridp]
                            * species[H2_nr].abn[gridp] * gridpoint[gridp].density
                            / (1.0 + critical_density/gridpoint[gridp].density);
 
@@ -307,7 +306,8 @@ double heating( GRIDPOINT *gridpoint,
   double zeta = 1.0;                                                      /* cosmic ray variable */
 
 
-  heating_cosmic_rays = (9.4*EV) * (1.3E-17*zeta) * species[H2_nr].abn * gridpoint[gridp].density;
+  heating_cosmic_rays = (9.4*EV) * (1.3E-17*zeta)
+                        * species[H2_nr].abn[gridp] * gridpoint[gridp].density;
 
 
   /*_____________________________________________________________________________________________*/
@@ -328,7 +328,7 @@ double heating( GRIDPOINT *gridpoint,
 
   double heating_turbulent;
 
-  double l_turb = 5.0                        /* turbulent length scale (typical value) in parsec */
+  double l_turb = 5.0;                       /* turbulent length scale (typical value) in parsec */
 
 
   heating_turbulent = 3.5E-28 * pow(v_turb/1.0E5, 3) * (1.0/l_turb) * gridpoint[gridp].density;
@@ -360,33 +360,33 @@ double heating( GRIDPOINT *gridpoint,
 
   heating_chemical = species[H2x_nr].abn[gridp] * gridpoint[gridp].density         /* H2+  +  e- */
                      * electron_density
-                     * reaction[216].k * (10.9*EV)
+                     * reaction[216].k[gridp] * (10.9*EV)
 
                      + species[H2x_nr].abn[gridp] * gridpoint[gridp].density        /* H2+  +  H */
                        * species[H_nr].abn[gridp] * gridpoint[gridp].density
-                       * reaction[155].k * (0.94*EV)
+                       * reaction[155].k[gridp] * (0.94*EV)
 
                      + species[HCOx_nr].abn[gridp] * gridpoint[gridp].density     /* HCO+  +  e- */
                        * electron_density
-                       * reaction[240].k * (7.51*EV)
+                       * reaction[240].k[gridp] * (7.51*EV)
 
                      + species[H3x_nr].abn[gridp] * gridpoint[gridp].density       /* H3+  +  e- */
                        * electron_density
-                       * ( reaction[217].k * (4.76*EV) + reaction[218].k * (9.23*EV) )
+                       * ( reaction[217].k[gridp] * (4.76*EV) + reaction[218].k[gridp] * (9.23*EV) )
 
                      + species[H3Ox_nr].abn[gridp]*gridpoint[gridp].density       /* H3O+  +  e- */
                        * electron_density
-                       * ( reaction[236].k * (1.16*EV) + reaction[237].k * (5.63*EV)
-                           + reaction[238].k * (6.27*EV) )
+                       * ( reaction[236].k[gridp] * (1.16*EV) + reaction[237].k[gridp] * (5.63*EV)
+                           + reaction[238].k[gridp] * (6.27*EV) )
 
                      + species[Hex_nr].abn[gridp] * gridpoint[gridp].density        /* He+  + H2 */
-                       * species[H2_nr].abn[gridp] * gridpoint[gridp]
-                       * ( reaction[50].k * (6.51*EV) + reaction[170] * (6.51*EV) )
+                       * species[H2_nr].abn[gridp] * gridpoint[gridp].density
+                       * ( reaction[50].k[gridp] * (6.51*EV) + reaction[170].k[gridp] * (6.51*EV) )
 
                      + species[Hex_nr].abn[gridp] * gridpoint[gridp].density       /* He+  +  CO */
                        * species[CO_nr].abn[gridp] *gridpoint[gridp].density
-                       * ( reaction[89].k * (2.22*EV) + reaction[90].k * (2.22*EV)
-                           + reaction[91] * (2.22*EV) );
+                       * ( reaction[89].k[gridp] * (2.22*EV) + reaction[90].k[gridp] * (2.22*EV)
+                           + reaction[91].k[gridp] * (2.22*EV) );
 
 
   /*_____________________________________________________________________________________________*/
@@ -421,15 +421,20 @@ double heating( GRIDPOINT *gridpoint,
 
   double heating_gas_grain;
 
-  double accommodation = 0.35 * exp(-sqrt((temperature_gas+temperature_dust)/5.0E2)) + 0.1;
+  double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
+  // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
+
+
+  double accommodation = 0.1
+                         + 0.35*exp(-sqrt((temperature_gas[gridp]+temperature_dust[gridp])/5.0E2));
 
   double density_grain = 1.998E-12 * gridpoint[gridp].density * metallicity * 100.0 / gas_to_dust;
 
   double cross_section_grain = PI * pow(radius_grain, 2);
 
   heating_gas_grain = 4.003E-12 * gridpoint[gridp].density * density_grain * cross_section_grain
-                      * accommodation * sqrt(temperature_gas)
-                      * (temperature_gas - temperature_dust);
+                      * accommodation * sqrt(temperature_gas[gridp])
+                      * (temperature_gas[gridp] - temperature_dust[gridp]);
 
 
   /*_____________________________________________________________________________________________*/

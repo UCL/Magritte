@@ -103,7 +103,7 @@ clean: CMakeFiles/PRE_SETUP.dir/clean
 CMakeFiles/_setup.dir/all:
 	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/depend
 	$(MAKE) -f CMakeFiles/_setup.dir/build.make CMakeFiles/_setup.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=1,2,3,4 "Built target _setup"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=1,2,3,4,5 "Built target _setup"
 .PHONY : CMakeFiles/_setup.dir/all
 
 # Include target in all.
@@ -113,7 +113,7 @@ all: CMakeFiles/_setup.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/_setup.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/_setup.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles 0
 .PHONY : CMakeFiles/_setup.dir/rule
@@ -140,7 +140,7 @@ clean: CMakeFiles/_setup.dir/clean
 CMakeFiles/setup.dir/all: CMakeFiles/_setup.dir/all
 	$(MAKE) -f CMakeFiles/setup.dir/build.make CMakeFiles/setup.dir/depend
 	$(MAKE) -f CMakeFiles/setup.dir/build.make CMakeFiles/setup.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=5,6 "Built target setup"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles --progress-num=6,7 "Built target setup"
 .PHONY : CMakeFiles/setup.dir/all
 
 # Include target in all.
@@ -150,7 +150,7 @@ all: CMakeFiles/setup.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/setup.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles 7
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/setup.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/frederik/Dropbox/Astro/3D-RT/setup/CMakeFiles 0
 .PHONY : CMakeFiles/setup.dir/rule

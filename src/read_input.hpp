@@ -25,7 +25,7 @@ using namespace std;
 /* read_input: read the input file                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_input(string inputfile, GRIDPOINT *gridpoint);
+void read_input(string grid_inputfile, GRIDPOINT *gridpoint);
 
 /*-----------------------------------------------------------------------------------------------*/
 

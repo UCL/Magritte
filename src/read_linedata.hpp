@@ -23,9 +23,9 @@ using namespace std;
 /* read_linedata: read data files containing the line information in LAMBDA/RADEX format         */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_linedata( string datafile, int *irad, int *jrad, double *energy, double *weight,
+void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy, double *weight,
                     double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                    double *C_data, int *icol, int *jcol, int lspec );
+                    double *C_data, int *icol, int *jcol );
 
 /*-----------------------------------------------------------------------------------------------*/
 

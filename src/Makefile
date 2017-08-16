@@ -395,6 +395,60 @@ heapsort.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/heapsort.cpp.s
 .PHONY : heapsort.cpp.s
 
+heating.o: heating.cpp.o
+
+.PHONY : heating.o
+
+# target to build an object file
+heating.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/heating.cpp.o
+.PHONY : heating.cpp.o
+
+heating.i: heating.cpp.i
+
+.PHONY : heating.i
+
+# target to preprocess a source file
+heating.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/heating.cpp.i
+.PHONY : heating.cpp.i
+
+heating.s: heating.cpp.s
+
+.PHONY : heating.s
+
+# target to generate assembly for a file
+heating.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/heating.cpp.s
+.PHONY : heating.cpp.s
+
+initializers.o: initializers.cpp.o
+
+.PHONY : initializers.o
+
+# target to build an object file
+initializers.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/initializers.cpp.o
+.PHONY : initializers.cpp.o
+
+initializers.i: initializers.cpp.i
+
+.PHONY : initializers.i
+
+# target to preprocess a source file
+initializers.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/initializers.cpp.i
+.PHONY : initializers.cpp.i
+
+initializers.s: initializers.cpp.s
+
+.PHONY : initializers.s
+
+# target to generate assembly for a file
+initializers.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/initializers.cpp.s
+.PHONY : initializers.cpp.s
+
 level_population_solver.o: level_population_solver.cpp.o
 
 .PHONY : level_population_solver.o
@@ -866,6 +920,12 @@ help:
 	@echo "... heapsort.o"
 	@echo "... heapsort.i"
 	@echo "... heapsort.s"
+	@echo "... heating.o"
+	@echo "... heating.i"
+	@echo "... heating.s"
+	@echo "... initializers.o"
+	@echo "... initializers.i"
+	@echo "... initializers.s"
 	@echo "... level_population_solver.o"
 	@echo "... level_population_solver.i"
 	@echo "... level_population_solver.s"

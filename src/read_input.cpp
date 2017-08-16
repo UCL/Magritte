@@ -25,7 +25,7 @@ using namespace std;
 /* read_input: read the input file                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_input(string inputfile, GRIDPOINT *gridpoint)
+void read_input(string grid_inputfile, GRIDPOINT *gridpoint)
 {
 
   char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
@@ -33,7 +33,7 @@ void read_input(string inputfile, GRIDPOINT *gridpoint)
 
   /* Read input file */
 
-  FILE *input = fopen(inputfile.c_str(), "r");
+  FILE *input = fopen(grid_inputfile.c_str(), "r");
 
 
   /* For all lines in the input file */

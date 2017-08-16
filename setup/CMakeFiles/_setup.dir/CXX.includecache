@@ -40,6 +40,16 @@ string
 string
 -
 
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp
+math.h
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp
 stdio.h
 -
@@ -55,6 +65,8 @@ setup_data_structures.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
 data_tools.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
+initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
 string

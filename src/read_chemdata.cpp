@@ -29,7 +29,7 @@ using namespace std;
 /* read_species: read the species from the data file                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_species(string specdatafile)
+void read_species(string spec_datafile)
 {
 
 
@@ -37,7 +37,7 @@ void read_species(string specdatafile)
 
   int  l;                                                    /* index of a text line in the file */
 
-  int nspec = get_NSPEC(specdatafile);                                      /* number of species */
+  int nspec = get_NSPEC(spec_datafile);                                      /* number of species */
 
   int n;
 
@@ -61,12 +61,12 @@ void read_species(string specdatafile)
 
   /* Open species data file */
 
-  FILE *specdata2 = fopen(specdatafile.c_str(), "r");
+  FILE *specdata = fopen(spec_datafile.c_str(), "r");
 
 
   for (l=1; l<nspec; l++){
 
-    fgets(buffer, BUFFER_SIZE, specdata2);
+    fgets(buffer, BUFFER_SIZE, specdata);
     sscanf( buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff );
 
     species[l].sym  = sym_buff;
@@ -80,7 +80,7 @@ void read_species(string specdatafile)
   }
 
 
-  fclose(specdata2);
+  fclose(specdata);
 
 }
 
@@ -93,7 +93,7 @@ void read_species(string specdatafile)
 /* read_reactions: read the reactoins from the (CSV) data file                                                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_reactions(string reacdatafile)
+void read_reactions(string reac_datafile)
 {
 
 
@@ -107,7 +107,7 @@ void read_reactions(string reacdatafile)
 
   int reac;                                                                    /* reaction index */
 
-  int get_NREAC(string reacdatafile);
+  int get_NREAC(string reac_datafile);
 
   int n;
 
@@ -130,12 +130,12 @@ void read_reactions(string reacdatafile)
 
   /* Open reactions data file */
 
-  FILE *reacdata2 = fopen(reacdatafile.c_str(), "r");
+  FILE *reacdata = fopen(reac_datafile.c_str(), "r");
 
 
   for (l=0; l<NREAC; l++){
 
-    fgets(buffer, BUFFER_SIZE, reacdata2);
+    fgets(buffer, BUFFER_SIZE, reacdata);
 
     buffer_cpy = strdup(buffer);
 
@@ -234,7 +234,7 @@ void read_reactions(string reacdatafile)
 
   }
 
-  fclose(reacdata2);
+  fclose(reacdata);
 }
 
 

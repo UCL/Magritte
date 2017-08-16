@@ -11,6 +11,8 @@ string
 -
 
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/jacobian.cpp
+math.h
+-
 cvode/cvode.h
 -
 nvector/nvector_serial.h
@@ -65,6 +67,8 @@ sundials/sundials_types.h
 -
 
 /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equations.cpp
+math.h
+-
 cvode/cvode.h
 -
 nvector/nvector_serial.h

@@ -24,7 +24,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/grid_null.txt" 
+#define GRID_INPUTFILE "input/grid_1D_regular.txt" 
 
 #define SPEC_DATAFILE  "data/species_reduced.d" 
 
@@ -32,17 +32,15 @@ using namespace std;
 
 #define LINE_DATAFILE0 "data/12c.dat" 
 
-#define NGRID 1 
+#define NGRID 101 
 
-#define NSIDES 0 
+#define NSIDES 1 
 
 #define THETA_CRIT 1.100000 
 
-#define RAY_SEPARATION2 0.000000 
+#define RAY_SEPARATION2 0.000000E+00 
 
 #define SOBOLEV false 
-
-#define FIELD_FORM "ISO" 
 
 #define NSPEC 34 
 
@@ -64,23 +62,20 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 1410 
 
+#define MAX_NITERATIONS 1000 
+
+#define TIME_END_IN_YEARS 1.000000E+08 
+
+#define FIELD_FORM "ISO" 
+
+#define G_EXTERNAL_X 0.000000E+00 
+
+#define G_EXTERNAL_Y 0.000000E+00 
+
+#define G_EXTERNAL_Z 0.000000E+00 
+
 
 /*_______________________________________________________________________________________________*/
-
-
-
-
-
-/* Input and data files */
-
-// extern string grid_inputfile;                   /* path to input file containing the grid points */
-
-// extern string spec_datafile;                         /* path to data file containing the species */
-
-// extern string reac_datafile;                       /* path to data file containing the reactions */
-
-// extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
-
 
 
 
@@ -106,8 +101,6 @@ using namespace std;
 
 
 /* Parameters for level population iteration */
-
-#define MAX_NITERATIONS 1
 
 #define POP_PREC 1.0E-5                               /* precision used in convergence criterion */
 
@@ -331,7 +324,7 @@ extern char ortho_para[TOT_NCOLPAR];                    /* stores whether it is 
 
 extern double metallicity;
 
-extern double gas2dust;
+extern double gas_to_dust;
 
 
 #define GRIDSPECRAY(gridp,spec,ray)   ( (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC )

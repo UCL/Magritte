@@ -27,6 +27,31 @@ using namespace std;
 
 
 
+/* For compatibility */
+
+extern int tot_ncolpar;
+int tot_ncolpar;
+
+#define TOT_NCOLPAR tot_ncolpar
+
+
+typedef struct EVALPOINTS {
+
+  bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
+
+  long   ray;                               /* number of the ray the evaluation point belongs to */
+  long   nr;                                     /* number of the evaluation point along the ray */
+
+  long   eqp;                                                         /* point on equivalent ray */
+
+  double dZ;                                                 /* distance increment along the ray */
+  double Z;                                      /* distance between evaluation point and origin */
+  double vol;                  /* velocity along the ray between grid point and evaluation point */
+
+} EVALPOINT;
+
+
+
 /* Collision rate related indices */
 
 #define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \

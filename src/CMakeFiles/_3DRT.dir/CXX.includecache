@@ -148,6 +148,36 @@ heapsort.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/heapsort.hpp
 
+/home/frederik/Dropbox/Astro/3D-RT/src/heating.cpp
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+string.h
+-
+string
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+heating.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/heating.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/heating.hpp
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp
+math.h
+-
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/level_population_solver.cpp
 stdio.h
 -
@@ -177,6 +207,8 @@ level_populations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
 calc_C_coeff.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/calc_C_coeff.hpp
+initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 radiative_transfer.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/radiative_transfer.hpp
 level_population_solver.hpp
@@ -385,6 +417,8 @@ setup_data_structures.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
 data_tools.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
+initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
 string

@@ -8,6 +8,7 @@ CMakeFiles/setup.dir/setup.cpp.o: setup_tools.hpp
 CMakeFiles/setup.dir/setup.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp
 CMakeFiles/setup.dir/setup.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
 CMakeFiles/setup.dir/setup.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+CMakeFiles/setup.dir/setup.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 CMakeFiles/setup.dir/setup.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp
 CMakeFiles/setup.dir/setup.cpp.o: /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
 

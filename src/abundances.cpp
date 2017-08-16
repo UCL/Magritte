@@ -60,7 +60,7 @@ void abundances( GRIDPOINT *gridpoint, double *temperature_gas, double *temperat
 
   } /* end of gridp loop over grid points */
 
-  printf(" ---           --- \n");
+  printf(" ---            --- \n");
 
 }
 

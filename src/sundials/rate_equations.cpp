@@ -13,11 +13,13 @@
 
 
 
-#include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts. */
-#include <nvector/nvector_serial.h>  /* serial N_Vector types, fcts., macros */
-#include <cvode/cvode_dense.h>       /* prototype for CVDense */
-#include <sundials/sundials_dense.h> /* definitions DlsMat DENSE_ELEM */
-#include <sundials/sundials_types.h> /* definition of type realtype */
+#include <math.h>
+
+#include <cvode/cvode.h>                                  /* prototypes for CVODE fcts., consts. */
+#include <nvector/nvector_serial.h>                      /* serial N_Vector types, fcts., macros */
+#include <cvode/cvode_dense.h>                                          /* prototype for CVDense */
+#include <sundials/sundials_dense.h>                            /* definitions DlsMat DENSE_ELEM */
+#include <sundials/sundials_types.h>                              /* definition of type realtype */
 
 #include "../declarations.hpp"
 
@@ -46,9 +48,11 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 
   GRIDPOINT *gridpoint = data->gridpointer;
  
-  double n_H = gridpoint[gridp].density;
+  realtype n_H = (realtype) gridpoint[gridp].density;
 
-  double loss, form;
+  realtype zeta_H, zeta_H2, zeta_He;
+
+  realtype loss, form;
 
 
   x_e = Ith(y,0)+Ith(y,1)+Ith(y,3)+Ith(y,4)+Ith(y,6)+Ith(y,7)+Ith(y,8)+Ith(y,9)+Ith(y,10)+Ith(y,12)+Ith(y,13)+Ith(y,14)+Ith(y,15)+Ith(y,18)+Ith(y,19)+Ith(y,22)+Ith(y,23)+Ith(y,26);

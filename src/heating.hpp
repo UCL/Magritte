@@ -20,7 +20,7 @@
 /* heating: calculate the total heating                                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-double heating( GRIDPOINT *gridpoint,
+double heating( GRIDPOINT *gridpoint, long gridp,
                 double *temperature_gas, double *temperature_dust,
                 double *UV_field, double v_turb );
 

@@ -58,17 +58,14 @@ int main(){
   long nsides = (long) sqrt(nrays/12.0);
 
 
-
   /* Get theta_crit from line 13 in PARAMETERS_FILE */
 
   double theta_crit = get_nr(PARAMETERS_FILE, 13);
 
 
-
   /* Get ray_separation2 from line 15 in PARAMETERS_FILE */
 
   double ray_separation2 = get_nr(PARAMETERS_FILE, 15);
-
 
 
   /* Get sobolev from line 17 in PARAMETERS_FILE */
@@ -81,10 +78,34 @@ int main(){
   string field_form = get_string(PARAMETERS_FILE, 19);
 
 
-  /* Get the grid input file from line 27 in PARAMETERS_FILE */
+  /* Get max_niterations from line 21 in PARAMETERS_FILE */
 
-  string grid_inputfile = get_file(PARAMETERS_FILE, 27);
+  int max_niterations = get_nr(PARAMETERS_FILE, 21);
 
+
+  /* Get time_end_in_years from line 23 in PARAMETERS_FILE */
+
+  double time_end_in_years = get_nr(PARAMETERS_FILE, 23);
+
+
+  /* Get G_external_x from line 25 in PARAMETERS_FILE */
+
+  double G_external_x = get_nr(PARAMETERS_FILE, 25);
+
+
+  /* Get G_external_y from line 27 in PARAMETERS_FILE */
+
+  double G_external_y = get_nr(PARAMETERS_FILE, 27);
+
+
+  /* Get G_external_z from line 29 in PARAMETERS_FILE */
+
+  double G_external_z = get_nr(PARAMETERS_FILE, 29);
+
+
+  /* Get the grid input file from line 37 in PARAMETERS_FILE */
+
+  string grid_inputfile = get_file(PARAMETERS_FILE, 37);
 
 
   /* Get the number of grid points from the input file */
@@ -92,11 +113,9 @@ int main(){
   long ngrid = get_NGRID(grid_inputfile);
 
 
+  /* Get the species data file from line 39 in PARAMETERS_FILE */
 
-  /* Get the species data file from line 29 in PARAMETERS_FILE */
-
-  string spec_datafile = get_file(PARAMETERS_FILE, 29);
-
+  string spec_datafile = get_file(PARAMETERS_FILE, 39);
 
 
   /* Get the number of species from the species data file */
@@ -104,18 +123,16 @@ int main(){
   int nspec = get_NSPEC(spec_datafile);
 
 
+  /* Get the reaction data file from line 41 in PARAMETERS_FILE */
 
-  /* Get the reaction data file from line 31 in PARAMETERS_FILE */
-
-  string reac_datafile = get_file(PARAMETERS_FILE, 31);
-
+  string reac_datafile = get_file(PARAMETERS_FILE, 41);
 
 
-  /* Get the line data files starting from line 37 in PARAMETERS_FILE */
+  /* Get the line data files starting from line 47 in PARAMETERS_FILE */
 
   for (int l=0; l<NLSPEC; l++){
 
-    line_datafile[l] = get_file(PARAMETERS_FILE, 37+2*l);
+    line_datafile[l] = get_file(PARAMETERS_FILE, 47+2*l);
   }
 
 
@@ -190,7 +207,7 @@ int main(){
   int tot_nlev2 = cum_nlev2[NLSPEC-1] + nlev[NLSPEC-1]*nlev[NLSPEC-1];
                                                                /* tot of squares of nr of levels */
 
-  int tot_ncolpar = cum_ncolpar[NLSPEC-1] + ncolpar[NLSPEC-1];
+  tot_ncolpar = cum_ncolpar[NLSPEC-1] + ncolpar[NLSPEC-1];
 
 
 
@@ -341,11 +358,9 @@ int main(){
 
   fprintf( dec_new, "#define THETA_CRIT %lf \n\n", theta_crit );
 
-  fprintf( dec_new, "#define RAY_SEPARATION2 %lf \n\n", ray_separation2 );
+  fprintf( dec_new, "#define RAY_SEPARATION2 %lE \n\n", ray_separation2 );
 
   fprintf( dec_new, "#define SOBOLEV %s \n\n", sobolev.c_str() );
-
-  fprintf( dec_new, "#define FIELD_FORM \"%s\" \n\n", field_form.c_str() );
 
   fprintf( dec_new, "#define NSPEC %d \n\n", nspec );
 
@@ -366,6 +381,19 @@ int main(){
   fprintf( dec_new, "#define TOT_CUM_TOT_NCOLTEMP %d \n\n", tot_cum_tot_ncoltemp );
 
   fprintf( dec_new, "#define TOT_CUM_TOT_NCOLTRANTEMP %d \n\n", tot_cum_tot_ncoltrantemp );
+
+  fprintf( dec_new, "#define MAX_NITERATIONS %d \n\n", max_niterations );
+
+  fprintf( dec_new, "#define TIME_END_IN_YEARS %lE \n\n", time_end_in_years );
+
+  fprintf( dec_new, "#define FIELD_FORM \"%s\" \n\n", field_form.c_str() );
+
+  fprintf( dec_new, "#define G_EXTERNAL_X %lE \n\n", G_external_x );
+
+  fprintf( dec_new, "#define G_EXTERNAL_Y %lE \n\n", G_external_y );
+
+  fprintf( dec_new, "#define G_EXTERNAL_Z %lE \n\n", G_external_z );
+
 
 
 

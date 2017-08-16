@@ -43,6 +43,14 @@ src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o
 src/CMakeFiles/_3DRT.dir/heapsort.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/heapsort.cpp
  /home/frederik/Dropbox/Astro/3D-RT/src/heapsort.hpp
+src/CMakeFiles/_3DRT.dir/heating.cpp.o
+ /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/heating.cpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/heating.hpp
+src/CMakeFiles/_3DRT.dir/initializers.cpp.o
+ /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/level_population_solver.cpp
@@ -50,6 +58,7 @@ src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/calc_C_coeff.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/level_population_solver.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.cpp
  /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
@@ -105,6 +114,7 @@ src/CMakeFiles/_3DRT.dir/read_linedata.cpp.o
 src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.cpp
  /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
 src/CMakeFiles/_3DRT.dir/species_tools.cpp.o

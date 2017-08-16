@@ -67,16 +67,14 @@ SPECIES species[NSPEC];
 REACTIONS reaction[NREAC];
 
 
+int spec_par[TOT_NCOLPAR];       /* number of the species corresponding to a collision partner */
 
-int spec_par[TOT_NCOLPAR];         /* number of the species corresponding to a collision partner */
-
-char ortho_para[TOT_NCOLPAR];                           /* stores whether it is ortho or para H2 */
-
+char ortho_para[TOT_NCOLPAR];                         /* stores whether it is ortho or para H2 */
 
 
 double metallicity;
 
-double gas2dust;
+double gas_to_dust;
 
 
 

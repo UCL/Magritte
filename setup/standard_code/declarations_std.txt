@@ -5,21 +5,6 @@
 
 
 
-/* Input and data files */
-
-// extern string grid_inputfile;                   /* path to input file containing the grid points */
-
-// extern string spec_datafile;                         /* path to data file containing the species */
-
-// extern string reac_datafile;                       /* path to data file containing the reactions */
-
-// extern string line_datafile[NLSPEC];               /* path to data file containing the line data */
-
-
-
-
-
-
 /* Numerical constants */
 
 #define PI 3.141592653589793238462643383279502884197                                       /* pi */
@@ -40,8 +25,6 @@
 
 
 /* Parameters for level population iteration */
-
-#define MAX_NITERATIONS 1
 
 #define POP_PREC 1.0E-5                               /* precision used in convergence criterion */
 
@@ -265,7 +248,7 @@ extern char ortho_para[TOT_NCOLPAR];                    /* stores whether it is 
 
 extern double metallicity;
 
-extern double gas2dust;
+extern double gas_to_dust;
 
 
 #define GRIDSPECRAY(gridp,spec,ray)   ( (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC )

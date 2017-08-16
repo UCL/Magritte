@@ -43,12 +43,21 @@ src/CMakeFiles/_3DRT.dir/exact_feautrier.cpp.o: src/exact_feautrier.hpp
 src/CMakeFiles/_3DRT.dir/heapsort.cpp.o: src/heapsort.cpp
 src/CMakeFiles/_3DRT.dir/heapsort.cpp.o: src/heapsort.hpp
 
+src/CMakeFiles/_3DRT.dir/heating.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/heating.cpp.o: src/heating.cpp
+src/CMakeFiles/_3DRT.dir/heating.cpp.o: src/heating.hpp
+
+src/CMakeFiles/_3DRT.dir/initializers.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/initializers.cpp.o: src/initializers.cpp
+src/CMakeFiles/_3DRT.dir/initializers.cpp.o: src/initializers.hpp
+
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o: src/declarations.hpp
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o: src/level_population_solver.cpp
 src/CMakeFiles/_3DRT.dir/level_population_solver.cpp.o: src/level_population_solver.hpp
 
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/calc_C_coeff.hpp
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/initializers.hpp
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/level_population_solver.hpp
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/level_populations.cpp
 src/CMakeFiles/_3DRT.dir/level_populations.cpp.o: src/level_populations.hpp
@@ -104,6 +113,7 @@ src/CMakeFiles/_3DRT.dir/read_linedata.cpp.o: src/species_tools.hpp
 
 src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o: src/data_tools.hpp
 src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o: src/declarations.hpp
+src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o: src/initializers.hpp
 src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o: src/setup_data_structures.cpp
 src/CMakeFiles/_3DRT.dir/setup_data_structures.cpp.o: src/setup_data_structures.hpp
 

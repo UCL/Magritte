@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
  *
- *  Copyright (C) 1997-2008 Krzysztof M. Gorski, Eric Hivon, 
- *                          Benjamin D. Wandelt, Anthony J. Banday, 
- *                          Matthias Bartelmann, 
- *                          Reza Ansari & Kenneth M. Ganga 
+ *  Copyright (C) 1997-2008 Krzysztof M. Gorski, Eric Hivon,
+ *                          Benjamin D. Wandelt, Anthony J. Banday,
+ *                          Matthias Bartelmann,
+ *                          Reza Ansari & Kenneth M. Ganga
  *
  *
  *  This file is part of HEALPix.
@@ -64,10 +64,11 @@ void vec2pix_nest(const long nside, double *vec, long *ipix);
 
 void pix2vec_nest(long nside, long ipix, double *vec);
 
+void vec2ang(double *vec, double *theta, double *phi);
+
 
 /* ------------------ */
 /* end of header file */
 /* ------------------ */
 
 #endif /* __CHEALPIX_H__ */
-
