@@ -29,23 +29,16 @@
 /* abundances: calculate abundances for each species at each grid point                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-void abundances( GRIDPOINT *gridpoint, double *temperature_gas, double *temperature_dust,
+int abundances( GRIDPOINT *gridpoint, double *temperature_gas, double *temperature_dust,
                  double *rad_surface, double *AV,
                  double *column_H2, double *column_HD, double *column_C, double *column_CO,
                  double v_turb )
 {
 
 
-  long gridp;                                                                /* grid point index */
-
-
-  printf(" --- Abundances --- \n");
-
-
-
   /* For all gridpoints */
 
-  for (gridp=0; gridp<NGRID; gridp++){
+  for (long gridp=0; gridp<NGRID; gridp++){
 
 
     /* Calculate the reaction rates */
@@ -58,9 +51,11 @@ void abundances( GRIDPOINT *gridpoint, double *temperature_gas, double *temperat
 
     rate_equation_solver(gridpoint, gridp);
 
+
   } /* end of gridp loop over grid points */
 
-  printf(" ---            --- \n");
+
+  return(0);
 
 }
 

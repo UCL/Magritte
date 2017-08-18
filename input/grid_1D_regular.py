@@ -26,9 +26,9 @@ ngrid = int(sys.argv[1])
 
 np.random.seed(9001)
 
-x = 0.523797*np.array(range(ngrid))
-y = 0.783917*np.array(range(ngrid))
-z = 0.333333*np.array(range(ngrid))
+x = 0.527046*np.array(range(ngrid))
+y = 0.527046*np.array(range(ngrid))
+z = 0.666667*np.array(range(ngrid))
 
 vx = np.zeros(ngrid)
 vy = np.zeros(ngrid)

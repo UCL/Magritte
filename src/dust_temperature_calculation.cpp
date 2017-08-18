@@ -60,8 +60,6 @@ void dust_temperature_calculation( double *UV_field, double *rad_surface,
 
   /* Parameters as defined in the paper Hollenbach, Takahashi & Tielens (1991) */
 
-  double T_CMB = 2.73;                                                    /* CMB temperature (K) */
-
   double T_min = 0.0;                                                /* minimum dust temperature */
 
   double tau_100 = 1.0E-3;                               /* emission optical depth at 100 micron */

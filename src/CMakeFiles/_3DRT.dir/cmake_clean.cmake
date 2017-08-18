@@ -26,6 +26,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/_3DRT.dir/UV_field_calculator.cpp.o"
   "CMakeFiles/_3DRT.dir/dust_temperature_calculation.cpp.o"
   "CMakeFiles/_3DRT.dir/heating.cpp.o"
+  "CMakeFiles/_3DRT.dir/cooling.cpp.o"
+  "CMakeFiles/_3DRT.dir/update_temperature_gas.cpp.o"
   "CMakeFiles/_3DRT.dir/write_output.cpp.o"
   "lib_3DRT.pdb"
   "lib_3DRT.a"

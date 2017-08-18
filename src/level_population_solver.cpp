@@ -15,252 +15,119 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <Eigen/Dense>
+using namespace Eigen;
+
 #include "declarations.hpp"
 #include "level_population_solver.hpp"
-
-#define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
-#define IND(r,c) ((c)+(r)*n)
-#define IMD(r,c) ((c)+(r)*m)
 
 
 
 /* level_population_solver: sets up and solves the matrix equation corresp. to equilibrium eq.   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, double *dpop,
-                              long gridp, int lspec )
+int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R,
+                             double *pop, double *dpop )
 {
 
-  int i, j;                                       /* indices for the population level n_i or n_j */
 
-  int n = nlev[lspec];                      /* number of rows and columns of the matrix to solve */
-  int m = 1;                                                   /* number of solution vectors 'b' */
+  MatrixXd A(nlev[lspec],nlev[lspec]);
 
-  double *a;
-  a = (double*) malloc( n*n*sizeof(double) );
-
-  double *b;
-  b = (double*) malloc( n*sizeof(double) );
-
-  double row_tot;
+  VectorXd b(nlev[lspec]);
 
 
-  /* Fill the matrix a */
 
-  for (i=0; i<nlev[lspec]; i++){
 
-    row_tot = 0.0;
 
-    for (j=0; j<nlev[lspec]; j++){
+  /*   Fill matrix a and vector b                                                                */
+  /*_____________________________________________________________________________________________*/
+
+
+  for (int i=0; i<nlev[lspec]; i++){
+
+    double row_tot = 0.0;
+
+    for (int j=0; j<nlev[lspec]; j++){
 
       row_tot = row_tot + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
 
-      a[LINDEX(i,j)] = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
+      A(i,j) = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
     }
 
-    a[LINDEX(i,i)] = -row_tot;
+    A(i,i) = -row_tot;
   }
 
 
 
-  for (i=0; i<nlev[lspec]; i++){
+  for (int i=0; i<nlev[lspec]; i++){
 
-    b[i] = 0.0;
-    a[LINDEX(nlev[lspec]-1, i)] = 1.0E-8;
+    b(i) = 0.0;
+
+    A(nlev[lspec]-1, i) = 1.0;
 
     dpop[LSPECGRIDLEV(lspec,gridp,i)] = pop[LSPECGRIDLEV(lspec,gridp,i)];
   }
 
-  b[nlev[lspec]-1] = 1.0E-8 * gridpoint[gridp].density;
+
+  b(nlev[lspec]-1) = gridpoint[gridp].density;
+
+
+  /*_____________________________________________________________________________________________*/
 
 
 
-/*
-  printf("Input for lspec %d:", lspec);
-  printf("\n");
 
-  for (i=0; i<n; i++){
-
-    for (j=0; j<n; j++){
-
-      printf("%.2lE\t", a[IND(i,j)]);
-    }
-
-    printf("\n");
-  }
-
-  printf("\n"); */
-/*
-  for (i=0; i<n; i++){
-
-    for (j=0; j<m; j++){
-
-      printf("%.2lE\t", b[IMD(i,j)]);
-    }
-
-    printf("\n");
-  }
-*/
 
   /* Solve the system of equations using the Gauss-Jordan solver */
 
-  GaussJordan(n, m, a, b);
+  VectorXd x = A.colPivHouseholderQr().solve(b);
 
 
-  /* Update the populations and the change in populations */
 
-  for (i=0; i<nlev[lspec]; i++){
 
-    pop[LSPECGRIDLEV(lspec,gridp,i)] =  b[i];
 
-    dpop[LSPECGRIDLEV(lspec,gridp,i)] = fabs( dpop[LSPECGRIDLEV(lspec,gridp,i)]
-                                             - pop[LSPECGRIDLEV(lspec,gridp,i)] );
+  /* UPDATE THE POPULATIONS AND THE CHANGE IN POPULATIONS                                        */
+  /*_____________________________________________________________________________________________*/
 
-    if( isnan(b[i]) ){
 
-      // printf( "\n\n !!! ERROR in level poopulation solver !!!\n\n" );
-      printf( "   [ERROR]: population of level (%d,%d) is NaN at grid point %ld \n",
-              lspec, i, gridp );
+  for (int i=0; i<nlev[lspec]; i++){
+
+    long p_i = LSPECGRIDLEV(lspec,gridp,i);
+
+
+    /* avoid too small or too large populations */
+
+    if (x(i) > POP_LOWER_LIMIT){
+
+      if ( x(i) < POP_UPPER_LIMIT ) { pop[p_i] =  x(i); }
+
+      else                          { pop[p_i] = POP_UPPER_LIMIT; }
     }
+    else {
 
-  }
-
-/*
-  printf( "(level_population_solver): dpop is %.2lE \n", dpop[LSPECGRIDLEV(lspec,gridp,i)] );
-*/
-
-/*
-  printf("Output:");
-  printf("\n");
-
-  for (i=0; i<n; i++){
-
-    for (j=0; j<n; j++){
-
-      printf("%.2lE\t", a[IND(i,j)]);
-    }
-
-    printf("\n");
-  }
-
-  printf("\n");
-
-  for (i=0; i<n; i++){
-
-    for (j=0; j<m; j++){
-
-        printf("%.2lE\t", b[i]);
-    }
-
-    printf("\n");
-  }
-*/
-
-  /* Free the allocated memory for temporary variables */
-
-  free(a);
-  free(b);
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
-/*-----------------------------------------------------------------------------------------------*/
-
-void GaussJordan(int n, int m, double *a, double *b)
-{
-
-  int indexc[n];                              /* note that our vectors are indexed from 0 to n-1 */
-  int indexr[n];                              /* note that our vectors are indexed from 0 to n-1 */
-  int ipiv[n];
-
-  int i, icol, irow, j, k, l, ll;
-
-  double big, dum, pivinv, temp;
-
-
-  for (j=0; j<n; j++){ ipiv[j] = 0; }
-
-
-  for (i=0; i<n; i++){
-
-    big = 0.0;
-
-    for (j=0; j<n; j++){
-
-      if (ipiv[j] != 1){
-
-        for (k=0; k<n; k++){
-
-          if (ipiv[k] == 0){
-
-            if(fabs(a[IND(j,k)]) >= big){
-
-              big = fabs(a[IND(j,k)]);
-              irow = j;
-              icol = k;
-            }
-
-          }
-
-        }
-
-      }
-
+      pop[p_i] = 0.0;
     }
 
 
-    ipiv[icol] = ipiv[icol] + 1;
-
-    if (irow != icol){
-
-      for (l=0; l<n; l++){ SWAP(a[IND(irow,l)], a[IND(icol,l)]) }
-      for (l=0; l<m; l++){ SWAP(b[IMD(irow,l)], b[IMD(icol,l)]) }
-    }
-
-    indexr[i] = irow;
-    indexc[i] = icol;
-
-    if (a[IND(icol,icol)] == 0.0){ printf("(GaussJordan): ERROR - singular matrix !!!\n"); }
-
-    pivinv = 1.0 / a[IND(icol,icol)];
-
-    a[IND(icol,icol)] = 1.0;
-
-    for (l=0; l<n; l++){ a[IND(icol,l)] = pivinv * a[IND(icol,l)]; }
-    for (l=0; l<m; l++){ b[IMD(icol,l)] = pivinv * b[IMD(icol,l)]; }
+    dpop[p_i] = fabs(dpop[p_i] - pop[p_i]);
 
 
-    for (ll=0; ll<n; ll++){
+    if( isnan(b(i)) ){
 
-      if (ll != icol) {
-
-        dum = a[IND(ll,icol)];
-        a[IND(ll,icol)] = 0.0;
-
-        for (l=0; l<n; l++){ a[IND(ll,l)] = a[IND(ll,l)] - a[IND(icol,l)]*dum; }
-        for (l=0; l<m; l++){ b[IMD(ll,l)] = b[IMD(ll,l)] - b[IMD(icol,l)]*dum; }
-      }
-
+      printf( "\n\n !!! ERROR in level poopulation solver !!!\n\n" );
+      printf( "   [ERROR]: population (%d,%d) is NaN at grid point %ld \n", lspec, i, gridp );
     }
 
   }
 
 
-  for (l=n-1; l>=0; l--){
+  /*_____________________________________________________________________________________________*/
 
-    if (indexr[l] != indexc[l] ){
 
-      for (k=0; k<n; k++){ SWAP(a[IND(k,indexr[l])], a[IND(k,indexc[l])]); }
 
-    }
 
-  }
+
+  return(0);
 
 }
 

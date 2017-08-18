@@ -8,7 +8,7 @@
 Value                               | Constant
 ____________________________________|__________________
                                     |
-12*4*4                              | nrays (12*n^2)
+12                                  | nrays (12*n^2)
                                     |
 1.1                                 | theta_crit
                                     |
@@ -18,7 +18,7 @@ false                               | sobolev
                                     |
 ISO                                 | field form
                                     |
-1000                                | MAX_NITERATIONS
+300                                 | MAX_NITERATIONS
                                     |
 1.0E8                               | time_end (years)
                                     |

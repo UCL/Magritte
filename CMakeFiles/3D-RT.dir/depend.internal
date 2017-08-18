@@ -7,6 +7,7 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/UV_field_calculator.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/abundances.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/column_density_calculator.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/cooling.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/create_healpixvectors.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
@@ -22,4 +23,5 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/read_linedata.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/setup_data_structures.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/species_tools.hpp
+ /home/frederik/Dropbox/Astro/3D-RT/src/update_temperature_gas.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/write_output.hpp

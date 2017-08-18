@@ -260,6 +260,33 @@ column_density_calculator.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/column_density_calculator.cpp.s
 .PHONY : column_density_calculator.cpp.s
 
+cooling.o: cooling.cpp.o
+
+.PHONY : cooling.o
+
+# target to build an object file
+cooling.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/cooling.cpp.o
+.PHONY : cooling.cpp.o
+
+cooling.i: cooling.cpp.i
+
+.PHONY : cooling.i
+
+# target to preprocess a source file
+cooling.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/cooling.cpp.i
+.PHONY : cooling.cpp.i
+
+cooling.s: cooling.cpp.s
+
+.PHONY : cooling.s
+
+# target to generate assembly for a file
+cooling.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/cooling.cpp.s
+.PHONY : cooling.cpp.s
+
 create_healpixvectors.o: create_healpixvectors.cpp.o
 
 .PHONY : create_healpixvectors.o
@@ -854,6 +881,33 @@ spline.cpp.s:
 	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/spline.cpp.s
 .PHONY : spline.cpp.s
 
+update_temperature_gas.o: update_temperature_gas.cpp.o
+
+.PHONY : update_temperature_gas.o
+
+# target to build an object file
+update_temperature_gas.cpp.o:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/update_temperature_gas.cpp.o
+.PHONY : update_temperature_gas.cpp.o
+
+update_temperature_gas.i: update_temperature_gas.cpp.i
+
+.PHONY : update_temperature_gas.i
+
+# target to preprocess a source file
+update_temperature_gas.cpp.i:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/update_temperature_gas.cpp.i
+.PHONY : update_temperature_gas.cpp.i
+
+update_temperature_gas.s: update_temperature_gas.cpp.s
+
+.PHONY : update_temperature_gas.s
+
+# target to generate assembly for a file
+update_temperature_gas.cpp.s:
+	cd /home/frederik/Dropbox/Astro/3D-RT && $(MAKE) -f src/CMakeFiles/_3DRT.dir/build.make src/CMakeFiles/_3DRT.dir/update_temperature_gas.cpp.s
+.PHONY : update_temperature_gas.cpp.s
+
 write_output.o: write_output.cpp.o
 
 .PHONY : write_output.o
@@ -905,6 +959,9 @@ help:
 	@echo "... column_density_calculator.o"
 	@echo "... column_density_calculator.i"
 	@echo "... column_density_calculator.s"
+	@echo "... cooling.o"
+	@echo "... cooling.i"
+	@echo "... cooling.s"
 	@echo "... create_healpixvectors.o"
 	@echo "... create_healpixvectors.i"
 	@echo "... create_healpixvectors.s"
@@ -971,6 +1028,9 @@ help:
 	@echo "... spline.o"
 	@echo "... spline.i"
 	@echo "... spline.s"
+	@echo "... update_temperature_gas.o"
+	@echo "... update_temperature_gas.i"
+	@echo "... update_temperature_gas.s"
 	@echo "... write_output.o"
 	@echo "... write_output.i"
 	@echo "... write_output.s"

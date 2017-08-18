@@ -33,6 +33,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
                 double *UV_field, double v_turb )
 {
 
+
   double heating_total;                                                         /* total heating */
 
   double Habing_field = 1.68 * UV_field[gridp];                  /* UV radiation field in Habing */

@@ -2,7 +2,7 @@ To make the setup file you have to provide the PARAMETERS_FILE.
 
 e.g.
 
-$ make PARAMETERS_FILE=.../parameters.txt 
+$ make PARAMETERS_FILE=../parameters.txt 
 
 This will automatically execute the pre_setup and run the make_rates.py script.
 Afterwards you can run the setup executable. This will setup the 3D-RT code.

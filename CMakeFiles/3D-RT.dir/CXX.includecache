@@ -59,6 +59,10 @@ level_populations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/level_populations.hpp
 heating.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/heating.hpp
+cooling.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/cooling.hpp
+update_temperature_gas.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/update_temperature_gas.hpp
 write_output.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/write_output.hpp
 
@@ -71,6 +75,10 @@ declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/abundances.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/column_density_calculator.hpp
+declarations.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
+
+/home/frederik/Dropbox/Astro/3D-RT/src/cooling.hpp
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 
@@ -127,6 +135,8 @@ string
 /home/frederik/Dropbox/Astro/3D-RT/src/species_tools.hpp
 string
 -
+
+/home/frederik/Dropbox/Astro/3D-RT/src/update_temperature_gas.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/write_output.hpp
 declarations.hpp

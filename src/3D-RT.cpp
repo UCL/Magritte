@@ -45,6 +45,8 @@ using namespace std;
 #include "abundances.hpp"
 #include "level_populations.hpp"
 #include "heating.hpp"
+#include "cooling.hpp"
+#include "update_temperature_gas.hpp"
 
 #include "write_output.hpp"
 
@@ -252,7 +254,7 @@ int main()
 
 
 
-
+//
 
   /*   READ LINE DATA FOR EACH LINE PRODUCING SPECIES                                            */
   /*_____________________________________________________________________________________________*/
@@ -306,7 +308,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): ray tracing \n");
+  printf("(3D-RT): tracing rays \n");
 
 
   /* Execute ray_tracing */
@@ -365,6 +367,10 @@ int main()
 
   initialize_temperature_gas(temperature_gas);
 
+  double previous_temperature_gas[NGRID];    /* temp. of gas at each grid point, prev. iteration */
+
+  initialize_double_array_with(previous_temperature_gas, temperature_gas, NGRID);
+
   double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
 
   initialize_double_array(temperature_dust, NGRID);
@@ -401,13 +407,25 @@ int main()
 
   initialize_double_array(dpop, NGRID*TOT_NLEV);
 
+  double mean_intensity[NGRID*TOT_NRAD];                             /* mean intensity for a ray */
+
+  initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
+
   bool no_thermal_balance = true;
+
+  int niterations = 0;                                                   /* number of iterations */
 
 
 
   /* Thermal balance iterations */
 
+  printf("(3D-RT): Starting thermal balance iterations \n\n");
+
   while (no_thermal_balance){
+
+    no_thermal_balance = false;
+
+    niterations++;
 
 
     /* Calculate column densities */
@@ -477,7 +495,7 @@ int main()
 
     level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
                        A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
-                       coltemp, icol, jcol, temperature_gas, weight, energy );
+                       coltemp, icol, jcol, temperature_gas, weight, energy, mean_intensity );
 
     time_level_pop += omp_get_wtime();
 
@@ -502,13 +520,33 @@ int main()
 
     /* Calculate the thermal balance for each gridpoint */
 
-    for (int n=0; n<NGRID; n++){
+    for (long gridp=0; gridp<NGRID; gridp++){
 
-      double heating_total = heating( gridpoint, n, temperature_gas, temperature_dust,
-                                      UV_field, v_turb);
+      double heating_total = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+                                      UV_field, v_turb );
 
-                                      
-    }
+      double cooling_total = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency,
+                                      pop, mean_intensity );
+
+
+      double thermal_flux = heating_total - cooling_total;
+
+      double thermal_ratio = 2.0 * fabs(thermal_flux) / fabs(heating_total + cooling_total);
+
+
+      cout << "Thermal flux is = " << thermal_flux << "\n";
+
+      /* Check for thermal balance (convergence) */
+
+      if (thermal_ratio > THERMAL_PREC){
+
+        no_thermal_balance = true;
+
+        update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
+
+      }
+
+    } /* end of gridp look over grid points */
 
     printf("(3D-RT): heating and cooling calculated \n\n");
 
@@ -516,13 +554,18 @@ int main()
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
+    /* Limit the number of iterations */
 
-    /* Only one iteration for the moment */
+    if (niterations >= MAX_NITERATIONS){
 
-    no_thermal_balance = false;
+      no_thermal_balance = false;
+    }
 
 
   } /* end of thermal balance iterations */
+
+
+  printf("(3D-RT): thermal balance reached in %d iterations \n\n", niterations);
 
 
   /*_____________________________________________________________________________________________*/
@@ -540,7 +583,7 @@ int main()
 
   /* Write the output file  */
 
-  write_output( unit_healpixvector, antipod, gridpoint, evalpoint, pop, weight, energy );
+  write_output(unit_healpixvector, antipod, gridpoint, evalpoint, pop, weight, energy);
 
 
   printf("(3D-RT): output written \n\n");

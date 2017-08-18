@@ -32,7 +32,7 @@ using namespace std;
 
 #define LINE_DATAFILE0 "data/12c.dat" 
 
-#define NGRID 101 
+#define NGRID 10 
 
 #define NSIDES 1 
 
@@ -62,7 +62,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 1410 
 
-#define MAX_NITERATIONS 1000 
+#define MAX_NITERATIONS 300 
 
 #define TIME_END_IN_YEARS 1.000000E+08 
 
@@ -83,11 +83,12 @@ using namespace std;
 
 /* Numerical constants */
 
-#define PI 3.141592653589793238462643383279502884197                                       /* pi */
-#define CC 2.99792458E+10                                         /* speed of light in cgs units */
-#define HH 6.62606896E-27                                      /* Planck's constant in cgs units */
-#define KB 1.38065040E-16                                   /* Boltzmann's constant in cgs units */
-#define EV 1.60217646E-12                                                /* electron Volt in erg */
+#define PI    3.141592653589793238462643383279502884197                                       /* pi */
+#define CC    2.99792458E+10                                         /* speed of light in cgs units */
+#define HH    6.62606896E-27                                      /* Planck's constant in cgs units */
+#define KB    1.38065040E-16                                   /* Boltzmann's constant in cgs units */
+#define EV    1.60217646E-12                                                /* electron Volt in erg */
+#define T_CMB 2.725                     /* temperature of the cosmic microwave background radiation */
 
 
 
@@ -97,12 +98,20 @@ using namespace std;
 #define MAX_WIDTH 13                                                             /* for printing */
 #define BUFFER_SIZE 500                                    /* max number of characters in a line */
 
+
 #define NRAYS 12*NSIDES*NSIDES                   /* number of HEALPix rays as defined in HEALPix */
 
 
 /* Parameters for level population iteration */
 
-#define POP_PREC 1.0E-5                               /* precision used in convergence criterion */
+#define POP_PREC        1.0E-5                        /* precision used in convergence criterion */
+#define POP_LOWER_LIMIT 1.0E-26                                    /* lowest non-zero population */
+#define POP_UPPER_LIMIT 1.0E+15                                            /* highest population */
+
+
+/* Parameters for thermal balance iteration */
+
+#define THERMAL_PREC 1.0E-1                           /* precision used in convergence criterion */
 
 
 /* Grid related index definitions */

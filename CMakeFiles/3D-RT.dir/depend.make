@@ -6,6 +6,7 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/AV_calculator.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/UV_field_calculator.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/abundances.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/column_density_calculator.hpp
+CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/cooling.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/create_healpixvectors.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/data_tools.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/declarations.hpp
@@ -21,5 +22,6 @@ CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/read_input.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/read_linedata.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/setup_data_structures.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/species_tools.hpp
+CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/update_temperature_gas.hpp
 CMakeFiles/3D-RT.dir/src/3D-RT.cpp.o: src/write_output.hpp
 

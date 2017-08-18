@@ -33,34 +33,22 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
 {
 
 
-  long e1, e2;                                                         /* evaluation point index */
+  long ndepav = 0;                     /* average number of depth points used in exact_feautrier */
+  long nav = 0;                                   /* number of times exact_feautrier is executed */
 
-  long ndep;           /* number of depth points along a pair of antipodal rays (=etot1+etot2-2) */
-  long ndepav=0;                       /* average number of depth points used in exact_feautrier */
-  long nav=0;                                     /* number of times exact_feautrier is executed */
-
-  double boundary_condition=0.0;                        /* Intensity at the boundary of the grid */
-
-  double dtau_test;                     /* store dtau here untill we checked it is not too small */
-
-  long temp_sc;
-  long temp_nsc;
-
-
-
-  /* Calculate mean_intensity <J_ij> */
-
+  long m_ij = LSPECGRIDRAD(lspec,gridp,kr);               /* mean_intensity, S and opacity index */
 
   int i = irad[LSPECRAD(lspec,kr)];              /* i level index corresponding to transition kr */
   int j = jrad[LSPECRAD(lspec,kr)];              /* j level index corresponding to transition kr */
+
 
 
   /* For half of the rays (only half is needed since we also consider the antipodals) */
 
   for (long r=0; r<NRAYS/2; r++){
 
-    temp_sc = *nshortcuts;
-    temp_nsc = *nno_shortcuts;
+    long temp_sc  = *nshortcuts;
+    long temp_nsc = *nno_shortcuts;
 
 
     /* Get the antipodal ray for r */
@@ -74,16 +62,18 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
 
       *nshortcuts = temp_sc + 1;
 
-      mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)] = mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)]
-                                                     + P_intensity[RINDEX(gridp,r)];
+
+      mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
+
     }
 
     else if (P_intensity[RINDEX(gridp,ar)] > 0.0){
 
       *nshortcuts = temp_sc + 1;
 
-      mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)] = mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)]
-                                                     + P_intensity[RINDEX(gridp,ar)];
+
+      mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,ar)];
+
     }
 
     else {
@@ -104,13 +94,7 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
 
         *nno_shortcuts = temp_nsc + 1;
 
-        // printf("No shortcut for grid point %ld and ray %ld \n", gridp, r);
-
-        // printf("etot1 = %ld\n", etot1 );
-        // printf("etot2 = %ld\n", etot2 );
-
-
-        ndep = etot1 + etot2;
+        long ndep = etot1 + etot2;         /* nr. of depth points along a pair of antipodal rays */
 
 
         /* Allocate memory for the source function and optical depth */
@@ -124,52 +108,56 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
 
         /* For the antipodal ray to ray r */
 
-        for (e1=1; e1<etot1; e1++){
+        for (long e1=1; e1<etot1; e1++){
 
-          long ge1   = GP_NR_OF_EVALP(gridp, ar, etot1-e1);
-          long ge1m1 = GP_NR_OF_EVALP(gridp, ar, etot1-e1-1);
 
-          S[e1-1]    = ( Source[LSPECGRIDRAD(lspec,ge1,kr)]
-                         + Source[LSPECGRIDRAD(lspec,ge1m1,kr)] ) / 2.0;
+          long e_n  = GINDEX(gridp, GP_NR_OF_EVALP(gridp, ar, etot1-e1));
 
-          dtau[e1-1] = evalpoint[GINDEX(gridp, ge1)].dZ
-                       *( opacity[LSPECGRIDRAD(lspec,ge1,kr)]
-                          + opacity[LSPECGRIDRAD(lspec,ge1m1,kr)] ) / 2.0;
+          long s_n  = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, etot1-e1),kr);
+          long s_np = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, etot1-e1-1),kr);
+
+
+          S[e1-1]    = (Source[s_n] + Source[s_np]) / 2.0;
+
+          dtau[e1-1] = evalpoint[e_n].dZ * (opacity[s_n] + opacity[s_np]) / 2.0;
+
         }
 
 
         /* Adding the grid point itself (the origin for both rays) */
 
-        S[etot1-1]    = ( Source[LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, 0),kr)]
-                          + Source[LSPECGRIDRAD(lspec,gridp,kr)] ) / 2.0;
+        long e_a0 = GINDEX(gridp, GP_NR_OF_EVALP(gridp, ar, 0));
+        long e_0  = GINDEX(gridp, GP_NR_OF_EVALP(gridp, r, 0));
 
-        dtau[etot1-1] = evalpoint[GINDEX(gridp, GP_NR_OF_EVALP(gridp, ar, 0))].dZ
-                        *( opacity[LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, 0),kr)]
-                           + opacity[LSPECGRIDRAD(lspec,gridp,kr)] ) / 2.0;
+        long s_an = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, 0),kr);
+        long s_n  = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, 0),kr);
 
-        S[etot1]      = ( Source[LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, 0),kr)]
-                               + Source[LSPECGRIDRAD(lspec,gridp,kr)] ) / 2.0;
 
-        dtau[etot1]   = evalpoint[GINDEX(gridp, GP_NR_OF_EVALP(gridp, r, 0))].dZ
-                             *( opacity[LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, 0),kr)]
-                                + opacity[LSPECGRIDRAD(lspec,gridp, kr)] ) / 2.0;
+        S[etot1-1]    = (Source[s_an] + Source[m_ij]) / 2.0;
+
+        dtau[etot1-1] = evalpoint[e_a0].dZ * (opacity[s_an] + opacity[m_ij]) / 2.0;
+
+        S[etot1]      = (Source[s_n] + Source[m_ij]) / 2.0;
+
+        dtau[etot1]   = evalpoint[e_0].dZ * (opacity[s_n] + opacity[m_ij]) / 2.0;
 
 
         /* For ray r itself */
 
-        for (e2=1; e2<etot2; e2++){
+        for (long e2=1; e2<etot2; e2++){
 
-          long ge2   = GP_NR_OF_EVALP(gridp, r, e2);
-          long ge2m1 = GP_NR_OF_EVALP(gridp, r, e2-1);
 
-          S[etot1+e2]    = ( Source[LSPECGRIDRAD(lspec,ge2,kr)]
-                             + Source[LSPECGRIDRAD(lspec,ge2m1,kr)] ) / 2.0;
+          long e_n  = GINDEX(gridp, GP_NR_OF_EVALP(gridp, r, e2));
 
-          dtau[etot1+e2] = evalpoint[GINDEX(gridp, ge2)].dZ
-                           *( opacity[LSPECGRIDRAD(lspec,ge2,kr)]
-                              + opacity[LSPECGRIDRAD(lspec,ge2m1,kr)] ) / 2.0;
+          long s_n  = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, e2),kr);
+          long s_np = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, e2-1),kr);
+
+
+          S[etot1+e2]    = (Source[s_n] + Source[s_np]) / 2.0;
+
+          dtau[etot1+e2] = evalpoint[e_n].dZ * (opacity[s_n] + opacity[s_np]) / 2.0;
+
         }
-
 
 
         /*-------------------------------------------------------------------------------------*/
@@ -209,15 +197,17 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
         /*-------------------------------------------------------------------------------------*/
 
 
-        mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)]
-          = mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)]
-            + exact_feautrier(ndep, S, dtau, etot1, etot2, evalpoint, P_intensity, gridp, r, ar);
+        /* Solve the transfer equation wit hthe exact Feautrier solver */
+
+        exact_feautrier( ndep, S, dtau, etot1, etot2, evalpoint, P_intensity, gridp, r, ar );
+
+
+        mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
 
 
         // printf("(radiative_transfer): number of depth points %ld\n", ndep);
 
-        // printf( "(radiative_transfer): Feautrier P for ray %ld is %lE \n",
-        //         r, mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)] );
+        // printf( "P contribution to mean intensity %lE \n", mean_intensity[m_ij] );
 
 
         ndepav = ndepav + ndep;
@@ -232,23 +222,7 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
       } /* end of if etot1>1 && etot2>1 */
 
 
-      /* Impose boundary conditions */
-
-      else{
-
-        mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)]
-          = mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)] + boundary_condition;
-
-      }
-
-
-      // printf("(radiative_transfer): etot1 and etot2 are %ld and %ld \n", etot1, etot2);
-
-
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
-
-
-
 
 
     } /* end of else (no shortcut) */
@@ -256,12 +230,11 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
   } /* end of r loop over half of the rays */
 
 
-  mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)]
-    = mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)] + 1.0E-13 ; /// 4.0 / PI;
+  mean_intensity[m_ij] = mean_intensity[m_ij]; // / 4.0 / PI;
 
 
-  // printf( "(radiative_transfer): mean intensity at %ld is %lE \n",
-  //         gridp, mean_intensity[LSPECGRIDRAD(lspec,gridp,kr)] );
+  // printf( "(radiative_transfer): mean intensity at gridp %ld for trans %d is %lE \n",
+  //         gridp, kr, mean_intensity[m_ij] );
 
 
   // printf("(radiative_transfer): average ndep %.2lf \n", (double) ndepav/nav);

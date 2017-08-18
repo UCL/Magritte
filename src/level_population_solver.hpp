@@ -22,19 +22,19 @@
 /* level_population_solver: sets up and solves the matrix equation corresp. to equilibrium eq.   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void level_population_solver( GRIDPOINT *gridpoint, double *R, double *pop, double *dpop,
-                              long gridp, int lspec );
+int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R,
+                             double *pop, double *dpop );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
-/*-----------------------------------------------------------------------------------------------*/
-
-void GaussJordan(int n, int m, double *a, double *b);
-
-/*-----------------------------------------------------------------------------------------------*/
+// /* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
+// /*-----------------------------------------------------------------------------------------------*/
+//
+// void GaussJordan(int n, int m, double *a, double *b);
+//
+// /*-----------------------------------------------------------------------------------------------*/
 
 
 
