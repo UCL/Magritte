@@ -57,38 +57,38 @@ include CMakeFiles/test_level_population_solver.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_level_population_solver.dir/flags.make
 
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o: CMakeFiles/test_level_population_solver.dir/flags.make
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o: test_src/test_level_population_solver.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_level_population_solver.cpp
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o: CMakeFiles/test_level_population_solver.dir/flags.make
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o: test_src/unit_test_level_population_solver.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_level_population_solver.cpp
 
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_level_population_solver.cpp > CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.i
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_level_population_solver.cpp > CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.i
 
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_level_population_solver.cpp -o CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.s
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_level_population_solver.cpp -o CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.s
 
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.requires:
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.requires:
 
-.PHONY : CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.requires
+.PHONY : CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.requires
 
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.provides: CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.provides.build
-.PHONY : CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.provides
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.provides: CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test_level_population_solver.dir/build.make CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.provides.build
+.PHONY : CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.provides
 
-CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.provides.build: CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o
+CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.provides.build: CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o
 
 
 # Object files for target test_level_population_solver
 test_level_population_solver_OBJECTS = \
-"CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o"
+"CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o"
 
 # External object files for target test_level_population_solver
 test_level_population_solver_EXTERNAL_OBJECTS =
 
-test_level_population_solver: CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o
+test_level_population_solver: CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o
 test_level_population_solver: CMakeFiles/test_level_population_solver.dir/build.make
 test_level_population_solver: test_src/lib_test_main.a
 test_level_population_solver: /home/frederik/Dropbox/Astro/3D-RT/src/lib_3DRT.a
@@ -101,7 +101,7 @@ CMakeFiles/test_level_population_solver.dir/build: test_level_population_solver
 
 .PHONY : CMakeFiles/test_level_population_solver.dir/build
 
-CMakeFiles/test_level_population_solver.dir/requires: CMakeFiles/test_level_population_solver.dir/test_src/test_level_population_solver.cpp.o.requires
+CMakeFiles/test_level_population_solver.dir/requires: CMakeFiles/test_level_population_solver.dir/test_src/unit_test_level_population_solver.cpp.o.requires
 
 .PHONY : CMakeFiles/test_level_population_solver.dir/requires
 

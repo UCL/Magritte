@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_exact_feautrier.dir/test_src/test_exact_feautrier.cpp.o"
+  "CMakeFiles/test_exact_feautrier.dir/test_src/unit_test_exact_feautrier.cpp.o"
   "test_exact_feautrier.pdb"
   "test_exact_feautrier"
 )

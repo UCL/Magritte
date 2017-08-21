@@ -270,7 +270,7 @@ cfloat
 cstdio
 -
 
-/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_ray_tracing.cpp
+/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_ray_tracing.cpp
 stdio.h
 -
 stdlib.h

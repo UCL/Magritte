@@ -57,38 +57,38 @@ include CMakeFiles/test_spline.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_spline.dir/flags.make
 
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o: CMakeFiles/test_spline.dir/flags.make
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o: test_src/test_spline.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_spline.cpp
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o: CMakeFiles/test_spline.dir/flags.make
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o: test_src/unit_test_spline.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_spline.cpp
 
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_spline.dir/test_src/test_spline.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_spline.cpp > CMakeFiles/test_spline.dir/test_src/test_spline.cpp.i
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_spline.cpp > CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.i
 
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_spline.dir/test_src/test_spline.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_spline.cpp -o CMakeFiles/test_spline.dir/test_src/test_spline.cpp.s
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_spline.cpp -o CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.s
 
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.requires:
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.requires:
 
-.PHONY : CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.requires
+.PHONY : CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.requires
 
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.provides: CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test_spline.dir/build.make CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.provides.build
-.PHONY : CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.provides
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.provides: CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test_spline.dir/build.make CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.provides.build
+.PHONY : CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.provides
 
-CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.provides.build: CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o
+CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.provides.build: CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o
 
 
 # Object files for target test_spline
 test_spline_OBJECTS = \
-"CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o"
+"CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o"
 
 # External object files for target test_spline
 test_spline_EXTERNAL_OBJECTS =
 
-test_spline: CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o
+test_spline: CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o
 test_spline: CMakeFiles/test_spline.dir/build.make
 test_spline: test_src/lib_test_main.a
 test_spline: /home/frederik/Dropbox/Astro/3D-RT/src/lib_3DRT.a
@@ -101,7 +101,7 @@ CMakeFiles/test_spline.dir/build: test_spline
 
 .PHONY : CMakeFiles/test_spline.dir/build
 
-CMakeFiles/test_spline.dir/requires: CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o.requires
+CMakeFiles/test_spline.dir/requires: CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o.requires
 
 .PHONY : CMakeFiles/test_spline.dir/requires
 

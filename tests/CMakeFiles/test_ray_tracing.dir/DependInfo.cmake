@@ -4,12 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_ray_tracing.cpp" "/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles/test_ray_tracing.dir/test_src/test_ray_tracing.cpp.o"
+  "/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_ray_tracing.cpp" "/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles/test_ray_tracing.dir/test_src/unit_test_ray_tracing.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/home/frederik/Dropbox/Astro/3D-RT/src"
   )
 
 # Targets to which this target links.

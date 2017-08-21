@@ -24,6 +24,7 @@ using namespace std;
 
 #include "../../src/declarations.hpp"
 #include "../../src/definitions.hpp"
+#include "../../src/initializers.hpp"
 #include "../../src/read_input.hpp"
 #include "../../src/create_healpixvectors.hpp"
 #include "../../src/ray_tracing.hpp"
@@ -34,7 +35,7 @@ using namespace std;
 
 
 
-TEST_CASE("Feautrier solver on 14 depth points"){
+TEST_CASE("Feautrier solver"){
 
 
 
@@ -49,13 +50,11 @@ TEST_CASE("Feautrier solver on 14 depth points"){
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-
   /* Define grid (using types defined in definitions.h) */
 
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
   EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
-
 
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
@@ -65,34 +64,15 @@ TEST_CASE("Feautrier solver on 14 depth points"){
   line_datafile[0] = "../" + line_datafile[0];
 
 
+  initialize_evalpoint(evalpoint);
 
-  /* Initialize */
+  /* Initialize the data structures which will store the evaluation pointa */
 
-  for (long n1=0; n1<NGRID; n1++){
+  initialize_long_array(key, NGRID*NGRID);
 
-    for (long n2=0; n2<NGRID; n2++){
+  initialize_long_array(raytot, NGRID*NRAYS);
 
-      evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
-      evalpoint[GINDEX(n1,n2)].Z   = 0.0;
-      evalpoint[GINDEX(n1,n2)].vol = 0.0;
-
-      evalpoint[GINDEX(n1,n2)].ray = 0;
-      evalpoint[GINDEX(n1,n2)].nr  = 0;
-
-      evalpoint[GINDEX(n1,n2)].eqp = 0;
-
-      evalpoint[GINDEX(n1,n2)].onray = false;
-
-      key[GINDEX(n1,n2)] = 0;
-    }
-
-    for (long r=0; r<NRAYS; r++){
-
-      raytot[RINDEX(n1,r)]      = 0;
-      cum_raytot[RINDEX(n1,r)]  = 0;
-    }
-  }
-
+  initialize_long_array(cum_raytot, NGRID*NRAYS);
 
 
   /* Read input file */
@@ -100,11 +80,9 @@ TEST_CASE("Feautrier solver on 14 depth points"){
   read_input(grid_inputfile, gridpoint);
 
 
-
   /* Setup the (unit) HEALPix vectors */
 
   create_healpixvectors(unit_healpixvector, antipod);
-
 
 
   /* Ray tracing */
@@ -151,14 +129,7 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
   double P_intensity[NGRID*NRAYS];                       /* Feautrier's mean intensity for a ray */
 
-
-  for (long n1=0; n1<NGRID; n1++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      P_intensity[RINDEX(n1,r)] = 0.0;
-    }
-  }
+  initialize_double_array(P_intensity, NGRID*NRAYS);
 
 
   long gridp=0;
@@ -186,11 +157,13 @@ TEST_CASE("Feautrier solver on 14 depth points"){
       // printf( "etot1 and etot2 are %d and %d with %lE\n", etot1, etot2,
       //         exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)/P_test[n] );
 
-      CHECK( exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1)
-             == Approx( (P_test[n]+P_test[n-1])/2.0 ).epsilon(EPS) );
+      exact_feautrier(ndep,S,dtau,etot1,etot2,evalpoint,P_intensity,n,r1,ar1);
+
+      CHECK( P_intensity[n] == Approx( (P_test[n]+P_test[n-1])/2.0 ).epsilon(EPS) );
 
     }
 
+    CHECK(true);
 
 
     /* Check values stored in P_intensity */
@@ -203,12 +176,12 @@ TEST_CASE("Feautrier solver on 14 depth points"){
 
     for (int n=0; n<etot1; n++){
 
-      // printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,ar1)]);
+      printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,ar1)]);
     }
 
     for (int n=0; n<etot2; n++){
 
-      // printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,r1)]);
+      printf("%lE\t%lE\t%lE\n", S[n], dtau[n], P_intensity[RINDEX(n,r1)]);
     }
 
 

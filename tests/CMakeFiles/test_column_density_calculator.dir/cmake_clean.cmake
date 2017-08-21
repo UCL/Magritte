@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o"
+  "CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o"
   "test_column_density_calculator.pdb"
   "test_column_density_calculator"
 )

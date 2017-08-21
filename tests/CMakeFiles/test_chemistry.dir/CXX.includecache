@@ -333,4 +333,6 @@ catch.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.cpp
 ../../src/species_tools.cpp
 /home/frederik/Dropbox/Astro/3D-RT/src/species_tools.cpp
+../../reaction_rates.hpp
+/home/frederik/Dropbox/Astro/3D-RT/reaction_rates.hpp
 

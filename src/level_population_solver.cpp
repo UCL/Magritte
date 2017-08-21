@@ -78,7 +78,7 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
 
 
-  /* Solve the system of equations using the Gauss-Jordan solver */
+  /* Solve the system of equations using the colPivHouseholderQr solver provided by Eigen */
 
   VectorXd x = A.colPivHouseholderQr().solve(b);
 

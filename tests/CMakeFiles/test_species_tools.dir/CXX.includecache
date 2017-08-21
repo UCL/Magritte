@@ -262,7 +262,7 @@ cfloat
 cstdio
 -
 
-/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_species_tools.cpp
+/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_species_tools.cpp
 stdio.h
 -
 stdlib.h

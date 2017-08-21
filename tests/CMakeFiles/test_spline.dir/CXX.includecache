@@ -252,7 +252,7 @@ cfloat
 cstdio
 -
 
-/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_spline.cpp
+/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_spline.cpp
 stdio.h
 -
 stdlib.h

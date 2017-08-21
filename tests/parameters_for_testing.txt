@@ -8,15 +8,25 @@
 Value                               | Constant
 ____________________________________|__________________
                                     |
-192                                 | nrays (12*n^2)
+12*4*4                              | nrays (12*n^2)
                                     |
 1.1                                 | theta_crit
                                     |
-0.0                                 | ray_separation2
+0.00                                | ray_separation2
                                     |
 false                               | sobolev
                                     |
 ISO                                 | field form
+                                    |
+300                                 | MAX_NITERATIONS
+                                    |
+1.0E8                               | time_end (years)
+                                    |
+0.0                                 | G_EXTERNAL_X
+                                    |
+0.0                                 | G_EXTERNAL_Y
+                                    |
+0.0                                 | G_EXTERNAL_Z
 ____________________________________|__________________
 
 
@@ -24,11 +34,11 @@ ____________________________________|__________________
 File                                | Content
 ____________________________________|__________________
                                     |
-input/grid_1D_regular.txt           | Grid
+input/grid_1D_regular_101.txt       | Grid
                                     |
-data/test_species.d                 | Species
+data/species_reduced.d              | Species
                                     |
-data/test_rates.d                   | Reactions
+data/rates_reduced.d                | Reactions
 ____________________________________|__________________
                                     |
 1                                   | nr. of line files
@@ -36,7 +46,7 @@ ____________________________________|__________________
                                     |
 data/12c.dat                        | Lines 0
                                     |
-data/12c+.dat                       | Lines 1
+data/16o.dat                        | Lines 1
                                     |
-data/12co.dat                       | Lines 3
+data/12co.dat                       | Lines 2
 ____________________________________|__________________

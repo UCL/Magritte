@@ -57,38 +57,38 @@ include CMakeFiles/test_column_density_calculator.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_column_density_calculator.dir/flags.make
 
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o: CMakeFiles/test_column_density_calculator.dir/flags.make
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o: test_src/test_column_density_calculator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_column_density_calculator.cpp
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o: CMakeFiles/test_column_density_calculator.dir/flags.make
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o: test_src/unit_test_column_density_calculator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_column_density_calculator.cpp
 
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_column_density_calculator.cpp > CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.i
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_column_density_calculator.cpp > CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.i
 
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_column_density_calculator.cpp -o CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.s
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_column_density_calculator.cpp -o CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.s
 
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.requires:
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.requires:
 
-.PHONY : CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.requires
+.PHONY : CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.requires
 
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.provides: CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test_column_density_calculator.dir/build.make CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.provides.build
-.PHONY : CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.provides
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.provides: CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test_column_density_calculator.dir/build.make CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.provides.build
+.PHONY : CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.provides
 
-CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.provides.build: CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o
+CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.provides.build: CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o
 
 
 # Object files for target test_column_density_calculator
 test_column_density_calculator_OBJECTS = \
-"CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o"
+"CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o"
 
 # External object files for target test_column_density_calculator
 test_column_density_calculator_EXTERNAL_OBJECTS =
 
-test_column_density_calculator: CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o
+test_column_density_calculator: CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o
 test_column_density_calculator: CMakeFiles/test_column_density_calculator.dir/build.make
 test_column_density_calculator: test_src/lib_test_main.a
 test_column_density_calculator: /home/frederik/Dropbox/Astro/3D-RT/src/lib_3DRT.a
@@ -102,7 +102,7 @@ CMakeFiles/test_column_density_calculator.dir/build: test_column_density_calcula
 
 .PHONY : CMakeFiles/test_column_density_calculator.dir/build
 
-CMakeFiles/test_column_density_calculator.dir/requires: CMakeFiles/test_column_density_calculator.dir/test_src/test_column_density_calculator.cpp.o.requires
+CMakeFiles/test_column_density_calculator.dir/requires: CMakeFiles/test_column_density_calculator.dir/test_src/unit_test_column_density_calculator.cpp.o.requires
 
 .PHONY : CMakeFiles/test_column_density_calculator.dir/requires
 

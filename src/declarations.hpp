@@ -24,7 +24,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/grid_1D_regular.txt" 
+#define GRID_INPUTFILE "input/grid_1D_regular_101.txt" 
 
 #define SPEC_DATAFILE  "data/species_reduced.d" 
 
@@ -32,7 +32,7 @@ using namespace std;
 
 #define LINE_DATAFILE0 "data/12c.dat" 
 
-#define NGRID 10 
+#define NGRID 101 
 
 #define NSIDES 1 
 

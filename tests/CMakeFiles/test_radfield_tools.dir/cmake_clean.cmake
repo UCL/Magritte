@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_radfield_tools.dir/test_src/test_radfield_tools.cpp.o"
+  "CMakeFiles/test_radfield_tools.dir/test_src/unit_test_radfield_tools.cpp.o"
   "test_radfield_tools.pdb"
   "test_radfield_tools"
 )

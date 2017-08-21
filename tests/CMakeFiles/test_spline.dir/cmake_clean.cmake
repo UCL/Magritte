@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_spline.dir/test_src/test_spline.cpp.o"
+  "CMakeFiles/test_spline.dir/test_src/unit_test_spline.cpp.o"
   "test_spline.pdb"
   "test_spline"
 )

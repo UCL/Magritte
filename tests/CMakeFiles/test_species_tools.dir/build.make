@@ -57,38 +57,38 @@ include CMakeFiles/test_species_tools.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_species_tools.dir/flags.make
 
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o: CMakeFiles/test_species_tools.dir/flags.make
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o: test_src/test_species_tools.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_species_tools.cpp
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o: CMakeFiles/test_species_tools.dir/flags.make
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o: test_src/unit_test_species_tools.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/frederik/Dropbox/Astro/3D-RT/tests/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o -c /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_species_tools.cpp
 
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_species_tools.cpp > CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.i
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_species_tools.cpp > CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.i
 
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_species_tools.cpp -o CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.s
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_species_tools.cpp -o CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.s
 
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.requires:
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.requires:
 
-.PHONY : CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.requires
+.PHONY : CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.requires
 
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.provides: CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test_species_tools.dir/build.make CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.provides.build
-.PHONY : CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.provides
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.provides: CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test_species_tools.dir/build.make CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.provides.build
+.PHONY : CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.provides
 
-CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.provides.build: CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o
+CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.provides.build: CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o
 
 
 # Object files for target test_species_tools
 test_species_tools_OBJECTS = \
-"CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o"
+"CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o"
 
 # External object files for target test_species_tools
 test_species_tools_EXTERNAL_OBJECTS =
 
-test_species_tools: CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o
+test_species_tools: CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o
 test_species_tools: CMakeFiles/test_species_tools.dir/build.make
 test_species_tools: test_src/lib_test_main.a
 test_species_tools: /home/frederik/Dropbox/Astro/3D-RT/src/lib_3DRT.a
@@ -101,7 +101,7 @@ CMakeFiles/test_species_tools.dir/build: test_species_tools
 
 .PHONY : CMakeFiles/test_species_tools.dir/build
 
-CMakeFiles/test_species_tools.dir/requires: CMakeFiles/test_species_tools.dir/test_src/test_species_tools.cpp.o.requires
+CMakeFiles/test_species_tools.dir/requires: CMakeFiles/test_species_tools.dir/test_src/unit_test_species_tools.cpp.o.requires
 
 .PHONY : CMakeFiles/test_species_tools.dir/requires
 

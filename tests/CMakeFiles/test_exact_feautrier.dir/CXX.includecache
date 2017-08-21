@@ -20,6 +20,8 @@ string
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
+
 /home/frederik/Dropbox/Astro/3D-RT/src/ray_tracing.hpp
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
@@ -274,7 +276,7 @@ cfloat
 cstdio
 -
 
-/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/test_exact_feautrier.cpp
+/home/frederik/Dropbox/Astro/3D-RT/tests/test_src/unit_test_exact_feautrier.cpp
 stdio.h
 -
 stdlib.h
@@ -291,6 +293,8 @@ catch.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 ../../src/definitions.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/definitions.hpp
+../../src/initializers.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/initializers.hpp
 ../../src/read_input.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/read_input.hpp
 ../../src/create_healpixvectors.hpp

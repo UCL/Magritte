@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_ray_tracing.dir/test_src/test_ray_tracing.cpp.o"
+  "CMakeFiles/test_ray_tracing.dir/test_src/unit_test_ray_tracing.cpp.o"
   "test_ray_tracing.pdb"
   "test_ray_tracing"
 )
