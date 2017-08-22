@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib_level_population_solver.a  CMakeFiles/_level_population_solver.dir/test_main.cpp.o CMakeFiles/_level_population_solver.dir/home/frederik/Dropbox/Astro/3D-RT/src/level_population_solver.cpp.o
+/usr/bin/ranlib lib_level_population_solver.a

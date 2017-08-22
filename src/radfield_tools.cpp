@@ -153,25 +153,25 @@ double self_shielding_CO( double column_CO, double column_H2 )
 
   /* Write the shield_CO values to a text file (for testing) */
 
-  FILE *sCO = fopen("self_shielding_CO_table.txt", "w");
-
-  if (sCO == NULL){
-
-      printf("Error opening file!\n");
-      exit(1);
-    }
-
-  for (i=0; i<m; i++){
-
-    for (j=0; j<n; j++){
-
-      fprintf(sCO, "%lE\t%lE\t%lE\n", log10column_CO_grid[i],
-                                      log10column_H2_grid[j],
-                                      log10shield_CO_grid[IND(i,j)] );
-    }
-  }
-
-  fclose(sCO);
+  // FILE *sCO = fopen("self_shielding_CO_table.txt", "w");
+  //
+  // if (sCO == NULL){
+  //
+  //     printf("Error opening file!\n");
+  //     exit(1);
+  //   }
+  //
+  // for (i=0; i<m; i++){
+  //
+  //   for (j=0; j<n; j++){
+  //
+  //     fprintf(sCO, "%lE\t%lE\t%lE\n", log10column_CO_grid[i],
+  //                                     log10column_H2_grid[j],
+  //                                     log10shield_CO_grid[IND(i,j)] );
+  //   }
+  // }
+  //
+  // fclose(sCO);
 
 
 

@@ -12,7 +12,7 @@ ____________________________________|__________________
                                     |
 1.1                                 | theta_crit
                                     |
-0.00                                | ray_separation2
+0.03                                | ray_separation2
                                     |
 false                               | sobolev
                                     |

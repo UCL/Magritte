@@ -1,0 +1,1 @@
+/usr/bin/c++    -fopenmp    CMakeFiles/test_ray_tracing.dir/test_ray_tracing.cpp.o  -o test_ray_tracing -rdynamic lib_ray_tracing.a /home/frederik/Dropbox/Astro/3D-RT/src/HEALPix/lib_HEALPix.a 

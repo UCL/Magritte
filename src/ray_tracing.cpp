@@ -69,7 +69,6 @@ void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *e
 
 
   #pragma omp parallel                                                                \
-   private( )                                                                         \
    shared( unit_healpixvector, gridpoint, evalpoint, key, raytot, cum_raytot, succes, \
            time_de, time_key, time_sort )                                             \
    default( none )

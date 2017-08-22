@@ -63,6 +63,7 @@ string get_canonical_name(string name)
 int get_species_nr(string name)
 {
 
+  
   int spec;                                                                     /* species index */
 
   string canonical_name = get_canonical_name(name);         /* name as it appears in species.dat */

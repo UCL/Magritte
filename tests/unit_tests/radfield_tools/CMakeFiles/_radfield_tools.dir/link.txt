@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib_radfield_tools.a  CMakeFiles/_radfield_tools.dir/test_main.cpp.o CMakeFiles/_radfield_tools.dir/home/frederik/Dropbox/Astro/3D-RT/src/data_tools.cpp.o CMakeFiles/_radfield_tools.dir/home/frederik/Dropbox/Astro/3D-RT/src/read_chemdata.cpp.o CMakeFiles/_radfield_tools.dir/home/frederik/Dropbox/Astro/3D-RT/src/radfield_tools.cpp.o CMakeFiles/_radfield_tools.dir/home/frederik/Dropbox/Astro/3D-RT/src/spline.cpp.o
+/usr/bin/ranlib lib_radfield_tools.a

@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib_spline.a  CMakeFiles/_spline.dir/test_main.cpp.o CMakeFiles/_spline.dir/home/frederik/Dropbox/Astro/3D-RT/src/spline.cpp.o
+/usr/bin/ranlib lib_spline.a

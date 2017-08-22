@@ -38,7 +38,7 @@ using namespace std;
 
 #define THETA_CRIT 1.100000 
 
-#define RAY_SEPARATION2 0.000000E+00 
+#define RAY_SEPARATION2 3.000000E-02 
 
 #define SOBOLEV false 
 
