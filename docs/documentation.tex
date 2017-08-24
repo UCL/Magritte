@@ -69,7 +69,7 @@ All multi-dimensional arrays in the code are stored as one-dimensional lists. On
 
 \section{Ray tracing}
 
-To be able to simulate 3-dimensional clouds of gas on a computer we must find a way to represent this system in computer language. The first step is to chop up space into a bunch of cells. The (continuous) physical variables like e.g. temperature and density are assumed to be constant within each cell.
+To be able to simulate 3-dimensional objects we need a way to represent them in computer language. In this first verison of the code space is dicretized into a truely unstructered grid. In a truely unstructered grid every point is stored separately, without any relation between different points. Physical quantities as the position, gas velocity and temperature are stored independent for every point. In a later version we aim to exploit more the possible structure of the grid.
 
 \bigskip
 
@@ -92,6 +92,11 @@ of
 	\caption{Construction of the ray along wich the radiative transfer is solved.}
 	\label{grid}
 \end{figure}
+
+
+\subsection{\texttt{exact\_feautrier} solver}
+
+Based on the benchmarks, we can conclude that the \texttt{exact\_feautrier} solver has a 9 digit precission.
 
 
 \newpage

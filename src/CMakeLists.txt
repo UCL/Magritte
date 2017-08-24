@@ -11,7 +11,7 @@ add_subdirectory(sundials)
 
 # Add the Eigen directory so the header files can be found
 
-include_directories(/home/frederik/Dropbox/Astro/3D-RT/src)
+include_directories( . )
 
 
 # Create a library containing all source code in /src except the main (3D-RT.cpp)

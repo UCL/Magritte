@@ -51,9 +51,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/RESIZE_STACK.dir/DependInfo.cmake"
-  "CMakeFiles/MAKE_SETUP.dir/DependInfo.cmake"
   "CMakeFiles/3D-RT.dir/DependInfo.cmake"
+  "CMakeFiles/RESIZE_STACK.dir/DependInfo.cmake"
   "src/CMakeFiles/_3DRT.dir/DependInfo.cmake"
   "src/HEALPix/CMakeFiles/_HEALPix.dir/DependInfo.cmake"
   "src/sundials/CMakeFiles/_sundials.dir/DependInfo.cmake"

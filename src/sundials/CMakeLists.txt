@@ -6,14 +6,14 @@
 # Specify path to SUNDIALS header files
 
 set( SUNDIALS_INC_DIR
-     /home/frederik/Dropbox/Astro/3D-RT/src/sundials/include
+     include
      CACHE STRING "Location of SUNDIALS header files" )
 
 
 # Set search path for SUNDIALS libraries
 
 set( SUNDIALS_LIB_DIR
-     /home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib
+     lib
      CACHE STRING "Location of SUNDIALS library files" )
 
 

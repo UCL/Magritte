@@ -1,0 +1,7 @@
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/edit_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/rebuild_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/test_chemistry.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/RESIZE_STACK.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/MAKE_SETUP.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/_sundials.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/integration_tests/chemistry/CMakeFiles/_chemistry.dir

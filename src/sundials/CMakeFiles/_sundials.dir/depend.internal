@@ -3,7 +3,6 @@
 
 src/sundials/CMakeFiles/_sundials.dir/rate_equation_solver.cpp.o
  /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
- /home/frederik/Dropbox/Astro/3D-RT/src/sundials/jacobian.cpp
  /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.cpp
  /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.hpp
  /home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equations.cpp

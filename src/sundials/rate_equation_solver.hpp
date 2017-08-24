@@ -43,16 +43,6 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp);
 
 
 
-/* Private functions to output results */
-/*-----------------------------------------------------------------------------------------------*/
-
-static void PrintOutput(realtype t, realtype y1, realtype y2, realtype y3);
-static void PrintRootInfo(int root_f1, int root_f2);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
 /* Private function to print final statistics */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -75,10 +65,6 @@ static int check_flag(void *flagvalue, const char *funcname, int opt);
 /*-----------------------------------------------------------------------------------------------*/
 
 static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data);
-
-static int Jac(long int N, realtype t,
-               N_Vector y, N_Vector fy, DlsMat J, void *user_data,
-               N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 
 /*-----------------------------------------------------------------------------------------------*/
 

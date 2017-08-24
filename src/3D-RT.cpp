@@ -451,10 +451,7 @@ int main()
     dust_temperature_calculation(UV_field, rad_surface, temperature_dust);
 
 
-
-
-
-    /*   CALCULATE CHEMICAL ABUNDANCES (ITERATIVELY)                                             */
+    /*   CALCULATE CHEMICAL ABUNDANCES                                                           */
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 

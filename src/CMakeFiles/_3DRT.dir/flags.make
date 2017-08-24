@@ -6,5 +6,5 @@ CXX_FLAGS =
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/frederik/Dropbox/Astro/3D-RT/src 
+CXX_INCLUDES = -I/home/frederik/Dropbox/Astro/3D-RT/src/. 
 

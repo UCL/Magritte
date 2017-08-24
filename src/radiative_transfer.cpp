@@ -197,9 +197,11 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
         /*-------------------------------------------------------------------------------------*/
 
 
+        double ibc = IBC;
+
         /* Solve the transfer equation wit hthe exact Feautrier solver */
 
-        exact_feautrier( ndep, S, dtau, etot1, etot2, evalpoint, P_intensity, gridp, r, ar );
+        exact_feautrier( ndep, S, dtau, etot1, etot2, ibc, evalpoint, P_intensity, gridp, r, ar );
 
 
         mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];

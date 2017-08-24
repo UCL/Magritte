@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import sys
 
 
 
-# ----------------------------------------
-# Create a 1D grid to test Ray Tracing
-# ----------------------------------------
+# ----------------------------------------------
+#    Create a random grid to test ray_tracing
+# ----------------------------------------------
 
 
 
@@ -19,17 +20,37 @@ def randrange(n, vmin, vmax):
 
 
 
-ngrid = 50 #int(input("How many grid points?"))
+ngrid = int(sys.argv[1])
 
 np.random.seed(9001)
 
-x = 0.523797/ngrid*np.array(range(ngrid))
-y = 0.783917/ngrid*np.array(range(ngrid))
-z = 0.333333/ngrid*np.array(range(ngrid))
+x = randrange(ngrid,-10,10)
+y = randrange(ngrid,-10,10)
+z = randrange(ngrid,-10,10)
+
+# Place the first point in the origin for convenience in testing
+
+x[0] = 0.000000
+y[0] = 0.000000
+z[0] = 0.000000
+
+x[1] = 0.100000
+y[1] = 0.070000
+z[1] = 0.130000
+
+x[2] = -0.170000
+y[2] = 0.070000
+z[2] = -0.130000
+
+x[2] = 0.140000
+y[2] = -0.050000
+z[2] = -0.180000
+
 
 vx = np.zeros(ngrid)
 vy = np.zeros(ngrid)
 vz = np.zeros(ngrid)
+
 
 density = 10*np.ones(ngrid)
 
@@ -37,7 +58,8 @@ density = 10*np.ones(ngrid)
 data = np.stack((x, y, z, vx, vy, vz, density), axis=1)
 np.savetxt('grid.txt', data, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 
-print("Grid (1D) created with", ngrid, "grid points!")
+print("Grid created with", ngrid, "grid points!")
+
 
 # Plot the resulting grid
 

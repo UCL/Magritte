@@ -103,9 +103,14 @@ int main(){
   double G_external_z = get_nr(PARAMETERS_FILE, 29);
 
 
-  /* Get the grid input file from line 37 in PARAMETERS_FILE */
+  /* Get ibc from line 31 in the PARAMETERS_FILE */
 
-  string grid_inputfile = get_file(PARAMETERS_FILE, 37);
+  double ibc = get_nr(PARAMETERS_FILE, 31);
+
+
+  /* Get the grid input file from line 39 in PARAMETERS_FILE */
+
+  string grid_inputfile = get_file(PARAMETERS_FILE, 39);
 
 
   /* Get the number of grid points from the input file */
@@ -113,9 +118,9 @@ int main(){
   long ngrid = get_NGRID(grid_inputfile);
 
 
-  /* Get the species data file from line 39 in PARAMETERS_FILE */
+  /* Get the species data file from line 41 in PARAMETERS_FILE */
 
-  string spec_datafile = get_file(PARAMETERS_FILE, 39);
+  string spec_datafile = get_file(PARAMETERS_FILE, 41);
 
 
   /* Get the number of species from the species data file */
@@ -123,16 +128,16 @@ int main(){
   int nspec = get_NSPEC(spec_datafile);
 
 
-  /* Get the reaction data file from line 41 in PARAMETERS_FILE */
+  /* Get the reaction data file from line 43 in PARAMETERS_FILE */
 
-  string reac_datafile = get_file(PARAMETERS_FILE, 41);
+  string reac_datafile = get_file(PARAMETERS_FILE, 43);
 
 
-  /* Get the line data files starting from line 47 in PARAMETERS_FILE */
+  /* Get the line data files starting from line 49 in PARAMETERS_FILE */
 
   for (int l=0; l<NLSPEC; l++){
 
-    line_datafile[l] = get_file(PARAMETERS_FILE, 47+2*l);
+    line_datafile[l] = get_file(PARAMETERS_FILE, 49+2*l);
   }
 
 
@@ -146,26 +151,31 @@ int main(){
 
 
   cout << "(setup): PARAMETERS: \n";
-  cout << "(setup): nrays           : " << nrays << "\n";
-  cout << "(setup): theta_crit      : " << theta_crit << "\n";
-  cout << "(setup): ray_separation2 : " << ray_separation2 << "\n";
-  cout << "(setup): sobolev         : " << sobolev << "\n";
-  cout << "(setup): field_form      : " << field_form << "\n";
+  cout << "(setup): nrays             : " << nrays << "\n";
+  cout << "(setup): theta_crit        : " << theta_crit << "\n";
+  cout << "(setup): ray_separation2   : " << ray_separation2 << "\n";
+  cout << "(setup): sobolev           : " << sobolev << "\n";
+  cout << "(setup): field_form        : " << field_form << "\n";
+  cout << "(setup): time_end_in_years : " << time_end_in_years << "\n";
+  cout << "(setup): G_external_x      : " << G_external_x << "\n";
+  cout << "(setup): G_external_y      : " << G_external_y << "\n";
+  cout << "(setup): G_external_z      : " << G_external_z << "\n";
+  cout << "(setup): ibc               : " << ibc << "\n";
 
-  cout << "(setup): grid file       : " << grid_inputfile << "\n";
-  cout << "(setup): species file    : " << spec_datafile << "\n";
-  cout << "(setup): reactions file  : " << reac_datafile << "\n";
+  cout << "(setup): grid file         : " << grid_inputfile << "\n";
+  cout << "(setup): species file      : " << spec_datafile << "\n";
+  cout << "(setup): reactions file    : " << reac_datafile << "\n";
 
-  cout << "(setup): NLSPEC          : " << NLSPEC << "\n";
+  cout << "(setup): NLSPEC            : " << NLSPEC << "\n";
 
   for (int l=0; l<NLSPEC; l++){
 
-    cout << "(setup): line file " << l << "     : " << line_datafile[l] << "\n";
+    cout << "(setup): line file " << l << "       : " << line_datafile[l] << "\n";
   }
 
-  cout << "(setup): ngrid           : " << ngrid << "\n";
-  cout << "(setup): nsides          : " << nsides << " ( = sqrt(nrays/12) ) \n";
-  cout << "(setup): nspec           : " << nspec << "\n\n";
+  cout << "(setup): ngrid             : " << ngrid << "\n";
+  cout << "(setup): nsides            : " << nsides << " ( = sqrt(nrays/12) ) \n";
+  cout << "(setup): nspec             : " << nspec << "\n\n";
 
 
   /*_____________________________________________________________________________________________*/
@@ -393,6 +403,8 @@ int main(){
   fprintf( dec_new, "#define G_EXTERNAL_Y %lE \n\n", G_external_y );
 
   fprintf( dec_new, "#define G_EXTERNAL_Z %lE \n\n", G_external_z );
+
+  fprintf( dec_new, "#define IBC %.13lE \n\n", ibc );
 
 
 

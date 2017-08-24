@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib_sundials.a  CMakeFiles/_sundials.dir/home/frederik/Dropbox/Astro/3D-RT/src/sundials/rate_equation_solver.cpp.o
+/usr/bin/ranlib lib_sundials.a

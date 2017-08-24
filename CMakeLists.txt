@@ -29,7 +29,7 @@ add_custom_target( RESIZE_STACK ALL
 
 add_custom_target( MAKE_SETUP ALL
                    COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup
-                   WORKING_DIRECTORY /home/frederik/Dropbox/Astro/3D-RT/setup )
+                   WORKING_DIRECTORY setup )
 
 
 # Specify the subdirectory containing the source code

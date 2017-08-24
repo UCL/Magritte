@@ -37,9 +37,9 @@ int main(int argc, char *argv[]){
   string parameters_file = argv[1];
 
 
-  /* Get nlspec from line 34 in PARAMETERS_FILE */
+  /* Get nlspec from line 46 in PARAMETERS_FILE */
 
-  int nlspec = get_nr(parameters_file, 44);
+  int nlspec = get_nr(parameters_file, 46);
 
 
   /* Write NLSPEC file */

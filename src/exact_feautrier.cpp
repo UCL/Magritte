@@ -28,7 +28,7 @@
 /* exact_feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2,
+int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2, double ibc,
                      EVALPOINT *evalpoint, double *P_intensity, long gridp, long r, long ar )
 {
 
@@ -57,7 +57,7 @@ int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2,
   double *D;                                                                  /* helper variable */
   D = (double*) malloc( ndep*sizeof(double) );
 
-  double IBC = 4.4718814518123E-19;                                       /* boundary conditions */
+
 
 
 
@@ -86,7 +86,7 @@ int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2,
   for (long n=1; n<ndep-1; n++){
 
     Fd1[n] = -A[n];
-    Fd2[n] =  B[n] - 1.0;
+    Fd2[n] =  B[n] - 1.0;                             /* subtract the 1.0 for numerical purposes */
     Fd3[n] = -C[n];
 
     P[n]   =  S[n];
@@ -95,18 +95,18 @@ int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2,
 
   /* Define boundary conditions for the Feautrier matrix */
 
-  Fd1[0] = 0.0;
-  Fd2[0] = 2.0*A[0] + 2.0*A[0]*A[0];
+  Fd1[0] =  0.0;
+  Fd2[0] =  2.0*A[0] + 2.0*A[0]*A[0];
   Fd3[0] = -2.0*A[0]*A[0];
 
-  P[0]   = S[0] + 2.0*IBC*exp(-dtau[0]) / dtau[1];
+  P[0]   = S[0] + 2.0*ibc*exp(-dtau[0]) / dtau[1];
 
 
   Fd1[ndep-1] = -2.0*A[ndep-1]*A[ndep-1];
   Fd2[ndep-1] = 2.0*A[ndep-1] + 2.0*A[ndep-1]*A[ndep-1];
   Fd3[ndep-1] = 0.0;
 
-  P[ndep-1]   = S[ndep-1] + 2.0*IBC*exp(-dtau[0]) / dtau[ndep-1];
+  P[ndep-1]   = S[ndep-1] + 2.0*ibc*exp(-dtau[0]) / dtau[ndep-1];
 
 
   /*_____________________________________________________________________________________________*/
@@ -129,7 +129,7 @@ int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2,
   for (long n=1; n<ndep; n++){
 
     D[n] = Fd3[n-1] / bet;
-    bet  = 1.0 + (Fd2[n] - (Fd1[n]*D[n]));
+    bet  = 1.0 + (Fd2[n] - (Fd1[n]*D[n]));    /* add 1.0, after the large numbers are subtracted */
     P[n] = (P[n] - Fd1[n]*P[n-1]) / bet;
   }
 

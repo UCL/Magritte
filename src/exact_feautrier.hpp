@@ -22,8 +22,8 @@
 /* exact_feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2,
-                     EVALPOINT *evalpoint, double *P_intensity, long gridp, long r1, long ar1 );
+int exact_feautrier( long ndep, double *S, double *dtau, long etot1, long etot2, double ibc,
+                     EVALPOINT *evalpoint, double *P_intensity, long gridp, long r, long ar );
 
 /*-----------------------------------------------------------------------------------------------*/
 
