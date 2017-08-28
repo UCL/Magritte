@@ -219,11 +219,11 @@ In terms of the line source function $S_{ij}$ the result can be written slightly
 \begin{equation}
 \dot{\mathcal{E}} \ = \ h\nu_{ij} \ A_{ij} \ n_{i}  \phi_{\nu} \left( 1  - \frac{J_{\nu}}{S_{ij}} \right).
 \end{equation}
-This is the way in which the radiative cooling is implemented in the code. The total radiative cooling is giver by the expression above for every downward transition i.e.
+The total radiative cooling is giver by the expression above for every downward transition i.e.
 \begin{equation}
 \dot{\mathcal{E}} \ = \ \sum_{j} \sum_{i>j} h\nu_{ij} \ A_{ij} \ n_{i}  \phi_{\nu} \left( 1  - \frac{J_{\nu}}{S_{ij}} \right).
 \end{equation}
-
+This is the way in which the radiative cooling is implemented in the code (\texttt{cooling.cpp}).
 
 
 \newpage

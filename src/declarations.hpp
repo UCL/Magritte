@@ -293,7 +293,7 @@ typedef struct SPECIES {
 
 
 
-typedef struct REACTIONS {
+typedef struct REACTION {
 
   string   R1;                                                                     /* reactant 1 */
   string   R2;                                                                     /* reactant 2 */
@@ -317,13 +317,13 @@ typedef struct REACTIONS {
 
   int    dup;                                           /* Number of duplicates of this reaction */
 
-} REACTIONS;
+} REACTION;
 
 
 
 extern SPECIES species[NSPEC];
 
-extern REACTIONS reaction[NREAC];
+extern REACTION reaction[NREAC];
 
 
 

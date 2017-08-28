@@ -111,19 +111,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named 3D-RT
-
-# Build rule for target.
-3D-RT: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 3D-RT
-.PHONY : 3D-RT
-
-# fast build rule for target.
-3D-RT/fast:
-	$(MAKE) -f CMakeFiles/3D-RT.dir/build.make CMakeFiles/3D-RT.dir/build
-.PHONY : 3D-RT/fast
-
-#=============================================================================
 # Target rules for targets named RESIZE_STACK
 
 # Build rule for target.
@@ -135,6 +122,32 @@ RESIZE_STACK: cmake_check_build_system
 RESIZE_STACK/fast:
 	$(MAKE) -f CMakeFiles/RESIZE_STACK.dir/build.make CMakeFiles/RESIZE_STACK.dir/build
 .PHONY : RESIZE_STACK/fast
+
+#=============================================================================
+# Target rules for targets named MAKE_SETUP
+
+# Build rule for target.
+MAKE_SETUP: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MAKE_SETUP
+.PHONY : MAKE_SETUP
+
+# fast build rule for target.
+MAKE_SETUP/fast:
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/build
+.PHONY : MAKE_SETUP/fast
+
+#=============================================================================
+# Target rules for targets named 3D-RT
+
+# Build rule for target.
+3D-RT: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 3D-RT
+.PHONY : 3D-RT
+
+# fast build rule for target.
+3D-RT/fast:
+	$(MAKE) -f CMakeFiles/3D-RT.dir/build.make CMakeFiles/3D-RT.dir/build
+.PHONY : 3D-RT/fast
 
 #=============================================================================
 # Target rules for targets named _3DRT
@@ -209,9 +222,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... rebuild_cache"
-	@echo "... 3D-RT"
 	@echo "... RESIZE_STACK"
+	@echo "... MAKE_SETUP"
+	@echo "... 3D-RT"
+	@echo "... rebuild_cache"
 	@echo "... _3DRT"
 	@echo "... _HEALPix"
 	@echo "... _sundials"

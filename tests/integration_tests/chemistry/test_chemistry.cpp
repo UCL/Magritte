@@ -28,6 +28,7 @@ using namespace std;
 #include "../../../src/species_tools.hpp"
 #include "../../../src/read_chemdata.hpp"
 #include "../../../src/abundances.hpp"
+#include "../../../src/heating.hpp"
 
 
 
@@ -135,10 +136,12 @@ TEST_CASE("Test chemistry"){
 
 
 
+
+
   /* Write the results of the integration */
 
   FILE *abn_file = fopen("output/abundances_result.txt", "w");
-              
+
   if (abn_file == NULL){
 
     printf("Error opening file!\n");

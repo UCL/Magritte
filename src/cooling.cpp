@@ -18,6 +18,7 @@
 #include <string.h>
 
 #include <string>
+#include <iostream>
 using namespace std;
 
 #include "declarations.hpp"
@@ -60,9 +61,18 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
       long m_ij = LSPECGRIDRAD(lspec,gridp,kr);                          /* mean intensity index */
 
 
+      printf("pops %lE and %lE \n", pop[p_i], pop[p_j]);
+      printf("%lE \n", mean_intensity[m_ij]);
+
+
       /* Calculate the source function */
 
-      double Source = (A_coeff[b_ij] * pop[p_i])/(pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+      double Source = 0.0;
+
+      if (pop[p_j] > POP_LOWER_LIMIT || pop[p_i] > POP_LOWER_LIMIT){
+
+        Source = (A_coeff[b_ij] * pop[p_i])/(pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+      }
 
 
       /* Calculate the radiative cooling */
@@ -75,7 +85,7 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
 
       else {
 
-        cooling_radiative = 0.0;
+        cooling_radiative = cooling_radiative + 0.0;
       }
 
     } /* end of kr loop over transitions */

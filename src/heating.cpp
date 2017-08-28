@@ -17,6 +17,7 @@
 #include <math.h>
 #include <string.h>
 
+#include <iostream>
 #include <string>
 using namespace std;
 
@@ -39,6 +40,8 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   double Habing_field = 1.68 * UV_field[gridp];                  /* UV radiation field in Habing */
 
   double electron_density = species[e_nr].abn[gridp] * gridpoint[gridp].density;    /* e density */
+
+  if(electron_density <= 0.0) { electron_density = 0.1; }
 
 
 
@@ -448,6 +451,15 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
   heating_total = heating_dust + heating_PAH + heating_Weingartner + heating_C_ionization
                   + heating_H2_photodissociation + heating_H2_FUV_pumping + heating_cosmic_rays;
+
+  cout << "dust        " << heating_dust << "\n";
+  cout << "PAH         " << heating_PAH << "\n";
+  cout << "Weingartner " << heating_Weingartner << "\n";
+  cout << "C_ion       " << heating_C_ionization << "\n";
+  cout << "H2_phot     " << heating_H2_photodissociation << "\n";
+  cout << "H2_FUV      " << heating_H2_FUV_pumping << "\n";
+  cout << "CR          " << heating_cosmic_rays << "\n";
+
 
   return heating_total;
 

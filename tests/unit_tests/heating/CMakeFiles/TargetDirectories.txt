@@ -1,0 +1,7 @@
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/edit_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/rebuild_cache.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/RESIZE_STACK.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/_heating.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/test_heating.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/MAKE_SETUP.dir
+/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/heating/CMakeFiles/_sundials.dir

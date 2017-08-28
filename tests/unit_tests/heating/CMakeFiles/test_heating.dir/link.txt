@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/test_heating.dir/test_heating.cpp.o  -o test_heating -rdynamic lib_heating.a lib_sundials.a /home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_cvode.a /home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_nvecserial.a -lm -lrt 

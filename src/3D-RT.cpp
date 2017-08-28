@@ -532,6 +532,8 @@ int main()
 
 
       cout << "Thermal flux is = " << thermal_flux << "\n";
+      cout << "Heating " << heating_total << "\n";
+      cout << "Coolimg " << cooling_total << "\n";
 
       /* Check for thermal balance (convergence) */
 
@@ -543,7 +545,7 @@ int main()
 
       }
 
-    } /* end of gridp look over grid points */
+    } /* end of gridp loop over grid points */
 
     printf("(3D-RT): heating and cooling calculated \n\n");
 

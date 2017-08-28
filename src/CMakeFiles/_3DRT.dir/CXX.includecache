@@ -91,6 +91,8 @@ string.h
 -
 string
 -
+iostream
+-
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 cooling.hpp
@@ -176,6 +178,8 @@ stdlib.h
 math.h
 -
 string.h
+-
+iostream
 -
 string
 -
@@ -454,6 +458,8 @@ stdio.h
 stdlib.h
 -
 math.h
+-
+string.h
 -
 iostream
 -

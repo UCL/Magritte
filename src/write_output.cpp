@@ -27,12 +27,6 @@ void write_output( double *unit_healpixvector, long *antipod,
                    double *pop, double *weight, double *energy )
 {
 
-  char   ch;
-
-  long   n, n1, n2, r, i;                                                               /* index */
-
-  int lspec;                                                 /* index for line producing species */
-
 
   /* Write the the grid again (only for debugging)  */
 
@@ -44,7 +38,7 @@ void write_output( double *unit_healpixvector, long *antipod,
       exit(1);
     }
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
     fprintf(outgrid, "%f\t%f\t%f\n", gridpoint[n].x, gridpoint[n].y, gridpoint[n].z);
   }
@@ -64,7 +58,7 @@ void write_output( double *unit_healpixvector, long *antipod,
     }
 
 
-  for (r=0; r<NRAYS; r++){
+  for (long r=0; r<NRAYS; r++){
 
     fprintf( hp, "%f\t%f\t%f\n", unit_healpixvector[VINDEX(r,0)],
                                  unit_healpixvector[VINDEX(r,1)],
@@ -85,9 +79,9 @@ void write_output( double *unit_healpixvector, long *antipod,
       exit(1);
     }
 
-  for (n1=0; n1<NGRID; n1++){
+  for (long n1=0; n1<NGRID; n1++){
 
-    for (n2=0; n2<NGRID; n2++){
+    for (long n2=0; n2<NGRID; n2++){
 
       fprintf( eval, "%lf\t%ld\t%d\n",
                evalpoint[GINDEX(n1,n2)].Z,
@@ -112,9 +106,9 @@ void write_output( double *unit_healpixvector, long *antipod,
     }
 
 
-  for (n1=0; n1<NGRID; n1++){
+  for (long n1=0; n1<NGRID; n1++){
 
-    for (n2=0; n2<NGRID; n2++){
+    for (long n2=0; n2<NGRID; n2++){
 
       fprintf(fkey, "%ld\t", key[GINDEX(n1,n2)] );
     }
@@ -137,9 +131,9 @@ void write_output( double *unit_healpixvector, long *antipod,
     }
 
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
-    for (r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
       fprintf(rt, "%ld\t", raytot[RINDEX(n,r)] );
     }
@@ -162,9 +156,9 @@ void write_output( double *unit_healpixvector, long *antipod,
     }
 
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
-    for (r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
       fprintf(crt, "%ld\t", cum_raytot[RINDEX(n,r)] );
     }
@@ -188,13 +182,13 @@ void write_output( double *unit_healpixvector, long *antipod,
 
   fprintf(levelpops, "%d\n", NLSPEC);
 
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  for (int lspec=0; lspec<NLSPEC; lspec++){
 
   // fprintf(levelpops, "%d\t%d\t \n", lspec, nlev[lspec]);
 
-    for (n=0; n<NGRID; n++){
+    for (long n=0; n<NGRID; n++){
 
-      for (i=0; i<nlev[lspec]; i++){
+      for (int i=0; i<nlev[lspec]; i++){
 
         fprintf(levelpops, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
       }

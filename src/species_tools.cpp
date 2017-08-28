@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include <iostream>
 #include <string>
@@ -63,7 +64,7 @@ string get_canonical_name(string name)
 int get_species_nr(string name)
 {
 
-  
+
   int spec;                                                                     /* species index */
 
   string canonical_name = get_canonical_name(name);         /* name as it appears in species.dat */
@@ -134,5 +135,79 @@ char check_ortho_para(string name)
 
   return 'N';
 }
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* get_charge: get the charge of a species as a multiple of minus the electron charge            */
+/*-----------------------------------------------------------------------------------------------*/
+
+// int get_charge(string name)
+// {
+//
+//
+//   int charge = 0;                                                       /* charge of the species */
+//
+//   char list_name[15];
+//
+//   strcpy(list_name,name.c_str());
+//
+//   int length = length(name);
+//
+//   cout << "lengths is " << length << "\n";
+//
+//
+//   for (int letter=0; letter<15; letter++){
+//
+//     if( strcmp(list_name[letter],"+") ){
+//
+//       charge++;
+//     }
+//     else if( strcmp(list_name[letter],"-") ){
+//
+//       charge--;
+//     }
+//
+//     cout << "letter is " << list_name[letter] << "\n";
+//   }
+//
+//
+//   /* get number of + minus the number of - in the expression */
+//
+//
+//   if (charge < 0){
+//
+//     printf("WARNING: gas is negatively charge even without electrons \n");
+//   }
+//
+//
+//   return charge;
+//
+// }
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* get_electron_abundance: initialize electron abundance so that the gas is neutral              */
+/*-----------------------------------------------------------------------------------------------*/
+
+// int get_electron_abundance(string name)
+// {
+//
+//   for (int spec=0; spec<NSPEC; spec++){
+//
+//
+//   }
+//
+//
+//   return(0);
+//
+// }
 
 /*-----------------------------------------------------------------------------------------------*/
