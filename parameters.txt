@@ -18,7 +18,7 @@ false                               | sobolev
                                     |
 ISO                                 | field form
                                     |
-300                                 | MAX_NITERATIONS
+50                                  | MAX_NITERATIONS
                                     |
 1.0E8                               | time_end (years)
                                     |
@@ -28,9 +28,9 @@ ISO                                 | field form
                                     |
 0.0                                 | G_EXTERNAL_Z
                                     |
-4.4718814518123E-19                 | Feautrier BC (IBC)
+0.0                                 | Feautrier BC (IBC)
 ____________________________________|___________________
-
+				    
 
 
 File                                | Content

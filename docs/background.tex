@@ -62,11 +62,7 @@ The code is mainly written in C with some features of C++. For the ray tracing t
 \section{Chemistry}
 
 
-
-\section{Level populations}
-
-
-\subsection{Radiative transfer}
+\section{Radiative transfer}
 
 The \emph{intensity} $I_{\nu}\equiv I( \textbf{x},t;\hat{\textbf{n}},\nu)$ is defined as the energy $d\mathcal{E}$ propagated through a surface $d^{2}\textbf{S}$, in the direction $\hat{\textbf{n}}$, over a solid angle $d^{2}\omega$, within the frequency bin $[\nu,\nu+d\nu]$, in a time $dt$.
 \begin{equation}
@@ -82,7 +78,8 @@ The \emph{radiative transfer equation} expresses how much the intensity of the e
 \end{equation}
 One can see that in this equation $\eta_{\nu}(\textbf{x},\hat{\textbf{n}})$ is the \emph{emissivity} which adds to the intensity and $\chi_{\nu}(\textbf{x})$ is the \emph{opacity} of the medium, which attenuates the intensity. Note that we assumed that the opacity is independent of the direction in which we look.
 
-\bigskip
+
+\subsection{Feautrier solution method}
 
 To solve the radiative transfer equation along a ray we use the Feautrier method. The basic idea of the Feautrier method is to write the transfer equation as a second order instead of first order differential equation. Let us first make a distinction between the radiation travelling up and down a ray. Define
 \begin{equation}
@@ -189,6 +186,23 @@ D_{d} &= \left( B_{d} - A_{d} D_{d-1} \right)^{-1} C_{d} .
 \end{equation}
 Now it is clear that to find all $u_{d+\frac{1}{2}}$, we first need to calculate all $D_{d}$ and simultaneously we can calculate the $v_{d}$, to then substitute these in (\ref{rec2}) to find the $u_{d+\frac{1}{2}}$.
 
+
+\subsection{Scattering}
+
+So far we only considered an absorption term $\chi_{\nu}(\textbf{x})$ and an emission term $\eta_{\nu}(\textbf{x},\hat{\textbf{n}})$. However, there is a third important process by which electromagnetic radiation can interact with the medium: scattering. The radiation interacts with the medium such that it is deflected. We can see this process as an absorption of radiation in a certain direction followed by emission in another direction. Note that this is why we allowed the emissivity to depend on the direction in which we look. The transfer equation including the scattering can be written as follows
+\begin{equation}
+\hat{\textbf{n}} \cdot \nabla I_{\nu}(\textbf{x},\hat{\textbf{n}}) \ = \ \eta_{\nu}(\textbf{x},\hat{\textbf{n}}) \ + \ \chi_{\nu}^{\text{sca}}(\textbf{x}) \int \text{d} \hat{\textbf{n}}' \ \Phi(\hat{\textbf{n}},\hat{\textbf{n}}') I_{\nu}(\textbf{x},\hat{\textbf{n}}') \ - \ \big( \chi_{\nu}(\textbf{x}) + \chi_{\nu}^{\text{sca}}(\textbf{x}) \big) I_{\nu}(\textbf{x},\hat{\textbf{n}}).
+\label{RTEscat}
+\end{equation}
+The opacity gets an extra contribution from the radiation that is scattered out of the direction under consideration and the emissivity gets a contribution from the radiation of every direction that is scattered into the direction under consideration, hence the integral. $\Phi(\hat{\textbf{n}},\hat{\textbf{n}}')$ is the scattering phase function. It gives the angular distribution of the scattered radiation, i.e. the probability for incoming radiation from direction $\hat{\textbf{n}}'$ to be scattered into direction $\hat{\textbf{n}}$.
+
+\bigskip
+
+Including scattering in the transfer equation makes it a lot harder to solve: we need to know the radiation coming from all directions in order to solve for the radiation in a certain direction. We can overcome this difficulty by solving the equation iteratively. Let us first write equation (\ref{RTEscat}) in semi-discrete form where we only discretize the rays.
+\begin{equation}
+\frac{d I_{\nu}(\textbf{x},r)}{ds} \ = \ \eta_{\nu}(\textbf{x},r) \ + \ \chi_{\nu}^{\text{sca}}(\textbf{x}) \ \sum_{r' \neq r} \Phi(r,r') I_{\nu}(\textbf{x},r') \ - \ \Big( \chi_{\nu}(\textbf{x}) + \big( 1 - \Phi(r,r) \big) \chi_{\nu}^{\text{sca}}(\textbf{x}) \Big) I_{\nu}(\textbf{x},r).
+\label{RTEscat}
+\end{equation}
 
 
 \section{Thermal balance}

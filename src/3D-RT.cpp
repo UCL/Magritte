@@ -95,7 +95,7 @@ int main()
 
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
-  /* NOTE: gridpoint does not have to be initialized a slong as read_input works */
+  /* NOTE: gridpoint does not have to be initialized as long as read_input works */
 
   EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
@@ -369,7 +369,7 @@ int main()
 
   double previous_temperature_gas[NGRID];    /* temp. of gas at each grid point, prev. iteration */
 
-  initialize_double_array_with(previous_temperature_gas, temperature_gas, NGRID);
+  initialize_previous_temperature_gas(previous_temperature_gas, temperature_gas);
 
   double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
 
@@ -426,6 +426,9 @@ int main()
     no_thermal_balance = false;
 
     niterations++;
+
+
+    printf("(3D-RT): thermal balance iteration %d\n", niterations);
 
 
     /* Calculate column densities */
@@ -528,10 +531,19 @@ int main()
 
       double thermal_flux = heating_total - cooling_total;
 
-      double thermal_ratio = 2.0 * fabs(thermal_flux) / fabs(heating_total + cooling_total);
+      double thermal_ratio = 0.0;
 
+      if( fabs(heating_total + cooling_total) > 0.0 ){
 
-      cout << "Thermal flux is = " << thermal_flux << "\n";
+        thermal_ratio = 2.0 * fabs(thermal_flux) / fabs(heating_total + cooling_total);
+      }
+
+      cout << "Thermal flux  is = " << thermal_flux << "\n";
+      cout << "Thermal ratio is = " << thermal_ratio << "\n";
+
+      cout << "min  = " << fabs(thermal_flux) << "\n";
+      cout << "plus = " << fabs(heating_total + cooling_total) << "\n";
+
       cout << "Heating " << heating_total << "\n";
       cout << "Coolimg " << cooling_total << "\n";
 
@@ -544,6 +556,9 @@ int main()
         update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
 
       }
+
+
+      cout << "gas temperature " << temperature_gas[gridp] << "\n";
 
     } /* end of gridp loop over grid points */
 
@@ -582,7 +597,8 @@ int main()
 
   /* Write the output file  */
 
-  write_output(unit_healpixvector, antipod, gridpoint, evalpoint, pop, weight, energy);
+  write_output( unit_healpixvector, antipod, gridpoint, evalpoint,
+                pop, weight, energy, mean_intensity, temperature_gas, temperature_dust);
 
 
   printf("(3D-RT): output written \n\n");

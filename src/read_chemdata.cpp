@@ -23,6 +23,7 @@ using namespace std;
 
 #include "declarations.hpp"
 #include "data_tools.hpp"
+#include "species_tools.hpp"
 
 
 
@@ -35,11 +36,7 @@ void read_species(string spec_datafile)
 
   char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
 
-  int  l;                                                    /* index of a text line in the file */
-
-  int nspec = get_NSPEC(spec_datafile);                                      /* number of species */
-
-  int n;
+  int nspec = get_NSPEC(spec_datafile);                                     /* number of species */
 
   char sym_buff[15];
 
@@ -52,7 +49,7 @@ void read_species(string spec_datafile)
 
   species[0].sym = "dummy";
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
     species[0].abn[n] = 0.0;
   }
@@ -64,7 +61,9 @@ void read_species(string spec_datafile)
   FILE *specdata = fopen(spec_datafile.c_str(), "r");
 
 
-  for (l=1; l<nspec; l++){
+  for (int l=1; l<nspec; l++){
+
+    int n;
 
     fgets(buffer, BUFFER_SIZE, specdata);
     sscanf( buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff );
@@ -73,10 +72,27 @@ void read_species(string spec_datafile)
     species[l].mass = mass_buff;
 
 
-    for (n=0; n<NGRID; n++){
+    for (long n=0; n<NGRID; n++){
 
       species[l].abn[n] = abn_buff;
     }
+  }
+
+
+  /* Overwrite electron abindance */
+
+  printf("\n\nNote: The electron abundance will be overwritten to make the gas neutral \n\n");
+
+  int electron_nr = get_species_nr("e-");
+
+  cout << "electron nr : " << electron_nr << "\n";
+
+  for (long n=0; n<NGRID; n++){
+
+    cout << "jeej \n";
+    species[electron_nr].abn[n] = 0.0;
+    species[electron_nr].abn[n] = get_electron_abundance(n);
+    cout << "electron abundance : " << species[electron_nr].abn[n] << "\n";
   }
 
 

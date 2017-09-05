@@ -317,6 +317,7 @@ src/CMakeFiles/_3DRT.dir/reaction_rates.cpp.o: src/reaction_rates.hpp
 src/CMakeFiles/_3DRT.dir/read_chemdata.cpp.o: src/data_tools.hpp
 src/CMakeFiles/_3DRT.dir/read_chemdata.cpp.o: src/declarations.hpp
 src/CMakeFiles/_3DRT.dir/read_chemdata.cpp.o: src/read_chemdata.cpp
+src/CMakeFiles/_3DRT.dir/read_chemdata.cpp.o: src/species_tools.hpp
 
 src/CMakeFiles/_3DRT.dir/read_input.cpp.o: src/declarations.hpp
 src/CMakeFiles/_3DRT.dir/read_input.cpp.o: src/read_input.cpp

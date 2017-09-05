@@ -23,6 +23,8 @@ iostream
 -
 string
 -
+algorithm
+-
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 species_tools.hpp

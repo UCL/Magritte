@@ -18,6 +18,13 @@ add_custom_target( RESIZE_STACK ALL
                    COMMAND ulimit -S -s 131072 )
 
 
+# Make the setup executable and execute setup
+
+add_custom_target( MAKE_SETUP ALL
+                   COMMAND make PARAMETERS_FILE=../tests/unit_tests/species_tools/parameters_for_testing.txt && ./setup
+                   WORKING_DIRECTORY ../../../setup )
+
+
 # Add the test main and the 3DRT source code (which is to be tested)
 
 add_library( _species_tools test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/species_tools.cpp )

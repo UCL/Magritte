@@ -24,7 +24,8 @@
 
 void write_output( double *unit_healpixvector, long *antipod,
                    GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                   double *pop, double *weight, double *energy )
+                   double *pop, double *weight, double *energy, double *mean_intensity,
+                   double *temperature_gas, double *temperature_dust )
 {
 
 
@@ -170,6 +171,32 @@ void write_output( double *unit_healpixvector, long *antipod,
 
 
 
+  /* Write the abundances at each point */
+
+  FILE *abun= fopen("output/abundances.txt", "w");
+
+  if (abun == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (int spec=0; spec<NSPEC; spec++){
+
+    for (long n=0; n<NGRID; n++){
+
+      fprintf( abun, "%lE\t", species[spec].abn[n] );
+    }
+
+    fprintf( abun, "\n" );
+  }
+
+
+  fclose(abun);
+
+
+
   /* Write the level populations */
 
   FILE *levelpops = fopen("output/level_populations.txt", "w");
@@ -201,7 +228,71 @@ void write_output( double *unit_healpixvector, long *antipod,
 
 
 
+  /* Write the mean intensity at each point for each transition */
 
+  FILE *meanintensity = fopen("output/mean_intensities.txt", "w");
+
+  if (meanintensity == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+  int lspec = 0;
+
+  for (int kr=0; kr<nrad[lspec]; kr++){
+
+    for (long n=0; n<NGRID; n++){
+
+      fprintf( meanintensity, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
+    }
+
+    fprintf( meanintensity, "\n" );
+  }
+
+  fclose(meanintensity);
+
+
+
+  /* Write the gas temperatures at each point */
+
+  FILE *temp_gas = fopen("output/temperature_gas.txt", "w");
+
+  if (temp_gas == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    fprintf( temp_gas, "%lE\n", temperature_gas[n] );
+  }
+
+
+  fclose(temp_gas);
+
+
+
+  /* Write the dust temperatures at each point */
+
+  FILE *temp_dust = fopen("output/temperature_dust.txt", "w");
+
+  if (temp_dust == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    fprintf( temp_dust, "%lE\n", temperature_dust[n] );
+  }
+
+
+  fclose(temp_dust);
 
 
 }

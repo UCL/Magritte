@@ -124,6 +124,19 @@ RESIZE_STACK/fast:
 .PHONY : RESIZE_STACK/fast
 
 #=============================================================================
+# Target rules for targets named MAKE_SETUP
+
+# Build rule for target.
+MAKE_SETUP: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MAKE_SETUP
+.PHONY : MAKE_SETUP
+
+# fast build rule for target.
+MAKE_SETUP/fast:
+	$(MAKE) -f CMakeFiles/MAKE_SETUP.dir/build.make CMakeFiles/MAKE_SETUP.dir/build
+.PHONY : MAKE_SETUP/fast
+
+#=============================================================================
 # Target rules for targets named _species_tools
 
 # Build rule for target.
@@ -237,9 +250,10 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... RESIZE_STACK"
-	@echo "... _species_tools"
 	@echo "... rebuild_cache"
+	@echo "... RESIZE_STACK"
+	@echo "... MAKE_SETUP"
+	@echo "... _species_tools"
 	@echo "... test_species_tools"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/species_tools.o"
 	@echo "... home/frederik/Dropbox/Astro/3D-RT/src/species_tools.i"

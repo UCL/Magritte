@@ -31,12 +31,17 @@ TEST_CASE("Test species_tools"){
 
 
   species[0].sym = "dummy";
+  species[0].abn[0] = 0.1;
   species[1].sym = "H";
+  species[1].abn[0] = 0.1;
   species[2].sym = "H2";
-  species[3].sym = "He";
+  species[2].abn[0] = 0.1;
+  species[3].sym = "He+";
+  species[3].abn[0] = 0.4;
   species[4].sym = "Li";
+  species[4].abn[0] = 0.1;
   species[5].sym = "e-";
-
+  species[5].abn[0] = 0.0;
 
 
   CHECK( get_canonical_name("e") == "e-" );
@@ -61,6 +66,12 @@ TEST_CASE("Test species_tools"){
   // cout << get_species_nr("e") << "\n";
 
   cout << "charge is " << get_charge("H2O+") << "\n";
+  cout << "charge is " << get_charge("H2O-") << "\n";
+  cout << "charge is " << get_charge("H2O+++-+") << "\n";
+
+  cout << "electron abundance is " << get_electron_abundance(0) << "\n";
+
+  cout << NSPEC << "\n";
 
 
 }

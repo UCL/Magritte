@@ -62,7 +62,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 1410 
 
-#define MAX_NITERATIONS 300 
+#define MAX_NITERATIONS 50 
 
 #define TIME_END_IN_YEARS 1.000000E+08 
 
@@ -74,7 +74,7 @@ using namespace std;
 
 #define G_EXTERNAL_Z 0.000000E+00 
 
-#define IBC 4.4718814518123E-19 
+#define IBC 0.0000000000000E+00 
 
 
 /*_______________________________________________________________________________________________*/
@@ -85,12 +85,12 @@ using namespace std;
 
 /* Numerical constants */
 
-#define PI    3.141592653589793238462643383279502884197                                       /* pi */
-#define CC    2.99792458E+10                                         /* speed of light in cgs units */
-#define HH    6.62606896E-27                                      /* Planck's constant in cgs units */
-#define KB    1.38065040E-16                                   /* Boltzmann's constant in cgs units */
-#define EV    1.60217646E-12                                                /* electron Volt in erg */
-#define T_CMB 2.725                     /* temperature of the cosmic microwave background radiation */
+#define PI    3.141592653589793238462643383279502884197                                    /* pi */
+#define CC    2.99792458E+10                                      /* speed of light in cgs units */
+#define HH    6.62606896E-27                                   /* Planck's constant in cgs units */
+#define KB    1.38065040E-16                                /* Boltzmann's constant in cgs units */
+#define EV    1.60217646E-12                                             /* electron Volt in erg */
+#define T_CMB 2.725                  /* temperature of the cosmic microwave background radiation */
 
 
 

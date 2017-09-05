@@ -80,6 +80,15 @@ int initialize_temperature_gas(double *temperature_gas);
 
 
 
+/* initialize_previous_temperature_gas: set the "previous" gas temperature 0.9*temperature_gas   */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_previous_temperature_gas(double *previous_temperature_gas, double *temperature_gas);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 /* initialize_level_populations: sets pops of all line species to the thermal equilibrium value  */
 /*-----------------------------------------------------------------------------------------------*/
 

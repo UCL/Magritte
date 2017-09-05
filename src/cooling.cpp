@@ -61,10 +61,6 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
       long m_ij = LSPECGRIDRAD(lspec,gridp,kr);                          /* mean intensity index */
 
 
-      printf("pops %lE and %lE \n", pop[p_i], pop[p_j]);
-      printf("%lE \n", mean_intensity[m_ij]);
-
-
       /* Calculate the source function */
 
       double Source = 0.0;

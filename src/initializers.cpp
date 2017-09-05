@@ -177,7 +177,30 @@ int initialize_temperature_gas(double *temperature_gas)
 
   for (int n=0; n<NGRID; n++){
 
-    temperature_gas[n] = 300.0;
+    temperature_gas[n] = 10.0;
+  }
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* initialize_previous_temperature_gas: set the "previous" gas temperature 0.9*temperature_gas   */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_previous_temperature_gas(double *previous_temperature_gas, double *temperature_gas)
+{
+
+
+  for (int n=0; n<NGRID; n++){
+
+    previous_temperature_gas[n] = 0.9*temperature_gas[n];
   }
 
 

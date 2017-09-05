@@ -22,7 +22,8 @@
 
 void write_output( double *unit_healpixvector, long *antipod,
                    GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                   double *pop, double *weight, double *energy );
+                   double *pop, double *weight, double *energy, double *mean_intensity,
+                   double *temperature_gas, double *temperature_dust );
 
 /*-----------------------------------------------------------------------------------------------*/
 

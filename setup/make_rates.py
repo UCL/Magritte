@@ -807,6 +807,13 @@ if speciesFile != '':
     if not os.path.isfile(speciesFile):
         sys.exit('\n  ERROR! Specified species file '+speciesFile+' does not exist\n')
 
+
+
+if (os.stat(reactionFile).st_size <= 0 or os.stat(speciesFile).st_size <= 0):
+    return
+
+
+
 # Read the reactants, products, Arrhenius equation parameters and measurement labels for each reaction
 print '\n  Reading reaction file...'
 nReactions, reactants, products, alpha, beta, gamma, labels = read_reaction_file(reactionFile)

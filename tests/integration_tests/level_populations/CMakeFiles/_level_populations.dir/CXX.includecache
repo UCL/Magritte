@@ -1229,6 +1229,8 @@ declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 data_tools.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/data_tools.hpp
+species_tools.hpp
+/home/frederik/Dropbox/Astro/3D-RT/src/species_tools.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/read_input.cpp
 stdio.h
@@ -1299,9 +1301,13 @@ stdlib.h
 -
 math.h
 -
+string.h
+-
 iostream
 -
 string
+-
+algorithm
 -
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp

@@ -56,6 +56,15 @@ int get_charge(string name);
 
 
 
+/* get_electron_abundance: initialize electron abundance so that the gas is neutral              */
+/*-----------------------------------------------------------------------------------------------*/
+
+double get_electron_abundance(long gridp);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __SPECIES_TOOLS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

@@ -41,7 +41,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
   double electron_density = species[e_nr].abn[gridp] * gridpoint[gridp].density;    /* e density */
 
-  if(electron_density <= 0.0) { electron_density = 0.1; }
+  // if(electron_density <= 0.0) { electron_density = 0.1; }
 
 
 
@@ -449,17 +449,27 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
   /* Sum all contributions to the heating */
 
-  heating_total = heating_dust + heating_PAH + heating_Weingartner + heating_C_ionization
-                  + heating_H2_photodissociation + heating_H2_FUV_pumping + heating_cosmic_rays;
+  heating_total = heating_dust
+                  + heating_PAH
+                  + heating_Weingartner
+                  + heating_C_ionization;
+                  + heating_H2_photodissociation
+                  + heating_H2_FUV_pumping
+                  + heating_cosmic_rays
+                  + heating_turbulent
+                  + heating_chemical;
+                  + heating_gas_grain;
 
-  cout << "dust        " << heating_dust << "\n";
-  cout << "PAH         " << heating_PAH << "\n";
-  cout << "Weingartner " << heating_Weingartner << "\n";
-  cout << "C_ion       " << heating_C_ionization << "\n";
-  cout << "H2_phot     " << heating_H2_photodissociation << "\n";
-  cout << "H2_FUV      " << heating_H2_FUV_pumping << "\n";
-  cout << "CR          " << heating_cosmic_rays << "\n";
-
+  // cout << "dust        " << heating_dust << "\n";
+  // cout << "PAH         " << heating_PAH << "\n";
+  // cout << "Weingartner " << heating_Weingartner << "\n";
+  // cout << "C_ion       " << heating_C_ionization << "\n";
+  // cout << "H2_phot     " << heating_H2_photodissociation << "\n";
+  // cout << "H2_FUV      " << heating_H2_FUV_pumping << "\n";
+  // cout << "CR          " << heating_cosmic_rays << "\n";
+  // cout << "tur         " << heating_turbulent << "\n";
+  // cout << "chem        " << heating_chemical << "\n";
+  // cout << "gas-grain   " << heating_gas_grain << "\n";
 
   return heating_total;
 

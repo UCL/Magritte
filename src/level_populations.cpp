@@ -297,29 +297,6 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    /* Write the mean intensity at each point for each transition to a file (only for testing) */
-
-    // FILE *meanintensity = fopen("output/mean_intensity.txt", "w");
-    //
-    // if (meanintensity == NULL){
-    //
-    //   printf("Error opening file!\n");
-    //   exit(1);
-    // }
-    //
-    //
-    // for (kr=0; kr<nrad[lspec]; kr++){
-    //
-    //   for (n=0; n<NGRID; n++){
-    //
-    //     fprintf( meanintensity, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
-    //   }
-    //
-    //   fprintf( meanintensity, "\n" );
-    // }
-    //
-    // fclose(meanintensity);
-
 
 
     /* PRINT THE STATS OF THE CALCULATIONS FOR lspec */
