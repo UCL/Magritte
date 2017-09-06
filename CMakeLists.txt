@@ -27,9 +27,9 @@ add_custom_target( RESIZE_STACK ALL
 
 # Make the setup executable and execute setup
 
-add_custom_target( MAKE_SETUP ALL
-                   COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup
-                   WORKING_DIRECTORY setup )
+#add_custom_target( MAKE_SETUP ALL
+#                   COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup
+#                   WORKING_DIRECTORY setup )
 
 
 # Specify the subdirectory containing the source code
@@ -50,10 +50,10 @@ endif()
 
 # Create executable for 3D-RT main code
 
-add_executable( 3D-RT.o   src/3D-RT.cpp )
+add_executable( 3D-RT.exe   src/3D-RT.cpp )
 
 
 # Link the library of the /src directory to the 3D-RT main code
 
-target_link_libraries( 3D-RT.o   _3DRT )
+target_link_libraries( 3D-RT.exe   _3DRT )
 

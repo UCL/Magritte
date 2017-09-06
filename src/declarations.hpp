@@ -26,17 +26,17 @@ using namespace std;
 
 #define GRID_INPUTFILE "input/1D_regular_10.txt" 
 
-#define SPEC_DATAFILE  "data/species_reduced.d" 
+#define SPEC_DATAFILE  "data/species_reduced.txt" 
 
-#define REAC_DATAFILE  "data/rates_reduced.d" 
+#define REAC_DATAFILE  "data/rates_reduced.txt" 
 
-#define LINE_DATAFILE0 "data/12c.dat" 
+#define LINE_DATAFILE0 "data/12c.txt" 
 
-#define LINE_DATAFILE1 "data/12c+.dat" 
+#define LINE_DATAFILE1 "data/12c+.txt" 
 
-#define LINE_DATAFILE2 "data/16o.dat" 
+#define LINE_DATAFILE2 "data/16o.txt" 
 
-#define LINE_DATAFILE3 "data/12co.dat" 
+#define LINE_DATAFILE3 "data/12co.txt" 
 
 #define NGRID 10 
 
@@ -68,7 +68,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 50 
+#define MAX_NITERATIONS 5 
 
 #define TIME_END_IN_YEARS 1.000000E+08 
 
@@ -332,6 +332,7 @@ extern SPECIES species[NSPEC];
 extern REACTION reaction[NREAC];
 
 
+extern string lspec_name[NLSPEC];                         /* names of the line producing species */
 
 extern int spec_par[TOT_NCOLPAR];  /* number of the species corresponding to a collision partner */
 

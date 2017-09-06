@@ -10,21 +10,17 @@ import numpy as np
 
 # Get the input files from parameters.txt
 
-with open("../parameters.txt") as parameters_file:
+with open("../../parameters.txt") as parameters_file:
     parameters = parameters_file.readlines()
+
+nlspec = int(parameters[45].split()[0])
 
 grid_inputfile = "../" + parameters[38].split()[0]
 line_datafile  = "../" + parameters[48].split()[0]
 
-lspec_name = line_datafile.split("/")[2]
-lspec_name = lspec_name.split(".")[0]
-
-print "Plot level populations and mean intensity for " + lspec_name
-
-
+print "nlspec         : " + str(nlspec)
 print "grid inputfile : " + grid_inputfile
-print "line datafile  :  " + line_datafile
-
+print "line datafile  : " + line_datafile
 
 
 # Read the grid input file
@@ -32,6 +28,9 @@ print "line datafile  :  " + line_datafile
 xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
 
 ngrid = np.shape(xg)[0]
+
+
+
 
 
 # Read the level populations file
@@ -46,10 +45,6 @@ mean_intensity_data = np.loadtxt("mean_intensities.txt")
 nrad = np.shape(mean_intensity_data)[0]
 
 
-print "ngrid = " + str(ngrid)
-print "nlev  = " + str(nlev)
-
-
 # Make the plots
 
 fig = plt.figure()
@@ -57,6 +52,9 @@ fig = plt.figure()
 
 pop = np.zeros(ngrid)
 mean_intensity = np.zeros(ngrid)
+
+lspec_name = line_datafile.split("/")[2]
+lspec_name = lspec_name.split(".")[0]
 
 
 # Plot level populations

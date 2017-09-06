@@ -419,6 +419,8 @@ math.h
 -
 string
 -
+sstream
+-
 iostream
 -
 declarations.hpp
@@ -521,12 +523,18 @@ stdio.h
 -
 stdlib.h
 -
+string
+-
+sstream
+-
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 write_output.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/write_output.hpp
 
 /home/frederik/Dropbox/Astro/3D-RT/src/write_output.hpp
+string
+-
 declarations.hpp
 /home/frederik/Dropbox/Astro/3D-RT/src/declarations.hpp
 

@@ -242,8 +242,7 @@ int main(){
                                                          /* total over the line prodcing species */
   int tot_cum_tot_ncoltemp = cum_tot_ncoltemp[NLSPEC-1] + tot_ncoltemp[NLSPEC-1];
                                                          /* total over the line prodcing species */
-  int tot_cum_tot_ncoltrantemp = cum_tot_ncoltrantemp[NLSPEC-1]
-                                   + tot_ncoltrantemp[NLSPEC-1];
+  int tot_cum_tot_ncoltrantemp = cum_tot_ncoltrantemp[NLSPEC-1] + tot_ncoltrantemp[NLSPEC-1];
                                                          /* total over the line prodcing species */
 
 

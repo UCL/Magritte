@@ -248,6 +248,7 @@ extern SPECIES species[NSPEC];
 extern REACTION reaction[NREAC];
 
 
+extern string lspec_name[NLSPEC];                         /* names of the line producing species */
 
 extern int spec_par[TOT_NCOLPAR];  /* number of the species corresponding to a collision partner */
 

@@ -18,7 +18,7 @@ false                               | sobolev
                                     |
 ISO                                 | field form
                                     |
-50                                  | MAX_NITERATIONS
+5                                   | MAX_NITERATIONS
                                     |
 1.0E8                               | time_end (years)
                                     |
@@ -38,19 +38,19 @@ ____________________________________|___________________
                                     |
 input/1D_regular_10.txt             | Grid
                                     |
-data/species_reduced.d              | Species
+data/species_reduced.txt            | Species
                                     |
-data/rates_reduced.d                | Reactions
+data/rates_reduced.txt              | Reactions
 ____________________________________|___________________
                                     |
 4                                   | nr. of line files
 ____________________________________|___________________
                                     |
-data/12c.dat                        | Lines 0
+data/12c.txt                        | Lines 0
                                     |
-data/12c+.dat                       | Lines 1
+data/12c+.txt                       | Lines 1
                                     |
-data/16o.dat                        | Lines 2
+data/16o.txt                        | Lines 2
                                     |
-data/12co.dat                       | Lines 3
+data/12co.txt                       | Lines 3
 ____________________________________|___________________

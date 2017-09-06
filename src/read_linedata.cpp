@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include <string>
+#include <sstream>
 #include <iostream>
 using namespace std;
 
@@ -44,6 +45,8 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
   char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
 
+  char buffer_name[BUFFER_SIZE];                    /* buffer for name of line producing species */
+
   double buff1, buff2, buff3, buff4;                                 /* buffers to load the data */
 
 
@@ -57,9 +60,23 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
     FILE *data = fopen(line_datafile[lspec].c_str(), "r");
 
 
-    /* Skip first 7 lines */
+    /* Skip first line */
 
-    for (l=0; l<7; l++){
+    fscanf(data, "%*[^\n]\n");
+
+
+    /* Read the name of the line producing species */
+
+    fscanf( data, "%s %*[^\n]\n", buffer_name );
+
+    string str(buffer_name);
+
+    lspec_name[lspec] = buffer_name;
+
+
+    /* Skip first 5 lines */
+
+    for (l=0; l<5; l++){
 
       fscanf(data, "%*[^\n]\n");
     }

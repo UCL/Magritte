@@ -181,10 +181,10 @@ OpenMP_C_FLAGS:STRING=-fopenmp
 SUNDIALS_EXTRA_LIB:STRING=-lm;/usr/lib/x86_64-linux-gnu/librt.so
 
 //Location of SUNDIALS header files
-SUNDIALS_INC_DIR:STRING=/home/frederik/Dropbox/Astro/3D-RT/src/sundials/include
+SUNDIALS_INC_DIR:STRING=/src/sundials/include
 
 //Location of SUNDIALS library files
-SUNDIALS_LIB_DIR:STRING=/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib
+SUNDIALS_LIB_DIR:STRING=/src/sundials/lib
 
 //NVECTOR library
 SUNDIALS_NVEC_LIB:FILEPATH=/home/frederik/Dropbox/Astro/3D-RT/src/sundials/lib/libsundials_nvecserial.a

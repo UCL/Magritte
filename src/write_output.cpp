@@ -14,22 +14,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <string>
+#include <sstream>
+using namespace std;
+
 #include "declarations.hpp"
 #include "write_output.hpp"
 
 
 
-/* writing_output: write the output files
+/* write_grid: write the grid again (for debugging)                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
-void write_output( double *unit_healpixvector, long *antipod,
-                   GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                   double *pop, double *weight, double *energy, double *mean_intensity,
-                   double *temperature_gas, double *temperature_dust )
+int write_grid(string tag, GRIDPOINT *gridpoint)
 {
 
-
-  /* Write the the grid again (only for debugging)  */
 
   FILE *outgrid = fopen("output/grid.txt", "w");
 
@@ -47,8 +46,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(outgrid);
 
 
+  return(0);
 
-  /* Write the unit HEALPix vectors */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_healpixvectors: write the unit HEALPix vectors                                          */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_healpixvectors(string tag, double *unit_healpixvector)
+{
+
 
   FILE *hp = fopen("output/healpix.txt", "w");
 
@@ -69,8 +82,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(hp);
 
 
+  return(0);
 
-  /* Write the evaluation points (Z along ray and number of the ray) */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_eval: Write the evaluation points (Z along ray and number of the ray)                   */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_eval(string tag, EVALPOINT *evalpoint)
+{
+
 
   FILE *eval = fopen("output/eval.txt", "w");
 
@@ -95,8 +122,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(eval);
 
 
+  return(0);
 
-  /* Write the key to find which grid point corresponds to which evaluation point */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_key: write the key to find which grid point corresponds to which evaluation point       */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_key(string tag)
+{
+
 
   FILE *fkey = fopen("output/key.txt", "w");
 
@@ -120,8 +161,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(fkey);
 
 
+  return(0);
 
-  /* Write the total of evaluation points along each ray */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_raytot: write the total of evaluation points along each ray                             */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_raytot(string tag)
+{
+
 
   FILE *rt = fopen("output/raytot.txt", "w");
 
@@ -145,8 +200,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(rt);
 
 
+  return(0);
 
-  /* Write the cumulative total of evaluation points along each ray */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_cum_raytot: write the cumulative total of evaluation points along each ray              */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_cum_raytot(string tag)
+{
+
 
   FILE *crt = fopen("output/cum_raytot.txt", "w");
 
@@ -170,8 +239,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(crt);
 
 
+  return(0);
 
-  /* Write the abundances at each point */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_abundances: write the abundances at each point                                          */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_abundances(string tag)
+{
+
 
   FILE *abun= fopen("output/abundances.txt", "w");
 
@@ -196,65 +279,114 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(abun);
 
 
+  return(0);
 
-  /* Write the level populations */
+}
 
-  FILE *levelpops = fopen("output/level_populations.txt", "w");
+/*-----------------------------------------------------------------------------------------------*/
 
-  if (levelpops == NULL){
+
+
+
+
+/* write_level_populations: write the level populations at each point for each transition        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_level_populations(string tag, string *line_datafile, double *pop)
+{
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    string name = line_datafile[lspec];
+
+    string file_name = "output/level_populations_" + name.erase(0,5);
+
+    FILE *levelpops = fopen(file_name.c_str(), "w");
+
+    if (levelpops == NULL){
+
+        printf("Error opening file!\n");
+        exit(1);
+      }
+
+      for (long n=0; n<NGRID; n++){
+
+        for (int i=0; i<nlev[lspec]; i++){
+
+          fprintf(levelpops, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
+        }
+
+        fprintf(levelpops, "\n");
+      }
+
+    fclose(levelpops);
+
+  }
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_line_intensities: write the line intensities for each species, point and transition     */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_line_intensities(string tag, string *line_datafile, double *mean_intensity)
+{
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    string name = line_datafile[lspec];
+
+    string file_name = "output/line_intensities_" + name.erase(0,5);
+
+    FILE *lintens = fopen(file_name.c_str(), "w");
+
+    if (lintens == NULL){
 
       printf("Error opening file!\n");
       exit(1);
     }
 
-  fprintf(levelpops, "%d\n", NLSPEC);
+    for (int kr=0; kr<nrad[lspec]; kr++){
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
+      for (long n=0; n<NGRID; n++){
 
-  // fprintf(levelpops, "%d\t%d\t \n", lspec, nlev[lspec]);
-
-    for (long n=0; n<NGRID; n++){
-
-      for (int i=0; i<nlev[lspec]; i++){
-
-        fprintf(levelpops, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
+        fprintf( lintens, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
       }
 
-      fprintf(levelpops, "\n");
-    }
-  }
-
-  fclose(levelpops);
-
-
-
-  /* Write the mean intensity at each point for each transition */
-
-  FILE *meanintensity = fopen("output/mean_intensities.txt", "w");
-
-  if (meanintensity == NULL){
-
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
-  int lspec = 0;
-
-  for (int kr=0; kr<nrad[lspec]; kr++){
-
-    for (long n=0; n<NGRID; n++){
-
-      fprintf( meanintensity, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
+      fprintf( lintens, "\n" );
     }
 
-    fprintf( meanintensity, "\n" );
+    fclose(lintens);
+
   }
 
-  fclose(meanintensity);
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
 
 
 
-  /* Write the gas temperatures at each point */
+
+
+/* write_temperature_gas: write the gas temperatures at each point                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_temperature_gas(string tag, double *temperature_gas)
+{
+
 
   FILE *temp_gas = fopen("output/temperature_gas.txt", "w");
 
@@ -274,8 +406,22 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(temp_gas);
 
 
+  return(0);
 
-  /* Write the dust temperatures at each point */
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_temperature_dust: write the dust temperatures at each point                             */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_temperature_dust(string tag, double *temperature_dust)
+{
+
 
   FILE *temp_dust = fopen("output/temperature_dust.txt", "w");
 
@@ -295,9 +441,8 @@ void write_output( double *unit_healpixvector, long *antipod,
   fclose(temp_dust);
 
 
+  return(0);
+
 }
-
-
-
 
 /*-----------------------------------------------------------------------------------------------*/

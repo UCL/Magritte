@@ -595,10 +595,19 @@ int main()
   printf("(3D-RT): writing output \n");
 
 
-  /* Write the output file  */
+  /* Write the output files  */
 
-  write_output( unit_healpixvector, antipod, gridpoint, evalpoint,
-                pop, weight, energy, mean_intensity, temperature_gas, temperature_dust);
+  string tag = "";
+
+  write_abundances(tag);
+
+  write_level_populations(tag, line_datafile, pop);
+
+  write_line_intensities(tag, line_datafile, mean_intensity);
+
+  write_temperature_gas(tag, temperature_gas);
+
+  write_temperature_dust(tag, temperature_dust);
 
 
   printf("(3D-RT): output written \n\n");

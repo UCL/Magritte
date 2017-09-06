@@ -107,9 +107,11 @@ SPECIES species[NSPEC];
 REACTION reaction[NREAC];
 
 
-int spec_par[TOT_NCOLPAR];       /* number of the species corresponding to a collision partner */
+string lspec_name[NLSPEC];                                /* names of the line producing species */
 
-char ortho_para[TOT_NCOLPAR];                         /* stores whether it is ortho or para H2 */
+int spec_par[TOT_NCOLPAR];         /* number of the species corresponding to a collision partner */
+
+char ortho_para[TOT_NCOLPAR];                           /* stores whether it is ortho or para H2 */
 
 
 double metallicity;

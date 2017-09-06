@@ -10,13 +10,13 @@ import numpy as np
 
 # Read the gas temperatures file
 
-temperature_gas = np.loadtxt("temperature_gas.txt")
+temperature_gas = np.loadtxt("../temperature_gas.txt")
 ngrid = np.shape(temperature_gas)[0]
 
 
 # Read the dust temperatures file
 
-temperature_dust = np.loadtxt("temperature_dust.txt")
+temperature_dust = np.loadtxt("../temperature_dust.txt")
 
 
 print "ngrid = " + str(ngrid)
