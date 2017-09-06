@@ -50,10 +50,10 @@ endif()
 
 # Create executable for 3D-RT main code
 
-add_executable( 3D-RT   src/3D-RT.cpp )
+add_executable( 3D-RT.o   src/3D-RT.cpp )
 
 
 # Link the library of the /src directory to the 3D-RT main code
 
-target_link_libraries( 3D-RT   _3DRT )
+target_link_libraries( 3D-RT.o   _3DRT )
 

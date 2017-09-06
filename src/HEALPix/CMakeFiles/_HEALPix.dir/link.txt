@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib_HEALPix.a  CMakeFiles/_HEALPix.dir/ang2pix_nest.cpp.o CMakeFiles/_HEALPix.dir/pix2vec_nest.cpp.o CMakeFiles/_HEALPix.dir/vec2ang.cpp.o
+/usr/bin/ranlib lib_HEALPix.a
