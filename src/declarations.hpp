@@ -32,6 +32,12 @@ using namespace std;
 
 #define LINE_DATAFILE0 "data/12c.dat" 
 
+#define LINE_DATAFILE1 "data/12c+.dat" 
+
+#define LINE_DATAFILE2 "data/16o.dat" 
+
+#define LINE_DATAFILE3 "data/12co.dat" 
+
 #define NGRID 10 
 
 #define NSIDES 1 
@@ -46,21 +52,21 @@ using namespace std;
 
 #define NREAC 329 
 
-#define NLSPEC 1 
+#define NLSPEC 4 
 
-#define TOT_NLEV 5 
+#define TOT_NLEV 56 
 
-#define TOT_NRAD 7 
+#define TOT_NRAD 63 
 
-#define TOT_NLEV2 25 
+#define TOT_NLEV2 1756 
 
-#define TOT_NCOLPAR 6 
+#define TOT_NCOLPAR 18 
 
-#define TOT_CUM_TOT_NCOLTRAN 60 
+#define TOT_CUM_TOT_NCOLTRAN 1800 
 
-#define TOT_CUM_TOT_NCOLTEMP 141 
+#define TOT_CUM_TOT_NCOLTEMP 384 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 1410 
+#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
 #define MAX_NITERATIONS 50 
 
@@ -68,11 +74,11 @@ using namespace std;
 
 #define FIELD_FORM "ISO" 
 
-#define G_EXTERNAL_X 0.000000E+00 
+#define G_EXTERNAL_X 1.000000E+05 
 
-#define G_EXTERNAL_Y 0.000000E+00 
+#define G_EXTERNAL_Y 1.000000E+05 
 
-#define G_EXTERNAL_Z 0.000000E+00 
+#define G_EXTERNAL_Z 1.000000E+05 
 
 #define IBC 0.0000000000000E+00 
 

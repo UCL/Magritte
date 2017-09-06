@@ -1,5 +1,0 @@
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/spline/CMakeFiles/edit_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/spline/CMakeFiles/RESIZE_STACK.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/spline/CMakeFiles/test_spline.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/spline/CMakeFiles/_spline.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/spline/CMakeFiles/rebuild_cache.dir

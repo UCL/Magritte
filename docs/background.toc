@@ -5,6 +5,7 @@
 \contentsline {subsection}{\numberline {3.1}Feautrier solution method}{2}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Scattering}{4}{subsection.3.2}
 \contentsline {section}{\numberline {4}Thermal balance}{5}{section.4}
-\contentsline {subsection}{\numberline {4.1}Heating}{5}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Cooling}{5}{subsection.4.2}
-\contentsline {subsubsection}{\numberline {4.2.1}Radiative cooling}{5}{subsubsection.4.2.1}
+\contentsline {subsection}{\numberline {4.1}Dust temperature}{5}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Heating}{5}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Cooling}{5}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Radiative cooling}{5}{subsubsection.4.3.1}

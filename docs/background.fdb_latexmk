@@ -1,15 +1,15 @@
 # Fdb version 3
-["bibtex background"] 1504529448 "background.aux" "background.bbl" "background" 1504529978
+["bibtex background"] 1504703745 "background.aux" "background.bbl" "background" 1504703747
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "background.aux" 1504529977 2424 3b58cbf9babb8ab4e612769a85b6aabb ""
+  "background.aux" 1504703746 2523 2050bb8d43bd33e46636d6e04e8a4a24 ""
   "background.bcf" 0 -1 0 ""
   "library.bib" 1503382267 71619 287357f9a35e17aa96fd5ef12e5572fe ""
   (generated)
-  "background.blg"
   "background.bbl"
-["pdflatex"] 1504529976 "background.tex" "/home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf" "background" 1504529978
+  "background.blg"
+["pdflatex"] 1504703745 "background.tex" "/home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf" "background" 1504703747
   "/etc/texmf/web2c/texmf.cnf" 1490782050 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.aux" 1504529977 2424 3b58cbf9babb8ab4e612769a85b6aabb ""
+  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.aux" 1504703746 2523 2050bb8d43bd33e46636d6e04e8a4a24 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -125,16 +125,16 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1503421706 1863403 f3ff9a4253bcb5fb9a9baaf0c572cb01 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1503421733 3861264 4d6d2aea1e9ec06a6aa565dd168f16d9 ""
   "Images/grid.pdf" 1487695362 30605 6b74f108cabd7a6f3da75de052fdc774 ""
-  "background.aux" 1504529977 2424 3b58cbf9babb8ab4e612769a85b6aabb ""
-  "background.bbl" 1504529448 604 4e5c3cea9f430663ee535c5faee83b8f "bibtex background"
-  "background.out" 1504529977 510 25dbf071b98d486b63ca9d2cd487663a ""
-  "background.tex" 1504529976 13677 4cbe79b8a6f6ca86254f0f909dd0dec7 ""
-  "background.toc" 1504529977 697 54386eaabf41abac79ea299cbeb0a2da ""
+  "background.aux" 1504703746 2523 2050bb8d43bd33e46636d6e04e8a4a24 ""
+  "background.bbl" 1504703745 604 4e5c3cea9f430663ee535c5faee83b8f "bibtex background"
+  "background.out" 1504703746 576 019658ac35164b79703717b58c985e46 ""
+  "background.tex" 1504703743 13716 9615d2187431309db2dbc4460aea7bbb ""
+  "background.toc" 1504703746 778 f88d0bb1f57abab9098f38363d8ff0e4 ""
   (generated)
-  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.log"
-  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf"
-  "background.pdf"
-  "background.toc"
   "background.log"
-  "background.out"
+  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf"
+  "background.toc"
   "background.aux"
+  "background.out"
+  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.log"
+  "background.pdf"

@@ -1,2 +1,2 @@
 #define PARAMETERS_FILE "../parameters.txt" 
-#define NLSPEC 1
+#define NLSPEC 4

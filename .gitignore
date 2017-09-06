@@ -1,0 +1,20 @@
+# CMake related files #
+#######################
+
+/CMakeFiles
+Makefile
+*.cmake
+
+
+
+# Executables #
+###############
+
+.o
+
+
+
+# compiled libraries #
+######################
+
+.a

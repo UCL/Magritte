@@ -1,6 +1,0 @@
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/ray_tracing/CMakeFiles/rebuild_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/ray_tracing/CMakeFiles/RESIZE_STACK.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/ray_tracing/CMakeFiles/MAKE_SETUP.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/ray_tracing/CMakeFiles/edit_cache.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/ray_tracing/CMakeFiles/test_ray_tracing.dir
-/home/frederik/Dropbox/Astro/3D-RT/tests/unit_tests/ray_tracing/CMakeFiles/_ray_tracing.dir

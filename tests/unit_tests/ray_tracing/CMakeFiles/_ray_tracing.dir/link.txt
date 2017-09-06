@@ -1,2 +1,0 @@
-/usr/bin/ar qc lib_ray_tracing.a  CMakeFiles/_ray_tracing.dir/test_main.cpp.o CMakeFiles/_ray_tracing.dir/home/frederik/Dropbox/Astro/3D-RT/src/initializers.cpp.o CMakeFiles/_ray_tracing.dir/home/frederik/Dropbox/Astro/3D-RT/src/read_input.cpp.o CMakeFiles/_ray_tracing.dir/home/frederik/Dropbox/Astro/3D-RT/src/ray_tracing.cpp.o CMakeFiles/_ray_tracing.dir/home/frederik/Dropbox/Astro/3D-RT/src/heapsort.cpp.o CMakeFiles/_ray_tracing.dir/home/frederik/Dropbox/Astro/3D-RT/src/create_healpixvectors.cpp.o
-/usr/bin/ranlib lib_ray_tracing.a

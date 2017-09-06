@@ -1,2 +1,0 @@
-/usr/bin/ar qc lib_species_tools.a  CMakeFiles/_species_tools.dir/test_main.cpp.o CMakeFiles/_species_tools.dir/home/frederik/Dropbox/Astro/3D-RT/src/species_tools.cpp.o
-/usr/bin/ranlib lib_species_tools.a

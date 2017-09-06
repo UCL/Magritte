@@ -32,10 +32,13 @@ string reac_datafile = REAC_DATAFILE;              /* path to data file containi
 /* --- Addition by pre_setup --- */
 
 
-string line_datafile[NLSPEC] = { LINE_DATAFILE0 }; 
+string line_datafile[NLSPEC] = { LINE_DATAFILE0, \
+                                 LINE_DATAFILE1, \
+                                 LINE_DATAFILE2, \
+                                 LINE_DATAFILE3  }; 
  
 
-/* --- End of addition by pre_setup --- */
+ /* --- End of addition by pre_setup --- */
 
 
 
