@@ -1,5 +1,10 @@
-language: C++
+language:
+  - cpp
 
-script:
+addons:
 
-bundle exec make
+  apt:
+
+    packages:
+
+      - cmake
