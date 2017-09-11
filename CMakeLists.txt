@@ -16,7 +16,8 @@ project(3D-RT)
 # Specify the version of the project
 
 set(3DRT_VERSION_MAJOR 0)
-set(3DRT_VERSION_MINOR 0)
+set(3DRT_VERSION_MINOR 1)
+
 
 
 # Resize the stack to 128 Mb (UNIX version)
@@ -27,9 +28,9 @@ add_custom_target( RESIZE_STACK ALL
 
 # Make the setup executable and execute setup
 
-#add_custom_target( MAKE_SETUP ALL
-#                   COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup
-#                   WORKING_DIRECTORY setup )
+add_custom_target( MAKE_SETUP ALL
+                   COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup.exe
+                   WORKING_DIRECTORY setup )
 
 
 # Specify the subdirectory containing the source code

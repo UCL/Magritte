@@ -8,3 +8,9 @@ addons:
     packages:
 
       - cmake
+
+script:
+
+  - ./configure.sh
+
+  - make
