@@ -30,7 +30,14 @@ int write_grid(string tag, GRIDPOINT *gridpoint)
 {
 
 
-  FILE *outgrid = fopen("output/grid.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/grid" + tag + ".txt";
+
+  FILE *outgrid = fopen(file_name.c_str(), "w");
 
   if (outgrid == NULL){
 
@@ -63,7 +70,14 @@ int write_healpixvectors(string tag, double *unit_healpixvector)
 {
 
 
-  FILE *hp = fopen("output/healpix.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/healpix" + tag + ".txt";
+
+  FILE *hp = fopen(file_name.c_str(), "w");
 
   if (hp == NULL){
 
@@ -99,7 +113,14 @@ int write_eval(string tag, EVALPOINT *evalpoint)
 {
 
 
-  FILE *eval = fopen("output/eval.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/eval" + tag + ".txt";
+
+  FILE *eval = fopen(file_name.c_str(), "w");
 
   if (eval == NULL){
 
@@ -139,7 +160,14 @@ int write_key(string tag)
 {
 
 
-  FILE *fkey = fopen("output/key.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/key" + tag + ".txt";
+
+  FILE *fkey = fopen(file_name.c_str(), "w");
 
   if (fkey == NULL){
 
@@ -178,7 +206,14 @@ int write_raytot(string tag)
 {
 
 
-  FILE *rt = fopen("output/raytot.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/raytot" + tag + ".txt";
+
+  FILE *rt = fopen(file_name.c_str(), "w");
 
   if (rt == NULL){
 
@@ -217,7 +252,14 @@ int write_cum_raytot(string tag)
 {
 
 
-  FILE *crt = fopen("output/cum_raytot.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/cum_raytot" + tag + ".txt";
+
+  FILE *crt = fopen(file_name.c_str(), "w");
 
   if (crt == NULL){
 
@@ -256,7 +298,14 @@ int write_abundances(string tag)
 {
 
 
-  FILE *abun= fopen("output/abundances.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/abundances" + tag + ".txt";
+
+  FILE *abun= fopen(file_name.c_str(), "w");
 
   if (abun == NULL){
 
@@ -300,7 +349,16 @@ int write_level_populations(string tag, string *line_datafile, double *pop)
 
     string name = line_datafile[lspec];
 
-    string file_name = "output/level_populations_" + name.erase(0,5);
+    name.erase(0,5);
+
+    name.erase(name.end()-4,name.end());
+
+    if( !tag.empty() ){
+
+      tag = "_" + tag;
+    }
+
+    string file_name = "output/level_populations_" + name + tag + ".txt";
 
     FILE *levelpops = fopen(file_name.c_str(), "w");
 
@@ -346,7 +404,16 @@ int write_line_intensities(string tag, string *line_datafile, double *mean_inten
 
     string name = line_datafile[lspec];
 
-    string file_name = "output/line_intensities_" + name.erase(0,5);
+    name.erase(0,5);
+
+    name.erase(name.end()-4,name.end());
+
+    if( !tag.empty() ){
+
+      tag = tag + "_" + tag;
+    }
+
+    string file_name = "output/line_intensities_" + name + tag + ".txt";
 
     FILE *lintens = fopen(file_name.c_str(), "w");
 
@@ -388,7 +455,14 @@ int write_temperature_gas(string tag, double *temperature_gas)
 {
 
 
-  FILE *temp_gas = fopen("output/temperature_gas.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/temperature_gas" + tag + ".txt";
+
+  FILE *temp_gas = fopen(file_name.c_str(), "w");
 
   if (temp_gas == NULL){
 
@@ -423,7 +497,14 @@ int write_temperature_dust(string tag, double *temperature_dust)
 {
 
 
-  FILE *temp_dust = fopen("output/temperature_dust.txt", "w");
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/temperature_dust" + tag + ".txt";
+
+  FILE *temp_dust = fopen(file_name.c_str(), "w");
 
   if (temp_dust == NULL){
 

@@ -5,6 +5,16 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+
+
+
+# Check the tag of the data that is to be plotted
+
+if (len(sys.argv)>1):
+    tag = "_" + str(sys.argv[1])
+else:
+    tag = ""
 
 
 
@@ -29,6 +39,8 @@ ngrid = np.shape(xg)[0]
 
 
 # Read the abundances file
+
+file_name = "../abundances" + tag + ".txt"
 
 abundances_data = np.loadtxt("../abundances.txt")
 nspec = np.shape(abundances_data)[0]

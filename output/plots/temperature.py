@@ -5,18 +5,31 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
+
+
+# Check the tag of the data that is to be plotted
+
+if (len(sys.argv)>1):
+    tag = "_" + str(sys.argv[1])
+else:
+    tag = ""
 
 
 # Read the gas temperatures file
 
-temperature_gas = np.loadtxt("../temperature_gas.txt")
+file_name = "../temperature_gas" + tag + ".txt"
+
+temperature_gas = np.loadtxt(file_name)
 ngrid = np.shape(temperature_gas)[0]
 
 
 # Read the dust temperatures file
 
-temperature_dust = np.loadtxt("../temperature_dust.txt")
+file_name = "../temperature_dust" + tag + ".txt"
+
+temperature_dust = np.loadtxt(file_name)
 
 
 print "ngrid = " + str(ngrid)
@@ -59,7 +72,7 @@ ax2.set_ylabel("dust temperatures")
 
 fig.tight_layout()
 
-plot_name = "temperature.pdf"
+plot_name = "temperatures" + tag + ".pdf"
 
 fig.savefig(plot_name, bbox_inches='tight')
 

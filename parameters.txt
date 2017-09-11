@@ -46,11 +46,11 @@ ____________________________________|___________________
 4                                   | nr. of line files
 ____________________________________|___________________
                                     |
-data/12c.txt                        | Lines 0
+data/12C.txt                        | Lines 0
                                     |
-data/12c+.txt                       | Lines 1
+data/12C+.txt                       | Lines 1
                                     |
-data/16o.txt                        | Lines 2
+data/16O.txt                        | Lines 2
                                     |
-data/12co.txt                       | Lines 3
+data/12CO.txt                       | Lines 3
 ____________________________________|___________________

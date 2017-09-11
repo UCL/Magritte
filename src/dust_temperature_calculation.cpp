@@ -74,7 +74,7 @@ void dust_temperature_calculation( double *UV_field, double *rad_surface,
 
     /* Contribution to the dust temperature from the local FUV flux and the CMB background */
 
-    temperature_dust[n] = 8.9E-11*nu_0*(1.71*UV_field[n])+pow(T_CMB, 5);
+    temperature_dust[n] = 8.9E-11*nu_0*(1.71*UV_field[n]) + pow(T_CMB, 5);
 
 
     for (r=0; r<NRAYS; r++){
