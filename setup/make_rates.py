@@ -809,57 +809,54 @@ if speciesFile != '':
 
 
 
-if (os.stat(reactionFile).st_size <= 0 or os.stat(speciesFile).st_size <= 0):
-    return
+if (os.stat(reactionFile).st_size > 0 or os.stat(speciesFile).st_size > 0):
+
+    # Read the reactants, products, Arrhenius equation parameters and measurement labels for each reaction
+    print '\n  Reading reaction file...'
+    nReactions, reactants, products, alpha, beta, gamma, labels = read_reaction_file(reactionFile)
+
+    # Read the name, abundance and molecular mass for each species
+    if speciesFile != '':
+        print '  Reading species file...'
+        nSpecies, speciesList, abundanceList, massList = read_species_file(speciesFile)
+
+    # Find the total number and full list of reactions containing only these species
+        print '\n  Finding all reactions involving these species...'
+        nReactions, reactants, products, alpha, beta, gamma, labels = find_all_reactions(speciesList, reactants, products, alpha, beta, gamma, labels)
+
+    # Find the total number and full list of unique species contained in the reactions
+    else:
+        print '\n  Finding all species involved in the reactions...'
+        nSpecies, speciesList = find_all_species(reactants, products)
+        abundanceList = [float(0) for i in range(nSpecies)]
+
+    print '\n  Number of reactions:',nReactions
+    print '  Number of species:',nSpecies
 
 
+    # Check for "orphan" species that are either never formed or never destroyed
+    print '\n  Checking for species without formation/destruction reactions...'
+    nFormation, nDestruction, missingList = check_orphan_species(speciesList, reactants, products)
 
-# Read the reactants, products, Arrhenius equation parameters and measurement labels for each reaction
-print '\n  Reading reaction file...'
-nReactions, reactants, products, alpha, beta, gamma, labels = read_reaction_file(reactionFile)
+    # Sort the species first by number of destruction reactions, then by number of formation reactions
+    if sortSpecies:
+        print '\n  Sorting the species by number of formation reactions...'
+        speciesList = sort_species(speciesList, nFormation, nDestruction)
 
-# Read the name, abundance and molecular mass for each species
-if speciesFile != '':
-    print '  Reading species file...'
-    nSpecies, speciesList, abundanceList, massList = read_species_file(speciesFile)
+    # Calculate the molecular mass and elemental constituents of each species
+    print '\n  Calculating molecular masses and elemental constituents...'
+    massList, constituentList, elementList = find_constituents(speciesList)
 
-# Find the total number and full list of reactions containing only these species
-    print '\n  Finding all reactions involving these species...'
-    nReactions, reactants, products, alpha, beta, gamma, labels = find_all_reactions(speciesList, reactants, products, alpha, beta, gamma, labels)
+    # Write the ODEs in the appropriate language format
+    if codeFormat == 'C':
+        print '  Writing system of ODEs in C format...'
+        filename = '../src/sundials/rate_equations.cpp'
+        write_odes_c(filename, speciesList, constituentList, reactants, products, logForm=logForm)
 
-# Find the total number and full list of unique species contained in the reactions
-else:
-    print '\n  Finding all species involved in the reactions...'
-    nSpecies, speciesList = find_all_species(reactants, products)
-    abundanceList = [float(0) for i in range(nSpecies)]
-
-print '\n  Number of reactions:',nReactions
-print '  Number of species:',nSpecies
-
-
-# Check for "orphan" species that are either never formed or never destroyed
-print '\n  Checking for species without formation/destruction reactions...'
-nFormation, nDestruction, missingList = check_orphan_species(speciesList, reactants, products)
-
-# Sort the species first by number of destruction reactions, then by number of formation reactions
-if sortSpecies:
-    print '\n  Sorting the species by number of formation reactions...'
-    speciesList = sort_species(speciesList, nFormation, nDestruction)
-
-# Calculate the molecular mass and elemental constituents of each species
-print '\n  Calculating molecular masses and elemental constituents...'
-massList, constituentList, elementList = find_constituents(speciesList)
-
-# Write the ODEs in the appropriate language format
-if codeFormat == 'C':
-    print '  Writing system of ODEs in C format...'
-    filename = '../src/sundials/rate_equations.cpp'
-    write_odes_c(filename, speciesList, constituentList, reactants, products, logForm=logForm)
-
-# Write the Jacobian matrix in the appropriate language format
-if codeFormat == 'C':
-    print '  Writing Jacobian matrix in C format...'
-    filename = '../src/sundials/jacobian.cpp'
-    write_jac_c(filename, speciesList, reactants, products, logForm=False)
+    # Write the Jacobian matrix in the appropriate language format
+    if codeFormat == 'C':
+        print '  Writing Jacobian matrix in C format...'
+        filename = '../src/sundials/jacobian.cpp'
+        write_jac_c(filename, speciesList, reactants, products, logForm=False)
 
 print '\n  Finished! \n\n'
