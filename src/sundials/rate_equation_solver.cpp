@@ -205,7 +205,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   for (int i=0; i<NEQ; i++){
 
     if ( Ith(y,i) > 1.0E-26 ){
-      
+
       species[i+1].abn[gridp] = Ith(y,i);
     }
     else {

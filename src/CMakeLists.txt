@@ -9,9 +9,14 @@ add_subdirectory(HEALPix)
 add_subdirectory(sundials)
 
 
-# Add the Eigen directory so the header files can be found
+# Add the folder containing Eigen directory so the header files can be found
 
 include_directories( . )
+
+
+# Add the folder containing the sundials headers
+
+include_directories( sundials/include )
 
 
 # Create a library containing all source code in /src except the main (3D-RT.cpp)

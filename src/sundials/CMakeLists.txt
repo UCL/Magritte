@@ -5,9 +5,8 @@
 
 # Specify path to SUNDIALS header files
 
-set( SUNDIALS_INC_DIR
-     include
-     CACHE STRING "Location of SUNDIALS header files" )
+include_directories( include )
+
 
 
 # Set search path for SUNDIALS libraries
