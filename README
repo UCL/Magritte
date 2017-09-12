@@ -1,10 +1,24 @@
-3D-RT: 3D Radiative Transfer
-----------------------------
+3D-RT: a multipurpose 3D radiative transfer code
+------------------------------------------------
 
-- Specify the parameters in parameters.txt
-  (Data files are stored in the /data folder. Grids are stored in the /input folder.)
+
+How to get started:
+
+- Run the cofigure.sh script to produce the Makefile.
+  ($ ./configure.sh)
+
+
+How to use:
+
+- Specify the parameters in the parameters.txt file.
+  (Data files are stored in the /data folder.
+   Grids are stored in the /input folder.)
 
 - Run make to setup and compile the source code given the specified paremeters.
   This will create the 3D-RT executable.
+  ($ make)
 
 - Run the executable to generate the ouput in the /output folder.
+  ($ ./3D-RT.exe)
+
+- The output can be visualized using the python scripts in the output/plots folder.
