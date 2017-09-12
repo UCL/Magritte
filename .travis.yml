@@ -11,5 +11,6 @@ addons:
       - cmake
 
 script:
+  - which python
   - ./configure.sh
   - make
