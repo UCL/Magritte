@@ -284,7 +284,7 @@ int main(){
 
   Py_Initialize();
 
-  PySys_SetArgv(argc, argv);
+  // PySys_SetArgv(argc, argv);
 
   FILE *file = fopen("make_rates.py","r");
 
