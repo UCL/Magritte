@@ -760,15 +760,30 @@ for n in range(1,len(sys.argv)):
             index = sys.argv[n].lower().index(keyword.lower())+len(keyword)
             keywordValue[i] = sys.argv[n][index:].strip()
 
-if keywordValue[0] != '':
-    reactionFile = keywordValue[0]
-else:
-    reactionFile = '<None>'
 
-if keywordValue[1] != '':
-    speciesFile = keywordValue[1]
-else:
-    speciesFile = '<None>'
+
+# if keywordValue[0] != '':
+#     reactionFile = keywordValue[0]
+# else:
+#     reactionFile = '<None>'
+#
+# if keywordValue[1] != '':
+#     speciesFile = keywordValue[1]
+# else:
+#     speciesFile = '<None>'
+
+
+# Get the input files from parameters.txt
+
+with open("../parameters.txt") as parameters_file:
+    parameters = parameters_file.readlines()
+
+speciesFile  = "../" + parameters[40].split()[0]
+reactionFile = "../" + parameters[42].split()[0]
+
+
+
+
 
 if keywordValue[2] != '':
     outputPrefix = keywordValue[2]

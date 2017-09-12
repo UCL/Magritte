@@ -262,22 +262,22 @@ int main(){
   cout << "(setup): execute make_rates.py \n\n";
 
 
-  int argc = 3;
+  int argc = 1;
 
   char **argv;
-  argv = (char**) malloc( 3*sizeof(char*) );
+  argv = (char**) malloc( argc*sizeof(char*) );
 
   argv[0] = (char*) malloc( sizeof(string) );
-  argv[1] = (char*) malloc( sizeof(string) );
-  argv[2] = (char*) malloc( sizeof(string) );
+  // argv[1] = (char*) malloc( sizeof(string) );
+  // argv[2] = (char*) malloc( sizeof(string) );
 
   string argument1 = "make_rates.py";
-  string argument2 = "reactionFile=" + reac_datafile;
-  string argument3 = "speciesFile=" + spec_datafile;
+  // string argument2 = "reactionFile=" + reac_datafile;
+  // string argument3 = "speciesFile=" + spec_datafile;
 
   strcpy(argv[0],argument1.c_str());
-  strcpy(argv[1],argument2.c_str());
-  strcpy(argv[2],argument3.c_str());
+  // strcpy(argv[1],argument2.c_str());
+  // strcpy(argv[2],argument3.c_str());
 
 
   Py_SetProgramName(argv[0]);
