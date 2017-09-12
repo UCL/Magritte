@@ -22,8 +22,8 @@ set(3DRT_VERSION_MINOR 1)
 
 # Resize the stack to 128 Mb (UNIX version)
 
-add_custom_target( RESIZE_STACK ALL
-                   COMMAND ulimit -S -s 131072 )
+#add_custom_target( RESIZE_STACK ALL
+#                   COMMAND ulimit -S -s 131072 )
 
 
 # Make the setup executable and execute setup
