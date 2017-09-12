@@ -261,34 +261,20 @@ int main(){
 
   cout << "(setup): execute make_rates.py \n\n";
 
+  // char *program_name;
+  // program_name = (char*) malloc( sizeof(string) );
 
-  int argc = 1;
+  char program_name[] = "make_rates.py";
 
-  char **argv;
-  argv = (char**) malloc( argc*sizeof(char*) );
+  // strcpy(argv, name.c_str());
 
-  argv[0] = (char*) malloc( sizeof(string) );
-  // argv[1] = (char*) malloc( sizeof(string) );
-  // argv[2] = (char*) malloc( sizeof(string) );
-
-  string argument1 = "make_rates.py";
-  // string argument2 = "reactionFile=" + reac_datafile;
-  // string argument3 = "speciesFile=" + spec_datafile;
-
-  strcpy(argv[0],argument1.c_str());
-  // strcpy(argv[1],argument2.c_str());
-  // strcpy(argv[2],argument3.c_str());
-
-
-  Py_SetProgramName(argv[0]);
+  Py_SetProgramName(program_name);
 
   Py_Initialize();
 
-  // PySys_SetArgv(argc, argv);
+  FILE *file = fopen(program_name,"r");
 
-  FILE *file = fopen("make_rates.py","r");
-
-  PyRun_SimpleFile(file, "make_rates.py");
+  PyRun_SimpleFile(file, program_name);
 
   Py_Finalize();
 

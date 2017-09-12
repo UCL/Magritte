@@ -747,18 +747,18 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
 
 
 # Read and verify the command line keyword options (if any have been specified)
-usageString = sys.argv[0]+' [reactionFile=ReactionFileName] [speciesFile=SpeciesFileName] [outputPrefix=OutputFilePrefix] [sortSpecies=True|False] [logForm=True|False] [fileFormat=Rate95|Rate99|Rate05] [codeFormat=F77|F90|C]\n'
-keywordNames = ['reactionFile=','speciesFile=','outputPrefix=','sortSpecies=','logForm=','fileFormat=','codeFormat=']
-keywordValue = [reactionFile,speciesFile,outputPrefix,('True'if sortSpecies else 'False'),('True'if logForm else 'False'),fileFormat,codeFormat]
-
-for n in range(1,len(sys.argv)):
-    if sum([sys.argv[n].lower().count(keyword.lower()) for keyword in keywordNames]) == 0:
-        sys.exit('\n  ERROR! Unrecognised keyword: '+sys.argv[n]+'\n\nUsage: '+usageString)
-
-    for i, keyword in enumerate(keywordNames):
-        if sys.argv[n].lower().count(keyword.lower()) != 0:
-            index = sys.argv[n].lower().index(keyword.lower())+len(keyword)
-            keywordValue[i] = sys.argv[n][index:].strip()
+# usageString = sys.argv[0]+' [reactionFile=ReactionFileName] [speciesFile=SpeciesFileName] [outputPrefix=OutputFilePrefix] [sortSpecies=True|False] [logForm=True|False] [fileFormat=Rate95|Rate99|Rate05] [codeFormat=F77|F90|C]\n'
+# keywordNames = ['reactionFile=','speciesFile=','outputPrefix=','sortSpecies=','logForm=','fileFormat=','codeFormat=']
+# keywordValue = [reactionFile,speciesFile,outputPrefix,('True'if sortSpecies else 'False'),('True'if logForm else 'False'),fileFormat,codeFormat]
+#
+# for n in range(1,len(sys.argv)):
+#     if sum([sys.argv[n].lower().count(keyword.lower()) for keyword in keywordNames]) == 0:
+#         sys.exit('\n  ERROR! Unrecognised keyword: '+sys.argv[n]+'\n\nUsage: '+usageString)
+#
+#     for i, keyword in enumerate(keywordNames):
+#         if sys.argv[n].lower().count(keyword.lower()) != 0:
+#             index = sys.argv[n].lower().index(keyword.lower())+len(keyword)
+#             keywordValue[i] = sys.argv[n][index:].strip()
 
 
 
@@ -782,45 +782,15 @@ speciesFile  = "../" + parameters[40].split()[0]
 reactionFile = "../" + parameters[42].split()[0]
 
 
+outputPrefix = '<None>'
 
+sortSpecies = False
 
+logForm = False
 
-if keywordValue[2] != '':
-    outputPrefix = keywordValue[2]
-else:
-    outputPrefix = '<None>'
+fileFormat = "Rate05"
 
-if keywordValue[3].title() == 'True' or keywordValue[3].title() == 'False':
-    sortSpecies = keywordValue[3].title() == 'True'
-else:
-    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[3]+': '+keywordValue[3]+'\n\nUsage: '+usageString)
-
-if keywordValue[4].title() == 'True' or keywordValue[4].title() == 'False':
-    logForm = keywordValue[4].title() == 'True'
-else:
-    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[4]+': '+keywordValue[4]+'\n\nUsage: '+usageString)
-
-if keywordValue[5].title() == 'Rate95' or keywordValue[5].title() == 'Rate99' or keywordValue[5].title() == 'Rate05':
-    fileFormat = keywordValue[5].title()
-else:
-    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[5]+': '+keywordValue[5]+'\n\nUsage: '+usageString)
-
-if keywordValue[6].upper() == 'F77' or keywordValue[6].upper() == 'F90' or keywordValue[6].upper() == 'C':
-    codeFormat = keywordValue[6].upper()
-else:
-    sys.exit('\n  ERROR! Unrecognised option for keyword '+keywordNames[6]+': '+keywordValue[6]+'\n\nUsage: '+usageString)
-
-
-
-if reactionFile != '':
-    if not os.path.isfile(reactionFile):
-        sys.exit('\n  ERROR! Specified reaction file '+reactionFile+' does not exist\n')
-else:
-    sys.exit('\n  ERROR! An input reaction file must be specified\n\nUsage: '+usageString)
-
-if speciesFile != '':
-    if not os.path.isfile(speciesFile):
-        sys.exit('\n  ERROR! Specified species file '+speciesFile+' does not exist\n')
+codeFormat = "C"
 
 
 
