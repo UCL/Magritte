@@ -264,11 +264,11 @@ int main(){
 
   int argc = 3;
 
-  char *argv[3];
+  wchar_t *argv[3];
 
-  argv[0] = (char*) malloc( 50*sizeof(char)+sizeof(string) );
-  argv[1] = (char*) malloc( 50*sizeof(char)+sizeof(string) );
-  argv[2] = (char*) malloc( 50*sizeof(char)+sizeof(string) );
+  argv[0] = (char*) malloc( sizeof(string) );
+  argv[1] = (char*) malloc( sizeof(string) );
+  argv[2] = (char*) malloc( sizeof(string) );
 
   string argument1 = "make_rates.py";
   string argument2 = "reactionFile=" + reac_datafile;
