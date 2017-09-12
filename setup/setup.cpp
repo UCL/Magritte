@@ -264,7 +264,8 @@ int main(){
 
   int argc = 3;
 
-  wchar_t *argv[3];
+  char **argv;
+  argv = (char**) malloc( 3*sizeof(char*) );
 
   argv[0] = (char*) malloc( sizeof(string) );
   argv[1] = (char*) malloc( sizeof(string) );

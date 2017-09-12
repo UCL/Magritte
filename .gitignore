@@ -20,3 +20,9 @@ CMakeCache.txt
 ######################
 
 *.a
+
+
+# editor generated files #
+##########################
+
+*~
