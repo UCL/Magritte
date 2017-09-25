@@ -28,9 +28,13 @@ set(3DRT_VERSION_MINOR 1)
 
 # Make the setup executable and execute setup
 
-add_custom_target( MAKE_SETUP ALL
-                   COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup.exe
-                   WORKING_DIRECTORY setup )
+add_custom_command( OUTPUT src/sundials/rate_equations.cpp
+                    COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup.exe
+                    WORKING_DIRECTORY setup
+                    DEPENDS parameters.txt )
+
+add_custom_target( MAKE_SETUP
+                   DEPENDS src/sundials/rate_equations.cpp  )
 
 
 # Specify the subdirectory containing the source code
@@ -54,7 +58,11 @@ endif()
 add_executable( 3D-RT.exe   src/3D-RT.cpp )
 
 
+# Ensure that 3D-RT depends on the setup command defined above
+
+add_dependencies( 3D-RT.exe   MAKE_SETUP )
+
+
 # Link the library of the /src directory to the 3D-RT main code
 
 target_link_libraries( 3D-RT.exe   _3DRT )
-

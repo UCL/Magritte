@@ -68,7 +68,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 5 
+#define MAX_NITERATIONS 500 
 
 #define TIME_END_IN_YEARS 1.000000E+08 
 
