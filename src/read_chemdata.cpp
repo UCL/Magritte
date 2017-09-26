@@ -85,14 +85,10 @@ void read_species(string spec_datafile)
 
   int electron_nr = get_species_nr("e-");
 
-  cout << "electron nr : " << electron_nr << "\n";
-
   for (long n=0; n<NGRID; n++){
 
-    cout << "jeej \n";
     species[electron_nr].abn[n] = 0.0;
     species[electron_nr].abn[n] = get_electron_abundance(n);
-    cout << "electron abundance : " << species[electron_nr].abn[n] << "\n";
   }
 
 

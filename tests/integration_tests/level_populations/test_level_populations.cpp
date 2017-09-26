@@ -53,8 +53,11 @@ TEST_CASE("Test chemistry"){
 
   string test_line_datafile[NLSPEC];
 
-  test_line_datafile[0] = "../../../" + line_datafile[0];
 
+  for(int l=0; l<NLSPEC; l++){
+
+    test_line_datafile[l] = "../../../" + line_datafile[l];
+  }
 
   /* Define grid (using types defined in definitions.h)*/
 
@@ -221,16 +224,16 @@ TEST_CASE("Test chemistry"){
   initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
-    for (long n=0; n<NGRID; n++){
-
-      for (int i=0; i<nlev[lspec]; i++){
-
-        printf("%lE\n", pop[LSPECGRIDLEV(lspec,n, i)]);
-      }
-    }
-  }
+  // for (int lspec=0; lspec<NLSPEC; lspec++){
+  //
+  //   for (long n=0; n<NGRID; n++){
+  //
+  //     for (int i=0; i<nlev[lspec]; i++){
+  //
+  //       printf("%lE\n", pop[LSPECGRIDLEV(lspec,n, i)]);
+  //     }
+  //   }
+  // }
 
 
 
@@ -241,25 +244,30 @@ TEST_CASE("Test chemistry"){
                      coltemp, icol, jcol, temperature_gas, weight, energy, mean_intensity );
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
+  // for (int lspec=0; lspec<NLSPEC; lspec++){
+  //
+  //   for (long n=0; n<NGRID; n++){
+  //
+  //     for (int i=0; i<nlev[lspec]; i++){
+  //
+  //       printf("%lE\n", pop[LSPECGRIDLEV(lspec,n, i)]);
+  //     }
+  //   }
+  // }
 
-    for (long n=0; n<NGRID; n++){
-
-      for (int i=0; i<nlev[lspec]; i++){
-
-        printf("%lE\n", pop[LSPECGRIDLEV(lspec,n, i)]);
-      }
-    }
-  }
-  
 
   CHECK( 1==1 );
 
 
   /* Write output */
 
-  write_output(unit_healpixvector, antipod, gridpoint, evalpoint, pop, weight, energy);
+  string tag = "";
 
+  write_abundances(tag);
+
+  write_level_populations(tag, line_datafile, pop);
+
+  write_line_intensities(tag, line_datafile, mean_intensity);
 
 
 }

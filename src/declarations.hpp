@@ -24,7 +24,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/1D_regular_10.txt" 
+#define GRID_INPUTFILE "input/1D_regular_101.txt" 
 
 #define SPEC_DATAFILE  "data/species_reduced.txt" 
 
@@ -38,13 +38,13 @@ using namespace std;
 
 #define LINE_DATAFILE3 "data/12CO.txt" 
 
-#define NGRID 10 
+#define NGRID 101 
 
 #define NSIDES 1 
 
-#define THETA_CRIT 1.100000 
+#define THETA_CRIT 1.000000 
 
-#define RAY_SEPARATION2 3.000000E-02 
+#define RAY_SEPARATION2 0.000000E+00 
 
 #define SOBOLEV false 
 
@@ -68,17 +68,17 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 500 
+#define MAX_NITERATIONS 300 
 
 #define TIME_END_IN_YEARS 1.000000E+08 
 
 #define FIELD_FORM "ISO" 
 
-#define G_EXTERNAL_X 1.000000E+05 
+#define G_EXTERNAL_X 0.000000E+00 
 
-#define G_EXTERNAL_Y 1.000000E+05 
+#define G_EXTERNAL_Y 0.000000E+00 
 
-#define G_EXTERNAL_Z 1.000000E+05 
+#define G_EXTERNAL_Z 0.000000E+00 
 
 #define IBC 0.0000000000000E+00 
 

@@ -14,15 +14,19 @@ project(3D-RT_tests)
 
 # Resize the stack to 128 Mb (UNIX version)
 
-add_custom_target( RESIZE_STACK ALL
-                   COMMAND ulimit -S -s 131072 )
+# add_custom_target( RESIZE_STACK ALL
+#                    COMMAND ulimit -S -s 131072 )
 
 
 # Make the setup executable and execute setup
 
-add_custom_target( MAKE_SETUP ALL
-                   COMMAND make PARAMETERS_FILE=../tests/integration_tests/level_populations/parameters_for_testing.txt && ./setup
-                   WORKING_DIRECTORY ../../../setup )
+add_custom_command( OUTPUT ../../../src/declarations.hpp
+                    COMMAND echo "GO" && make PARAMETERS_FILE=../tests/integration_tests/level_populations/parameters.txt && ./setup.exe
+                    WORKING_DIRECTORY ../../../setup
+                    DEPENDS parameters.txt )
+
+add_custom_target( MAKE_SETUP
+                   DEPENDS ../../../src/declarations.hpp  )
 
 
 # Add the Eigen directory so the header files can be found
@@ -48,16 +52,21 @@ find_library( HEALPix
               DOC "HEALPix library" )
 
 
-# Add library containing the main and the 3DRT source code (which is to be tested)
+# Add library containing the main and the 3D-RT source code (which is to be tested)
 
 add_library( _level_populations   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/initializers.cpp ../../../src/read_input.cpp ../../../src/data_tools.cpp ../../../src/setup_data_structures.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/read_linedata.cpp ../../../src/create_healpixvectors.cpp ../../../src/ray_tracing.cpp ../../../src/heapsort.cpp ../../../src/level_populations.cpp ../../../src/radiative_transfer.cpp ../../../src/calc_C_coeff.cpp ../../../src/level_population_solver.cpp ../../../src/exact_feautrier.cpp ../../../src/write_output.cpp )
 
 
 # Create executable to test rate_calculations_radfield
 
-add_executable( test_level_populations   test_level_populations.cpp )
+add_executable( test_level_populations.exe   test_level_populations.cpp )
+
+
+# Ensure that 3D-RT depends on the setup command defined above
+
+add_dependencies( test_level_populations.exe   MAKE_SETUP )
 
 
 # Link the necessary libraries
 
-target_link_libraries( test_level_populations   _level_populations ${HEALPix} )
+target_link_libraries( test_level_populations.exe   _level_populations ${HEALPix} )

@@ -12,13 +12,13 @@ ____________________________________|___________________
                                     |
 1.1                                 | theta_crit
                                     |
-0.03                                | ray_separation2
+0.00                                | ray_separation2
                                     |
-false                               | sobolev
+true                                | sobolev
                                     |
 ISO                                 | field form
                                     |
-500                                 | MAX_NITERATIONS
+300                                 | MAX_NITERATIONS
                                     |
 1.0E8                               | time_end (years)
                                     |
