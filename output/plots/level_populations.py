@@ -9,6 +9,12 @@ import sys
 
 
 
+print " "
+print "Plot level populations and line intensities"
+print "-------------------------------------------"
+
+
+
 # Check the tag of the data that is to be plotted
 
 if (len(sys.argv)>1):
@@ -17,15 +23,16 @@ else:
     tag = ""
 
 
+
 # Get the input files from parameters.txt
 
 with open("../../parameters.txt") as parameters_file:
     parameters = parameters_file.readlines()
 
-nlspec = int(parameters[45].split()[0])
-
+nlspec         = int(parameters[45].split()[0])
 grid_inputfile = "../../" + parameters[38].split()[0]
 line_datafile  = ["../../" + parameters[48+2*lspec].split()[0] for lspec in range(nlspec) ]
+
 
 
 # Extract the names of the line producing species fron the datafile names
@@ -37,22 +44,22 @@ for lspec in range(nlspec):
     lspec_name[lspec] = lspec_name[lspec].split(".")[0]
 
 
-# Print the results
 
-print "nlspec         : " + str(nlspec)
-print "grid inputfile : " + grid_inputfile
+print "Plotting the level populations and line intencities from:"
 
 for lspec in range(nlspec):
-    print "line datafile " + str(lspec) + " for " + lspec_name[lspec] + " : " + line_datafile[lspec]
+    print "  line datafile " + str(lspec) + " for " + lspec_name[lspec] + " : " + line_datafile[lspec]
+
 
 
 # Read the grid input file
 
 xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
-
 ngrid = np.shape(xg)[0]
 
 
+
+# For all line data files
 
 for lspec in range(nlspec):
 
@@ -99,6 +106,7 @@ for lspec in range(nlspec):
     ax1.set_yscale("log")
 
 
+
     # Plot mean intensity
 
     ax2 = fig.add_subplot(212)
@@ -124,4 +132,8 @@ for lspec in range(nlspec):
     fig.savefig(plot_name, bbox_inches='tight')
 
 
-    print "Plot saved as " + plot_name
+    print "Plot " + str(lspec) + " saved as " + plot_name
+
+
+
+print " "

@@ -21,7 +21,7 @@ project(3D-RT_tests)
 # Make the setup executable and execute setup
 
 add_custom_command( OUTPUT ../../../src/declarations.hpp
-                    COMMAND echo "GO" && make PARAMETERS_FILE=../tests/integration_tests/level_populations/parameters.txt && ./setup.exe
+                    COMMAND make PARAMETERS_FILE=../tests/integration_tests/level_populations/parameters.txt && ./setup.exe
                     WORKING_DIRECTORY ../../../setup
                     DEPENDS parameters.txt )
 

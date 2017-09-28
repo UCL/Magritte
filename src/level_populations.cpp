@@ -28,11 +28,12 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                        int *irad, int*jrad, double *frequency,
+void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+                        int *irad, int*jrad, double *frequency, double v_turb,
                         double *A_coeff, double *B_coeff, double *C_coeff,
                         double *R, double *pop, double *dpop, double *C_data,
-                        double *coltemp, int *icol, int *jcol, double *temperature_gas,
+                        double *coltemp, int *icol, int *jcol,
+                        double *temperature_gas, double *temperature_dust,
                         double *weight, double *energy, double *mean_intensity )
 {
 
@@ -220,8 +221,9 @@ void level_populations( long *antipod, GRIDPOINT *gridpoint, EVALPOINT *evalpoin
 
           /* Calculate the mean intensity */
 
-          radiative_transfer( antipod, evalpoint, P_intensity, mean_intensity, Source, opacity,
-                              irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
+          radiative_transfer( gridpoint, evalpoint, antipod, P_intensity, mean_intensity,
+                              Source, opacity, frequency, temperature_gas, temperature_dust,
+                              irad, jrad, n, lspec, kr, v_turb, &nshortcuts, &nno_shortcuts );
 
 
           /* Fill the i>j part */

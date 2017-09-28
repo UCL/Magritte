@@ -26,9 +26,11 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensity,
-                         double *mean_intensity, double *Source, double *opacity,
-                         int *irad, int*jrad, long gridp, int lspec, int kr,
+void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+                         double *P_intensity, double *mean_intensity,
+                         double *Source, double *opacity, double *frequency,
+                         double *temperature_gas, double *temperature_dust,
+                         int *irad, int*jrad, long gridp, int lspec, int kr, double v_turb,
                          long *nshortcuts, long *nno_shortcuts )
 {
 
@@ -41,6 +43,7 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
   int i = irad[LSPECRAD(lspec,kr)];              /* i level index corresponding to transition kr */
   int j = jrad[LSPECRAD(lspec,kr)];              /* j level index corresponding to transition kr */
 
+  long b_ij = LSPECLEVLEV(lspec,i,j);                                         /* frequency index */
 
 
   /* For half of the rays (only half is needed since we also consider the antipodals) */
@@ -79,7 +82,7 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
     else {
 
 
-      /*   SOLVE TRANSFER EQUATION ALONG THE RAY
+      /*   DO THE RADIATIVE TRANSFER
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
@@ -160,19 +163,11 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
         }
 
 
-        /*-------------------------------------------------------------------------------------*/
-
-
-        /*   Sobolev approximation   */
-        /*   +++++++++++++++++++++   */
-
-        /* (to compare with 3D-PDR) */
-
-
         if (SOBOLEV == true){
 
-
+          /* Sobolev approximation    */
           /* NOTE: Make sure RAY_SEPARATION2=0.0 when SOBOLEV=true !!! */
+
 
           if (RAY_SEPARATION2 != 0.0){
 
@@ -180,31 +175,49 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
             printf("   [ERROR]:   SOBOLEV = true   while   RAY_SEPARATION2 != 0.0 \n\n");
           }
 
-          for (int n=0; n<ndep; n++){
+
+          double escape_probability = 0.0;
+
+          double optical_depth1 = 0.0;
+          double optical_depth2 = 0.0;
+
+          double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(v_turb,2) );
 
 
-            /* Source function is only non-zero at the point under consideration */
+          for (long e1=0; e1<etot1; e1++){
 
-            if ( !(n==etot1-1) || (n==etot1-2) ){
-
-              S[n] = 0.0;
-            }
-
+            optical_depth1 = optical_depth1 + dtau[e1];
           }
+
+          optical_depth1 = CC / frequency[b_ij] / speed_width * optical_depth1;
+
+          escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
+
+
+          for (long e2=0; e2<etot2; e2++){
+
+            optical_depth2 = optical_depth2 + dtau[etot1+e2];
+          }
+
+          escape_probability = escape_probability + (1 - exp(-optical_depth2)) / optical_depth2;
+
+
         }
 
+        else{
 
-        /*-------------------------------------------------------------------------------------*/
-
-
-        double ibc = IBC;
-
-        /* Solve the transfer equation wit hthe exact Feautrier solver */
-
-        exact_feautrier( ndep, S, dtau, etot1, etot2, ibc, evalpoint, P_intensity, gridp, r, ar );
+          double ibc = IBC;
 
 
-        mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
+          /* Solve the transfer equation wit hthe exact Feautrier solver */
+
+          exact_feautrier( ndep, S, dtau, etot1, etot2, ibc, evalpoint,
+                           P_intensity, gridp, r, ar );
+
+          mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
+
+        }
+
 
 
         // printf("(radiative_transfer): number of depth points %ld\n", ndep);
@@ -232,7 +245,31 @@ void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensit
   } /* end of r loop over half of the rays */
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij]; // / 4.0 / PI;
+  mean_intensity[m_ij] = mean_intensity[m_ij]; // / NRAYS;
+
+
+  /* Add the continuum radiation (due to dust and CMB) */
+
+  double factor          = 2.0*HH*pow(frequency[b_ij],3)/pow(CC,2);
+
+  double rho_grain       = 2.0;
+
+  double ngrain          = 2.0E-12*gridpoint[gridp].density*metallicity*100.0/gas_to_dust;
+
+  double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
+
+  double Planck_dust     = 1.0 / ( exp(HH*frequency[b_ij]/KB/temperature_dust[gridp])-1.0 );
+
+  double Planck_CMB      = 1.0 / ( exp(HH*frequency[b_ij]/KB/T_CMB)-1.0 );
+
+
+  /* NOTE: Continuum radiation is assumed to be local */
+
+  double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
+
+
+  mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
+
 
 
   // printf( "(radiative_transfer): mean intensity at gridp %ld for trans %d is %lE \n",

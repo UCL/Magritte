@@ -307,10 +307,9 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
   double heating_cosmic_rays;
 
-  double zeta = 1.0;                                                      /* cosmic ray variable */
 
 
-  heating_cosmic_rays = (9.4*EV) * (1.3E-17*zeta)
+  heating_cosmic_rays = (9.4*EV) * (1.3E-17*ZETA)
                         * species[H2_nr].abn[gridp] * gridpoint[gridp].density;
 
 

@@ -4,7 +4,7 @@
 /*                                                                                               */
 /* calc_rate: Calculate reaction rates (the ones not depending on the radiation field)           */
 /*                                                                                               */
-/* (based on H2_form, shield and calc_reac_rates in 3D-PDR)    v                                 */
+/* (based on H2_form, shield and calc_reac_rates in 3D-PDR)                                      */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -198,7 +198,6 @@ double rate_CRP( int reac, double temperature_gas)
 
   double k;                                                              /* reaction coefficient */
 
-  double zeta = 1.0;                                                      /* cosmic ray variable */
 
 
   /* For all duplicates */
@@ -227,7 +226,7 @@ double rate_CRP( int reac, double temperature_gas)
 
     else if ( temperature_gas < RT_max ){
 
-      return k = alpha * zeta;
+      return k = alpha * ZETA;
     }
 
   } /* end of rc loop over duplicates */
@@ -258,8 +257,6 @@ double rate_CRPHOT( int reac, double temperature_gas)
 
   double k;                                                              /* reaction coefficient */
 
-  double zeta = 1.0;                                                      /* cosmic ray variable */
-  double omega = 0.42;                                 /* variable for second cosmic ray photons */
 
 
   /* For all duplicates */
@@ -288,7 +285,7 @@ double rate_CRPHOT( int reac, double temperature_gas)
 
     else if ( temperature_gas < RT_max ){
 
-      return k = alpha * zeta * pow(temperature_gas/300.0, beta) * gamma / (1.0 - omega);
+      return k = alpha * ZETA * pow(temperature_gas/300.0, beta) * gamma / (1.0 - OMEGA);
     }
 
   } /* end of rc loop over duplicates */
@@ -452,8 +449,6 @@ double rate_CRH( int reac, double temperature_gas)
 
   int rc;                                                                      /* reaction index */
 
-  double zeta;                                                           /* Cosmic ray parameter */
-
   double yield;                   /* Number of adsorbed molecules released per cosmic ray impact */
   double flux = 2.06E-3;                      /* Flux of iron nuclei cosmic rays (in cm^-2 s^-1) */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
@@ -481,7 +476,7 @@ double rate_CRH( int reac, double temperature_gas)
     yield = 0.0;
   }
 
-  return k = flux * zeta * grain_param * yield;
+  return k = flux * ZETA * grain_param * yield;
 }
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -502,13 +497,6 @@ double rate_THERM( int reac, double temperature_gas, double temperature_dust)
 
   double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
   double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-  int rc;                                                                      /* reaction index */
-
-  double zeta;                                                           /* Cosmic ray parameter */
-
-  double yield;                   /* Number of adsorbed molecules released per cosmic ray impact */
-  double flux;                                /* Flux of iron nuclei cosmic rays (in cm^-2 s^-1) */
 
   double k;                                                              /* reaction coefficient */
 
@@ -544,13 +532,6 @@ double rate_GM( int reac )
 
   double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
   double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-  int rc;                                                                      /* reaction index */
-
-  double zeta;                                                           /* Cosmic ray parameter */
-
-  double yield;                   /* Number of adsorbed molecules released per cosmic ray impact */
-  double flux;                                /* Flux of iron nuclei cosmic rays (in cm^-2 s^-1) */
 
   double k;                                                              /* reaction coefficient */
 

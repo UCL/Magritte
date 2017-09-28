@@ -28,13 +28,13 @@ set(3DRT_VERSION_MINOR 1)
 
 # Make the setup executable and execute setup
 
-add_custom_command( OUTPUT src/declarations.hpp
+add_custom_command( OUTPUT src/sundials/rate_equations.cpp
                     COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup.exe
                     WORKING_DIRECTORY setup
                     DEPENDS parameters.txt )
 
 add_custom_target( MAKE_SETUP
-                   DEPENDS src/declarations.hpp )
+                   DEPENDS src/sundials/rate_equations.cpp  )
 
 
 # Specify the subdirectory containing the source code

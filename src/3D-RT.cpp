@@ -493,9 +493,10 @@ int main()
 
     time_level_pop -= omp_get_wtime();
 
-    level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
+    level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency, v_turb,
                        A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
-                       coltemp, icol, jcol, temperature_gas, weight, energy, mean_intensity );
+                       coltemp, icol, jcol, temperature_gas, temperature_dust,
+                       weight, energy, mean_intensity );
 
     time_level_pop += omp_get_wtime();
 

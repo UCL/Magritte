@@ -24,7 +24,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/1D_regular_101.txt" 
+#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt" 
 
 #define SPEC_DATAFILE  "data/species_reduced.txt" 
 
@@ -38,15 +38,15 @@ using namespace std;
 
 #define LINE_DATAFILE3 "data/12CO.txt" 
 
-#define NGRID 101 
+#define NGRID 122 
 
 #define NSIDES 1 
 
-#define THETA_CRIT 1.000000 
+#define THETA_CRIT 1.100000 
 
 #define RAY_SEPARATION2 0.000000E+00 
 
-#define SOBOLEV false 
+#define SOBOLEV true 
 
 #define NSPEC 34 
 
@@ -68,17 +68,17 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 300 
+#define MAX_NITERATIONS 500 
 
-#define TIME_END_IN_YEARS 1.000000E+08 
+#define TIME_END_IN_YEARS 1.000000E+01 
 
 #define FIELD_FORM "ISO" 
 
-#define G_EXTERNAL_X 0.000000E+00 
+#define G_EXTERNAL_X 5.270460E+00 
 
-#define G_EXTERNAL_Y 0.000000E+00 
+#define G_EXTERNAL_Y 5.270460E+00 
 
-#define G_EXTERNAL_Z 0.000000E+00 
+#define G_EXTERNAL_Z 6.666670E+00 
 
 #define IBC 0.0000000000000E+00 
 
@@ -86,7 +86,8 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-
+#define ZETA   3.85
+#define OMEGA  0.42
 
 
 /* Numerical constants */
@@ -96,7 +97,8 @@ using namespace std;
 #define HH    6.62606896E-27                                   /* Planck's constant in cgs units */
 #define KB    1.38065040E-16                                /* Boltzmann's constant in cgs units */
 #define EV    1.60217646E-12                                             /* electron Volt in erg */
-#define T_CMB 2.725                  /* temperature of the cosmic microwave background radiation */
+#define MP    1.67262164E-24                                         /* proton mass in cgs units */
+#define T_CMB 2.725             /* temperature of the cosmic microwave background radiation in K */
 
 
 

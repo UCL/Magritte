@@ -71,7 +71,7 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
       }
 
 
-      /* Calculate the radiative cooling */
+      /* Calculate the radiative line cooling */
 
       if (Source != 0.0){
 
@@ -97,24 +97,3 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
 }
 
 /*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* 3D-PDR piece of code */
-/*----------------------*/
-
-// double factor          = 2.0*HH*pow(nu_ij,3)/pow(CC,2);
-
-// double rho_grain       = 2.0;
-
-// double ngrain          = 2.0E-12 * gridpoint[gridp].density * metallicity * 100/gas_to_dust;
-
-// double emissivity_dust = rho_grain * ngrain * 0.01 * 1.3 * nu_ij / 3.0E11;
-
-// double Planck_dust     = 1.0 / ( exp(HH*nu_ij/KB/temperature_dust[gridp])-1.0 );
-
-// double Planck_CMB      = 1.0 / ( exp(HH*nu_ij/KB/T_CMB)-1.0 );
-
-// double Planck          = factor * (Planck_CMB + emissivity_dust*Planck_dust);

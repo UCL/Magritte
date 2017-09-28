@@ -14,7 +14,7 @@ How to use:
   (Data files are stored in the /data folder.
    Grids are stored in the /input folder.)
 
-- Run make to setup and compile the source code given the specified paremeters.
+- Run make to setup and compile the source code given the specified parameters.
   This will create the 3D-RT executable.
   ($ make)
 
@@ -22,3 +22,14 @@ How to use:
   ($ ./3D-RT.exe)
 
 - The output can be visualized using the python scripts in the output/plots folder.
+
+
+
+Current issues and todo
+-----------------------
+
+(!) Look out for devisions by 4PI which should be devisions by the number of rays.
+
+(!) The cosmic ray variables ZETA and OMEGA are defined as standard code to be 3.85 (from 3D-PDR).
+
+(!) 1D models assume NRAYS=12.

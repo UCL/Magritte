@@ -1,11 +1,35 @@
-# Script to plot the level populations
-# ------------------------------------
+# Script to plot the chemical abundances
+# --------------------------------------
 
 
 
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+
+
+
+# Helper function
+# ---------------
+
+
+def get_species_nr(name):
+    nr = 0
+    for spec in species_name:
+        if spec == name:
+            return nr
+        nr=nr+1
+    print "WARNING species not found!"
+    return 0
+
+
+# ---------------
+
+
+
+print " "
+print "Plot chemical abundances"
+print "------------------------"
 
 
 
@@ -27,10 +51,6 @@ grid_inputfile = "../../" + parameters[38].split()[0]
 spec_datafile  = "../../" + parameters[40].split()[0]
 
 
-print "Plot chemical abundances"
-
-print "grid inputfile : " + grid_inputfile
-
 
 # Read the grid input file
 
@@ -38,18 +58,17 @@ xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
 ngrid = np.shape(xg)[0]
 
 
-# Read the abundances file
+
+# Read the abundances output file
 
 file_name = "../abundances" + tag + ".txt"
 
-abundances_data = np.loadtxt("../abundances.txt")
+abundances_data = np.loadtxt(file_name)
 nspec = np.shape(abundances_data)[0]
 
-print "ngrid is " + str(ngrid)
-print "nspec is " + str(nspec)
 
 
-# Read the species
+# Read the species names for the legend
 
 species_name = ["dummy"]
 
@@ -58,32 +77,12 @@ with open(spec_datafile) as spec_file:
         species_name.append( spec_file.readline().split(",")[1] )
 
 
-# ----------------------------------------------------------------------------------------------- #
-
-# Helper function
-
-def get_species_nr(name):
-    nr = 0
-    for spec in species_name:
-        if spec == name:
-            return nr
-        nr=nr+1
-    print "WARNING species not found!"
-    return 0
-
-# ----------------------------------------------------------------------------------------------- #
-
-print "specnr " + str(get_species_nr("H3+"))
-print "specnr " + str(get_species_nr("e-"))
-
-
 
 # Make the plots
 
+print "Plotting the abundances as specified in " + file_name
+
 fig = plt.figure()
-
-
-# Plot abundances
 
 ax1 = fig.add_subplot(111)
 
@@ -102,16 +101,15 @@ ax1.set_xlabel("x (grid point)")
 ax1.set_ylabel("abundances")
 ax1.set_yscale("log")
 
-
-
 fig.tight_layout()
 
 plot_name = "abundances.pdf"
 
+
+
+# Save the plot in pdf format
+
 fig.savefig(plot_name, bbox_inches='tight')
 
-
 print "Plot saved as " + plot_name
-
-
-plt.show()
+print " "

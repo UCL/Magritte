@@ -23,11 +23,12 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void radiative_transfer( long *antipod, EVALPOINT *evalpoint, double *P_intensity,
-                         double *mean_intensity, double *Source, double *opacity,
-                         int *irad, int*jrad, long gridp, int lspec, int kr,
+void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+                         double *P_intensity, double *mean_intensity,
+                         double *Source, double *opacity, double *frequency,
+                         double *temperature_gas, double *temperature_dust,
+                         int *irad, int*jrad, long gridp, int lspec, int kr, double v_turb,
                          long *nshortcuts, long *nno_shortcuts );
-
 /*-----------------------------------------------------------------------------------------------*/
 
 

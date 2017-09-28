@@ -239,7 +239,7 @@ TEST_CASE("Test chemistry"){
 
   /* Calculate level populations for each line producing species */
 
-  level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
+  level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency, v_turb,
                      A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
                      coltemp, icol, jcol, temperature_gas, weight, energy, mean_intensity );
 
