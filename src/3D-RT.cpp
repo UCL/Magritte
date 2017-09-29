@@ -42,7 +42,7 @@ using namespace std;
 #include "calc_AV.hpp"
 #include "calc_UV_field.hpp"
 #include "calc_temperature_dust.hpp"
-#include "abundances.hpp"
+#include "chemistry.hpp"
 #include "level_populations.hpp"
 #include "heating.hpp"
 #include "cooling.hpp"
@@ -465,7 +465,7 @@ int main()
 
     time_abundances -= omp_get_wtime();
 
-    abundances( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                 column_H2, column_HD, column_C, column_CO, v_turb );
 
     time_abundances += omp_get_wtime();

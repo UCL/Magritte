@@ -23,7 +23,7 @@ include_directories( sundials/include )
 
 add_library( _3DRT
 initializers.cpp
-abundances.cpp
+chemistry.cpp
 data_tools.cpp
 species_tools.cpp
 setup_data_structures.cpp

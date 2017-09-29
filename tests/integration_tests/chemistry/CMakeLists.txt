@@ -113,7 +113,7 @@ test_main.cpp
 ../../../src/create_healpixvectors.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
-../../../src/abundances.cpp
+../../../src/chemistry.cpp
 ../../../src/reaction_rates.cpp
 ../../../src/calc_reac_rates.cpp
 ../../../src/calc_reac_rates_rad.cpp

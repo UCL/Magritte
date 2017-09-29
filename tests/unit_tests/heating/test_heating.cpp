@@ -28,7 +28,7 @@ using namespace std;
 #include "../../../src/read_input.hpp"
 #include "../../../src/species_tools.hpp"
 #include "../../../src/read_chemdata.hpp"
-#include "../../../src/abundances.hpp"
+#include "../../../src/chemistry.hpp"
 #include "../../../src/heating.hpp"
 
 
@@ -138,7 +138,7 @@ TEST_CASE("Test reaction_rates"){
   long gridp = 0;
 
 
-  abundances( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+  chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
               column_H2, column_HD, column_C, column_CO, v_turb );
 
 

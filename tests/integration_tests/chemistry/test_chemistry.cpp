@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 using namespace std;
 
 #include "catch.hpp"
@@ -39,7 +40,7 @@ using namespace std;
 #include "../../../src/calc_UV_field.hpp"
 #include "../../../src/calc_AV.hpp"
 #include "../../../src/calc_temperature_dust.hpp"
-#include "../../../src/abundances.hpp"
+#include "../../../src/chemistry.hpp"
 
 #include "../../../src/write_output.hpp"
 
@@ -189,54 +190,101 @@ TEST_CASE("Test chemistry"){
   calc_rad_surface(G_external, unit_healpixvector, rad_surface);
 
 
-  /* Calculate column densities */
 
-  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+  /* Iterate over the chemistry alone */
+
+  for(int iteration=0; iteration<32; iteration++){
 
 
-  /* Calculate the visual extinction */
+    /* Temporary storage for the species */
 
-  calc_AV(column_H2, AV);
+    SPECIES old_species[NSPEC];
 
+    for(int spec; spec<NSPEC; spec++){
 
-  /* Calculcate the UV field */
-
-  calc_UV_field(AV, rad_surface, UV_field);
-
-
-  /* Calculate the dust temperature */
-
-  calc_temperature_dust(UV_field, rad_surface, temperature_dust);
+      old_species[spec] = species[spec];
+    }
 
 
-  abundances( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-              column_H2, column_HD, column_C, column_CO, v_turb );
+    /* Calculate column densities */
+
+    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
 
 
+    /* Calculate the visual extinction */
+
+    calc_AV(column_H2, AV);
+
+
+    /* Calculcate the UV field */
+
+    calc_UV_field(AV, rad_surface, UV_field);
+
+
+    /* Calculate the dust temperature */
+
+    calc_temperature_dust(UV_field, rad_surface, temperature_dust);
+
+
+    /* Calculate the chemical abundances given the current temperatures and radiation field */
+
+    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+                column_H2, column_HD, column_C, column_CO, v_turb );
+
+
+    for(int spec=0; spec<NSPEC; spec++){
+
+      double max_difference = 0.0;
+
+      for(long n=0; n<NGRID; n++){
+
+        double difference = fabs(old_species[spec].abn[n] - species[spec].abn[n]);
+
+        if(difference > max_difference){
+
+          max_difference = difference;
+        }
+      }
+
+
+      cout << "max difference for " << species[spec].sym << " is " << max_difference << "\n";
+
+    }
+
+    /* Write output */
+
+    stringstream ss;
+    ss << iteration;
+
+    string tag = ss.str();
+
+    write_abundances(tag);
+
+  }
 
 
 
   /* Write the results of the integration */
 
-  FILE *abn_file = fopen("output/abundances_result.txt", "w");
-
-  if (abn_file == NULL){
-
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
-
-  for (int spec=0; spec<NSPEC; spec++){
-
-    fprintf( abn_file, "%lE\t", species[spec].abn[0] );
-  }
-
-
-  fclose(abn_file);
+  // FILE *abn_file = fopen("output/abundances_result.txt", "w");
+  //
+  // if (abn_file == NULL){
+  //
+  //   printf("Error opening file!\n");
+  //   exit(1);
+  // }
+  //
+  //
+  // for (int spec=0; spec<NSPEC; spec++){
+  //
+  //   fprintf( abn_file, "%lE\t", species[spec].abn[0] );
+  // }
+  //
+  //
+  // fclose(abn_file);
 
 
 
