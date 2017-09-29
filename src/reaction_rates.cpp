@@ -19,8 +19,8 @@
 
 #include "declarations.hpp"
 #include "reaction_rates.hpp"
-#include "rate_calculations.hpp"
-#include "rate_calculations_radfield.hpp"
+#include "calc_reac_rates.hpp"
+#include "calc_reac_rates_rad.hpp"
 
 
 
@@ -45,7 +45,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
   string P3;                                                               /* reaction product 3 */
   string P4;                                                               /* reaction product 4 */
 
-  /* All rate functions can be found in rate_calculations.cpp and rate_calculations_radfield.cpp */
+  /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */
   /* The rate functions are calculated locally so only need the
 
   /* For all reactions */
@@ -67,7 +67,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
 
 
-    /* The following rates are described in rate_calculations.c
+    /* The following rates are described in calc_reac_rates.c
 
 
     /* H2 formation */
@@ -196,7 +196,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
 
 
-    /* The following 5 rates are described in rate_calculations_radfield.c
+    /* The following 5 rates are described in calc_reac_rates_rad.c
 
 
     /* Photodesorption */
@@ -263,7 +263,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
 
 
-    /* The following reactions are again described in rate_calculations.s */
+    /* The following reactions are again described in calc_reac_rates.s */
 
 
     /* All other reactions */

@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* UV_field_calculator: Calculates the UV radiation field at each grid point                     */
+/* calc_UV_field: Calculates the UV radiation field at each grid point                     */
 /*                                                                                               */
 /* (based on 3DPDR in 3D-PDR)                                                                    */
 /*                                                                                               */
@@ -17,14 +17,14 @@
 #include <stdlib.h>
 
 #include "declarations.hpp"
-#include "UV_field_calculator.hpp"
+#include "calc_UV_field.hpp"
 
 
 
-/* UV_field_calculator: calculates the UV radiation field at each grid point                     */
+/* calc_UV_field: calculates the UV radiation field at each grid point                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void UV_field_calculator( double *AV, double *rad_surface, double *UV_field )
+void calc_UV_field( double *AV, double *rad_surface, double *UV_field )
 {
 
   long n;                                                                    /* grid point index */

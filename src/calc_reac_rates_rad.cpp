@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* rate_calculations_radfield: Calculate rates for reactions depending on the radiation field    */
+/* calc_reac_rates_rad: Calculate rates for reactions depending on the radiation field    */
 /*                                                                                               */
 /* (based on H2_form, shield and calc_reac_rates in 3D-PDR)                                      */
 /*                                                                                               */
@@ -16,7 +16,7 @@
 #include <math.h>
 
 #include "declarations.hpp"
-#include "rate_calculations_radfield.hpp"
+#include "calc_reac_rates_rad.hpp"
 #include "radfield_tools.hpp"
 
 

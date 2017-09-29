@@ -27,10 +27,10 @@ add_custom_target( MAKE_SETUP ALL
 
 # Add library containing the main and the 3DRT source code (which is to be tested)
 
-add_library( _reaction_rates   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/data_tools.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/reaction_rates.cpp ../../../src/rate_calculations.cpp ../../../src/rate_calculations_radfield.cpp ../../../src/radfield_tools.cpp ../../../src/spline.cpp )
+add_library( _reaction_rates   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/data_tools.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/reaction_rates.cpp ../../../src/calc_reac_rates.cpp ../../../src/calc_reac_rates_rad.cpp ../../../src/radfield_tools.cpp ../../../src/spline.cpp )
 
 
-# Create executable to test rate_calculations_radfield
+# Create executable to test calc_reac_rates_rad
 
 add_executable( test_reaction_rates   test_reaction_rates.cpp )
 

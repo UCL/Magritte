@@ -57,11 +57,11 @@ python test_spline_plot.py
 cd ..
 
 
-echo "Log for test_rate_calculations_radfield" > test_logs/test_rate_calculations_radfield.log
-echo "+++++++++++++++++++++++++++++++++++++++" >> test_logs/test_rate_calculations_radfield.log
-echo "                                       " >> test_logs/test_rate_calculations_radfield.log
+echo "Log for test_calc_reac_rates_rad" > test_logs/test_calc_reac_rates_rad.log
+echo "+++++++++++++++++++++++++++++++++++++++" >> test_logs/test_calc_reac_rates_rad.log
+echo "                                       " >> test_logs/test_calc_reac_rates_rad.log
 
 cd test_output
-python test_rate_calculations_radfield_plot.py
+python test_calc_reac_rates_rad_plot.py
 cd ..
 

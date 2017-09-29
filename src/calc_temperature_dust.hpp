@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for rad_surface_calculator.cpp                                                            */
+/* Header for calc_temperature_dust.cpp                                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,20 +10,21 @@
 
 
 
-#ifndef __RAD_SURFACE_CALCULATOR_HPP_INCLUDED__
-#define __RAD_SURFACE_CALCULATOR_HPP_INCLUDED__
+#ifndef __calc_temperature_dust_HPP_INCLUDED__
+#define __calc_temperature_dust_HPP_INCLUDED__
 
 
 
-/* rad_surface_calculator: calculates the UV radiation surface for each ray at each grid point   */
+/* calc_temperature_dust: calculate dust temparatures                                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void rad_surface_calculator(double *G_external, double *unit_healpixvector, double *rad_surface);
+void calc_temperature_dust( double *UV_field, double *rad_surface,
+                                   double *temperature_dust );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __RAD_SURFACE_CALCULATOR_HPP_INCLUDED__ */
+#endif /* __calc_temperature_dust_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* dust_temperature_calculation: Calculate dust temperatures                                     */
+/* calc_temperature_dust: Calculate dust temperatures                                     */
 /*                                                                                               */
 /* (based on dust_t in 3D-PDR)                                                                   */
 /*                                                                                               */
@@ -42,14 +42,14 @@
 #include <math.h>
 
 #include "declarations.hpp"
-#include "dust_temperature_calculation.hpp"
+#include "calc_temperature_dust.hpp"
 
 
 
-/* dust_temperature_calculation: calculate dust temparatures                                     */
+/* calc_temperature_dust: calculate dust temparatures                                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void dust_temperature_calculation( double *UV_field, double *rad_surface,
+void calc_temperature_dust( double *UV_field, double *rad_surface,
                                    double *temperature_dust )
 {
 
@@ -114,7 +114,7 @@ void dust_temperature_calculation( double *UV_field, double *rad_surface,
 
     if (temperature_dust[n] > 1000.0){
 
-      printf( "(dust_temperature_calculation): ERROR," \
+      printf( "(calc_temperature_dust): ERROR," \
               " calculated dust temperature exceeds 1000 K \n" );
     }
 

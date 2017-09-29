@@ -30,7 +30,7 @@ add_custom_target( MAKE_SETUP ALL
 add_library( _radfield_tools   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/data_tools.cpp ../../../src/read_chemdata.cpp ../../../src/radfield_tools.cpp ../../../src/spline.cpp )
 
 
-# Create executable to test rate_calculations_radfield
+# Create executable to test calc_reac_rates_rad
 
 add_executable( test_radfield_tools   test_radfield_tools.cpp )
 

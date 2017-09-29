@@ -17,7 +17,7 @@
 #include <math.h>
 
 #include "declarations.hpp"
-#include "rate_calculations.hpp"
+#include "calc_reac_rates.hpp"
 
 
 

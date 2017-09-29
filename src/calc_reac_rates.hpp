@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for rate_calculations.cpp                                                              */
+/* Header for calc_reac_rates.cpp                                                              */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,8 +10,8 @@
 
 
 
-#ifndef __RATE_CALCULATIONS_HPP_INCLUDED__
-#define __RATE_CALCULATIONS_HPP_INCLUDED__
+#ifndef __calc_reac_rates_HPP_INCLUDED__
+#define __calc_reac_rates_HPP_INCLUDED__
 
 
 
@@ -104,6 +104,6 @@ double rate_canonical( int reac, double temperature_gas );
 
 
 
-#endif /* __RATE_CALCULATIONS_HPP_INCLUDED__ */
+#endif /* __calc_reac_rates_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

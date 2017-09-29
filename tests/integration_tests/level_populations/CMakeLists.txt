@@ -76,7 +76,7 @@ test_main.cpp
 ../../../src/write_output.cpp )
 
 
-# Create executable to test rate_calculations_radfield
+# Create executable to test calc_reac_rates_rad
 
 add_executable( test_level_populations.exe   test_level_populations.cpp )
 

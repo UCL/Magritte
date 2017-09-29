@@ -67,14 +67,14 @@ add_executable( test_exact_feautrier   test_exact_feautrier.cpp )
 target_link_libraries( test_exact_feautrier   _test_main   ${3DRT}   ${HEALPix} )
 
 
-# Create executable to test column_density_calculator
+# Create executable to test calc_column_density
 
-add_executable( test_column_density_calculator   test_column_density_calculator.cpp )
+add_executable( test_calc_column_density   test_calc_column_density.cpp )
 
 
 # Link the necessary libraries
 
-target_link_libraries( test_column_density_calculator   _test_main   ${3DRT}   ${HEALPix} )
+target_link_libraries( test_calc_column_density   _test_main   ${3DRT}   ${HEALPix} )
 
 
 # Create executable to test level_population_solver
@@ -87,7 +87,7 @@ add_executable( test_level_population_solver   test_level_population_solver.cpp 
 target_link_libraries( test_level_population_solver   _test_main   ${3DRT} )
 
 
-# Create executable to test rate_calculations_radfield
+# Create executable to test calc_reac_rates_rad
 
 add_executable( test_radfield_tools   test_radfield_tools.cpp )
 

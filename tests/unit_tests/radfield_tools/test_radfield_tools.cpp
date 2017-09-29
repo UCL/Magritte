@@ -35,7 +35,7 @@ using namespace std;
 /* Test radfield_tools functions                                                                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-TEST_CASE("Test rate_calculations_radfield functions"){
+TEST_CASE("Test calc_reac_rates_rad functions"){
 
 
   int n, spec, reac, ray;                                                               /* index */

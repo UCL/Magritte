@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for dust_temperature_calculation.cpp                                                   */
+/* Header for calc_column_density.cpp                                                      */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,21 +10,33 @@
 
 
 
-#ifndef __DUST_TEMPERATURE_CALCULATION_HPP_INCLUDED__
-#define __DUST_TEMPERATURE_CALCULATION_HPP_INCLUDED__
+#ifndef __calc_column_density_HPP_INCLUDED__
+#define __calc_column_density_HPP_INCLUDED__
+
+#include "declarations.hpp"
 
 
 
-/* dust_temperature_calculation: calculate dust temparatures                                     */
+/* calc_column_density: calculates column density for each species, ray and grid point     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void dust_temperature_calculation( double *UV_field, double *rad_surface,
-                                   double *temperature_dust );
+void calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                                double *column_density, int spec );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __DUST_TEMPERATURE_CALCULATION_HPP_INCLUDED__ */
+/* column_density: calculates the column density for one species along one ray                   */
+/*-----------------------------------------------------------------------------------------------*/
+
+double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                        long gridp, int spec, long ray );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+#endif /* __calc_column_density_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

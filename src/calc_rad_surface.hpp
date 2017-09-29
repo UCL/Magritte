@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for UV_field_calculator.cpp                                                            */
+/* Header for calc_rad_surface.cpp                                                            */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,20 +10,20 @@
 
 
 
-#ifndef __UV_FIELD_CALCULATOR_HPP_INCLUDED__
-#define __UV_FIELD_CALCULATOR_HPP_INCLUDED__
+#ifndef __calc_rad_surface_HPP_INCLUDED__
+#define __calc_rad_surface_HPP_INCLUDED__
 
 
 
-/* UV_field_calculator: calculates the UV radiation field at each grid point                     */
+/* calc_rad_surface: calculates the UV radiation surface for each ray at each grid point   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void UV_field_calculator(double *AV, double *rad_surface, double *UV_field );
+void calc_rad_surface(double *G_external, double *unit_healpixvector, double *rad_surface);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __UV_FIELD_CALCULATOR_HPP_INCLUDED__ */
+#endif /* __calc_rad_surface_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

@@ -34,11 +34,11 @@ using namespace std;
 #include "../../../src/create_healpixvectors.hpp"
 #include "../../../src/ray_tracing.hpp"
 
-#include "../../../src/rad_surface_calculator.hpp"
-#include "../../../src/column_density_calculator.hpp"
-#include "../../../src/UV_field_calculator.hpp"
-#include "../../../src/AV_calculator.hpp"
-#include "../../../src/dust_temperature_calculation.hpp"
+#include "../../../src/calc_rad_surface.hpp"
+#include "../../../src/calc_column_density.hpp"
+#include "../../../src/calc_UV_field.hpp"
+#include "../../../src/calc_AV.hpp"
+#include "../../../src/calc_temperature_dust.hpp"
 #include "../../../src/abundances.hpp"
 
 #include "../../../src/write_output.hpp"
@@ -186,30 +186,30 @@ TEST_CASE("Test chemistry"){
 
   /* Calculate the radiation surface */
 
-  rad_surface_calculator(G_external, unit_healpixvector, rad_surface);
+  calc_rad_surface(G_external, unit_healpixvector, rad_surface);
 
 
   /* Calculate column densities */
 
-  column_density_calculator(gridpoint, evalpoint, column_H2, H2_nr);
-  column_density_calculator(gridpoint, evalpoint, column_HD, HD_nr);
-  column_density_calculator(gridpoint, evalpoint, column_C, C_nr);
-  column_density_calculator(gridpoint, evalpoint, column_CO, CO_nr);
+  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
 
 
   /* Calculate the visual extinction */
 
-  AV_calculator(column_H2, AV);
+  calc_AV(column_H2, AV);
 
 
   /* Calculcate the UV field */
 
-  UV_field_calculator(AV, rad_surface, UV_field);
+  calc_UV_field(AV, rad_surface, UV_field);
 
 
   /* Calculate the dust temperature */
 
-  dust_temperature_calculation(UV_field, rad_surface, temperature_dust);
+  calc_temperature_dust(UV_field, rad_surface, temperature_dust);
 
 
   abundances( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,

@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* radfield_tools: set of helper functions for rate_calculations_radfield.cpp                    */
+/* radfield_tools: set of helper functions for calc_reac_rates_rad.cpp                    */
 /*                                                                                               */
 /* (based on shield in 3D-PDR)                                                                   */
 /*                                                                                               */

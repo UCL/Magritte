@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for rate_calculations_radfield.cpp                                                     */
+/* Header for calc_reac_rates_rad.cpp                                                     */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,8 +10,8 @@
 
 
 
-#ifndef __RATE_CALCULATIONS_RADFIELD_HPP_INCLUDED__
-#define __RATE_CALCULATIONS_RADFIELD_HPP_INCLUDED__
+#ifndef __calc_reac_rates_rad_HPP_INCLUDED__
+#define __calc_reac_rates_rad_HPP_INCLUDED__
 
 
 
@@ -69,6 +69,6 @@ double rate_SI_photoionization( int reac, double *rad_surface, double *AV, long 
 
 
 
-#endif /* __RATE_CALCULATIONS_RADFIELD_HPP_INCLUDED__ */
+#endif /* __calc_reac_rates_rad_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

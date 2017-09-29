@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* rad_surface_calculator: Calculates the UV radiation surface for each ray at each grid point   */
+/* calc_rad_surface: Calculates the UV radiation surface for each ray at each grid point   */
 /*                                                                                               */
 /* (based on 3DPDR in 3D-PDR)                                                                    */
 /*                                                                                               */
@@ -20,14 +20,14 @@
 using namespace std;
 
 #include "declarations.hpp"
-#include "rad_surface_calculator.hpp"
+#include "calc_rad_surface.hpp"
 
 
 
-/* rad_surface_calculator: calculates the UV radiation surface for each ray at each grid point   */
+/* calc_rad_surface: calculates the UV radiation surface for each ray at each grid point   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void rad_surface_calculator(double *G_external, double *unit_healpixvector, double *rad_surface)
+void calc_rad_surface(double *G_external, double *unit_healpixvector, double *rad_surface)
 {
 
   long n;                                                                    /* grid point index */

@@ -115,21 +115,21 @@ test_main.cpp
 ../../../src/heapsort.cpp
 ../../../src/abundances.cpp
 ../../../src/reaction_rates.cpp
-../../../src/rate_calculations.cpp
-../../../src/rate_calculations_radfield.cpp
+../../../src/calc_reac_rates.cpp
+../../../src/calc_reac_rates_rad.cpp
 ../../../src/radfield_tools.cpp
 ../../../src/spline.cpp
-../../../src/AV_calculator.cpp
-../../../src/UV_field_calculator.cpp
-../../../src/column_density_calculator.cpp
-../../../src/rad_surface_calculator.cpp
-../../../src/dust_temperature_calculation.cpp
+../../../src/calc_AV.cpp
+../../../src/calc_UV_field.cpp
+../../../src/calc_column_density.cpp
+../../../src/calc_rad_surface.cpp
+../../../src/calc_temperature_dust.cpp
 ../../../src/write_output.cpp )
 
 target_link_libraries( _chemistry   _sundials )
 
 
-# Create executable to test rate_calculations_radfield
+# Create executable to test calc_reac_rates_rad
 
 add_executable( test_chemistry   test_chemistry.cpp )
 

@@ -203,7 +203,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
 
   /*  Contributes 1 eV on average per carbon ionization
-      Use the C photoionization rate determined in rate_calculations_radfield.cpp [units: s^-1]  */
+      Use the C photoionization rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
   double heating_C_ionization;
@@ -226,7 +226,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   /*  Hollenbach & Tielens, Review of Modern Physics, 1999, 71, 173
 
       Assume 1.5 eV liberated as heat during H2 formation
-      Use the H2 formation rate determined in rate_calculations.cpp [units: cm^3.s^-1]  */
+      Use the H2 formation rate determined in calc_reac_rates.cpp [units: cm^3.s^-1]  */
 
 
   double heating_H2_formation;
@@ -247,7 +247,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
 
   /*  Contributes 0.4 eV on average per photodissociated molecule
-      Use H2 photodissociation rate determined in rate_calculations_radfield.cpp [units: s^-1]  */
+      Use H2 photodissociation rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
   double heating_H2_photodissociation;
@@ -270,7 +270,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   /*  Hollenbach & McKee (1979)
 
       Contributes 2.2 eV on average per vibrationally excited H2* molecule
-      Use H2 photodissociation rate determined in rate_calculations_radfield.cpp [units: s^-1]
+      Use H2 photodissociation rate determined in calc_reac_rates_rad.cpp [units: s^-1]
       Use H2 critical density calculation from Hollenbach & McKee (1979)  */
 
 

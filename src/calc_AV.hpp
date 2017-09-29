@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for column_density_calculator.cpp                                                      */
+/* Header for calc_column_density.cpp                                                      */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,33 +10,22 @@
 
 
 
-#ifndef __COLUMN_DENSITY_CALCULATOR_HPP_INCLUDED__
-#define __COLUMN_DENSITY_CALCULATOR_HPP_INCLUDED__
+#ifndef __calc_AV_HPP_INCLUDED__
+#define __calc_AV_HPP_INCLUDED__
 
 #include "declarations.hpp"
 
 
 
-/* column_density_calculator: calculates column density for each species, ray and grid point     */
+/* calc_AV: calculates the visual extinction along a ray ray at a grid point               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                double *column_density, int spec );
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* column_density: calculates the column density for one species along one ray                   */
-/*-----------------------------------------------------------------------------------------------*/
-
-double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                        long gridp, int spec, long ray );
+void calc_AV( double *column_H2, double *AV );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __COLUMN_DENSITY_CALCULATOR_HPP_INCLUDED__ */
+#endif /* __calc_AV_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

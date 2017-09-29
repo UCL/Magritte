@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* test_column_density_calculator: tests the column_density_calculator function                  */
+/* test_calc_column_density: tests the calc_column_density function                  */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -30,7 +30,7 @@ using namespace std;
 #include "../../src/species_tools.hpp"
 #include "../../src/data_tools.hpp"
 #include "../../src/read_chemdata.hpp"
-#include "../../src/column_density_calculator.hpp"
+#include "../../src/calc_column_density.hpp"
 
 
 #define EPS 1.0E-7
@@ -122,7 +122,7 @@ TEST_CASE("1D regular grid"){
 
   int spec =0;
 
-  column_density_calculator(gridpoint, evalpoint, column_density, spec);
+  calc_column_density(gridpoint, evalpoint, column_density, spec);
 
 
   CHECK( 1==1 );

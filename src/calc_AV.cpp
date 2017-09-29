@@ -17,14 +17,14 @@
 #include <stdlib.h>
 
 #include "declarations.hpp"
-#include "AV_calculator.hpp"
+#include "calc_AV.hpp"
 
 
 
-/* AV_calculator: calculates the visual extinction along a ray ray at a grid point               */
+/* calc_AV: calculates the visual extinction along a ray ray at a grid point               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void AV_calculator( double *column_H2, double *AV )
+void calc_AV( double *column_H2, double *AV )
 {
 
   long n;                                                                    /* grid point index */

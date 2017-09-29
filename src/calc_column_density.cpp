@@ -17,14 +17,14 @@
 #include <stdlib.h>
 
 #include "declarations.hpp"
-#include "column_density_calculator.hpp"
+#include "calc_column_density.hpp"
 
 
 
-/* column_density_calculator: calculates column density for each species, ray and grid point     */
+/* calc_column_density: calculates column density for each species, ray and grid point     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void column_density_calculator( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+void calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                                 double *column_density, int spec )
 {
 
