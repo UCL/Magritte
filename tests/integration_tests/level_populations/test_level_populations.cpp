@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* test_chemistry:                                                                               */
+/* test_level_populations:                                                                       */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -39,8 +39,14 @@ using namespace std;
 
 
 
-TEST_CASE("Test chemistry"){
+TEST_CASE("Test level populations"){
 
+
+  metallicity = 1.0;
+
+  gas_to_dust = 100.0;
+
+  double v_turb = 1.0;
 
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
@@ -58,6 +64,7 @@ TEST_CASE("Test chemistry"){
 
     test_line_datafile[l] = "../../../" + line_datafile[l];
   }
+
 
   /* Define grid (using types defined in definitions.h)*/
 
@@ -211,6 +218,10 @@ TEST_CASE("Test chemistry"){
 
   initialize_temperature_gas(temperature_gas);
 
+  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
+
+  initialize_double_array(temperature_dust, NGRID);
+
   double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
   initialize_level_populations(energy, temperature_gas, pop);
@@ -239,9 +250,9 @@ TEST_CASE("Test chemistry"){
 
   /* Calculate level populations for each line producing species */
 
-  level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency, v_turb,
-                     A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
-                     coltemp, icol, jcol, temperature_gas, weight, energy, mean_intensity );
+  level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency, v_turb,
+                     A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data, coltemp, icol, jcol,
+                     temperature_gas, temperature_dust, weight, energy, mean_intensity );
 
 
   // for (int lspec=0; lspec<NLSPEC; lspec++){

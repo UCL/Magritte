@@ -54,7 +54,26 @@ find_library( HEALPix
 
 # Add library containing the main and the 3D-RT source code (which is to be tested)
 
-add_library( _level_populations   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/initializers.cpp ../../../src/read_input.cpp ../../../src/data_tools.cpp ../../../src/setup_data_structures.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/read_linedata.cpp ../../../src/create_healpixvectors.cpp ../../../src/ray_tracing.cpp ../../../src/heapsort.cpp ../../../src/level_populations.cpp ../../../src/radiative_transfer.cpp ../../../src/calc_C_coeff.cpp ../../../src/level_population_solver.cpp ../../../src/exact_feautrier.cpp ../../../src/write_output.cpp )
+add_library( _level_populations
+test_main.cpp
+../../../src/declarations.hpp
+../../../src/definitions.hpp
+../../../src/initializers.cpp
+../../../src/read_input.cpp
+../../../src/data_tools.cpp
+../../../src/setup_data_structures.cpp
+../../../src/species_tools.cpp
+../../../src/read_chemdata.cpp
+../../../src/read_linedata.cpp
+../../../src/create_healpixvectors.cpp
+../../../src/ray_tracing.cpp
+../../../src/heapsort.cpp
+../../../src/level_populations.cpp
+../../../src/radiative_transfer.cpp
+../../../src/calc_C_coeff.cpp
+../../../src/level_population_solver.cpp
+../../../src/exact_feautrier.cpp
+../../../src/write_output.cpp )
 
 
 # Create executable to test rate_calculations_radfield

@@ -69,7 +69,7 @@ int main()
 
   gas_to_dust = 100.0;
 
-  double v_turb = 0.0;
+  double v_turb = 1.0;
 
 
 

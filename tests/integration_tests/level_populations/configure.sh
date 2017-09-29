@@ -13,6 +13,9 @@ cd tests/integration_tests/level_populations
 
 cmake .
 
+# Execute the Makefile
+
+make
 
 
 # Clean up

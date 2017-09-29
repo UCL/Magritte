@@ -23,18 +23,36 @@ using namespace std;
 
 #include "../../../src/declarations.hpp"
 #include "../../../src/definitions.hpp"
-#include "../../../src/read_input.hpp"
+
+#include "../../../src/initializers.hpp"
 #include "../../../src/data_tools.hpp"
 #include "../../../src/species_tools.hpp"
-#include "../../../src/read_chemdata.hpp"
-#include "../../../src/abundances.hpp"
-#include "../../../src/heating.hpp"
 
+#include "../../../src/read_input.hpp"
+#include "../../../src/read_chemdata.hpp"
+
+#include "../../../src/create_healpixvectors.hpp"
+#include "../../../src/ray_tracing.hpp"
+
+#include "../../../src/rad_surface_calculator.hpp"
+#include "../../../src/column_density_calculator.hpp"
+#include "../../../src/UV_field_calculator.hpp"
+#include "../../../src/AV_calculator.hpp"
+#include "../../../src/dust_temperature_calculation.hpp"
+#include "../../../src/abundances.hpp"
+
+#include "../../../src/write_output.hpp"
 
 
 
 TEST_CASE("Test chemistry"){
 
+
+  metallicity = 1.0;
+
+  gas_to_dust = 100.0;
+
+  double v_turb = 1.0;
 
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
@@ -49,6 +67,12 @@ TEST_CASE("Test chemistry"){
   /* Define grid (using types defined in definitions.h)*/
 
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+
+  /* NOTE: gridpoint does not have to be initialized as long as read_input works */
+
+  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+
+  initialize_evalpoint(evalpoint);
 
 
   /* Read input file */
@@ -91,44 +115,101 @@ TEST_CASE("Test chemistry"){
   read_reactions(test_reac_datafile);
 
 
+  /* Initialize the data structures which will store the evaluation pointa */
+
+  initialize_long_array(key, NGRID*NGRID);
+
+  initialize_long_array(raytot, NGRID*NRAYS);
+
+  initialize_long_array(cum_raytot, NGRID*NRAYS);
+
+
+  /* Create the HEALPix vectors */
+
+  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+
+  long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
+
+
+  create_healpixvectors(unit_healpixvector, antipod);
+
+
+  /* Ray tracing */
+
+  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
+
+
   double temperature_gas[NGRID];
 
-  temperature_gas[0] = 10.0;
+  initialize_temperature_gas(temperature_gas);
 
   double temperature_dust[NGRID];
 
-  temperature_dust[0] = 0.0;
-
-  double rad_surface[NGRID];
-
-  rad_surface[0] = 0.0;
-
-  double AV[NGRID];
-
-  AV[0] = 0.0;
-
-  double column_H2[NGRID];
-
-  column_H2[0] = 0.0;
-
-  double column_HD[NGRID];
-
-  column_HD[0] = 0.0;
-
-  double column_C[NGRID];
-
-  column_C[0] = 0.0;
-
-  double column_CO[NGRID];
-
-  column_CO[0] = 0.0;
+  initialize_double_array(temperature_dust, NGRID);
 
 
-  metallicity = 1.0;
+  double AV[NGRID*NRAYS];
 
-  gas_to_dust = 100.0;
+  initialize_double_array(AV, NGRID*NRAYS);
 
-  double v_turb = 0.0;
+  double UV_field[NGRID];
+
+  initialize_double_array(UV_field, NGRID);
+
+  double column_H2[NGRID*NRAYS];
+
+  initialize_double_array(column_H2, NGRID*NRAYS);
+
+  double column_HD[NGRID*NRAYS];
+
+  initialize_double_array(column_HD, NGRID*NRAYS);
+
+  double column_C[NGRID*NRAYS];
+
+  initialize_double_array(column_C, NGRID*NRAYS);
+
+  double column_CO[NGRID*NRAYS];
+
+  initialize_double_array(column_CO, NGRID*NRAYS);
+
+
+  double rad_surface[NGRID*NRAYS];
+
+  initialize_double_array(rad_surface, NGRID*NRAYS);
+
+
+  double G_external[3];                                       /* external radiation field vector */
+
+  G_external[0] = G_EXTERNAL_X;
+  G_external[1] = G_EXTERNAL_Y;
+  G_external[2] = G_EXTERNAL_Z;
+
+  /* Calculate the radiation surface */
+
+  rad_surface_calculator(G_external, unit_healpixvector, rad_surface);
+
+
+  /* Calculate column densities */
+
+  column_density_calculator(gridpoint, evalpoint, column_H2, H2_nr);
+  column_density_calculator(gridpoint, evalpoint, column_HD, HD_nr);
+  column_density_calculator(gridpoint, evalpoint, column_C, C_nr);
+  column_density_calculator(gridpoint, evalpoint, column_CO, CO_nr);
+
+
+  /* Calculate the visual extinction */
+
+  AV_calculator(column_H2, AV);
+
+
+  /* Calculcate the UV field */
+
+  UV_field_calculator(AV, rad_surface, UV_field);
+
+
+  /* Calculate the dust temperature */
+
+  dust_temperature_calculation(UV_field, rad_surface, temperature_dust);
 
 
   abundances( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,

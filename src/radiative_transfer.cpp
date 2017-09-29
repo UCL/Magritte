@@ -45,6 +45,8 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
   long b_ij = LSPECLEVLEV(lspec,i,j);                                         /* frequency index */
 
+  double escape_probability;                /* escape probability from the Sobolev approximation */
+
 
   /* For half of the rays (only half is needed since we also consider the antipodals) */
 
@@ -176,7 +178,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
           }
 
 
-          double escape_probability = 0.0;
+          escape_probability = 0.0;
 
           double optical_depth1 = 0.0;
           double optical_depth2 = 0.0;
@@ -269,6 +271,12 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
 
   mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
+
+  if(SOBOLEV == true){
+
+    mean_intensity[m_ij] = (1 - escape_probability) * Source[m_ij]
+                           + escape_probability * continuum_mean_intensity;
+  }
 
 
 

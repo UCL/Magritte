@@ -14,15 +14,30 @@ project(3D-RT_tests)
 
 # Resize the stack to 128 Mb (UNIX version)
 
-add_custom_target( RESIZE_STACK ALL
-                   COMMAND ulimit -S -s 131072 )
+# add_custom_target( RESIZE_STACK ALL
+#                    COMMAND ulimit -S -s 131072 )
 
 
 # Make the setup executable and execute setup
 
-add_custom_target( MAKE_SETUP ALL
-                   COMMAND make PARAMETERS_FILE=../tests/integration_tests/chemistry/parameters_for_testing.txt && ./setup
-                   WORKING_DIRECTORY ../../../setup )
+add_custom_command( OUTPUT ../../../src/declarations.hpp
+                    COMMAND make PARAMETERS_FILE=../tests/integration_tests/chemistry/parameters.txt && ./setup.exe
+                    WORKING_DIRECTORY ../../../setup
+                    DEPENDS parameters.txt )
+
+add_custom_target( MAKE_SETUP
+                   DEPENDS ../../../src/declarations.hpp  )
+
+
+# Add compiler flags
+
+find_package(OpenMP REQUIRED)
+
+if(OPENMP_FOUND)
+  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+  set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}" )
+endif()
 
 
 # Specify path to SUNDIALS header files
@@ -30,6 +45,8 @@ add_custom_target( MAKE_SETUP ALL
 set( SUNDIALS_INC_DIR
      ../../../src/sundials/include
      CACHE STRING "Location of SUNDIALS header files" )
+
+include_directories(${SUNDIALS_INC_DIR})
 
 
 # Set search path for SUNDIALS libraries
@@ -75,10 +92,39 @@ add_library( _sundials   ../../../src/sundials/rate_equation_solver.cpp )
 target_link_libraries( _sundials   ${SUNDIALS_LIBS} )
 
 
+# Add HEALPix library
+
+find_library( HEALPix
+              lib_HEALPix.a ../../../src/HEALPix
+              DOC "HEALPix library" )
+
 
 # Add library containing the main and the 3DRT source code (which is to be tested)
 
-add_library( _chemistry   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/read_input.cpp ../../../src/data_tools.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/abundances.cpp ../../../src/reaction_rates.cpp ../../../src/rate_calculations.cpp ../../../src/rate_calculations_radfield.cpp ../../../src/radfield_tools.cpp ../../../src/spline.cpp )
+add_library( _chemistry
+test_main.cpp
+../../../src/declarations.hpp
+../../../src/definitions.hpp
+../../../src/initializers.cpp
+../../../src/read_input.cpp
+../../../src/data_tools.cpp
+../../../src/species_tools.cpp
+../../../src/read_chemdata.cpp
+../../../src/create_healpixvectors.cpp
+../../../src/ray_tracing.cpp
+../../../src/heapsort.cpp
+../../../src/abundances.cpp
+../../../src/reaction_rates.cpp
+../../../src/rate_calculations.cpp
+../../../src/rate_calculations_radfield.cpp
+../../../src/radfield_tools.cpp
+../../../src/spline.cpp
+../../../src/AV_calculator.cpp
+../../../src/UV_field_calculator.cpp
+../../../src/column_density_calculator.cpp
+../../../src/rad_surface_calculator.cpp
+../../../src/dust_temperature_calculation.cpp
+../../../src/write_output.cpp )
 
 target_link_libraries( _chemistry   _sundials )
 
@@ -90,5 +136,4 @@ add_executable( test_chemistry   test_chemistry.cpp )
 
 # Link the necessary libraries
 
-target_link_libraries( test_chemistry   _chemistry )
-
+target_link_libraries( test_chemistry   _chemistry ${HEALPix} )
