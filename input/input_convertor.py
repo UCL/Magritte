@@ -13,9 +13,9 @@ ngrid = np.shape(data)[0]
 
 # Rotate the gid such that the 1D line coincides with a HEALPix ray
 
-x = 0.527046*data[:,0]
-y = 0.527046*data[:,0]
-z = 0.666667*data[:,0]
+x = 0.527046276694729*data[:,0]
+y = 0.527046276694729*data[:,0]
+z = 0.666666666666667*data[:,0]
 
 vx = np.zeros(ngrid)
 vy = np.zeros(ngrid)

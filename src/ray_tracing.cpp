@@ -174,8 +174,19 @@ void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *e
 	                           + rvec[1]*unit_healpixvector[VINDEX(ipix,1)]
 	                           + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
 
-      double angle = acos( (rvec_dot_uhpv - Z[ipix])
-		                       / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]) );
+      double cosine = (rvec_dot_uhpv - Z[ipix])
+		                  / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
+
+
+      /* Avoid nan angles because of rounding errors */
+
+      if(cosine>1.0){
+
+        cosine = 1.0;
+      }
+
+
+      double angle = acos( cosine );
 
 
       /* If angle < THETA_CRIT, add the new evaluation point */
@@ -210,12 +221,21 @@ void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *e
 
           evalpoint[GINDEX(gridp,rb[n])].eqp = gridp;
         }
+        
         else {
 
           evalpoint[GINDEX(gridp,rb[n])].eqp = rb[n];
         }
 
-      }
+      } /* end of if angle < THETA_CRIT */
+
+      // else {
+      //
+      //   printf("angle is %lf for (%ld,%ld) \n", angle, gridp, n);
+      //   printf("zero? %lE \n", (rvec_dot_uhpv - Z[ipix])
+  		//                        / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]) -1.0 );
+      //
+      // }
 
 
     } /* end of n loop over gridpoints (around an origin) */

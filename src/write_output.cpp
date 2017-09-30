@@ -88,9 +88,9 @@ int write_healpixvectors(string tag, double *unit_healpixvector)
 
   for (long r=0; r<NRAYS; r++){
 
-    fprintf( hp, "%f\t%f\t%f\n", unit_healpixvector[VINDEX(r,0)],
-                                 unit_healpixvector[VINDEX(r,1)],
-                                 unit_healpixvector[VINDEX(r,2)] );
+    fprintf( hp, "%.15f\t%.15f\t%.15f\n", unit_healpixvector[VINDEX(r,0)],
+                                          unit_healpixvector[VINDEX(r,1)],
+                                          unit_healpixvector[VINDEX(r,2)] );
   }
 
   fclose(hp);
@@ -520,6 +520,142 @@ int write_temperature_dust(string tag, double *temperature_dust)
 
 
   fclose(temp_dust);
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_UV_field: write the UV field at each point                                              */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_UV_field(string tag, double *UV_field)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/UV_field" + tag + ".txt";
+
+  FILE *UV_file = fopen(file_name.c_str(), "w");
+
+  if (UV_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    fprintf( UV_file, "%lE\n", UV_field[n] );
+  }
+
+
+  fclose(UV_file);
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_UV_field: write the visual extinction (AV) at each point                                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_AV(string tag, double *AV)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/AV" + tag + ".txt";
+
+  FILE *AV_file = fopen(file_name.c_str(), "w");
+
+  if (AV_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    for(long r=0; r<NRAYS; r++){
+
+      fprintf( AV_file, "%lE\t", AV[RINDEX(n,r)] );
+    }
+
+    fprintf( AV_file, "\n" );
+  }
+
+
+  fclose(AV_file);
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_rad_surface: write the rad surface at each point                                        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_rad_surface(string tag, double *rad_surface)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/rad_surface" + tag + ".txt";
+
+  FILE *rad_file = fopen(file_name.c_str(), "w");
+
+  if (rad_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    for(long r=0; r<NRAYS; r++){
+
+      fprintf( rad_file, "%lE\t", rad_surface[RINDEX(n,r)] );
+    }
+
+    fprintf( rad_file, "\n" );
+  }
+
+
+  fclose(rad_file);
 
 
   return(0);

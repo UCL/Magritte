@@ -1,2 +1,2 @@
-#define PARAMETERS_FILE "../parameters.txt" 
-#define NLSPEC 4
+#define PARAMETERS_FILE "../tests/integration_tests/chemistry/parameters.txt" 
+#define NLSPEC 1

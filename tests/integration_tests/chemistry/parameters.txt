@@ -16,9 +16,9 @@ ____________________________________|___________________
                                     |
 false                               | sobolev
                                     |
-ISO                                 | field form
+UNI                                 | field form
                                     |
-300                                 | MAX_NITERATIONS
+500                                 | MAX_NITERATIONS
                                     |
 1.0E8                               | time_end (years)
                                     |

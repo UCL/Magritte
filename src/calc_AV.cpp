@@ -21,7 +21,7 @@
 
 
 
-/* calc_AV: calculates the visual extinction along a ray ray at a grid point               */
+/* calc_AV: calculates the visual extinction along a ray ray at a grid point                     */
 /*-----------------------------------------------------------------------------------------------*/
 
 void calc_AV( double *column_H2, double *AV )

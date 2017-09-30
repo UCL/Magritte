@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* calc_UV_field: Calculates the UV radiation field at each grid point                     */
+/* calc_UV_field: Calculates the UV radiation field at each grid point                           */
 /*                                                                                               */
 /* (based on 3DPDR in 3D-PDR)                                                                    */
 /*                                                                                               */
@@ -21,7 +21,7 @@
 
 
 
-/* calc_UV_field: calculates the UV radiation field at each grid point                     */
+/* calc_UV_field: calculates the UV radiation field at each grid point                           */
 /*-----------------------------------------------------------------------------------------------*/
 
 void calc_UV_field( double *AV, double *rad_surface, double *UV_field )
@@ -46,7 +46,10 @@ void calc_UV_field( double *AV, double *rad_surface, double *UV_field )
 
     for (r=0; r<NRAYS; r++){
 
-      UV_field[n] = UV_field[n] + rad_surface[RINDEX(n,r)]*exp(-tau_UV*AV[RINDEX(n,r)]);
+      if(raytot[RINDEX(n,r)] > 0){
+
+        UV_field[n] = UV_field[n] + rad_surface[RINDEX(n,r)]*exp(-tau_UV*AV[RINDEX(n,r)]);
+      }
     }
 
 

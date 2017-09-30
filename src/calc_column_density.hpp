@@ -30,8 +30,8 @@ void calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 /* column_density: calculates the column density for one species along one ray                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-double column_density_( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                        long gridp, int spec, long ray );
+double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                                long gridp, int spec, long ray );
 
 /*-----------------------------------------------------------------------------------------------*/
 

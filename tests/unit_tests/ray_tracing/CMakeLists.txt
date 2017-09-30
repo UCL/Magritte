@@ -14,20 +14,33 @@ project(3D-RT_tests)
 
 # Resize the stack to 128 Mb (UNIX version)
 
-add_custom_target( RESIZE_STACK ALL
-                   COMMAND ulimit -S -s 131072 )
+# add_custom_target( RESIZE_STACK ALL
+#                    COMMAND ulimit -S -s 131072 )
 
 
 # Make the setup executable and execute setup
 
-add_custom_target( MAKE_SETUP ALL
-                   COMMAND make PARAMETERS_FILE=../tests/unit_tests/ray_tracing/parameters_for_testing.txt && ./setup
-                   WORKING_DIRECTORY ../../../setup )
+add_custom_command( OUTPUT ../../../src/declarations.hpp
+                    COMMAND make PARAMETERS_FILE=../tests/unit_tests/ray_tracing/parameters.txt && ./setup.exe
+                    WORKING_DIRECTORY ../../../setup
+                    DEPENDS parameters.txt )
+
+add_custom_target( MAKE_SETUP
+                   DEPENDS ../../../src/declarations.hpp  )
 
 
 # Add the test main and the 3DRT source code (which is to be tested)
 
-add_library( _ray_tracing   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/initializers.cpp ../../../src/read_input.cpp ../../../src/ray_tracing.cpp ../../../src/heapsort.cpp ../../../src/create_healpixvectors.cpp )
+add_library( _ray_tracing
+test_main.cpp
+../../../src/declarations.hpp
+../../../src/definitions.hpp
+../../../src/initializers.cpp
+../../../src/read_input.cpp
+../../../src/ray_tracing.cpp
+../../../src/heapsort.cpp
+../../../src/create_healpixvectors.cpp
+../../../src/write_output.cpp )
 
 
 # Add compiler flags
@@ -56,4 +69,3 @@ add_executable( test_ray_tracing   test_ray_tracing.cpp )
 # Link the necessary libraries
 
 target_link_libraries( test_ray_tracing   _ray_tracing ${HEALPix} )
-

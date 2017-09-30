@@ -157,6 +157,10 @@ TEST_CASE("Test chemistry"){
 
   initialize_double_array(UV_field, NGRID);
 
+  double column_H[NGRID*NRAYS];
+
+  initialize_double_array(column_H, NGRID*NRAYS);
+
   double column_H2[NGRID*NRAYS];
 
   initialize_double_array(column_H2, NGRID*NRAYS);
@@ -193,7 +197,7 @@ TEST_CASE("Test chemistry"){
 
   /* Iterate over the chemistry alone */
 
-  for(int iteration=0; iteration<32; iteration++){
+  for(int iteration=0; iteration<8; iteration++){
 
 
     /* Temporary storage for the species */
@@ -208,6 +212,7 @@ TEST_CASE("Test chemistry"){
 
     /* Calculate column densities */
 
+    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
     calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
     calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
     calc_column_density(gridpoint, evalpoint, column_C, C_nr);
@@ -216,12 +221,27 @@ TEST_CASE("Test chemistry"){
 
     /* Calculate the visual extinction */
 
-    calc_AV(column_H2, AV);
+    calc_AV(column_H, AV);
 
 
     /* Calculcate the UV field */
 
     calc_UV_field(AV, rad_surface, UV_field);
+
+
+    string tag0 = "0";
+
+    write_UV_field(tag0, UV_field);
+
+    write_AV(tag0, AV);
+
+    write_rad_surface(tag0, rad_surface);
+
+    printf("%.25lf\n", unit_healpixvector[VINDEX(0,0)]);
+    printf("%.25lf\n", unit_healpixvector[VINDEX(0,1)]);
+    printf("%.25lf\n", unit_healpixvector[VINDEX(0,2)]);
+
+    write_eval("", evalpoint);
 
 
     /* Calculate the dust temperature */
