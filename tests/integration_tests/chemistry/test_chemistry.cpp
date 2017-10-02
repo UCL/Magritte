@@ -249,11 +249,16 @@ TEST_CASE("Test chemistry"){
     calc_temperature_dust(UV_field, rad_surface, temperature_dust);
 
 
+    write_temperature_dust("", temperature_dust);
+
+
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                 column_H2, column_HD, column_C, column_CO, v_turb );
 
+
+    /* Check for convergence */
 
     for(int spec=0; spec<NSPEC; spec++){
 
@@ -282,6 +287,8 @@ TEST_CASE("Test chemistry"){
     string tag = ss.str();
 
     write_abundances(tag);
+
+    write_reaction_rates(tag, reaction);
 
   }
 

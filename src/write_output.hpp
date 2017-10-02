@@ -145,6 +145,15 @@ int write_rad_surface(string tag, double *rad_surface);
 
 
 
+/* write_reaction_rates: write the rad surface at each point                                        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_reaction_rates(string tag, REACTION *reaction);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

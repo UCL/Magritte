@@ -663,3 +663,50 @@ int write_rad_surface(string tag, double *rad_surface)
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_reaction_rates: write the rad surface at each point                                        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_reaction_rates(string tag, REACTION *reaction)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/reaction_rates" + tag + ".txt";
+
+  FILE *reac_file = fopen(file_name.c_str(), "w");
+
+  if (reac_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    for(int reac=0; reac<NREAC; reac++){
+
+      fprintf( reac_file, "%lE\t", reaction[reac].k[n] );
+    }
+
+    fprintf( reac_file, "\n" );
+  }
+
+
+  fclose(reac_file);
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
