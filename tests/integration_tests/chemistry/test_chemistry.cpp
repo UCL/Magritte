@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <iostream>
 #include <string>
@@ -226,6 +227,9 @@ TEST_CASE("Test chemistry"){
     calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
 
 
+    // write_double_1("column_H", tag, NGRID,  )
+
+
     /* Calculate the visual extinction */
 
     calc_AV(column_H, AV);
@@ -244,6 +248,16 @@ TEST_CASE("Test chemistry"){
     write_rad_surface(tag, rad_surface);
 
     write_eval("", evalpoint);
+
+
+    /* Implement guess temperature */
+
+    for(long n=0; n<NGRID; n++){
+
+      temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
+    }
+
+    write_temperature_gas("", temperature_gas);
 
 
     /* Calculate the dust temperature */

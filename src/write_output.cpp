@@ -716,11 +716,11 @@ int write_reaction_rates(string tag, REACTION *reaction)
 
 
 
-/* write_canonical_reactions: write the number of the reactions which are caninically calculated */
+/* write_certain_reactions: write rates of certain reactions (as indicated in reaction_rates.cpp)*/
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_canonical_rates( string tag, int nr_can_reac, int *canonical_reactions,
-                           REACTION *reaction )
+int write_certain_rates( string tag, string name, int nr_certain_reac, int *certain_reactions,
+                         REACTION *reaction )
 {
 
 
@@ -729,44 +729,152 @@ int write_canonical_rates( string tag, int nr_can_reac, int *canonical_reactions
     tag = "_" + tag;
   }
 
-  string file_name = "output/canonical_rates" + tag + ".txt";
 
-  FILE *can_file = fopen(file_name.c_str(), "w");
 
-  if (can_file == NULL){
+  string file_name0 = "output/" + name + "_reactions" + tag + ".txt";
+
+  FILE *certain_file0 = fopen(file_name0.c_str(), "w");
+
+  if (certain_file0 == NULL){
 
     printf("Error opening file!\n");
     exit(1);
   }
 
-  cout << "s;lk;lk " << nr_can_reac << "\n";
+
+  for(int reac=0; reac<nr_certain_reac; reac++){
+
+    fprintf( certain_file0, "%d\n", certain_reactions[reac] );
+  }
+
+  fclose(certain_file0);
 
 
-  for(int reac=0; reac<nr_can_reac; reac++){
 
-    fprintf( can_file, "%d \t", reac );
+  string file_name = "output/" + name + "_rates" + tag + ".txt";
+
+  FILE *certain_file = fopen(file_name.c_str(), "w");
+
+  if (certain_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
   }
 
 
-  fprintf( can_file, "\n" );
+  for(int reac=0; reac<nr_certain_reac; reac++){
+
+    fprintf( certain_file, "%d \t", certain_reactions[reac] );
+  }
+
+
+  fprintf( certain_file, "\n" );
 
   for (long n=0; n<NGRID; n++){
 
-    for(int reac=0; reac<nr_can_reac; reac++){
+    for(int reac=0; reac<nr_certain_reac; reac++){
 
-      fprintf( can_file, "%lE \t", reaction[canonical_reactions[reac]].k[n] );
-      cout << "YOW yow " << canonical_reactions[reac] << "\n";
+      fprintf( certain_file, "%lE \t", reaction[certain_reactions[reac]].k[n] );
     }
 
-    fprintf( can_file, "\n" );
+    fprintf( certain_file, "\n" );
   }
 
 
-  fclose(can_file);
+  fclose(certain_file);
 
 
   return(0);
 
 }
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_double_1: write a 1D list of doubles                                                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_double_1(string name, string tag, long length, double *variable)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/" + name + tag + ".txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+  if (file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<length; n++){
+
+    fprintf( file, "%lE\n", variable[n] );
+  }
+
+
+  fclose(file);
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_double_2: write a 2D array of doubles                                                   */
+/*-----------------------------------------------------------------------------------------------*/
+// 
+// int write_double_2(string name, string tag, long nrows, long ncols, double *variable)
+// {
+//
+//
+//   if ( !tag.empty() ){
+//
+//     tag = "_" + tag;
+//   }
+//
+//   string file_name = "output/" + name + tag + ".txt";
+//
+//   FILE *file = fopen(file_name.c_str(), "w");
+//
+//   if (file == NULL){
+//
+//     printf("Error opening file!\n");
+//     exit(1);
+//   }
+//
+//
+//   for (long row=0; row<nrows; row++){
+//
+//     for(long col=0; col<ncols; col++){
+//
+//       fprintf( file, "%lE\t", variable[n] );
+//     }
+//
+//     fprintf( file, "\n" );
+//   }
+//
+//
+//   fclose(file);
+//
+//
+//   return(0);
+//
+// }
 
 /*-----------------------------------------------------------------------------------------------*/

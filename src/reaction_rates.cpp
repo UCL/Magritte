@@ -32,7 +32,8 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
                      double *rad_surface, double *AV,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double v_turb, long gridp,
-                     int *nr_can_reac, int *canonical_reactions )
+                     int *nr_can_reac, int *canonical_reactions,
+                     int *nr_can_phot, int *can_photo_reactions )
 {
 
 
@@ -264,6 +265,25 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
     }
 
 
+    /* Other (canonical) photoreaction */
+
+    else if ( R2 == "PHOTON" ){
+
+      reaction[reac].k[gridp] = rate_canonical_photoreaction( reac, temperature_gas[gridp],
+                                                              rad_surface, AV, gridp );
+
+
+
+      /* Output related variables, for testing only */
+
+      can_photo_reactions[*nr_can_phot] = reac;
+      *nr_can_phot = *nr_can_phot + 1;
+
+      /* ------------------------------------------ */
+
+
+    }
+
 
 
     /* The following reactions are again described in calc_reac_rates.s */
@@ -278,8 +298,6 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
 
       /* Output related variables, for testing only */
-
-      cout << "nr_can_reac " << *nr_can_reac << "\n";
 
       canonical_reactions[*nr_can_reac] = reac;
       *nr_can_reac = *nr_can_reac + 1;

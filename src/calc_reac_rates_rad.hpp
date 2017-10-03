@@ -69,6 +69,16 @@ double rate_SI_photoionization( int reac, double *rad_surface, double *AV, long 
 
 
 
+/* rate_canonical_photoreaction: returns rate coefficient for a canonical photoreaction          */
+/*-----------------------------------------------------------------------------------------------*/
+
+double rate_canonical_photoreaction( int reac, double temperature_gas, double *rad_surface,
+                                     double *AV, long gridp );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __calc_reac_rates_rad_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

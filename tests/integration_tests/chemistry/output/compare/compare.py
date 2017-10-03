@@ -12,30 +12,23 @@ else:
     tag = ""
 
 
-file_name = "../" + name + "_rates" + tag + ".txt"
+file_name = "../" + name + tag + ".txt"
 
 print file_name
 
 rates = np.loadtxt(file_name)
 
 ngrid = np.shape(rates)[0]
-nreac = np.shape(rates)[1]
 
 
-file_name = "output_3D-PDR/" + name + "_rates" + tag + "_3D-PDR.txt"
+
+file_name = "output_3D-PDR/" + name + tag + "_3D-PDR.txt"
 
 rates_2 = np.loadtxt(file_name)
 
 
 error          = rates - rates_2
 relative_error = 2.0*abs(error)/(rates+rates_2)
-
-print " "
-print "Do the reaction numbers agree?"
-
-# for item in error[0][:]
-#     if(item != 0):
-#         print "Reaction " + item + "has a wrong partner!"
 
 
 # Make the plots
@@ -47,14 +40,12 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(111)
 
-data_line = np.zeros(ngrid+1)
+data_line = np.zeros(ngrid)
 
-for reac in range(nreac):
-    data_line = relative_error[:,reac]
-    if(max(data_line) > 1.0E-99):
-        ax1.plot(data_line, label=reac)
+data_line = error
+# if(max(data_line) > 1.0E-99):
+ax1.plot(data_line)
 
-ax1.legend()
 ax1.set_title(name + " error")
 ax1.set_xlabel("x (grid point)")
 ax1.set_ylabel(name + " error")

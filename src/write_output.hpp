@@ -154,16 +154,25 @@ int write_reaction_rates(string tag, REACTION *reaction);
 
 
 
-/* write_canonical_reactions: write the number of the reactions which are caninically calculated */
+/* write_certain_reactions: write rates of certain reactions (as indicated in reaction_rates.cpp)*/
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_canonical_rates( string tag, int nr_can_reac, int *canonical_reactions,
-                           REACTION *reaction );
+int write_certain_rates( string tag, string name, int nr_certain_reac, int *certain_reactions,
+                         REACTION *reaction );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* write_double_1: write a 1D list of doubles                                                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_double_1(string name, string tag, long length, double *variable);
 
 /*-----------------------------------------------------------------------------------------------*/

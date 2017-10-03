@@ -596,7 +596,7 @@ double rate_canonical( int reac, double temperature_gas)
       return k = 0.0;
     }
 
-    else if ( temperature_gas < RT_max ){
+    else if ( temperature_gas <= RT_max ){
 
       return k = alpha * pow(temperature_gas/300.0, beta) * exp(-gamma/temperature_gas);
     }

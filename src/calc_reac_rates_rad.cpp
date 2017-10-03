@@ -328,3 +328,75 @@ double rate_SI_photoionization( int reac, double *rad_surface, double *AV, long 
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* rate_canonical_photoreaction: returns rate coefficient for a canonical photoreaction          */
+/*-----------------------------------------------------------------------------------------------*/
+
+double rate_canonical_photoreaction( int reac, double temperature_gas, double *rad_surface,
+                                     double *AV, long gridp )
+{
+
+
+  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
+                             /* in this case the unattenuated photodissociation rate (in cm^3/s) */
+  double beta;                               /* beta coefficient to calculate rate coefficient k */
+  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+
+  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
+  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+
+  double tau;                                                                   /* optical depth */
+
+  double k;                                                              /* reaction coefficient */
+
+
+  /* For all duplicates */
+  /* duplicates is 1 if there is only on entry for the reaction (different from 3D-PDR) */
+
+  for (int rc=0; rc<reaction[reac].dup; rc++){
+
+    alpha = reaction[reac+rc].alpha;
+    beta  = reaction[reac+rc].beta;
+    gamma = reaction[reac+rc].gamma;
+
+    RT_min = reaction[reac+rc].RT_min;
+    RT_max = reaction[reac+rc].RT_max;
+
+
+    /* Check for large negative gamma values that might cause discrepant
+       rates at low temperatures. Set these rates to zero when T < RTMIN. */
+
+    if ( gamma < -200.0  &&  temperature_gas < RT_min ){
+
+      return k = 0.0;
+    }
+
+    else if ( temperature_gas < RT_max ){
+
+
+      for (long ray=0; ray<NRAYS; ray++){
+
+
+        /* Calculate the optical depth in the SI absorption band, accounting
+           for grain extinction and shielding by ??? */
+
+        double tau = gamma*AV[RINDEX(gridp,ray)];
+
+
+        /* Calculate the SI photoionization rate */
+
+        k = k + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau) / 2.0;
+      }
+
+    }
+
+  } /* end of rc loop over duplicates */
+
+  return k;
+}
+
+/*-----------------------------------------------------------------------------------------------*/
