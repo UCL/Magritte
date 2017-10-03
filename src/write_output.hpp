@@ -154,6 +154,16 @@ int write_reaction_rates(string tag, REACTION *reaction);
 
 
 
+/* write_canonical_reactions: write the number of the reactions which are caninically calculated */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_canonical_rates( string tag, int nr_can_reac, int *canonical_reactions,
+                           REACTION *reaction );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

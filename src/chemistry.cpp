@@ -23,6 +23,7 @@
 #include "chemistry.hpp"
 #include "reaction_rates.hpp"
 #include "sundials/rate_equation_solver.hpp"
+#include "write_output.hpp"
 
 
 
@@ -30,10 +31,20 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperature_dust,
-                 double *rad_surface, double *AV,
-                 double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                 double v_turb )
+               double *rad_surface, double *AV,
+               double *column_H2, double *column_HD, double *column_C, double *column_CO,
+               double v_turb )
 {
+
+
+  /* Output related variables, for testing only */
+
+  int nr_can_reac = 0;
+
+
+  int canonical_reactions[NREAC];
+
+  /* ------------------------------------------ */
 
 
   /* For all gridpoints */
@@ -41,10 +52,16 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
   for (long gridp=0; gridp<NGRID; gridp++){
 
 
+
+    nr_can_reac = 0;
+
+
+
     /* Calculate the reaction rates */
 
     reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                    column_H2, column_HD, column_C, column_CO, v_turb, gridp );
+                    column_H2, column_HD, column_C, column_CO, v_turb, gridp,
+                    &nr_can_reac, canonical_reactions );
 
 
     /* Solve the rate equations */
@@ -53,6 +70,15 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
 
   } /* end of gridp loop over grid points */
+
+
+
+  /* Output related variables, for testing only */
+
+  write_canonical_rates("0", nr_can_reac, canonical_reactions, reaction);
+
+  /* ------------------------------------------ */
+
 
 
   return(0);

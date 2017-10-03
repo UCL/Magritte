@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <string>
 #include <sstream>
 using namespace std;
@@ -668,7 +669,7 @@ int write_rad_surface(string tag, double *rad_surface)
 
 
 
-/* write_reaction_rates: write the rad surface at each point                                        */
+/* write_reaction_rates: write the rad surface at each point                                     */
 /*-----------------------------------------------------------------------------------------------*/
 
 int write_reaction_rates(string tag, REACTION *reaction)
@@ -703,6 +704,65 @@ int write_reaction_rates(string tag, REACTION *reaction)
 
 
   fclose(reac_file);
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_canonical_reactions: write the number of the reactions which are caninically calculated */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_canonical_rates( string tag, int nr_can_reac, int *canonical_reactions,
+                           REACTION *reaction )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/canonical_rates" + tag + ".txt";
+
+  FILE *can_file = fopen(file_name.c_str(), "w");
+
+  if (can_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+  cout << "s;lk;lk " << nr_can_reac << "\n";
+
+
+  for(int reac=0; reac<nr_can_reac; reac++){
+
+    fprintf( can_file, "%d \t", reac );
+  }
+
+
+  fprintf( can_file, "\n" );
+
+  for (long n=0; n<NGRID; n++){
+
+    for(int reac=0; reac<nr_can_reac; reac++){
+
+      fprintf( can_file, "%lE \t", reaction[canonical_reactions[reac]].k[n] );
+      cout << "YOW yow " << canonical_reactions[reac] << "\n";
+    }
+
+    fprintf( can_file, "\n" );
+  }
+
+
+  fclose(can_file);
 
 
   return(0);

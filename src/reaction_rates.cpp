@@ -13,6 +13,7 @@
 
 
 #include <stdio.h>
+#include <iostream>
 #include <string>
 #include <string.h>
 #include <math.h>
@@ -30,7 +31,8 @@
 void reaction_rates( double *temperature_gas, double *temperature_dust,
                      double *rad_surface, double *AV,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double v_turb, long gridp )
+                     double v_turb, long gridp,
+                     int *nr_can_reac, int *canonical_reactions )
 {
 
 
@@ -47,6 +49,8 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
   /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */
   /* The rate functions are calculated locally so only need the
+
+
 
   /* For all reactions */
 
@@ -210,7 +214,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
     /* H2 photodissociation */
     /* Taking into account self-shielding and grain extinction */
 
-    else if ( R1 == "H2"  &&  R2 == ""  &&  R3 == "" ){
+    else if ( R1 == "H2"  &&  R2 == "PHOTON"  &&  R3 == "" ){
 
       H2_photodissociation_nr = reac;
 
@@ -221,7 +225,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
     /* HD photodissociation */
 
-    else if ( R1 == "HD"  &&  R2 == ""  &&  R3 == "" ){
+    else if ( R1 == "HD"  &&  R2 == "PHOTON"  &&  R3 == "" ){
 
       reaction[reac].k[gridp] = rate_H2_photodissociation( reac, rad_surface, AV, column_HD,
                                                            v_turb, gridp );
@@ -230,7 +234,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
     /* CO photodissociation */
 
-    else if ( R1 == "CO"  &&  R2 == ""  &&  R3 == ""
+    else if ( R1 == "CO"  &&  R2 == "PHOTON"  &&  R3 == ""
               && ( P1 == "C"  ||  P2 == "C"  ||  P3 == "C"  || P4 == "C"  )
               && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O" ) ){
 
@@ -239,10 +243,9 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
     }
 
 
-
     /* C photoionization */
 
-    else if ( R1 == "C"  &&  R2 == ""  &&  R3 == ""
+    else if ( R1 == "C"  &&  R2 == "PHOTON"  &&  R3 == ""
               && ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) ){
 
       C_ionization_nr = reac;
@@ -254,7 +257,7 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
     /* SI photoionization */
 
-    else if ( R1 == "S"  &&  R2 == ""  &&  R3 == ""
+    else if ( R1 == "S"  &&  R2 == "PHOTON"  &&  R3 == ""
               && ( (P1 == "S+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "S+") ) ){
 
       reaction[reac].k[gridp] = rate_SI_photoionization(reac, rad_surface, AV, gridp);
@@ -271,6 +274,20 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
     else {
 
       reaction[reac].k[gridp] = rate_canonical(reac, temperature_gas[gridp]);
+
+
+
+      /* Output related variables, for testing only */
+
+      cout << "nr_can_reac " << *nr_can_reac << "\n";
+
+      canonical_reactions[*nr_can_reac] = reac;
+      *nr_can_reac = *nr_can_reac + 1;
+
+      /* ------------------------------------------ */
+
+
+
     }
 
 

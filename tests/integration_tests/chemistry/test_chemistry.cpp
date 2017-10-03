@@ -197,7 +197,14 @@ TEST_CASE("Test chemistry"){
 
   /* Iterate over the chemistry alone */
 
-  for(int iteration=0; iteration<8; iteration++){
+  for(int iteration=0; iteration<1; iteration++){
+
+
+    /* Construct the tags */
+
+    stringstream ss;
+    ss << iteration;
+    string tag = ss.str();
 
 
     /* Temporary storage for the species */
@@ -229,17 +236,12 @@ TEST_CASE("Test chemistry"){
     calc_UV_field(AV, rad_surface, UV_field);
 
 
-    string tag0 = "0";
 
-    write_UV_field(tag0, UV_field);
+    write_UV_field(tag, UV_field);
 
-    write_AV(tag0, AV);
+    write_AV(tag, AV);
 
-    write_rad_surface(tag0, rad_surface);
-
-    printf("%.25lf\n", unit_healpixvector[VINDEX(0,0)]);
-    printf("%.25lf\n", unit_healpixvector[VINDEX(0,1)]);
-    printf("%.25lf\n", unit_healpixvector[VINDEX(0,2)]);
+    write_rad_surface(tag, rad_surface);
 
     write_eval("", evalpoint);
 
@@ -279,12 +281,6 @@ TEST_CASE("Test chemistry"){
 
     }
 
-    /* Write output */
-
-    stringstream ss;
-    ss << iteration;
-
-    string tag = ss.str();
 
     write_abundances(tag);
 

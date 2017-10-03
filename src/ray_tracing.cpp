@@ -221,7 +221,7 @@ void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *e
 
           evalpoint[GINDEX(gridp,rb[n])].eqp = gridp;
         }
-        
+
         else {
 
           evalpoint[GINDEX(gridp,rb[n])].eqp = rb[n];
@@ -291,9 +291,9 @@ void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *e
   } /* end of OpenMP parallel region */
 
 
-  printf("(ray_tracing): time in dividing evaluation points %lf sec\n", time_de);
-  printf("(ray_tracing): time in making the key             %lf sec\n", time_key);
-  printf("(ray_tracing): time in heapsort routine           %lf sec\n", time_sort);
+  printf( "(ray_tracing): time in dividing evaluation points %lf sec\n", time_de );
+  printf( "(ray_tracing): time in making the key             %lf sec\n", time_key );
+  printf( "(ray_tracing): time in heapsort routine           %lf sec\n", time_sort );
 
   printf( "(ray_tracing): succes rate %.2lf" \
           "(# eval. points)/ ((# grid points)^2 - (# grid points)) \n",
