@@ -38,9 +38,9 @@
 
 /* Problem Constants */
 
-#define NEQ      (NSPEC-2)             /* number of equations: NSPEC minus dummy minus electrons */
-#define RTOL     RCONST(1.0E-8)                                     /* scalar relative tolerance */
-#define ATOL     RCONST(1.0e-30)                         /* vector absolute tolerance components */
+#define NEQ      (NSPEC-3)           /* number of equations: NSPEC minus dummies minus electrons */
+#define RTOL     RCONST(1.0E-6)                                     /* scalar relative tolerance */
+#define ATOL     RCONST(1.0e-26)                         /* vector absolute tolerance components */
 
 
 

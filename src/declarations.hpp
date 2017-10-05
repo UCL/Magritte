@@ -42,7 +42,7 @@ using namespace std;
 
 #define SOBOLEV false 
 
-#define NSPEC 34 
+#define NSPEC 35 
 
 #define NREAC 329 
 

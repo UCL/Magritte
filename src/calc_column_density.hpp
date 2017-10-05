@@ -20,8 +20,8 @@
 /* calc_column_density: calculates column density for each species, ray and grid point     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                double *column_density, int spec );
+int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                         double *column_density, int spec );
 
 /*-----------------------------------------------------------------------------------------------*/
 

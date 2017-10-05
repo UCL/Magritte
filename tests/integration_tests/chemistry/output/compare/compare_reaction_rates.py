@@ -24,11 +24,11 @@ nreac = np.shape(rates)[1]
 
 file_name = "output_3D-PDR/" + name + "_rates" + tag + "_3D-PDR.txt"
 
-rates_2 = np.loadtxt(file_name)
+rates2 = np.loadtxt(file_name)
 
 
-error          = rates - rates_2
-relative_error = 2.0*abs(error)/(rates+rates_2)
+error          = rates - rates2
+relative_error = 2.0*abs(error)/(rates+rates2)
 
 print " "
 print "Do the reaction numbers agree?"
@@ -51,8 +51,11 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if(max(data_line) > 1.0E-99):
-        ax1.plot(data_line, label=reac)
+    # if(max(data_line) > 1.0E-99):
+    if(reac==2):
+        # ax1.plot(data_line, label=rates[0,reac])
+        ax1.plot(rates[:,reac], label=rates[0,reac])
+        ax1.plot(rates2[:,reac], label=rates[0,reac])
 
 ax1.legend()
 ax1.set_title(name + " error")

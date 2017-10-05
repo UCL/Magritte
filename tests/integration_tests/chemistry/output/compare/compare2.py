@@ -52,13 +52,13 @@ ax1 = fig1.add_subplot(111)
 data_line = np.zeros(ngrid)
 
 for index in range(nindex):
-    if(True):
-        # data_line = relative_error[:,index]
-        # ax1.plot(data_line, label=index)
-        data_line1 = data[:,index]
-        ax1.plot(data_line1, label=index)
-        data_line2 = data2[:,index]
-        ax1.plot(data_line2, label=index)        
+    if(index==10):
+        data_line = relative_error[:,index]
+        ax1.plot(data_line, label=index)
+        # data_line1 = data[:,index]
+        # ax1.plot(data_line1, label=index)
+        # data_line2 = data2[:,index]
+        # ax1.plot(data_line2, label=index)
 
 ax1.legend()
 ax1.set_title(name + " error")

@@ -47,11 +47,21 @@ void read_species(string spec_datafile)
 
   /* The first species is a dummy for when a species is not found */
 
-  species[0].sym = "dummy";
+  species[0].sym = "dummy0";
 
   for (long n=0; n<NGRID; n++){
 
     species[0].abn[n] = 0.0;
+  }
+
+
+  /* The last species is a dummy with abundance 1.0 everywhere */
+
+  species[NSPEC-1].sym = "dummy1";
+
+  for (long n=0; n<NGRID; n++){
+
+    species[NSPEC-1].abn[n] = 1.0;
   }
 
 
@@ -61,7 +71,7 @@ void read_species(string spec_datafile)
   FILE *specdata = fopen(spec_datafile.c_str(), "r");
 
 
-  for (int l=1; l<nspec; l++){
+  for (int l=1; l<NSPEC-1; l++){
 
     int n;
 

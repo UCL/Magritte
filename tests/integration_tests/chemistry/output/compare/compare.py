@@ -16,19 +16,19 @@ file_name = "../" + name + tag + ".txt"
 
 print file_name
 
-rates = np.loadtxt(file_name)
+data  = np.loadtxt(file_name)
 
-ngrid = np.shape(rates)[0]
+ngrid = np.shape(data)[0]
 
 
 
 file_name = "output_3D-PDR/" + name + tag + "_3D-PDR.txt"
 
-rates_2 = np.loadtxt(file_name)
+data2 = np.loadtxt(file_name)
 
 
-error          = rates - rates_2
-relative_error = 2.0*abs(error)/(rates+rates_2)
+error          = data - data2
+relative_error = 2.0*abs(error)/(data+data2)
 
 
 # Make the plots
@@ -42,13 +42,14 @@ ax1 = fig.add_subplot(111)
 
 data_line = np.zeros(ngrid)
 
-data_line = error
+data_line = relative_error
 # if(max(data_line) > 1.0E-99):
 ax1.plot(data_line)
 
-ax1.set_title(name + " error")
+
+ax1.set_title(name + " relative error")
 ax1.set_xlabel("x (grid point)")
-ax1.set_ylabel(name + " error")
+ax1.set_ylabel(name + "relative error")
 ax1.set_yscale("log")
 
 fig.tight_layout()

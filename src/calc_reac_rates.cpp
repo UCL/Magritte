@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <iostream>
+using namespace std;
 
 #include "declarations.hpp"
 #include "calc_reac_rates.hpp"
@@ -566,8 +568,6 @@ double rate_canonical( int reac, double temperature_gas)
   double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
   double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
 
-  int rc;                                                                      /* reaction index */
-
   double k;                                                              /* reaction coefficient */
 
 
@@ -575,7 +575,7 @@ double rate_canonical( int reac, double temperature_gas)
   /* For all duplicates */
   /* duplicates is 1 if there is only on entry for the reaction (different from 3D-PDR) */
 
-  for (rc=0; rc<reaction[reac].dup; rc++){
+  for (int rc=0; rc<reaction[reac].dup; rc++){
 
 
     /* Copy the reaction data to variables with more convenient (shorter) names */
@@ -598,7 +598,9 @@ double rate_canonical( int reac, double temperature_gas)
 
     else if ( temperature_gas <= RT_max ){
 
-      return k = alpha * pow(temperature_gas/300.0, beta) * exp(-gamma/temperature_gas);
+      k = alpha * pow(temperature_gas/300.0, beta) * exp(-gamma/temperature_gas);
+      if(reac+rc==2){cout<< "rate: " <<  alpha << " and " << beta << " and " << gamma << " and " << temperature_gas << " and " << exp(-gamma/temperature_gas) << " and " << k << "\n";}
+      return k;
     }
 
   } /* end of rc loop over duplicates */

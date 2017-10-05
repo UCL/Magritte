@@ -838,43 +838,43 @@ int write_double_1(string name, string tag, long length, double *variable)
 
 /* write_double_2: write a 2D array of doubles                                                   */
 /*-----------------------------------------------------------------------------------------------*/
-// 
-// int write_double_2(string name, string tag, long nrows, long ncols, double *variable)
-// {
-//
-//
-//   if ( !tag.empty() ){
-//
-//     tag = "_" + tag;
-//   }
-//
-//   string file_name = "output/" + name + tag + ".txt";
-//
-//   FILE *file = fopen(file_name.c_str(), "w");
-//
-//   if (file == NULL){
-//
-//     printf("Error opening file!\n");
-//     exit(1);
-//   }
-//
-//
-//   for (long row=0; row<nrows; row++){
-//
-//     for(long col=0; col<ncols; col++){
-//
-//       fprintf( file, "%lE\t", variable[n] );
-//     }
-//
-//     fprintf( file, "\n" );
-//   }
-//
-//
-//   fclose(file);
-//
-//
-//   return(0);
-//
-// }
+
+int write_double_2(string name, string tag, long nrows, long ncols, double *variable)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/" + name + tag + ".txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+  if (file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long row=0; row<nrows; row++){
+
+    for(long col=0; col<ncols; col++){
+
+      fprintf( file, "%lE\t", variable[col + ncols*row] );
+    }
+
+    fprintf( file, "\n" );
+  }
+
+
+  fclose(file);
+
+
+  return(0);
+
+}
 
 /*-----------------------------------------------------------------------------------------------*/

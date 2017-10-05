@@ -158,6 +158,10 @@ TEST_CASE("Test chemistry"){
 
   initialize_double_array(UV_field, NGRID);
 
+  double column_tot[NGRID*NRAYS];
+
+  initialize_double_array(column_tot, NGRID*NRAYS);
+
   double column_H[NGRID*NRAYS];
 
   initialize_double_array(column_H, NGRID*NRAYS);
@@ -220,6 +224,7 @@ TEST_CASE("Test chemistry"){
 
     /* Calculate column densities */
 
+    calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
     calc_column_density(gridpoint, evalpoint, column_H, H_nr);
     calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
     calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
@@ -227,12 +232,14 @@ TEST_CASE("Test chemistry"){
     calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
 
 
-    // write_double_1("column_H", tag, NGRID,  )
+    write_double_2("column_tot", tag, NGRID, NRAYS, column_tot);
+
+
 
 
     /* Calculate the visual extinction */
 
-    calc_AV(column_H, AV);
+    calc_AV(column_tot, AV);
 
 
     /* Calculcate the UV field */

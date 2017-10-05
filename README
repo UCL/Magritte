@@ -38,4 +38,6 @@ Current issues and todo
 
 (!) Note factors of PC in distances.
 
+(!) The first and last species are "dummies".
+
 todo: Write one proper Python script that does the whole setup.

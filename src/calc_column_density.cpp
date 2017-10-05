@@ -24,25 +24,24 @@
 /* calc_column_density: calculates column density for each species, ray and grid point     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                double *column_density, int spec )
+int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                          double *column_density, int spec )
 {
 
-  long n;                                                                    /* grid point index */
-
-  long r;                                                                           /* ray index */
 
   /* For all grid points n and rays r */
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
-    for (r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
       column_density[RINDEX(n,r)] = column_density_at_point(gridpoint, evalpoint, n, spec, r);
 
     }
   }
 
+
+  return(0);
 
 }
 
@@ -59,14 +58,13 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                                 long gridp, int spec, long ray )
 {
 
-  double column_density_res = 0.0;                                   /* resulting column density */
 
-  long e, evnr;                                                        /* evaluation point index */
+  double column_density_res = 0.0;                                   /* resulting column density */
 
 
   if(raytot[RINDEX(gridp,ray)] > 0){
 
-    evnr = GP_NR_OF_EVALP(gridp,ray,0);
+    long evnr = GP_NR_OF_EVALP(gridp,ray,0);
 
     column_density_res = evalpoint[GINDEX(gridp,evnr)].dZ * PC
                          *( gridpoint[gridp].density*species[spec].abn[gridp]
@@ -75,9 +73,9 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     /* Numerical integration along the ray (line of sight) */
 
-    for (e=1; e<raytot[RINDEX(gridp,ray)]; e++){
+    for (long e=1; e<raytot[RINDEX(gridp,ray)]; e++){
 
-      evnr = GP_NR_OF_EVALP(gridp,ray,e);
+      long evnr = GP_NR_OF_EVALP(gridp,ray,e);
 
       column_density_res = column_density_res
                            + evalpoint[GINDEX(gridp,evnr)].dZ * PC

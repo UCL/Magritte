@@ -375,6 +375,10 @@ int main()
 
   initialize_double_array(temperature_dust, NGRID);
 
+  double column_tot[NGRID*NRAYS];
+
+  initialize_double_array(column_tot, NGRID*NRAYS);
+
   double column_H[NGRID*NRAYS];                  /* H column density for each ray and grid point */
 
   initialize_double_array(column_H, NGRID*NRAYS);
@@ -437,6 +441,7 @@ int main()
 
     /* Calculate column densities */
 
+    calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
     calc_column_density(gridpoint, evalpoint, column_H, H_nr);
     calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
     calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
@@ -446,7 +451,7 @@ int main()
 
     /* Calculate the visual extinction */
 
-    calc_AV(column_H, AV);
+    calc_AV(column_tot, AV);
 
 
     /* Calculcate the UV field */

@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
 
 #include "declarations.hpp"
 #include "calc_reac_rates_rad.hpp"
@@ -351,7 +352,7 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
 
   double tau;                                                                   /* optical depth */
 
-  double k;                                                              /* reaction coefficient */
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* For all duplicates */
@@ -367,6 +368,12 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
     RT_max = reaction[reac+rc].RT_max;
 
 
+    if(reaction[reac].dup>1){
+
+      cout << "dup for reac " << reac << "\n";
+    }
+
+
     /* Check for large negative gamma values that might cause discrepant
        rates at low temperatures. Set these rates to zero when T < RTMIN. */
 
@@ -380,16 +387,13 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
 
       for (long ray=0; ray<NRAYS; ray++){
 
-
-        /* Calculate the optical depth in the SI absorption band, accounting
-           for grain extinction and shielding by ??? */
-
         double tau = gamma*AV[RINDEX(gridp,ray)];
 
-
-        /* Calculate the SI photoionization rate */
-
         k = k + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau) / 2.0;
+
+        if(k<0.0){
+          cout << "rate for " << reac+rc << " at " << gridp << " is " << k << "\n";
+        }
       }
 
     }
