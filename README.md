@@ -1,4 +1,4 @@
-# [![Build Status](https://raw.githubusercontent.com/UCL/3D-RT/master/docs/Images/Magritte_logo.png?token=AWbw4ZY-2XIs-l_66DRpSSUfCTY-Haljks5Z4S-VwA%3D%3D)] Magritte [![Build Status](https://travis-ci.com/UCL/3D-RT.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/3D-RT)
+# ![Magritte logo](https://raw.githubusercontent.com/UCL/3D-RT/master/docs/Images/Magritte_logo.png?token=AWbw4ZY-2XIs-l_66DRpSSUfCTY-Haljks5Z4S-VwA%3D%3D) Magritte [![Build Status](https://travis-ci.com/UCL/3D-RT.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/3D-RT)
 
 ## a multidimensional accelerated general-purpose radiative transfer code
 
