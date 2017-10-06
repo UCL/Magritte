@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# Frederik De Ceuster - University College London                                                 #
+# Frederik De Ceuster - University College London & KU Leuven                                     #
 #                                                                                                 #
 # ----------------------------------------------------------------------------------------------- #
 #                                                                                                 #

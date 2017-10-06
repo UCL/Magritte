@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Specify project name
 
-project(3D-RT_tests)
+project(Magritte_tests)
 
 
 # Resize the stack to 128 Mb (UNIX version)
@@ -52,7 +52,7 @@ find_library( HEALPix
               DOC "HEALPix library" )
 
 
-# Add library containing the main and the 3D-RT source code (which is to be tested)
+# Add library containing the main and the Magritte source code (which is to be tested)
 
 add_library( _level_populations
 test_main.cpp
@@ -81,7 +81,7 @@ test_main.cpp
 add_executable( test_level_populations.exe   test_level_populations.cpp )
 
 
-# Ensure that 3D-RT depends on the setup command defined above
+# Ensure that Magritte depends on the setup command defined above
 
 add_dependencies( test_level_populations.exe   MAKE_SETUP )
 

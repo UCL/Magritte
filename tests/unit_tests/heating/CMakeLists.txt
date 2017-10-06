@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Specify project name
 
-project(3D-RT_tests)
+project(Magritte_tests)
 
 
 # Resize the stack to 128 Mb (UNIX version)
@@ -76,7 +76,7 @@ target_link_libraries( _sundials   ${SUNDIALS_LIBS} )
 
 
 
-# Add library containing the main and the 3DRT source code (which is to be tested)
+# Add library containing the main and the MAGRITTE source code (which is to be tested)
 
 add_library( _heating   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/initializers.cpp ../../../src/read_input.cpp ../../../src/data_tools.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/chemistry.cpp ../../../src/reaction_rates.cpp ../../../src/calc_reac_rates.cpp ../../../src/calc_reac_rates_rad.cpp ../../../src/radfield_tools.cpp ../../../src/spline.cpp ../../../src/heating.cpp )
 

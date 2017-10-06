@@ -23,7 +23,7 @@
 
 
 
-\title{\vspace{0cm} \huge \textsc{3D-RT: 3D Radiative Transfer} \\
+\title{\vspace{0cm} \huge \textsc{Magritte: 3D Radiative Transfer} \\
                 \vskip3mm \textsc{Code Documentation} }
 
 \author{\large Frederik De Ceuster}
@@ -37,7 +37,7 @@
 \vskip5cm
 
 \begin{abstract}
-This report gives an overview of some technical aspects of the 3D-RT code. The goal is to motivate why and explain how some things are coded the way they are.
+This report gives an overview of some technical aspects of the Magritte code. The goal is to motivate why and explain how some things are coded the way they are.
 \end{abstract}
 
 \vskip5cm
@@ -49,11 +49,11 @@ This report gives an overview of some technical aspects of the 3D-RT code. The g
 
 \section{General}
 
-3D-RT is a multipurpose accelerated 3D radiative transfer code. Given a gas with a density and velocity distribution, an external radiation field and a provisional chemical composition, it selfconsistently calculates the temperature, level populations and chemical composition of the gas. 3D-RT is a ray-tracing code, meaning that to solve for the transport of electromagnetic radiation, the radiative transfer equation is solved along a set of rays.
+Magritte is a multipurpose accelerated 3D radiative transfer code. Given a gas with a density and velocity distribution, an external radiation field and a provisional chemical composition, it selfconsistently calculates the temperature, level populations and chemical composition of the gas. Magritte is a ray-tracing code, meaning that to solve for the transport of electromagnetic radiation, the radiative transfer equation is solved along a set of rays.
 
 \bigskip
 
-The first version of 3D-RT is mainly based on 3D-PDR \cite{3DPDR}. The main difference is that in 3D-RT the radiative transfer is solved exactly and not in the Sobolev or large velocity gradient (LVG) approximation.
+The first version of Magritte is mainly based on 3D-PDR \cite{3DPDR}. The main difference is that in Magritte the radiative transfer is solved exactly and not in the Sobolev or large velocity gradient (LVG) approximation.
 
 \bigskip
 

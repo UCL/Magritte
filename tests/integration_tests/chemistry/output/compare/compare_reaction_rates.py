@@ -51,7 +51,7 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if(np.mean(data_line) > 0.3E-1 and np.mean(data_line) < 1.0 ):
+    if( (np.mean(data_line) > 0.3E-1 and np.mean(data_line) < 1.0) or False ):
         ax1.plot(data_line, label=int(my_rates[0,reac]))
     if(False):
         ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))

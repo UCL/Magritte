@@ -4,7 +4,7 @@ entering extended mode
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **background.tex
-(/home/frederik/Dropbox/Astro/3D-RT/docs/background.tex
+(/home/frederik/Dropbox/Astro/Magritte/docs/background.tex
 LaTeX2e <2016/02/01>
 Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -380,7 +380,7 @@ LaTeX Warning: Command \@footnotemark  has changed.
                Check if current package is valid.
 
 LaTeX Info: Redefining \textsubscript on input line 1277.
-) (/home/frederik/Dropbox/Astro/3D-RT/docs/background.aux
+) (/home/frederik/Dropbox/Astro/Magritte/docs/background.aux
 
 LaTeX Warning: Label `RTEscat' multiply defined.
 
@@ -485,7 +485,7 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 31.
 LaTeX Info: Redefining \pageref on input line 31.
 LaTeX Info: Redefining \nameref on input line 31.
- (/home/frederik/Dropbox/Astro/3D-RT/docs/background.out) (/home/frederik/Dropbox/Astro/3D-RT/docs/background.out)
+ (/home/frederik/Dropbox/Astro/Magritte/docs/background.out) (/home/frederik/Dropbox/Astro/Magritte/docs/background.out)
 \@outlinefile=\write3
 \openout3 = `background.out'.
 
@@ -500,7 +500,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 LaTeX Font Info:    Try loading font information for U+rsfs on input line 34.
  (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-) (/home/frederik/Dropbox/Astro/3D-RT/docs/background.toc [1
+) (/home/frederik/Dropbox/Astro/Magritte/docs/background.toc [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}])
 \tf@toc=\write4
@@ -511,11 +511,11 @@ File: Images/grid.pdf Graphic file (type pdf)
  <use Images/grid.pdf>
 Package pdftex.def Info: Images/grid.pdf used on input line 121.
 (pdftex.def)             Requested size: 221.44502pt x 53.90588pt.
- [4 </home/frederik/Dropbox/Astro/3D-RT/docs/Images/grid.pdf>] [5] [6] (/home/frederik/Dropbox/Astro/3D-RT/docs/background.bbl) [7]
+ [4 </home/frederik/Dropbox/Astro/Magritte/docs/Images/grid.pdf>] [5] [6] (/home/frederik/Dropbox/Astro/Magritte/docs/background.bbl) [7]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 266.
  [8]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 266.
- (/home/frederik/Dropbox/Astro/3D-RT/docs/background.aux)
+ (/home/frederik/Dropbox/Astro/Magritte/docs/background.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 266.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 266.
 Package rerunfilecheck Info: File `background.out' has not changed.
@@ -536,7 +536,7 @@ Here is how much of TeX's memory you used:
  33i,19n,32p,913b,458s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on /home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf (8 pages, 262429 bytes).
+Output written on /home/frederik/Dropbox/Astro/Magritte/docs/background.pdf (8 pages, 262429 bytes).
 PDF statistics:
  275 PDF objects out of 1000 (max. 8388607)
  233 compressed objects within 3 object streams

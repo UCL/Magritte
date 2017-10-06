@@ -1,4 +1,4 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -62,7 +62,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 1410 
 
-#define MAX_NITERATIONS 500 
+#define MAX_NITERATIONS 450 
 
 #define TIME_END_IN_YEARS 1.000000E+08 
 

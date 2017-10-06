@@ -1,4 +1,4 @@
-# ![Magritte logo](https://raw.githubusercontent.com/UCL/3D-RT/master/docs/Images/Magritte_logo.png?token=AWbw4U46loMQBSOlQVJh5Hy6DvN_vLicks5Z4TI7wA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/3D-RT.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/3D-RT)
+# ![Magritte logo](https://raw.githubusercontent.com/UCL/Magritte/master/docs/Images/Magritte_logo.png?token=AWbw4U46loMQBSOlQVJh5Hy6DvN_vLicks5Z4TI7wA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
 ## a Multidimensional Accelerated General-purpose RadIaTive TransfEr code
 
@@ -20,17 +20,20 @@ How to use:
    Grids are stored in the /input folder.)
 
 - Run make to setup and compile the source code given the specified parameters.
-  This will create the 3D-RT executable.
+  This will create the Magritte executable.
   ```
   $ make
   ```
 
 - Run the executable to generate the ouput in the /output folder.
   ```
-  $ ./3D-RT.exe
+  $ ./Magritte.exe
   ```
 
 - The output can be visualized using the python scripts in the output/plots folder.
+
+
+
 
 
 

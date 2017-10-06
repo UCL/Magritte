@@ -1,4 +1,4 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -37,7 +37,7 @@ int main(){
 
 
   cout << "                \n";
-  cout << "Setup for 3D-RT \n";
+  cout << "Setup for Magritte \n";
   cout << "--------------- \n\n";
 
 
@@ -498,7 +498,7 @@ int main(){
 
 
 
-  cout << "(setup): done, 3D-RT can now be compiled \n\n";
+  cout << "(setup): done, Magritte can now be compiled \n\n";
 
   return(0);
 

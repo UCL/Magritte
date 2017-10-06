@@ -21,7 +21,7 @@
 \newcommand{\cm}{\color{blue} \hspace{3mm}}
 
 
-\title{\vspace{0cm} \huge \textsc{3D-RT: 3D Radiative Transfer} \\
+\title{\vspace{0cm} \huge \textsc{Magritte: 3D Radiative Transfer} \\
                 \vskip3mm \textsc{ Background Physics} }
 
 \author{\large Frederik De Ceuster}
@@ -35,7 +35,7 @@
 \vskip5cm
 
 \begin{abstract}
-This report aims to explain some of the physics behind the calculations done in the 3D-RT code.
+This report aims to explain some of the physics behind the calculations done in the Magritte code.
 \end{abstract}
 
 \vskip5cm
@@ -47,11 +47,11 @@ This report aims to explain some of the physics behind the calculations done in 
 
 \section{General}
 
-3D-RT is a multipurpose accelerated 3D radiative transfer code. Given a gas with a density and velocity distribution, an external radiation field and a provisional chemical composition, it selfconsistently calculates the temperature, level populations and chemical composition of the gas. 3D-RT is a ray-tracing code, meaning that to solve for the transport of electromagnetic radiation, the radiative transfer equation is solved along a set of rays.
+Magritte is a multipurpose accelerated 3D radiative transfer code. Given a gas with a density and velocity distribution, an external radiation field and a provisional chemical composition, it selfconsistently calculates the temperature, level populations and chemical composition of the gas. Magritte is a ray-tracing code, meaning that to solve for the transport of electromagnetic radiation, the radiative transfer equation is solved along a set of rays.
 
 \bigskip
 
-The first version of 3D-RT is mainly based on 3D-PDR \cite{3DPDR}. The main difference is that in 3D-RT the radiative transfer is solved exactly and not in the Sobolev or large velocity gradient (LVG) approximation.
+The first version of Magritte is mainly based on 3D-PDR \cite{3DPDR}. The main difference is that in Magritte the radiative transfer is solved exactly and not in the Sobolev or large velocity gradient (LVG) approximation.
 
 \bigskip
 
@@ -259,7 +259,7 @@ This is the way in which the radiative cooling is implemented in the code (\text
 
 \subsection{Sobolev approximation}
 
-The main difference between 3D-PDR and the first version of 3D-RT is that former used the Sobolev approximation.
+The main difference between 3D-PDR and the first version of Magritte is that former used the Sobolev approximation.
 
 
 

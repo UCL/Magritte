@@ -1,4 +1,4 @@
-# CMakeLists.txt for 3D-RT (HEALPix directory)
+# CMakeLists.txt for Magritte (HEALPix directory)
 # --------------------------------------------
 
 

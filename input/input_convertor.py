@@ -1,4 +1,4 @@
-# Convert 3D-PDR input files to 3D-RT input files
+# Convert 3D-PDR input files to Magritte input files
 
 import numpy as np
 import sys

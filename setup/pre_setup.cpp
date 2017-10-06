@@ -1,4 +1,4 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 
 
   cout << "                    \n";
-  cout << "Pre-setup for 3D-RT \n";
+  cout << "Pre-setup for Magritte \n";
   cout << "------------------- \n\n";
 
 

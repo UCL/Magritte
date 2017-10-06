@@ -1,4 +1,4 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -199,9 +199,9 @@ void setup_data_structures2(string *line_datafile)
                                               + ( ncoltran[LSPECPAR(lspec,par-1)]
                                                   *ncoltemp[LSPECPAR(lspec,par-1)] );
 
-      // printf("(3D-RT): cum_ncoltran[%d] = %d \n", par, cum_ncoltran[LSPECPAR(lspec,par)]);
-      // printf("(3D-RT): cum_ncoltemp[%d] = %d \n", par, cum_ncoltemp[LSPECPAR(lspec,par)]);
-      // printf( "(3D-RT): cum_ncoltrantemp[%d] = %d \n",
+      // printf("(Magritte): cum_ncoltran[%d] = %d \n", par, cum_ncoltran[LSPECPAR(lspec,par)]);
+      // printf("(Magritte): cum_ncoltemp[%d] = %d \n", par, cum_ncoltemp[LSPECPAR(lspec,par)]);
+      // printf( "(Magritte): cum_ncoltrantemp[%d] = %d \n",
       //         par, cum_ncoltrantemp[LSPECPAR(lspec,par)] );
     }
   }
@@ -226,9 +226,9 @@ void setup_data_structures2(string *line_datafile)
                               + ( ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
                                   *ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)] );
 
-    // printf("(3D-RT): tot_ncoltran %d\n", tot_ncoltran[lspec]);
-    // printf("(3D-RT): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);
-    // printf("(3D-RT): tot_ncoltrantemp %d\n", tot_ncoltrantemp[lspec]);
+    // printf("(Magritte): tot_ncoltran %d\n", tot_ncoltran[lspec]);
+    // printf("(Magritte): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);
+    // printf("(Magritte): tot_ncoltrantemp %d\n", tot_ncoltrantemp[lspec]);
   }
 
 

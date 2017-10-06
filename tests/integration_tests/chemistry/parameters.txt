@@ -1,4 +1,4 @@
-3D-RT: Input parameters
+Magritte: Input parameters
 -----------------------
 
 - Specify the input files and parameters.
@@ -18,7 +18,7 @@ false                               | sobolev
                                     |
 UNI                                 | field form
                                     |
-500                                 | MAX_NITERATIONS
+450                                 | MAX_NITERATIONS
                                     |
 1.0E8                               | time_end (years)
                                     |

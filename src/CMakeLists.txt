@@ -1,4 +1,4 @@
-# CMakeLists.txt for 3D-RT (/src directory)
+# CMakeLists.txt for Magritte (/src directory)
 # -----------------------------------------
 
 
@@ -19,9 +19,9 @@ include_directories( . )
 include_directories( sundials/include )
 
 
-# Create a library containing all source code in /src except the main (3D-RT.cpp)
+# Create a library containing all source code in /src except the main (Magritte.cpp)
 
-add_library( _3DRT
+add_library( _MAGRITTE
 initializers.cpp
 chemistry.cpp
 data_tools.cpp
@@ -56,5 +56,5 @@ write_output.cpp )
 
 # Link the libraries of the subdirectories to this library
 
-target_link_libraries( _3DRT   _HEALPix )
-target_link_libraries( _3DRT   _sundials )
+target_link_libraries( _MAGRITTE   _HEALPix )
+target_link_libraries( _MAGRITTE   _sundials )

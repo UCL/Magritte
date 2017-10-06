@@ -1,4 +1,4 @@
-# CMakeLists.txt for 3D-RT (main directory)
+# CMakeLists.txt for Magritte (main directory)
 # -----------------------------------------
 
 
@@ -10,13 +10,13 @@ cmake_minimum_required(VERSION 2.8)
 
 # Specify projact name
 
-project(3D-RT)
+project(Magritte)
 
 
 # Specify the version of the project
 
-set(3DRT_VERSION_MAJOR 0)
-set(3DRT_VERSION_MINOR 1)
+set(MAGRITTE_VERSION_MAJOR 0)
+set(MAGRITTE_VERSION_MINOR 1)
 
 
 
@@ -53,16 +53,16 @@ if(OPENMP_FOUND)
 endif()
 
 
-# Create executable for 3D-RT main code
+# Create executable for Magritte main code
 
-add_executable( 3D-RT.exe   src/3D-RT.cpp )
-
-
-# Ensure that 3D-RT depends on the setup command defined above
-
-add_dependencies( 3D-RT.exe   MAKE_SETUP )
+add_executable( Magritte.exe   src/Magritte.cpp )
 
 
-# Link the library of the /src directory to the 3D-RT main code
+# Ensure that Magritte depends on the setup command defined above
 
-target_link_libraries( 3D-RT.exe   _3DRT )
+add_dependencies( Magritte.exe   MAKE_SETUP )
+
+
+# Link the library of the /src directory to the Magritte main code
+
+target_link_libraries( Magritte.exe   _MAGRITTE )

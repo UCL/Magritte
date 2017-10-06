@@ -1,8 +1,8 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* 3D-RT: writing_output                                                                         */
+/* Magritte: writing_output                                                                         */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */

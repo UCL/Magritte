@@ -1,4 +1,4 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -32,6 +32,7 @@
 
 double rate_PHOTD( int reac, double temperature_gas, double *rad_surface, double *AV, long gridp )
 {
+
 
   long   ray;                                                                       /* ray index */
 
@@ -108,6 +109,8 @@ double rate_PHOTD( int reac, double temperature_gas, double *rad_surface, double
 double rate_H2_photodissociation( int reac, double *rad_surface,
                                   double *AV, double *column_H2, double v_turb, long gridp )
 {
+
+  cout << "H2 photodissociation is " << reac << "\n";
 
   long   ray;                                                                       /* ray index */
 

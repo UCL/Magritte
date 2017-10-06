@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Specify project name
 
-project(3D-RT_tests)
+project(Magritte_tests)
 
 
 # Resize the stack to 128 Mb (UNIX version)
@@ -48,7 +48,7 @@ find_library( HEALPix
               DOC "HEALPix library" )
 
 
-# Add library containing the main and the 3DRT source code (which is to be tested)
+# Add library containing the main and the MAGRITTE source code (which is to be tested)
 
 add_library( _cooling   test_main.cpp ../../../src/declarations.hpp ../../../src/definitions.hpp ../../../src/initializers.cpp ../../../src/read_input.cpp ../../../src/data_tools.cpp ../../../src/setup_data_structures.cpp ../../../src/species_tools.cpp ../../../src/read_chemdata.cpp ../../../src/read_linedata.cpp ../../../src/create_healpixvectors.cpp ../../../src/ray_tracing.cpp ../../../src/heapsort.cpp ../../../src/level_populations.cpp ../../../src/radiative_transfer.cpp ../../../src/calc_C_coeff.cpp ../../../src/level_population_solver.cpp ../../../src/cooling.cpp ../../../src/exact_feautrier.cpp ../../../src/write_output.cpp )
 

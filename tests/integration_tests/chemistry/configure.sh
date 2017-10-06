@@ -2,7 +2,7 @@
 
 
 
-# Make sure 3D-RT is configured
+# Make sure Magritte is configured
 
 cd ../../../
 ./configure.sh

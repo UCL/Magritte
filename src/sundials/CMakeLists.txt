@@ -1,4 +1,4 @@
-# CMakeLists.txt for 3D-RT (/sundials directory)
+# CMakeLists.txt for Magritte (/sundials directory)
 # ----------------------------------------------
 
 

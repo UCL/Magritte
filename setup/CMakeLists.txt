@@ -1,4 +1,4 @@
-# CMakeLists.txt for 3D-RT setup
+# CMakeLists.txt for Magritte setup
 # ------------------------------
 
 

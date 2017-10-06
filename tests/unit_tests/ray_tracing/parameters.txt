@@ -1,4 +1,4 @@
-3D-RT: Input parameters
+Magritte: Input parameters
 -----------------------
 
 - Specify the input files and parameters.

@@ -7,9 +7,9 @@
   (generated)
   "background.blg"
   "background.bbl"
-["pdflatex"] 1506435605 "background.tex" "/home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf" "background" 1506586170
+["pdflatex"] 1506435605 "background.tex" "/home/frederik/Dropbox/Astro/Magritte/docs/background.pdf" "background" 1506586170
   "/etc/texmf/web2c/texmf.cnf" 1490782050 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.aux" 1506435606 2712 bb54e4ae405ebe99df3ffdcf5312756a ""
+  "/home/frederik/Dropbox/Astro/Magritte/docs/background.aux" 1506435606 2712 bb54e4ae405ebe99df3ffdcf5312756a ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -134,8 +134,8 @@
   (generated)
   "background.toc"
   "background.aux"
-  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.pdf"
+  "/home/frederik/Dropbox/Astro/Magritte/docs/background.pdf"
   "background.pdf"
   "background.log"
-  "/home/frederik/Dropbox/Astro/3D-RT/docs/background.log"
+  "/home/frederik/Dropbox/Astro/Magritte/docs/background.log"
   "background.out"

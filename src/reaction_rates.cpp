@@ -1,4 +1,4 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -13,8 +13,11 @@
 
 
 #include <stdio.h>
+
 #include <iostream>
 #include <string>
+using namespace std;
+
 #include <string.h>
 #include <math.h>
 
@@ -38,37 +41,25 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 {
 
 
-  int reac, rc;                                                                /* reaction index */
-
-  string R1;                                                                       /* reactant 1 */
-  string R2;                                                                       /* reactant 2 */
-  string R3;                                                                       /* reactant 3 */
-
-  string P1;                                                               /* reaction product 1 */
-  string P2;                                                               /* reaction product 2 */
-  string P3;                                                               /* reaction product 3 */
-  string P4;                                                               /* reaction product 4 */
-
-  /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */
-  /* The rate functions are calculated locally so only need the
-
-
-
   /* For all reactions */
 
-  for (reac=0; reac<NREAC; reac++){
+  for (int reac=0; reac<NREAC; reac++){
 
 
     /* Copy the reaction data to variables with more convenient names */
 
-    R1 = reaction[reac].R1;
-    R2 = reaction[reac].R2;
-    R3 = reaction[reac].R3;
+    string R1 = reaction[reac].R1;                                                 /* reactant 1 */
+    string R2 = reaction[reac].R2;                                                 /* reactant 2 */
+    string R3 = reaction[reac].R3;                                                 /* reactant 3 */
 
-    P1 = reaction[reac].P1;
-    P2 = reaction[reac].P2;
-    P3 = reaction[reac].P3;
-    P4 = reaction[reac].P4;
+    string P1 = reaction[reac].P1;                                         /* reaction product 1 */
+    string P2 = reaction[reac].P2;                                         /* reaction product 2 */
+    string P3 = reaction[reac].P3;                                         /* reaction product 3 */
+    string P4 = reaction[reac].P4;                                         /* reaction product 4 */
+
+
+    /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */
+    /* The rate functions are calculated locally so only need the
 
 
 

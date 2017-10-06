@@ -1,8 +1,8 @@
-/* Frederik De Ceuster - University College London                                               */
+/* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* 3D-RT: main                                                                                   */
+/* Magritte: main                                                                                */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -52,7 +52,7 @@ using namespace std;
 
 
 
-/* main code for 3D-RT: 3D Radiative Transfer                                                    */
+/* main for Magritte                                                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
 int main()
@@ -76,7 +76,7 @@ int main()
 
 
   printf("                              \n");
-  printf("3D-RT : 3D Radiative Transfer \n");
+  printf("Magritte : 3D Radiative Transfer \n");
   printf("----------------------------- \n");
   printf("                              \n");
 
@@ -88,7 +88,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): reading grid input \n");
+  printf("(Magritte): reading grid input \n");
 
 
   /* Define grid (using types defined in definitions.h)*/
@@ -107,7 +107,7 @@ int main()
   read_input(grid_inputfile, gridpoint);
 
 
-  printf("(3D-RT): grid input read \n\n");
+  printf("(Magritte): grid input read \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -120,7 +120,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): reading chemistry input \n");
+  printf("(Magritte): reading chemistry input \n");
 
 
   /* Read the species (and their initial abundances) */
@@ -158,7 +158,7 @@ int main()
   read_reactions(reac_datafile);
 
 
-  printf("(3D-RT): chemistry input read \n\n");
+  printf("(Magritte): chemistry input read \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -260,7 +260,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): reading line data \n");
+  printf("(Magritte): reading line data \n");
 
 
   /* Read the line data files stored in the list(!) line_data */
@@ -269,7 +269,7 @@ int main()
                  A_coeff, B_coeff, coltemp, C_data, icol, jcol );
 
 
-  printf("(3D-RT): line data read \n");
+  printf("(Magritte): line data read \n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -282,7 +282,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): creating HEALPix vectors \n");
+  printf("(Magritte): creating HEALPix vectors \n");
 
 
   /* Create the (unit) HEALPix vectors and find antipodal pairs */
@@ -295,7 +295,7 @@ int main()
   create_healpixvectors(unit_healpixvector, antipod);
 
 
-  printf("(3D-RT): HEALPix vectors creatied \n\n");
+  printf("(Magritte): HEALPix vectors creatied \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -308,7 +308,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): tracing rays \n");
+  printf("(Magritte): tracing rays \n");
 
 
   /* Execute ray_tracing */
@@ -320,10 +320,10 @@ int main()
   time_ray_tracing += omp_get_wtime();
 
 
-  printf("\n(3D-RT): time in ray_tracing: %lf sec \n", time_ray_tracing);
+  printf("\n(Magritte): time in ray_tracing: %lf sec \n", time_ray_tracing);
 
 
-  printf("(3D-RT): rays traced \n\n");
+  printf("(Magritte): rays traced \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -427,7 +427,7 @@ int main()
 
   /* Thermal balance iterations */
 
-  printf("(3D-RT): Starting thermal balance iterations \n\n");
+  printf("(Magritte): Starting thermal balance iterations \n\n");
 
   while (no_thermal_balance){
 
@@ -436,7 +436,7 @@ int main()
     niterations++;
 
 
-    printf("(3D-RT): thermal balance iteration %d\n", niterations);
+    printf("(Magritte): thermal balance iteration %d\n", niterations);
 
 
     /* Calculate column densities */
@@ -468,7 +468,7 @@ int main()
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    printf("(3D-RT): calculating chemical abundances \n\n");
+    printf("(Magritte): calculating chemical abundances \n\n");
 
 
     /* Calculate the chemical abundances by solving the rate equations */
@@ -481,10 +481,10 @@ int main()
     time_abundances += omp_get_wtime();
 
 
-    printf("\n(3D-RT): time in abundances: %lf sec\n", time_abundances);
+    printf("\n(Magritte): time in abundances: %lf sec\n", time_abundances);
 
 
-    printf("(3D-RT): chemical abundances calculated \n\n");
+    printf("(Magritte): chemical abundances calculated \n\n");
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -496,7 +496,7 @@ int main()
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    printf("(3D-RT): calculating level populations \n\n");
+    printf("(Magritte): calculating level populations \n\n");
 
 
     /* Calculate level populations for each line producing species */
@@ -511,10 +511,10 @@ int main()
     time_level_pop += omp_get_wtime();
 
 
-    printf("\n(3D-RT): time in level_populations: %lf sec\n", time_level_pop);
+    printf("\n(Magritte): time in level_populations: %lf sec\n", time_level_pop);
 
 
-    printf("(3D-RT): level populations calculated \n\n");
+    printf("(Magritte): level populations calculated \n\n");
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -526,7 +526,7 @@ int main()
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    printf("(3D-RT): calculating heating and cooling \n\n");
+    printf("(Magritte): calculating heating and cooling \n\n");
 
 
     /* Calculate the thermal balance for each gridpoint */
@@ -573,7 +573,7 @@ int main()
 
     } /* end of gridp loop over grid points */
 
-    printf("(3D-RT): heating and cooling calculated \n\n");
+    printf("(Magritte): heating and cooling calculated \n\n");
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -590,7 +590,7 @@ int main()
   } /* end of thermal balance iterations */
 
 
-  printf("(3D-RT): thermal balance reached in %d iterations \n\n", niterations);
+  printf("(Magritte): thermal balance reached in %d iterations \n\n", niterations);
 
 
   /*_____________________________________________________________________________________________*/
@@ -603,7 +603,7 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(3D-RT): writing output \n");
+  printf("(Magritte): writing output \n");
 
 
   /* Write the output files  */
@@ -621,7 +621,7 @@ int main()
   write_temperature_dust(tag, temperature_dust);
 
 
-  printf("(3D-RT): output written \n\n");
+  printf("(Magritte): output written \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -630,7 +630,7 @@ int main()
 
 
 
-  printf("(3D-RT): done \n\n");
+  printf("(Magritte): done \n\n");
 
 
   return(0);

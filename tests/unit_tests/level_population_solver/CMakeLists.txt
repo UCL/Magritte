@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Specify project name
 
-project(3D-RT_tests)
+project(Magritte_tests)
 
 
 # Resize the stack to 128 Mb (UNIX version)
