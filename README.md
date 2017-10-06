@@ -6,7 +6,9 @@
 How to get started:
 
 - Run the cofigure.sh script to produce the Makefile.
-  ($ ./configure.sh)
+  ```
+  $ ./configure.sh
+  ```
 
 
 How to use:
@@ -17,10 +19,14 @@ How to use:
 
 - Run make to setup and compile the source code given the specified parameters.
   This will create the 3D-RT executable.
-  ($ make)
+  ```
+  $ make
+  ```
 
 - Run the executable to generate the ouput in the /output folder.
-  ($ ./3D-RT.exe)
+  ```
+  $ ./3D-RT.exe
+  ```
 
 - The output can be visualized using the python scripts in the output/plots folder.
 
