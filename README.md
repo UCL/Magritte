@@ -1,7 +1,7 @@
-# Magritte [![Build Status](https://travis-ci.org/jbeder/yaml-cpp.svg?branch=master)](https://travis-ci.org/jbeder/yaml-cpp)
+# Magritte [![Build Status](https://travis-ci.com/UCL/3D-RT.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master
+)](https://travis-ci.com/UCL/3D-RT)
 
-Multidimensional accelerated general-purpose radiative transfer code
-
+## a multidimensional accelerated general-purpose radiative transfer code
 
 
 How to get started:
