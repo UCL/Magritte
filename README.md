@@ -1,5 +1,7 @@
-3D-RT: a multipurpose 3D radiative transfer code
-------------------------------------------------
+# Magritte [![Build Status](https://travis-ci.org/jbeder/yaml-cpp.svg?branch=master)](https://travis-ci.org/jbeder/yaml-cpp)
+
+Multidimensional accelerated general-purpose radiative transfer code
+
 
 
 How to get started:

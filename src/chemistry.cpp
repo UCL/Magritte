@@ -41,10 +41,12 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
   int nr_can_reac = 0;
   int nr_can_phot = 0;
+  int nr_all = 0;
 
 
   int canonical_reactions[NREAC];
   int can_photo_reactions[NREAC];
+  int all_reactions[NREAC];
 
   /* ------------------------------------------ */
 
@@ -57,6 +59,7 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
     nr_can_reac = 0;
     nr_can_phot = 0;
+    nr_all = 0;
 
 
     /* Calculate the reaction rates */
@@ -64,7 +67,8 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
     reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
                     column_H2, column_HD, column_C, column_CO, v_turb, gridp,
                     &nr_can_reac, canonical_reactions,
-                    &nr_can_phot, can_photo_reactions );
+                    &nr_can_phot, can_photo_reactions,
+                    &nr_all, all_reactions );
 
 
     /* Solve the rate equations */
@@ -80,6 +84,7 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
   write_certain_rates("0", "canonical", nr_can_reac, canonical_reactions, reaction);
   write_certain_rates("0", "can_phot", nr_can_phot, can_photo_reactions, reaction);
+  write_certain_rates("0", "all", nr_all, all_reactions, reaction);
 
   write_double_1("rates2", "0", NGRID, &reaction[2].k[0]);
 
