@@ -236,8 +236,10 @@ void read_reactions(string reac_datafile)
 
 
     /* Check for duplicates */
+    /* reaction[reac].dup are the number of instances of the same reaction as reac before reac */
+    /* This is different from 3D-PDR */
 
-    reaction[l].dup = 1;
+    reaction[l].dup = 0;
 
     for (reac=0; reac<l; reac++){
 
@@ -250,7 +252,7 @@ void read_reactions(string reac_datafile)
            &&  reaction[l].P4 == reaction[reac].P4 ){
 
         reaction[l].dup = reaction[l].dup + 1;
-        reaction[reac].dup = reaction[reac].dup + 1;
+        // reaction[reac].dup = reaction[reac].dup + 1;
       }
     }
 

@@ -298,7 +298,7 @@ TEST_CASE("Test chemistry"){
       }
 
 
-      cout << "max difference for " << species[spec].sym << " is " << max_difference << "\n";
+      // cout << "max difference for " << species[spec].sym << " is " << max_difference << "\n";
 
     }
 

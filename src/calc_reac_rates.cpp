@@ -561,51 +561,59 @@ double rate_GM( int reac )
 double rate_canonical( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+  bool no_better_data = true;           /* true if there is no better data available in the file */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double k = 0.0;                                                        /* reaction coefficient */
 
-  double k;                                                              /* reaction coefficient */
+  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
+  int top_reac = reac;                                         /* last instance of this reaction */
 
 
+  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
 
-  /* For all duplicates */
-  /* duplicates is 1 if there is only on entry for the reaction (different from 3D-PDR) */
-
-  for (int rc=0; rc<reaction[reac].dup; rc++){
-
-
-    /* Copy the reaction data to variables with more convenient (shorter) names */
-
-    alpha = reaction[reac+rc].alpha;
-    beta  = reaction[reac+rc].beta;
-    gamma = reaction[reac+rc].gamma;
-
-    RT_min = reaction[reac+rc].RT_min;
-    RT_max = reaction[reac+rc].RT_max;
+    top_reac = top_reac + 1;
+  }
 
 
-    /* Check for large negative gamma values that might cause discrepant
-       rates at low temperatures. Set these rates to zero when T < RTMIN. */
+  /* If there are duplicates, look through duplicates for better data */
 
-    if ( gamma < -200.0  &&  temperature_gas < RT_min ){
+  if(bot_reac != top_reac){
 
-      return k = 0.0;
+    for (int rc=bot_reac; rc<=top_reac; rc++){
+
+      double RT_min = reaction[rc].RT_min;
+      double RT_max = reaction[rc].RT_max;
+
+      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
+
+        no_better_data = false;
+      }
     }
+  }
 
-    else if ( temperature_gas <= RT_max ){
 
-      k = alpha * pow(temperature_gas/300.0, beta) * exp(-gamma/temperature_gas);
-      if(reac+rc==2){cout<< "rate: " <<  alpha << " and " << beta << " and " << gamma << " and " << temperature_gas << " and " << exp(-gamma/temperature_gas) << " and " << k << "\n";}
-      return k;
-    }
+  double alpha  = reaction[reac].alpha;
+  double beta   = reaction[reac].beta;
+  double gamma  = reaction[reac].gamma;
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  } /* end of rc loop over duplicates */
 
-  return k = 0.0;
+  /* Check for large negative gamma values that might cause discrepant
+     rates at low temperatures. Set these rates to zero when T < RTMIN. */
+
+  if ( gamma < -200.0  &&  temperature_gas < RT_min ){
+
+    return k = 0.0;
+  }
+
+  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) ) && no_better_data ){
+
+    return k = alpha * pow(temperature_gas/300.0, beta) * exp(-gamma/temperature_gas);
+  }
+
+
+  return k;
 }
 
 /*-----------------------------------------------------------------------------------------------*/

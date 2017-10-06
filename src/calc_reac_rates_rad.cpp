@@ -341,64 +341,64 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
                                      double *AV, long gridp )
 {
 
-
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-                             /* in this case the unattenuated photodissociation rate (in cm^3/s) */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
-
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-  double tau;                                                                   /* optical depth */
+  bool no_better_data = true;           /* true if there is no better data available in the file */
 
   double k = 0.0;                                                        /* reaction coefficient */
 
 
-  /* For all duplicates */
-  /* duplicates is 1 if there is only on entry for the reaction (different from 3D-PDR) */
-
-  for (int rc=0; rc<reaction[reac].dup; rc++){
-
-    alpha = reaction[reac+rc].alpha;
-    beta  = reaction[reac+rc].beta;
-    gamma = reaction[reac+rc].gamma;
-
-    RT_min = reaction[reac+rc].RT_min;
-    RT_max = reaction[reac+rc].RT_max;
+  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
+  int top_reac = reac;                                         /* last instance of this reaction */
 
 
-    if(reaction[reac].dup>1){
+  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
 
-      cout << "dup for reac " << reac << "\n";
-    }
-
-
-    /* Check for large negative gamma values that might cause discrepant
-       rates at low temperatures. Set these rates to zero when T < RTMIN. */
-
-    if ( gamma < -200.0  &&  temperature_gas < RT_min ){
-
-      return k = 0.0;
-    }
-
-    else if ( temperature_gas < RT_max ){
+    top_reac = top_reac + 1;
+  }
 
 
-      for (long ray=0; ray<NRAYS; ray++){
+  /* If there are duplicates, look through duplicates for better data */
 
-        double tau = gamma*AV[RINDEX(gridp,ray)];
+  if(bot_reac != top_reac){
 
-        k = k + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau) / 2.0;
+    for (int rc=bot_reac; rc<=top_reac; rc++){
 
-        if(k<0.0){
-          cout << "rate for " << reac+rc << " at " << gridp << " is " << k << "\n";
-        }
+      double RT_min = reaction[rc].RT_min;
+      double RT_max = reaction[rc].RT_max;
+
+      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
+
+        no_better_data = false;
       }
-
     }
+  }
 
-  } /* end of rc loop over duplicates */
+
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
+
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
+
+
+  /* Check for large negative gamma values that might cause discrepant
+     rates at low temperatures. Set these rates to zero when T < RTMIN. */
+
+  if ( gamma < -200.0  &&  temperature_gas < RT_min ){
+
+    return k = 0.0;
+  }
+
+  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) ) && no_better_data ){
+
+    for (long ray=0; ray<NRAYS; ray++){
+
+      double tau = gamma*AV[RINDEX(gridp,ray)];
+
+      k = k + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau) / 2.0;
+    }
+  }
+
 
   return k;
 }

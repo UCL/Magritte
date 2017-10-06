@@ -16,19 +16,19 @@ file_name = "../" + name + "_rates" + tag + ".txt"
 
 print file_name
 
-rates = np.loadtxt(file_name)
+my_rates = np.loadtxt(file_name)
 
-ngrid = np.shape(rates)[0]
-nreac = np.shape(rates)[1]
+ngrid = np.shape(my_rates)[0]
+nreac = np.shape(my_rates)[1]
 
 
 file_name = "output_3D-PDR/" + name + "_rates" + tag + "_3D-PDR.txt"
 
-rates2 = np.loadtxt(file_name)
+their_rates = np.loadtxt(file_name)
 
 
-error          = rates - rates2
-relative_error = 2.0*abs(error)/(rates+rates2)
+error          = my_rates - their_rates
+relative_error = 2.0*abs(error)/(my_rates+their_rates)
 
 print " "
 print "Do the reaction numbers agree?"
@@ -51,16 +51,16 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    # if(max(data_line) > 1.0E-99):
-    if(reac==2):
-        # ax1.plot(data_line, label=rates[0,reac])
-        ax1.plot(rates[:,reac], label=rates[0,reac])
-        ax1.plot(rates2[:,reac], label=rates[0,reac])
+    if(np.mean(data_line) > 1.0E-99 or True):
+        ax1.plot(data_line, label=int(my_rates[0,reac]))
+    if(False):
+        ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))
+        ax1.plot(their_rates2[:,reac], label=int(their_rates[0,reac]))
 
 ax1.legend()
-ax1.set_title(name + " error")
+ax1.set_title(name + " relative error")
 ax1.set_xlabel("x (grid point)")
-ax1.set_ylabel(name + " error")
+ax1.set_ylabel(name + " relative error")
 ax1.set_yscale("log")
 
 fig.tight_layout()
