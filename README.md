@@ -1,9 +1,10 @@
-# ![Magritte logo](https://raw.githubusercontent.com/UCL/3D-RT/master/docs/Images/Magritte_logo.png?token=AWbw4U46loMQBSOlQVJh5Hy6DvN_vLicks5Z4TI7wA%3D%3D) Magritte [![Build Status](https://travis-ci.com/UCL/3D-RT.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/3D-RT)
+# ![Magritte logo](https://raw.githubusercontent.com/UCL/3D-RT/master/docs/Images/Magritte_logo.png?token=AWbw4U46loMQBSOlQVJh5Hy6DvN_vLicks5Z4TI7wA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/3D-RT.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/3D-RT)
 
-## a multidimensional accelerated general-purpose radiative transfer code
+## a Multidimensional Accelerated General-purpose RadIaTive TransfEr code
 
 
 How to get started:
+-------------------
 
 - Run the cofigure.sh script to produce the Makefile.
   ```
@@ -12,6 +13,7 @@ How to get started:
 
 
 How to use:
+-----------
 
 - Specify the parameters in the parameters.txt file.
   (Data files are stored in the /data folder.
