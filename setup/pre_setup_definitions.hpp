@@ -35,6 +35,14 @@ int tot_ncolpar;
 #define TOT_NCOLPAR tot_ncolpar
 
 
+
+/* Ugly fix */
+
+#define NGRID 1
+#define NREAC 1
+
+
+
 typedef struct EVALPOINTS {
 
   bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
@@ -49,6 +57,34 @@ typedef struct EVALPOINTS {
   double vol;                  /* velocity along the ray between grid point and evaluation point */
 
 } EVALPOINT;
+
+
+
+typedef struct REACTION {
+
+  string   R1;                                                                     /* reactant 1 */
+  string   R2;                                                                     /* reactant 2 */
+  string   R3;                                                                     /* reactant 3 */
+
+  string   P1;                                                             /* reaction product 1 */
+  string   P2;                                                             /* reaction product 2 */
+  string   P3;                                                             /* reaction product 3 */
+  string   P4;                                                             /* reaction product 4 */
+
+
+  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
+  double beta;                               /* beta coefficient to calculate rate coefficient k */
+  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+
+  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
+  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+
+
+  double k[NGRID];                                                  /* reaction rate coefficient */
+
+  int    dup;                                           /* Number of duplicates of this reaction */
+
+} REACTION;
 
 
 

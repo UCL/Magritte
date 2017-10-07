@@ -202,7 +202,7 @@ TEST_CASE("Test chemistry"){
 
   /* Iterate over the chemistry alone */
 
-  for(int iteration=0; iteration<1; iteration++){
+  for(int iteration=0; iteration<8; iteration++){
 
 
     /* Construct the tags */

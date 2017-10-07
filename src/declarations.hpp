@@ -64,7 +64,7 @@ using namespace std;
 
 #define MAX_NITERATIONS 450 
 
-#define TIME_END_IN_YEARS 1.000000E+08 
+#define TIME_END_IN_YEARS 1.000000E+07 
 
 #define FIELD_FORM "UNI" 
 

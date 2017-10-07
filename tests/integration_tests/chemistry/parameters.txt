@@ -20,7 +20,7 @@ UNI                                 | field form
                                     |
 450                                 | MAX_NITERATIONS
                                     |
-1.0E8                               | time_end (years)
+1.0E7                               | time_end (years)
                                     |
 5.27046                             | G_EXTERNAL_X
                                     |
