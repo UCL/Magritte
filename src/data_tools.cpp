@@ -375,3 +375,49 @@ int get_ncoltemp(string datafile, int *ncoltran, int partner, int lspec)
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* no_better_data: checks whether there data closer to the actual temperature                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
+{
+
+
+  bool no_better_data = true;           /* true if there is no better data available in the file */
+
+  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
+  int top_reac = reac;                                         /* last instance of this reaction */
+
+
+  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
+
+    top_reac = top_reac + 1;
+  }
+
+
+  /* If there are duplicates, look through duplicates for better data */
+
+  if(bot_reac != top_reac){
+
+    for (int rc=bot_reac; rc<=top_reac; rc++){
+
+      double RT_min = reaction[rc].RT_min;
+      double RT_max = reaction[rc].RT_max;
+
+      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
+
+        no_better_data = false;
+      }
+    }
+  }
+
+
+  return no_better_data;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/

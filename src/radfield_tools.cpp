@@ -234,12 +234,6 @@ double self_shielding_CO( double column_CO, double column_H2 )
 double dust_scattering( double AV_ray, double lambda )
 {
 
-  int i;                                                                                /* index */
-
-  double tau_visual;                         /* optical depth at the visual wavelength (λ=5500Å) */
-  double tau_lambda;                                       /* optical depth at wavelength lambda */
-
-  double exponent;                                                            /* helper variable */
 
   /* Coefficients in equation (1) in Wagenblast & Hartquist 1989                                 */
   /*     A(0)    = a(0)*exp(-k(0)*tau)                                                           */
@@ -249,22 +243,24 @@ double dust_scattering( double AV_ray, double lambda )
 
   double A[] = { 1.000,  2.006, -1.438, 0.7364, -0.5076, -0.0592 };
 
+
   /*     K(0)    = see A0                                                                        */
   /*     K(I)    = see A(I)                                                                      */
 
   double k[] = { 0.7514, 0.8490, 1.013, 1.282,   2.005,   5.832 };
 
-  double dust_scatter;                                  /* attenuation due to scattering by dust */
+
+  double dust_scatter = 0.0;                            /* attenuation due to scattering by dust */
 
 
   /* Calculate the optical depth at visual wavelength */
 
-  tau_visual = AV_ray / 1.086;
+  double tau_visual = AV_ray / 1.086;
 
 
   /* Convert the optical depth to that at the desired wavelength */
 
-  tau_lambda = tau_visual * X_lambda(lambda);
+  double tau_lambda = tau_visual * X_lambda(lambda);
 
 
   /* Calculate the attenuation due to scattering by dust */
@@ -272,7 +268,7 @@ double dust_scattering( double AV_ray, double lambda )
 
   if ( tau_lambda < 1.0 ){
 
-    exponent = tau_lambda * k[0];
+    double exponent = tau_lambda * k[0];
 
     if ( exponent < 100.0 ){
 
@@ -282,9 +278,9 @@ double dust_scattering( double AV_ray, double lambda )
 
   else {
 
-    for (i=0; i<5; i++){
+    for (int i=1; i<6; i++){
 
-      exponent = tau_lambda * k[i];
+      double exponent = tau_lambda * k[i];
 
       if ( exponent < 100.0 ){
 

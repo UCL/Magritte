@@ -21,7 +21,7 @@
 
 
 
-/* calc_column_density: calculates column density for each species, ray and grid point     */
+/* calc_column_density: calculates column density for each species, ray and grid point           */
 /*-----------------------------------------------------------------------------------------------*/
 
 int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,

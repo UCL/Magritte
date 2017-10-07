@@ -21,6 +21,7 @@ using namespace std;
 
 #include "declarations.hpp"
 #include "write_output.hpp"
+#include "radfield_tools.hpp"
 
 
 
@@ -872,6 +873,52 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
 
   fclose(file);
 
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_radfield_tools( string tag, double *AV ,double lambda )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  string file_name = "output/dust_scattering" + tag + ".txt";
+
+  FILE *ds_file = fopen(file_name.c_str(), "w");
+
+  if (ds_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    for(long r=0; r<NRAYS; r++){
+
+      fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], 1000.0) );
+    }
+
+    fprintf( ds_file, "\n" );
+  }
+
+
+  fclose(ds_file);
+
+  cout << "X lambda " << X_lambda(1000.0) << "\n";
 
   return(0);
 

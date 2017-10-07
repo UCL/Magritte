@@ -19,6 +19,7 @@
 #include "declarations.hpp"
 #include "calc_reac_rates_rad.hpp"
 #include "radfield_tools.hpp"
+#include "data_tools.hpp"
 
 
 
@@ -34,15 +35,6 @@ double rate_PHOTD( int reac, double temperature_gas, double *rad_surface, double
 {
 
 
-  long   ray;                                                                       /* ray index */
-
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
-
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
   double yield;                   /* Number of adsorbed molecules released per cosmic ray impact */
 
   double flux;                                                /* Flux of photons (in cm^-2 s^-1) */
@@ -54,15 +46,14 @@ double rate_PHOTD( int reac, double temperature_gas, double *rad_surface, double
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
                                       /* = average grain surface area per H atom (devided by PI) */
 
-  double k;                                                              /* reaction coefficient */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   if ( temperature_gas < 50.0 ){
@@ -88,7 +79,7 @@ double rate_PHOTD( int reac, double temperature_gas, double *rad_surface, double
 
   /* For all rays */
 
-  for (ray=0; ray<NRAYS; ray++){
+  for (long ray=0; ray<NRAYS; ray++){
 
     k = k + flux * rad_surface[RINDEX(gridp,ray)]
                  * exp(-1.8*AV[RINDEX(gridp,ray)]) * grain_param * yield;
@@ -112,36 +103,25 @@ double rate_H2_photodissociation( int reac, double *rad_surface,
 
   cout << "H2 photodissociation is " << reac << "\n";
 
-  long   ray;                                                                       /* ray index */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-                             /* in this case the unattenuated photodissociation rate (in cm^3/s) */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double k = 0.0;                                                        /* reaction coefficient */
 
-  double k;                                                              /* reaction coefficient */
-
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
 
   double lambda = 1000.0;                           /* wavelength (in Å) of a typical transition */
 
-  double doppler_width;                     /* Doppler linewidth (in Hz) of a typical transition */
+  double doppler_width = v_turb / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
                                                 /* (assuming turbulent broadening with b=3 km/s) */
-  doppler_width = v_turb / (lambda*1.0E-8);
 
   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
 
 
-  for (ray=0; ray<NRAYS; ray++){
+  for (long ray=0; ray<NRAYS; ray++){
 
     k = k + alpha * rad_surface[RINDEX(gridp,ray)]
             * self_shielding_H2( column_H2[RINDEX(gridp,ray)], doppler_width, radiation_width )
@@ -163,33 +143,20 @@ double rate_CO_photodissociation( int reac, double *rad_surface,
                                   double *AV, double *column_CO, double *column_H2, long gridp )
 {
 
-  long   ray;                                                                       /* ray index */
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-                             /* in this case the unattenuated photodissociation rate (in cm^3/s) */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  double lambda;                     /* mean wavelength (in Å) of 33 dissociating bands weighted */
-                                      /* by their fractional contribution to the total shielding */
-
-  double k;                                                              /* reaction coefficient */
-
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* Now lambda is calculated */
 
-  for (ray=0; ray<NRAYS; ray++){
+  for (long ray=0; ray<NRAYS; ray++){
 
 
     /* Calculate the mean wavelength (in Å) of the 33 dissociating bands,
@@ -199,7 +166,11 @@ double rate_CO_photodissociation( int reac, double *rad_surface,
     double u = log10(1.0 + column_CO[ray]); /* ??? WHY THE + 1.0 ??? */
     double w = log10(1.0 + column_H2[ray]); /* ??? WHY THE + 1.0 ??? */
 
-    lambda = (5675.0 - 200.6*w) - (571.6 - 24.09*w)*u + (18.22 - 0.7664*w)*u*u;
+
+    /* mean wavelength (in Å) of 33 dissociating bands weighted
+       by their fractional contribution to the total shielding */
+
+    double lambda = (5675.0 - 200.6*w) - (571.6 - 24.09*w)*u + (18.22 - 0.7664*w)*u*u;
 
 
     /* lambda cannot be larger than the wavelength of band 33 (1076.1Å)
@@ -238,37 +209,26 @@ double rate_C_photoionization( int reac, double temperature_gas,
                                double *column_C, double *column_H2, long gridp )
 {
 
-  long   ray;                                                                       /* ray index */
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-                             /* in this case the unattenuated photodissociation rate (in cm^3/s) */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  double tau_C;                                        /* optical depth in the C absorption band */
-
-  double k;                                                              /* reaction coefficient */
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
-
-
-  for (ray=0; ray<NRAYS; ray++){
+  for (long ray=0; ray<NRAYS; ray++){
 
 
     /* Calculate the optical depth in the C absorption band, accounting
        for grain extinction and shielding by C and overlapping H2 lines */
 
-    tau_C = gamma*AV[RINDEX(gridp,ray)] + 1.1E-17*column_C[RINDEX(gridp,ray)]
-            + ( 0.9*pow(temperature_gas,0.27) * pow(column_H2[RINDEX(gridp,ray)]/1.59E21, 0.45) );
+    double tau_C = gamma*AV[RINDEX(gridp,ray)] + 1.1E-17*column_C[RINDEX(gridp,ray)]
+                   + ( 0.9*pow(temperature_gas,0.27)
+                          * pow(column_H2[RINDEX(gridp,ray)]/1.59E21, 0.45) );
 
 
     /* Calculate the C photoionization rate */
@@ -291,36 +251,25 @@ double rate_C_photoionization( int reac, double temperature_gas,
 double rate_SI_photoionization( int reac, double *rad_surface, double *AV, long gridp )
 {
 
-  long   ray;                                                                       /* ray index */
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-                             /* in this case the unattenuated photodissociation rate (in cm^3/s) */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-  double tau_S;                                       /* optical depth in the SI absorption band */
-
-  double k;                                                              /* reaction coefficient */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
 
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
-  for (ray=0; ray<NRAYS; ray++){
+  for (long ray=0; ray<NRAYS; ray++){
 
 
     /* Calculate the optical depth in the SI absorption band, accounting
        for grain extinction and shielding by ??? */
 
-    tau_S = gamma*AV[RINDEX(gridp,ray)];
+    double tau_S = gamma*AV[RINDEX(gridp,ray)];
 
 
     /* Calculate the SI photoionization rate */
@@ -344,37 +293,6 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
                                      double *AV, long gridp )
 {
 
-  bool no_better_data = true;           /* true if there is no better data available in the file */
-
-  double k = 0.0;                                                        /* reaction coefficient */
-
-
-  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
-  int top_reac = reac;                                         /* last instance of this reaction */
-
-
-  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
-
-    top_reac = top_reac + 1;
-  }
-
-
-  /* If there are duplicates, look through duplicates for better data */
-
-  if(bot_reac != top_reac){
-
-    for (int rc=bot_reac; rc<=top_reac; rc++){
-
-      double RT_min = reaction[rc].RT_min;
-      double RT_max = reaction[rc].RT_max;
-
-      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
-
-        no_better_data = false;
-      }
-    }
-  }
-
 
   double alpha = reaction[reac].alpha;
   double beta  = reaction[reac].beta;
@@ -382,6 +300,8 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
 
   double RT_min = reaction[reac].RT_min;
   double RT_max = reaction[reac].RT_max;
+
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* Check for large negative gamma values that might cause discrepant
@@ -392,7 +312,8 @@ double rate_canonical_photoreaction( int reac, double temperature_gas, double *r
     return k = 0.0;
   }
 
-  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) ) && no_better_data ){
+  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) )
+            && no_better_data(reac, reaction, temperature_gas) ){
 
     for (long ray=0; ray<NRAYS; ray++){
 

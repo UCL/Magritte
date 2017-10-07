@@ -6,7 +6,14 @@ import sys
 
 name = str(sys.argv[1])
 
-file_name = "../" + name + ".txt"
+
+if(len(sys.argv) > 2):
+    tag  = "_" + str(sys.argv[2])
+else:
+    tag = ""
+
+
+file_name = "../" + name + tag + ".txt"
 
 data = np.loadtxt(file_name)
 

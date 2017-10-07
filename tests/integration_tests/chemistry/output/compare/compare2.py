@@ -30,10 +30,12 @@ nrows = np.shape(data2)[0]
 ncols = np.shape(data2)[1]
 
 for i in range(nrows):
+    temp        = data2[i,0]
     data2[i,0]  = data2[i,4]
-    data2[i,4]  = 0.0
+    data2[i,4]  = temp
+    temp        = data2[i,10]
     data2[i,10] = data2[i,6]
-    data2[i,6]  = 0.0
+    data2[i,6]  = temp
 
 
 error          = data - data2
@@ -52,9 +54,10 @@ ax1 = fig1.add_subplot(111)
 data_line = np.zeros(ngrid)
 
 for index in range(nindex):
-    if(index==10):
+    if(index==10 or True):
         data_line = relative_error[:,index]
-        ax1.plot(data_line, label=index)
+        if(np.mean(data_line) > 1.0E-1 or True):
+            ax1.plot(data_line, label=index)
         # data_line1 = data[:,index]
         # ax1.plot(data_line1, label=index)
         # data_line2 = data2[:,index]

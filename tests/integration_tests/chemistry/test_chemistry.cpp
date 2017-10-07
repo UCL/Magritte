@@ -234,6 +234,7 @@ TEST_CASE("Test chemistry"){
 
     write_double_2("column_tot", tag, NGRID, NRAYS, column_tot);
 
+    write_double_2("column_density_H2", tag, NGRID, NRAYS, column_H2);
 
 
 
@@ -251,6 +252,8 @@ TEST_CASE("Test chemistry"){
     write_UV_field(tag, UV_field);
 
     write_AV(tag, AV);
+
+    write_radfield_tools(tag, AV, 1000.0);
 
     write_rad_surface(tag, rad_surface);
 

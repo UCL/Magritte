@@ -92,6 +92,15 @@ int get_ncoltemp(string datafile, int *ncoltran, int partner, int lspec);
 
 
 
+/* no_better_data: checks whether there data closer to the actual temperature                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+bool no_better_data(int reac, REACTION *reaction, double temperature_gas);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __DATA_TOOLS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

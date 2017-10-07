@@ -20,6 +20,7 @@ using namespace std;
 
 #include "declarations.hpp"
 #include "calc_reac_rates.hpp"
+#include "data_tools.hpp"
 
 
 
@@ -29,29 +30,18 @@ using namespace std;
 double rate_H2_formation( int reac, double temperature_gas, double temperature_dust )
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-  double factor1, factor2;                                                   /* helper variables */
-
-  double xi;                                          /* correction factor for high temperatures */
-
-  double k;                                                              /* reaction coefficient */
-
+  double k= 0.0;                                                         /* reaction coefficient */
 
 
   /* Copy the reaction data to variables with more convenient names */
 
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
 
   /* Following Cazaux & Tielens (2002, ApJ, 575, L29) and (2004, ApJ, 604, 222) */
@@ -91,13 +81,13 @@ double rate_H2_formation( int reac, double temperature_gas, double temperature_d
 
   /* Calculate the formation efficiency on silicate grains */
 
-  factor1 = mu_sil*flux / ( 2.0*nu_H2_sil*exp(-E_H2_sil/temperature_dust) );
+  double factor1 = mu_sil*flux / ( 2.0*nu_H2_sil*exp(-E_H2_sil/temperature_dust) );
 
-  factor2 = pow(1.0 + sqrt( (E_Hch_sil-E_s_sil) / (E_Hph_sil-E_s_sil) ), 2)
-            / 4.0 * exp(-E_s_sil/temperature_dust);
+  double factor2 = pow(1.0 + sqrt( (E_Hch_sil-E_s_sil) / (E_Hph_sil-E_s_sil) ), 2)
+                   / 4.0 * exp(-E_s_sil/temperature_dust);
 
-  xi = 1.0 / ( 1.0 + nu_H_sil / (2.0*flux) * exp(-1.5*E_Hch_sil/temperature_dust)
-                     * pow(1.0 + sqrt( (E_Hch_sil-E_s_sil) / (E_Hph_sil-E_s_sil) ), 2) );
+  double xi = 1.0 / ( 1.0 + nu_H_sil / (2.0*flux) * exp(-1.5*E_Hch_sil/temperature_dust)
+                            * pow(1.0 + sqrt( (E_Hch_sil-E_s_sil) / (E_Hph_sil-E_s_sil) ), 2) );
 
 
   double formation_efficiency_sil;             /* H2 formation efficiency on silicate grains */
@@ -147,27 +137,18 @@ double rate_H2_formation( int reac, double temperature_gas, double temperature_d
 double rate_PAH( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-  int rc;                                                                      /* reaction index */
-
-  double k;                                                              /* reaction coefficient */
-
+  double k= 0.0;                                                         /* reaction coefficient */
 
 
   /* Copy the reaction data to variables with more convenient names */
 
-  alpha = reaction[reac].alpha;
-  beta = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
+  double alpha = reaction[reac].alpha;
+  double beta = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
 
   /* Following  Wolfire et al. (2003, ApJ, 587, 278; 2008, ApJ, 680, 384) */
@@ -189,49 +170,31 @@ double rate_PAH( int reac, double temperature_gas)
 double rate_CRP( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  int rc;                                                                      /* reaction index */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  double k;                                                              /* reaction coefficient */
-
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
-  /* For all duplicates */
-  /* duplicates is 1 if there is only on entry for the reaction (different from 3D-PDR) */
+  /* Check for large negative gamma values that might cause discrepant
+     rates at low temperatures. Set these rates to zero when T < RTMIN. */
 
-  for (rc=0; rc<reaction[reac].dup; rc++){
+  if ( gamma < -200.0  &&  temperature_gas < RT_min ){
 
+    return k = 0.0;
+  }
 
-    /* Copy the reaction data to variables with more convenient (shorter) names */
+  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) )
+            && no_better_data(reac, reaction, temperature_gas) ){
 
-    alpha = reaction[reac+rc].alpha;
-    beta  = reaction[reac+rc].beta;
-    gamma = reaction[reac+rc].gamma;
+    return k = alpha * ZETA;
+  }
 
-    RT_min = reaction[reac+rc].RT_min;
-    RT_max = reaction[reac+rc].RT_max;
-
-
-    /* Check for large negative gamma values that might cause discrepant
-       rates at low temperatures. Set these rates to zero when T < RTMIN. */
-
-    if ( gamma < -200.0  &&  temperature_gas < RT_min ){
-
-      return k = 0.0;
-    }
-
-    else if ( temperature_gas < RT_max ){
-
-      return k = alpha * ZETA;
-    }
-
-  } /* end of rc loop over duplicates */
 
   return k = 0.0;
 }
@@ -248,49 +211,32 @@ double rate_CRP( int reac, double temperature_gas)
 double rate_CRPHOT( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  int rc;                                                                      /* reaction index */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  double k;                                                              /* reaction coefficient */
-
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
-  /* For all duplicates */
-  /* duplicates is 1 if there is only on entry for the reaction (different from 3D-PDR) */
+  /* Check for large negative gamma values that might cause discrepant
+     rates at low temperatures. Set these rates to zero when T < RTMIN. */
 
-  for (rc=0; rc<reaction[reac].dup; rc++){
+  if ( gamma < -200.0  &&  temperature_gas < RT_min ){
+
+    return k = 0.0;
+  }
+
+  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) )
+            && no_better_data(reac, reaction, temperature_gas) ){
+
+    return k = alpha * ZETA * pow(temperature_gas/300.0, beta) * gamma / (1.0 - OMEGA);
+  }
 
 
-    /* Copy the reaction data to variables with more convenient (shorter) names */
-
-    alpha = reaction[reac+rc].alpha;
-    beta  = reaction[reac+rc].beta;
-    gamma = reaction[reac+rc].gamma;
-
-    RT_min = reaction[reac+rc].RT_min;
-    RT_max = reaction[reac+rc].RT_max;
-
-
-    /* Check for large negative gamma values that might cause discrepant
-       rates at low temperatures. Set these rates to zero when T < RTMIN. */
-
-    if ( gamma < -200.0  &&  temperature_gas < RT_min ){
-
-      return k = 0.0;
-    }
-
-    else if ( temperature_gas < RT_max ){
-
-      return k = alpha * ZETA * pow(temperature_gas/300.0, beta) * gamma / (1.0 - OMEGA);
-    }
-
-  } /* end of rc loop over duplicates */
 
   return k = 0.0;
 }
@@ -307,14 +253,16 @@ double rate_CRPHOT( int reac, double temperature_gas)
 double rate_FREEZE( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  int rc;                                                                      /* reaction index */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
+
+  double k = 0.0;                                                        /* reaction coefficient */
+
 
   double sticking_coeff = 0.3;                                /* dust grain sticking coefficient */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
@@ -323,17 +271,7 @@ double rate_FREEZE( int reac, double temperature_gas)
   // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
 
 
-  double C_ion;                                   /* Factor taking care of electrostatic effects */
-
-  double k;                                                              /* reaction coefficient */
-
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double C_ion = 0.0;                             /* Factor taking care of electrostatic effects */
 
 
   /* Following Roberts et al. 2007 */
@@ -379,14 +317,15 @@ double rate_FREEZE( int reac, double temperature_gas)
 double rate_ELFRZE( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  int rc;                                                                      /* reaction index */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
+
+  double k = 0.0;                                                        /* reaction coefficient */
 
   double sticking_coeff = 0.3;                                /* dust grain sticking coefficient */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
@@ -395,17 +334,7 @@ double rate_ELFRZE( int reac, double temperature_gas)
   // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
 
 
-  double C_ion;                                   /* Factor taking care of electrostatic effects */
-
-  double k;                                                              /* reaction coefficient */
-
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double C_ion = 0.0;                              /* Factor taking care of electrostatic effects */
 
 
   /* Following Roberts et al. 2007 */
@@ -442,28 +371,19 @@ double rate_ELFRZE( int reac, double temperature_gas)
 double rate_CRH( int reac, double temperature_gas)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  int rc;                                                                      /* reaction index */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-  double yield;                   /* Number of adsorbed molecules released per cosmic ray impact */
+  double k = 0.0;                                                        /* reaction coefficient */
+
+  double yield = 0.0;             /* Number of adsorbed molecules released per cosmic ray impact */
   double flux = 2.06E-3;                      /* Flux of iron nuclei cosmic rays (in cm^-2 s^-1) */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
-
-  double k;                                                              /* reaction coefficient */
-
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
 
 
   /* Following Roberts et al. (2007, MNRAS, 382, 773, Equation 3) */
@@ -493,22 +413,15 @@ double rate_CRH( int reac, double temperature_gas)
 double rate_THERM( int reac, double temperature_gas, double temperature_dust)
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  double k;                                                              /* reaction coefficient */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* Following Hasegawa, Herbst & Leung (1992, ApJS, 82, 167, Equations 2 & 3) */
@@ -528,22 +441,15 @@ double rate_THERM( int reac, double temperature_gas, double temperature_dust)
 double rate_GM( int reac )
 {
 
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
 
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+  double alpha = reaction[reac].alpha;
+  double beta  = reaction[reac].beta;
+  double gamma = reaction[reac].gamma;
 
-  double k;                                                              /* reaction coefficient */
+  double RT_min = reaction[reac].RT_min;
+  double RT_max = reaction[reac].RT_max;
 
-
-  alpha = reaction[reac].alpha;
-  beta  = reaction[reac].beta;
-  gamma = reaction[reac].gamma;
-
-  RT_min = reaction[reac].RT_min;
-  RT_max = reaction[reac].RT_max;
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   return k = alpha;
@@ -561,42 +467,14 @@ double rate_GM( int reac )
 double rate_canonical( int reac, double temperature_gas)
 {
 
-  bool no_better_data = true;           /* true if there is no better data available in the file */
-
-  double k = 0.0;                                                        /* reaction coefficient */
-
-  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
-  int top_reac = reac;                                         /* last instance of this reaction */
-
-
-  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
-
-    top_reac = top_reac + 1;
-  }
-
-
-  /* If there are duplicates, look through duplicates for better data */
-
-  if(bot_reac != top_reac){
-
-    for (int rc=bot_reac; rc<=top_reac; rc++){
-
-      double RT_min = reaction[rc].RT_min;
-      double RT_max = reaction[rc].RT_max;
-
-      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
-
-        no_better_data = false;
-      }
-    }
-  }
-
 
   double alpha  = reaction[reac].alpha;
   double beta   = reaction[reac].beta;
   double gamma  = reaction[reac].gamma;
   double RT_min = reaction[reac].RT_min;
   double RT_max = reaction[reac].RT_max;
+
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* Check for large negative gamma values that might cause discrepant
@@ -607,7 +485,8 @@ double rate_canonical( int reac, double temperature_gas)
     return k = 0.0;
   }
 
-  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) ) && no_better_data ){
+  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) )
+            && no_better_data(reac, reaction, temperature_gas) ){
 
     return k = alpha * pow(temperature_gas/300.0, beta) * exp(-gamma/temperature_gas);
   }

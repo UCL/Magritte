@@ -6,6 +6,7 @@ import sys
 
 name = str(sys.argv[1])
 
+
 if(len(sys.argv) > 2):
     tag  = "_" + str(sys.argv[2])
 else:
@@ -51,13 +52,15 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if( (np.mean(data_line) > 0.3E-1 and np.mean(data_line) < 1.0) or False ):
+    if( (np.mean(data_line) > 0.5E-1 and np.mean(data_line) < 1.0E10) or True ):
         ax1.plot(data_line, label=int(my_rates[0,reac]))
+        # ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))
+        # ax1.plot(their_rates[:,reac], label=int(my_rates[0,reac]))
     if(False):
         ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))
         ax1.plot(their_rates2[:,reac], label=int(their_rates[0,reac]))
 
-ax1.legend()
+# ax1.legend()
 ax1.set_title(name + " relative error")
 ax1.set_xlabel("x (grid point)")
 ax1.set_ylabel(name + " relative error")
