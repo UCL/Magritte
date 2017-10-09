@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* radfield_tools: set of helper functions for calc_reac_rates_rad.cpp                    */
+/* radfield_tools: set of helper functions for calc_reac_rates_rad.cpp                           */
 /*                                                                                               */
 /* (based on shield in 3D-PDR)                                                                   */
 /*                                                                                               */
@@ -121,7 +121,7 @@ double self_shielding_CO( double column_CO, double column_H2 )
   /*  12CO line shielding, using the computed values listed in
       van Dishoeck & Black (1988, ApJ, 334, 771, Table 5)
 
-      Appropriate shielding factors are determined by performing a  2-dimensional spline
+      Appropriate shielding factors are determined by performing a 2-dimensional spline
       interpolation over the values listed in Table 5 of van Dishoeck & Black, which include
       contributions from self-shielding and H2 screening  */
 

@@ -355,7 +355,7 @@ int write_level_populations(string tag, string *line_datafile, double *pop)
 
     name.erase(name.end()-4,name.end());
 
-    if( !tag.empty() ){
+    if ( !tag.empty() ){
 
       tag = "_" + tag;
     }
@@ -601,7 +601,7 @@ int write_AV(string tag, double *AV)
 
   for (long n=0; n<NGRID; n++){
 
-    for(long r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
       fprintf( AV_file, "%lE\t", AV[RINDEX(n,r)] );
     }
@@ -648,7 +648,7 @@ int write_rad_surface(string tag, double *rad_surface)
 
   for (long n=0; n<NGRID; n++){
 
-    for(long r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
       fprintf( rad_file, "%lE\t", rad_surface[RINDEX(n,r)] );
     }
@@ -695,7 +695,7 @@ int write_reaction_rates(string tag, REACTION *reaction)
 
   for (long n=0; n<NGRID; n++){
 
-    for(int reac=0; reac<NREAC; reac++){
+    for (int reac=0; reac<NREAC; reac++){
 
       fprintf( reac_file, "%lE\t", reaction[reac].k[n] );
     }
@@ -743,7 +743,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
   }
 
 
-  for(int reac=0; reac<nr_certain_reac; reac++){
+  for (int reac=0; reac<nr_certain_reac; reac++){
 
     fprintf( certain_file0, "%d\n", certain_reactions[reac] );
   }
@@ -763,7 +763,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
   }
 
 
-  for(int reac=0; reac<nr_certain_reac; reac++){
+  for (int reac=0; reac<nr_certain_reac; reac++){
 
     fprintf( certain_file, "%d \t", certain_reactions[reac] );
   }
@@ -773,7 +773,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
 
   for (long n=0; n<NGRID; n++){
 
-    for(int reac=0; reac<nr_certain_reac; reac++){
+    for (int reac=0; reac<nr_certain_reac; reac++){
 
       fprintf( certain_file, "%lE \t", reaction[certain_reactions[reac]].k[n] );
     }
@@ -862,7 +862,7 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
 
   for (long row=0; row<nrows; row++){
 
-    for(long col=0; col<ncols; col++){
+    for (long col=0; col<ncols; col++){
 
       fprintf( file, "%lE\t", variable[col + ncols*row] );
     }
@@ -907,7 +907,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda )
 
   for (long n=0; n<NGRID; n++){
 
-    for(long r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
       fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], 1000.0) );
     }
