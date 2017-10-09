@@ -6,7 +6,15 @@ import sys
 
 name = str(sys.argv[1])
 
-file_name = "../" + name + ".txt"
+
+if(len(sys.argv) > 2):
+    tag  = "_" + str(sys.argv[2])
+else:
+    tag = ""
+
+
+file_name = "../" + name + tag + ".txt"
+
 
 data = np.loadtxt(file_name)
 
@@ -34,7 +42,7 @@ ax1.legend()
 ax1.set_title(name)
 ax1.set_xlabel("x (grid point)")
 ax1.set_ylabel(name)
-# ax1.set_yscale("log")
+ax1.set_yscale("log")
 
 fig.tight_layout()
 

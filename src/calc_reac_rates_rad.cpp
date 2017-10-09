@@ -101,7 +101,6 @@ double rate_H2_photodissociation( int reac, double *rad_surface,
                                   double *AV, double *column_H2, double v_turb, long gridp )
 {
 
-  cout << "H2 photodissociation is " << reac << "\n";
 
   double alpha = reaction[reac].alpha;
   double beta  = reaction[reac].beta;
@@ -120,6 +119,7 @@ double rate_H2_photodissociation( int reac, double *rad_surface,
 
   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
 
+  cout << "v turb : " << v_turb << "\n";
 
   for (long ray=0; ray<NRAYS; ray++){
 

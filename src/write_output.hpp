@@ -185,7 +185,7 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_radfield_tools( string tag, double *AV ,double lambda );
+int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, double *column_H2, double *column_CO );
 
 /*-----------------------------------------------------------------------------------------------*/
 

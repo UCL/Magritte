@@ -75,11 +75,12 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     for (long e=1; e<raytot[RINDEX(gridp,ray)]; e++){
 
-      long evnr = GP_NR_OF_EVALP(gridp,ray,e);
+      long evnr  = GP_NR_OF_EVALP(gridp,ray,e);
+      long evnrp = GP_NR_OF_EVALP(gridp,ray,e-1);
 
       column_density_res = column_density_res
                            + evalpoint[GINDEX(gridp,evnr)].dZ * PC
-                             * ( gridpoint[evnr-1].density*species[spec].abn[evnr-1]
+                             * ( gridpoint[evnrp].density*species[spec].abn[evnrp]
                                  + gridpoint[evnr].density*species[spec].abn[evnr] ) / 2.0;
 
     } /* end of e loop over evaluation points */

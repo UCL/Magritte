@@ -288,9 +288,6 @@ void splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
       function value y by performing a bicubic spline interpolation.  */
 
 
-  long i, j;                                                                          /* indices */
-
-
   double *ya_temp;
   ya_temp = (double*) malloc( n*sizeof(double) );
 
@@ -315,9 +312,9 @@ void splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
   /* Perform m evaluations of the row splines constructed by
 !    splie2 using the one-dimensional spline evaluator splint */
 
-  for (i=0; i<m; i++){
+  for (long i=0; i<m; i++){
 
-    for (j=0; j<n; j++){
+    for (long j=0; j<n; j++){
 
       ya_temp[j] = ya[IND(i,j)];
 

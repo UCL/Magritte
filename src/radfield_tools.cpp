@@ -93,9 +93,9 @@ double self_shielding_H2( double column_H2, double doppler_width, double radiati
     double sqrt_PI = 1.772453851;                                           /* square root of PI */
     double r  = radiation_width / (sqrt_PI*doppler_width);  /* (equation A2 in Federman's paper) */
     double t1 = 3.02 * pow(r*1.0E3,-0.064);                 /* (equation A6 in Federman's paper) */
-    double u1 = sqrt(tau_D*r) / t1;                          /* (equation A6 in Federman's paper) */
+    double u1 = sqrt(tau_D*r) / t1;                         /* (equation A6 in Federman's paper) */
 
-    J_R = r / ( t1 * sqrt(sqrt_PI/2.0 + u1*u1) );
+    J_R = r / ( t1 * sqrt(PI/4.0 + u1*u1) );
   }
 
 

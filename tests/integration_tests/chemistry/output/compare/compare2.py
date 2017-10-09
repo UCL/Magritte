@@ -54,7 +54,7 @@ ax1 = fig1.add_subplot(111)
 data_line = np.zeros(ngrid)
 
 for index in range(nindex):
-    if(index==10 or True):
+    if(index==0 or True):
         data_line = relative_error[:,index]
         if(np.mean(data_line) > 1.0E-1 or True):
             ax1.plot(data_line, label=index)

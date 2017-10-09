@@ -71,6 +71,7 @@ int main()
 
   double v_turb = 1.0;
 
+  v_turb = 1.0E5 * v_turb;
 
 
 

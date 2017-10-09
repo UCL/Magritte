@@ -134,7 +134,7 @@ int write_eval(string tag, EVALPOINT *evalpoint)
 
     for (long n2=0; n2<NGRID; n2++){
 
-      fprintf( eval, "%lf\t%ld\t%d\n",
+      fprintf( eval, "%lE\t%ld\t%d\n",
                evalpoint[GINDEX(n1,n2)].Z,
                evalpoint[GINDEX(n1,n2)].ray,
                evalpoint[GINDEX(n1,n2)].onray );
@@ -882,10 +882,12 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
 
 
 
+
+
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_radfield_tools( string tag, double *AV ,double lambda )
+int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, double *column_H2, double *column_CO )
 {
 
 
@@ -893,6 +895,10 @@ int write_radfield_tools( string tag, double *AV ,double lambda )
 
     tag = "_" + tag;
   }
+
+
+
+  /* Write dust scattering */
 
   string file_name = "output/dust_scattering" + tag + ".txt";
 
@@ -918,7 +924,72 @@ int write_radfield_tools( string tag, double *AV ,double lambda )
 
   fclose(ds_file);
 
-  cout << "X lambda " << X_lambda(1000.0) << "\n";
+
+
+  /* Write H2 shield */
+
+  string file_name2 = "output/shielding_H2" + tag + ".txt";
+
+  FILE *s_file = fopen(file_name2.c_str(), "w");
+
+  if (s_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+
+  double doppler_width = v_turb / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
+                                                /* (assuming turbulent broadening with b=3 km/s) */
+
+
+  double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
+
+
+  for (long n=0; n<NGRID; n++){
+
+    for (long r=0; r<NRAYS; r++){
+
+      fprintf( s_file, "%lE\t", self_shielding_H2( column_H2[RINDEX(n,r)], doppler_width, radiation_width ) );
+    }
+
+    fprintf( s_file, "\n" );
+  }
+
+
+  fclose(s_file);
+
+
+  /* Write CO shield */
+
+  string file_name3 = "output/shielding_CO" + tag + ".txt";
+
+  FILE *c_file = fopen(file_name3.c_str(), "w");
+
+  if (c_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+
+  for (long n=0; n<NGRID; n++){
+
+    for (long r=0; r<NRAYS; r++){
+
+      fprintf( c_file, "%lE\t", self_shielding_CO( column_CO[RINDEX(n,r)], column_H2[RINDEX(n,r)] ) );
+    }
+
+    fprintf( c_file, "\n" );
+  }
+
+
+  fclose(c_file);
+
+
+  // cout << "X lambda " << X_lambda(1000.0) << "\n";
 
   return(0);
 

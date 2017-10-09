@@ -31,13 +31,6 @@ their_rates = np.loadtxt(file_name)
 error          = my_rates - their_rates
 relative_error = 2.0*abs(error)/(my_rates+their_rates)
 
-print " "
-print "Do the reaction numbers agree?"
-
-# for item in error[0][:]
-#     if(item != 0):
-#         print "Reaction " + item + "has a wrong partner!"
-
 
 # Make the plots
 
@@ -52,7 +45,7 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if( (np.mean(data_line) > 0.5E-1 and np.mean(data_line) < 1.0E10) or True ):
+    if( (np.mean(data_line) > 0.4E-1 and np.mean(data_line) < 1.0E10) or False ):
         ax1.plot(data_line, label=int(my_rates[0,reac]))
         # ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))
         # ax1.plot(their_rates[:,reac], label=int(my_rates[0,reac]))

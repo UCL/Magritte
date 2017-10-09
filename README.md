@@ -1,6 +1,6 @@
 # ![Magritte logo](https://raw.githubusercontent.com/UCL/Magritte/master/docs/Images/Magritte_logo.png?token=AWbw4ROrEnF4IybgYLXTTlxbDx7zDgyHks5Z4UnkwA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
-## Multidimensional Accelerated General-purpose RadIaTive TransfEr code
+## Multidimensional Accelerated General-purpose RadIaTive TransfEr
 
 
 How to get started:

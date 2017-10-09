@@ -56,6 +56,8 @@ TEST_CASE("Test chemistry"){
 
   double v_turb = 1.0;
 
+  v_turb = 1.0E5 * v_turb;
+
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
@@ -202,7 +204,7 @@ TEST_CASE("Test chemistry"){
 
   /* Iterate over the chemistry alone */
 
-  for(int iteration=0; iteration<8; iteration++){
+  for(int iteration=0; iteration<1; iteration++){
 
 
     /* Construct the tags */
@@ -222,6 +224,8 @@ TEST_CASE("Test chemistry"){
     }
 
 
+    // species[H2_nr].abn[0] = 0.0;
+
     /* Calculate column densities */
 
     calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
@@ -234,7 +238,14 @@ TEST_CASE("Test chemistry"){
 
     write_double_2("column_tot", tag, NGRID, NRAYS, column_tot);
 
+    cout << species[H2_nr].abn[0] << "\n";
+    cout << species[H2_nr].abn[1] << "\n";
+    cout << species[H2_nr].abn[2] << "\n";
+    cout << species[H2_nr].abn[3] << "\n";
+
+    write_double_2("column_density_C", tag, NGRID, NRAYS, column_C);
     write_double_2("column_density_H2", tag, NGRID, NRAYS, column_H2);
+    write_double_2("column_density_CO", tag, NGRID, NRAYS, column_CO);
 
 
 
@@ -253,7 +264,7 @@ TEST_CASE("Test chemistry"){
 
     write_AV(tag, AV);
 
-    write_radfield_tools(tag, AV, 1000.0);
+    write_radfield_tools( tag, AV, 1000.0, v_turb, column_H2, column_CO );
 
     write_rad_surface(tag, rad_surface);
 
@@ -311,27 +322,6 @@ TEST_CASE("Test chemistry"){
     write_reaction_rates(tag, reaction);
 
   }
-
-
-
-  /* Write the results of the integration */
-
-  // FILE *abn_file = fopen("output/abundances_result.txt", "w");
-  //
-  // if (abn_file == NULL){
-  //
-  //   printf("Error opening file!\n");
-  //   exit(1);
-  // }
-  //
-  //
-  // for (int spec=0; spec<NSPEC; spec++){
-  //
-  //   fprintf( abn_file, "%lE\t", species[spec].abn[0] );
-  // }
-  //
-  //
-  // fclose(abn_file);
 
 
 
