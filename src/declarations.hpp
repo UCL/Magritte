@@ -24,63 +24,63 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt" 
+#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 
-#define SPEC_DATAFILE  "data/species_reduced.txt" 
+#define SPEC_DATAFILE  "data/species_reduced.txt"
 
-#define REAC_DATAFILE  "data/rates_reduced.txt" 
+#define REAC_DATAFILE  "data/rates_reduced.txt"
 
-#define LINE_DATAFILE0 "data/12C.txt" 
+#define LINE_DATAFILE0 "data/12C.txt"
 
-#define NGRID 122 
+#define NGRID 122
 
-#define NSIDES 1 
+#define NSIDES 1
 
-#define THETA_CRIT 1.300000 
+#define THETA_CRIT 1.300000
 
-#define RAY_SEPARATION2 0.000000E+00 
+#define RAY_SEPARATION2 0.000000E+00
 
-#define SOBOLEV false 
+#define SOBOLEV false
 
-#define NSPEC 35 
+#define NSPEC 35
 
-#define NREAC 329 
+#define NREAC 329
 
-#define NLSPEC 1 
+#define NLSPEC 1
 
-#define TOT_NLEV 5 
+#define TOT_NLEV 5
 
-#define TOT_NRAD 7 
+#define TOT_NRAD 7
 
-#define TOT_NLEV2 25 
+#define TOT_NLEV2 25
 
-#define TOT_NCOLPAR 6 
+#define TOT_NCOLPAR 6
 
-#define TOT_CUM_TOT_NCOLTRAN 60 
+#define TOT_CUM_TOT_NCOLTRAN 60
 
-#define TOT_CUM_TOT_NCOLTEMP 141 
+#define TOT_CUM_TOT_NCOLTEMP 141
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 1410 
+#define TOT_CUM_TOT_NCOLTRANTEMP 1410
 
-#define MAX_NITERATIONS 450 
+#define MAX_NITERATIONS 500
 
-#define TIME_END_IN_YEARS 1.000000E+07 
+#define TIME_END_IN_YEARS 1.000000E+07
 
-#define FIELD_FORM "UNI" 
+#define FIELD_FORM "UNI"
 
-#define G_EXTERNAL_X 5.270460E+00 
+#define G_EXTERNAL_X 5.270460E+00
 
-#define G_EXTERNAL_Y 5.270460E+00 
+#define G_EXTERNAL_Y 5.270460E+00
 
-#define G_EXTERNAL_Z 6.666670E+00 
+#define G_EXTERNAL_Z 6.666670E+00
 
-#define IBC 0.0000000000000E+00 
+#define IBC 0.0000000000000E+00
 
 
 /*_______________________________________________________________________________________________*/
 
 
-#define ZETA   3.85
+#define ZETA   3.846153846153846
 #define OMEGA  0.42
 
 
@@ -389,5 +389,3 @@ extern double x_e;
 #endif /* __DECLARATIONS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/
-
-

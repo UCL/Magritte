@@ -1,3 +1,4 @@
+
 /* Frederik De Ceuster - University College London & KU Leuven                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
@@ -144,8 +145,41 @@ TEST_CASE("Test calc_reac_rates_rad functions"){
     fclose(sCO);
 
 
+
+
+    FILE *fi = fopen("output/spline.txt", "w");
+
+    if (fi == NULL){
+
+      printf("Error opening file!\n");
+      exit(1);
+    }
+
+
+    n = 200;
+
+    for (int j=0; j<n; j++){
+
+      double columnH2 = pow(10.0, (23.0-16.0)/n*j + 16.0) ;
+
+      fprintf( fi, "%lE\t%lE\n", columnH2, self_shielding_CO(0.0, columnH2) );
+    }
+
+
+    fclose(fi);
+
+
+
+
+
     CHECK( 1==1 );
   }
+
+
+
+
+
+
 
 
 }

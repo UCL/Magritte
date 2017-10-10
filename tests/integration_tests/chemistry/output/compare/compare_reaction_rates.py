@@ -45,7 +45,7 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if( (np.mean(data_line) > 0.4E-1 and np.mean(data_line) < 1.0E10) or False ):
+    if( (np.mean(data_line[20:100]) > 0.1E-10 and np.mean(data_line) < 1.0E10) or False ):
         ax1.plot(data_line, label=int(my_rates[0,reac]))
         # ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))
         # ax1.plot(their_rates[:,reac], label=int(my_rates[0,reac]))
@@ -53,7 +53,7 @@ for reac in range(nreac):
         ax1.plot(my_rates[:,reac], label=int(my_rates[0,reac]))
         ax1.plot(their_rates2[:,reac], label=int(their_rates[0,reac]))
 
-# ax1.legend()
+ax1.legend()
 ax1.set_title(name + " relative error")
 ax1.set_xlabel("x (grid point)")
 ax1.set_ylabel(name + " relative error")

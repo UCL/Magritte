@@ -126,8 +126,6 @@ double self_shielding_CO( double column_CO, double column_H2 )
       contributions from self-shielding and H2 screening  */
 
 
-  long i, j;                                                                          /* indices */
-
   double log10shield;                                           /* total self-shielding function */
 
   const long m = 8;
@@ -153,7 +151,7 @@ double self_shielding_CO( double column_CO, double column_H2 )
 
   /* Write the shield_CO values to a text file (for testing) */
 
-  // FILE *sCO = fopen("self_shielding_CO_table.txt", "w");
+  // FILE *sCO = fopen("output/self_shielding_CO_table.txt", "w");
   //
   // if (sCO == NULL){
   //
@@ -161,9 +159,9 @@ double self_shielding_CO( double column_CO, double column_H2 )
   //     exit(1);
   //   }
   //
-  // for (i=0; i<m; i++){
+  // for (long i=0; i<m; i++){
   //
-  //   for (j=0; j<n; j++){
+  //   for (long j=0; j<n; j++){
   //
   //     fprintf(sCO, "%lE\t%lE\t%lE\n", log10column_CO_grid[i],
   //                                     log10column_H2_grid[j],
@@ -183,8 +181,8 @@ double self_shielding_CO( double column_CO, double column_H2 )
 
   /* Scale the variables to get a better spline interpolation */
 
-  double log10column_CO = log10(column_CO+1.0);
-  double log10column_H2 = log10(column_H2+1.0);
+  double log10column_CO = log10(column_CO + 1.0);
+  double log10column_H2 = log10(column_H2 + 1.0);
 
 
 
@@ -325,10 +323,10 @@ double X_lambda(double lambda)
                        2.54E0, 2.50E0, 2.58E0, 2.78E0, 3.01E0, \
                        3.12E0, 2.86E0, 2.58E0, 2.35E0, 2.00E0, \
                        1.58E0, 1.42E0, 1.32E0, 1.00E0, 0.75E0, \
-                       0.48E0, 0.28E0, 0.12E0, 0.05E0, 1.00E-50 };
+                       0.48E0, 0.28E0, 0.12E0, 0.05E0, 1.0E-99 };
 
-  double yp0 = 1.0E30;                                               /* lower boundary condition */
-  double ypn = 1.0E30;                                               /* upper boundary condition */
+  double yp0 = 1.0E31;                                               /* lower boundary condition */
+  double ypn = 1.0E31;                                               /* upper boundary condition */
 
   double d2logX[n];                                   /* second order derivative of the function */
 

@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-
+column_H2 = {18.0E0, 19.0E0, 20.0E0, 21.0E0, 22.0E0, 23.0E0}
+points = {0.000E+00, -8.539E-02, -1.451E-01, -4.559E-01, -1.303E+00, -3.883E+00}
 
 name = str(sys.argv[1])
 
@@ -54,20 +55,22 @@ ax1 = fig1.add_subplot(111)
 data_line = np.zeros(ngrid)
 
 for index in range(nindex):
-    if(index==0 or True):
-        # data_line = relative_error[:,index]
-        # if(np.mean(data_line) > 1.0E-1 or True):
-        #     ax1.plot(data_line, label=index)
-        data_line1 = data[:,index]
-        ax1.plot(data_line1, label=index)
-        data_line2 = data2[:,index]
-        ax1.plot(data_line2, label=index)
+    if(index==0 or False):
+        data_line = relative_error[:,index]
+        if(np.mean(data_line) > 1.0E-1 or True):
+            ax1.plot(data_line, label=index)
+        # data_line1 = data[:,index]
+        # ax1.plot(data_line1, label=index)
+        # data_line2 = data2[:,index]
+        # ax1.plot(data_line2, label=index)
+
+# ax1.scatter(column_H2)
 
 ax1.legend()
 ax1.set_title(name + " error")
 ax1.set_xlabel("x (grid point)")
 ax1.set_ylabel(name + " error")
-ax1.set_yscale("log")
+# ax1.set_yscale("log")
 
 fig1.tight_layout()
 

@@ -121,7 +121,7 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 
   for (i=n-2; i>=0; i--){
 
-    d2y[i] = d2y[i]*d2y[i] + u[i];
+    d2y[i] = d2y[i]*d2y[i+1] + u[i];
   }
 
 
@@ -153,12 +153,11 @@ void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
       y    = result of the interpolation  */
 
 
-  long j_lo = 0;
-  long j_hi = n-1;
+  long j_lo = -1;
+  long j_hi = n;
   long j_mid;
 
   bool ascending = (xa[n-1] > xa[0]);
-
 
 
   /* Find the interval x[j_lo] <= x <= x[j_hi] using bisection method */
@@ -179,17 +178,29 @@ void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
   } /* end of while loop */
 
 
-  if ( ((x < xa[0])  &&  ascending)  ||  ((x > xa[0])  &&  !ascending) ){
+  if ( j_lo == -1 ){
 
     j_lo = 0;
     j_hi = 1;
   }
 
-  if ( ((x > xa[n-1])  &&  ascending)  ||  ((x < xa[n-1])  &&  !ascending) ){
+  if ( j_lo == n-1 ){
 
     j_lo = n-2;
     j_hi = n-1;
   }
+
+  // if ( ((x <= xa[0])  &&  ascending)  ||  ((x >= xa[0])  &&  !ascending) ){
+  //
+  //   j_lo = 0;
+  //   j_hi = 1;
+  // }
+  //
+  // if ( ((x >= xa[n-1])  &&  ascending)  ||  ((x <= xa[n-1])  &&  !ascending) ){
+  //
+  //   j_lo = n-2;
+  //   j_hi = n-1;
+  // }
 
 
 
@@ -242,9 +253,6 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
   double ypn = 1.0E30;        /* Values higher than or equal to 1.0D30 indicate a natural spline */
 
 
-  void spline( double *x2a, double *ya_temp, long n, double yp0, double ypn, double *d2ya_temp );
-
-
   for (i=0; i<m; i++){
 
     for (j=0; j<n; j++){
@@ -259,7 +267,6 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
     for (j=0; j<n; j++){
 
       d2ya[IND(i,j)] = d2ya_temp[j];
-      // printf("%lE\n", d2ya_temp[j]);
     }
 
   }
@@ -300,13 +307,8 @@ void splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
   double *d2yy_temp;
   d2yy_temp = (double*) malloc( m*sizeof(double) );
 
-  double yp0 = 1.0E30;        /* Values higher than or equal to 1.0D30 indicate a natural spline */
-  double ypn = 1.0E30;        /* Values higher than or equal to 1.0D30 indicate a natural spline */
-
-  void splint(double*, double*, double*, long, double, double*);
-
-  void spline(double*, double*, long, double, double, double*);
-
+  double yp0 = 1.0E31;        /* Values higher than or equal to 1.0D30 indicate a natural spline */
+  double ypn = 1.0E31;        /* Values higher than or equal to 1.0D30 indicate a natural spline */
 
 
   /* Perform m evaluations of the row splines constructed by

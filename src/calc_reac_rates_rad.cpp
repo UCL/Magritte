@@ -163,8 +163,8 @@ double rate_CO_photodissociation( int reac, double *rad_surface,
        weighted by their fractional contribution to the total shielding
        van Dishoeck & Black (1988, ApJ, 334, 771, Equation 4) */
 
-    double u = log10(1.0 + column_CO[ray]); /* ??? WHY THE + 1.0 ??? */
-    double w = log10(1.0 + column_H2[ray]); /* ??? WHY THE + 1.0 ??? */
+    double u = log10(1.0 + column_CO[RINDEX(gridp,ray)]);
+    double w = log10(1.0 + column_H2[RINDEX(gridp,ray)]);
 
 
     /* mean wavelength (in Å) of 33 dissociating bands weighted
@@ -191,6 +191,8 @@ double rate_CO_photodissociation( int reac, double *rad_surface,
             * self_shielding_CO( column_CO[RINDEX(gridp,ray)], column_H2[RINDEX(gridp,ray)] )
             * dust_scattering( AV[RINDEX(gridp,ray)], lambda ) / 2.0;
   }
+
+
 
   return k;
 }

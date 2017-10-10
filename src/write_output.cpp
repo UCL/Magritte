@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <iostream>
 #include <string>
@@ -915,7 +916,10 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
     for (long r=0; r<NRAYS; r++){
 
-      fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], 1000.0) );
+      double w = log10(1.0 + column_H2[RINDEX(n,r)]);
+      double LLLlambda = (5675.0 - 200.6*w);
+
+      fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], LLLlambda) );
     }
 
     fprintf( ds_file, "\n" );
@@ -987,6 +991,32 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
 
   fclose(c_file);
+
+
+
+  /* Write X_lambda */
+
+  string file_name4 = "output/X_lambda" + tag + ".txt";
+
+  FILE *xl_file = fopen(file_name4.c_str(), "w");
+
+  if (xl_file == NULL){
+
+    printf("Error opening file!\n");
+    exit(1);
+  }
+
+
+
+  for (long n=1; n<=200; n++){
+
+    double LLLlambda = pow(10.0, (9.0-2.0)/200.0*n+2.0);
+    fprintf( xl_file, "%lE\t%lE\n", LLLlambda, X_lambda(LLLlambda) );
+
+  }
+
+
+  fclose(xl_file);
 
 
   // cout << "X lambda " << X_lambda(1000.0) << "\n";

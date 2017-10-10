@@ -73,7 +73,7 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
     /* Solve the rate equations */
 
-    rate_equation_solver(gridpoint, gridp);
+    // rate_equation_solver(gridpoint, gridp);
 
 
   } /* end of gridp loop over grid points */

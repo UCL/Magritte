@@ -36,19 +36,19 @@ ____________________________________|___________________
 File                                | Content
 ____________________________________|___________________
                                     |
-input/grid_1D_regular_101.txt       | Grid
+input/1D_regular_101.txt            | Grid
                                     |
-data/species_reduced.d              | Species
+data/species_reduced.txt            | Species
                                     |
-data/rates_reduced.d                | Reactions
+data/rates_reduced.txt              | Reactions
 ____________________________________|___________________
                                     |
 1                                   | nr. of line files
 ____________________________________|___________________
                                     |
-data/12c.dat                        | Lines 0
+data/12C.txt                        | Lines 0
                                     |
-data/16o.dat                        | Lines 1
+data/16O.txt                        | Lines 1
                                     |
-data/12co.dat                       | Lines 2
+data/12CO.txt                       | Lines 2
 ____________________________________|___________________
