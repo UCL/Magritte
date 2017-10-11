@@ -186,6 +186,9 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
   Ith(ydot,31) = form+Ith(y,31)*loss;
 
 
+  data->electron_abundance = x_e;
+
+
   return(0);
 }
  /*-----------------------------------------------------------------------------------------------*/

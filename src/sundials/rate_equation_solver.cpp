@@ -60,6 +60,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   user_data->gp          = gridp;
   user_data->gridpointer = gridpoint;
+  user_data->electron_abundance = species[e_nr].abn[gridp];
 
 
   int flag;                                                   /* output flag for CVODE functions */
@@ -213,6 +214,9 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
       species[i+1].abn[gridp] = 0.0;
     }
   }
+
+
+  species[e_nr].abn[gridp] = user_data->electron_abundance;
 
 
 

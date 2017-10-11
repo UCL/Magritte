@@ -28,7 +28,10 @@ using namespace std;
 typedef struct {
 
   long gp;
+
   GRIDPOINT* gridpointer;
+
+  double electron_abundance;
 
 } *USER_DATA;
 
