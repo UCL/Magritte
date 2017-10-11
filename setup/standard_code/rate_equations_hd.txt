@@ -50,8 +50,6 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
  
   realtype n_H = (realtype) gridpoint[gridp].density;
 
-  realtype zeta_H, zeta_H2, zeta_He;
-
   realtype loss, form;
 
 

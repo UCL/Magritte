@@ -200,7 +200,7 @@ TEST_CASE("Test chemistry"){
 
   calc_rad_surface(G_external, unit_healpixvector, rad_surface);
 
-
+  write_abundances("init");
 
   /* Iterate over the chemistry alone */
 

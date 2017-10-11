@@ -348,25 +348,6 @@ double X_lambda(double lambda)
   }
 
 
-  /* Write the X_lambda values to a text file (for testing) */
-
-  // FILE *xl = fopen("X_lambda.txt", "w");
-
-  // if (xl == NULL){
-
-  //     printf("Error opening file!\n");
-  //     exit(1);
-  //   }
-
-  // for (int i=0; i<n; i++){
-
-  //   fprintf(xl, "%lE\t%lE\n", lambda_grid[i], X_grid[i] );
-  // }
-
-  // fclose(xl);
-
-
-
   /* Calculate the cubic splines (spline.cpp) */
 
   spline(loglambda_grid, logX_grid, n, yp0, ypn, d2logX);

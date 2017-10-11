@@ -45,16 +45,12 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
       d2y = vector for the second derivative of the function  */
 
 
-  long i;                                                                               /* index */
-
-  double sig;
-  double p;
   double qn;
   double un;
 
   double *u;
   u = (double*) malloc( n*sizeof(double) );
-
+  
 
 
   /* Set lower boundary conditions */
@@ -78,11 +74,11 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
   }
 
 
-  for (i=1; i<n-1; i++){
+  for (long i=1; i<n-1; i++){
 
-    sig = (x[i]-x[i-1]) / (x[i+1]-x[i-1]);
+    double sig = (x[i]-x[i-1]) / (x[i+1]-x[i-1]);
 
-    p = sig*d2y[i-1] + 2.0;
+    double p = sig*d2y[i-1] + 2.0;
 
     d2y[i] = (sig-1.0) / p;
 
@@ -119,7 +115,7 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 
   /* Back-substitution */
 
-  for (i=n-2; i>=0; i--){
+  for (long i=n-2; i>=0; i--){
 
     d2y[i] = d2y[i]*d2y[i+1] + u[i];
   }
@@ -240,8 +236,6 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
       d2ya = matrix for the second derivative of the function  */
 
 
-  long i, j;                                                                          /* indices */
-
   double *ya_temp;
   ya_temp = (double*) malloc( n*sizeof(double) );
 
@@ -253,9 +247,9 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
   double ypn = 1.0E30;        /* Values higher than or equal to 1.0D30 indicate a natural spline */
 
 
-  for (i=0; i<m; i++){
+  for (long i=0; i<m; i++){
 
-    for (j=0; j<n; j++){
+    for (long j=0; j<n; j++){
 
       ya_temp[j] = ya[IND(i,j)];
     }
@@ -264,7 +258,7 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
     spline( x2a, ya_temp, n, yp0, ypn, d2ya_temp );
 
 
-    for (j=0; j<n; j++){
+    for (long j=0; j<n; j++){
 
       d2ya[IND(i,j)] = d2ya_temp[j];
     }

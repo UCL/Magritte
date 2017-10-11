@@ -26,7 +26,7 @@ their_abn = np.loadtxt(file_name)
 
 
 error          = my_abn - their_abn
-relative_error = 2.0*abs(error)/(my_abn+their_abn)
+relative_error = 2.0*abs(error)/abs(my_abn+their_abn)
 
 
 # Make the plots
@@ -42,7 +42,7 @@ data_line = np.zeros(ngrid+1)
 
 for spec in range(nspec):
     data_line = relative_error[:,spec]
-    if( (np.mean(data_line) > 0.5E-2 and np.mean(data_line) < 1.0E10) or False ):
+    if( (np.mean(data_line) > 0.7E-1 and np.mean(data_line) < 1.0E10) or False ):
         ax1.plot(data_line, label=spec)
         # ax1.plot(my_abn[:,spec], label=spec)
         # ax1.plot(their_abn[:,spec], label=spec)
