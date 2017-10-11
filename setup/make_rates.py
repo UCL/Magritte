@@ -441,8 +441,10 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
     if xrayReactions:
         output.write(xray_parameters(speciesList, codeFormat='C'))
 
+    output.write("  data->electron_abundance = x_e;\n")
+
     # Prepare and write the loss and formation terms for each ODE
-    output.write('\n  /* The ODEs created by MakeRates begin here... */\n')
+    output.write('\n\n  /* The ODEs created by MakeRates begin here... */\n')
     if useTtk:
         app.progressValue.set(0)
         Style().configure('Horizontal.TProgressbar', background='#dcdad5')
