@@ -32,12 +32,6 @@ using namespace std;
 
 #define LINE_DATAFILE0 "data/12C.txt" 
 
-#define LINE_DATAFILE1 "data/12C+.txt" 
-
-#define LINE_DATAFILE2 "data/16O.txt" 
-
-#define LINE_DATAFILE3 "data/12CO.txt" 
-
 #define NGRID 122 
 
 #define NSIDES 1 
@@ -46,33 +40,33 @@ using namespace std;
 
 #define RAY_SEPARATION2 0.000000E+00 
 
-#define SOBOLEV true 
+#define SOBOLEV false 
 
 #define NSPEC 35 
 
 #define NREAC 329 
 
-#define NLSPEC 4 
+#define NLSPEC 1 
 
-#define TOT_NLEV 56 
+#define TOT_NLEV 5 
 
-#define TOT_NRAD 63 
+#define TOT_NRAD 7 
 
-#define TOT_NLEV2 1756 
+#define TOT_NLEV2 25 
 
-#define TOT_NCOLPAR 18 
+#define TOT_NCOLPAR 6 
 
-#define TOT_CUM_TOT_NCOLTRAN 1800 
+#define TOT_CUM_TOT_NCOLTRAN 60 
 
-#define TOT_CUM_TOT_NCOLTEMP 384 
+#define TOT_CUM_TOT_NCOLTEMP 141 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
+#define TOT_CUM_TOT_NCOLTRANTEMP 1410 
 
-#define MAX_NITERATIONS 700 
+#define MAX_NITERATIONS 500 
 
-#define TIME_END_IN_YEARS 1.000000E+01 
+#define TIME_END_IN_YEARS 1.000000E+07 
 
-#define FIELD_FORM "ISO" 
+#define FIELD_FORM "UNI" 
 
 #define G_EXTERNAL_X 5.270460E+00 
 
@@ -86,7 +80,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define ZETA   3.85
+#define ZETA   3.846153846153846
 #define OMEGA  0.42
 
 

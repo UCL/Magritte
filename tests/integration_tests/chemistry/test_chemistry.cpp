@@ -202,9 +202,10 @@ TEST_CASE("Test chemistry"){
 
   write_abundances("init");
 
+
   /* Iterate over the chemistry alone */
 
-  for(int iteration=0; iteration<1; iteration++){
+  for(int iteration=0; iteration<8; iteration++){
 
 
     /* Construct the tags */
@@ -321,7 +322,8 @@ TEST_CASE("Test chemistry"){
 
     write_reaction_rates(tag, reaction);
 
-  }
+
+  } /* End of chemistry iteration */
 
 
 

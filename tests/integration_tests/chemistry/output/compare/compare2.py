@@ -71,7 +71,7 @@ ax1.set_yscale("log")
 
 fig1.tight_layout()
 
-plot_name = "error_" + name + ".png"
+plot_name = "error_" + name + tag + ".png"
 
 
 # Save the plot in pdf format
