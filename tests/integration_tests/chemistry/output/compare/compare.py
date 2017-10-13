@@ -12,7 +12,7 @@ else:
     tag = ""
 
 
-file_name = "../" + name + tag + ".txt"
+file_name = "../files/" + name + tag + ".txt"
 
 print file_name
 
@@ -60,7 +60,7 @@ ax1.scatter(lambdac,Xc)
 
 
 ax1.set_title(name + " relative error")
-ax1.set_xlabel("x (grid point)")
+ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name + "relative error")
 ax1.set_yscale("log")
 ax1.set_xscale("log")

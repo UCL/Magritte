@@ -1,8 +1,8 @@
 #! /bin/bash
 
-for filename in ../abundances_*
+for filename in ../files/abundances_*
 do
-    tag=${filename#"../abundances_"}
+    tag=${filename#"../files/abundances_"}
     tag=${tag%".txt"}
-    python abundances.py $tag
+    python plot_abun.py $tag
 done

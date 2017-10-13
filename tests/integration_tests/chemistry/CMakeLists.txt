@@ -131,9 +131,9 @@ target_link_libraries( _chemistry   _sundials )
 
 # Create executable to test calc_reac_rates_rad
 
-add_executable( test_chemistry   test_chemistry.cpp )
+add_executable( test_chemistry.exe   test_chemistry.cpp )
 
 
 # Link the necessary libraries
 
-target_link_libraries( test_chemistry   _chemistry ${HEALPix} )
+target_link_libraries( test_chemistry.exe   _chemistry ${HEALPix} )

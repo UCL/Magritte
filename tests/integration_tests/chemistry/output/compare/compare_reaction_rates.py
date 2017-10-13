@@ -17,7 +17,7 @@ if(name=="all"):
 
 print "Comparing"
 
-file_name = "../" + name + "_rates" + tag + ".txt"
+file_name = "../files/" + name + "_rates" + tag + ".txt"
 
 print file_name
 
@@ -40,36 +40,49 @@ relative_error = 2.0*abs(error)/(my_rates+their_rates)
 
 # Make the plots
 
-fig = plt.figure()
+fig1 = plt.figure()
+fig2 = plt.figure()
 
-ax1 = fig.add_subplot(111)
+ax1 = fig1.add_subplot(111)
+ax2 = fig2.add_subplot(111)
 
 data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if( (np.mean(data_line[2:20]) > 0.9E-6 and np.mean(data_line) < 1.0E10) or False ):
+    if( (np.mean(data_line[2:20]) > 0.9E-9 and np.mean(data_line) < 1.0E10) or False ):
         ax1.plot(data_line, label=int(reac))
-        # ax1.plot(my_rates[:,reac], label=int(reac))
-        # ax1.plot(their_rates[:,reac], label=int(reac))
-    if(False):
-        ax1.plot(my_rates[:,reac], label=int(reac))
-        ax1.plot(their_rates2[:,reac], label=int(reac))
+        ax2.plot(my_rates[:,reac], label=int(reac))
+        ax2.plot(their_rates[:,reac], label=int(reac))
 
-ax1.legend()
+
+# ax1.legend()
 ax1.set_title(name + " relative error")
-ax1.set_xlabel("x (grid point)")
+ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name + " relative error")
+ax1.grid()
 ax1.set_yscale("log")
 
-fig.tight_layout()
+# ax2.legend()
+ax2.set_title("both Magritte and 3D-PDR " + name + "s")
+ax2.set_xlabel("n (grid point nr)")
+ax2.set_ylabel(name)
+ax2.grid()
+ax2.set_yscale("log")
 
-plot_name = "error_" + name + tag + ".png"
+fig1.tight_layout()
+fig2.tight_layout()
+
+plot_name1 = "error_" + name + tag + ".png"
+plot_name2 = "both_" + name + tag + ".png"
 
 
 # Save the plot in pdf format
 
-fig.savefig(plot_name, bbox_inches='tight')
+fig1.savefig(plot_name1, bbox_inches='tight')
+fig2.savefig(plot_name2, bbox_inches='tight')
 
-print "Plot saved as " + plot_name
+print "Plots saved as "
+print "   " + plot_name1
+print "   " + plot_name2
 print " "

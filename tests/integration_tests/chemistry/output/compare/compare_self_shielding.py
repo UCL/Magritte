@@ -13,7 +13,7 @@ else:
     tag = ""
 
 
-file_name = "../" + name + tag + ".txt"
+file_name = "../files" + name + tag + ".txt"
 
 print file_name
 

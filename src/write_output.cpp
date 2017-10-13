@@ -38,7 +38,7 @@ int write_grid(string tag, GRIDPOINT *gridpoint)
     tag = "_" + tag;
   }
 
-  string file_name = "output/grid" + tag + ".txt";
+  string file_name = "output/files/grid" + tag + ".txt";
 
   FILE *outgrid = fopen(file_name.c_str(), "w");
 
@@ -78,7 +78,7 @@ int write_healpixvectors(string tag, double *unit_healpixvector)
     tag = "_" + tag;
   }
 
-  string file_name = "output/healpix" + tag + ".txt";
+  string file_name = "output/files/healpix" + tag + ".txt";
 
   FILE *hp = fopen(file_name.c_str(), "w");
 
@@ -121,7 +121,7 @@ int write_eval(string tag, EVALPOINT *evalpoint)
     tag = "_" + tag;
   }
 
-  string file_name = "output/eval" + tag + ".txt";
+  string file_name = "output/files/eval" + tag + ".txt";
 
   FILE *eval = fopen(file_name.c_str(), "w");
 
@@ -168,7 +168,7 @@ int write_key(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/key" + tag + ".txt";
+  string file_name = "output/files/key" + tag + ".txt";
 
   FILE *fkey = fopen(file_name.c_str(), "w");
 
@@ -214,7 +214,7 @@ int write_raytot(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/raytot" + tag + ".txt";
+  string file_name = "output/files/raytot" + tag + ".txt";
 
   FILE *rt = fopen(file_name.c_str(), "w");
 
@@ -260,7 +260,7 @@ int write_cum_raytot(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/cum_raytot" + tag + ".txt";
+  string file_name = "output/files/cum_raytot" + tag + ".txt";
 
   FILE *crt = fopen(file_name.c_str(), "w");
 
@@ -306,7 +306,7 @@ int write_abundances(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/abundances" + tag + ".txt";
+  string file_name = "output/files/abundances" + tag + ".txt";
 
   FILE *abun= fopen(file_name.c_str(), "w");
 
@@ -361,7 +361,7 @@ int write_level_populations(string tag, string *line_datafile, double *pop)
       tag = "_" + tag;
     }
 
-    string file_name = "output/level_populations_" + name + tag + ".txt";
+    string file_name = "output/files/level_populations_" + name + tag + ".txt";
 
     FILE *levelpops = fopen(file_name.c_str(), "w");
 
@@ -416,7 +416,7 @@ int write_line_intensities(string tag, string *line_datafile, double *mean_inten
       tag = tag + "_" + tag;
     }
 
-    string file_name = "output/line_intensities_" + name + tag + ".txt";
+    string file_name = "output/files/line_intensities_" + name + tag + ".txt";
 
     FILE *lintens = fopen(file_name.c_str(), "w");
 
@@ -463,7 +463,7 @@ int write_temperature_gas(string tag, double *temperature_gas)
     tag = "_" + tag;
   }
 
-  string file_name = "output/temperature_gas" + tag + ".txt";
+  string file_name = "output/files/temperature_gas" + tag + ".txt";
 
   FILE *temp_gas = fopen(file_name.c_str(), "w");
 
@@ -505,7 +505,7 @@ int write_temperature_dust(string tag, double *temperature_dust)
     tag = "_" + tag;
   }
 
-  string file_name = "output/temperature_dust" + tag + ".txt";
+  string file_name = "output/files/temperature_dust" + tag + ".txt";
 
   FILE *temp_dust = fopen(file_name.c_str(), "w");
 
@@ -547,7 +547,7 @@ int write_UV_field(string tag, double *UV_field)
     tag = "_" + tag;
   }
 
-  string file_name = "output/UV_field" + tag + ".txt";
+  string file_name = "output/files/UV_field" + tag + ".txt";
 
   FILE *UV_file = fopen(file_name.c_str(), "w");
 
@@ -589,7 +589,7 @@ int write_AV(string tag, double *AV)
     tag = "_" + tag;
   }
 
-  string file_name = "output/AV" + tag + ".txt";
+  string file_name = "output/files/AV" + tag + ".txt";
 
   FILE *AV_file = fopen(file_name.c_str(), "w");
 
@@ -636,7 +636,7 @@ int write_rad_surface(string tag, double *rad_surface)
     tag = "_" + tag;
   }
 
-  string file_name = "output/rad_surface" + tag + ".txt";
+  string file_name = "output/files/rad_surface" + tag + ".txt";
 
   FILE *rad_file = fopen(file_name.c_str(), "w");
 
@@ -683,7 +683,7 @@ int write_reaction_rates(string tag, REACTION *reaction)
     tag = "_" + tag;
   }
 
-  string file_name = "output/reaction_rates" + tag + ".txt";
+  string file_name = "output/files/reaction_rates" + tag + ".txt";
 
   FILE *reac_file = fopen(file_name.c_str(), "w");
 
@@ -733,7 +733,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
 
 
 
-  string file_name0 = "output/" + name + "_reactions" + tag + ".txt";
+  string file_name0 = "output/files/" + name + "_reactions" + tag + ".txt";
 
   FILE *certain_file0 = fopen(file_name0.c_str(), "w");
 
@@ -753,7 +753,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
 
 
 
-  string file_name = "output/" + name + "_rates" + tag + ".txt";
+  string file_name = "output/files/" + name + "_rates" + tag + ".txt";
 
   FILE *certain_file = fopen(file_name.c_str(), "w");
 
@@ -808,7 +808,7 @@ int write_double_1(string name, string tag, long length, double *variable)
     tag = "_" + tag;
   }
 
-  string file_name = "output/" + name + tag + ".txt";
+  string file_name = "output/files/" + name + tag + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -850,7 +850,7 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
     tag = "_" + tag;
   }
 
-  string file_name = "output/" + name + tag + ".txt";
+  string file_name = "output/files/" + name + tag + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -901,7 +901,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write dust scattering */
 
-  string file_name = "output/dust_scattering" + tag + ".txt";
+  string file_name = "output/files/dust_scattering" + tag + ".txt";
 
   FILE *ds_file = fopen(file_name.c_str(), "w");
 
@@ -932,7 +932,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write H2 shield */
 
-  string file_name2 = "output/shielding_H2" + tag + ".txt";
+  string file_name2 = "output/files/shielding_H2" + tag + ".txt";
 
   FILE *s_file = fopen(file_name2.c_str(), "w");
 
@@ -967,7 +967,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write CO shield */
 
-  string file_name3 = "output/shielding_CO" + tag + ".txt";
+  string file_name3 = "output/files/shielding_CO" + tag + ".txt";
 
   FILE *c_file = fopen(file_name3.c_str(), "w");
 
@@ -996,7 +996,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write X_lambda */
 
-  string file_name4 = "output/X_lambda" + tag + ".txt";
+  string file_name4 = "output/files/X_lambda" + tag + ".txt";
 
   FILE *xl_file = fopen(file_name4.c_str(), "w");
 

@@ -111,7 +111,6 @@ double rate_H2_photodissociation( int reac, double *rad_surface,
 
   double k = 0.0;                                                        /* reaction coefficient */
 
-
   double lambda = 1000.0;                           /* wavelength (in Å) of a typical transition */
 
   double doppler_width = v_turb / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
@@ -119,7 +118,6 @@ double rate_H2_photodissociation( int reac, double *rad_surface,
 
   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
 
-  cout << "v turb : " << v_turb << "\n";
 
   for (long ray=0; ray<NRAYS; ray++){
 

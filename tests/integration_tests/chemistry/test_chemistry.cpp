@@ -205,7 +205,7 @@ TEST_CASE("Test chemistry"){
 
   /* Iterate over the chemistry alone */
 
-  for(int iteration=0; iteration<8; iteration++){
+  for (int iteration=0; iteration<20; iteration++){
 
 
     /* Construct the tags */
@@ -219,7 +219,7 @@ TEST_CASE("Test chemistry"){
 
     SPECIES old_species[NSPEC];
 
-    for(int spec; spec<NSPEC; spec++){
+    for (int spec; spec<NSPEC; spec++){
 
       old_species[spec] = species[spec];
     }
@@ -274,7 +274,7 @@ TEST_CASE("Test chemistry"){
 
     /* Implement guess temperature */
 
-    for(long n=0; n<NGRID; n++){
+    for (long n=0; n<NGRID; n++){
 
       temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
     }
@@ -298,15 +298,15 @@ TEST_CASE("Test chemistry"){
 
     /* Check for convergence */
 
-    for(int spec=0; spec<NSPEC; spec++){
+    for (int spec=0; spec<NSPEC; spec++){
 
       double max_difference = 0.0;
 
-      for(long n=0; n<NGRID; n++){
+      for (long n=0; n<NGRID; n++){
 
         double difference = fabs(old_species[spec].abn[n] - species[spec].abn[n]);
 
-        if(difference > max_difference){
+        if (difference > max_difference){
 
           max_difference = difference;
         }

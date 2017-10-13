@@ -13,7 +13,7 @@ else:
     tag = ""
 
 
-file_name = "../" + name + tag + ".txt"
+file_name = "../files/" + name + tag + ".txt"
 
 
 data = np.loadtxt(file_name)
@@ -40,13 +40,13 @@ for index in range(nindex):
 
 ax1.legend()
 ax1.set_title(name)
-ax1.set_xlabel("x (grid point)")
+ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name)
 ax1.set_yscale("log")
 
 fig.tight_layout()
 
-plot_name = name + ".png"
+plot_name = name + tag + ".png"
 
 
 
