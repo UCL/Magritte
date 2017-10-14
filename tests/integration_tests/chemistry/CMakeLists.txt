@@ -124,6 +124,7 @@ test_main.cpp
 ../../../src/calc_column_density.cpp
 ../../../src/calc_rad_surface.cpp
 ../../../src/calc_temperature_dust.cpp
+../../../src/calc_LTE_populations.cpp
 ../../../src/write_output.cpp )
 
 target_link_libraries( _chemistry   _sundials )

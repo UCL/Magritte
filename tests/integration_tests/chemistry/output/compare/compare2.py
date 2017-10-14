@@ -16,30 +16,34 @@ file_name = "../files/" + name + tag + ".txt"
 
 print file_name
 
-data = np.loadtxt(file_name)
+my_data = np.loadtxt(file_name)
 
-ngrid  = np.shape(data)[0]
-nindex = np.shape(data)[1]
+ngrid  = np.shape(my_data)[0]
+nindex = np.shape(my_data)[1]
 
 
 file_name = "output_3D-PDR/" + name + tag + "_3D-PDR.txt"
 
-data2 = np.loadtxt(file_name)
+their_data = np.loadtxt(file_name)
 
-nrows = np.shape(data2)[0]
-ncols = np.shape(data2)[1]
+arow           = their_data[-2]
+their_data[-2] = their_data[-1]
+their_data[-1] = arow
+
+nrows = np.shape(their_data)[0]
+ncols = np.shape(their_data)[1]
 
 for i in range(nrows):
-    temp        = data2[i,0]
-    data2[i,0]  = data2[i,4]
-    data2[i,4]  = temp
-    temp        = data2[i,10]
-    data2[i,10] = data2[i,6]
-    data2[i,6]  = temp
+    temp             = their_data[i,0]
+    their_data[i,0]  = their_data[i,4]
+    their_data[i,4]  = temp
+    temp             = their_data[i,10]
+    their_data[i,10] = their_data[i,6]
+    their_data[i,6]  = temp
 
 
-error          = data - data2
-relative_error = 2.0*abs(error)/abs(data+data2)
+error          = my_data - their_data
+relative_error = 2.0*abs(error)/abs(my_data+their_data)
 
 
 # Make the plots
@@ -70,8 +74,8 @@ for index in range(nindex):
         data_line2 = data2[:,index]
         ax2.plot(data_line2, label=index)
 
-ax1.legend()
-ax1.set_title(name + " error")
+# ax1.legend()
+ax1.set_title(name + tag + " error")
 ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name + " error")
 ax1.grid()
@@ -81,7 +85,7 @@ fig1.tight_layout()
 
 
 ax2.legend()
-ax2.set_title(name + " error")
+ax2.set_title("both " + name + tag)
 ax2.set_xlabel("n (grid point nr)")
 ax2.set_ylabel(name + " error")
 ax2.grid()

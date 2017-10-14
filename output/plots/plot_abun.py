@@ -41,6 +41,15 @@ else:
     tag = ""
 
 
+# Check if there are specific species to be plotted
+
+if (len(sys.argv)>2):
+    species_I_want = get_species_nr( str(sys.argv[2]) )
+    species_specified = True
+else:
+    species_I_want = ""
+    species_specified = False
+
 
 # Get the input files from parameters.txt
 
@@ -92,11 +101,11 @@ for spec in range(nspec):
     for point in range(ngrid):
         abundance[point] = abundances_data[spec][point]
 
-    if( max(abundance) > 1.0E-5 ):
+    if( max(abundance) > 1.0E100 or species_I_want == spec):
         ax1.plot(abundance, label=species_name[spec])
 
 ax1.legend()
-ax1.set_title("chemical abundances")
+ax1.set_title("chemical abundances " + tag)
 ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel("abundances")
 ax1.grid()

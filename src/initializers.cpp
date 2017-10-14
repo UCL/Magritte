@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Initializers.c: Initialization functions for all (linearized) arrays                          */
+/* Initializers.cpp: Initialization functions for all (linearized) arrays                          */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -26,7 +26,7 @@ int initialize_int_array(int *array, long length)
 {
 
 
-  for(int i=0; i<length; i++){
+  for (long i=0; i<length; i++){
 
     array[i] = 0;
   }
@@ -47,7 +47,7 @@ int initialize_long_array(long *array, long length)
 {
 
 
-  for(int i=0; i<length; i++){
+  for (long i=0; i<length; i++){
 
     array[i] = 0;
   }
@@ -70,7 +70,7 @@ int initialize_double_array(double *array, long length)
 {
 
 
-  for(int i=0; i<length; i++){
+  for (long i=0; i<length; i++){
 
     array[i] = 0.0;
   }
@@ -93,7 +93,7 @@ int initialize_double_array_with(double *array1, double *array2, long length)
 {
 
 
-  for(int i=0; i<length; i++){
+  for (long i=0; i<length; i++){
 
     array1[i] = array2[i];
   }
@@ -116,7 +116,7 @@ int initialize_char_array(char *array, long length)
 {
 
 
-  for(int i=0; i<length; i++){
+  for (long i=0; i<length; i++){
 
     array[i] = 0.0;
   }
@@ -140,9 +140,9 @@ int initialize_evalpoint(EVALPOINT *evalpoint)
 {
 
 
-    for (int n1=0; n1<NGRID; n1++){
+    for (long n1=0; n1<NGRID; n1++){
 
-      for (int n2=0; n2<NGRID; n2++){
+      for (long n2=0; n2<NGRID; n2++){
 
         evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
         evalpoint[GINDEX(n1,n2)].Z   = 0.0;
@@ -175,7 +175,7 @@ int initialize_temperature_gas(double *temperature_gas)
 {
 
 
-  for (int n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
     temperature_gas[n] = 10.0;
   }
@@ -198,7 +198,7 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
 {
 
 
-  for (int n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
     previous_temperature_gas[n] = 0.9*temperature_gas[n];
   }
@@ -217,36 +217,36 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
 /* initialize_level_populations: sets pops of all line species to the thermal equilibrium value  */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_level_populations(double *energy, double *temperature_gas, double *pop)
-{
-
-
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
-    for (int n=0; n<NGRID; n++){
-
-      for (int i=0; i<nlev[lspec]; i++){
-
-
-        long p_i = LSPECGRIDLEV(lspec,n,i);
-
-
-        pop[p_i] = exp( -HH*CC*energy[LSPECLEV(lspec,i)] / (KB*temperature_gas[n]) );
-
-
-        /* Avoid too small numbers */
-
-        if (pop[p_i] < POP_LOWER_LIMIT){
-
-          pop[p_i] = 0.0;
-        }
-
-      }
-    }
-  }
-
-
-  return(0);
-}
+// int initialize_level_populations(double *energy, double *temperature_gas, double *pop)
+// {
+//
+//
+//   for (int lspec=0; lspec<NLSPEC; lspec++){
+//
+//     for (int n=0; n<NGRID; n++){
+//
+//       for (int i=0; i<nlev[lspec]; i++){
+//
+//
+//         long p_i = LSPECGRIDLEV(lspec,n,i);
+//
+//
+//         pop[p_i] = exp( -HH*CC*energy[LSPECLEV(lspec,i)] / (KB*temperature_gas[n]) );
+//
+//
+//         /* Avoid too small numbers */
+//
+//         if (pop[p_i] < POP_LOWER_LIMIT){
+//
+//           pop[p_i] = 0.0;
+//         }
+//
+//       }
+//     }
+//   }
+//
+//
+//   return(0);
+// }
 
 /*-----------------------------------------------------------------------------------------------*/

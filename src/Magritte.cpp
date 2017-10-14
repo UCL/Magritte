@@ -43,6 +43,7 @@ using namespace std;
 #include "calc_UV_field.hpp"
 #include "calc_temperature_dust.hpp"
 #include "chemistry.hpp"
+#include "calc_LTE_populations.hpp"
 #include "level_populations.hpp"
 #include "heating.hpp"
 #include "cooling.hpp"
@@ -76,10 +77,10 @@ int main()
 
 
 
-  printf("                              \n");
-  printf("Magritte : 3D Radiative Transfer \n");
-  printf("----------------------------- \n");
-  printf("                              \n");
+  printf("\n");
+  printf("Magritte : Multidimensional Accelerated General-purpose RadIaTive TransEr\n");
+  printf("-------------------------------------------------------------------------\n");
+  printf("\n");
 
 
 
@@ -425,6 +426,8 @@ int main()
   int niterations = 0;                                                   /* number of iterations */
 
 
+  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop );
+
 
   /* Thermal balance iterations */
 
@@ -457,7 +460,7 @@ int main()
 
     /* Calculcate the UV field */
 
-    calc_UV_field(AV, rad_surface, UV_field);
+    calc_UV_field(antipod, AV, rad_surface, UV_field);
 
 
     /* Calculate the dust temperature */

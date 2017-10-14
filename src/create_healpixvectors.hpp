@@ -18,7 +18,7 @@
 /* create_healpixvector: store the HEALPix vectors and find the antipodal pairs                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void create_healpixvectors(double *unit_healpixvector, long *antipod);
+int create_healpixvectors(double *unit_healpixvector, long *antipod);
 
 /*-----------------------------------------------------------------------------------------------*/
 

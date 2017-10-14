@@ -71,7 +71,7 @@ void calc_rad_surface(double *G_external, double *unit_healpixvector, double *ra
 
       rad_surface[RINDEX(n,r_max)] = max_product;
 
-    }
+    } /* end if UNIform radiation field */
 
 
     /* In case of an ISOtropic radiation field */
@@ -83,7 +83,8 @@ void calc_rad_surface(double *G_external, double *unit_healpixvector, double *ra
 
         rad_surface[RINDEX(n,r)] = G_external[0] / (double) NRAYS;
       }
-    }
+
+    } /* end if ISOtropic radiation field */
 
 
   } /* end of n loop over grid points */

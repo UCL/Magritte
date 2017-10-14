@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for abundance.cpp                                                                      */
+/* Header for chemistry.cpp                                                                      */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,8 +10,8 @@
 
 
 
-#ifndef __ABUNDANCES_HPP_INCLUDED__
-#define __ABUNDANCES_HPP_INCLUDED__
+#ifndef __CHEMISTRY_HPP_INCLUDED__
+#define __CHEMISTRY_HPP_INCLUDED__
 
 
 
@@ -27,6 +27,6 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
 
 
-#endif /* __ABUNDANCES_HPP_INCLUDED__ */
+#endif /* __CHEMISTRY_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

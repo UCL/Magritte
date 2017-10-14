@@ -24,31 +24,32 @@
 /* calc_UV_field: calculates the UV radiation field at each grid point                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_UV_field( double *AV, double *rad_surface, double *UV_field )
+void calc_UV_field( long *antipod, double *AV, double *rad_surface, double *UV_field )
 {
 
-  long n;                                                                    /* grid point index */
-  long r;                                                                           /* ray index */
 
   double tau_UV = 3.02;   /* dimensionless factor converting visual extinction to UV attenuation */
 
 
-
   /* For all grid points */
 
-  for (n=0; n<NGRID; n++){
-
+  for (long n=0; n<NGRID; n++){
 
     UV_field[n] = 0.0;
 
 
     /* For all rays */
 
-    for (r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
-      if(raytot[RINDEX(n,r)] > 0){
+      long nr  = RINDEX(n,r);
+      long nar = RINDEX(n,antipod[r]);
 
-        UV_field[n] = UV_field[n] + rad_surface[RINDEX(n,r)]*exp(-tau_UV*AV[RINDEX(n,r)]);
+      // printf("r and ar are : %ld and %ld\n", r, antipod[r]);
+
+      if ( (raytot[nr] > 0) || (raytot[nar] > 0) ){
+
+        UV_field[n] = UV_field[n] + rad_surface[nr]*exp(-tau_UV*AV[nr]);
       }
     }
 

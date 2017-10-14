@@ -42,6 +42,7 @@ using namespace std;
 #include "../../../src/calc_AV.hpp"
 #include "../../../src/calc_temperature_dust.hpp"
 #include "../../../src/chemistry.hpp"
+#include "../../../src/calc_LTE_populations.hpp"
 
 #include "../../../src/write_output.hpp"
 
@@ -137,6 +138,10 @@ TEST_CASE("Test chemistry"){
 
   create_healpixvectors(unit_healpixvector, antipod);
 
+  for (long r=0; r<NRAYS; r++){
+    printf("%ld   %ld \n" , r, antipod[r]);
+  }
+
 
   /* Ray tracing */
 
@@ -200,18 +205,85 @@ TEST_CASE("Test chemistry"){
 
   calc_rad_surface(G_external, unit_healpixvector, rad_surface);
 
-  write_abundances("init");
+  write_abundances("0");
+
+
+
+
+
+
+
+
+  /* Calculate column densities */
+
+  calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+  calc_column_density(gridpoint, evalpoint, column_H, H_nr);
+  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+
+
+  write_double_2("column_tot", "0", NGRID, NRAYS, column_tot);
+  write_double_2("column_density_C","0", NGRID, NRAYS, column_C);
+  write_double_2("column_density_H2", "0", NGRID, NRAYS, column_H2);
+  write_double_2("column_density_CO", "0", NGRID, NRAYS, column_CO);
+
+  write_eval("0", evalpoint);
+
+  write_healpixvectors("", unit_healpixvector);
+
+  /* Calculate the visual extinction */
+
+  calc_AV(column_tot, AV);
+
+
+  /* Calculcate the UV field */
+
+  calc_UV_field(antipod, AV, rad_surface, UV_field);
+
+
+
+  write_UV_field("0", UV_field);
+
+  write_AV("0", AV);
+
+  write_radfield_tools( "0", AV, 1000.0, v_turb, column_H2, column_CO );
+
+  write_rad_surface("0", rad_surface);
+
+  write_eval("0", evalpoint);
+
+
+  /* Implement guess temperature */
+
+  for (long n=0; n<NGRID; n++){
+
+    temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
+  }
+
+
+  /* Calculate the dust temperature */
+
+  calc_temperature_dust(UV_field, rad_surface, temperature_dust);
+
+
+  write_temperature_gas("0", temperature_gas);
+
+  write_temperature_dust("0", temperature_dust);
+
+
 
 
   /* Iterate over the chemistry alone */
 
-  for (int iteration=0; iteration<20; iteration++){
+  for (int iteration=0; iteration<8; iteration++){
 
 
     /* Construct the tags */
 
     stringstream ss;
-    ss << iteration;
+    ss << iteration + 1;
     string tag = ss.str();
 
 
@@ -238,12 +310,6 @@ TEST_CASE("Test chemistry"){
 
 
     write_double_2("column_tot", tag, NGRID, NRAYS, column_tot);
-
-    cout << species[H2_nr].abn[0] << "\n";
-    cout << species[H2_nr].abn[1] << "\n";
-    cout << species[H2_nr].abn[2] << "\n";
-    cout << species[H2_nr].abn[3] << "\n";
-
     write_double_2("column_density_C", tag, NGRID, NRAYS, column_C);
     write_double_2("column_density_H2", tag, NGRID, NRAYS, column_H2);
     write_double_2("column_density_CO", tag, NGRID, NRAYS, column_CO);
@@ -257,7 +323,7 @@ TEST_CASE("Test chemistry"){
 
     /* Calculcate the UV field */
 
-    calc_UV_field(AV, rad_surface, UV_field);
+    calc_UV_field(antipod, AV, rad_surface, UV_field);
 
 
 
@@ -269,25 +335,13 @@ TEST_CASE("Test chemistry"){
 
     write_rad_surface(tag, rad_surface);
 
-    write_eval("", evalpoint);
-
-
-    /* Implement guess temperature */
-
-    for (long n=0; n<NGRID; n++){
-
-      temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
-    }
-
-    write_temperature_gas("", temperature_gas);
-
 
     /* Calculate the dust temperature */
 
     calc_temperature_dust(UV_field, rad_surface, temperature_dust);
 
 
-    write_temperature_dust("", temperature_dust);
+    write_temperature_dust(tag, temperature_dust);
 
 
     /* Calculate the chemical abundances given the current temperatures and radiation field */

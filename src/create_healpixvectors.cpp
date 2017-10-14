@@ -12,6 +12,7 @@
 
 
 
+#include <stdio.h>
 #include <math.h>
 
 #include "declarations.hpp"
@@ -23,19 +24,18 @@
 /* create_healpixvector: store the HEALPix vectors and find the antipodal pairs                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void create_healpixvectors(double *unit_healpixvector, long *antipod)
+int create_healpixvectors(double *unit_healpixvector, long *antipod)
 {
-
-  double vector[3];                        /* unit vector in the direction of the HEALPix vector */
-
-  long r1, r2, r3, ipix;                                                          /* ray indices */
 
 
   /* Create the (unit) HEALPix vectors  */
 
-  for (r1=0; r1<NRAYS; r1++){
+  for (long r1=0; r1<NRAYS; r1++){
 
-    ipix = r1;
+    long ipix = r1;
+
+    double vector[3];                      /* unit vector in the direction of the HEALPix vector */
+
     pix2vec_nest(NSIDES, ipix, vector);
 
     unit_healpixvector[VINDEX(ipix,0)] = vector[0];
@@ -48,20 +48,22 @@ void create_healpixvectors(double *unit_healpixvector, long *antipod)
   /* Find the antipodal pairs */
   /* HEALPix vectors are not perfectly antipodal, TOL gives the allowed tolerance */
 
-  for (r2=0; r2<NRAYS; r2++){
+  for (long r2=0; r2<NRAYS; r2++){
 
-    for (r3=0; r3<NRAYS; r3++){
+    for (long r3=0; r3<NRAYS; r3++){
 
-      if ( fabs(unit_healpixvector[VINDEX(r2,0)]+unit_healpixvector[VINDEX(r3,0)]) < TOL
-           && fabs(unit_healpixvector[VINDEX(r2,1)]+unit_healpixvector[VINDEX(r3,1)]) < TOL
-           && fabs(unit_healpixvector[VINDEX(r2,3)]+unit_healpixvector[VINDEX(r3,3)]) < TOL ){
+      if (    (fabs(unit_healpixvector[VINDEX(r2,0)] + unit_healpixvector[VINDEX(r3,0)]) < TOL)
+           && (fabs(unit_healpixvector[VINDEX(r2,1)] + unit_healpixvector[VINDEX(r3,1)]) < TOL)
+           && (fabs(unit_healpixvector[VINDEX(r2,2)] + unit_healpixvector[VINDEX(r3,2)]) < TOL) ){
 
         antipod[r2] = r3;
       }
+
     }
   }
 
 
+  return(0);
 }
 
 /*-----------------------------------------------------------------------------------------------*/

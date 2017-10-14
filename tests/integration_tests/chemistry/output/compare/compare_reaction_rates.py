@@ -33,6 +33,10 @@ print file_name
 
 their_rates = np.loadtxt(file_name)
 
+rates             = their_rates[-2,:]
+their_rates[-2,:] = their_rates[-1,:]
+their_rates[-1,:] = their_rates[-2,:]
+
 
 error          = my_rates - their_rates
 relative_error = 2.0*abs(error)/(my_rates+their_rates)
@@ -50,7 +54,7 @@ data_line = np.zeros(ngrid+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]
-    if( (np.mean(data_line[2:20]) > 0.9E-9 and np.mean(data_line) < 1.0E10) or False ):
+    if( (np.mean(data_line[0:1]) > 1.0E-20 and np.mean(data_line) < 1.0E10) or False ):
         ax1.plot(data_line, label=int(reac))
         ax2.plot(my_rates[:,reac], label=int(reac))
         ax2.plot(their_rates[:,reac], label=int(reac))
@@ -63,8 +67,8 @@ ax1.set_ylabel(name + " relative error")
 ax1.grid()
 ax1.set_yscale("log")
 
-# ax2.legend()
-ax2.set_title("both Magritte and 3D-PDR " + name + "s")
+ax2.legend()
+ax2.set_title("both Magritte and 3D-PDR " + name + "s" + " at " + tag)
 ax2.set_xlabel("n (grid point nr)")
 ax2.set_ylabel(name)
 ax2.grid()
