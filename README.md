@@ -1,4 +1,4 @@
-# ![Magritte logo](https://raw.githubusercontent.com/UCL/Magritte/master/docs/Images/Magritte_logo.png?token=AWbw4ROrEnF4IybgYLXTTlxbDx7zDgyHks5Z4UnkwA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
+# ![Magritte logo](https://raw.githubusercontent.com/UCL/Magritte/master/docs/Images/Magritte_logo.png?token=AWbw4ahxpYY-sLWuJbKZ95Mhqo9xW3pYks5Z64V6wA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
 ## Multidimensional Accelerated General-purpose RadIaTive TransfEr
 
@@ -53,3 +53,8 @@ Current issues and todo
 (!) The first and last species are "dummies".
 
 todo: Write one proper Python script that does the whole setup.
+
+
+-----
+
+Developed by Frederik De Ceuster at University College London & KU Leuven
