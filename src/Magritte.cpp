@@ -409,9 +409,15 @@ int main()
 
   initialize_double_array(UV_field, NGRID);
 
+
+
+
   double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
-  initialize_level_populations(energy, temperature_gas, pop);
+  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop );
+
+
+
 
   double dpop[NGRID*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
 
@@ -426,7 +432,7 @@ int main()
   int niterations = 0;                                                   /* number of iterations */
 
 
-  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop );
+
 
 
   /* Thermal balance iterations */
