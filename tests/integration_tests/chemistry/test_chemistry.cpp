@@ -138,23 +138,11 @@ TEST_CASE("Test chemistry"){
 
   create_healpixvectors(unit_healpixvector, antipod);
 
-  for (long r=0; r<NRAYS; r++){
-    printf("%ld   %ld \n" , r, antipod[r]);
-  }
-
 
   /* Ray tracing */
 
   ray_tracing(unit_healpixvector, gridpoint, evalpoint);
 
-
-  double temperature_gas[NGRID];
-
-  initialize_temperature_gas(temperature_gas);
-
-  double temperature_dust[NGRID];
-
-  initialize_double_array(temperature_dust, NGRID);
 
 
   double AV[NGRID*NRAYS];
@@ -242,6 +230,14 @@ TEST_CASE("Test chemistry"){
 
   calc_UV_field(antipod, AV, rad_surface, UV_field);
 
+
+  double temperature_gas[NGRID];
+
+  initialize_temperature_gas(UV_field, temperature_gas);
+
+  double temperature_dust[NGRID];
+
+  initialize_double_array(temperature_dust, NGRID);
 
 
   write_UV_field("0", UV_field);

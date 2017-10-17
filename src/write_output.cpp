@@ -18,7 +18,6 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-using namespace std;
 
 #include "declarations.hpp"
 #include "write_output.hpp"
@@ -29,7 +28,7 @@ using namespace std;
 /* write_grid: write the grid again (for debugging)                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_grid(string tag, GRIDPOINT *gridpoint)
+int write_grid(std::string tag, GRIDPOINT *gridpoint)
 {
 
 
@@ -38,7 +37,7 @@ int write_grid(string tag, GRIDPOINT *gridpoint)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/grid" + tag + ".txt";
+  std::string file_name = "output/files/grid" + tag + ".txt";
 
   FILE *outgrid = fopen(file_name.c_str(), "w");
 
@@ -69,7 +68,7 @@ int write_grid(string tag, GRIDPOINT *gridpoint)
 /* write_healpixvectors: write the unit HEALPix vectors                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_healpixvectors(string tag, double *unit_healpixvector)
+int write_healpixvectors(std::string tag, double *unit_healpixvector)
 {
 
 
@@ -78,7 +77,7 @@ int write_healpixvectors(string tag, double *unit_healpixvector)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/healpix" + tag + ".txt";
+  std::string file_name = "output/files/healpix" + tag + ".txt";
 
   FILE *hp = fopen(file_name.c_str(), "w");
 
@@ -112,7 +111,7 @@ int write_healpixvectors(string tag, double *unit_healpixvector)
 /* write_eval: Write the evaluation points (Z along ray and number of the ray)                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_eval(string tag, EVALPOINT *evalpoint)
+int write_eval(std::string tag, EVALPOINT *evalpoint)
 {
 
 
@@ -121,7 +120,7 @@ int write_eval(string tag, EVALPOINT *evalpoint)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/eval" + tag + ".txt";
+  std::string file_name = "output/files/eval" + tag + ".txt";
 
   FILE *eval = fopen(file_name.c_str(), "w");
 
@@ -159,7 +158,7 @@ int write_eval(string tag, EVALPOINT *evalpoint)
 /* write_key: write the key to find which grid point corresponds to which evaluation point       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_key(string tag)
+int write_key(std::string tag)
 {
 
 
@@ -168,7 +167,7 @@ int write_key(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/key" + tag + ".txt";
+  std::string file_name = "output/files/key" + tag + ".txt";
 
   FILE *fkey = fopen(file_name.c_str(), "w");
 
@@ -205,7 +204,7 @@ int write_key(string tag)
 /* write_raytot: write the total of evaluation points along each ray                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_raytot(string tag)
+int write_raytot(std::string tag)
 {
 
 
@@ -214,7 +213,7 @@ int write_raytot(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/raytot" + tag + ".txt";
+  std::string file_name = "output/files/raytot" + tag + ".txt";
 
   FILE *rt = fopen(file_name.c_str(), "w");
 
@@ -251,7 +250,7 @@ int write_raytot(string tag)
 /* write_cum_raytot: write the cumulative total of evaluation points along each ray              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_cum_raytot(string tag)
+int write_cum_raytot(std::string tag)
 {
 
 
@@ -260,7 +259,7 @@ int write_cum_raytot(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/cum_raytot" + tag + ".txt";
+  std::string file_name = "output/files/cum_raytot" + tag + ".txt";
 
   FILE *crt = fopen(file_name.c_str(), "w");
 
@@ -297,7 +296,7 @@ int write_cum_raytot(string tag)
 /* write_abundances: write the abundances at each point                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_abundances(string tag)
+int write_abundances(std::string tag)
 {
 
 
@@ -306,7 +305,7 @@ int write_abundances(string tag)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/abundances" + tag + ".txt";
+  std::string file_name = "output/files/abundances" + tag + ".txt";
 
   FILE *abun= fopen(file_name.c_str(), "w");
 
@@ -344,30 +343,31 @@ int write_abundances(string tag)
 /* write_level_populations: write the level populations at each point for each transition        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_level_populations(string tag, string *line_datafile, double *pop)
+int write_level_populations(std::string tag, std::string *line_datafile, double *pop)
 {
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
 
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    string name = line_datafile[lspec];
+    std::string name = line_datafile[lspec];
 
     name.erase(0,5);
 
     name.erase(name.end()-4,name.end());
 
-    if ( !tag.empty() ){
-
-      tag = "_" + tag;
-    }
-
-    string file_name = "output/files/level_populations_" + name + tag + ".txt";
+    std::string file_name = "output/files/level_populations_" + name + tag + ".txt";
 
     FILE *levelpops = fopen(file_name.c_str(), "w");
 
     if (levelpops == NULL){
 
-        printf("Error opening file!\n");
+        std :: cout << "Error opening file " << file_name << "!\n";
         exit(1);
       }
 
@@ -399,24 +399,25 @@ int write_level_populations(string tag, string *line_datafile, double *pop)
 /* write_line_intensities: write the line intensities for each species, point and transition     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_line_intensities(string tag, string *line_datafile, double *mean_intensity)
+int write_line_intensities(std::string tag, std::string *line_datafile, double *mean_intensity)
 {
+
+
+  if( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
 
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    string name = line_datafile[lspec];
+    std::string name = line_datafile[lspec];
 
     name.erase(0,5);
 
     name.erase(name.end()-4,name.end());
 
-    if( !tag.empty() ){
-
-      tag = tag + "_" + tag;
-    }
-
-    string file_name = "output/files/line_intensities_" + name + tag + ".txt";
+    std::string file_name = "output/files/line_intensities_" + name + tag + ".txt";
 
     FILE *lintens = fopen(file_name.c_str(), "w");
 
@@ -454,7 +455,7 @@ int write_line_intensities(string tag, string *line_datafile, double *mean_inten
 /* write_temperature_gas: write the gas temperatures at each point                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_temperature_gas(string tag, double *temperature_gas)
+int write_temperature_gas(std::string tag, double *temperature_gas)
 {
 
 
@@ -463,7 +464,7 @@ int write_temperature_gas(string tag, double *temperature_gas)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/temperature_gas" + tag + ".txt";
+  std::string file_name = "output/files/temperature_gas" + tag + ".txt";
 
   FILE *temp_gas = fopen(file_name.c_str(), "w");
 
@@ -496,7 +497,7 @@ int write_temperature_gas(string tag, double *temperature_gas)
 /* write_temperature_dust: write the dust temperatures at each point                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_temperature_dust(string tag, double *temperature_dust)
+int write_temperature_dust(std::string tag, double *temperature_dust)
 {
 
 
@@ -505,7 +506,7 @@ int write_temperature_dust(string tag, double *temperature_dust)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/temperature_dust" + tag + ".txt";
+  std::string file_name = "output/files/temperature_dust" + tag + ".txt";
 
   FILE *temp_dust = fopen(file_name.c_str(), "w");
 
@@ -538,7 +539,7 @@ int write_temperature_dust(string tag, double *temperature_dust)
 /* write_UV_field: write the UV field at each point                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_UV_field(string tag, double *UV_field)
+int write_UV_field(std::string tag, double *UV_field)
 {
 
 
@@ -547,7 +548,7 @@ int write_UV_field(string tag, double *UV_field)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/UV_field" + tag + ".txt";
+  std::string file_name = "output/files/UV_field" + tag + ".txt";
 
   FILE *UV_file = fopen(file_name.c_str(), "w");
 
@@ -580,7 +581,7 @@ int write_UV_field(string tag, double *UV_field)
 /* write_UV_field: write the visual extinction (AV) at each point                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_AV(string tag, double *AV)
+int write_AV(std::string tag, double *AV)
 {
 
 
@@ -589,7 +590,7 @@ int write_AV(string tag, double *AV)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/AV" + tag + ".txt";
+  std::string file_name = "output/files/AV" + tag + ".txt";
 
   FILE *AV_file = fopen(file_name.c_str(), "w");
 
@@ -627,7 +628,7 @@ int write_AV(string tag, double *AV)
 /* write_rad_surface: write the rad surface at each point                                        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_rad_surface(string tag, double *rad_surface)
+int write_rad_surface(std::string tag, double *rad_surface)
 {
 
 
@@ -636,7 +637,7 @@ int write_rad_surface(string tag, double *rad_surface)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/rad_surface" + tag + ".txt";
+  std::string file_name = "output/files/rad_surface" + tag + ".txt";
 
   FILE *rad_file = fopen(file_name.c_str(), "w");
 
@@ -674,7 +675,7 @@ int write_rad_surface(string tag, double *rad_surface)
 /* write_reaction_rates: write the rad surface at each point                                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_reaction_rates(string tag, REACTION *reaction)
+int write_reaction_rates(std::string tag, REACTION *reaction)
 {
 
 
@@ -683,7 +684,7 @@ int write_reaction_rates(string tag, REACTION *reaction)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/reaction_rates" + tag + ".txt";
+  std::string file_name = "output/files/reaction_rates" + tag + ".txt";
 
   FILE *reac_file = fopen(file_name.c_str(), "w");
 
@@ -721,8 +722,8 @@ int write_reaction_rates(string tag, REACTION *reaction)
 /* write_certain_reactions: write rates of certain reactions (as indicated in reaction_rates.cpp)*/
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_certain_rates( string tag, string name, int nr_certain_reac, int *certain_reactions,
-                         REACTION *reaction )
+int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
+                         int *certain_reactions, REACTION *reaction )
 {
 
 
@@ -733,7 +734,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
 
 
 
-  string file_name0 = "output/files/" + name + "_reactions" + tag + ".txt";
+  std::string file_name0 = "output/files/" + name + "_reactions" + tag + ".txt";
 
   FILE *certain_file0 = fopen(file_name0.c_str(), "w");
 
@@ -753,7 +754,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
 
 
 
-  string file_name = "output/files/" + name + "_rates" + tag + ".txt";
+  std::string file_name = "output/files/" + name + "_rates" + tag + ".txt";
 
   FILE *certain_file = fopen(file_name.c_str(), "w");
 
@@ -799,7 +800,7 @@ int write_certain_rates( string tag, string name, int nr_certain_reac, int *cert
 /* write_double_1: write a 1D list of doubles                                                    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_double_1(string name, string tag, long length, double *variable)
+int write_double_1(std::string name, std::string tag, long length, double *variable)
 {
 
 
@@ -808,7 +809,7 @@ int write_double_1(string name, string tag, long length, double *variable)
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/" + name + tag + ".txt";
+  std::string file_name = "output/files/" + name + tag + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -841,7 +842,7 @@ int write_double_1(string name, string tag, long length, double *variable)
 /* write_double_2: write a 2D array of doubles                                                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_double_2(string name, string tag, long nrows, long ncols, double *variable)
+int write_double_2(std::string name, std::string tag, long nrows, long ncols, double *variable)
 {
 
 
@@ -850,7 +851,7 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
     tag = "_" + tag;
   }
 
-  string file_name = "output/files/" + name + tag + ".txt";
+  std::string file_name = "output/files/" + name + tag + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -888,7 +889,8 @@ int write_double_2(string name, string tag, long nrows, long ncols, double *vari
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, double *column_H2, double *column_CO )
+int write_radfield_tools( std::string tag, double *AV ,double lambda, double v_turb,
+                          double *column_H2, double *column_CO )
 {
 
 
@@ -901,7 +903,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write dust scattering */
 
-  string file_name = "output/files/dust_scattering" + tag + ".txt";
+  std::string file_name = "output/files/dust_scattering" + tag + ".txt";
 
   FILE *ds_file = fopen(file_name.c_str(), "w");
 
@@ -932,7 +934,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write H2 shield */
 
-  string file_name2 = "output/files/shielding_H2" + tag + ".txt";
+  std::string file_name2 = "output/files/shielding_H2" + tag + ".txt";
 
   FILE *s_file = fopen(file_name2.c_str(), "w");
 
@@ -967,7 +969,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write CO shield */
 
-  string file_name3 = "output/files/shielding_CO" + tag + ".txt";
+  std::string file_name3 = "output/files/shielding_CO" + tag + ".txt";
 
   FILE *c_file = fopen(file_name3.c_str(), "w");
 
@@ -996,7 +998,7 @@ int write_radfield_tools( string tag, double *AV ,double lambda, double v_turb, 
 
   /* Write X_lambda */
 
-  string file_name4 = "output/files/X_lambda" + tag + ".txt";
+  std::string file_name4 = "output/files/X_lambda" + tag + ".txt";
 
   FILE *xl_file = fopen(file_name4.c_str(), "w");
 

@@ -45,6 +45,59 @@ if(OPENMP_FOUND)
 endif()
 
 
+
+# Specify path to SUNDIALS header files
+
+set( SUNDIALS_INC_DIR
+     ../../../src/sundials/include
+     CACHE STRING "Location of SUNDIALS header files" )
+
+include_directories(${SUNDIALS_INC_DIR})
+
+
+# Set search path for SUNDIALS libraries
+
+set( SUNDIALS_LIB_DIR
+     ../../../src/sundials/lib
+     CACHE STRING "Location of SUNDIALS library files" )
+
+
+# Find the SUNDIALS solver's library
+
+find_library( SUNDIALS_SOLVER_LIB
+              sundials_cvode ${SUNDIALS_LIB_DIR}
+              DOC "CVODE library" )
+
+
+# Find the NVECTOR library
+
+find_library( SUNDIALS_NVEC_LIB
+              sundials_nvecserial ${SUNDIALS_LIB_DIR}
+              DOC "NVECTOR library" )
+
+
+# Set additional libraries
+
+set( SUNDIALS_EXTRA_LIB
+     -lm /usr/lib/x86_64-linux-gnu/librt.so
+     CACHE STRING "Additional libraries")
+
+
+# List of all libraries
+
+set( SUNDIALS_LIBS ${SUNDIALS_SOLVER_LIB} ${SUNDIALS_NVEC_LIB} ${SUNDIALS_EXTRA_LIB} )
+
+
+# Create a sundials library
+
+add_library( _sundials   ../../../src/sundials/rate_equation_solver.cpp )
+
+
+# Link the necessary libraries
+
+target_link_libraries( _sundials   ${SUNDIALS_LIBS} )
+
+
 # Add HEALPix library
 
 find_library( HEALPix
@@ -68,13 +121,30 @@ test_main.cpp
 ../../../src/create_healpixvectors.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
+../../../src/chemistry.cpp
+../../../src/reaction_rates.cpp
+../../../src/calc_reac_rates.cpp
+../../../src/calc_reac_rates_rad.cpp
+../../../src/radfield_tools.cpp
 ../../../src/level_populations.cpp
 ../../../src/radiative_transfer.cpp
 ../../../src/calc_C_coeff.cpp
 ../../../src/level_population_solver.cpp
+../../../src/calc_rad_surface.cpp
+../../../src/calc_column_density.cpp
+../../../src/calc_AV.cpp
+../../../src/calc_UV_field.cpp
+../../../src/calc_temperature_dust.cpp
+../../../src/calc_LTE_populations.cpp
+../../../src/spline.cpp
 ../../../src/exact_feautrier.cpp
+../../../src/heating.cpp
+../../../src/cooling.cpp
+../../../src/update_temperature_gas.cpp
 ../../../src/write_output.cpp )
 
+
+target_link_libraries( _level_populations   _sundials )
 
 # Create executable to test calc_reac_rates_rad
 

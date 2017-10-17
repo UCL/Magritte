@@ -18,7 +18,7 @@ true                                | sobolev
                                     |
 ISO                                 | field form
                                     |
-500                                 | MAX_NITERATIONS
+400                                 | MAX_NITERATIONS
                                     |
 1.0E1                               | time_end (years)
                                     |

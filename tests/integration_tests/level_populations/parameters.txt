@@ -14,19 +14,19 @@ ____________________________________|___________________
                                     |
 0.0                                 | ray_separation2
                                     |
-false                               | sobolev
+true                                | sobolev
                                     |
-ISO                                 | field form
+UNI                                 | field form
                                     |
-300                                 | MAX_NITERATIONS
+1                                   | MAX_NITERATIONS
                                     |
-1.0E8                               | time_end (years)
+1.0E7                               | time_end (years)
                                     |
-0.0                                 | G_EXTERNAL_X
+5.27046                             | G_EXTERNAL_X
                                     |
-0.0                                 | G_EXTERNAL_Y
+5.27046                             | G_EXTERNAL_Y
                                     |
-0.0                                 | G_EXTERNAL_Z
+6.66667                             | G_EXTERNAL_Z
                                     |
 0.0                                 | Feautrier BC (IBC)
 ____________________________________|___________________
@@ -36,7 +36,7 @@ ____________________________________|___________________
 File                                | Content
 ____________________________________|___________________
                                     |
-input/1D_regular_101.txt            | Grid
+input/1Dn30.dat_conv.txt            | Grid
                                     |
 data/species_reduced.txt            | Species
                                     |
@@ -46,11 +46,11 @@ ____________________________________|___________________
 4                                   | nr. of line files
 ____________________________________|___________________
                                     |
-data/12C.txt                        | Lines 0
+data/12C+.txt                       | Lines 0
                                     |
-data/12C+.txt                       | Lines 1
+data/12CO.txt                       | Lines 1
                                     |
 data/16O.txt                        | Lines 2
                                     |
-data/12CO.txt                       | Lines 3
+data/12C.txt                        | Lines 3
 ____________________________________|___________________

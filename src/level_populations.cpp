@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <signal.h>
 
 #include "declarations.hpp"
 #include "level_populations.hpp"
@@ -22,6 +23,7 @@
 #include "initializers.hpp"
 #include "radiative_transfer.hpp"
 #include "level_population_solver.hpp"
+#include "write_output.hpp"
 
 
 
@@ -63,7 +65,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
       /* Calculate collisional (C) coefficients for temperature_gas */
 
-      calc_C_coeff( C_data, coltemp, icol, jcol, temperature_gas,
+      calc_C_coeff( gridpoint, C_data, coltemp, icol, jcol, temperature_gas,
                     weight, energy, C_coeff, n, lspec );
 
 
@@ -80,10 +82,71 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
         }
       }
 
+
+      // if (n==0)
+      // {
+      //
+      // {
+      //     FILE *file = fopen("output/files/A_C+_0.txt", "w");
+      //
+      //     if (file == NULL){
+      //
+      //       printf("Error opening file!\n");
+      //       exit(1);
+      //     }
+      //
+      //
+      //     for (long row=0; row<nlev[lspec]; row++){
+      //
+      //       for (long col=0; col<nlev[lspec]; col++){
+      //
+      //         fprintf( file, "%lE\t", A_coeff[LSPECLEVLEV(lspec,row,col)] );
+      //       }
+      //
+      //       fprintf( file, "\n" );
+      //     }
+      //
+      //
+      //     fclose(file);
+      //
+      // }
+      //
+      // {
+      //     FILE *file = fopen("output/files/C_C+_0.txt", "w");
+      //
+      //     if (file == NULL){
+      //
+      //       printf("Error opening file!\n");
+      //       exit(1);
+      //     }
+      //
+      //
+      //     for (long row=0; row<nlev[lspec]; row++){
+      //
+      //       for (long col=0; col<nlev[lspec]; col++){
+      //
+      //         fprintf( file, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)] );
+      //       }
+      //
+      //       fprintf( file, "\n" );
+      //     }
+      //
+      //
+      //     fclose(file);
+      //
+      //     raise(SIGABRT);
+      // }
+      //
+      // }
+
+
+
+
     } /* end of n loop over grid points */
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
 
 
 
@@ -121,7 +184,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
-      for (int n=0; n<NGRID; n++){
+      for (long n=0; n<NGRID; n++){
 
         for (int kr=0; kr<nrad[lspec]; kr++){
 
@@ -156,8 +219,8 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
           // Source[s_ij]  = Source[s_ij] + 0.0E-20;
 
 
-          if (opacity[s_ij] < 1.0E-26){
-            opacity[s_ij] = 1.0E-26;
+          if (opacity[s_ij] < 1.0E-50){
+            opacity[s_ij] = 1.0E-50;
           }
 
 
@@ -166,7 +229,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
           //   printf("pop i and pop j %lE , %lE \n", pop[p_i], pop[p_j]);
           // }
 
-        }
+        } /* end of kr loop over transitions */
 
       } /* end of n loop over gridpoints */
 
@@ -206,7 +269,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
         /* For all grid points */
 
-        for (int n=0; n<NGRID; n++){
+        for (long n=0; n<NGRID; n++){
 
           long r_ij = LSPECGRIDLEVLEV(lspec,n,i,j);
           long r_ji = LSPECGRIDLEVLEV(lspec,n,j,i);
@@ -249,7 +312,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
-      for (int n=0; n<NGRID; n++){
+      for (long n=0; n<NGRID; n++){
 
 
         /* Solve the radiative balance equation for the level populations */

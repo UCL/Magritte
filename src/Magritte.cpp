@@ -78,8 +78,8 @@ int main()
 
 
   printf("\n");
-  printf("Magritte : Multidimensional Accelerated General-purpose RadIaTive TransEr\n");
-  printf("-------------------------------------------------------------------------\n");
+  printf("   Magritte : Multidimensional Accelerated General-purpose RadIaTive TransEr\n");
+  printf("-------------------------------------------------------------------------------\n");
   printf("\n");
 
 
@@ -365,14 +365,6 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  double temperature_gas[NGRID];                    /* temperature of the gas at each grid point */
-
-  initialize_temperature_gas(temperature_gas);
-
-  double previous_temperature_gas[NGRID];    /* temp. of gas at each grid point, prev. iteration */
-
-  initialize_previous_temperature_gas(previous_temperature_gas, temperature_gas);
-
   double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
 
   initialize_double_array(temperature_dust, NGRID);
@@ -409,16 +401,6 @@ int main()
 
   initialize_double_array(UV_field, NGRID);
 
-
-
-
-  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
-
-  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop );
-
-
-
-
   double dpop[NGRID*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
 
   initialize_double_array(dpop, NGRID*TOT_NLEV);
@@ -427,11 +409,85 @@ int main()
 
   initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
 
+
+
+  /* Make a guess for the gas temperature, based on he UV field */
+
+  calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+
+  calc_AV(column_tot, AV);
+
+  calc_UV_field(antipod, AV, rad_surface, UV_field);
+
+  double temperature_gas[NGRID];                    /* temperature of the gas at each grid point */
+
+  guess_temperature_gas(UV_field, temperature_gas);
+
+  double previous_temperature_gas[NGRID];    /* temp. of gas at each grid point, prev. iteration */
+
+  initialize_previous_temperature_gas(previous_temperature_gas, temperature_gas);
+
+
+
+  /* Preliminary chemistry iterations */
+
+  printf("(Magritte): Starting chemistry iterations \n\n");
+
+  for (int chem_iteration=0; chem_iteration<8; chem_iteration++){
+
+    printf("(Magritte):   chemistry iteration %d \n", chem_iteration+1);
+
+
+    /* Calculate column densities */
+
+    calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
+    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+
+
+    /* Calculate the visual extinction */
+
+    calc_AV(column_tot, AV);
+
+
+    /* Calculcate the UV field */
+
+    calc_UV_field(antipod, AV, rad_surface, UV_field);
+
+
+    /* Calculate the dust temperature */
+
+    calc_temperature_dust(UV_field, rad_surface, temperature_dust);
+
+
+    /* Calculate the chemical abundances given the current temperatures and radiation field */
+
+    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+                column_H2, column_HD, column_C, column_CO, v_turb );
+
+
+  } /* End of chemistry iteration */
+
+  printf("\n(Magritte): Chemistry iterations done\n\n");
+
+
+
+  /* Initialize the level populations with their LTE values */
+
+  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
+
+  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+
+  write_level_populations("0", line_datafile, pop);
+
+
+
   bool no_thermal_balance = true;
 
-  int niterations = 0;                                                   /* number of iterations */
-
-
+  int niterations = 0;
 
 
 
@@ -450,8 +506,7 @@ int main()
 
 
     /* Calculate column densities */
-
-    calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+    
     calc_column_density(gridpoint, evalpoint, column_H, H_nr);
     calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
     calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);

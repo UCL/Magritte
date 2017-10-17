@@ -30,39 +30,45 @@ using namespace std;
 
 #define REAC_DATAFILE  "data/rates_reduced.txt" 
 
-#define LINE_DATAFILE0 "data/12C.txt" 
+#define LINE_DATAFILE0 "data/12C+.txt" 
+
+#define LINE_DATAFILE1 "data/12CO.txt" 
+
+#define LINE_DATAFILE2 "data/16O.txt" 
+
+#define LINE_DATAFILE3 "data/12C.txt" 
 
 #define NGRID 122 
 
 #define NSIDES 1 
 
-#define THETA_CRIT 1.300000 
+#define THETA_CRIT 1.000000 
 
 #define RAY_SEPARATION2 0.000000E+00 
 
-#define SOBOLEV false 
+#define SOBOLEV true 
 
 #define NSPEC 35 
 
 #define NREAC 329 
 
-#define NLSPEC 1 
+#define NLSPEC 4 
 
-#define TOT_NLEV 5 
+#define TOT_NLEV 56 
 
-#define TOT_NRAD 7 
+#define TOT_NRAD 63 
 
-#define TOT_NLEV2 25 
+#define TOT_NLEV2 1756 
 
-#define TOT_NCOLPAR 6 
+#define TOT_NCOLPAR 18 
 
-#define TOT_CUM_TOT_NCOLTRAN 60 
+#define TOT_CUM_TOT_NCOLTRAN 1800 
 
-#define TOT_CUM_TOT_NCOLTEMP 141 
+#define TOT_CUM_TOT_NCOLTEMP 384 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 1410 
+#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 500 
+#define MAX_NITERATIONS 1 
 
 #define TIME_END_IN_YEARS 1.000000E+07 
 
@@ -329,7 +335,7 @@ extern SPECIES species[NSPEC];
 extern REACTION reaction[NREAC];
 
 
-extern string lspec_name[NLSPEC];                         /* names of the line producing species */
+extern int lspec_nr[NLSPEC];                              /* names of the line producing species */
 
 extern int spec_par[TOT_NCOLPAR];  /* number of the species corresponding to a collision partner */
 

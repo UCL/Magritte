@@ -58,24 +58,24 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
         long p_i = LSPECGRIDLEV(lspec,n,i);
         int  l_i = LSPECLEV(lspec,i);
 
-        pop[p_i] = gridpoint[n].density * weight[l_i] * exp( -energy[l_i]/(KB*temperature_gas[n]) )
-                   / partition_function;
+        pop[p_i] = gridpoint[n].density * species[lspec_nr[lspec]].abn[n] * weight[l_i]
+                   * exp( -energy[l_i]/(KB*temperature_gas[n]) ) / partition_function;
 
         total_population = total_population + pop[p_i];
 
 
         /* Avoid too small numbers */
 
-        if (pop[p_i] < POP_LOWER_LIMIT){
-
-          pop[p_i] = 0.0;
-        }
+        // if (pop[p_i] < POP_LOWER_LIMIT){
+        //
+        //   pop[p_i] = 0.0;
+        // }
 
       } /* end of i loop over levels */
 
       /* Check if total population adds up to the density */
 
-      if ( (total_population-gridpoint[n].density)/total_population > 1.0E-3 ){
+      if ( (total_population-gridpoint[n].density*species[lspec_nr[lspec]].abn[n])/total_population > 1.0E-3 ){
 
         printf("\nERROR : total of level populations differs from density !\n\n");
       }

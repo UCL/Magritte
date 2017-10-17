@@ -82,11 +82,11 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
 
   /* Output related variables, for testing only */
 
-  write_certain_rates("0", "canonical", nr_can_reac, canonical_reactions, reaction);
-  write_certain_rates("0", "can_phot", nr_can_phot, can_photo_reactions, reaction);
-  write_certain_rates("0", "all", nr_all, all_reactions, reaction);
-
-  write_double_1("rates2", "0", NGRID, &reaction[2].k[0]);
+  // write_certain_rates("0", "canonical", nr_can_reac, canonical_reactions, reaction);
+  // write_certain_rates("0", "can_phot", nr_can_phot, can_photo_reactions, reaction);
+  // write_certain_rates("0", "all", nr_all, all_reactions, reaction);
+  //
+  // write_double_1("rates2", "0", NGRID, &reaction[2].k[0]);
 
   /* ------------------------------------------ */
 

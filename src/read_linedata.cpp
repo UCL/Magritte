@@ -36,11 +36,8 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 {
 
 
-  int l;                                                     /* index of a text line in the file */
-  int par1, par2, par3, par4;                                   /* index for a collision partner */
-  int tindex1, tindex2;                                                     /* temperature index */
-
   int n;                                                                         /* helper index */
+
   int i, j;                                                                     /* level indices */
 
   char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
@@ -62,52 +59,56 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
     /* Skip first line */
 
-    fscanf(data, "%*[^\n]\n");
+    fgets(buffer, BUFFER_SIZE, data);
 
 
     /* Read the name of the line producing species */
 
-    fscanf( data, "%s %*[^\n]\n", buffer_name );
+    fgets(buffer, BUFFER_SIZE, data);
+    sscanf( buffer, "%s %*[^\n]\n", buffer_name );
 
     string str(buffer_name);
-
-    lspec_name[lspec] = buffer_name;
+    string lspec_name = buffer_name;
+    lspec_nr[lspec] = get_species_nr(lspec_name);
 
 
     /* Skip first 5 lines */
 
-    for (l=0; l<5; l++){
+    for (int l=0; l<5; l++){
 
-      fscanf(data, "%*[^\n]\n");
+      fgets(buffer, BUFFER_SIZE, data);
     }
 
 
     /* Read energy levels */
 
-    for (l=0; l<nlev[lspec]; l++){
+    for (int l=0; l<nlev[lspec]; l++){
 
-      fscanf( data, "%d %lf %lf %*[^\n]\n", &n, &buff1, &buff2 );
+      fgets(buffer, BUFFER_SIZE, data);
+      sscanf( buffer, "%d %lf %lf %*[^\n]\n", &n, &buff1, &buff2 );
 
-      energy[LSPECLEV(lspec,l)] = buff1;
+      energy[LSPECLEV(lspec,l)] = HH*CC*buff1;             /* energy converted from cm^-1 to erg */
       weight[LSPECLEV(lspec,l)] = buff2;
 
-      // printf( "(read_linedata): level energy and weight are %f \t %.1f \n",
-      //         energy[LSPECLEV(lspec,l)], weight[LSPECLEV(lspec,l)] );
+      // printf("%s\n",buffer);
+      // printf( "(read_linedata): level energy and weight are %lE \t %.1f \n",
+      //         energy[LSPECLEV(lspec,l)]/CC/HH, weight[LSPECLEV(lspec,l)] );
 
     }
 
+    // printf( "(read_linedata): \n" );
 
     /* Skip the next 3 lines */
 
-    for (l=0; l<3; l++){
+    for (int l=0; l<3; l++){
 
-      fscanf(data, "%*[^\n]\n");
+      fgets(buffer, BUFFER_SIZE, data);
     }
 
 
     /* Read transitions and Einstein A coefficients */
 
-    for (l=0; l<nrad[lspec]; l++){
+    for (int l=0; l<nrad[lspec]; l++){
 
       fgets(buffer, BUFFER_SIZE, data);
       sscanf( buffer, "%d %d %d %lE %lE %*[^\n] \n", &n, &i, &j, &buff1, &buff2 );
@@ -129,21 +130,21 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
     /* Skip the next 2 lines */
 
-    for (l=0; l<2; l++){
+    for (int l=0; l<2; l++){
 
-      fscanf(data, "%*[^\n]\n");
+      fgets(buffer, BUFFER_SIZE, data);
     }
 
 
 
     /* For each collision partner */
 
-    for (par4=0; par4<ncolpar[lspec]; par4++){
+    for (int par4=0; par4<ncolpar[lspec]; par4++){
 
 
       /* Skip the next line */
 
-      fscanf(data, "%*[^\n]\n");
+      fgets(buffer, BUFFER_SIZE, data);
 
 
       /* Extract the species corresponding to the collision partner */
@@ -158,15 +159,15 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
       /* Skip the next 5 lines */
 
-      for (l=0; l<5; l++){
+      for (int l=0; l<5; l++){
 
-        fscanf(data, "%*[^\n]\n");
+        fgets(buffer, BUFFER_SIZE, data);
       }
 
 
       /* Read the collision temperatures */
 
-      for (tindex1=0; tindex1<ncoltemp[LSPECPAR(lspec,par4)]; tindex1++){
+      for (int tindex1=0; tindex1<ncoltemp[LSPECPAR(lspec,par4)]; tindex1++){
 
         fscanf( data, "\t %lf \t", &buff3 );
         coltemp[LSPECPARTEMP(lspec,par4,tindex1)] = buff3;
@@ -186,7 +187,7 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
       // printf("(read_linedata): C_data\n");
 
-      for (l=0; l<ncoltran[LSPECPAR(lspec,par4)]; l++){
+      for (int l=0; l<ncoltran[LSPECPAR(lspec,par4)]; l++){
 
 
         /* Read first 3 entries of the line containing the transition level indices */
@@ -203,7 +204,7 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
         /* Read the rest of the line containing the C_data */
 
-        for (tindex2=0; tindex2<ncoltemp[LSPECPAR(lspec,par4)]; tindex2++){
+        for (int tindex2=0; tindex2<ncoltemp[LSPECPAR(lspec,par4)]; tindex2++){
 
           fscanf( data, "%lf", &buff4 );
           C_data[LSPECPARTRANTEMP(lspec,par4,l,tindex2)] = buff4;
@@ -233,35 +234,40 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
     /* Use data to calculate all coefficients in proper units */
 
-    for (l=0; l<nrad[lspec]; l++){
+    for (int l=0; l<nrad[lspec]; l++){
 
       i = irad[LSPECRAD(lspec,l)];
       j = jrad[LSPECRAD(lspec,l)];
 
+      int l_ij = LSPECLEVLEV(lspec,i,j);
+      int l_ji = LSPECLEVLEV(lspec,j,i);
+
 
       /* Frequency is in GHz, convert to Hz */
 
-      frequency[LSPECLEVLEV(lspec,i,j)] = 1.0E9*frequency[LSPECLEVLEV(lspec,i,j)];
+      frequency[l_ij] = 1.0E9*frequency[l_ij];
 
 
       /* Energy/frequency of the transition is symmetric */
 
-      frequency[LSPECLEVLEV(lspec,j,i)] = frequency[LSPECLEVLEV(lspec,i,j)];
+      frequency[l_ji] = frequency[l_ij];
 
 
       /* Calculate the Einstein B coefficients */
 
-      B_coeff[LSPECLEVLEV(lspec,i,j)] = A_coeff[LSPECLEVLEV(lspec,i,j)] * pow(CC, 2)
-                                        / ( 2.0*HH*pow(frequency[LSPECLEVLEV(lspec,i,j)] , 3) );
+      B_coeff[l_ij] = A_coeff[l_ij] * pow(CC, 2) / ( 2.0*HH*pow(frequency[l_ij] , 3) );
 
-      B_coeff[LSPECLEVLEV(lspec,j,i)] = weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)]
-                                        * B_coeff[LSPECLEVLEV(lspec,i,j)];
+      B_coeff[l_ji] = weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)] * B_coeff[l_ij];
+
 
       // printf( "(read_linedata): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
       //         A_coeff[LSPECLEVLEV(lspec,i,j)], B_coeff[LSPECLEVLEV(lspec,i,j)],
       //         B_coeff[LSPECLEVLEV(lspec,j,i)] );
 
     }
+
+
+
 
 
     // printf("(read_linedata): intput C_data = \n");

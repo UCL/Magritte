@@ -12,39 +12,26 @@
 
 
 
+#include <iostream>
 #include <stdio.h>
 #include <math.h>
 
 #include "declarations.hpp"
 #include "calc_C_coeff.hpp"
+#include "initializers.hpp"
 
 
 
 /* calc_C_coeff: calculates the collisional coefficients (C_ij) from the line data               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double *temperature_gas,
-                   double *weight, double *energy, double *C_coeff, long gridp, int lspec )
+void calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *icol, int *jcol,
+                   double *temperature_gas, double *weight, double *energy, double *C_coeff,
+                   long gridp, int lspec )
 {
 
-  int par;                                                      /* index for a collision partner */
-
-  int spec;                                                                     /* species index */
-
-  int tindex;                                                               /* temperature index */
-  int tindex_low;                               /* index of temperature below actual temperature */
-  int tindex_high;                              /* index of temperature above actual temperature */
-
-  int ckr;                                                       /* collisional transition index */
-
-  int i, j;                                                                     /* level indices */
 
   double step;                                                    /* (linear) interpolation step */
-
-  double C_tmp;                                                         /* temporary value for C */
-
-  int max_ncoltran;                   /* maximum number of collisional transitions for a partner */
-  int par_max_ncoltran;                /* partner with maximum number of collisional transitions */
 
 
   // printf("(calc_C_coeff): intput C_data = \n");
@@ -66,66 +53,56 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
 
 
 
+
   /* Calculate H2 ortho/para fraction at equilibrium for given temperature */
 
-  double frac_H2_para = 0.0;                                              /* fraction of para-H2 */
+  double frac_H2_para  = 0.0;                                             /* fraction of para-H2 */
   double frac_H2_ortho = 0.0;                                            /* fraction of ortho-H2 */
 
 
   if (species[H2_nr].abn[gridp] > 0.0){
 
-    frac_H2_para = 1.0 / (1.0 + 9.0*exp(-170.5/temperature_gas[gridp]));
+    frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/temperature_gas[gridp]));
     frac_H2_ortho = 1.0 - frac_H2_para;
   }
 
 
-  max_ncoltran = 0;
-  par_max_ncoltran = 0;
+
 
 
   /* For all collision partners */
 
-  for (par=0; par<ncolpar[lspec]; par++){
+  for (int par=0; par<ncolpar[lspec]; par++){
 
 
     /* Get the number of the species corresponding to the collision partner */
 
-    spec = spec_par[lspec,par];
-
-    /* Find max number of collisional transitions for a partner */
-
-    if (ncoltran[LSPECPAR(lspec,par)] > max_ncoltran){
-
-      max_ncoltran = ncoltran[par];
-      par_max_ncoltran = par;
-    }
+    int spec = spec_par[lspec,par];
 
 
     /* Find the available temperatures closest to the actual tamperature */
 
-    tindex_low = -1;
-    tindex_high = -1;
+    int tindex_low  = -1;                       /* index of temperature below actual temperature */
+    int tindex_high = -1;                       /* index of temperature above actual temperature */
 
 
-    /* for all available temperatures */
+    /* Find the data corresponding to the temperatures above and below the actual temperature */
 
-    for (tindex=0; tindex<ncoltemp[LSPECPAR(lspec,par)]; tindex++ ){
+    for (int tindex=0; tindex<ncoltemp[LSPECPAR(lspec,par)]; tindex++ ){
 
       if (temperature_gas[gridp] < coltemp[LSPECPARTEMP(lspec,par,tindex)]){
 
-        tindex_low = tindex-1;
-        tindex_high  = tindex;
+        tindex_low  = tindex-1;
+        tindex_high = tindex;
 
         break;
       }
     }
 
-
     if (tindex_high == -1){
 
       tindex_high = tindex_low = ncoltemp[LSPECPAR(lspec,par)]-1;
     }
-
 
     if (tindex_high == 0){
 
@@ -133,13 +110,59 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
     }
 
 
+    double C_T_low[nlev[lspec]*nlev[lspec]];
+
+    initialize_double_array(C_T_low, nlev[lspec]*nlev[lspec]);
+
+    double C_T_high[nlev[lspec]*nlev[lspec]];
+
+    initialize_double_array(C_T_high, nlev[lspec]*nlev[lspec]);
+
+
+    for (int ckr=0; ckr<ncoltran[LSPECPAR(lspec,par)]; ckr++){
+
+      int i = icol[LSPECPARTRAN(lspec,par,ckr)];
+      int j = jcol[LSPECPARTRAN(lspec,par,ckr)];
+
+      C_T_low[LINDEX(i,j)]  = C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_low)];
+      C_T_high[LINDEX(i,j)] = C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_high)];
+    }
+
+
+    /* Calculate the reverse (excitation) rate coefficients from detailed balance, if not given
+       i.e. C_ji = C_ij * g_i/g_j * exp( -(E_i-E_j)/ (kb T) ) */
+
+    for (int ckr=0; ckr<ncoltran[LSPECPAR(lspec,par)]; ckr++){
+
+      int i = icol[LSPECPARTRAN(lspec,par,ckr)];
+      int j = jcol[LSPECPARTRAN(lspec,par,ckr)];
+
+      int l_i = LSPECLEV(lspec,i);
+      int l_j = LSPECLEV(lspec,j);
+
+
+      if ( C_T_low[LINDEX(j,i)] == 0.0 && C_T_low[LINDEX(i,j)] != 0.0 ){
+
+        C_T_low[LINDEX(j,i)] = C_T_low[LINDEX(i,j)] * weight[l_i]/weight[l_j]
+                               * exp( -(energy[l_i] - energy[l_j])
+                                       /(KB*coltemp[LSPECPARTEMP(lspec,par,tindex_low)]) );
+      }
+
+
+      if ( C_T_high[LINDEX(j,i)] == 0.0 && C_T_high[LINDEX(i,j)] != 0.0 ){
+
+        C_T_high[LINDEX(j,i)] = C_T_high[LINDEX(i,j)] * weight[l_i]/weight[l_j]
+                                * exp( -(energy[l_i] - energy[l_j])
+                                        /(KB*coltemp[LSPECPARTEMP(lspec,par,tindex_high)]) );
+      }
+    }
+
+
     /* Calculate the (linear) interpolation step */
 
-    if (tindex_high == tindex_low){
+    double step = 0.0;                                            /* (linear) interpolation step */
 
-      step = 0.0;
-    }
-    else {
+    if (tindex_high != tindex_low){
 
       step = (temperature_gas[gridp] - coltemp[LSPECPARTEMP(lspec,par,tindex_low)])
               / ( coltemp[LSPECPARTEMP(lspec,par,tindex_high)]
@@ -149,60 +172,43 @@ void calc_C_coeff( double *C_data, double *coltemp, int *icol, int *jcol, double
     // printf("(calc_C_coeff): step %.2lf \n", step);
 
 
-    /* For all collisional transitions */
+    /* For all C matrix elements */
 
-    for (ckr=0; ckr<ncoltran[LSPECPAR(lspec,par)]; ckr++){
+    for (int i=0; i<nlev[lspec]; i++){
 
-      i = icol[LSPECPARTRAN(lspec,par,ckr)];
-      j = jcol[LSPECPARTRAN(lspec,par,ckr)];
+      for (int j=0; j<nlev[lspec]; j++){
 
 
-      /* Make a linear interpolation for C in the temperature */
+        /* Make a linear interpolation for C in the temperature */
 
-      C_tmp = C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_low)]
-              + ( C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_high)]
-                  - C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_low)] )*step;
+        double C_tmp = C_T_low[LINDEX(i,j)] + (C_T_high[LINDEX(i,j)]-C_T_low[LINDEX(i,j)]) * step;
 
-      // printf( "(calc_C_coeff): C_tmp = %.2lE \t tindex_low %d \t tindex_high %d \n",
-      //         C_tmp, tindex_low, tindex_high );
+        // printf( "(calc_C_coeff): C_tmp = %.2lE \t tindex_low %d \t tindex_high %d \n",
+        //         C_tmp, tindex_low, tindex_high );
 
 
 
-      /* Weigh contributions to C by abundance */
+        /* Weigh contributions to C by abundance */
 
-      double abundance = species[spec].abn[gridp];
+        double abundance = gridpoint[gridp].density * species[spec].abn[gridp];
 
-      if ( ortho_para[LSPECPAR(lspec,par)] == 'o' ){
+        if ( ortho_para[LSPECPAR(lspec,par)] == 'o' ){
 
-        abundance = abundance * frac_H2_ortho;
+          abundance = abundance * frac_H2_ortho;
+        }
+
+        else if ( ortho_para[LSPECPAR(lspec,par)] == 'p' ){
+
+          abundance = abundance * frac_H2_para;
+        }
+
+        C_coeff[LSPECLEVLEV(lspec,i,j)] = C_coeff[LSPECLEVLEV(lspec,i,j)] + C_tmp*abundance;
+
       }
 
-      else if ( ortho_para[LSPECPAR(lspec,par)] == 'p' ){
-
-        abundance = abundance * frac_H2_para;
-      }
-
-      C_coeff[LSPECLEVLEV(lspec,i,j)] = C_coeff[LSPECLEVLEV(lspec,i,j)] + C_tmp*abundance;
     }
 
-  }
-
-
-  /* Calculate the reverse (excitation) rate coefficients from detailed balance */
-  /* i.e. C_ji = C_ij * g_i/g_j * exp( -(E_i-E_j)/ (kb T) )                     */
-
-  for (ckr=0; ckr<ncoltran[LSPECPAR(lspec,par_max_ncoltran)]; ckr++){
-
-    i = icol[LSPECPARTRAN(lspec,par_max_ncoltran,ckr)];
-    j = jcol[LSPECPARTRAN(lspec,par_max_ncoltran,ckr)];
-
-    C_coeff[LSPECLEVLEV(lspec,j,i)] = C_coeff[LSPECLEVLEV(lspec,i,j)]
-                                     * weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)]
-                                     * exp( -( energy[LSPECLEV(lspec,i)]
-                                               -energy[LSPECLEV(lspec,j)] )
-                                             / (KB*temperature_gas[gridp]) );
-
-  }
+  } /* end of par loop ovrer collision partners */
 
 
   // printf("(calc_C_coeff): output [C_ij]= \n");

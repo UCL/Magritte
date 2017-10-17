@@ -58,7 +58,7 @@ for lspec in range(nlspec):
 
     # Read the level populations file
 
-    file_name = "../level_populations_" + lspec_name[lspec] + tag + ".txt"
+    file_name = "../files/level_populations_" + lspec_name[lspec] + tag + ".txt"
 
     data = np.loadtxt(file_name)
     nlev = np.shape(data)[1]
@@ -66,7 +66,7 @@ for lspec in range(nlspec):
 
     # Read the line intensities file
 
-    file_name = "../line_intensities_" + lspec_name[lspec] + tag + ".txt"
+    file_name = "../files/line_intensities_" + lspec_name[lspec] + tag + ".txt"
 
     mean_intensity_data = np.loadtxt(file_name)
     nrad = np.shape(mean_intensity_data)[0]
@@ -119,7 +119,7 @@ for lspec in range(nlspec):
 
     fig.tight_layout()
 
-    plot_name = "level_populations_"+lspec_name[lspec]+".pdf"
+    plot_name = "level_populations_"+lspec_name[lspec]+".png"
 
     fig.savefig(plot_name, bbox_inches='tight')
 
