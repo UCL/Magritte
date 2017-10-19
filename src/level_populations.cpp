@@ -13,6 +13,7 @@
 
 
 #include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <math.h>
 #include <signal.h>
@@ -83,60 +84,25 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       }
 
 
-      // if (n==0)
-      // {
+
+      // if (n==0){
       //
-      // {
-      //     FILE *file = fopen("output/files/A_C+_0.txt", "w");
-      //
-      //     if (file == NULL){
-      //
-      //       printf("Error opening file!\n");
-      //       exit(1);
-      //     }
-      //
-      //
-      //     for (long row=0; row<nlev[lspec]; row++){
-      //
-      //       for (long col=0; col<nlev[lspec]; col++){
-      //
-      //         fprintf( file, "%lE\t", A_coeff[LSPECLEVLEV(lspec,row,col)] );
-      //       }
-      //
-      //       fprintf( file, "\n" );
-      //     }
-      //
-      //
-      //     fclose(file);
+      //   std::cout << temperature_gas[n] << "\n";
+      //   std::cout << temperature_gas[n] << "\n";
+      //   std::cout << temperature_gas[n] << "\n";
+      //   write_Einstein_coeff("1", A_coeff, B_coeff, C_coeff);
       //
       // }
       //
-      // {
-      //     FILE *file = fopen("output/files/C_C+_0.txt", "w");
-      //
-      //     if (file == NULL){
-      //
-      //       printf("Error opening file!\n");
-      //       exit(1);
-      //     }
+      // if (n==1){
       //
       //
-      //     for (long row=0; row<nlev[lspec]; row++){
+      //   std::cout << temperature_gas[n] << "\n";
+      //   std::cout << temperature_gas[n] << "\n";
+      //   std::cout << temperature_gas[n] << "\n";
+      //   write_Einstein_coeff("2", A_coeff, B_coeff, C_coeff);
       //
-      //       for (long col=0; col<nlev[lspec]; col++){
-      //
-      //         fprintf( file, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)] );
-      //       }
-      //
-      //       fprintf( file, "\n" );
-      //     }
-      //
-      //
-      //     fclose(file);
-      //
-      //     raise(SIGABRT);
-      // }
-      //
+      //   // raise(SIGABRT);
       // }
 
 
@@ -163,7 +129,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
     while( populations_not_converged ){
 
-      populations_not_converged = false;
+      populations_not_converged =  false;
 
       niterations++;
 
@@ -219,8 +185,8 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
           // Source[s_ij]  = Source[s_ij] + 0.0E-20;
 
 
-          if (opacity[s_ij] < 1.0E-50){
-            opacity[s_ij] = 1.0E-50;
+          if (opacity[s_ij] < 1.0E-99){
+            opacity[s_ij] = 1.0E-99;
           }
 
 
@@ -303,6 +269,14 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       } /* end of kr loop over radiative transitions */
 
 
+      // write_R("1", 0, R);
+      // write_R("2", 1, R);
+      // write_R("50", 49, R);
+      // write_R("75", 74, R);
+
+      // raise(SIGABRT);
+
+
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
@@ -340,6 +314,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
               populations_not_converged = true;
             }
           }
+
 
         } /* end of i loop over levels */
 

@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
 
 #include "declarations.hpp"
 #include "radiative_transfer.hpp"
@@ -45,7 +46,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
   long b_ij = LSPECLEVLEV(lspec,i,j);                                         /* frequency index */
 
-  double escape_probability;                /* escape probability from the Sobolev approximation */
+  double escape_probability = 0.0;          /* escape probability from the Sobolev approximation */
 
 
   /* For half of the rays (only half is needed since we also consider the antipodals) */
@@ -95,7 +96,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
       long etot2 = raytot[RINDEX(gridp, r)];    /* total number of evaluation points along ray r */
 
 
-      if (etot1>0 && etot2>0){
+      if ( etot1>0 || etot2>0 ){
 
         *nno_shortcuts = temp_nsc + 1;
 
@@ -113,6 +114,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
         /* For the antipodal ray to ray r */
 
+        if (etot1 > 1){
         for (long e1=1; e1<etot1; e1++){
 
 
@@ -124,31 +126,47 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
           S[e1-1]    = (Source[s_n] + Source[s_np]) / 2.0;
 
-          dtau[e1-1] = evalpoint[e_n].dZ * (opacity[s_n] + opacity[s_np]) / 2.0;
+          dtau[e1-1] = evalpoint[e_n].dZ * PC * (opacity[s_n] + opacity[s_np]) / 2.0;
+
+        }
+        }
+
+
+        /* Adding the piece that contains the origin for ar */
+
+        if (etot1 > 0){
+
+          long e_a0 = GINDEX(gridp, GP_NR_OF_EVALP(gridp, ar, 0));
+
+          long s_an = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, 0),kr);
+
+
+          S[etot1-1]    = (Source[s_an] + Source[m_ij]) / 2.0;
+
+          dtau[etot1-1] = evalpoint[e_a0].dZ * PC * (opacity[s_an] + opacity[m_ij]) / 2.0;
 
         }
 
 
-        /* Adding the grid point itself (the origin for both rays) */
+        /* Adding the piece that contains the origin for r */
 
-        long e_a0 = GINDEX(gridp, GP_NR_OF_EVALP(gridp, ar, 0));
-        long e_0  = GINDEX(gridp, GP_NR_OF_EVALP(gridp, r, 0));
+        if (etot2 > 0){
 
-        long s_an = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, ar, 0),kr);
-        long s_n  = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, 0),kr);
+          long e_0  = GINDEX(gridp, GP_NR_OF_EVALP(gridp, r, 0));
+
+          long s_n  = LSPECGRIDRAD(lspec,GP_NR_OF_EVALP(gridp, r, 0),kr);
 
 
-        S[etot1-1]    = (Source[s_an] + Source[m_ij]) / 2.0;
+          S[etot1]      = (Source[s_n] + Source[m_ij]) / 2.0;
 
-        dtau[etot1-1] = evalpoint[e_a0].dZ * (opacity[s_an] + opacity[m_ij]) / 2.0;
+          dtau[etot1]   = evalpoint[e_0].dZ * PC * (opacity[s_n] + opacity[m_ij]) / 2.0;
+        }
 
-        S[etot1]      = (Source[s_n] + Source[m_ij]) / 2.0;
-
-        dtau[etot1]   = evalpoint[e_0].dZ * (opacity[s_n] + opacity[m_ij]) / 2.0;
 
 
         /* For ray r itself */
 
+        if (etot2 > 1){
         for (long e2=1; e2<etot2; e2++){
 
 
@@ -160,8 +178,9 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
           S[etot1+e2]    = (Source[s_n] + Source[s_np]) / 2.0;
 
-          dtau[etot1+e2] = evalpoint[e_n].dZ * (opacity[s_n] + opacity[s_np]) / 2.0;
+          dtau[etot1+e2] = evalpoint[e_n].dZ * PC * (opacity[s_n] + opacity[s_np]) / 2.0;
 
+        }
         }
 
 
@@ -178,13 +197,14 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
           }
 
 
-          escape_probability = 0.0;
-
           double optical_depth1 = 0.0;
           double optical_depth2 = 0.0;
 
           double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(v_turb,2) );
 
+          // if (gridp == 1){
+          //   std::cout << "speed width : " << speed_width << "\n";
+          // }
 
           for (long e1=0; e1<etot1; e1++){
 
@@ -193,32 +213,72 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
           optical_depth1 = CC / frequency[b_ij] / speed_width * optical_depth1;
 
-          escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
+          if (optical_depth1 < -5.0){
 
-
-          for (long e2=0; e2<etot2; e2++){
-
-            optical_depth2 = optical_depth2 + dtau[etot1+e2];
+            escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
           }
 
-          escape_probability = escape_probability + (1 - exp(-optical_depth2)) / optical_depth2;
+          else if( fabs(optical_depth1) < 1.0E-8){
+
+            escape_probability = escape_probability + 1.0;
+          }
+
+          else{
+
+            escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
+
+            // if (gridp == 1){
+            //   printf("%lE\n", escape_probability);
+            // }
+          }
 
 
-        }
 
-        else{
+          // for (long e2=0; e2<etot2; e2++){
+          //
+          //   optical_depth2 = optical_depth2 + dtau[etot1+e2];
+          // }
+          //
+          //
+          // if (optical_depth2 < -5.0){
+          //
+          //   escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
+          // }
+          //
+          // else if( fabs(optical_depth2) < 1.0E-8){
+          //
+          //   escape_probability = escape_probability + 1.0;
+          // }
+          //
+          // else{
+          //
+          //   escape_probability = escape_probability + (1 - exp(-optical_depth2)) / optical_depth2;
+          // }
 
-          double ibc = IBC;
 
 
-          /* Solve the transfer equation wit hthe exact Feautrier solver */
+          // if (gridp == 1){
+          //   printf("%d, %d   %lE   %lE   %lE\n", i, j, escape_probability, optical_depth1, optical_depth2);
+          // }
 
-          exact_feautrier( ndep, S, dtau, etot1, etot2, ibc, evalpoint,
-                           P_intensity, gridp, r, ar );
 
-          mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
 
-        }
+
+        } /* end of if SOBOLEV */
+
+        // else{
+        //
+        //   double ibc = IBC;
+        //
+        //
+        //   /* Solve the transfer equation wit hthe exact Feautrier solver */
+        //
+        //   exact_feautrier( ndep, S, dtau, etot1, etot2, ibc, evalpoint,
+        //                    P_intensity, gridp, r, ar );
+        //
+        //   mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
+        //
+        // }
 
 
 
@@ -230,13 +290,22 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
         ndepav = ndepav + ndep;
         nav = nav + 1;
 
+        // if (gridp == 1){
+        //   for (int i=0; i<ndep; i++){
+        //
+        //     std::cout << "opacity and source at << " << i << " are : " << dtau[i] << " " << S[i] << "\n";
+        //   }
+        // }
+
+
+
 
         /* Free the allocated memory for temporary variables */
 
         free(S);
         free(dtau);
 
-      } /* end of if etot1>1 && etot2>1 */
+      } /* end of if etot1>1 || etot2>1 */
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
@@ -248,6 +317,10 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
 
   mean_intensity[m_ij] = mean_intensity[m_ij]; // / NRAYS;
+
+  escape_probability = escape_probability; // / NRAYS;
+
+
 
 
   /* Add the continuum radiation (due to dust and CMB) */
@@ -270,16 +343,19 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
-
   if(SOBOLEV == true){
 
-    mean_intensity[m_ij] = (1 - escape_probability) * Source[m_ij]
+    mean_intensity[m_ij] = (1.0 - escape_probability) * Source[m_ij]
                            + escape_probability * continuum_mean_intensity;
   }
+  // else {
+  //
+  //   mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
+  // }
 
-
-
+  // if (gridp == 1){
+  //   printf("%d, %d   %lE  THIS IS  %lE \n", i, j, escape_probability, continuum_mean_intensity);
+  // }
   // printf( "(radiative_transfer): mean intensity at gridp %ld for trans %d is %lE \n",
   //         gridp, kr, mean_intensity[m_ij] );
 

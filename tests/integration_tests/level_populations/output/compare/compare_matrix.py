@@ -38,7 +38,7 @@ relative_error = 2.0*abs(error)/abs(my_data+their_data)
 # Make the plots
 
 print " "
-print "Plotting " + file_name
+print "Plotting " + name + tag
 
 
 fig1 = plt.figure()
@@ -47,6 +47,7 @@ fig1 = plt.figure()
 # ax1 = fig1.add_subplot(111)
 # ax2 = fig2.add_subplot(111)
 
+plt.title("error " + name + tag)
 plt.imshow(relative_error)
 plt.colorbar()
 

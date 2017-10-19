@@ -16,7 +16,6 @@
 #include <stdlib.h>
 
 #include <Eigen/Dense>
-using namespace Eigen;
 
 #include "declarations.hpp"
 #include "level_population_solver.hpp"
@@ -31,9 +30,9 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 {
 
 
-  MatrixXd A(nlev[lspec],nlev[lspec]);
+  Eigen::MatrixXd A(nlev[lspec],nlev[lspec]);
 
-  VectorXd b(nlev[lspec]);
+  Eigen::VectorXd b(nlev[lspec]);
 
 
 
@@ -69,7 +68,9 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
   }
 
 
-  b(nlev[lspec]-1) = gridpoint[gridp].density;
+  b(nlev[lspec]-1) = gridpoint[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
+
+  // printf("density %lE \n", b(nlev[lspec]-1) );
 
 
   /*_____________________________________________________________________________________________*/
@@ -80,7 +81,7 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
   /* Solve the system of equations using the colPivHouseholderQr solver provided by Eigen */
 
-  VectorXd x = A.colPivHouseholderQr().solve(b);
+  Eigen::VectorXd x = A.colPivHouseholderQr().solve(b);
 
 
 

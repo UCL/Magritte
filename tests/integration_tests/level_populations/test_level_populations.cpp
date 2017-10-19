@@ -368,7 +368,7 @@ TEST_CASE("Test level populations"){
 
   calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
 
-  write_level_populations("0", line_datafile, pop);
+  write_level_populations("0", pop);
 
   bool no_thermal_balance = true;
 
@@ -392,7 +392,6 @@ TEST_CASE("Test level populations"){
   // }
   //
   // write_abundances("level1");
-
 
 
 
@@ -442,9 +441,12 @@ TEST_CASE("Test level populations"){
                        coltemp, icol, jcol, temperature_gas, temperature_dust,
                        weight, energy, mean_intensity );
 
-    write_level_populations("level1c", line_datafile, pop);
+    write_level_populations("level1c", pop);
 
-    write_line_intensities("level1c", line_datafile, mean_intensity);
+    write_line_intensities("level1c", mean_intensity);
+
+    // return;
+
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/

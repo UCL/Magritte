@@ -68,6 +68,10 @@ void calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *i
 
 
 
+  /* Initialize C_coeff */
+
+  initialize_double_array(C_coeff, TOT_NLEV2);
+
 
 
   /* For all collision partners */

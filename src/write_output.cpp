@@ -21,6 +21,7 @@
 
 #include "declarations.hpp"
 #include "write_output.hpp"
+#include "species_tools.hpp"
 #include "radfield_tools.hpp"
 
 
@@ -343,7 +344,7 @@ int write_abundances(std::string tag)
 /* write_level_populations: write the level populations at each point for each transition        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_level_populations(std::string tag, std::string *line_datafile, double *pop)
+int write_level_populations(std::string tag, double *pop)
 {
 
 
@@ -355,35 +356,35 @@ int write_level_populations(std::string tag, std::string *line_datafile, double 
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    std::string name = line_datafile[lspec];
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
-    name.erase(0,5);
+    std::string file_name = "output/files/level_populations_" + lspec_name + tag + ".txt";
 
-    name.erase(name.end()-4,name.end());
+    FILE *file = fopen(file_name.c_str(), "w");
 
-    std::string file_name = "output/files/level_populations_" + name + tag + ".txt";
 
-    FILE *levelpops = fopen(file_name.c_str(), "w");
+    if (file == NULL){
 
-    if (levelpops == NULL){
+      std :: cout << "Error opening file " << file_name << "!\n";
+      std::cout << file_name + "\n";
+      exit(1);
+    }
 
-        std :: cout << "Error opening file " << file_name << "!\n";
-        exit(1);
+
+    for (long n=0; n<NGRID; n++){
+
+      for (int i=0; i<nlev[lspec]; i++){
+
+        fprintf(file, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
       }
 
-      for (long n=0; n<NGRID; n++){
+      fprintf(file, "\n");
+    }
 
-        for (int i=0; i<nlev[lspec]; i++){
 
-          fprintf(levelpops, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
-        }
+    fclose(file);
 
-        fprintf(levelpops, "\n");
-      }
-
-    fclose(levelpops);
-
-  }
+  } /* end of lspec loop over line producing species */
 
 
   return(0);
@@ -399,7 +400,7 @@ int write_level_populations(std::string tag, std::string *line_datafile, double 
 /* write_line_intensities: write the line intensities for each species, point and transition     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_line_intensities(std::string tag, std::string *line_datafile, double *mean_intensity)
+int write_line_intensities(std::string tag, double *mean_intensity)
 {
 
 
@@ -411,33 +412,32 @@ int write_line_intensities(std::string tag, std::string *line_datafile, double *
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    std::string name = line_datafile[lspec];
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
-    name.erase(0,5);
+    std::string file_name = "output/files/line_intensities_" + lspec_name + tag + ".txt";
 
-    name.erase(name.end()-4,name.end());
+    FILE *file = fopen(file_name.c_str(), "w");
 
-    std::string file_name = "output/files/line_intensities_" + name + tag + ".txt";
 
-    FILE *lintens = fopen(file_name.c_str(), "w");
-
-    if (lintens == NULL){
+    if (file == NULL){
 
       printf("Error opening file!\n");
+      std::cout << file_name + "\n";
       exit(1);
     }
 
-    for (int kr=0; kr<nrad[lspec]; kr++){
 
-      for (long n=0; n<NGRID; n++){
+    for (long n=0; n<NGRID; n++){
 
-        fprintf( lintens, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
+      for (int kr=0; kr<nrad[lspec]; kr++){
+
+        fprintf( file, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
       }
 
-      fprintf( lintens, "\n" );
+      fprintf( file, "\n" );
     }
 
-    fclose(lintens);
+    fclose(file);
 
   }
 
@@ -1022,6 +1022,146 @@ int write_radfield_tools( std::string tag, double *AV ,double lambda, double v_t
 
 
   // cout << "X lambda " << X_lambda(1000.0) << "\n";
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_Einstein_coeff: write the Einstein A, B or C coefficients                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_Einstein_coeff( std::string tag, double *A_coeff, double *B_coeff, double *C_coeff )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+
+
+    std::string file_name_A = "output/files/Einstein_A_" + lspec_name + tag + ".txt";
+    std::string file_name_B = "output/files/Einstein_B_" + lspec_name + tag + ".txt";
+    std::string file_name_C = "output/files/Einstein_C_" + lspec_name + tag + ".txt";
+
+
+    FILE *file_A = fopen(file_name_A.c_str(), "w");
+    FILE *file_B = fopen(file_name_B.c_str(), "w");
+    FILE *file_C = fopen(file_name_C.c_str(), "w");
+
+    if (file_A == NULL){
+
+      printf("Error opening file!\n");
+      std::cout << file_name_A + "\n";
+      exit(1);
+    }
+
+    if (file_B == NULL){
+
+      printf("Error opening file!\n");
+      std::cout << file_name_B + "\n";
+      exit(1);
+    }
+
+    if (file_C == NULL){
+
+      printf("Error opening file!\n");
+      std::cout << file_name_C + "\n";
+      exit(1);
+    }
+
+
+    for (long row=0; row<nlev[lspec]; row++){
+
+      for (long col=0; col<nlev[lspec]; col++){
+
+        fprintf( file_A, "%lE\t", A_coeff[LSPECLEVLEV(lspec,row,col)] );
+        fprintf( file_B, "%lE\t", B_coeff[LSPECLEVLEV(lspec,row,col)] );
+        fprintf( file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)] );
+
+      }
+
+      fprintf( file_A, "\n" );
+      fprintf( file_B, "\n" );
+      fprintf( file_C, "\n" );
+
+    }
+
+
+    fclose(file_A);
+    fclose(file_B);
+    fclose(file_C);
+
+  } /* end of lspec loop over line producing species */
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_R: write the transition matrix R                                                        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_R( std::string tag, long gridp, double *R )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+
+    std::string file_name = "output/files/R_" + lspec_name + tag + ".txt";
+
+    FILE *file = fopen(file_name.c_str(), "w");
+
+
+    if (file == NULL){
+
+      printf("Error opening file!\n");
+      std::cout << file_name + "\n";
+      exit(1);
+    }
+
+
+    for (long row=0; row<nlev[lspec]; row++){
+
+      for (long col=0; col<nlev[lspec]; col++){
+
+        fprintf( file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,gridp,row,col)] );
+
+      }
+
+      fprintf( file, "\n" );
+
+    }
+
+    fclose(file);
+
+  } /* end of lspec loop over line producing species */
+
 
   return(0);
 
