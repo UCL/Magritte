@@ -458,14 +458,19 @@ TEST_CASE("Test level populations"){
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
+    double heating_total[NGRID];
+
+    double cooling_total[NGRID];
+
+
     /* Calculate the thermal balance for each gridpoint */
 
     for (long gridp=0; gridp<NGRID; gridp++){
 
-      double heating_total = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+      heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
                                       UV_field, v_turb );
 
-      double cooling_total = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency,
+      cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
                                       pop, mean_intensity );
 
 
@@ -473,9 +478,10 @@ TEST_CASE("Test level populations"){
 
       double thermal_ratio = 0.0;
 
-      if( fabs(heating_total + cooling_total) > 0.0 ){
+      if( fabs(heating_total[gridp] + cooling_total[gridp]) > 0.0 ){
 
-        thermal_ratio = 2.0 * fabs(thermal_flux) / fabs(heating_total + cooling_total);
+        thermal_ratio = 2.0 * fabs(thermal_flux)
+                        / fabs(heating_total[gridp] + cooling_total[gridp]);
       }
 
 
@@ -483,7 +489,7 @@ TEST_CASE("Test level populations"){
 
       if (thermal_ratio > THERMAL_PREC){
 
-        no_thermal_balance = true;
+        no_thermal_balance = false;
 
         update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
 
@@ -493,6 +499,12 @@ TEST_CASE("Test level populations"){
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+    string name = species[lspec_nr[0]].sym;
+
+    string file_name ="cool_" + name;
+
+    write_double_1(file_name, "level1c", NGRID, cooling_total);
 
 
     /* Limit the number of iterations */
@@ -508,7 +520,9 @@ TEST_CASE("Test level populations"){
 
 
 
+  write_temperature_gas("final", temperature_gas);
 
+  write_temperature_dust("final", temperature_dust);
 
 
 

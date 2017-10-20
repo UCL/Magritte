@@ -30,13 +30,7 @@ using namespace std;
 
 #define REAC_DATAFILE  "data/rates_reduced.txt" 
 
-#define LINE_DATAFILE0 "data/12C.txt" 
-
-#define LINE_DATAFILE1 "data/12CO.txt" 
-
-#define LINE_DATAFILE2 "data/16O.txt" 
-
-#define LINE_DATAFILE3 "data/12C+.txt" 
+#define LINE_DATAFILE0 "data/12C+.txt" 
 
 #define NGRID 122 
 
@@ -52,23 +46,23 @@ using namespace std;
 
 #define NREAC 329 
 
-#define NLSPEC 4 
+#define NLSPEC 1 
 
-#define TOT_NLEV 56 
+#define TOT_NLEV 5 
 
-#define TOT_NRAD 63 
+#define TOT_NRAD 9 
 
-#define TOT_NLEV2 1756 
+#define TOT_NLEV2 25 
 
-#define TOT_NCOLPAR 18 
+#define TOT_NCOLPAR 4 
 
-#define TOT_CUM_TOT_NCOLTRAN 1800 
+#define TOT_CUM_TOT_NCOLTRAN 40 
 
-#define TOT_CUM_TOT_NCOLTEMP 384 
+#define TOT_CUM_TOT_NCOLTEMP 61 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
+#define TOT_CUM_TOT_NCOLTRANTEMP 610 
 
-#define MAX_NITERATIONS 500 
+#define MAX_NITERATIONS 1 
 
 #define TIME_END_IN_YEARS 1.000000E+07 
 
@@ -115,14 +109,14 @@ using namespace std;
 
 /* Parameters for level population iteration */
 
-#define POP_PREC        1.0E-5                        /* precision used in convergence criterion */
+#define POP_PREC        1.0E-2                        /* precision used in convergence criterion */
 #define POP_LOWER_LIMIT 1.0E-26                                    /* lowest non-zero population */
 #define POP_UPPER_LIMIT 1.0E+15                                            /* highest population */
 
 
 /* Parameters for thermal balance iteration */
 
-#define THERMAL_PREC 1.0E-1                           /* precision used in convergence criterion */
+#define THERMAL_PREC 5.0E-3                           /* precision used in convergence criterion */
 
 
 /* Grid related index definitions */

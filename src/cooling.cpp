@@ -31,11 +31,12 @@ using namespace std;
 
 
 double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coeff,
-                double *frequency, double *pop, double *mean_intensity )
+                double *frequency, double *weight, double *pop, double *mean_intensity )
 {
 
 
   double cooling_total = 0.0;                                                   /* total cooling */
+
   double cooling_radiative = 0.0;                                           /* radiative cooling */
 
 
@@ -65,9 +66,19 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
 
       double Source = 0.0;
 
-      if (pop[p_j] > POP_LOWER_LIMIT || pop[p_i] > POP_LOWER_LIMIT){
+      double factor = 2.0 * HH * pow(frequency[b_ij], 3) / pow(CC, 2);
 
-        Source = (A_coeff[b_ij] * pop[p_i])/(pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+      double tpop   = pop[p_j]*weight[LSPECLEV(lspec,i)]/pop[p_i]/weight[LSPECLEV(lspec,j)] - 1.0;
+
+
+      if ( fabs(tpop)<1.0E-50 ){
+
+        Source = HH * frequency[b_ij] * pop[p_i] * A_coeff[b_ij] / 4.0 / PI;
+      }
+
+      else if ( pop[p_i] > 0.0 ) {
+
+        Source = factor / tpop;
       }
 
 
@@ -76,13 +87,10 @@ double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coe
       if (Source != 0.0){
 
         cooling_radiative = cooling_radiative
-                            + HH*frequency[b_ij] * pop[p_i] * (1.0 - mean_intensity[m_ij]/Source);
+                            + HH*frequency[b_ij] * A_coeff[b_ij] * pop[p_i]
+                              * (1.0 - mean_intensity[m_ij]/Source);
       }
 
-      else {
-
-        cooling_radiative = cooling_radiative + 0.0;
-      }
 
     } /* end of kr loop over transitions */
 

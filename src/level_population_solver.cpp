@@ -25,8 +25,7 @@
 /* level_population_solver: sets up and solves the matrix equation corresp. to equilibrium eq.   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R,
-                             double *pop, double *dpop )
+int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
 {
 
 
@@ -63,8 +62,6 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
     b(i) = 0.0;
 
     A(nlev[lspec]-1, i) = 1.0;
-
-    dpop[LSPECGRIDLEV(lspec,gridp,i)] = pop[LSPECGRIDLEV(lspec,gridp,i)];
   }
 
 
@@ -108,9 +105,6 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
       pop[p_i] = 0.0;
     }
-
-
-    dpop[p_i] = fabs(dpop[p_i] - pop[p_i]);
 
 
     if( isnan(b(i)) ){

@@ -18,7 +18,7 @@ true                                | sobolev
                                     |
 UNI                                 | field form
                                     |
-500                                 | MAX_NITERATIONS
+1                                   | MAX_NITERATIONS
                                     |
 1.0E7                               | time_end (years)
                                     |
@@ -43,14 +43,14 @@ data/species_reduced.txt            | Species
 data/rates_reduced.txt              | Reactions
 ____________________________________|___________________
                                     |
-4                                   | nr. of line files
+1                                   | nr. of line files
 ____________________________________|___________________
                                     |
-data/12C.txt                        | Lines 0
+data/12C+.txt                       | Lines 0
                                     |
 data/12CO.txt                       | Lines 1
                                     |
 data/16O.txt                        | Lines 2
                                     |
-data/12C+.txt                       | Lines 3
+data/12C.txt                        | Lines 3
 ____________________________________|___________________

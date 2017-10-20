@@ -289,9 +289,19 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       for (long n=0; n<NGRID; n++){
 
 
+        /* Save the previous populations */
+
+        double previous_pop[nlev[lspec]];
+
+        for (int i=0; i<nlev[lspec]; i++){
+
+          previous_pop[i] = pop[LSPECGRIDLEV(lspec,n,i)];
+        }
+
+
         /* Solve the radiative balance equation for the level populations */
 
-        level_population_solver( gridpoint, n, lspec, R, pop, dpop );
+        level_population_solver( gridpoint, n, lspec, R, pop );
 
 
         /* Check for convergence */
@@ -302,9 +312,10 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
           long p_i = LSPECGRIDLEV(lspec,n,i);                              /* pop and dpop index */
 
 
-          if ( pop[p_i] != 0.0 ){
+          if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
+               && !( pop[p_i]==0.0 && previous_pop[i]==0.0 ) ){
 
-            double dpoprel = dpop[p_i] / (pop[p_i] + dpop[p_i]);
+            double dpoprel = 2.0 * fabs(pop[p_i] - previous_pop[i]) / (pop[p_i] + previous_pop[i]);
 
 
             /* If the population of any of the levels is not converged */
@@ -312,6 +323,9 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
             if (dpoprel > POP_PREC){
 
               populations_not_converged = true;
+
+              std::cout << " dpoprel " << dpoprel << "\n";
+
             }
           }
 

@@ -31,14 +31,14 @@
 
 /* Parameters for level population iteration */
 
-#define POP_PREC        1.0E-5                        /* precision used in convergence criterion */
+#define POP_PREC        1.0E-2                        /* precision used in convergence criterion */
 #define POP_LOWER_LIMIT 1.0E-26                                    /* lowest non-zero population */
 #define POP_UPPER_LIMIT 1.0E+15                                            /* highest population */
 
 
 /* Parameters for thermal balance iteration */
 
-#define THERMAL_PREC 1.0E-1                           /* precision used in convergence criterion */
+#define THERMAL_PREC 5.0E-3                           /* precision used in convergence criterion */
 
 
 /* Grid related index definitions */
