@@ -44,6 +44,7 @@ using namespace std;
 #include "../../../src/calc_AV.hpp"
 #include "../../../src/calc_UV_field.hpp"
 #include "../../../src/calc_temperature_dust.hpp"
+#include "../../../src/reaction_rates.hpp"
 #include "../../../src/chemistry.hpp"
 #include "../../../src/calc_LTE_populations.hpp"
 #include "../../../src/level_populations.hpp"
@@ -321,7 +322,7 @@ TEST_CASE("Test level populations"){
 
   /* Preliminary chemistry iterations */
 
-  for (int chem_iteration=0; chem_iteration<8; chem_iteration++){
+  for (int chem_iteration=0; chem_iteration<5; chem_iteration++){
 
 
     /* Calculate column densities */
@@ -353,7 +354,7 @@ TEST_CASE("Test level populations"){
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-                column_H2, column_HD, column_C, column_CO, v_turb );
+               column_H2, column_HD, column_C, column_CO, v_turb );
 
 
   } /* End of chemistry iteration */
@@ -366,7 +367,7 @@ TEST_CASE("Test level populations"){
 
   double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
-  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+  // calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
 
   write_level_populations("0", pop);
 
@@ -380,11 +381,11 @@ TEST_CASE("Test level populations"){
 
   // for (int chem_iteration=0; chem_iteration<3; chem_iteration++){
   //
-  //   calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-  //   calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-  //   calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-  //   calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-  //   calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+    // calc_column_density(gridpoint, evalpoint, column_H, H_nr);
+    // calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+    // calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+    // calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+    // calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
   //
   //   chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
   //              column_H2, column_HD, column_C, column_CO, v_turb );
@@ -404,25 +405,30 @@ TEST_CASE("Test level populations"){
     niterations++;
 
 
-    /* Calculate column densities */
-
-    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
-
-
-
 
     /*   CALCULATE CHEMICAL ABUNDANCES                                                           */
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    /* Calculate the chemical abundances by solving the rate equations */
+    for (int chem_iteration=0; chem_iteration<3; chem_iteration++){
 
-    // chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-    //             column_H2, column_HD, column_C, column_CO, v_turb );
+
+      /* Calculate column densities */
+
+      calc_column_density(gridpoint, evalpoint, column_H, H_nr);
+      calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+      calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+      calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+      calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+
+
+      /* Calculate the chemical abundances given the current temperatures and radiation field */
+
+      chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+                 column_H2, column_HD, column_C, column_CO, v_turb );
+
+
+    } /* End of chemistry iteration */
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -434,6 +440,11 @@ TEST_CASE("Test level populations"){
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
+    /* Initialize the level populations to their LTE values */
+
+    calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+
+
     /* Calculate level populations for each line producing species */
 
     level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency, v_turb,
@@ -441,12 +452,12 @@ TEST_CASE("Test level populations"){
                        coltemp, icol, jcol, temperature_gas, temperature_dust,
                        weight, energy, mean_intensity );
 
-    write_level_populations("level1c", pop);
-
-    write_line_intensities("level1c", mean_intensity);
-
-    // return;
-
+    //
+    // write_level_populations("level1c", pop);
+    //
+    // write_line_intensities("level1c", mean_intensity);
+    //
+    // write_transition_levels("", irad, jrad);
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -460,21 +471,83 @@ TEST_CASE("Test level populations"){
 
     double heating_total[NGRID];
 
+    double heating_1[NGRID];
+    double heating_2[NGRID];
+    double heating_3[NGRID];
+    double heating_4[NGRID];
+    double heating_5[NGRID];
+    double heating_6[NGRID];
+    double heating_7[NGRID];
+    double heating_8[NGRID];
+    double heating_9[NGRID];
+    double heating_10[NGRID];
+    double heating_11[NGRID];
+
+
     double cooling_total[NGRID];
+
+    // calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+
+    int nr_can_reac = 0;
+    int nr_can_phot = 0;
+    int nr_all = 0;
+
+
+    int canonical_reactions[NREAC];
+    int can_photo_reactions[NREAC];
+    int all_reactions[NREAC];
+
+    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
+    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+
+
+    write_reaction_rates("preheat", reaction);
+
+    write_abundances("preheat");
 
 
     /* Calculate the thermal balance for each gridpoint */
 
     for (long gridp=0; gridp<NGRID; gridp++){
 
+      double heating_components[12];
+
+      nr_can_reac = 0;
+      nr_can_phot = 0;
+      nr_all = 0;
+
+      reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
+                      column_H2, column_HD, column_C, column_CO, v_turb, gridp,
+                      &nr_can_reac, canonical_reactions,
+                      &nr_can_phot, can_photo_reactions,
+                      &nr_all, all_reactions );
+
+
       heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
-                                      UV_field, v_turb );
+                                      UV_field, v_turb, heating_components );
 
       cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
                                       pop, mean_intensity );
 
 
-      double thermal_flux = heating_total - cooling_total;
+      heating_1[gridp] = heating_components[0];
+      heating_2[gridp] = heating_components[1];
+      heating_3[gridp] = heating_components[2];
+      heating_4[gridp] = heating_components[3];
+      heating_5[gridp] = heating_components[4];
+      heating_6[gridp] = heating_components[5];
+      heating_7[gridp] = heating_components[6];
+      heating_8[gridp] = heating_components[7];
+      heating_9[gridp] = heating_components[8];
+      heating_10[gridp] = heating_components[9];
+      heating_11[gridp] = heating_components[10];
+      // heating_total[gridp] = heating_components[11];
+
+
+      double thermal_flux = heating_total[gridp] - cooling_total[gridp];
 
       double thermal_ratio = 0.0;
 
@@ -489,7 +562,7 @@ TEST_CASE("Test level populations"){
 
       if (thermal_ratio > THERMAL_PREC){
 
-        no_thermal_balance = false;
+        no_thermal_balance = true;
 
         update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
 
@@ -500,11 +573,29 @@ TEST_CASE("Test level populations"){
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+
+
     string name = species[lspec_nr[0]].sym;
 
     string file_name ="cool_" + name;
 
     write_double_1(file_name, "level1c", NGRID, cooling_total);
+
+
+    write_double_1("heat_1", "level1c", NGRID, heating_1);
+    write_double_1("heat_2", "level1c", NGRID, heating_2);
+    write_double_1("heat_3", "level1c", NGRID, heating_3);
+    write_double_1("heat_4", "level1c", NGRID, heating_4);
+    write_double_1("heat_5", "level1c", NGRID, heating_5);
+    write_double_1("heat_6", "level1c", NGRID, heating_6);
+    write_double_1("heat_7", "level1c", NGRID, heating_7);
+    write_double_1("heat_8", "level1c", NGRID, heating_8);
+    write_double_1("heat_9", "level1c", NGRID, heating_9);
+    write_double_1("heat_10", "level1c", NGRID, heating_10);
+    write_double_1("heat_11", "level1c", NGRID, heating_11);
+
+    write_double_1("heat", "level1c", NGRID, heating_total);
+
 
 
     /* Limit the number of iterations */

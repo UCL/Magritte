@@ -53,8 +53,8 @@ data_line = relative_error
 
 # if(max(data_line) > 1.0E-99):
 ax1.plot(data_line)
-# ax1.plot(data[:75,0],data[:75,1],label="Magritte")
-# ax1.plot(data2[:75,0],data2[:75,1],label="3D-PDR")
+# ax1.plot(my_data,label="Magritte")
+# ax1.plot(their_data,label="3D-PDR")
 # ax1.plot(data[:,0],relative_error[:,1])
 # ax1.plot(data[:,1])
 # ax1.plot(data2[:,1])

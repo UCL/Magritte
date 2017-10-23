@@ -29,12 +29,12 @@ their_data = np.loadtxt(file_name)
 
 # Reverse the last two grid points
 
-# arow           = their_data[-2]
-# their_data[-2] = their_data[-1]
-# their_data[-1] = arow
-#
-# nrows = np.shape(their_data)[0]
-# ncols = np.shape(their_data)[1]
+arow           = their_data[-2]
+their_data[-2] = their_data[-1]
+their_data[-1] = arow
+
+nrows = np.shape(their_data)[0]
+ncols = np.shape(their_data)[1]
 
 
 # Calculate the error

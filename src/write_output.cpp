@@ -1168,3 +1168,58 @@ int write_R( std::string tag, long gridp, double *R )
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_transition_levels: write the levels corresponding to each transition                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_transition_levels( std::string tag, int *irad, int *jrad )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+
+    std::string file_name = "output/files/transition_levels_" + lspec_name + tag + ".txt";
+
+    FILE *file = fopen(file_name.c_str(), "w");
+
+
+    if (file == NULL){
+
+      printf("Error opening file!\n");
+      std::cout << file_name + "\n";
+      exit(1);
+    }
+
+
+    for (int kr=0; kr<nrad[lspec]; kr++){
+
+      int i = irad[LSPECRAD(lspec,kr)];          /* i level index corresponding to transition kr */
+      int j = jrad[LSPECRAD(lspec,kr)];          /* j level index corresponding to transition kr */
+
+      fprintf( file, "%d \t %d\n", i, j );
+
+    }
+
+
+    fclose(file);
+
+  } /* end of lspec loop over line producing species */
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/

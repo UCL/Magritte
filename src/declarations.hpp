@@ -32,6 +32,12 @@ using namespace std;
 
 #define LINE_DATAFILE0 "data/12C+.txt" 
 
+#define LINE_DATAFILE1 "data/12CO.txt" 
+
+#define LINE_DATAFILE2 "data/16O.txt" 
+
+#define LINE_DATAFILE3 "data/12C.txt" 
+
 #define NGRID 122 
 
 #define NSIDES 1 
@@ -46,23 +52,23 @@ using namespace std;
 
 #define NREAC 329 
 
-#define NLSPEC 1 
+#define NLSPEC 4 
 
-#define TOT_NLEV 5 
+#define TOT_NLEV 56 
 
-#define TOT_NRAD 9 
+#define TOT_NRAD 63 
 
-#define TOT_NLEV2 25 
+#define TOT_NLEV2 1756 
 
-#define TOT_NCOLPAR 4 
+#define TOT_NCOLPAR 18 
 
-#define TOT_CUM_TOT_NCOLTRAN 40 
+#define TOT_CUM_TOT_NCOLTRAN 1800 
 
-#define TOT_CUM_TOT_NCOLTEMP 61 
+#define TOT_CUM_TOT_NCOLTEMP 384 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 610 
+#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 1 
+#define MAX_NITERATIONS 70 
 
 #define TIME_END_IN_YEARS 1.000000E+07 
 

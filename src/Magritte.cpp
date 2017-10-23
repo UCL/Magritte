@@ -481,7 +481,7 @@ int main()
 
   calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
 
-  write_level_populations("0", line_datafile, pop);
+  write_level_populations("0", pop);
 
 
 
@@ -506,7 +506,7 @@ int main()
 
 
     /* Calculate column densities */
-    
+
     calc_column_density(gridpoint, evalpoint, column_H, H_nr);
     calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
     calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
@@ -677,9 +677,9 @@ int main()
 
   write_abundances(tag);
 
-  write_level_populations(tag, line_datafile, pop);
+  write_level_populations(tag, pop);
 
-  write_line_intensities(tag, line_datafile, mean_intensity);
+  write_line_intensities(tag, mean_intensity);
 
   write_temperature_gas(tag, temperature_gas);
 

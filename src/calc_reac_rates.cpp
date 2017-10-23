@@ -267,8 +267,8 @@ double rate_FREEZE( int reac, double temperature_gas)
   double sticking_coeff = 0.3;                                /* dust grain sticking coefficient */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
                                       /* = average grain surface area per H atom (devided by PI) */
-  double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
-  // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
+  double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
+  // double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
 
 
   double C_ion = 0.0;                             /* Factor taking care of electrostatic effects */
@@ -330,8 +330,8 @@ double rate_ELFRZE( int reac, double temperature_gas)
   double sticking_coeff = 0.3;                                /* dust grain sticking coefficient */
   double grain_param = 2.4E-22;   /* <d_g a^2> average grain density times radius squared (cm^2) */
                                       /* = average grain surface area per H atom (devided by PI) */
-  double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
-  // double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
+  double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
+  // double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
 
 
   double C_ion = 0.0;                              /* Factor taking care of electrostatic effects */

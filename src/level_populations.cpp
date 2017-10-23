@@ -84,30 +84,6 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       }
 
 
-
-      // if (n==0){
-      //
-      //   std::cout << temperature_gas[n] << "\n";
-      //   std::cout << temperature_gas[n] << "\n";
-      //   std::cout << temperature_gas[n] << "\n";
-      //   write_Einstein_coeff("1", A_coeff, B_coeff, C_coeff);
-      //
-      // }
-      //
-      // if (n==1){
-      //
-      //
-      //   std::cout << temperature_gas[n] << "\n";
-      //   std::cout << temperature_gas[n] << "\n";
-      //   std::cout << temperature_gas[n] << "\n";
-      //   write_Einstein_coeff("2", A_coeff, B_coeff, C_coeff);
-      //
-      //   // raise(SIGABRT);
-      // }
-
-
-
-
     } /* end of n loop over grid points */
 
 
@@ -126,12 +102,17 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
     int niterations = 0;                                                 /* number of iterations */
 
 
-
     while( populations_not_converged ){
 
       populations_not_converged =  false;
 
       niterations++;
+
+
+      printf( "(level_populations): Iteration %d for %s\n",
+              niterations, species[lspec_nr[lspec]].sym.c_str() );
+
+      long n_not_converged = 0;              /* number of grid points that are not yet converged */
 
 
       initialize_double_array_with( R, R_temp, NGRID*TOT_NLEV2 );
@@ -189,11 +170,6 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
             opacity[s_ij] = 1.0E-99;
           }
 
-
-          // if ( kr == 6 ){
-          //   printf("source and opacity %lE , %lE \n", Source[s_ij], opacity[s_ij]);
-          //   printf("pop i and pop j %lE , %lE \n", pop[p_i], pop[p_j]);
-          // }
 
         } /* end of kr loop over transitions */
 
@@ -324,7 +300,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
               populations_not_converged = true;
 
-              std::cout << " dpoprel " << dpoprel << "\n";
+              n_not_converged++;
 
             }
           }
@@ -333,6 +309,9 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
         } /* end of i loop over levels */
 
       } /* end of n loop over grid points */
+
+
+      printf("(level_populations): Not yet converged for %ld of %ld\n", n_not_converged, NGRID);
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/

@@ -12,7 +12,7 @@ else:
     tag = ""
 
 
-file_name = "../files/" + name + tag + ".txt"
+file_name = "../files/line_intensities_" + name + tag + ".txt"
 
 print file_name
 
@@ -22,19 +22,35 @@ ngrid  = np.shape(my_data)[0]
 nindex = np.shape(my_data)[1]
 
 
-file_name = "output_3D-PDR/" + name + tag + "_3D-PDR.txt"
+file_name = "../files/transition_levels_" + name + ".txt"
 
-their_data = np.loadtxt(file_name)
+ilev, jlev = np.loadtxt(file_name, unpack=True)
+
+nlev = int(np.max(ilev) + 1)
+print nlev
+
+file_name = "output_3D-PDR/line_intensities_" + name + tag + "_3D-PDR.txt"
+
+temp_their_data = np.loadtxt(file_name)
+
+their_data = np.zeros(np.shape(my_data))
+
+
+for trans in range(nindex):
+    place = jlev[trans] + nlev*ilev[trans]
+    their_data[:,trans] = temp_their_data[:,place]
+
+np.savetxt("output_3D-PDR/cut_line_intensities_" + name + tag + "_3D-PDR.txt", their_data)
 
 
 # Reverse the last two grid points
 
-# arow           = their_data[-2]
-# their_data[-2] = their_data[-1]
-# their_data[-1] = arow
-#
-# nrows = np.shape(their_data)[0]
-# ncols = np.shape(their_data)[1]
+arow           = their_data[-2]
+their_data[-2] = their_data[-1]
+their_data[-1] = arow
+
+nrows = np.shape(their_data)[0]
+ncols = np.shape(their_data)[1]
 
 
 # Calculate the error
@@ -71,7 +87,7 @@ for index in range(nindex):
         data_line2 = their_data[:,index]
         ax2.plot(data_line2, label=index)
 
-# ax1.legend()
+ax1.legend()
 ax1.set_title(name + tag + " error")
 ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name + " error")
@@ -91,8 +107,8 @@ ax2.set_yscale("log")
 fig2.tight_layout()
 
 
-plot_name1 = "error_" + name + tag + ".png"
-plot_name2 = "both_" + name + tag + ".png"
+plot_name1 = "error_line_intensities_" + name + tag + ".png"
+plot_name2 = "both_line_intensities_" + name + tag + ".png"
 
 
 # Save the plot

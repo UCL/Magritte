@@ -210,6 +210,15 @@ int write_R( std::string tag, long gridp, double *R );
 
 
 
+/* write_transition_levels: write the levels corresponding to each transition                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_transition_levels( std::string tag, int *irad, int *jrad );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/
