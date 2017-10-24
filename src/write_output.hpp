@@ -219,6 +219,16 @@ int write_transition_levels( std::string tag, int *irad, int *jrad );
 
 
 
+/* write_performance_log: write the performance results of the run                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_performance_log( double time_total, double time_level_pop, double time_chemistry,
+                           double time_ray_tracing, int niterations );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

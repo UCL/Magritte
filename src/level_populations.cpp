@@ -97,14 +97,19 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    bool populations_not_converged = true;       /* true when level population are not converged */
+    bool some_not_converged = true;  /* true when popualations of a grid point are not converged */
+
+    bool not_converged[NGRID];     /* true when populations of this grid point are not converged */
+
+    initialize_bool(true, NGRID, not_converged);
 
     int niterations = 0;                                                 /* number of iterations */
 
 
-    while( populations_not_converged ){
 
-      populations_not_converged =  false;
+    while( some_not_converged ){
+
+      some_not_converged =  false;
 
       niterations++;
 
@@ -112,11 +117,16 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       printf( "(level_populations): Iteration %d for %s\n",
               niterations, species[lspec_nr[lspec]].sym.c_str() );
 
+
       long n_not_converged = 0;              /* number of grid points that are not yet converged */
 
 
+      /* Set R equal to R_temp */
+
       initialize_double_array_with( R, R_temp, NGRID*TOT_NLEV2 );
 
+
+      /* Initialize the Source and opacity with zero's */
 
       double Source[NGRID*TOT_NRAD];                                          /* source function */
 
@@ -133,52 +143,49 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
       for (long n=0; n<NGRID; n++){
 
-        for (int kr=0; kr<nrad[lspec]; kr++){
+        // if (not_converged[n]){
+
+          for (int kr=0; kr<nrad[lspec]; kr++){
 
 
-          int i     = irad[LSPECRAD(lspec,kr)];        /* i index corresponding to transition kr */
-          int j     = jrad[LSPECRAD(lspec,kr)];        /* j index corresponding to transition kr */
+            int i     = irad[LSPECRAD(lspec,kr)];      /* i index corresponding to transition kr */
+            int j     = jrad[LSPECRAD(lspec,kr)];      /* j index corresponding to transition kr */
 
-          long s_ij = LSPECGRIDRAD(lspec,n,kr);                      /* Source and opacity index */
+            long s_ij = LSPECGRIDRAD(lspec,n,kr);                    /* Source and opacity index */
 
-          long b_ij = LSPECLEVLEV(lspec,i,j);            /* A_coeff, B_coeff and frequency index */
-          long b_ji = LSPECLEVLEV(lspec,j,i);            /* A_coeff, B_coeff and frequency index */
+            long b_ij = LSPECLEVLEV(lspec,i,j);          /* A_coeff, B_coeff and frequency index */
+            long b_ji = LSPECLEVLEV(lspec,j,i);          /* A_coeff, B_coeff and frequency index */
 
-          long p_i  = LSPECGRIDLEV(lspec,n,i);                                      /* pop index */
-          long p_j  = LSPECGRIDLEV(lspec,n,j);                                      /* pop index */
-
-
-          double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
+            long p_i  = LSPECGRIDLEV(lspec,n,i);                                    /* pop index */
+            long p_j  = LSPECGRIDLEV(lspec,n,j);                                    /* pop index */
 
 
-          if (pop[p_j] > POP_LOWER_LIMIT || pop[p_i] > POP_LOWER_LIMIT){
+            double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
 
 
-            Source[s_ij]  = (A_coeff[b_ij] * pop[p_i])
-                            / (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+            if (pop[p_j] > POP_LOWER_LIMIT || pop[p_i] > POP_LOWER_LIMIT){
+
+
+              Source[s_ij]  = (A_coeff[b_ij] * pop[p_i])
+                              / (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
 
 
 
-            opacity[s_ij] =  hv_4pi * (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+              opacity[s_ij] =  hv_4pi * (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
 
-          }
-
-          // Source[s_ij]  = Source[s_ij] + 0.0E-20;
+            }
 
 
-          if (opacity[s_ij] < 1.0E-99){
-            opacity[s_ij] = 1.0E-99;
-          }
+            if (opacity[s_ij] < 1.0E-99){
+              opacity[s_ij] = 1.0E-99;
+            }
 
 
-        } /* end of kr loop over transitions */
+          } /* end of kr loop over transitions */
+
+        // } /* end of if not converged */
 
       } /* end of n loop over gridpoints */
-
-
-      // Source[LSPECGRIDRAD(0,0,0)] = 1.0E-5;
-      // Source[LSPECGRIDRAD(0,0,1)] = 1.0E-5;
-      // Source[LSPECGRIDRAD(0,0,2)] = 1.0E-5;
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
@@ -213,32 +220,37 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
         for (long n=0; n<NGRID; n++){
 
-          long r_ij = LSPECGRIDLEVLEV(lspec,n,i,j);
-          long r_ji = LSPECGRIDLEVLEV(lspec,n,j,i);
+          // if (not_converged[n]){
 
-          long b_ij = LSPECLEVLEV(lspec,i,j);
-          long b_ji = LSPECLEVLEV(lspec,j,i);
+            long r_ij = LSPECGRIDLEVLEV(lspec,n,i,j);
+            long r_ji = LSPECGRIDLEVLEV(lspec,n,j,i);
 
-          long m_ij = LSPECGRIDRAD(lspec,n,kr);
+            long b_ij = LSPECLEVLEV(lspec,i,j);
+            long b_ji = LSPECLEVLEV(lspec,j,i);
 
-          mean_intensity[m_ij] = 0.0;
+            long m_ij = LSPECGRIDRAD(lspec,n,kr);
 
-
-          /* Calculate the mean intensity */
-
-          radiative_transfer( gridpoint, evalpoint, antipod, P_intensity, mean_intensity,
-                              Source, opacity, frequency, temperature_gas, temperature_dust,
-                              irad, jrad, n, lspec, kr, v_turb, &nshortcuts, &nno_shortcuts );
+            mean_intensity[m_ij] = 0.0;
 
 
-          /* Fill the i>j part */
+            /* Calculate the mean intensity */
 
-          R[r_ij] = R[r_ij] + B_coeff[b_ij]*mean_intensity[m_ij];
+            radiative_transfer( gridpoint, evalpoint, antipod, P_intensity, mean_intensity,
+                                Source, opacity, frequency, temperature_gas, temperature_dust,
+                                irad, jrad, n, lspec, kr, v_turb, &nshortcuts, &nno_shortcuts );
 
 
-          /* Add the j>i part */
+            /* Fill the i>j part */
 
-          R[r_ji] = R[r_ji] + B_coeff[b_ji]*mean_intensity[m_ij];
+            R[r_ij] = R[r_ij] + B_coeff[b_ij]*mean_intensity[m_ij];
+
+
+            /* Add the j>i part */
+
+            R[r_ji] = R[r_ji] + B_coeff[b_ji]*mean_intensity[m_ij];
+
+
+          // } /* end of if not converged */
 
         } /* end of n loop over grid points */
 
@@ -264,54 +276,61 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
       for (long n=0; n<NGRID; n++){
 
+        if (not_converged[n]){
 
-        /* Save the previous populations */
-
-        double previous_pop[nlev[lspec]];
-
-        for (int i=0; i<nlev[lspec]; i++){
-
-          previous_pop[i] = pop[LSPECGRIDLEV(lspec,n,i)];
-        }
+          not_converged[n] = false;
 
 
-        /* Solve the radiative balance equation for the level populations */
+          /* Save the previous populations */
 
-        level_population_solver( gridpoint, n, lspec, R, pop );
+          double previous_pop[nlev[lspec]];
 
+          for (int i=0; i<nlev[lspec]; i++){
 
-        /* Check for convergence */
-
-        for (int i=0; i<nlev[lspec]; i++){
-
-
-          long p_i = LSPECGRIDLEV(lspec,n,i);                              /* pop and dpop index */
-
-
-          if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
-               && !( pop[p_i]==0.0 && previous_pop[i]==0.0 ) ){
-
-            double dpoprel = 2.0 * fabs(pop[p_i] - previous_pop[i]) / (pop[p_i] + previous_pop[i]);
-
-
-            /* If the population of any of the levels is not converged */
-
-            if (dpoprel > POP_PREC){
-
-              populations_not_converged = true;
-
-              n_not_converged++;
-
-            }
+            previous_pop[i] = pop[LSPECGRIDLEV(lspec,n,i)];
           }
 
 
-        } /* end of i loop over levels */
+          /* Solve the radiative balance equation for the level populations */
+
+          level_population_solver( gridpoint, n, lspec, R, pop );
+
+
+          /* Check for convergence */
+
+          for (int i=0; i<nlev[lspec]; i++){
+
+
+            long p_i = LSPECGRIDLEV(lspec,n,i);                            /* pop and dpop index */
+
+
+            if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
+                 && !( pop[p_i]==0.0 && previous_pop[i]==0.0 ) ){
+
+
+              double dpoprel = 2.0 * fabs(pop[p_i] - previous_pop[i]) / (pop[p_i] + previous_pop[i]);
+
+
+              /* If the population of any of the levels is not converged */
+
+              if (dpoprel > POP_PREC){
+
+                not_converged[n]   = true;
+
+                some_not_converged = true;
+
+                n_not_converged++;
+
+              }
+
+            }
+
+
+          } /* end of i loop over levels */
+
+        } /* end of if not converged */
 
       } /* end of n loop over grid points */
-
-
-      printf("(level_populations): Not yet converged for %ld of %ld\n", n_not_converged, NGRID);
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
@@ -319,10 +338,14 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
       /* Limit the number of iterations */
 
-      if (niterations >= MAX_NITERATIONS){
+      if (niterations > MAX_NITERATIONS || n_not_converged < 10){
 
-        populations_not_converged = false;
+        some_not_converged = false;
       }
+
+
+      printf("(level_populations): Not yet converged for %ld of %ld\n", n_not_converged, NGRID);
+
 
     } /* end of while loop of iterations */
 
@@ -342,8 +365,9 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
     printf( "(level_populations): nshortcuts/(nshortcuts+nno_shortcuts) = %.5lf \n",
             (double) nshortcuts/(nshortcuts+nno_shortcuts) );
 
-    printf( "(level_populations): population levels for %d converged after %d iterations\n"
-            "                     with precision %.1lE\n", lspec, niterations, POP_PREC );
+    printf( "(level_populations): population levels for %s converged after %d iterations\n"
+            "                     with precision %.1lE\n",
+            species[lspec_nr[lspec]].sym.c_str(), niterations, POP_PREC );
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 

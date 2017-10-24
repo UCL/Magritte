@@ -12,15 +12,15 @@ ____________________________________|___________________
                                     |
 1.3                                 | theta_crit
                                     |
-0.00                                | ray_separation2
+0.0                                 | ray_separation2
                                     |
 true                                | sobolev
                                     |
-ISO                                 | field form
+UNI                                 | field form
                                     |
-400                                 | MAX_NITERATIONS
+500                                 | MAX_NITERATIONS
                                     |
-1.0E1                               | time_end (years)
+1.0E7                               | time_end (years)
                                     |
 5.27046                             | G_EXTERNAL_X
                                     |

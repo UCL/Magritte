@@ -24,6 +24,7 @@ using namespace std;
 
 #include "pre_setup_parameters.hpp"
 #include "pre_setup_definitions.hpp"
+#include "outputdirectory.hpp"
 #include "setup_tools.hpp"
 #include "../src/setup_data_structures.cpp"
 #include "../src/data_tools.cpp"

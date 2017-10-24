@@ -371,36 +371,22 @@ TEST_CASE("Test level populations"){
 
   write_level_populations("0", pop);
 
-  bool no_thermal_balance = true;
+
+  bool somewhere_no_thermal_balance = true;
+
+  bool no_thermal_balance[NGRID];
+
+  initialize_bool(true, NGRID, no_thermal_balance);
 
   int niterations = 0;
 
 
 
-
-
-  // for (int chem_iteration=0; chem_iteration<3; chem_iteration++){
-  //
-    // calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    // calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    // calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    // calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    // calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
-  //
-  //   chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-  //              column_H2, column_HD, column_C, column_CO, v_turb );
-  //
-  // }
-  //
-  // write_abundances("level1");
-
-
-
   /* Thermal balance iterations */
 
-  while (no_thermal_balance){
+  while (somewhere_no_thermal_balance){
 
-    no_thermal_balance = false;
+    somewhere_no_thermal_balance = false;
 
     niterations++;
 
@@ -513,60 +499,69 @@ TEST_CASE("Test level populations"){
 
     for (long gridp=0; gridp<NGRID; gridp++){
 
-      double heating_components[12];
+      if (no_thermal_balance[gridp]){
 
-      nr_can_reac = 0;
-      nr_can_phot = 0;
-      nr_all = 0;
+        no_thermal_balance[gridp] = false;
 
-      reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                      column_H2, column_HD, column_C, column_CO, v_turb, gridp,
-                      &nr_can_reac, canonical_reactions,
-                      &nr_can_phot, can_photo_reactions,
-                      &nr_all, all_reactions );
+        double heating_components[12];
 
+        nr_can_reac = 0;
+        nr_can_phot = 0;
+        nr_all = 0;
 
-      heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
-                                      UV_field, v_turb, heating_components );
-
-      cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
-                                      pop, mean_intensity );
+        reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
+                        column_H2, column_HD, column_C, column_CO, v_turb, gridp,
+                        &nr_can_reac, canonical_reactions,
+                        &nr_can_phot, can_photo_reactions,
+                        &nr_all, all_reactions );
 
 
-      heating_1[gridp] = heating_components[0];
-      heating_2[gridp] = heating_components[1];
-      heating_3[gridp] = heating_components[2];
-      heating_4[gridp] = heating_components[3];
-      heating_5[gridp] = heating_components[4];
-      heating_6[gridp] = heating_components[5];
-      heating_7[gridp] = heating_components[6];
-      heating_8[gridp] = heating_components[7];
-      heating_9[gridp] = heating_components[8];
-      heating_10[gridp] = heating_components[9];
-      heating_11[gridp] = heating_components[10];
-      // heating_total[gridp] = heating_components[11];
+        heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+                                        UV_field, v_turb, heating_components );
+
+        cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
+                                        pop, mean_intensity );
 
 
-      double thermal_flux = heating_total[gridp] - cooling_total[gridp];
+        heating_1[gridp] = heating_components[0];
+        heating_2[gridp] = heating_components[1];
+        heating_3[gridp] = heating_components[2];
+        heating_4[gridp] = heating_components[3];
+        heating_5[gridp] = heating_components[4];
+        heating_6[gridp] = heating_components[5];
+        heating_7[gridp] = heating_components[6];
+        heating_8[gridp] = heating_components[7];
+        heating_9[gridp] = heating_components[8];
+        heating_10[gridp] = heating_components[9];
+        heating_11[gridp] = heating_components[10];
+        // heating_total[gridp] = heating_components[11];
 
-      double thermal_ratio = 0.0;
 
-      if( fabs(heating_total[gridp] + cooling_total[gridp]) > 0.0 ){
+        double thermal_flux = heating_total[gridp] - cooling_total[gridp];
 
-        thermal_ratio = 2.0 * fabs(thermal_flux)
-                        / fabs(heating_total[gridp] + cooling_total[gridp]);
-      }
+        double thermal_ratio = 0.0;
+
+        if( fabs(heating_total[gridp] + cooling_total[gridp]) > 0.0 ){
+
+          thermal_ratio = 2.0 * fabs(thermal_flux)
+                          / fabs(heating_total[gridp] + cooling_total[gridp]);
+        }
 
 
-      /* Check for thermal balance (convergence) */
+        /* Check for thermal balance (convergence) */
 
-      if (thermal_ratio > THERMAL_PREC){
+        if (thermal_ratio > THERMAL_PREC){
 
-        no_thermal_balance = true;
+          no_thermal_balance[gridp]    = true;
 
-        update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
+          somewhere_no_thermal_balance = true;
 
-      }
+          update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
+
+        }
+
+
+      } /* end of if no thermal balance */
 
     } /* end of gridp loop over grid points */
 
@@ -602,7 +597,7 @@ TEST_CASE("Test level populations"){
 
     if (niterations >= MAX_NITERATIONS){
 
-      no_thermal_balance = false;
+      somewhere_no_thermal_balance = false;
     }
 
 

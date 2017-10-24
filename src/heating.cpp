@@ -59,7 +59,6 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   const double precision = 1.0E-2;                     /* precision of the Newton-Raphson method */
 
 
-
   /* Parameters */
 
   double Delta_d  = 1.0;
@@ -209,8 +208,6 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   heating_components[3] = heating_C_ionization;
 
 
-  printf("C ionization nr %d\n", C_ionization_nr);
-
   /*_____________________________________________________________________________________________*/
 
 
@@ -233,7 +230,6 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
   heating_components[4] = heating_H2_formation;
 
-  printf("H2 formation nr %d\n", H2_formation_nr);
 
   /*_____________________________________________________________________________________________*/
 
@@ -253,8 +249,6 @@ double heating( GRIDPOINT *gridpoint, long gridp,
                                         * species[H2_nr].abn[gridp] * gridpoint[gridp].density;
 
   heating_components[5] = heating_H2_photodissociation;
-
-  printf("H2 photodissociation nr %d\n", H2_photodissociation_nr);
 
 
   /*_____________________________________________________________________________________________*/

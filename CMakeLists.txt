@@ -29,7 +29,7 @@ set(MAGRITTE_VERSION_MINOR 1)
 # Make the setup executable and execute setup
 
 add_custom_command( OUTPUT src/sundials/rate_equations.cpp
-                    COMMAND make PARAMETERS_FILE=../parameters.txt && ./setup.exe
+                    COMMAND bash run_setup.sh
                     WORKING_DIRECTORY setup
                     DEPENDS parameters.txt )
 

@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Magritte: writing_output                                                                         */
+/* Magritte: writing_output                                                                      */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -23,6 +23,7 @@
 #include "write_output.hpp"
 #include "species_tools.hpp"
 #include "radfield_tools.hpp"
+#include "../setup/outputdirectory.hpp"
 
 
 
@@ -38,7 +39,7 @@ int write_grid(std::string tag, GRIDPOINT *gridpoint)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/grid" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "grid" + tag + ".txt";
 
   FILE *outgrid = fopen(file_name.c_str(), "w");
 
@@ -78,7 +79,7 @@ int write_healpixvectors(std::string tag, double *unit_healpixvector)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/healpix" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "healpix" + tag + ".txt";
 
   FILE *hp = fopen(file_name.c_str(), "w");
 
@@ -121,7 +122,7 @@ int write_eval(std::string tag, EVALPOINT *evalpoint)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/eval" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "eval" + tag + ".txt";
 
   FILE *eval = fopen(file_name.c_str(), "w");
 
@@ -168,7 +169,7 @@ int write_key(std::string tag)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/key" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "key" + tag + ".txt";
 
   FILE *fkey = fopen(file_name.c_str(), "w");
 
@@ -214,7 +215,7 @@ int write_raytot(std::string tag)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/raytot" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "raytot" + tag + ".txt";
 
   FILE *rt = fopen(file_name.c_str(), "w");
 
@@ -260,7 +261,7 @@ int write_cum_raytot(std::string tag)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/cum_raytot" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "cum_raytot" + tag + ".txt";
 
   FILE *crt = fopen(file_name.c_str(), "w");
 
@@ -306,7 +307,7 @@ int write_abundances(std::string tag)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/abundances" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "abundances" + tag + ".txt";
 
   FILE *abun= fopen(file_name.c_str(), "w");
 
@@ -358,7 +359,7 @@ int write_level_populations(std::string tag, double *pop)
 
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
-    std::string file_name = "output/files/level_populations_" + lspec_name + tag + ".txt";
+    std::string file_name = OUTPUT_DIRECTORY + "level_populations_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen(file_name.c_str(), "w");
 
@@ -414,7 +415,7 @@ int write_line_intensities(std::string tag, double *mean_intensity)
 
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
-    std::string file_name = "output/files/line_intensities_" + lspec_name + tag + ".txt";
+    std::string file_name = OUTPUT_DIRECTORY + "line_intensities_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen(file_name.c_str(), "w");
 
@@ -464,7 +465,7 @@ int write_temperature_gas(std::string tag, double *temperature_gas)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/temperature_gas" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "temperature_gas" + tag + ".txt";
 
   FILE *temp_gas = fopen(file_name.c_str(), "w");
 
@@ -506,7 +507,7 @@ int write_temperature_dust(std::string tag, double *temperature_dust)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/temperature_dust" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "temperature_dust" + tag + ".txt";
 
   FILE *temp_dust = fopen(file_name.c_str(), "w");
 
@@ -548,7 +549,7 @@ int write_UV_field(std::string tag, double *UV_field)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/UV_field" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "UV_field" + tag + ".txt";
 
   FILE *UV_file = fopen(file_name.c_str(), "w");
 
@@ -590,7 +591,7 @@ int write_AV(std::string tag, double *AV)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/AV" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "AV" + tag + ".txt";
 
   FILE *AV_file = fopen(file_name.c_str(), "w");
 
@@ -637,7 +638,7 @@ int write_rad_surface(std::string tag, double *rad_surface)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/rad_surface" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "rad_surface" + tag + ".txt";
 
   FILE *rad_file = fopen(file_name.c_str(), "w");
 
@@ -684,7 +685,7 @@ int write_reaction_rates(std::string tag, REACTION *reaction)
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/reaction_rates" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + "reaction_rates" + tag + ".txt";
 
   FILE *reac_file = fopen(file_name.c_str(), "w");
 
@@ -734,7 +735,7 @@ int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
 
 
 
-  std::string file_name0 = "output/files/" + name + "_reactions" + tag + ".txt";
+  std::string file_name0 = OUTPUT_DIRECTORY + name + "_reactions" + tag + ".txt";
 
   FILE *certain_file0 = fopen(file_name0.c_str(), "w");
 
@@ -754,7 +755,7 @@ int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
 
 
 
-  std::string file_name = "output/files/" + name + "_rates" + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + name + "_rates" + tag + ".txt";
 
   FILE *certain_file = fopen(file_name.c_str(), "w");
 
@@ -809,7 +810,7 @@ int write_double_1(std::string name, std::string tag, long length, double *varia
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/" + name + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + name + tag + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -851,7 +852,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
     tag = "_" + tag;
   }
 
-  std::string file_name = "output/files/" + name + tag + ".txt";
+  std::string file_name = OUTPUT_DIRECTORY + name + tag + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -1051,9 +1052,9 @@ int write_Einstein_coeff( std::string tag, double *A_coeff, double *B_coeff, dou
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
 
-    std::string file_name_A = "output/files/Einstein_A_" + lspec_name + tag + ".txt";
-    std::string file_name_B = "output/files/Einstein_B_" + lspec_name + tag + ".txt";
-    std::string file_name_C = "output/files/Einstein_C_" + lspec_name + tag + ".txt";
+    std::string file_name_A = OUTPUT_DIRECTORY + "Einstein_A_" + lspec_name + tag + ".txt";
+    std::string file_name_B = OUTPUT_DIRECTORY + "Einstein_B_" + lspec_name + tag + ".txt";
+    std::string file_name_C = OUTPUT_DIRECTORY + "Einstein_C_" + lspec_name + tag + ".txt";
 
 
     FILE *file_A = fopen(file_name_A.c_str(), "w");
@@ -1133,7 +1134,7 @@ int write_R( std::string tag, long gridp, double *R )
 
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
-    std::string file_name = "output/files/R_" + lspec_name + tag + ".txt";
+    std::string file_name = OUTPUT_DIRECTORY + "R_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen(file_name.c_str(), "w");
 
@@ -1190,7 +1191,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
-    std::string file_name = "output/files/transition_levels_" + lspec_name + tag + ".txt";
+    std::string file_name = OUTPUT_DIRECTORY + "transition_levels_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen(file_name.c_str(), "w");
 
@@ -1216,6 +1217,49 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
     fclose(file);
 
   } /* end of lspec loop over line producing species */
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_performance_log: write the performance results of the run                               */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_performance_log( double time_total, double time_level_pop, double time_chemistry,
+                           double time_ray_tracing, int niterations )
+{
+
+
+  std::string file_name = OUTPUT_DIRECTORY + "performance_log.txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+
+  if (file == NULL){
+
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
+
+
+  fprintf( file, "time_total       %lE", time_total );
+  fprintf( file, "time_ray_tracing %lE", time_ray_tracing );
+  fprintf( file, "time_level_pop   %lE", time_level_pop );
+  fprintf( file, "time_chemistry   %lE", time_chemistry );
+  fprintf( file, "n_tb_iterations  %d", time_ray_tracing );
+
+
+  fclose(file);
+
+
 
 
   return(0);

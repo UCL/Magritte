@@ -214,7 +214,7 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
 
 
 
-/* gueess_temperature_gas: make a guess for the gas temperature based on the UV field            */
+/* guess_temperature_gas: make a guess for the gas temperature based on the UV field             */
 /*-----------------------------------------------------------------------------------------------*/
 
 int guess_temperature_gas(double *UV_field, double *temperature_gas)
@@ -224,6 +224,29 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas)
   for (long n=0; n<NGRID; n++){
 
     temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
+  }
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* initialize_bool: initialize a boolean variable                                                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_bool(bool value, long length, bool *variable)
+{
+
+
+  for (long n=0; n<length; n++){
+
+    variable[n] = value;
   }
 
 

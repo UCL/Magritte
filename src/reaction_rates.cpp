@@ -34,10 +34,7 @@ using namespace std;
 void reaction_rates( double *temperature_gas, double *temperature_dust,
                      double *rad_surface, double *AV,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double v_turb, long gridp,
-                     int *nr_can_reac, int *canonical_reactions,
-                     int *nr_can_phot, int *can_photo_reactions,
-                     int *nr_all, int *all_reactions )
+                     double v_turb, long gridp )
 {
 
 
@@ -60,15 +57,6 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
     /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */
     /* The rate functions are calculated locally so only need the
-
-
-
-    /* Output related variables, for testing only */
-
-    all_reactions[*nr_all] = reac;
-    *nr_all = *nr_all + 1;
-
-    /* ------------------------------------------ */
 
 
 
@@ -272,16 +260,6 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
       reaction[reac].k[gridp] = rate_canonical_photoreaction( reac, temperature_gas[gridp],
                                                               rad_surface, AV, gridp );
 
-
-
-      /* Output related variables, for testing only */
-
-      can_photo_reactions[*nr_can_phot] = reac;
-      *nr_can_phot = *nr_can_phot + 1;
-
-      /* ------------------------------------------ */
-
-
     }
 
 
@@ -294,17 +272,6 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
     else {
 
       reaction[reac].k[gridp] = rate_canonical(reac, temperature_gas[gridp]);
-
-
-
-      /* Output related variables, for testing only */
-
-      canonical_reactions[*nr_can_reac] = reac;
-      *nr_can_reac = *nr_can_reac + 1;
-
-      /* ------------------------------------------ */
-
-
 
     }
 

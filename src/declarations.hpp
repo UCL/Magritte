@@ -30,19 +30,19 @@ using namespace std;
 
 #define REAC_DATAFILE  "data/rates_reduced.txt" 
 
-#define LINE_DATAFILE0 "data/12C+.txt" 
+#define LINE_DATAFILE0 "data/12C.txt" 
 
-#define LINE_DATAFILE1 "data/12CO.txt" 
+#define LINE_DATAFILE1 "data/12C+.txt" 
 
 #define LINE_DATAFILE2 "data/16O.txt" 
 
-#define LINE_DATAFILE3 "data/12C.txt" 
+#define LINE_DATAFILE3 "data/12CO.txt" 
 
 #define NGRID 122 
 
 #define NSIDES 1 
 
-#define THETA_CRIT 1.000000 
+#define THETA_CRIT 1.300000 
 
 #define RAY_SEPARATION2 0.000000E+00 
 
@@ -68,7 +68,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 70 
+#define MAX_NITERATIONS 500 
 
 #define TIME_END_IN_YEARS 1.000000E+07 
 
