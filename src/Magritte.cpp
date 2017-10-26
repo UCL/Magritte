@@ -743,7 +743,7 @@ int main()
 
     /* Limit the number of iterations */
 
-    if (niterations > MAX_NITERATIONS || n_not_converged < 10){
+    if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10){
 
       somewhere_no_thermal_balance = false;
     }

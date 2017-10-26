@@ -276,27 +276,28 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
       for (long n=0; n<NGRID; n++){
 
+
+        /* Save the previous populations */
+
+        double previous_pop[nlev[lspec]];
+
+        for (int i=0; i<nlev[lspec]; i++){
+
+          previous_pop[i] = pop[LSPECGRIDLEV(lspec,n,i)];
+        }
+
+
+        /* Solve the radiative balance equation for the level populations */
+
+        level_population_solver( gridpoint, n, lspec, R, pop );
+
+
+        /* Check for convergence */
+
         if (not_converged[n]){
 
           not_converged[n] = false;
 
-
-          /* Save the previous populations */
-
-          double previous_pop[nlev[lspec]];
-
-          for (int i=0; i<nlev[lspec]; i++){
-
-            previous_pop[i] = pop[LSPECGRIDLEV(lspec,n,i)];
-          }
-
-
-          /* Solve the radiative balance equation for the level populations */
-
-          level_population_solver( gridpoint, n, lspec, R, pop );
-
-
-          /* Check for convergence */
 
           for (int i=0; i<nlev[lspec]; i++){
 
@@ -338,7 +339,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
       /* Limit the number of iterations */
 
-      if (niterations > MAX_NITERATIONS || n_not_converged < 10){
+      if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10){
 
         some_not_converged = false;
       }

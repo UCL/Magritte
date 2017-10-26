@@ -24,7 +24,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/1Dn20.dat_conv.txt" 
+#define GRID_INPUTFILE "input/1Dn45.dat_conv.txt" 
 
 #define SPEC_DATAFILE  "data/species_reduced.txt" 
 
