@@ -9,4 +9,8 @@ echo "std::string OUTPUT_DIRECTORY = \"$output_directory\";" > outputdirectory.h
 
 # Make the setup file, execute if make was succesful and make a directory for the output
 
-make PARAMETERS_FILE=../parameters.txt && ./setup.exe && mkdir "../$output_directory"
+make PARAMETERS_FILE=../parameters.txt && ./setup.exe && mkdir "../$output_directory" && mkdir "../$output_directory/plots/"
+
+# Copy the input parameters to the output file
+
+cp ../parameters.txt ../$output_directory/parameters.txt

@@ -1,0 +1,56 @@
+Magritte: Input parameters
+-----------------------
+
+- Specify the input files and parameters.
+
+
+
+Value                               | Constant
+____________________________________|___________________
+                                    |
+12                                  | nrays (12*n^2)
+                                    |
+1.3                                 | theta_crit
+                                    |
+0.0                                 | ray_separation2
+                                    |
+true                                | sobolev
+                                    |
+UNI                                 | field form
+                                    |
+300                                 | MAX_NITERATIONS
+                                    |
+1.0E7                               | time_end (years)
+                                    |
+5.27046                             | G_EXTERNAL_X
+                                    |
+5.27046                             | G_EXTERNAL_Y
+                                    |
+6.66667                             | G_EXTERNAL_Z
+                                    |
+0.0                                 | Feautrier BC (IBC)
+____________________________________|___________________
+
+
+
+File                                | Content
+____________________________________|___________________
+                                    |
+input/1Dn30.dat_conv.txt            | Grid
+                                    |
+data/species_reduced.txt            | Species
+                                    |
+data/rates_reduced.txt              | Reactions
+____________________________________|___________________
+                                    |
+4                                   | nr. of line files
+____________________________________|___________________
+                                    |
+data/12C.txt                        | Lines 0
+                                    |
+data/12C+.txt                       | Lines 1
+                                    |
+data/16O.txt                        | Lines 2
+                                    |
+data/12CO.txt                       | Lines 3
+____________________________________|___________________

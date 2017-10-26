@@ -15,7 +15,9 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "declarations.hpp"
 #include "level_population_solver.hpp"
+
 
 
 #define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
@@ -24,8 +26,7 @@
 
 
 
-void level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R,
-                              double *pop, double *dpop )
+int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
 {
 
 
@@ -41,7 +42,10 @@ void level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, doubl
 
 
 
-  /* Fill the matrix a */
+
+  /*   Fill matrix a and vector b                                                                */
+  /*_____________________________________________________________________________________________*/
+
 
   for (int i=0; i<nlev[lspec]; i++){
 
@@ -63,12 +67,16 @@ void level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, doubl
 
     b[i] = 0.0;
 
-    a[LINDEX(nlev[lspec]-1, i)] = 1.0E-8;
-
-    dpop[LSPECGRIDLEV(lspec,gridp,i)] = pop[LSPECGRIDLEV(lspec,gridp,i)];
+    a[LINDEX(nlev[lspec]-1, i)] = 1.0;
   }
 
-  b[nlev[lspec]-1] = 1.0E-8 * gridpoint[gridp].density;
+
+  b[nlev[lspec]-1] = gridpoint[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
+
+
+  /*_____________________________________________________________________________________________*/
+
+
 
 
 
@@ -77,19 +85,29 @@ void level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, doubl
   GaussJordan(n, m, a, b);
 
 
-  /* Update the populations and the change in populations */
+
+
+
+  /* UPDATE THE POPULATIONS AND THE CHANGE IN POPULATIONS                                        */
+  /*_____________________________________________________________________________________________*/
+
 
   for (int i=0; i<nlev[lspec]; i++){
 
-    pop[LSPECGRIDLEV(lspec,gridp,i)] =  b[i];
+    long p_i = LSPECGRIDLEV(lspec,gridp,i);
 
-    dpop[LSPECGRIDLEV(lspec,gridp,i)] = fabs( dpop[LSPECGRIDLEV(lspec,gridp,i)]
-                                             - pop[LSPECGRIDLEV(lspec,gridp,i)] );
 
-    if( isnan(b[i]) ){
+    /* avoid too small or too large populations */
 
-      printf( "(level_population_solver): population of level (%d,%d) is NaN at grid point %ld \n",
-              lspec, i, gridp );
+    if (b[i] > POP_LOWER_LIMIT){
+
+      if ( b[i] < POP_UPPER_LIMIT ) { pop[p_i] =  b[i]; }
+
+      else                          { pop[p_i] = POP_UPPER_LIMIT; }
+    }
+    else {
+
+      pop[p_i] = 0.0;
     }
 
   }
@@ -101,6 +119,8 @@ void level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, doubl
   free(a);
   free(b);
 
+  return(0);
+
 }
 
 
@@ -109,7 +129,7 @@ void level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, doubl
 /* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
 /*-----------------------------------------------------------------------------------------------*/
 
-void GaussJordan(int n, int m, double *a, double *b)
+int GaussJordan(int n, int m, double *a, double *b)
 {
 
   int indexc[n];                              /* note that our vectors are indexed from 0 to n-1 */
@@ -199,6 +219,9 @@ void GaussJordan(int n, int m, double *a, double *b)
     }
 
   }
+
+
+  return(0);
 
 }
 

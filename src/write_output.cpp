@@ -318,9 +318,9 @@ int write_abundances(std::string tag)
   }
 
 
-  for (int spec=0; spec<NSPEC; spec++){
+  for (long n=0; n<NGRID; n++){
 
-    for (long n=0; n<NGRID; n++){
+    for (int spec=0; spec<NSPEC; spec++){
 
       fprintf( abun, "%lE\t", species[spec].abn[n] );
     }
@@ -1233,7 +1233,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 /*-----------------------------------------------------------------------------------------------*/
 
 int write_performance_log( double time_total, double time_level_pop, double time_chemistry,
-                           double time_ray_tracing, int niterations )
+                           double time_ray_tracing, int n_tb_iterations )
 {
 
 
@@ -1250,11 +1250,11 @@ int write_performance_log( double time_total, double time_level_pop, double time
   }
 
 
-  fprintf( file, "time_total       %lE", time_total );
-  fprintf( file, "time_ray_tracing %lE", time_ray_tracing );
-  fprintf( file, "time_level_pop   %lE", time_level_pop );
-  fprintf( file, "time_chemistry   %lE", time_chemistry );
-  fprintf( file, "n_tb_iterations  %d", time_ray_tracing );
+  fprintf( file, "time_total       %lE\n", time_total );
+  fprintf( file, "time_ray_tracing %lE\n", time_ray_tracing );
+  fprintf( file, "time_level_pop   %lE\n", time_level_pop );
+  fprintf( file, "time_chemistry   %lE\n", time_chemistry );
+  fprintf( file, "n_tb_iterations  %d\n",  n_tb_iterations );
 
 
   fclose(file);

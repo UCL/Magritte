@@ -15,23 +15,29 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <Eigen/Dense>
-
 #include "declarations.hpp"
 #include "level_population_solver.hpp"
 
 
 
-/* level_population_solver: sets up and solves the matrix equation corresp. to equilibrium eq.   */
-/*-----------------------------------------------------------------------------------------------*/
+#define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
+#define IND(r,c) ((c)+(r)*n)
+#define IMD(r,c) ((c)+(r)*m)
+
+
 
 int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
 {
 
 
-  Eigen::MatrixXd A(nlev[lspec],nlev[lspec]);
+  int n = nlev[lspec];                      /* number of rows and columns of the matrix to solve */
+  int m = 1;                                                   /* number of solution vectors 'b' */
 
-  Eigen::VectorXd b(nlev[lspec]);
+  double *a;
+  a = (double*) malloc( nlev[lspec]*nlev[lspec]*sizeof(double) );
+
+  double *b;
+  b = (double*) malloc( nlev[lspec]*sizeof(double) );
 
 
 
@@ -43,31 +49,29 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
   for (int i=0; i<nlev[lspec]; i++){
 
-    double row_tot = 0.0;
+    double out = 0.0;
 
     for (int j=0; j<nlev[lspec]; j++){
 
-      row_tot = row_tot + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
+      out = out + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
 
-      A(i,j) = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
+      a[LINDEX(i,j)] = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
     }
 
-    A(i,i) = -row_tot;
+    a[LINDEX(i,i)] = -out;
   }
 
 
 
   for (int i=0; i<nlev[lspec]; i++){
 
-    b(i) = 0.0;
+    b[i] = 0.0;
 
-    A(nlev[lspec]-1, i) = 1.0;
+    a[LINDEX(nlev[lspec]-1, i)] = 1.0;
   }
 
 
-  b(nlev[lspec]-1) = gridpoint[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
-
-  // printf("density %lE \n", b(nlev[lspec]-1) );
+  b[nlev[lspec]-1] = gridpoint[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
 
 
   /*_____________________________________________________________________________________________*/
@@ -76,9 +80,9 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
 
 
-  /* Solve the system of equations using the colPivHouseholderQr solver provided by Eigen */
+  /* Solve the system of equations using the Gauss-Jordan solver */
 
-  Eigen::VectorXd x = A.colPivHouseholderQr().solve(b);
+  GaussJordan(n, m, a, b);
 
 
 
@@ -95,9 +99,9 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
     /* avoid too small or too large populations */
 
-    if (x(i) > POP_LOWER_LIMIT){
+    if (b[i] > POP_LOWER_LIMIT){
 
-      if ( x(i) < POP_UPPER_LIMIT ) { pop[p_i] =  x(i); }
+      if ( b[i] < POP_UPPER_LIMIT ) { pop[p_i] =  b[i]; }
 
       else                          { pop[p_i] = POP_UPPER_LIMIT; }
     }
@@ -106,24 +110,119 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
       pop[p_i] = 0.0;
     }
 
+  }
 
-    if( isnan(b(i)) ){
 
-      printf( "\n\n !!! ERROR in level poopulation solver !!!\n\n" );
-      printf( "   [ERROR]: population (%d,%d) is NaN at grid point %ld \n", lspec, i, gridp );
+
+  /* Free the allocated memory for temporary variables */
+
+  free(a);
+  free(b);
+
+  return(0);
+
+}
+
+
+
+
+/* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
+/*-----------------------------------------------------------------------------------------------*/
+
+int GaussJordan(int n, int m, double *a, double *b)
+{
+
+  int indexc[n];                              /* note that our vectors are indexed from 0 to n-1 */
+  int indexr[n];                              /* note that our vectors are indexed from 0 to n-1 */
+  int ipiv[n];
+
+  int icol, irow;
+
+  double temp;
+
+
+  for (int j=0; j<n; j++){ ipiv[j] = 0; }
+
+
+  for (int i=0; i<n; i++){
+
+    double big = 0.0;
+
+    for (int j=0; j<n; j++){
+
+      if (ipiv[j] != 1){
+
+        for (int k=0; k<n; k++){
+
+          if (ipiv[k] == 0){
+
+            if(fabs(a[IND(j,k)]) >= big){
+
+              big = fabs(a[IND(j,k)]);
+              irow = j;
+              icol = k;
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+
+    ipiv[icol] = ipiv[icol] + 1;
+
+    if (irow != icol){
+
+      for (int l=0; l<n; l++){ SWAP(a[IND(irow,l)], a[IND(icol,l)]) }
+      for (int l=0; l<m; l++){ SWAP(b[IMD(irow,l)], b[IMD(icol,l)]) }
+    }
+
+    indexr[i] = irow;
+    indexc[i] = icol;
+
+    if (a[IND(icol,icol)] == 0.0){ printf("(GaussJordan): ERROR - singular matrix !!!\n"); }
+
+    double pivinv = 1.0 / a[IND(icol,icol)];
+
+    a[IND(icol,icol)] = 1.0;
+
+    for (int l=0; l<n; l++){ a[IND(icol,l)] = pivinv * a[IND(icol,l)]; }
+    for (int l=0; l<m; l++){ b[IMD(icol,l)] = pivinv * b[IMD(icol,l)]; }
+
+
+    for (int ll=0; ll<n; ll++){
+
+      if (ll != icol) {
+
+        double dum = a[IND(ll,icol)];
+
+        a[IND(ll,icol)] = 0.0;
+
+        for (int l=0; l<n; l++){ a[IND(ll,l)] = a[IND(ll,l)] - a[IND(icol,l)]*dum; }
+        for (int l=0; l<m; l++){ b[IMD(ll,l)] = b[IMD(ll,l)] - b[IMD(icol,l)]*dum; }
+      }
+
     }
 
   }
 
 
-  /*_____________________________________________________________________________________________*/
+  for (int l=n-1; l>=0; l--){
 
+    if (indexr[l] != indexc[l] ){
 
+      for (int k=0; k<n; k++){ SWAP(a[IND(k,indexr[l])], a[IND(k,indexc[l])]); }
 
+    }
+
+  }
 
 
   return(0);
-
+  
 }
 
 /*-----------------------------------------------------------------------------------------------*/

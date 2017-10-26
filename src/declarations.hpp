@@ -24,7 +24,7 @@ using namespace std;
 /*_______________________________________________________________________________________________*/
 
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt" 
+#define GRID_INPUTFILE "input/1Dn20.dat_conv.txt" 
 
 #define SPEC_DATAFILE  "data/species_reduced.txt" 
 
@@ -38,7 +38,7 @@ using namespace std;
 
 #define LINE_DATAFILE3 "data/12CO.txt" 
 
-#define NGRID 122 
+#define NGRID 294 
 
 #define NSIDES 1 
 
@@ -68,7 +68,7 @@ using namespace std;
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define MAX_NITERATIONS 500 
+#define MAX_NITERATIONS 300 
 
 #define TIME_END_IN_YEARS 1.000000E+07 
 

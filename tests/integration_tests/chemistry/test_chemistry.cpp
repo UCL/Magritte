@@ -343,7 +343,7 @@ TEST_CASE("Test chemistry"){
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-                column_H2, column_HD, column_C, column_CO, v_turb );
+               column_H2, column_HD, column_C, column_CO, v_turb );
 
 
     /* Check for convergence */
