@@ -233,7 +233,7 @@ TEST_CASE("Test chemistry"){
 
   double temperature_gas[NGRID];
 
-  initialize_temperature_gas(UV_field, temperature_gas);
+  initialize_temperature_gas(temperature_gas);
 
   double temperature_dust[NGRID];
 
@@ -251,12 +251,9 @@ TEST_CASE("Test chemistry"){
   write_eval("0", evalpoint);
 
 
-  /* Implement guess temperature */
+  /* Make aguess for the gas temperature */
 
-  for (long n=0; n<NGRID; n++){
-
-    temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
-  }
+  guess_temperature_gas(UV_field, temperature_gas);
 
 
   /* Calculate the dust temperature */

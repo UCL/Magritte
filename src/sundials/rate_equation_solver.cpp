@@ -21,8 +21,9 @@
 
 #include <cvode/cvode.h>                                  /* prototypes for CVODE fcts., consts. */
 #include <nvector/nvector_serial.h>                      /* serial N_Vector types, fcts., macros */
-#include <cvode/cvode_dense.h>                                          /* prototype for CVDense */
-#include <sundials/sundials_dense.h>                            /* definitions DlsMat DENSE_ELEM */
+#include <sunmatrix/sunmatrix_dense.h>                              /* access to dense SUNMatrix */
+#include <sunlinsol/sunlinsol_dense.h>                        /* access to dense SUNLinearSolver */
+#include <cvode/cvode_direct.h>                                     /* access to CVDls interface */
 #include <sundials/sundials_types.h>                              /* definition of type realtype */
 
 #include "../declarations.hpp"
@@ -42,7 +43,8 @@
 #define RTOL     RCONST(1.0E-6)                                     /* scalar relative tolerance */
 #define ATOL     RCONST(1.0e-26)                         /* vector absolute tolerance components */
 
-
+// #define USE_CVSUPERLUMP_SPARSE_SOLVER
+#define USE_DENSE_SOLVER
 
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
@@ -61,6 +63,10 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   user_data->gp          = gridp;
   user_data->gridpointer = gridpoint;
   user_data->electron_abundance = species[e_nr].abn[gridp];
+
+
+  SUNMatrix       A  = NULL;
+  SUNLinearSolver LS = NULL;
 
 
   int flag;                                                   /* output flag for CVODE functions */
@@ -84,7 +90,6 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   N_Vector y = N_VNew_Serial(NEQ);
 
-
   if (check_flag((void *)y, "N_VNew_Serial", 0)){
 
     return(1);
@@ -97,7 +102,6 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
     return(1);
   }
-
 
 
   /* Initialize y */
@@ -158,6 +162,36 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   }
 
 
+  /* Create dense SUNMatrix for use in linear solves */
+
+  A = SUNDenseMatrix(NEQ, NEQ);
+
+  if(check_flag((void *)A, "SUNDenseMatrix", 0)){
+
+    return(1);
+  }
+
+
+  /* Create dense SUNLinearSolver object for use by CVode */
+
+  LS = SUNDenseLinearSolver(y, A);
+
+  if(check_flag((void *)LS, "SUNDenseLinearSolver", 0)){
+
+    return(1);
+  }
+
+
+  /* Call CVDlsSetLinearSolver to attach the matrix and linear solver to CVode */
+
+  flag = CVDlsSetLinearSolver(cvode_mem, LS, A);
+
+  if(check_flag(&flag, "CVDlsSetLinearSolver", 1)){
+
+    return(1);
+  }
+
+
   /* Call CVodeSetMaxNumSteps to set the maximum number of steps */
 
   flag = CVodeSetMaxNumSteps(cvode_mem, mxstep);
@@ -178,14 +212,40 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   }
 
 
-  /* Call CVDense to specify the CVDENSE dense linear solver */
 
-  flag = CVDense(cvode_mem, NEQ);
+// /* Pick the right solver */
+//
+// // #ifdef USE_DENSE_SOLVER
+//
+//   /* Call CVDense to specify the CVDENSE dense linear solver */
+//
+//   flag = CVDense(cvode_mem, NEQ);
+//
+//
+//   if (check_flag(&flag, "CVDense", 1)){
+//
+//     return(1);
+//   }
+//
+// // #endif
+//
+//
+//
+// #ifdef USE_CVSUPERLUMP_SPARSE_SOLVER
+//
+//   /* Call CVSuperLUMT to specify the CVSuperLUMT sparse direct linear solver */
+//
+//   int nnz = NEQ * NEQ;
+//
+//   flag = CVSuperLUMT(cvode_mem, 1, NEQ, nnz);
+//
+//   if (check_flag(&flag, "CVSuperLUMT", 1)){
+//
+//     return(1);
+//   }
+//
+// #endif
 
-  if (check_flag(&flag, "CVDense", 1)){
-
-    return(1);
-  }
 
 
   /* Call CVode */
@@ -235,6 +295,15 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   CVodeFree(&cvode_mem);
 
+
+  /* Free the linear solver memory */
+
+  SUNLinSolFree(LS);
+
+
+  /* Free the matrix memory */
+
+  SUNMatDestroy(A);
 
 
   return(0);

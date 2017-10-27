@@ -42,6 +42,16 @@ set( SUNDIALS_EXTRA_LIB
 set( SUNDIALS_LIBS ${SUNDIALS_SOLVER_LIB} ${SUNDIALS_NVEC_LIB} ${SUNDIALS_EXTRA_LIB} )
 
 
+IF(KLU_FOUND)
+  LIST(APPEND SUNDIALS_LIBS ${KLU_LIBRARIES})
+ENDIF(KLU_FOUND)
+
+IF(SUPERLUMT_FOUND)
+  LIST(APPEND SUNDIALS_LIBS ${SUPERLUMT_LIBRARIES})
+ENDIF(SUPERLUMT_FOUND)
+
+
+
 # Create a sundials library
 
 add_library( _sundials   rate_equation_solver.cpp )
@@ -50,4 +60,3 @@ add_library( _sundials   rate_equation_solver.cpp )
 # Link the necessary libraries
 
 target_link_libraries( _sundials   ${SUNDIALS_LIBS} )
-

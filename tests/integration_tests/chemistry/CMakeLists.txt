@@ -20,8 +20,8 @@ project(Magritte_tests)
 
 # Make the setup executable and execute setup
 
-add_custom_command( OUTPUT ../../../src/declarations.hpp
-                    COMMAND make PARAMETERS_FILE=../tests/integration_tests/chemistry/parameters.txt && ./setup.exe
+add_custom_command( OUTPUT ../../../src/sundials/rate_equations.cpp
+                    COMMAND
                     WORKING_DIRECTORY ../../../setup
                     DEPENDS parameters.txt )
 

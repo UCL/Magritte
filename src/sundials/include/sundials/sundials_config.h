@@ -1,21 +1,20 @@
-/*
- * -----------------------------------------------------------------
- * $Revision: 4895 $
- * $Date: 2016-09-05 16:57:24 -0700 (Mon, 05 Sep 2016) $
- * ----------------------------------------------------------------- 
+/* ----------------------------------------------------------------- 
  * Programmer(s): Aaron Collier and Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * Copyright (c) 2005, The Regents of the University of California.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
  * For details, see the LICENSE file.
- *------------------------------------------------------------------
+ * -----------------------------------------------------------------
  * SUNDIALS configuration header file
- *------------------------------------------------------------------
- */
+ * -----------------------------------------------------------------*/
 
-/* Define SUNDIALS version number */
-#define SUNDIALS_PACKAGE_VERSION "2.7.0"
+/* Define SUNDIALS version numbers */
+#define SUNDIALS_VERSION "3.0.0"
+#define SUNDIALS_VERSION_MAJOR 3
+#define SUNDIALS_VERSION_MINOR 0
+#define SUNDIALS_VERSION_PATCH 0
+#define SUNDIALS_VERSION_LABEL ""
 
 /* FCMIX: Define Fortran name-mangling macro for C identifiers.
  * Depending on the inferred scheme, one of the following six
@@ -42,6 +41,14 @@
  *     #define SUNDIALS_EXTENDED_PRECISION 1
  */
 #define SUNDIALS_DOUBLE_PRECISION 1
+
+/* Define type of vector indices in SUNDIALS 'sunindextype'. 
+ * Depending on user choice of index type, one of the following 
+ * two macros will be defined:
+ *     #define SUNDIALS_INT64_T 1
+ *     #define SUNDIALS_INT32_T 1
+ */
+#define SUNDIALS_INT32_T 1
 
 /* Use generic math functions 
  * If it was decided that generic math functions can be used, then
@@ -79,7 +86,7 @@
  * otherwise
  *      #define SUNDIALS_MPI_COMM_F2C 0
  */
-
+#define SUNDIALS_MPI_COMM_F2C 1
 
 /* Mark SUNDIALS API functions for export/import
  * When building shared SUNDIALS libraries under Windows, use

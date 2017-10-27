@@ -14,7 +14,7 @@ ____________________________________|___________________
                                     |
 0.0                                 | ray_separation2
                                     |
-false                               | sobolev
+true                                | sobolev
                                     |
 UNI                                 | field form
                                     |
