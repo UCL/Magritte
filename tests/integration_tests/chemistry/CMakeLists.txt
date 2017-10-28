@@ -20,10 +20,10 @@ project(Magritte_tests)
 
 # Make the setup executable and execute setup
 
-add_custom_command( OUTPUT ../../../src/sundials/rate_equations.cpp
-                    COMMAND
+add_custom_command( OUTPUT declarations.hpp
+                    COMMAND bash run_test_setup.sh
                     WORKING_DIRECTORY ../../../setup
-                    DEPENDS parameters.txt )
+                    DEPENDS parameters.hpp )
 
 add_custom_target( MAKE_SETUP
                    DEPENDS ../../../src/declarations.hpp  )
@@ -107,7 +107,6 @@ test_main.cpp
 ../../../src/definitions.hpp
 ../../../src/initializers.cpp
 ../../../src/read_input.cpp
-../../../src/data_tools.cpp
 ../../../src/species_tools.cpp
 ../../../src/read_chemdata.cpp
 ../../../src/create_healpixvectors.cpp

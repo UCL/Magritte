@@ -2,16 +2,22 @@
 
 
 
-# Compile the pre_setup and create the Makefile for setup
+# Create and execute the Makefile for the setup
 
 cd setup
-g++ -o pre_setup.exe pre_setup.cpp
 cmake .
+make
+
+
+
+# Execute the setup for Magritte
+
+./setup.exe
 cd ..
 
 
 
-# Create the Makefile
+# Create the Makefile for Magritte
 
 cmake .
 

@@ -16,11 +16,10 @@
 #include <string.h>
 #include <math.h>
 #include <iostream>
-using namespace std;
 
 #include "declarations.hpp"
 #include "calc_reac_rates.hpp"
-#include "data_tools.hpp"
+#include "species_tools.hpp"
 
 
 

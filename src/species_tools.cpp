@@ -20,7 +20,6 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-using namespace std;
 
 #include "declarations.hpp"
 #include "species_tools.hpp"
@@ -30,7 +29,7 @@ using namespace std;
 /* get_canonical_name: get the name of the species as it appears in the species.dat file         */
 /*-----------------------------------------------------------------------------------------------*/
 
-string get_canonical_name(string name)
+std::string get_canonical_name(std::string name)
 {
 
 
@@ -62,13 +61,13 @@ string get_canonical_name(string name)
 /* get_species_nr: get the number corresponding to the given species symbol                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_species_nr(string name)
+int get_species_nr(std::string name)
 {
 
 
   int spec;                                                                     /* species index */
 
-  string canonical_name = get_canonical_name(name);         /* name as it appears in species.dat */
+  std::string canonical_name = get_canonical_name(name);    /* name as it appears in species.dat */
 
 
   /* For all species */
@@ -88,15 +87,16 @@ int get_species_nr(string name)
 
   /* If the function did not return yet, no match was found */
 
-  cout << "\n WARNING : there is no species with symbol " << canonical_name << "\n";
+  printf( "\n WARNING : there is no species with symbol %s", canonical_name.c_str() );
 
 
   /* Set the not found species to be the dummy (zeroth species) */
 
   spec = 0;
 
-  cout << "\n WARNING : the species " << canonical_name
-       << " is set to the \"dummy\" reference with abundance 0.0 \n\n";
+  printf( "\n WARNING : the species %s  is set to the \"dummy\" reference with abundance 0.0 \n\n",
+          canonical_name.c_str() );
+
 
   return spec;
 
@@ -111,7 +111,7 @@ int get_species_nr(string name)
 /* check_ortho_para: check whether it is ortho or para H2                                        */
 /*-----------------------------------------------------------------------------------------------*/
 
-char check_ortho_para(string name)
+char check_ortho_para(std::string name)
 {
 
   /* ortho-H2 */
@@ -146,7 +146,7 @@ char check_ortho_para(string name)
 /* get_charge: get the charge of a species as a multiple of minus the electron charge            */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_charge(string name)
+int get_charge(std::string name)
 {
 
 
@@ -190,6 +190,52 @@ double get_electron_abundance(long gridp)
   }
 
   return charge_total;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* no_better_data: checks whether there data closer to the actual temperature                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
+{
+
+
+  bool no_better_data = true;           /* true if there is no better data available in the file */
+
+  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
+  int top_reac = reac;                                         /* last instance of this reaction */
+
+
+  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
+
+    top_reac = top_reac + 1;
+  }
+
+
+  /* If there are duplicates, look through duplicates for better data */
+
+  if(bot_reac != top_reac){
+
+    for (int rc=bot_reac; rc<=top_reac; rc++){
+
+      double RT_min = reaction[rc].RT_min;
+      double RT_max = reaction[rc].RT_max;
+
+      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
+
+        no_better_data = false;
+      }
+    }
+  }
+
+
+  return no_better_data;
 
 }
 

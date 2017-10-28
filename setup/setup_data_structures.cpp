@@ -17,44 +17,22 @@
 
 #include <string>
 #include <iostream>
-using namespace std;
 
-#include "declarations.hpp"
+#include "setup_definitions.hpp"
 #include "setup_data_structures.hpp"
-#include "data_tools.hpp"
-#include "initializers.hpp"
-
-
-
-/* setup_data_structures: set up all the different datastructures                                */
-/*-----------------------------------------------------------------------------------------------*/
-
-void setup_data_structures(string *line_datafile)
-{
-
-  setup_data_structures1(line_datafile);
-  setup_data_structures2(line_datafile);
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
+#include "setup_data_tools.hpp"
 
 
 
 /* setup_data_structures1: set up the first part of the different datastructures                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures1(string *line_datafile)
+int setup_data_structures1( std::string *line_datafile, int *nlev, int *nrad, int *cum_nlev,
+                            int *cum_nrad, int *cum_nlev2, int *ncolpar, int *cum_ncolpar )
 {
 
 
-  int lspec;                                    /* index of the line species under consideration */
-
-
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  for (int lspec=0; lspec<NLSPEC; lspec++){
 
 
     /* Get the number of levels for each line producing species */
@@ -72,17 +50,9 @@ void setup_data_structures1(string *line_datafile)
 
 
 
-  initialize_int_array(cum_nlev, NLSPEC);
-
-  initialize_int_array(cum_nlev2, NLSPEC);
-
-  initialize_int_array(cum_nrad, NLSPEC);
-
-
-
   /* Calculate the cumulatives for nlev and nrad (needed for indexing, see definitions.h) */
 
-  for (lspec=1; lspec<NLSPEC; lspec++){
+  for (int lspec=1; lspec<NLSPEC; lspec++){
 
     cum_nlev[lspec] = cum_nlev[lspec-1] + nlev[lspec-1];
 
@@ -93,10 +63,9 @@ void setup_data_structures1(string *line_datafile)
 
 
 
+  /* Get the number of collision partners for each species */
 
-   /* Get the number of collision partners for each species */
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  for (int lspec=0; lspec<NLSPEC; lspec++){
 
     ncolpar[lspec] = get_ncolpar(line_datafile[lspec]);
 
@@ -105,17 +74,15 @@ void setup_data_structures1(string *line_datafile)
 
 
 
-  initialize_int_array(cum_ncolpar, NLSPEC);
-
-
-
   /* Calculate the cumulative for ncolpar (needed for indexing, see definitions.h) */
 
-  for (lspec=1; lspec<NLSPEC; lspec++){
+  for (int lspec=1; lspec<NLSPEC; lspec++){
 
     cum_ncolpar[lspec] = cum_ncolpar[lspec-1] + ncolpar[lspec-1];
   }
 
+
+  return(0);
 
 }
 
@@ -128,34 +95,29 @@ void setup_data_structures1(string *line_datafile)
 /* setup_data_structures2: set up the second part of the different datastructures                */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures2(string *line_datafile)
+int setup_data_structures2( std::string *line_datafile, int* ncolpar, int *cum_ncolpar,
+                            int *ncoltran, int *ncoltemp,
+                            int *cum_ncoltran, int *cum_ncoltemp, int *cum_ncoltrantemp,
+                            int *tot_ncoltran, int *tot_ncoltemp, int *tot_ncoltrantemp,
+                            int *cum_tot_ncoltran, int *cum_tot_ncoltemp,
+                            int *cum_tot_ncoltrantemp )
 {
-
-
-  int par;                                                      /* index for a collision partner */
-  int lspec;                                    /* index of the line species under consideration */
-
-
-
-  initialize_int_array(ncoltran, TOT_NCOLPAR);
-
-  initialize_int_array(ncoltemp, TOT_NCOLPAR);
-
 
 
   /* For each line producing species */
 
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  for (int lspec=0; lspec<NLSPEC; lspec++){
 
 
     /* For each collision partner */
 
-    for (par=0; par<ncolpar[lspec]; par++){
+    for (int par=0; par<ncolpar[lspec]; par++){
 
 
       /* Get the number of collisional transitions */
 
-      ncoltran[LSPECPAR(lspec,par)] = get_ncoltran(line_datafile[lspec], ncoltran, lspec);
+      ncoltran[LSPECPAR(lspec,par)] = get_ncoltran( line_datafile[lspec], ncoltran, ncolpar,
+                                                    cum_ncolpar, lspec );
 
       // printf( "(read_linedata): number of collisional transitions for partner %d is %d\n",
       //         par, ncoltran[LSPECPAR(lspec,par)] );
@@ -164,7 +126,8 @@ void setup_data_structures2(string *line_datafile)
 
       /* Get the number of collision temperatures */
 
-      ncoltemp[LSPECPAR(lspec,par)] = get_ncoltemp(line_datafile[lspec], ncoltran, par, lspec);
+      ncoltemp[LSPECPAR(lspec,par)] = get_ncoltemp( line_datafile[lspec], ncoltran, cum_ncolpar,
+                                                    par, lspec );
 
       // printf( "(read_linedata): number of collisional temperatures for partner %d is %d\n",
       //         par, ncoltemp[LSPECPAR(lspec,par)] );
@@ -175,19 +138,11 @@ void setup_data_structures2(string *line_datafile)
 
 
 
-  initialize_int_array(cum_ncoltran, TOT_NCOLPAR);
-
-  initialize_int_array(cum_ncoltemp, TOT_NCOLPAR);
-
-  initialize_int_array(cum_ncoltrantemp, TOT_NCOLPAR);
-
-
-
   /* Calculate the cumulatives (needed for indexing, see definitions.h) */
 
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    for (par=1; par<ncolpar[lspec]; par++){
+    for (int par=1; par<ncolpar[lspec]; par++){
 
       cum_ncoltran[LSPECPAR(lspec,par)] = cum_ncoltran[LSPECPAR(lspec,par-1)]
                                           + ncoltran[LSPECPAR(lspec,par-1)];
@@ -207,14 +162,8 @@ void setup_data_structures2(string *line_datafile)
   }
 
 
-  initialize_int_array(tot_ncoltran, NLSPEC);
 
-  initialize_int_array(tot_ncoltemp, NLSPEC);
-
-  initialize_int_array(tot_ncoltrantemp, NLSPEC);
-
-
-  for (lspec=0; lspec<NLSPEC; lspec++){
+  for (int lspec=0; lspec<NLSPEC; lspec++){
 
     tot_ncoltran[lspec] = cum_ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
                           + ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)];
@@ -233,17 +182,9 @@ void setup_data_structures2(string *line_datafile)
 
 
 
-  initialize_int_array(cum_tot_ncoltran, NLSPEC);
-
-  initialize_int_array(cum_tot_ncoltemp, NLSPEC);
-
-  initialize_int_array(cum_tot_ncoltrantemp, NLSPEC);
-
-
-
   /* Calculate the cumulatives of the cumulatives (also needed for indexing, see definitions.h) */
 
-  for (lspec=1; lspec<NLSPEC; lspec++){
+  for (int lspec=1; lspec<NLSPEC; lspec++){
 
     cum_tot_ncoltran[lspec] = cum_tot_ncoltran[lspec-1] + tot_ncoltran[lspec-1];
 
@@ -251,6 +192,9 @@ void setup_data_structures2(string *line_datafile)
 
     cum_tot_ncoltrantemp[lspec] = cum_tot_ncoltrantemp[lspec-1] + tot_ncoltrantemp[lspec-1];
   }
+
+
+  return(0);
 
 }
 

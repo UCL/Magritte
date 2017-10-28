@@ -22,6 +22,8 @@ import struct
 import sys
 import time
 
+import numpy as np
+
 
 
 useTtk = False
@@ -777,11 +779,17 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
 
 # Get the input files from parameters.txt
 
-with open("../parameters.txt") as parameters_file:
-    parameters = parameters_file.readlines()
+with open("../parameters.hpp") as parameters_file:
+    for line in parameters_file:
+        line = line.split()
+        if len(line) is 3:
+            if line[1] == 'SPEC_DATAFILE':
+                speciesFile = "../" + line[2].split("\"")[1]
+            if line[1] == 'REAC_DATAFILE':
+                reactionFile = "../" + line[2].split("\"")[1]
 
-speciesFile  = "../" + parameters[40].split()[0]
-reactionFile = "../" + parameters[42].split()[0]
+print speciesFile
+print reactionFile
 
 
 outputPrefix = '<None>'

@@ -16,7 +16,6 @@
 
 #include <iostream>
 #include <string>
-using namespace std;
 
 #include <string.h>
 #include <math.h>
@@ -45,14 +44,14 @@ void reaction_rates( double *temperature_gas, double *temperature_dust,
 
     /* Copy the reaction data to variables with more convenient names */
 
-    string R1 = reaction[reac].R1;                                                 /* reactant 1 */
-    string R2 = reaction[reac].R2;                                                 /* reactant 2 */
-    string R3 = reaction[reac].R3;                                                 /* reactant 3 */
+    std::string R1 = reaction[reac].R1;                                            /* reactant 1 */
+    std::string R2 = reaction[reac].R2;                                            /* reactant 2 */
+    std::string R3 = reaction[reac].R3;                                            /* reactant 3 */
 
-    string P1 = reaction[reac].P1;                                         /* reaction product 1 */
-    string P2 = reaction[reac].P2;                                         /* reaction product 2 */
-    string P3 = reaction[reac].P3;                                         /* reaction product 3 */
-    string P4 = reaction[reac].P4;                                         /* reaction product 4 */
+    std::string P1 = reaction[reac].P1;                                    /* reaction product 1 */
+    std::string P2 = reaction[reac].P2;                                    /* reaction product 2 */
+    std::string P3 = reaction[reac].P3;                                    /* reaction product 3 */
+    std::string P4 = reaction[reac].P4;                                    /* reaction product 4 */
 
 
     /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */

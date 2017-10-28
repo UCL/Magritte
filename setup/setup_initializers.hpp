@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for species_tools.cpp                                                                  */
+/* Header for initializers.cpp                                                                   */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,69 +10,67 @@
 
 
 
-#ifndef __SPECIES_TOOLS_HPP_INCLUDED__
-#define __SPECIES_TOOLS_HPP_INCLUDED__
+#ifndef __SETUP_INITIALIZERS_HPP_INCLUDED__
+#define __SETUP_INITIALIZERS_HPP_INCLUDED__
 
 
 
-#include <string>
 
 
-
-/* get_canonical_name: get the name of the species as it appears in the species.dat file         */
+/* initialize_int_array: sets all entries of the linearized array of ints equal to zero          */
 /*-----------------------------------------------------------------------------------------------*/
 
-std::string get_canonical_name(std::string name);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* get_species_nr: get the number corresponding to the given species symbol                      */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_species_nr(std::string name);
+int initialize_int_array(int *array, long length);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* check_ortho_para: check whether it is ortho or para H2                                        */
+/* initialize_long_array: sets all entries of the linearized array of longs equal to zero        */
 /*-----------------------------------------------------------------------------------------------*/
 
-char check_ortho_para(std::string name);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* get_charge: get the charge of a species                                                       */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_charge(std::string name);
+int initialize_long_array(long *array, long length);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* get_electron_abundance: initialize electron abundance so that the gas is neutral              */
+/* initialize_double_array: sets all entries of the linearized array of doubles equal to zero    */
 /*-----------------------------------------------------------------------------------------------*/
 
-double get_electron_abundance(long gridp);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* no_better_data: checks whether there data closer to the actual temperature                    */
-/*-----------------------------------------------------------------------------------------------*/
-
-bool no_better_data(int reac, REACTION *reaction, double temperature_gas);
+int initialize_double_array(double *array, long length);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __SPECIES_TOOLS_HPP_INCLUDED__ */
+/* initialize_double_array_with: sets entries of the first array of doubles equal to the second  */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_double_array_with(double *array1, double *array2, long length);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* initialize_char_array: sets all entries of the linearized array of doubles equal to 'i'       */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_char_array(char *array, long length);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* initialize_bool: initialize a boolean variable                                                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_bool(bool value, long length, bool *variable);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+#endif /* __SETUP_INITIALIZERS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

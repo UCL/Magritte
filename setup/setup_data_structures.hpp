@@ -14,23 +14,14 @@
 #define __SETUP_DATA_STRUCTURES_HPP_INCLUDED__
 
 #include <string>
-using namespace std;
-
-
-
-/* setup_data_structures: set up the different datastructures                                    */
-/*-----------------------------------------------------------------------------------------------*/
-
-void setup_data_structures(string *line_datafile);
-
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
 /* setup_data_structures1: set up the first part of the different datastructures                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures1(string *line_datafile);
+int setup_data_structures1( std::string *line_datafile, int *nlev, int *nrad, int *cum_nlev,
+                            int *cum_nrad, int *cum_nlev2, int *ncolpar, int *cum_ncolpar );
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -39,7 +30,12 @@ void setup_data_structures1(string *line_datafile);
 /* setup_data_structures2: set up the second part of the different datastructures                */
 /*-----------------------------------------------------------------------------------------------*/
 
-void setup_data_structures2(string *line_datafile);
+int setup_data_structures2( std::string *line_datafile, int* ncolpar, int *cum_ncolpar,
+                            int *ncoltran, int *ncoltemp,
+                            int *cum_ncoltran, int *cum_ncoltemp, int *cum_ncoltrantemp,
+                            int *tot_ncoltran, int *tot_ncoltemp, int *tot_ncoltrantemp,
+                            int *cum_tot_ncoltran, int *cum_tot_ncoltemp,
+                            int *cum_tot_ncoltrantemp );
 
 /*-----------------------------------------------------------------------------------------------*/
 

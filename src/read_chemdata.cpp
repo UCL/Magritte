@@ -22,7 +22,6 @@
 using namespace std;
 
 #include "declarations.hpp"
-#include "data_tools.hpp"
 #include "species_tools.hpp"
 
 
@@ -35,8 +34,6 @@ void read_species(string spec_datafile)
 
 
   char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
-
-  int nspec = get_NSPEC(spec_datafile);                                     /* number of species */
 
   char sym_buff[15];
 

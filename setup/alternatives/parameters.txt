@@ -10,7 +10,7 @@ ____________________________________|___________________
                                     |
 12                                  | nrays (12*n^2)
                                     |
-1.3                                 | theta_crit
+1.30                                | theta_crit
                                     |
 0.0                                 | ray_separation2
                                     |
@@ -18,7 +18,7 @@ true                                | sobolev
                                     |
 UNI                                 | field form
                                     |
-500                                 | MAX_NITERATIONS
+350                                 | MAX_NITERATIONS
                                     |
 1.0E7                               | time_end (years)
                                     |
@@ -43,8 +43,14 @@ data/species_reduced.txt            | Species
 data/rates_reduced.txt              | Reactions
 ____________________________________|___________________
                                     |
-1                                   | nr. of line files
+4                                   | nr. of line files
 ____________________________________|___________________
                                     |
 data/12C.txt                        | Lines 0
+                                    |
+data/12C+.txt                       | Lines 1
+                                    |
+data/16O.txt                        | Lines 2
+                                    |
+data/12CO.txt                       | Lines 3
 ____________________________________|___________________

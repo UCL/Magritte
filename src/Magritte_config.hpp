@@ -1,59 +1,58 @@
-/* Configure file */
+#define NGRID 122 
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
+#define NRAYS 12 
 
-#define SPEC_DATAFILE  "data/species_reduced.txt"
+#define NSPEC 35 
 
-#define REAC_DATAFILE  "data/rates_reduced.txt"
+#define NREAC 329 
 
-#define LINE_DATAFILE0 "data/12C.txt"
+#define TOT_NLEV 56 
 
-#define LINE_DATAFILE1 "data/12C+.txt"
+#define TOT_NRAD 63 
 
-#define LINE_DATAFILE2 "data/16O.txt"
+#define TOT_NLEV2 1756 
 
-#define LINE_DATAFILE3 "data/12CO.txt"
+#define TOT_NCOLPAR 18 
 
-#define NGRID 122
+#define TOT_CUM_TOT_NCOLTRAN 1800 
 
-#define NSIDES 1
+#define TOT_CUM_TOT_NCOLTEMP 384 
 
-#define THETA_CRIT 1.300000
+#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define RAY_SEPARATION2 0.000000E+00
+#define NLEV { 5, 5, 5, 41 } 
 
-#define SOBOLEV true
+#define NRAD { 7, 9, 7, 40 } 
 
-#define NSPEC 35
+#define CUM_NLEV { 0, 5, 10, 15 } 
 
-#define NREAC 329
+#define CUM_NLEV2 { 0, 25, 50, 75 } 
 
-#define NLSPEC 4
+#define CUM_NRAD { 0, 7, 16, 23 } 
 
-#define TOT_NLEV 56
+#define NCOLPAR { 6, 4, 6, 2 } 
 
-#define TOT_NRAD 63
+#define CUM_NCOLPAR { 0, 6, 10, 16 } 
 
-#define TOT_NLEV2 1756
+#define NCOLTEMP { 28, 28, 27, 29, 17, 12, 17, 17, 9, 18, 26, 26, 18, 27, 19, 16, 25, 25 } 
 
-#define TOT_NCOLPAR 18
+#define NCOLTRAN { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 820, 820 } 
 
-#define TOT_CUM_TOT_NCOLTRAN 1800
+#define CUM_NCOLTEMP { 0, 28, 56, 83, 112, 129, 0, 17, 34, 43, 0, 26, 52, 70, 97, 116, 0, 25 } 
 
-#define TOT_CUM_TOT_NCOLTEMP 384
+#define CUM_NCOLTRAN { 0, 10, 20, 30, 40, 50, 0, 10, 20, 30, 0, 10, 20, 30, 40, 50, 0, 820 } 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 44340
+#define CUM_NCOLTRANTEMP { 0, 280, 560, 830, 1120, 1290, 0, 170, 340, 430, 0, 260, 520, 700, 970, 1160, 0, 20500 } 
 
-#define MAX_NITERATIONS 300
+#define TOT_NCOLTEMP { 141, 61, 132, 50 } 
 
-#define TIME_END_IN_YEARS 1.000000E+07
+#define TOT_NCOLTRAN { 60, 40, 60, 1640 } 
 
-#define FIELD_FORM "UNI"
+#define TOT_NCOLTRANTEMP { 1410, 610, 1320, 41000 } 
 
-#define G_EXTERNAL_X 5.270460E+00
+#define CUM_TOT_NCOLTEMP { 0, 141, 202, 334 } 
 
-#define G_EXTERNAL_Y 5.270460E+00
+#define CUM_TOT_NCOLTRAN { 0, 60, 100, 160 } 
 
-#define G_EXTERNAL_Z 6.666670E+00
+#define CUM_TOT_NCOLTRANTEMP { 0, 1410, 2020, 3340 } 
 
-#define IBC 0.0000000000000E+00 

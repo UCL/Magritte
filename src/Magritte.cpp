@@ -27,8 +27,8 @@ using namespace std;
 
 #include "initializers.hpp"
 #include "species_tools.hpp"
-#include "data_tools.hpp"
-#include "setup_data_structures.hpp"
+// #include "data_tools.hpp"
+// #include "setup_data_structures.hpp"
 
 #include "read_input.hpp"
 #include "read_chemdata.hpp"
@@ -181,25 +181,16 @@ int main()
 
 
 
-  /*   SETUP DATA STRUCTURES                                                                     */
+  /*   DECLARE AND INITIALIZE LINE VARIABLES                                                     */
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(Magritte): setting up data structures \n");
-
-
-  /* Initialize the data structures which will store the evaluation pointa */
-
-  initialize_long_array(key, NGRID*NGRID);
-
-  initialize_long_array(raytot, NGRID*NRAYS);
-
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
+  printf("(Magritte): declaring and initializing line variables \n");
 
 
   /* Setup the data structures which will store the line data */
 
-  setup_data_structures(line_datafile);
+  // setup_data_structures(line_datafile);
 
 
   /* Define line related variables */
@@ -329,6 +320,15 @@ int main()
 
 
   printf("(Magritte): tracing rays \n");
+
+
+  /* Initialize the data structures which will store the evaluation pointa */
+
+  initialize_long_array(key, NGRID*NGRID);
+
+  initialize_long_array(raytot, NGRID*NRAYS);
+
+  initialize_long_array(cum_raytot, NGRID*NRAYS);
 
 
   /* Execute ray_tracing */

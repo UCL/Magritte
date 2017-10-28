@@ -1,5 +1,5 @@
-# CMakeLists.txt for Magritte (main directory)
-# -----------------------------------------
+# CMakeLists.txt for Magritte
+# ---------------------------
 
 
 
@@ -28,13 +28,13 @@ set(MAGRITTE_VERSION_MINOR 1)
 
 # Make the setup executable and execute setup
 
-add_custom_command( OUTPUT src/sundials/rate_equations.cpp
+add_custom_command( OUTPUT src/Magritte_config.hpp
                     COMMAND bash run_setup.sh
                     WORKING_DIRECTORY setup
-                    DEPENDS parameters.txt )
+                    DEPENDS parameters.hpp )
 
 add_custom_target( MAKE_SETUP
-                   DEPENDS src/sundials/rate_equations.cpp  )
+                   DEPENDS src/Magritte_config.hpp )
 
 
 # Specify the subdirectory containing the source code

@@ -15,75 +15,79 @@
 #ifndef __DECLARATIONS_HPP_INCLUDED__
 #define __DECLARATIONS_HPP_INCLUDED__
 
+
+
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
+
 #include <string>
-using namespace std;
 
 
 
-/*   Input before compilation, placed here by setup (src/setup.cpp)                              */
-/*_______________________________________________________________________________________________*/
-
-
-#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt" 
-
-#define SPEC_DATAFILE  "data/species_reduced.txt" 
-
-#define REAC_DATAFILE  "data/rates_reduced.txt" 
-
-#define LINE_DATAFILE0 "data/12C.txt" 
-
-#define LINE_DATAFILE1 "data/12C+.txt" 
-
-#define LINE_DATAFILE2 "data/16O.txt" 
-
-#define LINE_DATAFILE3 "data/12CO.txt" 
-
-#define NGRID 122 
-
-#define NSIDES 1 
-
-#define THETA_CRIT 1.300000 
-
-#define RAY_SEPARATION2 0.000000E+00 
-
-#define SOBOLEV true 
-
-#define NSPEC 35 
-
-#define NREAC 329 
-
-#define NLSPEC 4 
-
-#define TOT_NLEV 56 
-
-#define TOT_NRAD 63 
-
-#define TOT_NLEV2 1756 
-
-#define TOT_NCOLPAR 18 
-
-#define TOT_CUM_TOT_NCOLTRAN 1800 
-
-#define TOT_CUM_TOT_NCOLTEMP 384 
-
-#define TOT_CUM_TOT_NCOLTRANTEMP 44340 
-
-#define MAX_NITERATIONS 300 
-
-#define TIME_END_IN_YEARS 1.000000E+07 
-
-#define FIELD_FORM "UNI" 
-
-#define G_EXTERNAL_X 5.270460E+00 
-
-#define G_EXTERNAL_Y 5.270460E+00 
-
-#define G_EXTERNAL_Z 6.666670E+00 
-
-#define IBC 0.0000000000000E+00 
-
-
-/*_______________________________________________________________________________________________*/
+// /*   Input before compilation, placed here by setup (src/setup.cpp)                              */
+// /*_______________________________________________________________________________________________*/
+//
+//
+// #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
+//
+// #define SPEC_DATAFILE  "data/species_reduced.txt"
+//
+// #define REAC_DATAFILE  "data/rates_reduced.txt"
+//
+// #define LINE_DATAFILE0 "data/12C.txt"
+//
+// #define LINE_DATAFILE1 "data/12C+.txt"
+//
+// #define LINE_DATAFILE2 "data/16O.txt"
+//
+// #define LINE_DATAFILE3 "data/12CO.txt"
+//
+// #define NGRID 122
+//
+// #define NSIDES 1
+//
+// #define THETA_CRIT 1.300000
+//
+// #define RAY_SEPARATION2 0.000000E+00
+//
+// #define SOBOLEV true
+//
+// #define NSPEC 35
+//
+// #define NREAC 329
+//
+// #define NLSPEC 4
+//
+// #define TOT_NLEV 56
+//
+// #define TOT_NRAD 63
+//
+// #define TOT_NLEV2 1756
+//
+// #define TOT_NCOLPAR 18
+//
+// #define TOT_CUM_TOT_NCOLTRAN 1800
+//
+// #define TOT_CUM_TOT_NCOLTEMP 384
+//
+// #define TOT_CUM_TOT_NCOLTRANTEMP 44340
+//
+// #define MAX_NITERATIONS 300
+//
+// #define TIME_END_IN_YEARS 1.000000E+07
+//
+// #define FIELD_FORM "UNI"
+//
+// #define G_EXTERNAL_X 5.270460E+00
+//
+// #define G_EXTERNAL_Y 5.270460E+00
+//
+// #define G_EXTERNAL_Z 6.666670E+00
+//
+// #define IBC 0.0000000000000E+00
+//
+//
+// /*_______________________________________________________________________________________________*/
 
 
 #define ZETA   3.846153846153846
@@ -99,6 +103,7 @@ using namespace std;
 #define EV    1.60217646E-12                                             /* electron Volt in erg */
 #define MP    1.67262164E-24                                         /* proton mass in cgs units */
 #define PC    3.08568025E+18                                                   /* cm in a parsec */
+#define AU    1.66053878E-24                                                 /* atomic mass unit */
 #define T_CMB 2.725             /* temperature of the cosmic microwave background radiation in K */
 
 
@@ -109,8 +114,6 @@ using namespace std;
 #define MAX_WIDTH 13                                                             /* for printing */
 #define BUFFER_SIZE 500                                    /* max number of characters in a line */
 
-
-#define NRAYS 12*NSIDES*NSIDES                   /* number of HEALPix rays as defined in HEALPix */
 
 
 /* Parameters for level population iteration */
@@ -227,6 +230,47 @@ typedef struct EVALPOINTS {
 
 
 
+typedef struct SPECIES {
+
+  std::string sym;                                                            /* chemical symbol */
+
+  double mass;                                                                       /* mol mass */
+
+  double abn[NGRID];                                                                /* abundance */
+
+} SPECIES;
+
+
+
+typedef struct REACTION {
+
+  std::string   R1;                                                                /* reactant 1 */
+  std::string   R2;                                                                /* reactant 2 */
+  std::string   R3;                                                                /* reactant 3 */
+
+  std::string   P1;                                                        /* reaction product 1 */
+  std::string   P2;                                                        /* reaction product 2 */
+  std::string   P3;                                                        /* reaction product 3 */
+  std::string   P4;                                                        /* reaction product 4 */
+
+
+  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
+  double beta;                               /* beta coefficient to calculate rate coefficient k */
+  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
+
+  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
+  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
+
+
+  double k[NGRID];                                                  /* reaction rate coefficient */
+
+  int    dup;                                           /* Number of duplicates of this reaction */
+
+} REACTION;
+
+
+
+
 /* Declaration of external variables */
 
 
@@ -281,54 +325,7 @@ extern int cum_tot_ncoltrantemp[NLSPEC];/* cum. of tot. of ntran*ntemp over spec
 
 
 
-
-
-
-/* ----- ADDITIONS for the chemistry code -----                                                  */
-/* --------------------------------------------------------------------------------------------- */
-
-#define AU 1.66053878E-24                                                    /* atomic mass unit */
-
-
-typedef struct SPECIES {
-
-  string sym;                                                                 /* chemical symbol */
-
-  double mass;                                                                       /* mol mass */
-
-  double abn[NGRID];                                                                /* abundance */
-
-} SPECIES;
-
-
-
-typedef struct REACTION {
-
-  string   R1;                                                                     /* reactant 1 */
-  string   R2;                                                                     /* reactant 2 */
-  string   R3;                                                                     /* reactant 3 */
-
-  string   P1;                                                             /* reaction product 1 */
-  string   P2;                                                             /* reaction product 2 */
-  string   P3;                                                             /* reaction product 3 */
-  string   P4;                                                             /* reaction product 4 */
-
-
-  double alpha;                             /* alpha coefficient to calculate rate coefficient k */
-  double beta;                               /* beta coefficient to calculate rate coefficient k */
-  double gamma;                             /* gamma coefficient to calculate rate coefficient k */
-
-  double RT_min;                           /* RT_min coefficient to calculate rate coefficient k */
-  double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
-
-
-  double k[NGRID];                                                  /* reaction rate coefficient */
-
-  int    dup;                                           /* Number of duplicates of this reaction */
-
-} REACTION;
-
-
+/* Chemistry */
 
 extern SPECIES species[NSPEC];
 
@@ -395,5 +392,3 @@ extern double x_e;
 #endif /* __DECLARATIONS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/
-
-

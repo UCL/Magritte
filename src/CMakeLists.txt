@@ -24,9 +24,7 @@ include_directories( sundials/include )
 add_library( _MAGRITTE
 initializers.cpp
 chemistry.cpp
-data_tools.cpp
 species_tools.cpp
-setup_data_structures.cpp
 read_input.cpp
 read_chemdata.cpp
 read_linedata.cpp
