@@ -13,6 +13,11 @@ cmake_minimum_required(VERSION 2.8)
 project(Magritte_chemistry_tests)
 
 
+IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    message("debug mode")
+ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+
+
 # Resize the stack to 128 Mb (UNIX version)
 
 # add_custom_target( RESIZE_STACK ALL

@@ -18,7 +18,7 @@
 
 #define SOBOLEV true
 
-#define MAX_NITERATIONS 30
+#define MAX_NITERATIONS 300
 
 #define TIME_END_IN_YEARS 1.000000E+07
 

@@ -35,7 +35,7 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
   long gridp = data->gp;
 
   GRIDPOINT *gridpoint = data->gridpointer;
-
+ 
   realtype n_H = (realtype) gridpoint[gridp].density;
 
   realtype loss, form;
@@ -177,6 +177,6 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
 
 
   return(0);
-
 }
  /*-----------------------------------------------------------------------------------------------*/
+
