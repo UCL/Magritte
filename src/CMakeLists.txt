@@ -38,6 +38,7 @@ radfield_tools.cpp
 spline.cpp
 calc_LTE_populations.cpp
 level_populations.cpp
+acceleration_Ng.cpp
 calc_C_coeff.cpp
 radiative_transfer.cpp
 exact_feautrier.cpp

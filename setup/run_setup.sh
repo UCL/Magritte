@@ -11,7 +11,7 @@ echo " "
 
 # Get the current date and time to label the output files
 
-date_stamp=`date +%Y-%m-%d_%H:%M:%S`;
+date_stamp=`date +%y-%m-%d_%H:%M`;
 
 output_directory="output/files/${date_stamp}_output/";
 

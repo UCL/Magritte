@@ -14,4 +14,3 @@ script:
   - python --version
   - ./configure.sh
   - make
-  - ./Magritte.exe

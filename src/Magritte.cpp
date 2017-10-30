@@ -536,6 +536,18 @@ int main()
 
   initialize_double_array(pop, NGRID*TOT_NLEV);
 
+  double prev1_pop[NGRID*TOT_NLEV];                      /* level population n_i 1 iteration ago */
+
+  initialize_double_array(prev1_pop, NGRID*TOT_NLEV);
+
+  double prev2_pop[NGRID*TOT_NLEV];                     /* level population n_i 2 iterations ago */
+
+  initialize_double_array(prev2_pop, NGRID*TOT_NLEV);
+
+  double prev3_pop[NGRID*TOT_NLEV];                     /* level population n_i 3 iterations ago */
+
+  initialize_double_array(prev3_pop, NGRID*TOT_NLEV);
+
   bool somewhere_no_thermal_balance = true;
 
   bool no_thermal_balance[NGRID];
@@ -639,8 +651,8 @@ int main()
     time_level_pop -= omp_get_wtime();
 
     level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency, v_turb,
-                       A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
-                       coltemp, icol, jcol, temperature_gas, temperature_dust,
+                       A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
+                       C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
                        weight, energy, mean_intensity );
 
     time_level_pop += omp_get_wtime();
@@ -682,52 +694,52 @@ int main()
 
     for (long gridp=0; gridp<NGRID; gridp++){
 
-      if (no_thermal_balance[gridp]){
-
-        no_thermal_balance[gridp] = false;
-
-        double heating_components[12];
-
-        reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                        column_H2, column_HD, column_C, column_CO, v_turb, gridp );
+      double heating_components[12];
 
 
-        heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
-                                        UV_field, v_turb, heating_components );
-
-        cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
-                                        pop, mean_intensity );
+      reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
+                      column_H2, column_HD, column_C, column_CO, v_turb, gridp );
 
 
-        double thermal_flux = heating_total[gridp] - cooling_total[gridp];
+      heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+                                      UV_field, v_turb, heating_components );
 
-        double thermal_sum  = heating_total[gridp] + cooling_total[gridp];
-
-        double thermal_ratio = 0.0;
-
-
-        if( fabs(thermal_sum) > 0.0 ){
-
-          thermal_ratio = 2.0 * fabs(thermal_flux) / fabs(thermal_sum);
-        }
+      cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
+                                      pop, mean_intensity );
 
 
-        /* Check for thermal balance (convergence) */
+      double thermal_flux = heating_total[gridp] - cooling_total[gridp];
 
-        if (thermal_ratio > THERMAL_PREC){
+      double thermal_sum  = heating_total[gridp] + cooling_total[gridp];
+
+      double thermal_ratio = 0.0;
+
+
+      if( fabs(thermal_sum) > 0.0 ){
+
+        thermal_ratio = 2.0 * fabs(thermal_flux) / fabs(thermal_sum);
+      }
+
+
+      /* Check for thermal balance (convergence) */
+
+      if (thermal_ratio > THERMAL_PREC){
+
+
+        update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
+
+
+        if (temperature_gas[gridp] != T_CMB){
 
           no_thermal_balance[gridp] = true;
 
           somewhere_no_thermal_balance = true;
 
           n_not_converged++;
-
-          update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
-
         }
 
+      }
 
-      } /* end of if no thermal balance */
 
     } /* end of gridp loop over grid points */
 

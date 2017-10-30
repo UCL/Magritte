@@ -23,6 +23,7 @@
 #include "declarations.hpp"
 
 #include "level_populations.hpp"
+#include "acceleration_Ng.hpp"
 #include "calc_C_coeff.hpp"
 #include "initializers.hpp"
 #include "radiative_transfer.hpp"
@@ -36,9 +37,9 @@
 
 int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
                        int *irad, int*jrad, double *frequency, double v_turb,
-                       double *A_coeff, double *B_coeff, double *C_coeff,
-                       double *R, double *pop, double *dpop, double *C_data,
-                       double *coltemp, int *icol, int *jcol,
+                       double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                       double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
+                       double *C_data, double *coltemp, int *icol, int *jcol,
                        double *temperature_gas, double *temperature_dust,
                        double *weight, double *energy, double *mean_intensity )
 {
@@ -47,7 +48,6 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
   long nshortcuts = 0;                                  /* number of times the shortcut is taken */
 
   long nno_shortcuts = 0;                           /* number of times the shortcut is not taken */
-
 
 
   /* For each line producing species */
@@ -124,6 +124,18 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
       long n_not_converged = 0;              /* number of grid points that are not yet converged */
 
 
+
+      if( ACCELERATION_NG && (niterations%4 == 0) ){
+
+        acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+      }
+
+
+      /* Store the populations of the previous 3 iterations */
+
+      store_populations(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+
+
       /* Set R equal to R_temp */
 
       initialize_double_array_with( R, R_temp, NGRID*TOT_NLEV2 );
@@ -146,47 +158,43 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
       for (long n=0; n<NGRID; n++){
 
-        // if (not_converged[n]){
-
-          for (int kr=0; kr<nrad[lspec]; kr++){
+        for (int kr=0; kr<nrad[lspec]; kr++){
 
 
-            int i     = irad[LSPECRAD(lspec,kr)];      /* i index corresponding to transition kr */
-            int j     = jrad[LSPECRAD(lspec,kr)];      /* j index corresponding to transition kr */
+          int i     = irad[LSPECRAD(lspec,kr)];        /* i index corresponding to transition kr */
+          int j     = jrad[LSPECRAD(lspec,kr)];        /* j index corresponding to transition kr */
 
-            long s_ij = LSPECGRIDRAD(lspec,n,kr);                    /* Source and opacity index */
+          long s_ij = LSPECGRIDRAD(lspec,n,kr);                      /* Source and opacity index */
 
-            long b_ij = LSPECLEVLEV(lspec,i,j);          /* A_coeff, B_coeff and frequency index */
-            long b_ji = LSPECLEVLEV(lspec,j,i);          /* A_coeff, B_coeff and frequency index */
+          long b_ij = LSPECLEVLEV(lspec,i,j);            /* A_coeff, B_coeff and frequency index */
+          long b_ji = LSPECLEVLEV(lspec,j,i);            /* A_coeff, B_coeff and frequency index */
 
-            long p_i  = LSPECGRIDLEV(lspec,n,i);                                    /* pop index */
-            long p_j  = LSPECGRIDLEV(lspec,n,j);                                    /* pop index */
-
-
-            double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
+          long p_i  = LSPECGRIDLEV(lspec,n,i);                                      /* pop index */
+          long p_j  = LSPECGRIDLEV(lspec,n,j);                                      /* pop index */
 
 
-            if (pop[p_j] > POP_LOWER_LIMIT || pop[p_i] > POP_LOWER_LIMIT){
+          double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
 
 
-              Source[s_ij]  = (A_coeff[b_ij] * pop[p_i])
-                              / (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+          if (pop[p_j] > POP_LOWER_LIMIT || pop[p_i] > POP_LOWER_LIMIT){
+
+
+            Source[s_ij]  = (A_coeff[b_ij] * pop[p_i])
+                            / (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
 
 
 
-              opacity[s_ij] =  hv_4pi * (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
+            opacity[s_ij] =  hv_4pi * (pop[p_j]*B_coeff[b_ji] - pop[p_i]*B_coeff[b_ij]);
 
-            }
-
-
-            if (opacity[s_ij] < 1.0E-99){
-              opacity[s_ij] = 1.0E-99;
-            }
+          }
 
 
-          } /* end of kr loop over transitions */
+          if (opacity[s_ij] < 1.0E-99){
+            opacity[s_ij] = 1.0E-99;
+          }
 
-        // } /* end of if not converged */
+
+        } /* end of kr loop over transitions */
 
       } /* end of n loop over gridpoints */
 
@@ -280,16 +288,6 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
       for (long n=0; n<NGRID; n++){
 
 
-        /* Save the previous populations */
-
-        double previous_pop[nlev[lspec]];
-
-        for (int i=0; i<nlev[lspec]; i++){
-
-          previous_pop[i] = pop[LSPECGRIDLEV(lspec,n,i)];
-        }
-
-
         /* Solve the radiative balance equation for the level populations */
 
         level_population_solver( gridpoint, n, lspec, R, pop );
@@ -309,10 +307,10 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
 
             if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
-                 && !( pop[p_i]==0.0 && previous_pop[i]==0.0 ) ){
+                 && !( pop[p_i]==0.0 && prev1_pop[p_i]==0.0 ) ){
 
 
-              double dpoprel = 2.0 * fabs(pop[p_i] - previous_pop[i]) / (pop[p_i] + previous_pop[i]);
+              double dpoprel = 2.0 * fabs(pop[p_i] - prev1_pop[p_i]) / (pop[p_i] + prev1_pop[p_i]);
 
 
               /* If the population of any of the levels is not converged */

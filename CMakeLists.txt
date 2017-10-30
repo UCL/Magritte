@@ -13,6 +13,11 @@ cmake_minimum_required(VERSION 2.8)
 project(Magritte)
 
 
+# Set build type to Release to get optimal performance
+
+set(CMAKE_BUILD_TYPE Release)
+
+
 # Specify the version of the project
 
 set(MAGRITTE_VERSION_MAJOR 0)

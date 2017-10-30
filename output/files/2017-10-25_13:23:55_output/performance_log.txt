@@ -1,5 +1,0 @@
-time_total       6.166909E+03
-time_ray_tracing 4.472091E-02
-time_level_pop   5.947458E+03
-time_chemistry   2.094270E+02
-n_tb_iterations  301

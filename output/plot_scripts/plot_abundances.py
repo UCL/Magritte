@@ -34,14 +34,17 @@ else:
 
 
 
-# Get the input files from parameters.txt
+# Get the input files from parameters.hpp
 
-with open("../files/" + date_stamp + "_output/parameters.txt") as parameters_file:
-    parameters = parameters_file.readlines()
 
-grid_inputfile = "../../" + parameters[38].split()[0]
-spec_datafile  = "../../" + parameters[40].split()[0]
-
+with open("../../parameters.hpp") as parameters_file:
+    for line in parameters_file:
+        line = line.split()
+        if len(line) is 3:
+            if line[1] == 'SPEC_DATAFILE':
+                spec_datafile = "../../" + line[2].split("\"")[1]
+            if line[1] == 'GRID_INPUTFILE':
+                grid_inputfile = "../../" + line[2].split("\"")[1]
 
 
 # Read the grid input file

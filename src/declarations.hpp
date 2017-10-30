@@ -60,7 +60,7 @@
 
 /* Parameters for thermal balance iteration */
 
-#define THERMAL_PREC 5.0E-3                           /* precision used in convergence criterion */
+#define THERMAL_PREC 1.0E-3                           /* precision used in convergence criterion */
 
 
 /* Grid related index definitions */
@@ -104,7 +104,9 @@
 
 
 #define LINDEX(i,j) ((j)+(i)*nlev[lspec])                        /* when second index are levels */
+
 #define TINDEX(r,c) ((c)+(r)*nrad[lspec])         /* when second index are radiative transitions */
+
 #define L2INDEX(r,c) ((c)+(r)*nlev[lspec]*nlev[lspec])       /* when second index is LINDEX(i,j) */
 
 // #define SINDEX(r,c) ((c)+(r)*NSPEC)               /* when second index are (chemical) species */

@@ -90,12 +90,12 @@ int update_temperature_gas( double thermal_flux, long gridp, double *temperature
 
   /* Enforce the minimun temperature to be T_CMB and maximum 30000 */
 
-  if(temperature_gas[gridp] < T_CMB){
+  if (temperature_gas[gridp] < T_CMB){
 
     temperature_gas[gridp] = T_CMB;
   }
 
-  else if(temperature_gas[gridp] > 30000.0){
+  else if (temperature_gas[gridp] > 30000.0){
 
     temperature_gas[gridp] = 30000.0;
   }

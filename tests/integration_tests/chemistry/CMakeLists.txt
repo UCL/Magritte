@@ -13,9 +13,9 @@ cmake_minimum_required(VERSION 2.8)
 project(Magritte_chemistry_tests)
 
 
-IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
-    message("debug mode")
-ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+# Set build type to Release to get optimal performance
+
+set(CMAKE_BUILD_TYPE Release)
 
 
 # Resize the stack to 128 Mb (UNIX version)
