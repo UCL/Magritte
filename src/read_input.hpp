@@ -16,8 +16,9 @@
 
 
 #include <string>
-using namespace std;
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 
@@ -25,7 +26,7 @@ using namespace std;
 /* read_input: read the input file                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_input(string grid_inputfile, GRIDPOINT *gridpoint);
+int read_input(std::string grid_inputfile, GRIDPOINT *gridpoint);
 
 /*-----------------------------------------------------------------------------------------------*/
 

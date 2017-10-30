@@ -16,7 +16,10 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "calc_UV_field.hpp"
 
 
@@ -24,7 +27,7 @@
 /* calc_UV_field: calculates the UV radiation field at each grid point                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_UV_field( long *antipod, double *AV, double *rad_surface, double *UV_field )
+int calc_UV_field( long *antipod, double *AV, double *rad_surface, double *UV_field )
 {
 
 
@@ -56,6 +59,8 @@ void calc_UV_field( long *antipod, double *AV, double *rad_surface, double *UV_f
 
   } /* end of n loop over grid points */
 
+
+  return(0);
 
 }
 

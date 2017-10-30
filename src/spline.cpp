@@ -26,7 +26,7 @@
 /* spline: calculate the cubic spline (cfr. Numerical Recipes, Chapter 3.3: Spline Routine)      */
 /*-----------------------------------------------------------------------------------------------*/
 
-void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
+int spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 {
 
   /*  Given the arrays x and y (size n) containing a tabulated function, i.e., y[i]=f(x[i]),
@@ -50,7 +50,7 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 
   double *u;
   u = (double*) malloc( n*sizeof(double) );
-  
+
 
 
   /* Set lower boundary conditions */
@@ -123,6 +123,9 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 
   free(u);
 
+
+  return(0);
+
 }
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -134,7 +137,7 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 /* splint: spline interpolations                                                                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
+int splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
 {
 
   /*  Given the arrays xa and ya (size n) containing a tabulated function, i.e., ya[i] = f(xa[i]),
@@ -210,6 +213,9 @@ void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
        + ( (pow(A,3)-A)*d2ya[j_lo]
             + (pow(B,3)-B)*d2ya[j_hi] ) * pow(xa[j_hi]-xa[j_lo],2) / 6.0;
 
+
+  return(0);
+
 }
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -221,7 +227,7 @@ void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
 /* splie2: calculate the cubic splines of the rows for a 2-variable function                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya )
+int splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya )
 {
 
   /*  Given a tabulated function ya (of size mxn) and tabulated independent variables x1a
@@ -269,6 +275,9 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
   free(ya_temp);
   free(d2ya_temp);
 
+
+  return(0);
+
 }
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -280,8 +289,8 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
 /* splin2: interpolate function via a bicubic spline                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-void splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
-             double x1, double x2, double *y )
+int splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
+            double x1, double x2, double *y )
 {
 
   /*  Given x1a, x2a, ya, m, n (as described in splie2) and d2ya (as produced by that function),
@@ -328,6 +337,8 @@ void splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
 
   splint(x1a, yy_temp, d2yy_temp, m, x1, y);
 
+
+  return(0);
 
 }
 

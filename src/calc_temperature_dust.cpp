@@ -41,7 +41,10 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "calc_temperature_dust.hpp"
 
 
@@ -49,13 +52,8 @@
 /* calc_temperature_dust: calculate dust temparatures                                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_temperature_dust( double *UV_field, double *rad_surface,
-                                   double *temperature_dust )
+int calc_temperature_dust( double *UV_field, double *rad_surface, double *temperature_dust )
 {
-
-  long n;                                                                    /* grid point index */
-
-  long r;                                                                           /* ray index */
 
 
   /* Parameters as defined in the paper Hollenbach, Takahashi & Tielens (1991) */
@@ -69,7 +67,7 @@ void calc_temperature_dust( double *UV_field, double *rad_surface,
 
   /* For all grid points */
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
 
     /* Contribution to the dust temperature from the local FUV flux and the CMB background */
@@ -77,7 +75,7 @@ void calc_temperature_dust( double *UV_field, double *rad_surface,
     temperature_dust[n] = 8.9E-11*nu_0*(1.71*UV_field[n]) + pow(T_CMB, 5);
 
 
-    for (r=0; r<NRAYS; r++){
+    for (long r=0; r<NRAYS; r++){
 
 
       /* The minimum dust temperature is related to the incident FUV flux along each ray
@@ -119,6 +117,9 @@ void calc_temperature_dust( double *UV_field, double *rad_surface,
     }
 
   } /* end of n loop over grid points */
+
+
+  return(0);
 
 }
 

@@ -17,9 +17,11 @@
 #include <stdlib.h>
 
 #include <string>
-using namespace std;
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "calc_rad_surface.hpp"
 
 
@@ -27,7 +29,7 @@ using namespace std;
 /* calc_rad_surface: calculates the UV radiation surface for each ray at each grid point   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_rad_surface(double *G_external, double *unit_healpixvector, double *rad_surface)
+int calc_rad_surface(double *G_external, double *unit_healpixvector, double *rad_surface)
 {
 
   long n;                                                                    /* grid point index */
@@ -89,6 +91,8 @@ void calc_rad_surface(double *G_external, double *unit_healpixvector, double *ra
 
   } /* end of n loop over grid points */
 
+
+  return(0);
 
 }
 

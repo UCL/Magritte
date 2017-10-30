@@ -16,7 +16,10 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "calc_C_coeff.hpp"
 #include "initializers.hpp"
 
@@ -25,9 +28,9 @@
 /* calc_C_coeff: calculates the collisional coefficients (C_ij) from the line data               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *icol, int *jcol,
-                   double *temperature_gas, double *weight, double *energy, double *C_coeff,
-                   long gridp, int lspec )
+int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *icol, int *jcol,
+                  double *temperature_gas, double *weight, double *energy, double *C_coeff,
+                  long gridp, int lspec )
 {
 
 
@@ -226,6 +229,9 @@ void calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *i
 
   //   printf("\n");
   // }
+
+
+  return(0);
 
 }
 

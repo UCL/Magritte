@@ -19,9 +19,11 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-using namespace std;
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "read_linedata.hpp"
 #include "species_tools.hpp"
 
@@ -30,9 +32,9 @@ using namespace std;
 /* read_linedata: read data files containing the line information in LAMBDA/RADEX format         */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy, double *weight,
-                    double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                    double *C_data, int *icol, int *jcol )
+int read_linedata( std::string *line_datafile, int *irad, int *jrad, double *energy, double *weight,
+                   double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
+                   double *C_data, int *icol, int *jcol )
 {
 
 
@@ -67,8 +69,8 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
     fgets(buffer, BUFFER_SIZE, data);
     sscanf( buffer, "%s %*[^\n]\n", buffer_name );
 
-    string str(buffer_name);
-    string lspec_name = buffer_name;
+    std::string str(buffer_name);
+    std::string lspec_name = buffer_name;
     lspec_nr[lspec] = get_species_nr(lspec_name);
 
 
@@ -289,6 +291,9 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 
   }
 
+
+  return(0);
+
 }
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -300,7 +305,7 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 /* extract_spec_par: extract the species corresponding to the collision partner                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void extract_spec_par(char *buffer, int lspec, int par)
+int extract_spec_par(char *buffer, int lspec, int par)
 {
 
   int n;                                                                                /* index */
@@ -315,44 +320,47 @@ void extract_spec_par(char *buffer, int lspec, int par)
 
   /* Addapt for inconsistencies in specification of collision partners */
 
-    cursor2=0;
-    buffer2[cursor2] = buffer[0];
-    cursor2++;
+  cursor2 = 0;
+  buffer2[cursor2] = buffer[0];
+  cursor2++;
 
-    for (cursor=1; cursor<BUFFER_SIZE/3; cursor++ ){
+  for (cursor=1; cursor<BUFFER_SIZE/3; cursor++ ){
 
-      if ( (buffer[cursor] == '-') && (buffer[cursor-1] != 'o') && (buffer[cursor-1] != 'p') ){
+    if ( (buffer[cursor] == '-') && (buffer[cursor-1] != 'o') && (buffer[cursor-1] != 'p') ){
 
-        buffer2[cursor2] = ' ';
-        cursor2++;
-        buffer2[cursor2] = '-';
-        cursor2++;
-        buffer2[cursor2] = ' ';
-        cursor2++;
-      }
-
-      else {
-        buffer2[cursor2] = buffer[cursor];
-        cursor2++;
-      }
+      buffer2[cursor2] = ' ';
+      cursor2++;
+      buffer2[cursor2] = '-';
+      cursor2++;
+      buffer2[cursor2] = ' ';
+      cursor2++;
     }
 
-    sscanf( buffer2, "%d %s %s %s %*[^\n] \n", &n, string1, string2, string3 );
+    else {
+      buffer2[cursor2] = buffer[cursor];
+      cursor2++;
+    }
+  }
+
+  sscanf( buffer2, "%d %s %s %s %*[^\n] \n", &n, string1, string2, string3 );
 
 
-    /* Note: string3 contains the name of the collision partner */
+  /* Note: string3 contains the name of the collision partner */
 
-    string name = string3;
-
-
-    /* Use one of the species_tools to find species nr corresponding to coll. partner */
-
-    spec_par[LSPECPAR(lspec,par)] = get_species_nr(name);
+  std::string name = string3;
 
 
-    /* Check whether the collision partner is ortho- or para- H2 (or something else) */
+  /* Use one of the species_tools to find species nr corresponding to coll. partner */
 
-    ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
+  spec_par[LSPECPAR(lspec,par)] = get_species_nr(name);
+
+
+  /* Check whether the collision partner is ortho- or para- H2 (or something else) */
+
+  ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
+
+
+  return(0);
 
 }
 

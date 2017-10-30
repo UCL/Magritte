@@ -19,7 +19,6 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-using namespace std;
 
 #include "catch.hpp"
 
@@ -61,11 +60,11 @@ TEST_CASE("Test chemistry"){
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  string test_grid_inputfile = "../../../" + grid_inputfile;
+  std::string test_grid_inputfile = "../../../" + grid_inputfile;
 
-  string test_spec_datafile  = "../../../" + spec_datafile;
+  std::string test_spec_datafile  = "../../../" + spec_datafile;
 
-  string test_reac_datafile  = "../../../" + reac_datafile;
+  std::string test_reac_datafile  = "../../../" + reac_datafile;
 
 
   /* Define grid (using types defined in definitions.h)*/
@@ -274,9 +273,9 @@ TEST_CASE("Test chemistry"){
 
     /* Construct the tags */
 
-    stringstream ss;
+    std::stringstream ss;
     ss << iteration + 1;
-    string tag = ss.str();
+    std::string tag = ss.str();
 
 
     /* Temporary storage for the species */
@@ -359,7 +358,7 @@ TEST_CASE("Test chemistry"){
       }
 
 
-      // cout << "max difference for " << species[spec].sym << " is " << max_difference << "\n";
+      // std::cout << "max difference for " << species[spec].sym << " is " << max_difference << "\n";
 
     }
 

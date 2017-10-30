@@ -15,7 +15,10 @@
 
 
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 
 
 /* calc_LTE_populations: Calculates the LTE level populations                                    */

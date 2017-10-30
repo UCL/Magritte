@@ -28,13 +28,13 @@ set(MAGRITTE_VERSION_MINOR 1)
 
 # Make the setup executable and execute setup
 
-add_custom_command( OUTPUT src/Magritte_config.hpp
+add_custom_command( OUTPUT src/sundials/rate_equations.cpp
                     COMMAND bash run_setup.sh
                     WORKING_DIRECTORY setup
                     DEPENDS parameters.hpp )
 
 add_custom_target( MAKE_SETUP
-                   DEPENDS src/Magritte_config.hpp )
+                   DEPENDS src/sundials/rate_equations.cpp )
 
 
 # Specify the subdirectory containing the source code

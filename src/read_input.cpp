@@ -16,16 +16,18 @@
 #include <stdlib.h>
 
 #include <string>
-using namespace std;
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "read_input.hpp"
 
 
 /* read_input: read the input file                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_input(string grid_inputfile, GRIDPOINT *gridpoint)
+int read_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 {
 
   char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
@@ -38,7 +40,7 @@ void read_input(string grid_inputfile, GRIDPOINT *gridpoint)
 
   /* For all lines in the input file */
 
-  for (int n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
     fgets( buffer, BUFFER_SIZE, input );
 
@@ -50,6 +52,9 @@ void read_input(string grid_inputfile, GRIDPOINT *gridpoint)
 
 
   fclose(input);
+
+
+  return(0);
 
 }
 

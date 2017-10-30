@@ -18,7 +18,10 @@
 #include <math.h>
 #include <signal.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "level_populations.hpp"
 #include "calc_C_coeff.hpp"
 #include "initializers.hpp"

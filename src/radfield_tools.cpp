@@ -15,9 +15,14 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "radfield_tools.hpp"
 #include "spline.hpp"
+
+
 
 #define IND(r,c) ((c)+(r)*n)
 

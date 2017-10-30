@@ -15,6 +15,8 @@
 
 
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 

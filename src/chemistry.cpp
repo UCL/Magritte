@@ -19,7 +19,10 @@
 
 #include <stdio.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "chemistry.hpp"
 #include "reaction_rates.hpp"
 #include "sundials/rate_equation_solver.hpp"

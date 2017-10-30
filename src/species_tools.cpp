@@ -21,7 +21,10 @@
 #include <string>
 #include <algorithm>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "species_tools.hpp"
 
 
@@ -65,14 +68,12 @@ int get_species_nr(std::string name)
 {
 
 
-  int spec;                                                                     /* species index */
-
   std::string canonical_name = get_canonical_name(name);    /* name as it appears in species.dat */
 
 
   /* For all species */
 
-  for (spec=0; spec<NSPEC; spec++){
+  for (int spec=0; spec<NSPEC; spec++){
 
     if ( species[spec].sym == canonical_name ){
 
@@ -92,7 +93,7 @@ int get_species_nr(std::string name)
 
   /* Set the not found species to be the dummy (zeroth species) */
 
-  spec = 0;
+  int spec = 0;
 
   printf( "\n WARNING : the species %s  is set to the \"dummy\" reference with abundance 0.0 \n\n",
           canonical_name.c_str() );

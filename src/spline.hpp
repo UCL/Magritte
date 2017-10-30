@@ -18,7 +18,7 @@
 /* spline: calculate the cubic spline (cfr. Numerical Recipes, Chapter 3.3: Spline Routine)      */
 /*-----------------------------------------------------------------------------------------------*/
 
-void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y );
+int spline( double *x, double *y, long n, double yp0, double ypn, double *d2y );
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -27,7 +27,7 @@ void spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
 /* splint: spline interpolations                                                                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y);
+int splint( double *xa, double *ya, double *d2ya, long n, double x, double *y );
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -36,7 +36,7 @@ void splint(double *xa, double *ya, double *d2ya, long n, double x, double *y);
 /* splie2: calculate the cubic splines of the rows for a 2-variable function                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya );
+int splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya );
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -45,8 +45,8 @@ void splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya 
 /* splin2: interpolate function via a bicubic spline                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-void splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
-             double x1, double x2, double *y );
+int splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
+            double x1, double x2, double *y );
 
 /*-----------------------------------------------------------------------------------------------*/
 

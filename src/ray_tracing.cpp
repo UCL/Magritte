@@ -18,7 +18,10 @@
 #include <omp.h>
 /*#include <mpi.h>*/
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "ray_tracing.hpp"
 #include "heapsort.hpp"
 #include "initializers.hpp"

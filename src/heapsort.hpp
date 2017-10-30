@@ -16,8 +16,10 @@
 
 
 long max (double *a, long n, long i, long j, long k);
-void downheap(double *a, long *b, long n, long i);
-void heapsort(double *a, long *b, long n);
+
+int downheap(double *a, long *b, long n, long i);
+
+int heapsort(double *a, long *b, long n);
 
 /*-----------------------------------------------------------------------------------------------*/
 

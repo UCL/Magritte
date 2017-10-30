@@ -19,6 +19,7 @@
 #include "heapsort.hpp"
 
 
+
 long max (double *a, long n, long i, long j, long k)
 {
 
@@ -38,8 +39,9 @@ long max (double *a, long n, long i, long j, long k)
 
 
 
-void downheap(double *a, long *b, long n, long i)
+int downheap(double *a, long *b, long n, long i)
 {
+
 
   while (1){
 
@@ -61,19 +63,26 @@ void downheap(double *a, long *b, long n, long i)
     i = j;
 
   }
+
+
+  return(0);
+
 }
 
-void heapsort(double *a, long *b, long n)
+
+
+
+
+int heapsort(double *a, long *b, long n)
 {
 
-  long i;
 
-  for (i=(n-2)/2; i>=0; i--){
+  for (long i=(n-2)/2; i>=0; i--){
 
     downheap(a, b, n, i);
   }
 
-  for (i=0; i<n; i++){
+  for (long i=0; i<n; i++){
 
     double temp1 = a[n-i-1];
     long    temp2 = b[n-i-1];
@@ -85,7 +94,12 @@ void heapsort(double *a, long *b, long n)
     b[0]     = temp2;
 
     downheap(a, b, n-i-1, 0);
-    }
+
+  }
+
+
+  return(0);
+
 }
 
 

@@ -20,15 +20,12 @@
 
 #include <string>
 #include <iostream>
-using namespace std;
 
 #include "declarations.hpp"
 #include "definitions.hpp"
 
 #include "initializers.hpp"
 #include "species_tools.hpp"
-// #include "data_tools.hpp"
-// #include "setup_data_structures.hpp"
 
 #include "read_input.hpp"
 #include "read_chemdata.hpp"
@@ -779,7 +776,7 @@ int main()
 
   /* Write the output files */
 
-  string tag = "final";
+  std::string tag = "final";
 
   write_abundances(tag);
 

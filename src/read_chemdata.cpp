@@ -19,9 +19,12 @@
 
 #include <string>
 #include <iostream>
-using namespace std;
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
+#include "read_chemdata.hpp"
 #include "species_tools.hpp"
 
 
@@ -29,7 +32,7 @@ using namespace std;
 /* read_species: read the species from the data file                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_species(string spec_datafile)
+int read_species(std::string spec_datafile)
 {
 
 
@@ -46,9 +49,9 @@ void read_species(string spec_datafile)
 
   species[0].sym = "dummy0";
 
-  for (long n=0; n<NGRID; n++){
+  for (long gridp=0; gridp<NGRID; gridp++){
 
-    species[0].abn[n] = 0.0;
+    species[0].abn[gridp] = 0.0;
   }
 
 
@@ -56,9 +59,9 @@ void read_species(string spec_datafile)
 
   species[NSPEC-1].sym = "dummy1";
 
-  for (long n=0; n<NGRID; n++){
+  for (long gridp=0; gridp<NGRID; gridp++){
 
-    species[NSPEC-1].abn[n] = 1.0;
+    species[NSPEC-1].abn[gridp] = 1.0;
   }
 
 
@@ -79,9 +82,9 @@ void read_species(string spec_datafile)
     species[l].mass = mass_buff;
 
 
-    for (long n=0; n<NGRID; n++){
+    for (long gridp=0; gridp<NGRID; gridp++){
 
-      species[l].abn[n] = abn_buff;
+      species[l].abn[gridp] = abn_buff;
     }
   }
 
@@ -92,14 +95,16 @@ void read_species(string spec_datafile)
 
   int electron_nr = get_species_nr("e-");
 
-  for (long n=0; n<NGRID; n++){
+  for (long gridp=0; gridp<NGRID; gridp++){
 
-    species[electron_nr].abn[n] = 0.0;
-    species[electron_nr].abn[n] = get_electron_abundance(n);
+    species[electron_nr].abn[gridp] = 0.0;
+    species[electron_nr].abn[gridp] = get_electron_abundance(gridp);
   }
 
-
   fclose(specdata);
+
+
+  return(0);
 
 }
 
@@ -112,7 +117,7 @@ void read_species(string spec_datafile)
 /* read_reactions: read the reactoins from the (CSV) data file                                                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_reactions(string reac_datafile)
+int read_reactions(std::string reac_datafile)
 {
 
 
@@ -121,14 +126,6 @@ void read_reactions(string reac_datafile)
 
   char *buffer_cpy;                                                 /* buffer for a line of data */
   buffer_cpy = (char*) malloc( BUFFER_SIZE*sizeof(char) );
-
-  int l;                                                     /* index of a text line in the file */
-
-  int reac;                                                                    /* reaction index */
-
-  int get_NREAC(string reac_datafile);
-
-  int n;
 
 
   char *alpha_buff;
@@ -152,7 +149,7 @@ void read_reactions(string reac_datafile)
   FILE *reacdata = fopen(reac_datafile.c_str(), "r");
 
 
-  for (l=0; l<NREAC; l++){
+  for (int l=0; l<NREAC; l++){
 
     fgets(buffer, BUFFER_SIZE, reacdata);
 
@@ -238,7 +235,7 @@ void read_reactions(string reac_datafile)
 
     reaction[l].dup = 0;
 
-    for (reac=0; reac<l; reac++){
+    for (int reac=0; reac<l; reac++){
 
       if ( reaction[l].R1 == reaction[reac].R1
            &&  reaction[l].R2 == reaction[reac].R2
@@ -249,14 +246,17 @@ void read_reactions(string reac_datafile)
            &&  reaction[l].P4 == reaction[reac].P4 ){
 
         reaction[l].dup = reaction[l].dup + 1;
-        // reaction[reac].dup = reaction[reac].dup + 1;
+
       }
     }
 
   }
 
   fclose(reacdata);
-}
 
+
+  return(0);
+
+}
 
 /*-----------------------------------------------------------------------------------------------*/

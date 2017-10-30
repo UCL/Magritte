@@ -13,6 +13,8 @@
 #ifndef __calc_AV_HPP_INCLUDED__
 #define __calc_AV_HPP_INCLUDED__
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 
@@ -20,7 +22,7 @@
 /* calc_AV: calculates the visual extinction along a ray ray at a grid point               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_AV( double *column_H2, double *AV );
+int calc_AV( double *column_H2, double *AV );
 
 /*-----------------------------------------------------------------------------------------------*/
 

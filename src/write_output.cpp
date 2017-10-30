@@ -19,7 +19,10 @@
 #include <string>
 #include <sstream>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "write_output.hpp"
 #include "species_tools.hpp"
 #include "radfield_tools.hpp"

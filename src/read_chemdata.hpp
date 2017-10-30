@@ -16,14 +16,13 @@
 
 
 #include <string>
-using namespace std;
 
 
 
 /* read_species: read the species from the data file                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_species(string spec_datafile);
+int read_species(std::string spec_datafile);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -32,7 +31,7 @@ void read_species(string spec_datafile);
 /* read_reactions: read the reactoins from the (CSV) data file                                                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_reactions(string reac_datafile);
+int read_reactions(std::string reac_datafile);
 
 /*-----------------------------------------------------------------------------------------------*/
 

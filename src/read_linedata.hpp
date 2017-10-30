@@ -16,14 +16,13 @@
 
 
 #include <string>
-using namespace std;
 
 
 
 /* read_linedata: read data files containing the line information in LAMBDA/RADEX format         */
 /*-----------------------------------------------------------------------------------------------*/
 
-void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy, double *weight,
+int read_linedata( std::string *line_datafile, int *irad, int *jrad, double *energy, double *weight,
                     double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
                     double *C_data, int *icol, int *jcol );
 
@@ -34,7 +33,7 @@ void read_linedata( string *line_datafile, int *irad, int *jrad, double *energy,
 /* extract_spec_par: extract the species corresponding to the collision partner                  */
 /*-----------------------------------------------------------------------------------------------*/
 
-void extract_spec_par(char *buffer, int lspec, int par);
+int extract_spec_par(char *buffer, int lspec, int par);
 
 /*-----------------------------------------------------------------------------------------------*/
 

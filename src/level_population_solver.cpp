@@ -15,7 +15,10 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "level_population_solver.hpp"
 
 
@@ -105,7 +108,7 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
       else                          { pop[p_i] = POP_UPPER_LIMIT; }
     }
-    
+
     else {
 
       pop[p_i] = 0.0;

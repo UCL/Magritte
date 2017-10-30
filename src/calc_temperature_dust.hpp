@@ -18,8 +18,7 @@
 /* calc_temperature_dust: calculate dust temparatures                                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-void calc_temperature_dust( double *UV_field, double *rad_surface,
-                                   double *temperature_dust );
+int calc_temperature_dust( double *UV_field, double *rad_surface, double *temperature_dust );
 
 /*-----------------------------------------------------------------------------------------------*/
 
