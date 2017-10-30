@@ -8,3 +8,8 @@ cd setup
 cmake .
 make
 cd ..
+
+
+# Create the Makefile for Magritte
+
+cmake .
