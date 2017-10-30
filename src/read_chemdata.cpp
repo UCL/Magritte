@@ -114,7 +114,7 @@ int read_species(std::string spec_datafile)
 
 
 
-/* read_reactions: read the reactoins from the (CSV) data file                                                  */
+/* read_reactions: read the reactoins from the (CSV) data file                                   */
 /*-----------------------------------------------------------------------------------------------*/
 
 int read_reactions(std::string reac_datafile)

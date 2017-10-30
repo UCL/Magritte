@@ -4,24 +4,38 @@ import sys
 
 
 
-if(len(sys.argv) > 1):
-    tag  = "_" + str(sys.argv[1])
+# Check whether the date stamp of the datafile is given
+
+if (len(sys.argv)>1):
+    date_stamp = str(sys.argv[1])
+else:
+    print "ERROR : No date stamp given !\n"
+    print "Please try again and give the date stamp of the output file you want to plot\n"
+
+
+# Check the tag of the data that is to be plotted
+
+if (len(sys.argv)>2):
+    tag = "_" + str(sys.argv[2])
 else:
     tag = ""
 
-# Get the input files from parameters.txt
-
-with open("../../parameters.txt") as parameters_file:
-    parameters = parameters_file.readlines()
-
-spec_datafile  = "../../../../../" + parameters[40].split()[0]
 
 
-file_name = "../files/abundances" + tag + ".txt"
+# Get the input files from parameters.hpp
 
-print file_name
+with open("../../parameters.hpp") as parameters_file:
+    for line in parameters_file:
+        line = line.split()
+        if len(line) is 3:
+            if line[1] == 'SPEC_DATAFILE':
+                spec_datafile = "../../../../../" + line[2].split("\"")[1]
 
-my_abn = np.transpose(np.loadtxt(file_name))
+
+my_file_name = "../files/" + date_stamp + "_output/abundances" + tag + ".txt"
+
+
+my_abn = np.loadtxt(my_file_name)
 
 ngrid = np.shape(my_abn)[0]
 nspec = np.shape(my_abn)[1]
@@ -67,7 +81,7 @@ def get_species_nr(name):
 
 # Check if there are specific species to be plotted
 
-if (len(sys.argv)>2):
+if (len(sys.argv)>3):
     species_I_want = get_species_nr( str(sys.argv[2]) )
     species_specified = True
 else:
@@ -79,7 +93,8 @@ else:
 # Make the plots
 
 print " "
-print "Plotting " + file_name
+print "Plotting for" + file_name
+print "and " + my_file_name
 
 fig1 = plt.figure()
 fig2 = plt.figure()
@@ -114,8 +129,8 @@ ax2.set_yscale("log")
 fig1.tight_layout()
 fig2.tight_layout()
 
-plot_name1 = "error_abundances" + tag + ".png"
-plot_name2 = "both_abundances" + tag + ".png"
+plot_name1 = "../files/" + date_stamp + "_output/plots/error_abundances" + tag + ".png"
+plot_name2 = "../files/" + date_stamp + "_output/plots/both_abundances" + tag + ".png"
 
 
 

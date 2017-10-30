@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 #include <iostream>
 #include <string>
@@ -56,6 +57,9 @@ TEST_CASE("Test chemistry"){
   double v_turb = 1.0;
 
   v_turb = 1.0E5 * v_turb;
+
+
+  double time_chem = 0.0;
 
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
@@ -337,9 +341,12 @@ TEST_CASE("Test chemistry"){
 
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
+    time_chem -= omp_get_wtime();
+
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO, v_turb );
 
+    time_chem += omp_get_wtime();
 
     /* Check for convergence */
 
@@ -370,7 +377,7 @@ TEST_CASE("Test chemistry"){
 
   } /* End of chemistry iteration */
 
-
+  printf("Time in chemistry is %lE\n", time_chem);
 
   SECTION("Check reading the files"){
 

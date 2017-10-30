@@ -777,6 +777,12 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
 #     speciesFile = '<None>'
 
 
+print " "
+print "MakeRates for Magritte"
+print "----------------------"
+print " "
+
+
 # Get the input files from parameters.txt
 
 with open("../parameters.hpp") as parameters_file:
@@ -787,9 +793,6 @@ with open("../parameters.hpp") as parameters_file:
                 speciesFile = "../" + line[2].split("\"")[1]
             if line[1] == 'REAC_DATAFILE':
                 reactionFile = "../" + line[2].split("\"")[1]
-
-print speciesFile
-print reactionFile
 
 
 outputPrefix = '<None>'
@@ -855,3 +858,4 @@ if (os.stat(reactionFile).st_size > 0 or os.stat(speciesFile).st_size > 0):
         write_jac_c(filename, speciesList, reactants, products, logForm=False)
 
 print '\n  Finished! \n\n'
+print " "

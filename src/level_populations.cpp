@@ -34,13 +34,13 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
-                        int *irad, int*jrad, double *frequency, double v_turb,
-                        double *A_coeff, double *B_coeff, double *C_coeff,
-                        double *R, double *pop, double *dpop, double *C_data,
-                        double *coltemp, int *icol, int *jcol,
-                        double *temperature_gas, double *temperature_dust,
-                        double *weight, double *energy, double *mean_intensity )
+int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+                       int *irad, int*jrad, double *frequency, double v_turb,
+                       double *A_coeff, double *B_coeff, double *C_coeff,
+                       double *R, double *pop, double *dpop, double *C_data,
+                       double *coltemp, int *icol, int *jcol,
+                       double *temperature_gas, double *temperature_dust,
+                       double *weight, double *energy, double *mean_intensity )
 {
 
 
@@ -348,7 +348,7 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
       }
 
 
-      printf("(level_populations): Not yet converged for %ld of %ld\n", n_not_converged, NGRID);
+      printf("(level_populations): Not yet converged for %ld of %d\n", n_not_converged, NGRID);
 
 
     } /* end of while loop of iterations */
@@ -377,6 +377,9 @@ void level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipo
 
 
   } /* end of lspec loop over line producing species */
+
+
+  return(0);
 
 }
 

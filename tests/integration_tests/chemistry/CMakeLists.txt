@@ -1,5 +1,6 @@
-# CMakeLists.txt for tests/integration_tests/chemistry
-# ----------------------------------------------------
+# CMakeLists.txt for tests/integration_tests/chemistry/
+# -----------------------------------------------------
+
 
 
 # Specify the minimum required CMake version
@@ -20,13 +21,13 @@ project(Magritte_chemistry_tests)
 
 # Make the setup executable and execute setup
 
-add_custom_command( OUTPUT declarations.hpp
-                    COMMAND bash run_test_setup.sh
-                    WORKING_DIRECTORY ../../../setup
-                    DEPENDS parameters.hpp )
+add_custom_command( OUTPUT /home/frederik/Dropbox/Astro/Magritte/src/sundials/rate_equations.cpp
+                    COMMAND bash run_test_setup.sh && echo done
+                    WORKING_DIRECTORY /home/frederik/Dropbox/Astro/Magritte/setup
+                    DEPENDS /home/frederik/Dropbox/Astro/Magritte/tests/integration_tests/chemistry/parameters.hpp )
 
 add_custom_target( MAKE_SETUP
-                   DEPENDS ../../../src/declarations.hpp  )
+                   DEPENDS /home/frederik/Dropbox/Astro/Magritte/src/sundials/rate_equations.cpp )
 
 
 # Add compiler flags
@@ -38,6 +39,39 @@ if(OPENMP_FOUND)
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
   set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}" )
 endif()
+
+
+# Add library containing the main and the MAGRITTE source code (which is to be tested)
+
+add_library( _chemistry
+test_main.cpp
+../../../src/declarations.hpp
+../../../src/definitions.hpp
+../../../src/initializers.cpp
+../../../src/read_input.cpp
+../../../src/species_tools.cpp
+../../../src/read_chemdata.cpp
+../../../src/create_healpixvectors.cpp
+../../../src/ray_tracing.cpp
+../../../src/heapsort.cpp
+../../../src/chemistry.cpp
+../../../src/reaction_rates.cpp
+../../../src/calc_reac_rates.cpp
+../../../src/calc_reac_rates_rad.cpp
+../../../src/radfield_tools.cpp
+../../../src/spline.cpp
+../../../src/calc_AV.cpp
+../../../src/calc_UV_field.cpp
+../../../src/calc_column_density.cpp
+../../../src/calc_rad_surface.cpp
+../../../src/calc_temperature_dust.cpp
+../../../src/calc_LTE_populations.cpp
+../../../src/write_output.cpp )
+
+
+# Ensure that all source code depends on the setup command defined above
+
+add_dependencies( _chemistry MAKE_SETUP )
 
 
 # Specify path to SUNDIALS header files
@@ -99,34 +133,7 @@ find_library( HEALPix
               DOC "HEALPix library" )
 
 
-# Add library containing the main and the MAGRITTE source code (which is to be tested)
-
-add_library( _chemistry
-test_main.cpp
-../../../src/declarations.hpp
-../../../src/definitions.hpp
-../../../src/initializers.cpp
-../../../src/read_input.cpp
-../../../src/species_tools.cpp
-../../../src/read_chemdata.cpp
-../../../src/create_healpixvectors.cpp
-../../../src/ray_tracing.cpp
-../../../src/heapsort.cpp
-../../../src/chemistry.cpp
-../../../src/reaction_rates.cpp
-../../../src/calc_reac_rates.cpp
-../../../src/calc_reac_rates_rad.cpp
-../../../src/radfield_tools.cpp
-../../../src/spline.cpp
-../../../src/calc_AV.cpp
-../../../src/calc_UV_field.cpp
-../../../src/calc_column_density.cpp
-../../../src/calc_rad_surface.cpp
-../../../src/calc_temperature_dust.cpp
-../../../src/calc_LTE_populations.cpp
-../../../src/write_output.cpp )
-
-target_link_libraries( _chemistry   _sundials )
+target_link_libraries( _chemistry   _sundials ${HEALPix} )
 
 
 # Create executable to test calc_reac_rates_rad
@@ -136,4 +143,4 @@ add_executable( test_chemistry.exe   test_chemistry.cpp )
 
 # Link the necessary libraries
 
-target_link_libraries( test_chemistry.exe   _chemistry ${HEALPix} )
+target_link_libraries( test_chemistry.exe   _chemistry )

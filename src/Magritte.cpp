@@ -746,7 +746,7 @@ int main()
     }
 
 
-    printf("(Magritte): Not yet converged for %ld of %ld\n", n_not_converged, NGRID);
+    printf("(Magritte): Not yet converged for %ld of %d\n", n_not_converged, NGRID);
 
 
   } /* end of thermal balance iterations */

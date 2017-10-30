@@ -44,20 +44,21 @@ int write_grid(std::string tag, GRIDPOINT *gridpoint)
 
   std::string file_name = OUTPUT_DIRECTORY + "grid" + tag + ".txt";
 
-  FILE *outgrid = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (outgrid == NULL){
+  if (file == NULL){
 
-      printf("Error opening file!\n");
-      exit(1);
-    }
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
 
   for (long n=0; n<NGRID; n++){
 
-    fprintf(outgrid, "%f\t%f\t%f\n", gridpoint[n].x, gridpoint[n].y, gridpoint[n].z);
+    fprintf(file, "%f\t%f\t%f\n", gridpoint[n].x, gridpoint[n].y, gridpoint[n].z);
   }
 
-  fclose(outgrid);
+  fclose(file);
 
 
   return(0);
@@ -84,23 +85,24 @@ int write_healpixvectors(std::string tag, double *unit_healpixvector)
 
   std::string file_name = OUTPUT_DIRECTORY + "healpix" + tag + ".txt";
 
-  FILE *hp = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (hp == NULL){
+  if (file == NULL){
 
-      printf("Error opening file!\n");
-      exit(1);
-    }
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
 
 
   for (long r=0; r<NRAYS; r++){
 
-    fprintf( hp, "%.15f\t%.15f\t%.15f\n", unit_healpixvector[VINDEX(r,0)],
+    fprintf(file, "%.15f\t%.15f\t%.15f\n", unit_healpixvector[VINDEX(r,0)],
                                           unit_healpixvector[VINDEX(r,1)],
                                           unit_healpixvector[VINDEX(r,2)] );
   }
 
-  fclose(hp);
+  fclose(file);
 
 
   return(0);
@@ -127,19 +129,20 @@ int write_eval(std::string tag, EVALPOINT *evalpoint)
 
   std::string file_name = OUTPUT_DIRECTORY + "eval" + tag + ".txt";
 
-  FILE *eval = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (eval == NULL){
+  if (file == NULL){
 
-      printf("Error opening file!\n");
-      exit(1);
-    }
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
 
   for (long n1=0; n1<NGRID; n1++){
 
     for (long n2=0; n2<NGRID; n2++){
 
-      fprintf( eval, "%lE\t%ld\t%d\n",
+      fprintf( file, "%lE\t%ld\t%d\n",
                evalpoint[GINDEX(n1,n2)].Z,
                evalpoint[GINDEX(n1,n2)].ray,
                evalpoint[GINDEX(n1,n2)].onray );
@@ -147,7 +150,7 @@ int write_eval(std::string tag, EVALPOINT *evalpoint)
 
   }
 
-  fclose(eval);
+  fclose(file);
 
 
   return(0);
@@ -174,26 +177,27 @@ int write_key(std::string tag)
 
   std::string file_name = OUTPUT_DIRECTORY + "key" + tag + ".txt";
 
-  FILE *fkey = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (fkey == NULL){
+  if (file == NULL){
 
-      printf("Error opening file!\n");
-      exit(1);
-    }
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
 
 
   for (long n1=0; n1<NGRID; n1++){
 
     for (long n2=0; n2<NGRID; n2++){
 
-      fprintf(fkey, "%ld\t", key[GINDEX(n1,n2)] );
+      fprintf(file, "%ld\t", key[GINDEX(n1,n2)] );
     }
 
-    fprintf(fkey, "\n");
+    fprintf(file, "\n");
   }
 
-  fclose(fkey);
+  fclose(file);
 
 
   return(0);
@@ -220,26 +224,27 @@ int write_raytot(std::string tag)
 
   std::string file_name = OUTPUT_DIRECTORY + "raytot" + tag + ".txt";
 
-  FILE *rt = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (rt == NULL){
+  if (file == NULL){
 
-      printf("Error opening file!\n");
-      exit(1);
-    }
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
 
 
   for (long n=0; n<NGRID; n++){
 
     for (long r=0; r<NRAYS; r++){
 
-      fprintf(rt, "%ld\t", raytot[RINDEX(n,r)] );
+      fprintf(file, "%ld\t", raytot[RINDEX(n,r)] );
     }
 
-    fprintf(rt, "\n");
+    fprintf(file, "\n");
   }
 
-  fclose(rt);
+  fclose(file);
 
 
   return(0);
@@ -266,26 +271,27 @@ int write_cum_raytot(std::string tag)
 
   std::string file_name = OUTPUT_DIRECTORY + "cum_raytot" + tag + ".txt";
 
-  FILE *crt = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (crt == NULL){
+  if (file == NULL){
 
-      printf("Error opening file!\n");
-      exit(1);
-    }
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
 
 
   for (long n=0; n<NGRID; n++){
 
     for (long r=0; r<NRAYS; r++){
 
-      fprintf(crt, "%ld\t", cum_raytot[RINDEX(n,r)] );
+      fprintf(file, "%ld\t", cum_raytot[RINDEX(n,r)] );
     }
 
-    fprintf(crt, "\n");
+    fprintf(file, "\n");
   }
 
-  fclose(crt);
+  fclose(file);
 
 
   return(0);
@@ -312,11 +318,12 @@ int write_abundances(std::string tag)
 
   std::string file_name = OUTPUT_DIRECTORY + "abundances" + tag + ".txt";
 
-  FILE *abun= fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (abun == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
@@ -325,14 +332,14 @@ int write_abundances(std::string tag)
 
     for (int spec=0; spec<NSPEC; spec++){
 
-      fprintf( abun, "%lE\t", species[spec].abn[n] );
+      fprintf( file, "%lE\t", species[spec].abn[n] );
     }
 
-    fprintf( abun, "\n" );
+    fprintf( file, "\n" );
   }
 
 
-  fclose(abun);
+  fclose(file);
 
 
   return(0);
@@ -470,22 +477,23 @@ int write_temperature_gas(std::string tag, double *temperature_gas)
 
   std::string file_name = OUTPUT_DIRECTORY + "temperature_gas" + tag + ".txt";
 
-  FILE *temp_gas = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (temp_gas == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
 
   for (long n=0; n<NGRID; n++){
 
-    fprintf( temp_gas, "%lE\n", temperature_gas[n] );
+    fprintf( file, "%lE\n", temperature_gas[n] );
   }
 
 
-  fclose(temp_gas);
+  fclose(file);
 
 
   return(0);
@@ -512,22 +520,23 @@ int write_temperature_dust(std::string tag, double *temperature_dust)
 
   std::string file_name = OUTPUT_DIRECTORY + "temperature_dust" + tag + ".txt";
 
-  FILE *temp_dust = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (temp_dust == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
 
   for (long n=0; n<NGRID; n++){
 
-    fprintf( temp_dust, "%lE\n", temperature_dust[n] );
+    fprintf( file, "%lE\n", temperature_dust[n] );
   }
 
 
-  fclose(temp_dust);
+  fclose(file);
 
 
   return(0);
@@ -554,22 +563,23 @@ int write_UV_field(std::string tag, double *UV_field)
 
   std::string file_name = OUTPUT_DIRECTORY + "UV_field" + tag + ".txt";
 
-  FILE *UV_file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (UV_file == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
 
   for (long n=0; n<NGRID; n++){
 
-    fprintf( UV_file, "%lE\n", UV_field[n] );
+    fprintf( file, "%lE\n", UV_field[n] );
   }
 
 
-  fclose(UV_file);
+  fclose(file);
 
 
   return(0);
@@ -596,11 +606,12 @@ int write_AV(std::string tag, double *AV)
 
   std::string file_name = OUTPUT_DIRECTORY + "AV" + tag + ".txt";
 
-  FILE *AV_file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (AV_file == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
@@ -609,14 +620,14 @@ int write_AV(std::string tag, double *AV)
 
     for (long r=0; r<NRAYS; r++){
 
-      fprintf( AV_file, "%lE\t", AV[RINDEX(n,r)] );
+      fprintf( file, "%lE\t", AV[RINDEX(n,r)] );
     }
 
-    fprintf( AV_file, "\n" );
+    fprintf( file, "\n" );
   }
 
 
-  fclose(AV_file);
+  fclose(file);
 
 
   return(0);
@@ -643,11 +654,12 @@ int write_rad_surface(std::string tag, double *rad_surface)
 
   std::string file_name = OUTPUT_DIRECTORY + "rad_surface" + tag + ".txt";
 
-  FILE *rad_file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (rad_file == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
@@ -656,14 +668,14 @@ int write_rad_surface(std::string tag, double *rad_surface)
 
     for (long r=0; r<NRAYS; r++){
 
-      fprintf( rad_file, "%lE\t", rad_surface[RINDEX(n,r)] );
+      fprintf( file, "%lE\t", rad_surface[RINDEX(n,r)] );
     }
 
-    fprintf( rad_file, "\n" );
+    fprintf( file, "\n" );
   }
 
 
-  fclose(rad_file);
+  fclose(file);
 
 
   return(0);
@@ -690,11 +702,12 @@ int write_reaction_rates(std::string tag, REACTION *reaction)
 
   std::string file_name = OUTPUT_DIRECTORY + "reaction_rates" + tag + ".txt";
 
-  FILE *reac_file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (reac_file == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
@@ -703,14 +716,14 @@ int write_reaction_rates(std::string tag, REACTION *reaction)
 
     for (int reac=0; reac<NREAC; reac++){
 
-      fprintf( reac_file, "%lE\t", reaction[reac].k[n] );
+      fprintf( file, "%lE\t", reaction[reac].k[n] );
     }
 
-    fprintf( reac_file, "\n" );
+    fprintf( file, "\n" );
   }
 
 
-  fclose(reac_file);
+  fclose(file);
 
 
   return(0);
@@ -740,55 +753,57 @@ int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
 
   std::string file_name0 = OUTPUT_DIRECTORY + name + "_reactions" + tag + ".txt";
 
-  FILE *certain_file0 = fopen(file_name0.c_str(), "w");
+  FILE *file0 = fopen(file_name0.c_str(), "w");
 
-  if (certain_file0 == NULL){
+  if (file0 == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name0 + "\n";
     exit(1);
   }
 
 
   for (int reac=0; reac<nr_certain_reac; reac++){
 
-    fprintf( certain_file0, "%d\n", certain_reactions[reac] );
+    fprintf( file0, "%d\n", certain_reactions[reac] );
   }
 
-  fclose(certain_file0);
+  fclose(file0);
 
 
 
   std::string file_name = OUTPUT_DIRECTORY + name + "_rates" + tag + ".txt";
 
-  FILE *certain_file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen(file_name.c_str(), "w");
 
-  if (certain_file == NULL){
+  if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
 
   for (int reac=0; reac<nr_certain_reac; reac++){
 
-    fprintf( certain_file, "%d \t", certain_reactions[reac] );
+    fprintf( file, "%d \t", certain_reactions[reac] );
   }
 
 
-  fprintf( certain_file, "\n" );
+  fprintf( file, "\n" );
 
   for (long n=0; n<NGRID; n++){
 
     for (int reac=0; reac<nr_certain_reac; reac++){
 
-      fprintf( certain_file, "%lE \t", reaction[certain_reactions[reac]].k[n] );
+      fprintf( file, "%lE \t", reaction[certain_reactions[reac]].k[n] );
     }
 
-    fprintf( certain_file, "\n" );
+    fprintf( file, "\n" );
   }
 
 
-  fclose(certain_file);
+  fclose(file);
 
 
   return(0);
@@ -820,6 +835,7 @@ int write_double_1(std::string name, std::string tag, long length, double *varia
   if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 
@@ -862,6 +878,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
   if (file == NULL){
 
     printf("Error opening file!\n");
+    std::cout << file_name + "\n";
     exit(1);
   }
 

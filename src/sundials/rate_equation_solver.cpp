@@ -26,7 +26,10 @@
 #include <cvode/cvode_direct.h>                                     /* access to CVDls interface */
 #include <sundials/sundials_types.h>                              /* definition of type realtype */
 
+#include "../../parameters.hpp"
+#include "../Magritte_config.hpp"
 #include "../declarations.hpp"
+
 #include "rate_equation_solver.hpp"
 #include "rate_equations.cpp"
 
@@ -43,8 +46,11 @@
 #define RTOL     RCONST(1.0E-6)                                     /* scalar relative tolerance */
 #define ATOL     RCONST(1.0e-26)                         /* vector absolute tolerance components */
 
+
 // #define USE_CVSUPERLUMP_SPARSE_SOLVER
 #define USE_DENSE_SOLVER
+
+
 
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
@@ -79,6 +85,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   realtype time_start = 0.0;                                 /* start time of chemical evolution */
 
   realtype time_end   = TIME_END_IN_YEARS*seconds_in_year;     /* end time of chemical evolution */
+
 
 
   /* Specify the maximum number of internal steps */
@@ -217,32 +224,14 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 //
 // // #ifdef USE_DENSE_SOLVER
 //
-//   /* Call CVDense to specify the CVDENSE dense linear solver */
-//
-//   flag = CVDense(cvode_mem, NEQ);
-//
-//
-//   if (check_flag(&flag, "CVDense", 1)){
-//
-//     return(1);
-//   }
-//
+
 // // #endif
 //
 //
 //
 // #ifdef USE_CVSUPERLUMP_SPARSE_SOLVER
 //
-//   /* Call CVSuperLUMT to specify the CVSuperLUMT sparse direct linear solver */
-//
-//   int nnz = NEQ * NEQ;
-//
-//   flag = CVSuperLUMT(cvode_mem, 1, NEQ, nnz);
-//
-//   if (check_flag(&flag, "CVSuperLUMT", 1)){
-//
-//     return(1);
-//   }
+
 //
 // #endif
 
