@@ -124,7 +124,7 @@ double rate_H2_formation( int reac, double temperature_gas, double temperature_d
 
   return k = 0.5 * thermal_speed
              * (cs_sil*formation_efficiency_sil + cs_gra*formation_efficiency_gra)
-             * sticking_coeff * metallicity * 100.0 / gas_to_dust;
+             * sticking_coeff * METALLICITY * 100.0 / GAS_TO_DUST;
 }
 
 /*-----------------------------------------------------------------------------------------------*/

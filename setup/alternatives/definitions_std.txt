@@ -76,9 +76,9 @@ char ortho_para[TOT_NCOLPAR];                           /* stores whether it is 
 
 
 
-double metallicity;
+double METALLICITY;
 
-double gas_to_dust;
+double GAS_TO_DUST;
 
 
 

@@ -108,7 +108,7 @@ TEST_CASE("1D regular grid"){
 
   initialize_double_array(AV, NGRID*NRAYS);
 
-  metallicity = 1.0;
+  METALLICITY = 1.0;
 
 
 

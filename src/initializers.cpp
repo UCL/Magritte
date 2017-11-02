@@ -112,6 +112,29 @@ int initialize_double_array_with(double *array1, double *array2, long length)
 
 
 
+/* initialize_double_array_with_value: sets entries of the array of doubles equal to value       */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_double_array_with_value(double *array, double value, long length)
+{
+
+
+  for (long i=0; i<length; i++){
+
+    array[i] = value;
+  }
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
 /* initialize_char_array: sets all entries of the linearized array of doubles equal to 'i'       */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -121,7 +144,7 @@ int initialize_char_array(char *array, long length)
 
   for (long i=0; i<length; i++){
 
-    array[i] = 0.0;
+    array[i] = 'i';
   }
 
 

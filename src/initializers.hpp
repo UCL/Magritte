@@ -53,6 +53,15 @@ int initialize_double_array_with(double *array1, double *array2, long length);
 
 
 
+/* initialize_double_array_with_value: sets entries of the array of doubles equal to value       */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_double_array_with_value(double *array, double value, long length);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 /* initialize_char_array: sets all entries of the linearized array of doubles equal to 'i'       */
 /*-----------------------------------------------------------------------------------------------*/
 

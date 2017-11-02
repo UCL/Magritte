@@ -36,7 +36,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
-                       int *irad, int*jrad, double *frequency, double v_turb,
+                       int *irad, int*jrad, double *frequency,
                        double *A_coeff, double *B_coeff, double *C_coeff, double *R,
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
                        double *C_data, double *coltemp, int *icol, int *jcol,
@@ -125,15 +125,17 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
 
 
-      if( ACCELERATION_NG && (niterations%4 == 0) ){
+      if( ACCELERATION_POP_NG && (niterations%4 == 0) ){
 
         acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
       }
 
 
+
       /* Store the populations of the previous 3 iterations */
 
       store_populations(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+
 
 
       /* Set R equal to R_temp */
@@ -248,7 +250,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
             radiative_transfer( gridpoint, evalpoint, antipod, P_intensity, mean_intensity,
                                 Source, opacity, frequency, temperature_gas, temperature_dust,
-                                irad, jrad, n, lspec, kr, v_turb, &nshortcuts, &nno_shortcuts );
+                                irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
 
 
             /* Fill the i>j part */

@@ -185,7 +185,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_radfield_tools( std::string tag, double *AV ,double lambda, double v_turb,
+int write_radfield_tools( std::string tag, double *AV ,double lambda,
                           double *column_H2, double *column_CO );
 
 /*-----------------------------------------------------------------------------------------------*/

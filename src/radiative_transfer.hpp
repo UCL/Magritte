@@ -29,7 +29,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
                          double *P_intensity, double *mean_intensity,
                          double *Source, double *opacity, double *frequency,
                          double *temperature_gas, double *temperature_dust,
-                         int *irad, int*jrad, long gridp, int lspec, int kr, double v_turb,
+                         int *irad, int*jrad, long gridp, int lspec, int kr,
                          long *nshortcuts, long *nno_shortcuts );
 /*-----------------------------------------------------------------------------------------------*/
 

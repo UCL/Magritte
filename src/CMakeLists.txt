@@ -36,6 +36,7 @@ calc_reac_rates.cpp
 calc_reac_rates_rad.cpp
 radfield_tools.cpp
 spline.cpp
+thermal_balance.cpp
 calc_LTE_populations.cpp
 level_populations.cpp
 acceleration_Ng.cpp

@@ -35,8 +35,7 @@
 
 int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperature_dust,
                double *rad_surface, double *AV,
-               double *column_H2, double *column_HD, double *column_C, double *column_CO,
-               double v_turb )
+               double *column_H2, double *column_HD, double *column_C, double *column_CO )
 {
 
 
@@ -48,7 +47,7 @@ int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperatur
     /* Calculate the reaction rates */
 
     reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                    column_H2, column_HD, column_C, column_CO, v_turb, gridp );
+                    column_H2, column_HD, column_C, column_CO, gridp );
 
 
     /* Solve the rate equations */

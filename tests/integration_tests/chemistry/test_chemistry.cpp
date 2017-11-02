@@ -50,15 +50,6 @@
 TEST_CASE("Test chemistry"){
 
 
-  metallicity = 1.0;
-
-  gas_to_dust = 100.0;
-
-  double v_turb = 1.0;
-
-  v_turb = 1.0E5 * v_turb;
-
-
   double time_chem = 0.0;
 
 
@@ -246,7 +237,7 @@ TEST_CASE("Test chemistry"){
 
   write_AV("0", AV);
 
-  write_radfield_tools( "0", AV, 1000.0, v_turb, column_H2, column_CO );
+  write_radfield_tools( "0", AV, 1000.0, column_H2, column_CO );
 
   write_rad_surface("0", rad_surface);
 
@@ -326,7 +317,7 @@ TEST_CASE("Test chemistry"){
 
     write_AV(tag, AV);
 
-    write_radfield_tools( tag, AV, 1000.0, v_turb, column_H2, column_CO );
+    write_radfield_tools( tag, AV, 1000.0, column_H2, column_CO );
 
     write_rad_surface(tag, rad_surface);
 
@@ -344,7 +335,7 @@ TEST_CASE("Test chemistry"){
     time_chem -= omp_get_wtime();
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-               column_H2, column_HD, column_C, column_CO, v_turb );
+               column_H2, column_HD, column_C, column_CO );
 
     time_chem += omp_get_wtime();
 

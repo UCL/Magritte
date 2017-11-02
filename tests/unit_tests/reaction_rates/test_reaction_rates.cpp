@@ -109,18 +109,11 @@ TEST_CASE("Test reaction_rates"){
   column_CO[0] = 0.0;
 
 
-  metallicity = 1.0;
-
-  gas_to_dust = 100.0;
-
-  double v_turb = 0.0;
-
-
   long gridp = 0;
 
 
   reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                  column_H2, column_HD, column_C, column_CO, v_turb, gridp );
+                  column_H2, column_HD, column_C, column_CO, gridp );
 
 
 

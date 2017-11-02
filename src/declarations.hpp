@@ -213,52 +213,52 @@ typedef struct REACTION {
 
 /* Grid and evaluation points */
 
-extern long cum_raytot[NGRID*NRAYS];    /* cumulative number of evaluation points along each ray */
+extern long cum_raytot[NGRID*NRAYS];       /* cumulative nr. of evaluation points along each ray */
 
-extern long key[NGRID*NGRID];      /* stores the numbers of the grid points on the rays in order */
+extern long key[NGRID*NGRID];         /* stores the nrs. of the grid points on the rays in order */
 
-extern long raytot[NGRID*NRAYS];        /* cumulative number of evaluation points along each ray */
+extern long raytot[NGRID*NRAYS];           /* cumulative nr. of evaluation points along each ray */
 
 
 /* Level populations */
 
-extern int nlev[NLSPEC];                                    /* number of levels for this species */
+extern const int nlev[NLSPEC];                              /* number of levels for this species */
 
-extern int nrad[NLSPEC];                     /* number of radiative transitions for this species */
+extern const int nrad[NLSPEC];               /* number of radiative transitions for this species */
 
-extern int cum_nlev[NLSPEC];                         /* cumulative number of levels over species */
+extern const int cum_nlev[NLSPEC];                   /* cumulative number of levels over species */
 
-extern int cum_nlev2[NLSPEC];                    /* cumulative of squares of levels over species */
+extern const int cum_nlev2[NLSPEC];              /* cumulative of squares of levels over species */
 
-extern int cum_nrad[NLSPEC];       /* cumulative of number of radiative transitions over species */
+extern const int cum_nrad[NLSPEC]; /* cumulative of number of radiative transitions over species */
 
 
 
-extern int ncolpar[NLSPEC];                     /* number of collision partners for this species */
+extern const int ncolpar[NLSPEC];               /* number of collision partners for this species */
 
-extern int cum_ncolpar[NLSPEC];          /* cumulative number of collision partners over species */
+extern const int cum_ncolpar[NLSPEC];    /* cumulative number of collision partners over species */
 
-extern int ncoltemp[TOT_NCOLPAR];    /* number of col. temperatures for each species and partner */
+extern const int ncoltemp[TOT_NCOLPAR];    /* number of col. temperatures for each specs & prtnr */
 
-extern int ncoltran[TOT_NCOLPAR];     /* number of col. transitions for each species and partner */
+extern const int ncoltran[TOT_NCOLPAR];     /* number of col. transitions for each specs & prtnr */
 
-extern int cum_ncoltemp[TOT_NCOLPAR]; /* cum. nr. of col. temperatures over species and partners */
+extern const int cum_ncoltemp[TOT_NCOLPAR]; /* cum. nr. of col. temperatures over specs & prtnrs */
 
-extern int cum_ncoltran[TOT_NCOLPAR];  /* cum. nr. of col. transitions over species and partners */
+extern const int cum_ncoltran[TOT_NCOLPAR];  /* cum. nr. of col. transitions over specs & prtnrs */
 
-extern int tot_ncoltemp[NLSPEC];     /* total nr. of col. temperatures over species and partners */
+extern const int tot_ncoltemp[NLSPEC];     /* total nr. of col. temperatures over specs & prtnrs */
 
-extern int tot_ncoltran[NLSPEC];      /* total nr. of col. transitions over species and partners */
+extern const int tot_ncoltran[NLSPEC];      /* total nr. of col. transitions over specs & prtnrs */
 
-extern int cum_tot_ncoltemp[NLSPEC];     /* cum. of tot. of col. temp. over species and partners */
+extern const int cum_tot_ncoltemp[NLSPEC];     /* cum. of tot. of col. temp. over specs & prtnrs */
 
-extern int cum_tot_ncoltran[NLSPEC]; /* cumulative tot. of col. trans. over species and partners */
+extern const int cum_tot_ncoltran[NLSPEC]; /* cumulative tot. of col. trans. over specs & prtnrs */
 
-extern int cum_ncoltrantemp[TOT_NCOLPAR]; /* cumulative of ntran*ntemp over species and partners */
+extern const int cum_ncoltrantemp[TOT_NCOLPAR]; /* cumulative of ntran*ntemp over specs & prtnrs */
 
-extern int tot_ncoltrantemp[NLSPEC];           /* total of ntran*ntemp over species and partners */
+extern const int tot_ncoltrantemp[NLSPEC];           /* total of ntran*ntemp over specs & prtnrs */
 
-extern int cum_tot_ncoltrantemp[NLSPEC];/* cum. of tot. of ntran*ntemp over species and partners */
+extern const int cum_tot_ncoltrantemp[NLSPEC];   /* cum. of tot. of ntran*ntemp o specs & prtnrs */
 
 
 
@@ -275,11 +275,6 @@ extern int spec_par[TOT_NCOLPAR];  /* number of the species corresponding to a c
 
 extern char ortho_para[TOT_NCOLPAR];                    /* stores whether it is ortho or para H2 */
 
-
-
-extern double metallicity;
-
-extern double gas_to_dust;
 
 
 #define GRIDSPECRAY(gridp,spec,ray)   ( (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC )
@@ -321,8 +316,6 @@ extern int H2_formation_nr;
 extern int H2_photodissociation_nr;
 
 
-
-extern double x_e;
 
 
 

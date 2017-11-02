@@ -24,7 +24,7 @@
 
 double heating( GRIDPOINT *gridpoint, long gridp,
                 double *temperature_gas, double *temperature_dust,
-                double *UV_field, double v_turb, double* heating_components );
+                double *UV_field, double* heating_components );
 
 /*-----------------------------------------------------------------------------------------------*/
 

@@ -61,15 +61,6 @@ using namespace std;
 TEST_CASE("Test level populations"){
 
 
-  metallicity = 1.0;
-
-  gas_to_dust = 100.0;
-
-  double v_turb = 1.0;
-
-  v_turb = 1.0E5 * v_turb;
-
-
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
   string test_grid_inputfile = "../../../" + grid_inputfile;
@@ -354,7 +345,7 @@ TEST_CASE("Test level populations"){
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-               column_H2, column_HD, column_C, column_CO, v_turb );
+               column_H2, column_HD, column_C, column_CO );
 
 
   } /* End of chemistry iteration */
@@ -411,7 +402,7 @@ TEST_CASE("Test level populations"){
       /* Calculate the chemical abundances given the current temperatures and radiation field */
 
       chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-                 column_H2, column_HD, column_C, column_CO, v_turb );
+                 column_H2, column_HD, column_C, column_CO );
 
 
     } /* End of chemistry iteration */
@@ -433,7 +424,7 @@ TEST_CASE("Test level populations"){
 
     /* Calculate level populations for each line producing species */
 
-    level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency, v_turb,
+    level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency,
                        A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
                        coltemp, icol, jcol, temperature_gas, temperature_dust,
                        weight, energy, mean_intensity );
@@ -510,14 +501,14 @@ TEST_CASE("Test level populations"){
         nr_all = 0;
 
         reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                        column_H2, column_HD, column_C, column_CO, v_turb, gridp,
+                        column_H2, column_HD, column_C, column_CO, gridp,
                         &nr_can_reac, canonical_reactions,
                         &nr_can_phot, can_photo_reactions,
                         &nr_all, all_reactions );
 
 
         heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
-                                        UV_field, v_turb, heating_components );
+                                        UV_field, heating_components );
 
         cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
                                         pop, mean_intensity );

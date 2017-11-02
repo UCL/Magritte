@@ -128,22 +128,15 @@ TEST_CASE("Test reaction_rates"){
   column_CO[0] = 0.0;
 
 
-  metallicity = 1.0;
-
-  gas_to_dust = 100.0;
-
-  double v_turb = 0.0;
-
-
   long gridp = 0;
 
 
   chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
-              column_H2, column_HD, column_C, column_CO, v_turb );
+             column_H2, column_HD, column_C, column_CO );
 
 
   double heating_total = heating( gridpoint, gridp, temperature_gas, temperature_dust,
-                                  UV_field, v_turb );
+                                  UV_field );
 
   cout << "Heating total " << heating_total << "\n";
 

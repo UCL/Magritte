@@ -31,7 +31,7 @@ int calc_AV( double *column_H, double *AV )
 {
 
 
-  double A_V0 = 6.289E-22*metallicity;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
+  double A_V0 = 6.289E-22*METALLICITY;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
 
 
 

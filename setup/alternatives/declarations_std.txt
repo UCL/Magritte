@@ -259,9 +259,9 @@ extern char ortho_para[TOT_NCOLPAR];                    /* stores whether it is 
 
 
 
-extern double metallicity;
+extern double METALLICITY;
 
-extern double gas_to_dust;
+extern double GAS_TO_DUST;
 
 
 #define GRIDSPECRAY(gridp,spec,ray)   ( (ray) + (spec)*NRAYS + (gridp)*NRAYS*NSPEC )

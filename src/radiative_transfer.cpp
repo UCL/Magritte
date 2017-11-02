@@ -34,7 +34,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
                          double *P_intensity, double *mean_intensity,
                          double *Source, double *opacity, double *frequency,
                          double *temperature_gas, double *temperature_dust,
-                         int *irad, int*jrad, long gridp, int lspec, int kr, double v_turb,
+                         int *irad, int*jrad, long gridp, int lspec, int kr,
                          long *nshortcuts, long *nno_shortcuts )
 {
 
@@ -203,7 +203,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
           double optical_depth1 = 0.0;
           double optical_depth2 = 0.0;
 
-          double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(v_turb,2) );
+          double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(V_TURB,2) );
 
           // if (gridp == 1){
           //   std::cout << "speed width : " << speed_width << "\n";
@@ -332,7 +332,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*gridpoint[gridp].density*metallicity*100.0/gas_to_dust;
+  double ngrain          = 2.0E-12*gridpoint[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 

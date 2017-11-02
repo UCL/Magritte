@@ -100,8 +100,8 @@ double rate_PHOTD( int reac, double temperature_gas, double *rad_surface, double
 /* rate_H2_photodissociation: returns rate coefficient for H2 dissociation                       */
 /*-----------------------------------------------------------------------------------------------*/
 
-double rate_H2_photodissociation( int reac, double *rad_surface,
-                                  double *AV, double *column_H2, double v_turb, long gridp )
+double rate_H2_photodissociation( int reac, double *rad_surface, double *AV,
+                                  double *column_H2, long gridp )
 {
 
 
@@ -116,7 +116,7 @@ double rate_H2_photodissociation( int reac, double *rad_surface,
 
   double lambda = 1000.0;                           /* wavelength (in Å) of a typical transition */
 
-  double doppler_width = v_turb / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
+  double doppler_width = V_TURB / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
                                                 /* (assuming turbulent broadening with b=3 km/s) */
 
   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */

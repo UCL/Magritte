@@ -31,7 +31,7 @@
 
 double heating( GRIDPOINT *gridpoint, long gridp,
                 double *temperature_gas, double *temperature_dust,
-                double *UV_field, double v_turb, double* heating_components )
+                double *UV_field, double* heating_components )
 {
 
 
@@ -103,7 +103,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
 
   double heating_dust = 2.7E-25 * Delta_UV * Delta_d * gridpoint[gridp].density * Y * Habing_field
-                        * ( pow(1.0-x, 2)/x + x_k*(pow(x, 2) - 1.0)/pow(x, 2)  ) * metallicity;
+                        * ( pow(1.0-x, 2)/x + x_k*(pow(x, 2) - 1.0)/pow(x, 2)  ) * METALLICITY;
 
   heating_components[0] = heating_dust;
 
@@ -147,9 +147,9 @@ double heating( GRIDPOINT *gridpoint, long gridp,
                        * electron_density * phi_PAH * gridpoint[gridp].density;
 
 
-  /* Assume the PE heating rate scales linearly with metallicity */
+  /* Assume the PE heating rate scales linearly with METALLICITY */
 
-  double heating_PAH = (PAH_heating - PAH_cooling)*metallicity;
+  double heating_PAH = (PAH_heating - PAH_cooling)*METALLICITY;
 
   heating_components[1] = heating_PAH;
 
@@ -180,7 +180,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
 
 
   double heating_Weingartner
-        = 1.0E-26 * metallicity * (Habing_field * gridpoint[gridp].density)
+        = 1.0E-26 * METALLICITY * (Habing_field * gridpoint[gridp].density)
           * ( C0 + C1*pow(temperature_gas[gridp], C4) )
           / ( 1.0 + C2*pow(Habing_field * sqrt(temperature_gas[gridp]) / electron_density, C5)
           * ( 1.0 + C3*pow(Habing_field * sqrt(temperature_gas[gridp]) / electron_density, C6) ) );
@@ -324,7 +324,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   double l_turb = 5.0;                       /* turbulent length scale (typical value) in parsec */
 
 
-  double heating_turbulent = 3.5E-28*pow(v_turb/1.0E5, 3)*(1.0/l_turb)*gridpoint[gridp].density;
+  double heating_turbulent = 3.5E-28*pow(V_TURB/1.0E5, 3)*(1.0/l_turb)*gridpoint[gridp].density;
 
   heating_components[8] = heating_turbulent;
 
@@ -422,7 +422,7 @@ double heating( GRIDPOINT *gridpoint, long gridp,
   double accommodation = 0.1
                          + 0.35*exp(-sqrt((temperature_gas[gridp]+temperature_dust[gridp])/5.0E2));
 
-  double density_grain = 1.998E-12 * gridpoint[gridp].density * metallicity * 100.0 / gas_to_dust;
+  double density_grain = 1.998E-12 * gridpoint[gridp].density * METALLICITY * 100.0 / GAS_TO_DUST;
 
   double cross_section_grain = PI * pow(radius_grain, 2);
 

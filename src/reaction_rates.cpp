@@ -35,7 +35,7 @@
 int reaction_rates( double *temperature_gas, double *temperature_dust,
                     double *rad_surface, double *AV,
                     double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                    double v_turb, long gridp )
+                    long gridp )
 {
 
 
@@ -208,8 +208,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
       H2_photodissociation_nr = reac;
 
-      reaction[reac].k[gridp] = rate_H2_photodissociation( reac, rad_surface, AV, column_H2,
-                                                           v_turb, gridp );
+      reaction[reac].k[gridp] = rate_H2_photodissociation(reac, rad_surface, AV, column_H2, gridp);
     }
 
 
@@ -217,8 +216,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R1 == "HD"  &&  R2 == "PHOTON"  &&  R3 == "" ){
 
-      reaction[reac].k[gridp] = rate_H2_photodissociation( reac, rad_surface, AV, column_HD,
-                                                           v_turb, gridp );
+      reaction[reac].k[gridp] = rate_H2_photodissociation(reac, rad_surface, AV, column_HD, gridp);
     }
 
 

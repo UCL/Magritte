@@ -910,7 +910,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_radfield_tools( std::string tag, double *AV ,double lambda, double v_turb,
+int write_radfield_tools( std::string tag, double *AV ,double lambda,
                           double *column_H2, double *column_CO )
 {
 
@@ -967,7 +967,7 @@ int write_radfield_tools( std::string tag, double *AV ,double lambda, double v_t
 
 
 
-  double doppler_width = v_turb / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
+  double doppler_width = V_TURB / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
                                                 /* (assuming turbulent broadening with b=3 km/s) */
 
 

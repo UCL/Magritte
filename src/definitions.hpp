@@ -58,47 +58,47 @@ long raytot[NGRID*NRAYS];               /* cumulative number of evaluation point
 
 /* Level populations */
 
-int nlev[NLSPEC] = NLEV;                                    /* number of levels for this species */
+int const nlev[NLSPEC] = NLEV;
 
-int nrad[NLSPEC] = NRAD;                     /* number of radiative transitions for this species */
-
-
-int cum_nlev[NLSPEC]  = CUM_NLEV;                    /* cumulative number of levels over species */
-
-int cum_nlev2[NLSPEC] = CUM_NLEV2;               /* cumulative of squares of levels over species */
-
-int cum_nrad[NLSPEC]  = CUM_NRAD;  /* cumulative of number of radiative transitions over species */
+int const nrad[NLSPEC] = NRAD;
 
 
-int ncolpar[NLSPEC]     = NCOLPAR;              /* number of collision partners for this species */
+int const cum_nlev[NLSPEC]  = CUM_NLEV;
 
-int cum_ncolpar[NLSPEC] = CUM_NCOLPAR;   /* cumulative number of collision partners over species */
+int const cum_nlev2[NLSPEC] = CUM_NLEV2;
 
-
-int ncoltemp[TOT_NCOLPAR] = NCOLTEMP;    /* nr. of col. temperatures for each species & partners */
-
-int ncoltran[TOT_NCOLPAR] = NCOLTRAN;     /* nr. of col. transitions for each species & partners */
+int const cum_nrad[NLSPEC]  = CUM_NRAD;
 
 
-int cum_ncoltemp[TOT_NCOLPAR] = CUM_NCOLTEMP;   /* cum. nr. of col. temps. over specs & partners */
+int const ncolpar[NLSPEC]     = NCOLPAR;
 
-int cum_ncoltran[TOT_NCOLPAR] = CUM_NCOLTRAN;   /* cum. nr. of col. trans. over specs & partners */
-
-int cum_ncoltrantemp[TOT_NCOLPAR] = CUM_NCOLTRANTEMP;    /* cum. ntran*ntemp over specs & prtnrs */
+int const cum_ncolpar[NLSPEC] = CUM_NCOLPAR;
 
 
-int tot_ncoltemp[NLSPEC] = TOT_NCOLTEMP;     /* total nr. of col. temps. over species & partners */
+int const ncoltemp[TOT_NCOLPAR] = NCOLTEMP;
 
-int tot_ncoltran[NLSPEC] = TOT_NCOLTRAN;     /* total nr. of col. trans. over species & partners */
-
-int tot_ncoltrantemp[NLSPEC] = TOT_NCOLTRANTEMP;  /* tot. of ntran*ntemp over species & partners */
+int const ncoltran[TOT_NCOLPAR] = NCOLTRAN;
 
 
-int cum_tot_ncoltemp[NLSPEC] = CUM_TOT_NCOLTRAN; /* cum. tot. of col. temps. over specs & prtnrs */
+int const cum_ncoltemp[TOT_NCOLPAR] = CUM_NCOLTEMP;
 
-int cum_tot_ncoltran[NLSPEC] = CUM_TOT_NCOLTRAN; /* cum. tot. of col. trans. over specs & prtnrs */
+int const cum_ncoltran[TOT_NCOLPAR] = CUM_NCOLTRAN;
 
-int cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP; /* cumtot. ntran*ntemp o specs & prtnrs */
+int const cum_ncoltrantemp[TOT_NCOLPAR] = CUM_NCOLTRANTEMP;
+
+
+int const tot_ncoltemp[NLSPEC] = TOT_NCOLTEMP;
+
+int const tot_ncoltran[NLSPEC] = TOT_NCOLTRAN;
+
+int const tot_ncoltrantemp[NLSPEC] = TOT_NCOLTRANTEMP;
+
+
+int const cum_tot_ncoltemp[NLSPEC] = CUM_TOT_NCOLTRAN;
+
+int const cum_tot_ncoltran[NLSPEC] = CUM_TOT_NCOLTRAN;
+
+int const cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
 
 
 
@@ -115,12 +115,6 @@ int lspec_nr[NLSPEC];                                        /* nr of the line p
 int spec_par[TOT_NCOLPAR];         /* number of the species corresponding to a collision partner */
 
 char ortho_para[TOT_NCOLPAR];                           /* stores whether it is ortho or para H2 */
-
-
-
-double metallicity;
-
-double gas_to_dust;
 
 
 
@@ -157,9 +151,6 @@ int H2_formation_nr;
 
 int H2_photodissociation_nr;
 
-
-
-double x_e;
 
 
 
