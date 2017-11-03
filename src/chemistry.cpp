@@ -24,6 +24,7 @@
 #include "declarations.hpp"
 
 #include "chemistry.hpp"
+#include "calc_column_density.hpp"
 #include "reaction_rates.hpp"
 #include "sundials/rate_equation_solver.hpp"
 #include "write_output.hpp"
@@ -33,10 +34,18 @@
 /* abundances: calculate abundances for each species at each grid point                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int chemistry( GRIDPOINT *gridpoint, double *temperature_gas, double *temperature_dust,
-               double *rad_surface, double *AV,
+int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+               double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
                double *column_H2, double *column_HD, double *column_C, double *column_CO )
 {
+
+
+  /* Calculate column densities */
+
+  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
+  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
+  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
+  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
 
 
   /* For all gridpoints */

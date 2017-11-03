@@ -27,12 +27,11 @@
 /* calc_AV: calculates the visual extinction along a ray ray at a grid point                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_AV( double *column_H, double *AV )
+int calc_AV( double *column_tot, double *AV )
 {
 
 
   double A_V0 = 6.289E-22*METALLICITY;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
-
 
 
   /* For all grid points n and rays r */
@@ -41,7 +40,7 @@ int calc_AV( double *column_H, double *AV )
 
     for (long r=0; r<NRAYS; r++){
 
-      AV[RINDEX(n,r)] = A_V0 * column_H[RINDEX(n,r)];
+      AV[RINDEX(n,r)] = A_V0 * column_tot[RINDEX(n,r)];
     }
   }
 

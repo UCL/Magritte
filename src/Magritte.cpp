@@ -171,11 +171,6 @@ int main()
   printf("(Magritte): declaring and initializing line variables \n");
 
 
-  /* Setup the data structures which will store the line data */
-
-  // setup_data_structures(line_datafile);
-
-
   /* Define line related variables */
 
   int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
@@ -409,7 +404,6 @@ int main()
   double temperature_gas[NGRID];                           /* gas temperature at each grid point */
 
   guess_temperature_gas(UV_field, temperature_gas);
-  // initialize_double_array_with_value(temperature_gas, 200.0, NGRID);
 
 
   /* Calculate the dust temperature */
@@ -438,10 +432,6 @@ int main()
   printf("(Magritte): starting preliminary chemistry iterations \n\n");
 
 
-  double column_H[NGRID*NRAYS];                  /* H column density for each ray and grid point */
-
-  initialize_double_array(column_H, NGRID*NRAYS);
-
   double column_H2[NGRID*NRAYS];                /* H2 column density for each ray and grid point */
 
   initialize_double_array(column_H2, NGRID*NRAYS);
@@ -461,31 +451,20 @@ int main()
 
   /* Preliminary chemistry iterations */
 
-  int np_chem_iterations = 5;                /* total number of preliminary chemistry iterations */
+  for (int chem_iteration=0; chem_iteration<PRELIM_CHEM_ITER; chem_iteration++){
 
-
-  for (int chem_iteration=0; chem_iteration<np_chem_iterations; chem_iteration++){
-
-    printf("(Magritte):   chemistry iteration %d of %d \n", chem_iteration+1, np_chem_iterations);
-
-
-    /* Calculate column densities */
-
-    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+    printf("(Magritte):   chemistry iteration %d of %d \n", chem_iteration+1, PRELIM_CHEM_ITER);
 
 
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
     time_chemistry -= omp_get_wtime();
 
-    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( gridpoint, evalpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
     time_chemistry += omp_get_wtime();
+
 
   } /* End of chemistry iteration */
 
@@ -565,25 +544,21 @@ int main()
   initialize_double_array(thermal_ratio, NGRID);
 
 
-  double thermal_sum[NGRID];
+  double prev_temperature_gas[NGRID];
 
-  initialize_double_array(thermal_sum, NGRID);
-
-
-  double prev2_temperature_gas[NGRID];
-
-  initialize_previous_temperature_gas(prev2_temperature_gas, temperature_gas);
+  initialize_previous_temperature_gas(prev_temperature_gas, temperature_gas);
 
 
-  for (int iter=0; iter<10; iter++){
+  for (int tb_iteration=0; tb_iteration<PRELIM_TB_ITER; tb_iteration++){
+
+    printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H, column_H2, column_HD,
-                               column_C, column_CO, UV_field, temperature_gas, temperature_dust,
+    thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H2, column_HD, column_C,
+                               column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity, thermal_ratio,
-                               thermal_sum,
                                time_chemistry, time_level_pop );
 
 
@@ -592,7 +567,7 @@ int main()
 
     for (long gridp=0; gridp<NGRID; gridp++){
 
-      update_temperature_gas( thermal_ratio, thermal_sum, gridp, temperature_gas, prev2_temperature_gas,
+      update_temperature_gas( thermal_ratio, gridp, temperature_gas, prev_temperature_gas,
                               temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
 
     }
@@ -603,62 +578,6 @@ int main()
 
   write_double_1("temperature_a", "", NGRID, temperature_a );
   write_double_1("temperature_b", "", NGRID, temperature_b );
-
-
-  // /* Thermal ratio for minimum temperature */
-  //
-  // initialize_double_array_with_value(temperature_gas, T_CMB, NGRID);
-  //
-  // thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H, column_H2, column_HD,
-  //                            column_C, column_CO, UV_field, temperature_gas, temperature_dust,
-  //                            rad_surface, AV, irad, jrad, energy, weight, frequency,
-  //                            A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
-  //                            prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity, thermal_ratio,
-  //                            time_chemistry, time_level_pop );
-  //
-  // initialize_double_array_with(thermal_ratio_a, thermal_ratio, NGRID);
-  //
-  //
-  // /* Thermal ratio for maximum temperature */
-  //
-  // initialize_double_array_with_value(temperature_gas, 100.0, NGRID);
-  //
-  // thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H, column_H2, column_HD,
-  //                            column_C, column_CO, UV_field, temperature_gas, temperature_dust,
-  //                            rad_surface, AV, irad, jrad, energy, weight, frequency,
-  //                            A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
-  //                            prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity, thermal_ratio,
-  //                            time_chemistry, time_level_pop );
-  //
-  // initialize_double_array_with(thermal_ratio_a, thermal_ratio, NGRID);
-  //
-  //
-  // for (long gridp=0; gridp<NGRID; gridp++){
-  //
-  //   shuffle_Brent( gridp, temperature_a, temperature_b, temperature_c, temperature_d,
-  //                  temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c );
-  //
-  //
-  //   update_temperature_gas_Brent( gridp, temperature_a, temperature_b, temperature_c,
-  //                                 temperature_d, temperature_e, thermal_ratio_a,
-  //                                 thermal_ratio_b, thermal_ratio_c );
-  //
-  //   if(temperature_b[gridp] < T_CMB){
-  //
-  //     temperature_b[gridp] = T_CMB;
-  //   }
-  //
-  //   else if (temperature_b[gridp] > 30000.0){
-  //
-  //     temperature_b[gridp] = 30000.0;
-  //   }
-  //
-  //   temperature_gas[gridp] = temperature_b[gridp];
-  //
-  //   printf("temp is %lf\n", temperature_gas[gridp]);
-  //
-  //
-  // } /* end of gridp loop over grid points */
 
 
   printf("(Magritte): minimal and maximal thermal flux calculated \n\n");
@@ -677,23 +596,16 @@ int main()
   printf("(Magritte): starting thermal balance iterations \n\n");
 
 
-  bool somewhere_no_thermal_balance = true;
-
-  bool no_thermal_balance[NGRID];
-
-  initialize_bool(true, NGRID, no_thermal_balance);
+  bool no_thermal_balance = true;  /* true when the temperature of a grid point is not converged */
 
   int niterations = 0;
 
 
-
   /* Thermal balance iterations */
 
+  while (no_thermal_balance){
 
-
-  while (somewhere_no_thermal_balance){
-
-    somewhere_no_thermal_balance = false;
+    no_thermal_balance = false;
 
     niterations++;
 
@@ -704,21 +616,15 @@ int main()
     long n_not_converged = 0;                /* number of grid points that are not yet converged */
 
 
-    thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H, column_H2, column_HD,
-                               column_C, column_CO, UV_field, temperature_gas, temperature_dust,
+    thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H2, column_HD, column_C,
+                               column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity, thermal_ratio,
-                               thermal_sum,
                                time_chemistry, time_level_pop );
 
 
-    // initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
-
-    for (long n=0; n<NGRID; n++){
-
-      thermal_ratio_b[n] = thermal_ratio[n] * thermal_sum[n] * thermal_sum[n];
-    }
+    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
 
 
     /* Calculate the thermal balance for each gridpoint */
@@ -737,32 +643,13 @@ int main()
                                       temperature_d, temperature_e, thermal_ratio_a,
                                       thermal_ratio_b, thermal_ratio_c );
 
-        if(temperature_b[gridp] < T_CMB){
-
-          temperature_b[gridp] = T_CMB;
-        }
-
-        else if (temperature_b[gridp] > 30000.0){
-
-          temperature_b[gridp] = 30000.0;
-        }
 
         temperature_gas[gridp] = temperature_b[gridp];
-
-
-        temperature_gas[gridp] = temperature_b[gridp];
-
-
-
-        // update_temperature_gas(thermal_ratio, gridp, temperature_gas, prev2_temperature_gas );
-
 
 
         if (temperature_gas[gridp] != T_CMB){
 
-          no_thermal_balance[gridp] = true;
-
-          somewhere_no_thermal_balance = true;
+          no_thermal_balance = true;
 
           n_not_converged++;
         }
@@ -783,7 +670,7 @@ int main()
 
     if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/20){
 
-      somewhere_no_thermal_balance = false;
+      no_thermal_balance = false;
     }
 
 

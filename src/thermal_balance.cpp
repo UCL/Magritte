@@ -36,8 +36,8 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
-                               double *column_H, double *column_H2, double *column_HD,
-                               double *column_C, double *column_CO, double *UV_field,
+                               double *column_H2, double *column_HD, double *column_C,
+                               double *column_CO, double *UV_field,
                                double *temperature_gas, double *temperature_dust,
                                double *rad_surface, double *AV, int *irad, int *jrad,
                                double *energy, double *weight, double *frequency,
@@ -45,7 +45,6 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
                                double *C_data, double *coltemp, int *icol, int *jcol,
                                double *prev1_pop, double *prev2_pop, double *prev3_pop,
                                double *pop, double *mean_intensity, double *thermal_ratio,
-                               double *thermal_sum,
                                double time_chemistry, double time_level_pop )
 {
 
@@ -61,32 +60,21 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
 
   /* Calculate the chemical abundances by solving the rate equations */
 
-  const int nchem_iterations = 3;            /* total number of preliminary chemistry iterations */
-
-
-  for (int chem_iteration=0; chem_iteration<nchem_iterations; chem_iteration++){
+  for (int chem_iteration=0; chem_iteration<CHEM_ITER; chem_iteration++){
 
     printf( "(thermal_balance):   chemistry iteration %d of %d \n",
-            chem_iteration+1, nchem_iterations );
-
-
-    /* Calculate column densities */
-
-    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+            chem_iteration+1, CHEM_ITER );
 
 
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
     time_chemistry -= omp_get_wtime();
 
-    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( gridpoint, evalpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
     time_chemistry += omp_get_wtime();
+
 
   } /* End of chemistry iteration */
 
@@ -145,7 +133,6 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
 
   /* Calculate column densities to get the most recent reaction rates */
 
-  calc_column_density(gridpoint, evalpoint, column_H, H_nr);
   calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
   calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
   calc_column_density(gridpoint, evalpoint, column_C, C_nr);
@@ -172,14 +159,14 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
 
     double thermal_flux = heating_total - cooling_total;
 
-    thermal_sum[gridp]  = heating_total + cooling_total;
+    double thermal_sum  = heating_total + cooling_total;
 
 
     thermal_ratio[gridp] = 0.0;
 
-    if (thermal_sum[gridp] != 0.0){
+    if (thermal_sum != 0.0){
 
-      thermal_ratio[gridp] = 2.0 * thermal_flux / thermal_sum[gridp];
+      thermal_ratio[gridp] = 2.0 * thermal_flux / thermal_sum;
     }
 
 

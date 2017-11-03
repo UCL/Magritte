@@ -31,10 +31,17 @@ double line_profile( EVALPOINT evalpoint, double *temperature_gas, double freque
 
   double profile = 0.0;
 
-  double velocity = evalpoint[GINDEX(gridp, GP_NR_OF_EVALP(gridp, evalp))].vol;
+  double mass            =
+
+  double velocity        = evalpoint[GINDEX(gridp, GP_NR_OF_EVALP(gridp, evalp))].vol;
 
   double frequency_shift = frequency * (1.0 -  velocity/CC);
 
+  double frequency_width2 = frequency / CC * ( 2.0*KB*temperature_gas[gridp]/PI/mass + V_TURB*V_TURB );
+
+
+
+  profile =
 
   return profile;
 

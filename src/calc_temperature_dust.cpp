@@ -58,7 +58,7 @@ int calc_temperature_dust( double *UV_field, double *rad_surface, double *temper
 
   /* Parameters as defined in the paper Hollenbach, Takahashi & Tielens (1991) */
 
-  double T_min = 0.0;                                                /* minimum dust temperature */
+  double temperature_min = 0.0;                                      /* minimum dust temperature */
 
   double tau_100 = 1.0E-3;                               /* emission optical depth at 100 micron */
 
@@ -81,16 +81,16 @@ int calc_temperature_dust( double *UV_field, double *rad_surface, double *temper
       /* The minimum dust temperature is related to the incident FUV flux along each ray
          Convert the incident FUV flux from Draine to Habing units by multiplying by 1.71 */
 
-      T_min = 12.2*pow(1.71*rad_surface[RINDEX(n,r)], 0.2);
+      temperature_min = 12.2*pow(1.71*rad_surface[RINDEX(n,r)], 0.2);
 
 
       /* Add the contribution to the dust temperature from the FUV flux incident along this ray */
 
-      if (T_min > 0.0){
+      if (temperature_min > 0.0){
 
         temperature_dust[n] = temperature_dust[n]
-                              + (0.42-log(3.45E-2*tau_100*T_min))
-                                *(3.45E-2*tau_100*T_min)*pow(T_min,5);
+                              + (0.42-log(3.45E-2*tau_100*temperature_min))
+                                *(3.45E-2*tau_100)*pow(temperature_min,6);
       }
 
     } /* end of r loop over rays */

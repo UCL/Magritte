@@ -100,19 +100,15 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    bool some_not_converged = true;  /* true when popualations of a grid point are not converged */
-
-    bool not_converged[NGRID];     /* true when populations of this grid point are not converged */
-
-    initialize_bool(true, NGRID, not_converged);
+    bool not_converged = true;       /* true when popualations of a grid point are not converged */
 
     int niterations = 0;                                                 /* number of iterations */
 
 
 
-    while( some_not_converged ){
+    while (not_converged){
 
-      some_not_converged =  false;
+      not_converged =  false;
 
       niterations++;
 
@@ -125,7 +121,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
 
 
-      if( ACCELERATION_POP_NG && (niterations%4 == 0) ){
+      if ( ACCELERATION_POP_NG && (niterations%4 == 0) ){
 
         acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
       }
@@ -297,42 +293,33 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
         /* Check for convergence */
 
-        if (not_converged[n]){
-
-          not_converged[n] = false;
+        for (int i=0; i<nlev[lspec]; i++){
 
 
-          for (int i=0; i<nlev[lspec]; i++){
+          long p_i = LSPECGRIDLEV(lspec,n,i);                              /* pop and dpop index */
 
 
-            long p_i = LSPECGRIDLEV(lspec,n,i);                            /* pop and dpop index */
+          if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
+               && !( pop[p_i]==0.0 && prev1_pop[p_i]==0.0 ) ){
 
 
-            if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
-                 && !( pop[p_i]==0.0 && prev1_pop[p_i]==0.0 ) ){
+            double dpoprel = 2.0 * fabs(pop[p_i] - prev1_pop[p_i]) / (pop[p_i] + prev1_pop[p_i]);
 
 
-              double dpoprel = 2.0 * fabs(pop[p_i] - prev1_pop[p_i]) / (pop[p_i] + prev1_pop[p_i]);
+            /* If the population of any of the levels is not converged */
 
+            if (dpoprel > POP_PREC){
 
-              /* If the population of any of the levels is not converged */
+              not_converged = true;
 
-              if (dpoprel > POP_PREC){
-
-                not_converged[n]   = true;
-
-                some_not_converged = true;
-
-                n_not_converged++;
-
-              }
+              n_not_converged++;
 
             }
 
+          }
 
-          } /* end of i loop over levels */
 
-        } /* end of if not converged */
+        } /* end of i loop over levels */
 
       } /* end of n loop over grid points */
 
@@ -344,7 +331,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
       if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10){
 
-        some_not_converged = false;
+        not_converged = false;
       }
 
 

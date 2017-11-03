@@ -22,17 +22,17 @@
 
 
 
-#define EPSILON 3.0E-8
-#define PREC    5.0E-3
-#define tol1    PREC
+#define EPSILON 3.0E-8                             /* lower bound on the precision we can obtain */
+
+#define PREC    5.0E-3                                   /* precision we need on the temperature */
 
 
 
 /* update_temperature_gas: update the gas temperature after a thermal balance iteration          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int update_temperature_gas( double *thermal_ratio, double *thermal_sum, long gridp, double *temperature_gas,
-                            double *previous_temperature_gas,
+int update_temperature_gas( double *thermal_ratio, long gridp, double *temperature_gas,
+                            double *prev_temperature_gas,
                             double *temperature_a, double *temperature_b,
                             double *thermal_ratio_a, double *thermal_ratio_b )
 {
@@ -44,17 +44,23 @@ int update_temperature_gas( double *thermal_ratio, double *thermal_sum, long gri
   if (thermal_ratio[gridp] > 0.0){
 
 
-    temperature_a[gridp]   = 0.7*temperature_gas[gridp];
-    thermal_ratio_a[gridp] = thermal_ratio[gridp]*thermal_sum[gridp]*thermal_sum[gridp];
+    /* Get a lower bound on the temperature for Brent's algorithm */
+
+    if (temperature_gas[gridp] < temperature_a[gridp]){
+
+      temperature_a[gridp]   = /*0.5**/temperature_gas[gridp];
+
+      thermal_ratio_a[gridp] = thermal_ratio[gridp];
+    }
 
 
     /* When we also increrased the tempoerature previous iteration */
 
-    if (previous_temperature_gas[gridp] < temperature_gas[gridp]){
+    if (prev_temperature_gas[gridp] < temperature_gas[gridp]){
 
-      previous_temperature_gas[gridp] = temperature_gas[gridp];
+      prev_temperature_gas[gridp] = temperature_gas[gridp];
 
-      temperature_gas[gridp]          = 3.0 * temperature_gas[gridp];
+      temperature_gas[gridp]          = 2.0 * temperature_gas[gridp];
     }
 
 
@@ -64,9 +70,9 @@ int update_temperature_gas( double *thermal_ratio, double *thermal_sum, long gri
 
       double temp = temperature_gas[gridp];
 
-      temperature_gas[gridp]          = ( temp + previous_temperature_gas[gridp] ) / 2.0;
+      temperature_gas[gridp]          = ( temp + prev_temperature_gas[gridp] ) / 2.0;
 
-      previous_temperature_gas[gridp] = temp;
+      prev_temperature_gas[gridp] = temp;
     }
 
 
@@ -79,17 +85,23 @@ int update_temperature_gas( double *thermal_ratio, double *thermal_sum, long gri
   if (thermal_ratio[gridp] < 0.0){
 
 
-    temperature_b[gridp]   = 1.7*temperature_gas[gridp];
-    thermal_ratio_b[gridp] = thermal_ratio[gridp]*thermal_sum[gridp]*thermal_sum[gridp];
+    /* Get an upper bound on the temperature for Brent's algorithm */
+
+    if (temperature_gas[gridp] > temperature_b[gridp]){
+
+      temperature_b[gridp]   = /*1.5**/temperature_gas[gridp];
+
+      thermal_ratio_b[gridp] = thermal_ratio[gridp];
+    }
 
 
     /* When we also decrerased the tempoerature previous iteration */
 
-    if (previous_temperature_gas[gridp] > temperature_gas[gridp]){
+    if (prev_temperature_gas[gridp] > temperature_gas[gridp]){
 
-      previous_temperature_gas[gridp] = temperature_gas[gridp];
+      prev_temperature_gas[gridp] = temperature_gas[gridp];
 
-      temperature_gas[gridp]          = 0.3 * temperature_gas[gridp];
+      temperature_gas[gridp]          = 0.5 * temperature_gas[gridp];
     }
 
 
@@ -99,25 +111,25 @@ int update_temperature_gas( double *thermal_ratio, double *thermal_sum, long gri
 
       double temp = temperature_gas[gridp];
 
-      temperature_gas[gridp]          = ( temp + previous_temperature_gas[gridp] ) / 2.0;
+      temperature_gas[gridp]          = ( temp + prev_temperature_gas[gridp] ) / 2.0;
 
-      previous_temperature_gas[gridp] = temp;
+      prev_temperature_gas[gridp] = temp;
     }
 
   } /* end of net cooling */
 
 
 
-  /* Enforce the minimun temperature to be T_CMB and maximum 30000 */
+  /* Enforce the minimun and maximum temperature */
 
-  if (temperature_gas[gridp] < T_CMB){
+  if (temperature_gas[gridp] < TEMPERATURE_MIN){
 
-    temperature_gas[gridp] = T_CMB;
+    temperature_gas[gridp] = TEMPERATURE_MIN;
   }
 
-  else if (temperature_gas[gridp] > 30000.0){
+  else if (temperature_gas[gridp] > TEMPERATURE_MAX){
 
-    temperature_gas[gridp] = 30000.0;
+    temperature_gas[gridp] = TEMPERATURE_MAX;
   }
 
 
@@ -195,7 +207,7 @@ int update_temperature_gas_Brent( long gridp, double *temperature_a, double *tem
   /* (see Numerical Recipes 9.4 for the original algorithm) */
 
 
-  double tolerance = 2.0*EPSILON*fabs(temperature_b[gridp])+0.5*tol1;
+  double tolerance = 2.0*EPSILON*fabs(temperature_b[gridp])+0.5*PREC;
 
   double xm = (temperature_c[gridp] - temperature_b[gridp]) / 2.0;
 
@@ -273,6 +285,20 @@ int update_temperature_gas_Brent( long gridp, double *temperature_a, double *tem
     if (xm > 0.0){ temperature_b[gridp] = temperature_b[gridp] + fabs(tolerance); }
 
     else { temperature_b[gridp] = temperature_b[gridp] - fabs(tolerance); }
+  }
+
+
+
+  /* Enforce the minimun and maximum temperature */
+
+  if(temperature_b[gridp] < TEMPERATURE_MIN){
+
+    temperature_b[gridp] = TEMPERATURE_MIN;
+  }
+
+  else if (temperature_b[gridp] > TEMPERATURE_MAX){
+
+    temperature_b[gridp] = TEMPERATURE_MAX;
   }
 
 

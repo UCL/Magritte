@@ -20,8 +20,6 @@
 
 #define PRELIM_CHEM_ITER 5
 
-#define CHEM_ITER 3
-
 #define PRELIM_TB_ITER 10
 
 #define MAX_NITERATIONS 300
@@ -45,7 +43,3 @@
 #define V_TURB 1.0E5
 
 #define IBC 0.0000000000000E+00
-
-#define TEMPERATURE_MIN T_CMB
-
-#define TEMPERATURE_MAX 30000.0
