@@ -42,7 +42,7 @@ level_populations.cpp
 acceleration_Ng.cpp
 calc_C_coeff.cpp
 radiative_transfer.cpp
-exact_feautrier.cpp
+feautrier.cpp
 level_population_solver.cpp
 calc_rad_surface.cpp
 calc_column_density.cpp

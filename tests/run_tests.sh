@@ -24,9 +24,9 @@ echo "                                    " >> test_logs/test_level_population_s
 
 
 
-echo "Log for test_exact_feautrier" > test_logs/test_exact_feautrier.log
-echo "++++++++++++++++++++++++++++" >> test_logs/test_exact_feautrier.log
-echo "                            " >> test_logs/test_exact_feautrier.log
+echo "Log for test_feautrier" > test_logs/test_feautrier.log
+echo "++++++++++++++++++++++++++++" >> test_logs/test_feautrier.log
+echo "                            " >> test_logs/test_feautrier.log
 
 cd ../input
 
@@ -34,7 +34,7 @@ python grid_1D_regular.py 101
 
 cd ../tests
 
-./test_exact_feautrier >> test_logs/test_exact_feautrier.log
+./test_feautrier >> test_logs/test_feautrier.log
 
 
 

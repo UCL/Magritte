@@ -489,6 +489,16 @@ int main()
 
   initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
 
+
+  double mean_intensity_eff[NGRID*TOT_NRAD];                         /* mean intensity for a ray */
+
+  initialize_double_array(mean_intensity_eff, NGRID*TOT_NRAD);
+
+  double Lambda_diagonal[NGRID*TOT_NRAD];                            /* mean intensity for a ray */
+
+  initialize_double_array(Lambda_diagonal, NGRID*TOT_NRAD);
+
+
   double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
   initialize_double_array(pop, NGRID*TOT_NLEV);
@@ -558,7 +568,9 @@ int main()
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
-                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity, thermal_ratio,
+                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               Lambda_diagonal, mean_intensity_eff,
+                               thermal_ratio,
                                time_chemistry, time_level_pop );
 
 
@@ -620,7 +632,9 @@ int main()
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
-                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity, thermal_ratio,
+                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               Lambda_diagonal, mean_intensity_eff,
+                               thermal_ratio,
                                time_chemistry, time_level_pop );
 
 

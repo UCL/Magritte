@@ -41,7 +41,8 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
                        double *C_data, double *coltemp, int *icol, int *jcol,
                        double *temperature_gas, double *temperature_dust,
-                       double *weight, double *energy, double *mean_intensity )
+                       double *weight, double *energy, double *mean_intensity,
+                       double *Lambda_diagonal, double *mean_intensity_eff )
 {
 
 
@@ -245,18 +246,20 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
             /* Calculate the mean intensity */
 
             radiative_transfer( gridpoint, evalpoint, antipod, P_intensity, mean_intensity,
+                                Lambda_diagonal, mean_intensity_eff,
                                 Source, opacity, frequency, temperature_gas, temperature_dust,
                                 irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
 
 
             /* Fill the i>j part */
 
-            R[r_ij] = R[r_ij] + B_coeff[b_ij]*mean_intensity[m_ij];
+            R[r_ij] = R[r_ij] - A_coeff[b_ij]*Lambda_diagonal[m_ij]
+                              + B_coeff[b_ij]*mean_intensity_eff[m_ij];
 
 
             /* Add the j>i part */
 
-            R[r_ji] = R[r_ji] + B_coeff[b_ji]*mean_intensity[m_ij];
+            R[r_ji] = R[r_ji] + B_coeff[b_ji]*mean_intensity_eff[m_ij];
 
 
           // } /* end of if not converged */
@@ -270,8 +273,6 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
       // write_R("2", 1, R);
       // write_R("50", 49, R);
       // write_R("75", 74, R);
-
-      // raise(SIGABRT);
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/

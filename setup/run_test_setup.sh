@@ -11,14 +11,21 @@ echo " "
 
 # Copy the parameters.hpp file to the main directory
 
-cp ../tests/integration_tests/chemistry/parameters.hpp ../parameters.hpp
+cp ../tests/$1/parameters.hpp ../parameters.hpp
+
+
+# Create and execute the Makefile for the setup
+
+cmake .
+make
 
 
 # Get the current date and time to label the output files
 
-date_stamp=`date +%Y-%m-%d_%H:%M:%S`;
+date_stamp=`date +%y-%m-%d_%H:%M`;
 
-output_directory="tests/integration_tests/chemistry/output/files/${date_stamp}_output/";
+output_directory="tests/$1/output/files/${date_stamp}_output/";
+
 
 echo "std::string OUTPUT_DIRECTORY = \"output/files/${date_stamp}_output/\";" > outputdirectory.hpp
 

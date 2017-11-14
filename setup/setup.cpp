@@ -125,7 +125,6 @@ int main(){
   printf("(setup):   G_external_x      : %le\n", G_EXTERNAL_X);
   printf("(setup):   G_external_y      : %le\n", G_EXTERNAL_Y);
   printf("(setup):   G_external_z      : %le\n", G_EXTERNAL_Z);
-  printf("(setup):   ibc               : %le\n", IBC);
 
 
   printf("\n");
@@ -350,86 +349,6 @@ int main(){
 
 
   /*_____________________________________________________________________________________________*/
-
-
-
-
-
-  /*   WRITE DEFINITIONS                                                                         */
-  /*_____________________________________________________________________________________________*/
-
-
-  // cout << "(setup): setting up definitions.hpp \n";
-  //
-  //
-  // char buffer1[BUFFER_SIZE];
-  // char buffer2[BUFFER_SIZE];
-  //
-  //
-  // FILE *def_new = fopen("../src/definitions.hpp", "w");
-  //
-  //
-  //
-  // /* Write the header */
-  //
-  // FILE *def_head = fopen("standard_code/definitions_hd.txt", "r");
-  //
-  //
-  // while ( !feof(def_head) ){
-  //
-  //   fgets(buffer1, BUFFER_SIZE, def_head);
-  //
-  //   fprintf(def_new, "%s", buffer1);
-  // }
-  //
-  // fclose(def_head);
-  //
-  //
-  // /* write the new definitions.hpp part */
-  //
-  // if (NLSPEC == 1){
-  //
-  //   fprintf( def_new, "std::string line_datafile[NLSPEC] = { LINE_DATAFILE0 }; \n \n\n" );
-  // }
-  //
-  // else{
-  //   fprintf( def_new, "std::string line_datafile[NLSPEC] = { LINE_DATAFILE0, \\\n" );
-  //
-  //   for (int l=1; l<NLSPEC-1; l++){
-  //
-  //     line_datafile[l]  = line_datafile[l].erase(0,3);   /* Subtract "../" part of the filenames */
-  //
-  //     fprintf( def_new, "                                      LINE_DATAFILE%d, \\\n", l );
-  //   }
-  //
-  //   fprintf( def_new, "                                      LINE_DATAFILE%d  }; \n \n\n ", NLSPEC-1 );
-  //
-  // }
-  //
-  //
-  // /* Write the standard part of definitions */
-  //
-  // FILE *def_std = fopen("standard_code/definitions_std.txt", "r");
-  //
-  //
-  // while ( !feof(def_std) ){
-  //
-  //   fgets(buffer1, BUFFER_SIZE, def_std);
-  //
-  //   fprintf(def_new, "%s", buffer1);
-  // }
-  //
-  // fclose(def_std);
-  //
-  //
-  // fclose(def_new);
-  //
-  //
-  // cout << "(setup): definitions.hpp is set up \n\n";
-
-
-  /*_____________________________________________________________________________________________*/
-
 
 
 

@@ -909,144 +909,144 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
-
-int write_radfield_tools( std::string tag, double *AV ,double lambda,
-                          double *column_H2, double *column_CO )
-{
-
-
-  if ( !tag.empty() ){
-
-    tag = "_" + tag;
-  }
-
-
-
-  /* Write dust scattering */
-
-  std::string file_name = "output/files/dust_scattering" + tag + ".txt";
-
-  FILE *ds_file = fopen(file_name.c_str(), "w");
-
-  if (ds_file == NULL){
-
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
-
-  for (long n=0; n<NGRID; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      double w = log10(1.0 + column_H2[RINDEX(n,r)]);
-      double LLLlambda = (5675.0 - 200.6*w);
-
-      fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], LLLlambda) );
-    }
-
-    fprintf( ds_file, "\n" );
-  }
-
-
-  fclose(ds_file);
-
-
-
-  /* Write H2 shield */
-
-  std::string file_name2 = "output/files/shielding_H2" + tag + ".txt";
-
-  FILE *s_file = fopen(file_name2.c_str(), "w");
-
-  if (s_file == NULL){
-
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
-
-
-  double doppler_width = V_TURB / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
-                                                /* (assuming turbulent broadening with b=3 km/s) */
-
-
-  double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
-
-
-  for (long n=0; n<NGRID; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      fprintf( s_file, "%lE\t", self_shielding_H2( column_H2[RINDEX(n,r)], doppler_width, radiation_width ) );
-    }
-
-    fprintf( s_file, "\n" );
-  }
-
-
-  fclose(s_file);
-
-
-  /* Write CO shield */
-
-  std::string file_name3 = "output/files/shielding_CO" + tag + ".txt";
-
-  FILE *c_file = fopen(file_name3.c_str(), "w");
-
-  if (c_file == NULL){
-
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
-
-
-  for (long n=0; n<NGRID; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      fprintf( c_file, "%lE\t", self_shielding_CO( column_CO[RINDEX(n,r)], column_H2[RINDEX(n,r)] ) );
-    }
-
-    fprintf( c_file, "\n" );
-  }
-
-
-  fclose(c_file);
-
-
-
-  /* Write X_lambda */
-
-  std::string file_name4 = "output/files/X_lambda" + tag + ".txt";
-
-  FILE *xl_file = fopen(file_name4.c_str(), "w");
-
-  if (xl_file == NULL){
-
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
-
-
-  for (long n=1; n<=200; n++){
-
-    double LLLlambda = pow(10.0, (9.0-2.0)/200.0*n+2.0);
-    fprintf( xl_file, "%lE\t%lE\n", LLLlambda, X_lambda(LLLlambda) );
-
-  }
-
-
-  fclose(xl_file);
-
-
-  // cout << "X lambda " << X_lambda(1000.0) << "\n";
-
-  return(0);
-
-}
+// 
+// int write_radfield_tools( std::string tag, double *AV ,double lambda,
+//                           double *column_H2, double *column_CO )
+// {
+//
+//
+//   if ( !tag.empty() ){
+//
+//     tag = "_" + tag;
+//   }
+//
+//
+//
+//   /* Write dust scattering */
+//
+//   std::string file_name = "output/files/dust_scattering" + tag + ".txt";
+//
+//   FILE *ds_file = fopen(file_name.c_str(), "w");
+//
+//   if (ds_file == NULL){
+//
+//     printf("Error opening file!\n");
+//     exit(1);
+//   }
+//
+//
+//   for (long n=0; n<NGRID; n++){
+//
+//     for (long r=0; r<NRAYS; r++){
+//
+//       double w = log10(1.0 + column_H2[RINDEX(n,r)]);
+//       double LLLlambda = (5675.0 - 200.6*w);
+//
+//       fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], LLLlambda) );
+//     }
+//
+//     fprintf( ds_file, "\n" );
+//   }
+//
+//
+//   fclose(ds_file);
+//
+//
+//
+//   /* Write H2 shield */
+//
+//   std::string file_name2 = "output/files/shielding_H2" + tag + ".txt";
+//
+//   FILE *s_file = fopen(file_name2.c_str(), "w");
+//
+//   if (s_file == NULL){
+//
+//     printf("Error opening file!\n");
+//     exit(1);
+//   }
+//
+//
+//
+//   double doppler_width = V_TURB / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
+//                                                 /* (assuming turbulent broadening with b=3 km/s) */
+//
+//
+//   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
+//
+//
+//   for (long n=0; n<NGRID; n++){
+//
+//     for (long r=0; r<NRAYS; r++){
+//
+//       fprintf( s_file, "%lE\t", self_shielding_H2( column_H2[RINDEX(n,r)], doppler_width, radiation_width ) );
+//     }
+//
+//     fprintf( s_file, "\n" );
+//   }
+//
+//
+//   fclose(s_file);
+//
+//
+//   /* Write CO shield */
+//
+//   std::string file_name3 = "output/files/shielding_CO" + tag + ".txt";
+//
+//   FILE *c_file = fopen(file_name3.c_str(), "w");
+//
+//   if (c_file == NULL){
+//
+//     printf("Error opening file!\n");
+//     exit(1);
+//   }
+//
+//
+//
+//   for (long n=0; n<NGRID; n++){
+//
+//     for (long r=0; r<NRAYS; r++){
+//
+//       fprintf( c_file, "%lE\t", self_shielding_CO( column_CO[RINDEX(n,r)], column_H2[RINDEX(n,r)] ) );
+//     }
+//
+//     fprintf( c_file, "\n" );
+//   }
+//
+//
+//   fclose(c_file);
+//
+//
+//
+//   /* Write X_lambda */
+//
+//   std::string file_name4 = "output/files/X_lambda" + tag + ".txt";
+//
+//   FILE *xl_file = fopen(file_name4.c_str(), "w");
+//
+//   if (xl_file == NULL){
+//
+//     printf("Error opening file!\n");
+//     exit(1);
+//   }
+//
+//
+//
+//   for (long n=1; n<=200; n++){
+//
+//     double LLLlambda = pow(10.0, (9.0-2.0)/200.0*n+2.0);
+//     fprintf( xl_file, "%lE\t%lE\n", LLLlambda, X_lambda(LLLlambda) );
+//
+//   }
+//
+//
+//   fclose(xl_file);
+//
+//
+//   // cout << "X lambda " << X_lambda(1000.0) << "\n";
+//
+//   return(0);
+//
+// }
 
 /*-----------------------------------------------------------------------------------------------*/
 

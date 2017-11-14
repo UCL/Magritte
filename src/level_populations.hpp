@@ -30,7 +30,8 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
                        double *C_data, double *coltemp, int *icol, int *jcol,
                        double *temperature_gas, double *temperature_dust,
-                       double *weight, double *energy, double *mean_intensity );
+                       double *weight, double *energy, double *mean_intensity,
+                       double *Lambda_diagonal, double *mean_intensity_eff );
 
 /*-----------------------------------------------------------------------------------------------*/
 

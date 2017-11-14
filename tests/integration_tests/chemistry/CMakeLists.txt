@@ -27,7 +27,7 @@ set(CMAKE_BUILD_TYPE Release)
 # Make the setup executable and execute setup
 
 add_custom_command( OUTPUT /home/frederik/Dropbox/Astro/Magritte/src/sundials/rate_equations.cpp
-                    COMMAND bash run_test_setup.sh && echo done
+                    COMMAND bash run_test_setup.sh
                     WORKING_DIRECTORY /home/frederik/Dropbox/Astro/Magritte/setup
                     DEPENDS /home/frederik/Dropbox/Astro/Magritte/tests/integration_tests/chemistry/parameters.hpp )
 

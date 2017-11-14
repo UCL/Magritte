@@ -22,7 +22,7 @@
 #include "declarations.hpp"
 
 #include "radiative_transfer.hpp"
-#include "exact_feautrier.hpp"
+#include "feautrier.hpp"
 
 
 
@@ -32,6 +32,7 @@
 
 void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
                          double *P_intensity, double *mean_intensity,
+                         double *Lambda_diagonal, double *mean_intensity_eff,
                          double *Source, double *opacity, double *frequency,
                          double *temperature_gas, double *temperature_dust,
                          int *irad, int*jrad, long gridp, int lspec, int kr,
@@ -39,8 +40,8 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 {
 
 
-  long ndepav = 0;                     /* average number of depth points used in exact_feautrier */
-  long nav = 0;                                   /* number of times exact_feautrier is executed */
+  long ndepav = 0;                           /* average number of depth points used in feautrier */
+  long nav = 0;                                         /* number of times feautrier is executed */
 
   long m_ij = LSPECGRIDRAD(lspec,gridp,kr);               /* mean_intensity, S and opacity index */
 
@@ -205,9 +206,6 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
           double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(V_TURB,2) );
 
-          // if (gridp == 1){
-          //   std::cout << "speed width : " << speed_width << "\n";
-          // }
 
           for (long e1=0; e1<etot1; e1++){
 
@@ -229,10 +227,6 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
           else{
 
             escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
-
-            // if (gridp == 1){
-            //   printf("%lE\n", escape_probability);
-            // }
           }
 
 
@@ -259,25 +253,13 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
           // }
 
 
-
-          // if (gridp == 1){
-          //   printf("%d, %d   %lE   %lE   %lE\n", i, j, escape_probability, optical_depth1, optical_depth2);
-          // }
-
-
-
-
         } /* end of if SOBOLEV */
 
         // else{
         //
-        //   double ibc = IBC;
-        //
-        //
         //   /* Solve the transfer equation wit hthe exact Feautrier solver */
         //
-        //   exact_feautrier( ndep, S, dtau, etot1, etot2, ibc, evalpoint,
-        //                    P_intensity, gridp, r, ar );
+        //   feautrier( evalpoint, gridp, r, ar, S, dtau, P_intensity, Lambda_diagonal );
         //
         //   mean_intensity[m_ij] = mean_intensity[m_ij] + P_intensity[RINDEX(gridp,r)];
         //
@@ -350,6 +332,12 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antip
 
     mean_intensity[m_ij] = (1.0 - escape_probability) * Source[m_ij]
                            + escape_probability * continuum_mean_intensity;
+
+
+    Lambda_diagonal[m_ij]    = (1.0 - escape_probability);
+
+    mean_intensity_eff[m_ij] = escape_probability * continuum_mean_intensity;
+
   }
   // else {
   //

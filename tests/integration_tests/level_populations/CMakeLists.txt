@@ -137,7 +137,7 @@ test_main.cpp
 ../../../src/calc_temperature_dust.cpp
 ../../../src/calc_LTE_populations.cpp
 ../../../src/spline.cpp
-../../../src/exact_feautrier.cpp
+../../../src/feautrier.cpp
 ../../../src/heating.cpp
 ../../../src/cooling.cpp
 ../../../src/update_temperature_gas.cpp

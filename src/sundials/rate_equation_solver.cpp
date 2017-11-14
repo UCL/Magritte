@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 /* Header files with a description of contents used */
@@ -32,19 +33,20 @@
 
 #include "rate_equation_solver.hpp"
 #include "rate_equations.cpp"
+#include "jacobian.cpp"
 
 
 /* User-defined vector and matrix accessor macros: Ith, IJth */
 
 #define Ith(v,i)    NV_Ith_S(v,i)                             /* Ith numbers components 0..NEQ-1 */
-#define IJth(A,i,j) DENSE_ELEM(A,i,j)                         /* IJth numbers rows,cols 0..NEQ-1 */
+#define IJth(A,i,j) SM_ELEMENT_D(A,i,j)                       /* IJth numbers rows,cols 0..NEQ-1 */
 
 
 /* Problem Constants */
 
 #define NEQ      (NSPEC-3)           /* number of equations: NSPEC minus dummies minus electrons */
-#define RTOL     RCONST(1.0E-6)                                     /* scalar relative tolerance */
-#define ATOL     RCONST(1.0e-26)                         /* vector absolute tolerance components */
+#define RTOL     RCONST(1.0E-7)                                     /* scalar relative tolerance */
+#define ATOL     RCONST(1.0e-20)                         /* vector absolute tolerance components */
 
 
 // #define USE_CVSUPERLUMP_SPARSE_SOLVER
@@ -90,7 +92,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   /* Specify the maximum number of internal steps */
 
-  int mxstep = 10000000;
+  int mxstep = 1000000;
 
 
   /* Create serial vector of length NEQ for I.C. and abstol */
@@ -115,7 +117,14 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   for (int i=0; i<NEQ; i++){
 
-    Ith(y,i) = (realtype) species[i+1].abn[gridp];
+    if(species[i+1].abn[gridp]>0.0){
+
+      Ith(y,i) = (realtype) species[i+1].abn[gridp];
+    }
+    else{
+
+      Ith(y,i) =  0.0;
+    }
   }
 
 
@@ -199,6 +208,16 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   }
 
 
+  /* Specify that a user-supplied Jacobian function (Jac) is to be used */
+
+  flag = CVDlsSetJacFn(cvode_mem, Jac);
+
+  if (check_flag(&flag, "CVDlsSetJacFn", 1)){
+
+    return(1);
+  }
+
+
   /* Call CVodeSetMaxNumSteps to set the maximum number of steps */
 
   flag = CVodeSetMaxNumSteps(cvode_mem, mxstep);
@@ -219,28 +238,11 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   }
 
 
-
-// /* Pick the right solver */
-//
-// // #ifdef USE_DENSE_SOLVER
-//
-
-// // #endif
-//
-//
-//
-// #ifdef USE_CVSUPERLUMP_SPARSE_SOLVER
-//
-
-//
-// #endif
-
-
-
   /* Call CVode */
 
   flag = CVode(cvode_mem, time_end, y, &t, CV_NORMAL);
 
+printf("I got through!\n");
 
   if (check_flag(&flag, "CVode", 1)){
 

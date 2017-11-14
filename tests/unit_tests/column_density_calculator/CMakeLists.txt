@@ -57,14 +57,14 @@ find_library( HEALPix
 include_directories(/home/frederik/Dropbox/Astro/Magritte/src)
 
 
-# Create executable to test exact_feautrier
+# Create executable to test feautrier
 
-add_executable( test_exact_feautrier   test_exact_feautrier.cpp )
+add_executable( test_feautrier   test_feautrier.cpp )
 
 
 # Link the necessary libraries
 
-target_link_libraries( test_exact_feautrier   _test_main   ${MAGRITTE}   ${HEALPix} )
+target_link_libraries( test_feautrier   _test_main   ${MAGRITTE}   ${HEALPix} )
 
 
 # Create executable to test calc_column_density

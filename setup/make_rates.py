@@ -618,6 +618,8 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
     # Prepare and write the electron conservation equation
     output.write(conserve_species('e-', constituentList, codeFormat='C'))
 
+    output.write("  data->electron_abundance = x_e;\n\n")
+
     for n in range(nSpecies):
         species1 = speciesList[n]
         for m in range(nSpecies):

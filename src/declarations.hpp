@@ -181,14 +181,14 @@ typedef struct SPECIES {
 
 typedef struct REACTION {
 
-  std::string   R1;                                                                /* reactant 1 */
-  std::string   R2;                                                                /* reactant 2 */
-  std::string   R3;                                                                /* reactant 3 */
+  std::string R1;                                                                  /* reactant 1 */
+  std::string R2;                                                                  /* reactant 2 */
+  std::string R3;                                                                  /* reactant 3 */
 
-  std::string   P1;                                                        /* reaction product 1 */
-  std::string   P2;                                                        /* reaction product 2 */
-  std::string   P3;                                                        /* reaction product 3 */
-  std::string   P4;                                                        /* reaction product 4 */
+  std::string P1;                                                          /* reaction product 1 */
+  std::string P2;                                                          /* reaction product 2 */
+  std::string P3;                                                          /* reaction product 3 */
+  std::string P4;                                                          /* reaction product 4 */
 
 
   double alpha;                             /* alpha coefficient to calculate rate coefficient k */

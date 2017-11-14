@@ -22,7 +22,7 @@
 /* User-defined vector and matrix accessor macros: Ith, IJth */
 
 #define Ith(v,i)    NV_Ith_S(v,i)                             /* Ith numbers components 0..NEQ-1 */
-#define IJth(A,i,j) DENSE_ELEM(A,i,j)                         /* IJth numbers rows,cols 0..NEQ-1 */
+#define IJth(A,i,j) SM_ELEMENT_D(A,i,j)                       /* IJth numbers rows,cols 0..NEQ-1 */
 
 
 

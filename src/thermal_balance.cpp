@@ -44,7 +44,9 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
                                double *A_coeff, double *B_coeff, double *C_coeff, double *R,
                                double *C_data, double *coltemp, int *icol, int *jcol,
                                double *prev1_pop, double *prev2_pop, double *prev3_pop,
-                               double *pop, double *mean_intensity, double *thermal_ratio,
+                               double *pop, double *mean_intensity,
+                               double *Lambda_diagonal, double *mean_intensity_eff,
+                               double *thermal_ratio,
                                double time_chemistry, double time_level_pop )
 {
 
@@ -108,7 +110,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
   level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency,
                      A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
                      C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
-                     weight, energy, mean_intensity );
+                     weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
 
   time_level_pop += omp_get_wtime();
 

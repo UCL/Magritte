@@ -15,4 +15,9 @@ D.~Mihalas and B.~Weibel-Mihalas, {\em {Foundations of Radiation
   Hydrodynamics}}.
 \newblock Dover Books on Physics, Dover Publications, 1999.
 
+\bibitem{Rybicki1991}
+G.~B. Rybicki and D.~G. Hummer, ``{An accelerated lambda iteration method for
+  multilevel radiative transfer. I - Non-overlapping lines with background
+  continuum},'' {\em Astron. Astrophys.}, vol.~245, pp.~171--181, 1991.
+
 \end{thebibliography}
