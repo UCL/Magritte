@@ -31,3 +31,9 @@ CMakeCache.txt
 ##########
 
 #*20*
+
+
+# Text files containting old large files #
+##########################################
+
+*.txt
