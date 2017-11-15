@@ -30,18 +30,6 @@ std::string reac_datafile = REAC_DATAFILE;         /* path to data file containi
 std::string line_datafile[NLSPEC] = LINE_DATAFILES;              /* list of line data file paths */
 
 
-// /* --- Addition by pre_setup --- */
-//
-//
-// std::string line_datafile[NLSPEC] = { LINE_DATAFILE0, \
-//                                       LINE_DATAFILE1, \
-//                                       LINE_DATAFILE2, \
-//                                       LINE_DATAFILE3  };
-//
-//
-//  /* --- End of addition by pre_setup --- */
-
-
 
 /* Declaration of external variables */
 
@@ -53,6 +41,13 @@ long cum_raytot[NGRID*NRAYS];           /* cumulative number of evaluation point
 long key[NGRID*NGRID];             /* stores the numbers of the grid points on the rays in order */
 
 long raytot[NGRID*NRAYS];               /* cumulative number of evaluation points along each ray */
+
+
+long local_cum_raytot[NRAYS];           /* cumulative number of evaluation points along each ray */
+
+long local_key[NGRID];             /* stores the numbers of the grid points on the rays in order */
+
+long local_raytot[NRAYS];               /* cumulative number of evaluation points along each ray */
 
 
 
@@ -149,6 +144,7 @@ int H3Ox_nr;                                                 /* species nr corre
 int Hex_nr;                                                   /* species nr corresponding to He+ */
 
 int CO_nr;                                                     /* species nr corresponding to CO */
+
 
 
 /* Reaction numbers */

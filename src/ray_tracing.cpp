@@ -39,11 +39,18 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
   long   succes = 0;                                  /* total number of evaluation points found */
 
-  double vector[3];                        /* unit vector in the direction of the HEALPix vector */
-
   double time_de = 0.0;                                    /* time in dividing evaluation points */
   double time_key = 0.0;                                                 /* time to make the key */
   double time_sort = 0.0;                /* time to sort grid points w.r.t. distance from origin */
+
+
+  /* Initialize the data structures that will store the evaluation points */
+
+  initialize_long_array(key, NGRID*NGRID);
+
+  initialize_long_array(raytot, NGRID*NRAYS);
+
+  initialize_long_array(cum_raytot, NGRID*NRAYS);
 
 
   /* Note: GINDEX, RINDEX and GP_NR_OF_EVALP are defined in definitions.h */
@@ -232,15 +239,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
       } /* end of if angle < THETA_CRIT */
 
-      // else {
-      //
-      //   printf("angle is %lf for (%ld,%ld) \n", angle, gridp, n);
-      //   printf("zero? %lE \n", (rvec_dot_uhpv - Z[ipix])
-  		//                        / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]) -1.0 );
-      //
-      // }
-
-
     } /* end of n loop over gridpoints (around an origin) */
 
 
@@ -328,25 +326,25 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
 
 
-/* trace_rays: creates the evaluation points for each ray for this grid point                    */
+/* get_evalpoints: creates the evaluation points for each ray for this grid point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int trace_rays( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
+int get_evalpoints( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 {
 
 
-  long   succes = 0;                                  /* total number of evaluation points found */
+  /* Initialize the data structures that will store the evaluation points */
 
-  double vector[3];                        /* unit vector in the direction of the HEALPix vector */
+  initialize_long_array(local_key, NGRID);
 
-  double time_de = 0.0;                                    /* time in dividing evaluation points */
-  double time_key = 0.0;                                                 /* time to make the key */
-  double time_sort = 0.0;                /* time to sort grid points w.r.t. distance from origin */
+  initialize_long_array(local_raytot, NRAYS);
+
+  initialize_long_array(local_cum_raytot, NRAYS);
 
 
   /* Place the origin at the location of the grid point under consideration */
 
-  double origin[3];                   /* position vector of the grid point under consideration */
+  double origin[3];                     /* position vector of the grid point under consideration */
 
   origin[0] = gridpoint[gridp].x;
   origin[1] = gridpoint[gridp].y;
@@ -355,57 +353,47 @@ int trace_rays( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 
   /* Locate all grid points w.r.t. the origin */
 
-  double ra2[NGRID];        /* array with the squares of the lengths of local position vectors */
+  double ra2[NGRID];          /* array with the squares of the lengths of local position vectors */
 
-  long   rb[NGRID];                /* array with the identifiers of the local position vectors */
+  long rb[NGRID];                    /* array with the identifiers of the local position vectors */
 
 
   for (long n=0; n<NGRID; n++){
 
-    double rvec[3];                     /* local position vector of a grid point w.r.t. origin */
+    double rvec[3];                       /* local position vector of a grid point w.r.t. origin */
 
     rvec[0] = gridpoint[n].x - origin[0];
     rvec[1] = gridpoint[n].y - origin[1];
     rvec[2] = gridpoint[n].z - origin[2];
 
-    ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];            /* SQUARE length! */
+    ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];              /* SQUARE length! */
     rb[n]  = n;
   }
 
 
   /* Sort the grid points w.r.t their distance from the origin */
 
-  time_sort -= omp_get_wtime();
-
   heapsort(ra2, rb, NGRID);
 
   double radius = sqrt( ra2[NGRID-1]  );
 
-  time_sort += omp_get_wtime();
 
-
-  long   nr[NRAYS];                      /* current number of evaluation points along each ray */
-
-  initialize_long_array(nr, NRAYS);
-
-  double Z[NRAYS];                                                       /* distance along ray */
+  double Z[NRAYS];                                                         /* distance along ray */
 
   initialize_double_array(Z, NRAYS);
 
 
-  /*   FIND EVALUATION POINTS FRO gridp                                                        */
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  /*   FIND EVALUATION POINTS FOR gridp                                                          */
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
   /* Devide the grid points over the rays through the origin */
   /* Start from the second point in rb (first point is gridpoint itself) */
 
-  time_de -= omp_get_wtime();
-
 
   for (long n=1; n<NGRID; n++){
 
-    double rvec[3];                     /* local position vector of a grid point w.r.t. origin */
+    double rvec[3];                       /* local position vector of a grid point w.r.t. origin */
 
     rvec[0] = gridpoint[rb[n]].x - origin[0];
     rvec[1] = gridpoint[rb[n]].y - origin[1];
@@ -414,9 +402,9 @@ int trace_rays( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 
     /* Get ipix ray where rvec belongs to (using HEALPix functions) */
 
-    double theta, phi;                                            /* angles of the HEALPix ray */
+    double theta, phi;                                              /* angles of the HEALPix ray */
 
-    long   ipix;                                      /* ray index (as reference to the pixel) */
+    long   ipix;                                        /* ray index (as reference to the pixel) */
 
     vec2ang(rvec, &theta, &phi);
 
@@ -426,8 +414,8 @@ int trace_rays( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
     /* Calculate the angle between the gridpoint and its corresponding ray */
 
     double rvec_dot_uhpv = rvec[0]*unit_healpixvector[VINDEX(ipix,0)]
-	                          + rvec[1]*unit_healpixvector[VINDEX(ipix,1)]
-	                          + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
+	                         + rvec[1]*unit_healpixvector[VINDEX(ipix,1)]
+	                         + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
 
     double cosine = (rvec_dot_uhpv - Z[ipix])
 	                  / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
@@ -448,24 +436,15 @@ int trace_rays( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 
     if (angle < THETA_CRIT){
 
-      evalpoint[GINDEX(gridp,rb[n])].dZ  = rvec_dot_uhpv - Z[ipix];
+      evalpoint[rb[n]].onray = true;
 
-      evalpoint[GINDEX(gridp,rb[n])].vol
-        = (gridpoint[rb[n]].vx - gridpoint[gridp].vx)*unit_healpixvector[VINDEX(ipix,0)]
-          + (gridpoint[rb[n]].vy - gridpoint[gridp].vy)*unit_healpixvector[VINDEX(ipix,1)]
-          + (gridpoint[rb[n]].vz - gridpoint[gridp].vz)*unit_healpixvector[VINDEX(ipix,2)];
+      evalpoint[rb[n]].dZ    = rvec_dot_uhpv - Z[ipix];
 
-      evalpoint[GINDEX(gridp,rb[n])].ray = ipix;
+      evalpoint[rb[n]].ray   = ipix;
 
-      raytot[RINDEX(gridp,ipix)] = raytot[RINDEX(gridp,ipix)] + 1;
+	    evalpoint[rb[n]].Z     = Z[ipix] = rvec_dot_uhpv;
 
-      Z[ipix] = rvec_dot_uhpv;
-
-	     evalpoint[GINDEX(gridp,rb[n])].Z = Z[ipix];
-
-      evalpoint[GINDEX(gridp,rb[n])].onray = true;
-
-      succes = succes + 1;
+      local_raytot[ipix] = local_raytot[ipix] + 1;
 
 
       /* Check whether ipix ray for evaluation point can be considered equivalent */
@@ -474,64 +453,60 @@ int trace_rays( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 
       if (distance_to_ray2 < RAY_SEPARATION2){
 
-        evalpoint[GINDEX(gridp,rb[n])].eqp = gridp;
+        evalpoint[rb[n]].eqp = gridp;
       }
 
       else {
 
-        evalpoint[GINDEX(gridp,rb[n])].eqp = rb[n];
+        evalpoint[rb[n]].eqp = rb[n];
       }
 
-    } /* end of if angle < THETA_CRIT */
 
+    } /* end of if angle < THETA_CRIT */
 
   } /* end of n loop over gridpoints (around an origin) */
 
 
-  time_de += omp_get_wtime();
-
-
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
 
 
-  /*   SETUP EVALPOINTS DATA STRUCTURE                                                         */
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  /*   SETUP EVALPOINTS DATA STRUCTURE                                                           */
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  cum_raytot[RINDEX(gridp,0)] = 0;
+  long nr[NRAYS];                              /* current number of evaluation points on the ray */
 
-  cum_raytot[RINDEX(gridp,1)] = raytot[RINDEX(gridp,0)];
+  initialize_long_array(nr, NRAYS);
 
 
-  for (long r=2; r<NRAYS; r++){
+  local_cum_raytot[0] = 0;
 
-    cum_raytot[RINDEX(gridp,r)] = cum_raytot[RINDEX(gridp,r-1)] + raytot[RINDEX(gridp,r-1)];
+
+  for (long r=1; r<NRAYS; r++){
+
+    local_cum_raytot[r] = local_cum_raytot[r-1] + local_raytot[r-1];
   }
 
 
   /* Make a key to find back which evaluation point is where on which ray */
 
-  time_key -= omp_get_wtime();
-
   for (long n=0; n<NGRID; n++){
 
-    if (evalpoint[GINDEX(gridp,rb[n])].onray == true){
+    if (evalpoint[rb[n]].onray == true){
 
-      long ray = evalpoint[GINDEX(gridp,rb[n])].ray;
+      long ray = evalpoint[rb[n]].ray;
 
-      GP_NR_OF_EVALP(gridp, ray, nr[ray]) = rb[n];
+      LOCAL_GP_NR_OF_EVALP(ray, nr[ray]) = rb[n];
 
       nr[ray] = nr[ray] + 1;
     }
 
   }
 
-  time_key += omp_get_wtime();
 
-
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
   return(0);

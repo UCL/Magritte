@@ -266,46 +266,11 @@ int main()
 
 
 
-  /*   CREATE HEALPIX VECTORS AND FIND ANTIPODAL PAIRS                                           */
-  /*_____________________________________________________________________________________________*/
-
-
-  // printf("(Magritte): creating HEALPix vectors \n");
-  //
-  //
-  // /* Create the (unit) HEALPix vectors and find antipodal pairs */
-  //
-  // double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
-  //
-  // long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
-  //
-  //
-  // create_healpixvectors(unit_healpixvector, antipod);
-  //
-  //
-  // printf("(Magritte): HEALPix vectors created \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
-
-
-
-
-
   /*   RAY TRACING                                                                               */
   /*_____________________________________________________________________________________________*/
 
 
   printf("(Magritte): tracing rays \n");
-
-
-  /* Initialize the data structures which will store the evaluation pointa */
-
-  initialize_long_array(key, NGRID*NGRID);
-
-  initialize_long_array(raytot, NGRID*NRAYS);
-
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
 
 
   /* Execute ray_tracing */

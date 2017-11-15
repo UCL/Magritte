@@ -30,6 +30,15 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
 
 
 
+/* get_evalpoints: creates the evaluation points for each ray for this grid point                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_evalpoints( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __RAY_TRACING_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

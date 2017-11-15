@@ -74,9 +74,13 @@
 /* Special key to find the number of the grid point associated to a certain evaluation point */
 
 #define GP_NR_OF_EVALP(gridpoint, ray, evalp)                                                     \
-        key[ GINDEX( (gridpoint), (evalp) + cum_raytot[RINDEX((gridpoint), (ray))] ) ]            \
+        ( key[ GINDEX( (gridpoint), (evalp) + cum_raytot[RINDEX((gridpoint), (ray))] ) ] )        \
                /* GP_NR_OF_EVALP(gridpoint, ray, evalp) gives the grid point number corresponding \
                        to the "evalp"'th evaluation point on ray "ray" of grid point "gridpoint" */
+
+#define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( local_key[ (evalp) + local_cum_raytot[(ray)] ] )     \
+                                /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \
+                                   corresponding to the "evalp"'th evaluation point on ray "ray" */
 
 
 /* Level population related index definitions */
@@ -104,11 +108,7 @@
 
 #define LINDEX(i,j) ((j)+(i)*nlev[lspec])                        /* when second index are levels */
 
-#define TINDEX(r,c) ((c)+(r)*nrad[lspec])         /* when second index are radiative transitions */
-
 #define L2INDEX(r,c) ((c)+(r)*nlev[lspec]*nlev[lspec])       /* when second index is LINDEX(i,j) */
-
-// #define SINDEX(r,c) ((c)+(r)*NSPEC)               /* when second index are (chemical) species */
 
 #define GRIDLEVLEV(g,i,j) (L2INDEX((g),LINDEX((i),(j)))) /* for a grid point and 2 level indices */
 
@@ -217,6 +217,14 @@ extern long cum_raytot[NGRID*NRAYS];       /* cumulative nr. of evaluation point
 extern long key[NGRID*NGRID];         /* stores the nrs. of the grid points on the rays in order */
 
 extern long raytot[NGRID*NRAYS];           /* cumulative nr. of evaluation points along each ray */
+
+
+extern long local_cum_raytot[NRAYS];       /* cumulative nr. of evaluation points along each ray */
+
+extern long local_key[NGRID];         /* stores the nrs. of the grid points on the rays in order */
+
+extern long local_raytot[NRAYS];           /* cumulative nr. of evaluation points along each ray */
+
 
 
 

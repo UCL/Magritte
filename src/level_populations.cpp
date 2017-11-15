@@ -230,49 +230,40 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
         for (long n=0; n<NGRID; n++){
 
-          // if (not_converged[n]){
 
-            long r_ij = LSPECGRIDLEVLEV(lspec,n,i,j);
-            long r_ji = LSPECGRIDLEVLEV(lspec,n,j,i);
+          long r_ij = LSPECGRIDLEVLEV(lspec,n,i,j);
+          long r_ji = LSPECGRIDLEVLEV(lspec,n,j,i);
 
-            long b_ij = LSPECLEVLEV(lspec,i,j);
-            long b_ji = LSPECLEVLEV(lspec,j,i);
+          long b_ij = LSPECLEVLEV(lspec,i,j);
+          long b_ji = LSPECLEVLEV(lspec,j,i);
 
-            long m_ij = LSPECGRIDRAD(lspec,n,kr);
+          long m_ij = LSPECGRIDRAD(lspec,n,kr);
 
-            mean_intensity[m_ij] = 0.0;
-
-
-            /* Calculate the mean intensity */
-
-            radiative_transfer( gridpoint, evalpoint, P_intensity, mean_intensity,
-                                Lambda_diagonal, mean_intensity_eff,
-                                Source, opacity, frequency, temperature_gas, temperature_dust,
-                                irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
+          mean_intensity[m_ij] = 0.0;
 
 
-            /* Fill the i>j part */
+          /* Calculate the mean intensity */
 
-            R[r_ij] = R[r_ij] - A_coeff[b_ij]*Lambda_diagonal[m_ij]
-                              + B_coeff[b_ij]*mean_intensity_eff[m_ij];
-
-
-            /* Add the j>i part */
-
-            R[r_ji] = R[r_ji] + B_coeff[b_ji]*mean_intensity_eff[m_ij];
+          radiative_transfer( gridpoint, evalpoint, P_intensity, mean_intensity,
+                              Lambda_diagonal, mean_intensity_eff,
+                              Source, opacity, frequency, temperature_gas, temperature_dust,
+                              irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
 
 
-          // } /* end of if not converged */
+          /* Fill the i>j part */
+
+          R[r_ij] = R[r_ij] - A_coeff[b_ij]*Lambda_diagonal[m_ij]
+                            + B_coeff[b_ij]*mean_intensity_eff[m_ij];
+
+
+          /* Add the j>i part */
+
+          R[r_ji] = R[r_ji] + B_coeff[b_ji]*mean_intensity_eff[m_ij];
+
 
         } /* end of n loop over grid points */
 
       } /* end of kr loop over radiative transitions */
-
-
-      // write_R("1", 0, R);
-      // write_R("2", 1, R);
-      // write_R("50", 49, R);
-      // write_R("75", 74, R);
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
