@@ -34,7 +34,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
                                double *pop, double *mean_intensity,
                                double *Lambda_diagonal, double *mean_intensity_eff,
                                double *thermal_ratio,
-                               double time_chemistry, double time_level_pop );
+                               double *time_chemistry, double *time_level_pop );
 
 /*-----------------------------------------------------------------------------------------------*/
 

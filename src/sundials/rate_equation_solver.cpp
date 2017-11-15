@@ -33,7 +33,7 @@
 
 #include "rate_equation_solver.hpp"
 #include "rate_equations.cpp"
-#include "jacobian.cpp"
+// #include "jacobian.cpp"
 
 
 /* User-defined vector and matrix accessor macros: Ith, IJth */
@@ -45,12 +45,8 @@
 /* Problem Constants */
 
 #define NEQ      (NSPEC-3)           /* number of equations: NSPEC minus dummies minus electrons */
-#define RTOL     RCONST(1.0E-7)                                     /* scalar relative tolerance */
-#define ATOL     RCONST(1.0e-20)                         /* vector absolute tolerance components */
-
-
-// #define USE_CVSUPERLUMP_SPARSE_SOLVER
-#define USE_DENSE_SOLVER
+#define RTOL     RCONST(1.0E-8)                                     /* scalar relative tolerance */
+#define ATOL     RCONST(1.0e-30)                         /* vector absolute tolerance components */
 
 
 
@@ -210,12 +206,12 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   /* Specify that a user-supplied Jacobian function (Jac) is to be used */
 
-  flag = CVDlsSetJacFn(cvode_mem, Jac);
-
-  if (check_flag(&flag, "CVDlsSetJacFn", 1)){
-
-    return(1);
-  }
+  // flag = CVDlsSetJacFn(cvode_mem, Jac);
+  //
+  // if (check_flag(&flag, "CVDlsSetJacFn", 1)){
+  //
+  //   return(1);
+  // }
 
 
   /* Call CVodeSetMaxNumSteps to set the maximum number of steps */
@@ -242,8 +238,6 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
   flag = CVode(cvode_mem, time_end, y, &t, CV_NORMAL);
 
-printf("I got through!\n");
-
   if (check_flag(&flag, "CVode", 1)){
 
     printf("\n\n !!! CVode ERROR in solver !!! \n\n");
@@ -256,7 +250,7 @@ printf("I got through!\n");
 
   for (int i=0; i<NEQ; i++){
 
-    if ( Ith(y,i) > 1.0E-26 ){
+    if ( Ith(y,i) > 1.0E-30 ){
 
       species[i+1].abn[gridp] = Ith(y,i);
     }
@@ -295,6 +289,11 @@ printf("I got through!\n");
   /* Free the matrix memory */
 
   SUNMatDestroy(A);
+
+
+  /* Free the user data */
+
+  // free(user_data);
 
 
   return(0);

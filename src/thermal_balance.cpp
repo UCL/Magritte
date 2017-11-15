@@ -47,7 +47,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
                                double *pop, double *mean_intensity,
                                double *Lambda_diagonal, double *mean_intensity_eff,
                                double *thermal_ratio,
-                               double time_chemistry, double time_level_pop )
+                               double *time_chemistry, double *time_level_pop )
 {
 
 
@@ -70,18 +70,18 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
 
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
-    time_chemistry -= omp_get_wtime();
+    *time_chemistry -= omp_get_wtime();
 
     chemistry( gridpoint, evalpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
-    time_chemistry += omp_get_wtime();
+    *time_chemistry += omp_get_wtime();
 
 
   } /* End of chemistry iteration */
 
 
-  printf("\n(thermal_balance): time in chemistry: %lf sec\n", time_chemistry);
+  printf("\n(thermal_balance): time in chemistry: %lf sec\n", *time_chemistry);
 
   printf("(thermal_balance): chemical abundances calculated \n\n");
 
@@ -105,17 +105,17 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
 
   /* Calculate level populations for each line producing species */
 
-  time_level_pop -= omp_get_wtime();
+  *time_level_pop -= omp_get_wtime();
 
   level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency,
                      A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
                      C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
                      weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
 
-  time_level_pop += omp_get_wtime();
+  *time_level_pop += omp_get_wtime();
 
 
-  printf("\n(thermal_balance): time in level_populations: %lf sec\n", time_level_pop);
+  printf("\n(thermal_balance): time in level_populations: %lf sec\n", *time_level_pop);
 
 
   printf("(thermal_balance): level populations calculated \n\n");

@@ -909,7 +909,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 
 /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
 /*-----------------------------------------------------------------------------------------------*/
-// 
+//
 // int write_radfield_tools( std::string tag, double *AV ,double lambda,
 //                           double *column_H2, double *column_CO )
 // {
@@ -1257,7 +1257,8 @@ int write_performance_log( double time_total, double time_level_pop, double time
 {
 
 
-  std::string file_name = OUTPUT_DIRECTORY + "performance_log.txt";
+  std::string run_number = RUN_NUMBER;
+  std::string file_name = "tests/performance/performance_log_" + run_number + ".txt";
 
   FILE *file = fopen(file_name.c_str(), "w");
 
@@ -1269,7 +1270,7 @@ int write_performance_log( double time_total, double time_level_pop, double time
     exit(1);
   }
 
-
+  fprintf( file, "NGRID            %d\n", NGRID );
   fprintf( file, "time_total       %lE\n", time_total );
   fprintf( file, "time_ray_tracing %lE\n", time_ray_tracing );
   fprintf( file, "time_level_pop   %lE\n", time_level_pop );

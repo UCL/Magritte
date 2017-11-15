@@ -76,7 +76,7 @@ with open("../src/sundials/rate_equations.cpp", 'r') as read_file, open("../src/
 
             for species_index_2 in range(NEQ):
 
-                jacobian_entry = "  IJth(J, " + str(species_index_2) + ", " + str(species_index_1) + ") = ("
+                jacobian_entry = "  IJth(J, " + str(species_index_1) + ", " + str(species_index_2) + ") = ("
 
                 diff_spec      = "*Ith(y," + str(species_index_2) + ")"
 
@@ -121,9 +121,6 @@ with open("../src/sundials/rate_equations.cpp", 'r') as read_file, open("../src/
 
 
                 write_file.write(jacobian_entry)
-
-
-            write_file.write(jacobian_entry)
 
 
     # Write the footer for the jacobian.cpp file

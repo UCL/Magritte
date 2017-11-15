@@ -144,6 +144,7 @@ int read_reactions(std::string reac_datafile)
   RT_max_buff = (char*) malloc( 15*sizeof(char) );
 
 
+
   /* Open reactions data file */
 
   FILE *reacdata = fopen(reac_datafile.c_str(), "r");
@@ -253,6 +254,18 @@ int read_reactions(std::string reac_datafile)
   }
 
   fclose(reacdata);
+
+
+  /* Free the allocated memory */
+
+  // free(buffer);
+  // free(buffer_cpy);
+  // free(alpha_buff);
+  // free(beta_buff);
+  // free(gamma_buff);
+  // free(RT_min_buff);
+  // free(RT_max_buff);
+
 
 
   return(0);

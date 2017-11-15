@@ -149,9 +149,7 @@ double self_shielding_CO( double column_CO, double column_H2 )
             -2.760E+00, -2.818E+00, -2.902E+00, -3.146E+00, -3.758E+00, -5.441E+00, \
             -4.001E+00, -4.055E+00, -4.122E+00, -4.421E+00, -5.077E+00, -6.446E+00  };
 
-  double *d2log10shield;
-  d2log10shield = (double*) malloc( m*n*sizeof(double) );
-
+  double d2log10shield[m*n];
 
 
   /* Write the shield_CO values to a text file (for testing) */
@@ -244,13 +242,13 @@ double dust_scattering( double AV_ray, double lambda )
   /*     A(I)    = ∑ a(i)*exp(-k(i)*tau) for i=1,5                                               */
   /*               relative intensity decrease for tau ≥ 1                                       */
 
-  double A[] = { 1.000,  2.006, -1.438, 0.7364, -0.5076, -0.0592 };
+  double A[6] = { 1.000,  2.006, -1.438, 0.7364, -0.5076, -0.0592 };
 
 
   /*     K(0)    = see A0                                                                        */
   /*     K(I)    = see A(I)                                                                      */
 
-  double k[] = { 0.7514, 0.8490, 1.013, 1.282,   2.005,   5.832 };
+  double k[6] = { 0.7514, 0.8490, 1.013, 1.282,   2.005,   5.832 };
 
 
   double dust_scatter = 0.0;                            /* attenuation due to scattering by dust */
@@ -312,7 +310,6 @@ double X_lambda(double lambda)
      that at visual wavelength (λ=5500Å) using the extinction curve of
      Savage & Mathis (1979, ARA&A, 17, 73, Table 2) */
 
-  long i;                                                                               /* index */
 
   const long n = 30;
 
@@ -346,7 +343,7 @@ double X_lambda(double lambda)
   double loglambda_grid[n];
   double logX_grid[n];
 
-  for (i=0; i<n; i++){
+  for (int i=0; i<n; i++){
 
     loglambda_grid[i] = log(lambda_grid[i]);
     logX_grid[i]      = log(X_grid[i]);

@@ -22,6 +22,8 @@ echo "std::string OUTPUT_DIRECTORY = \"$output_directory\";" > outputdirectory.h
 
 python make_rates.py
 
+python MakeJacobian.py
+
 
 # Create and execute the Makefile for the setup
 

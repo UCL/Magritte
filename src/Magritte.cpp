@@ -465,7 +465,6 @@ int main()
 
     time_chemistry += omp_get_wtime();
 
-
   } /* End of chemistry iteration */
 
 
@@ -571,7 +570,7 @@ int main()
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
-                               time_chemistry, time_level_pop );
+                               &time_chemistry, &time_level_pop );
 
 
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
@@ -635,7 +634,7 @@ int main()
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
-                               time_chemistry, time_level_pop );
+                               &time_chemistry, &time_level_pop );
 
 
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
@@ -738,10 +737,6 @@ int main()
 
   /*_____________________________________________________________________________________________*/
 
-
-
-
-  printf("(Magritte): performance of this run : \n\n");
 
 
 

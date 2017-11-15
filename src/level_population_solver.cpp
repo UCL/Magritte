@@ -36,14 +36,7 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
   const int n = nlev[lspec];                /* number of rows and columns of the matrix to solve */
   const int m = 1;                                             /* number of solution vectors 'b' */
 
-  // double *a;
-  // a = (double*) malloc( nlev[lspec]*nlev[lspec]*sizeof(double) );
-
-  // double *b;
-  // b = (double*) malloc( nlev[lspec]*sizeof(double) );
-
   double a[n*n];
-
   double b[n*m];
 
 
@@ -119,12 +112,6 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
   }
 
-
-
-  /* Free the allocated memory for temporary variables */
-
-  // free(a);
-  // free(b);
 
   return(0);
 

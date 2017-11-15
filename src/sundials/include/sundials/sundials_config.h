@@ -10,9 +10,9 @@
  * -----------------------------------------------------------------*/
 
 /* Define SUNDIALS version numbers */
-#define SUNDIALS_VERSION "3.0.0"
+#define SUNDIALS_VERSION "3.1.0"
 #define SUNDIALS_VERSION_MAJOR 3
-#define SUNDIALS_VERSION_MINOR 0
+#define SUNDIALS_VERSION_MINOR 1
 #define SUNDIALS_VERSION_PATCH 0
 #define SUNDIALS_VERSION_LABEL ""
 
@@ -48,7 +48,7 @@
  *     #define SUNDIALS_INT64_T 1
  *     #define SUNDIALS_INT32_T 1
  */
-#define SUNDIALS_INT32_T 1
+#define SUNDIALS_INT64_T 1
 
 /* Use generic math functions 
  * If it was decided that generic math functions can be used, then
@@ -86,7 +86,7 @@
  * otherwise
  *      #define SUNDIALS_MPI_COMM_F2C 0
  */
-#define SUNDIALS_MPI_COMM_F2C 1
+
 
 /* Mark SUNDIALS API functions for export/import
  * When building shared SUNDIALS libraries under Windows, use

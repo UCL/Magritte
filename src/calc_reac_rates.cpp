@@ -33,7 +33,7 @@ double rate_H2_formation( int reac, double temperature_gas, double temperature_d
 {
 
 
-  double k= 0.0;                                                         /* reaction coefficient */
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* Copy the reaction data to variables with more convenient names */
@@ -140,7 +140,7 @@ double rate_PAH( int reac, double temperature_gas)
 {
 
 
-  double k= 0.0;                                                         /* reaction coefficient */
+  double k = 0.0;                                                        /* reaction coefficient */
 
 
   /* Copy the reaction data to variables with more convenient names */

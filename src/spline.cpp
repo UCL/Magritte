@@ -338,6 +338,15 @@ int splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
   splint(x1a, yy_temp, d2yy_temp, m, x1, y);
 
 
+  free(ya_temp);
+
+  free(d2ya_temp);
+
+  free(yy_temp);
+
+  free(d2yy_temp);
+
+
   return(0);
 
 }
