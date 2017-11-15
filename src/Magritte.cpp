@@ -31,7 +31,6 @@
 #include "read_chemdata.hpp"
 #include "read_linedata.hpp"
 
-#include "create_healpixvectors.hpp"
 #include "ray_tracing.hpp"
 
 #include "calc_rad_surface.hpp"
@@ -271,20 +270,20 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(Magritte): creating HEALPix vectors \n");
-
-
-  /* Create the (unit) HEALPix vectors and find antipodal pairs */
-
-  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
-
-  long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
-
-
-  create_healpixvectors(unit_healpixvector, antipod);
-
-
-  printf("(Magritte): HEALPix vectors created \n\n");
+  // printf("(Magritte): creating HEALPix vectors \n");
+  //
+  //
+  // /* Create the (unit) HEALPix vectors and find antipodal pairs */
+  //
+  // double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+  //
+  // long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
+  //
+  //
+  // create_healpixvectors(unit_healpixvector, antipod);
+  //
+  //
+  // printf("(Magritte): HEALPix vectors created \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -313,7 +312,7 @@ int main()
 
   time_ray_tracing -= omp_get_wtime();
 
-  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
+  ray_tracing(gridpoint, evalpoint);
 
   time_ray_tracing += omp_get_wtime();
 
@@ -326,7 +325,7 @@ int main()
 
   /*_____________________________________________________________________________________________*/
 
-
+  // return(0);
 
 
 
@@ -351,7 +350,7 @@ int main()
 
   /* Calculate the radiation surface */
 
-  calc_rad_surface(G_external, unit_healpixvector, rad_surface);
+  calc_rad_surface(G_external, rad_surface);
 
   printf("(Magritte): external radiation field calculated \n");
 
@@ -398,7 +397,7 @@ int main()
 
   /* Calculcate the UV field */
 
-  calc_UV_field(antipod, AV, rad_surface, UV_field);
+  calc_UV_field(AV, rad_surface, UV_field);
 
 
   double temperature_gas[NGRID];                           /* gas temperature at each grid point */
@@ -563,7 +562,7 @@ int main()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H2, column_HD, column_C,
+    thermal_balance_iteration( gridpoint, evalpoint, column_H2, column_HD, column_C,
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
@@ -627,7 +626,7 @@ int main()
     long n_not_converged = 0;                /* number of grid points that are not yet converged */
 
 
-    thermal_balance_iteration( gridpoint, evalpoint, antipod, column_H2, column_HD, column_C,
+    thermal_balance_iteration( gridpoint, evalpoint, column_H2, column_HD, column_C,
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,

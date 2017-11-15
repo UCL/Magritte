@@ -35,7 +35,7 @@
 /* thermal_balance: perform a thermal balance iteration to calculate the thermal flux            */
 /*-----------------------------------------------------------------------------------------------*/
 
-int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                                double *column_H2, double *column_HD, double *column_C,
                                double *column_CO, double *UV_field,
                                double *temperature_gas, double *temperature_dust,
@@ -107,7 +107,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long 
 
   *time_level_pop -= omp_get_wtime();
 
-  level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency,
+  level_populations( gridpoint, evalpoint, irad, jrad, frequency,
                      A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
                      C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
                      weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );

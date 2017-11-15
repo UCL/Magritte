@@ -30,7 +30,7 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                          double *P_intensity, double *mean_intensity,
                          double *Lambda_diagonal, double *mean_intensity_eff,
                          double *Source, double *opacity, double *frequency,

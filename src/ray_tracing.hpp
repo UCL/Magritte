@@ -24,7 +24,7 @@
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void ray_tracing( double *unit_healpixvector, GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
+int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
 
 /*-----------------------------------------------------------------------------------------------*/
 

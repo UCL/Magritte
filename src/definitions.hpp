@@ -56,6 +56,14 @@ long raytot[NGRID*NRAYS];               /* cumulative number of evaluation point
 
 
 
+/* HEALPix vectors */
+
+double const unit_healpixvector[3*NRAYS] = UNIT_HEALPIXVECTOR;
+
+long const antipod[NRAYS] = ANTIPOD;
+
+
+
 /* Level populations */
 
 int const nlev[NLSPEC] = NLEV;

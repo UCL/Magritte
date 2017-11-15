@@ -28,7 +28,6 @@ species_tools.cpp
 read_input.cpp
 read_chemdata.cpp
 read_linedata.cpp
-create_healpixvectors.cpp
 ray_tracing.cpp
 heapsort.cpp
 reaction_rates.cpp

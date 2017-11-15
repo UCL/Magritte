@@ -24,7 +24,7 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        int *irad, int*jrad, double *frequency,
                        double *A_coeff, double *B_coeff, double *C_coeff, double *R,
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,

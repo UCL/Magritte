@@ -26,6 +26,24 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length);
 
 
 
+/* write_long_array: write an array of long to the config file                                     */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_long_array(FILE *file, std::string NAME, long *array, long length);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* write_double_array: write an array of int to the config file                                  */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_double_array(FILE *file, std::string NAME, double *array, long length);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 #endif /* __SETUP_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

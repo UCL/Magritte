@@ -29,7 +29,7 @@
 /* calc_rad_surface: calculates the UV radiation surface for each ray at each grid point   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_rad_surface(double *G_external, double *unit_healpixvector, double *rad_surface)
+int calc_rad_surface(double *G_external, double *rad_surface)
 {
 
   long n;                                                                    /* grid point index */

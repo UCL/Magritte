@@ -45,7 +45,6 @@
 
 /* Helper constants */
 
-#define TOL 1.0E-9                                               /* tolerance for antipodal rays */
 #define MAX_WIDTH 13                                                             /* for printing */
 #define BUFFER_SIZE 500                                    /* max number of characters in a line */
 
@@ -218,6 +217,15 @@ extern long cum_raytot[NGRID*NRAYS];       /* cumulative nr. of evaluation point
 extern long key[NGRID*NGRID];         /* stores the nrs. of the grid points on the rays in order */
 
 extern long raytot[NGRID*NRAYS];           /* cumulative nr. of evaluation points along each ray */
+
+
+
+/* HEALPix vectors */
+
+extern const double unit_healpixvector[3*NRAYS];
+
+extern const long antipod[NRAYS];
+
 
 
 /* Level populations */

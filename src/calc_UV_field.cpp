@@ -27,7 +27,7 @@
 /* calc_UV_field: calculates the UV radiation field at each grid point                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_UV_field( long *antipod, double *AV, double *rad_surface, double *UV_field )
+int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
 {
 
 

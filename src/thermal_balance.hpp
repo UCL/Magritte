@@ -22,7 +22,7 @@
 /* thermal_balance: perform a thermal balance iteration to calculate the thermal flux            */
 /*-----------------------------------------------------------------------------------------------*/
 
-int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                                double *column_H2, double *column_HD, double *column_C,
                                double *column_CO, double *UV_field,
                                double *temperature_gas, double *temperature_dust,

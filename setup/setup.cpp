@@ -19,12 +19,13 @@
 #include <string>
 #include <iostream>
 
+#include "setup.hpp"
 #include "outputdirectory.hpp"
 #include "setup_definitions.hpp"
 #include "setup_data_structures.hpp"
 #include "setup_data_tools.hpp"
 #include "setup_initializers.hpp"
-#include "setup.hpp"
+#include "setup_healpixvectors.hpp"
 
 
 
@@ -266,6 +267,35 @@ int main(){
 
 
 
+
+  /*   SETUP HEALPIX VECTORS AND FIND ANTIPODAL PAIRS                                            */
+  /*_____________________________________________________________________________________________*/
+
+
+  printf("(setup): creating HEALPix vectors \n");
+
+
+  /* Create the (unit) HEALPix vectors and find antipodal pairs */
+
+  double *unit_healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
+  unit_healpixvector = (double*) malloc( 3*nrays*sizeof(double) );
+
+  long *antipod;                                             /* gives antipodal ray for each ray */
+  antipod = (long*) malloc( nrays*sizeof(long) );
+
+
+  setup_healpixvectors(nrays, unit_healpixvector, antipod);
+
+
+  printf("(setup): HEALPix vectors created \n\n");
+
+
+  /*_____________________________________________________________________________________________*/
+
+
+
+
+
   /*   WRITE CONFIG FILE                                                                         */
   /*_____________________________________________________________________________________________*/
 
@@ -342,6 +372,11 @@ int main(){
   write_int_array(config_file, "CUM_TOT_NCOLTRANTEMP", cum_tot_ncoltrantemp, NLSPEC);
 
 
+  write_double_array(config_file, "UNIT_HEALPIXVECTOR", unit_healpixvector, 3*nrays);
+
+  write_long_array(config_file, "ANTIPOD", antipod, nrays);
+
+
   fclose(config_file);
 
 
@@ -376,6 +411,58 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
   for (long i=1; i<length; i++){
 
     fprintf( file, ", %d", array[i] );
+  }
+
+  fprintf( file, " } \n\n");
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_long_array: write an array of long to the config file                                   */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_long_array(FILE *file, std::string NAME, long *array, long length)
+{
+
+  fprintf( file, "#define %s { %ld", NAME.c_str(), array[0]);
+
+  for (long i=1; i<length; i++){
+
+    fprintf( file, ", %ld", array[i] );
+  }
+
+  fprintf( file, " } \n\n");
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_double_array: write an array of int to the config file                                  */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_double_array(FILE *file, std::string NAME, double *array, long length)
+{
+
+  fprintf( file, "#define %s { %lE", NAME.c_str(), array[0]);
+
+  for (long i=1; i<length; i++){
+
+    fprintf( file, ", %lE", array[i] );
   }
 
   fprintf( file, " } \n\n");

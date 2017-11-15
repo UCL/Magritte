@@ -35,7 +35,7 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod,
+int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        int *irad, int*jrad, double *frequency,
                        double *A_coeff, double *B_coeff, double *C_coeff, double *R,
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
@@ -245,7 +245,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *antipod
 
             /* Calculate the mean intensity */
 
-            radiative_transfer( gridpoint, evalpoint, antipod, P_intensity, mean_intensity,
+            radiative_transfer( gridpoint, evalpoint, P_intensity, mean_intensity,
                                 Lambda_diagonal, mean_intensity_eff,
                                 Source, opacity, frequency, temperature_gas, temperature_dust,
                                 irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
