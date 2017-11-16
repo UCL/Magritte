@@ -1,6 +1,6 @@
-# ![Magritte logo](/docs/Images/Magritte_logo.png)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
+# <img src="/docs/Images/Magritte_logo.png" alt="Magritte_logo" style="width: 70px;"/>   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
-## Multidimensional Accelerated General-purpose Radiative Transfer
+#### Multidimensional Accelerated General-purpose Radiative Transfer
 
 
 How to get started:
