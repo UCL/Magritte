@@ -1,12 +1,11 @@
-# <img src="/docs/Images/Magritte_logo.png" height="60">
+<img src="/docs/Images/Magritte_logo.png" height="60">
 
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
 <img src="/docs/Images/Magritte_name.png" height="30">
----
 
-How to get started:
--------------------
+
+## How to get started:
 
 - Run the `cofigure.sh` bash script to produce the Makefile.
   ```
@@ -14,8 +13,7 @@ How to get started:
   ```
 
 
-How to use:
------------
+## How to use:
 
 - Specify the parameters in the `parameters.hpp` file.
   (Data files are stored in the `/data` folder.
@@ -41,8 +39,7 @@ How to use:
 
 
 
-Current issues and warnings
----------------------------
+## Current issues and warnings
 
 (!) Look out for devisions by 4PI which should be devisions by the number of rays.
 
@@ -54,8 +51,8 @@ Current issues and warnings
 
 
 
-
-
 ---
+
+
 
 Developed by [Frederik De Ceuster](https://github.com/FrederikDeCeuster) at [UCL](https://github.com/ucl) and [KU Leuven](https://github.com/IvS-KULeuven)
