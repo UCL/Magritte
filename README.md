@@ -1,6 +1,6 @@
-# ![Magritte logo](https://raw.githubusercontent.com/UCL/Magritte/master/docs/Images/Magritte_logo.png?token=AWbw4ahxpYY-sLWuJbKZ95Mhqo9xW3pYks5Z64V6wA%3D%3D)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
+# ![Magritte logo](/docs/Images/Magritte_logo.png)   Magritte   [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
-## Multidimensional Accelerated General-purpose RadIaTive TransfEr
+## Multidimensional Accelerated General-purpose Radiative Transfer
 
 
 How to get started:
@@ -56,4 +56,4 @@ Current issues and warnings
 
 ---
 
-Developed by [Frederik De Ceuster](https://github.com/FrederikDeCeuster) at [UCL](https://github.com/ucl) and [IvS-KULeuven](https://github.com/IvS-KULeuven)
+Developed by [Frederik De Ceuster](https://github.com/FrederikDeCeuster) at [UCL](https://github.com/ucl) and [KU Leuven](https://github.com/IvS-KULeuven)
