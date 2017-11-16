@@ -56,4 +56,4 @@ Current issues and warnings
 
 ---
 
-Developed by @FrederikDeCeuster at @UCL and @IvS-KULeuven
+Developed by [Frederik De Ceuster](https://github.com/FrederikDeCeuster) at [UCL](https://github.com/ucl) and [IvS-KULeuven](https://github.com/IvS-KULeuven)
