@@ -6,16 +6,16 @@
 How to get started:
 -------------------
 
-- Run the cofigure.sh script to produce the Makefile.
+- Run the cofigure.sh bash script to produce the Makefile.
   ```
-  $ ./configure.sh
+  $ bash configure.sh
   ```
 
 
 How to use:
 -----------
 
-- Specify the parameters in the parameters.txt file.
+- Specify the parameters in the parameters.hpp file.
   (Data files are stored in the /data folder.
    Grids are stored in the /input folder.)
 
@@ -25,36 +25,35 @@ How to use:
   $ make
   ```
 
-- Run the executable to generate the ouput in the /output folder.
+- Run the executable to generate the ouput in the /output/files/YY-MM-DD_hh:mm_output folder,
+  where first part of the last folder idicates the date and time when the makefile was executed.
   ```
   $ ./Magritte.exe
   ```
 
-- The output can be visualized using the python scripts in the output/plots folder.
+- The output can be visualized using the python scripts in the output/plot_scripts folder.
+  The results of these plot scripts will be saved in a seperate file /plots in the output folder.
 
 
 
 
 
 
-Current issues and todo
------------------------
+Current issues and warnings
+---------------------------
 
 (!) Look out for devisions by 4PI which should be devisions by the number of rays.
-
-(!) The cosmic ray variables ZETA and OMEGA are defined as standard code to be 3.85 (from 3D-PDR).
 
 (!) 1D models assume NRAYS=12.
 
 (!) Rounding errors in the angle calculation in ray tracing (temporary fix).
 
-(!) Note factors of PC in distances.
-
 (!) The first and last species are "dummies".
 
-todo: Write one proper Python script that does the whole setup.
 
 
------
 
-Developed by Frederik De Ceuster at University College London & KU Leuven
+
+---
+
+Developed by @FrederikDeCeuster at @UCL and @IvS-KULeuven
