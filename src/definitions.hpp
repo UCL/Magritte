@@ -36,18 +36,24 @@ std::string line_datafile[NLSPEC] = LINE_DATAFILES;              /* list of line
 
 /* Grid and evaluation points */
 
-long cum_raytot[NGRID*NRAYS];           /* cumulative number of evaluation points along each ray */
 
-long key[NGRID*NGRID];             /* stores the numbers of the grid points on the rays in order */
+# ifdef ON_THE_FLY
 
-long raytot[NGRID*NRAYS];               /* cumulative number of evaluation points along each ray */
+  long local_cum_raytot[NRAYS];         /* cumulative number of evaluation points along each ray */
 
+  long local_key[NGRID];           /* stores the numbers of the grid points on the rays in order */
 
-long local_cum_raytot[NRAYS];           /* cumulative number of evaluation points along each ray */
+  long local_raytot[NRAYS];             /* cumulative number of evaluation points along each ray */
 
-long local_key[NGRID];             /* stores the numbers of the grid points on the rays in order */
+# else
 
-long local_raytot[NRAYS];               /* cumulative number of evaluation points along each ray */
+  long cum_raytot[NGRID*NRAYS];         /* cumulative number of evaluation points along each ray */
+
+  long key[NGRID*NGRID];           /* stores the numbers of the grid points on the rays in order */
+
+  long raytot[NGRID*NRAYS];             /* cumulative number of evaluation points along each ray */
+
+# endif
 
 
 

@@ -25,10 +25,6 @@
 
 
 
-#define ZETA   3.846153846153846
-#define OMEGA  0.42
-
-
 /* Numerical constants */
 
 #define PI    3.141592653589793238462643383279502884197                                    /* pi */
@@ -73,14 +69,19 @@
 
 /* Special key to find the number of the grid point associated to a certain evaluation point */
 
-#define GP_NR_OF_EVALP(gridpoint, ray, evalp)                                                     \
+
+#ifdef ON_THE_FLY
+
+  #define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( local_key[ (evalp) + local_cum_raytot[(ray)] ] )   \
+                                /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \
+                                   corresponding to the "evalp"'th evaluation point on ray "ray" */
+#else
+
+  #define GP_NR_OF_EVALP(gridpoint, ray, evalp)                                                   \
         ( key[ GINDEX( (gridpoint), (evalp) + cum_raytot[RINDEX((gridpoint), (ray))] ) ] )        \
                /* GP_NR_OF_EVALP(gridpoint, ray, evalp) gives the grid point number corresponding \
                        to the "evalp"'th evaluation point on ray "ray" of grid point "gridpoint" */
-
-#define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( local_key[ (evalp) + local_cum_raytot[(ray)] ] )     \
-                                /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \
-                                   corresponding to the "evalp"'th evaluation point on ray "ray" */
+#endif
 
 
 /* Level population related index definitions */
@@ -212,19 +213,24 @@ typedef struct REACTION {
 
 /* Grid and evaluation points */
 
-extern long cum_raytot[NGRID*NRAYS];       /* cumulative nr. of evaluation points along each ray */
 
-extern long key[NGRID*NGRID];         /* stores the nrs. of the grid points on the rays in order */
+# ifdef ON_THE_FLY
 
-extern long raytot[NGRID*NRAYS];           /* cumulative nr. of evaluation points along each ray */
+  extern long local_cum_raytot[NRAYS];     /* cumulative nr. of evaluation points along each ray */
 
+  extern long local_key[NGRID];       /* stores the nrs. of the grid points on the rays in order */
 
-extern long local_cum_raytot[NRAYS];       /* cumulative nr. of evaluation points along each ray */
+  extern long local_raytot[NRAYS];         /* cumulative nr. of evaluation points along each ray */
 
-extern long local_key[NGRID];         /* stores the nrs. of the grid points on the rays in order */
+# else
 
-extern long local_raytot[NRAYS];           /* cumulative nr. of evaluation points along each ray */
+  extern long cum_raytot[NGRID*NRAYS];     /* cumulative nr. of evaluation points along each ray */
 
+  extern long key[NGRID*NGRID];       /* stores the nrs. of the grid points on the rays in order */
+
+  extern long raytot[NGRID*NRAYS];         /* cumulative nr. of evaluation points along each ray */
+
+# endif
 
 
 

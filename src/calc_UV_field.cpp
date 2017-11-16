@@ -31,7 +31,7 @@ int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
 {
 
 
-  double tau_UV = 3.02;   /* dimensionless factor converting visual extinction to UV attenuation */
+  const double tau_UV = 3.02;      /* conversion factor from visual extinction to UV attenuation */
 
 
   /* For all grid points */
@@ -48,9 +48,10 @@ int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
       long nr  = RINDEX(n,r);
       long nar = RINDEX(n,antipod[r]);
 
-      // printf("r and ar are : %ld and %ld\n", r, antipod[r]);
 
-      if ( (raytot[nr] > 0) || (raytot[nar] > 0) ){
+      // if ( (raytot[nr] > 0) || (raytot[nar] > 0) ){
+      
+      if ( (AV[nr] > 0) || (AV[nar] > 0) ){
 
         UV_field[n] = UV_field[n] + rad_surface[nr]*exp(-tau_UV*AV[nr]);
       }

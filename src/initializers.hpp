@@ -74,7 +74,7 @@ int initialize_char_array(char *array, long length);
 /* initialize_evalpoint: sets all entries of the linearized array equal to zero or false         */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_evalpoint(EVALPOINT *evalpoint);
+int initialize_evalpoint(EVALPOINT *evalpoint, long length);
 
 /*-----------------------------------------------------------------------------------------------*/
 

@@ -26,19 +26,16 @@
 
 
 
-/* calc_rad_surface: calculates the UV radiation surface for each ray at each grid point   */
+/* calc_rad_surface: calculates the UV radiation surface for each ray at each grid point         */
 /*-----------------------------------------------------------------------------------------------*/
 
 int calc_rad_surface(double *G_external, double *rad_surface)
 {
 
-  long n;                                                                    /* grid point index */
-  long r;                                                                           /* ray index */
-
 
   /* For all grid points */
 
-  for (n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
 
     /* In case of a UNIdirectional radiation field */
@@ -55,7 +52,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
       long r_max;
 
 
-      for (r=0; r<NRAYS; r++){
+      for (long r=0; r<NRAYS; r++){
 
         rad_surface[RINDEX(n,r)] = 0.0;
 
@@ -81,7 +78,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
     if (FIELD_FORM == "ISO"){
 
 
-      for (r=0; r<NRAYS; r++){
+      for (long r=0; r<NRAYS; r++){
 
         rad_surface[RINDEX(n,r)] = G_external[0] / (double) NRAYS;
       }

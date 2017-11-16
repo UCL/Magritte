@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for calc_column_density.cpp                                                      */
+/* Header for calc_column_density.cpp                                                            */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,8 +10,8 @@
 
 
 
-#ifndef __calc_column_density_HPP_INCLUDED__
-#define __calc_column_density_HPP_INCLUDED__
+#ifndef __CALC_COLUMN_DENSITY_HPP_INCLUDED__
+#define __CALC_COLUMN_DENSITY_HPP_INCLUDED__
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -19,7 +19,7 @@
 
 
 
-/* calc_column_density: calculates column density for each species, ray and grid point     */
+/* calc_column_density: calculates column density for each species, ray and grid point           */
 /*-----------------------------------------------------------------------------------------------*/
 
 int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
@@ -39,6 +39,6 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
 
-#endif /* __calc_column_density_HPP_INCLUDED__ */
+#endif /* __CALC_COLUMN_DENSITY_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

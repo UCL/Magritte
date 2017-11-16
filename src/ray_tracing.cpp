@@ -16,7 +16,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
-/*#include <mpi.h>*/
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -29,6 +28,7 @@
 
 
 
+#ifndef ON_THE_FLY
 
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
@@ -65,18 +65,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
 
   /* For all grid points */
-
-/*  MPI_Init(NULL, NULL);
-
-  int size;
-  int rank;
-
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  for (n1=rank; n1<NGRID; n1=n1+size){
-*/
-
 
   #pragma omp parallel                                                                \
    shared( unit_healpixvector, gridpoint, evalpoint, key, raytot, cum_raytot, succes, \
@@ -148,7 +136,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
     initialize_double_array(Z, NRAYS);
 
 
-    /*   FIND EVALUATION POINTS FRO gridp                                                        */
+    /*   FIND EVALUATION POINTS FOR gridp                                                        */
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
@@ -301,21 +289,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
           (double) succes/(NGRID*NGRID-NGRID) );
 
 
-/*
-  if (rank != 0){
-
-    MPI_Send( void* data, int count, MPI_Datatype datatype, int destination, int tag,
-              MPI_Comm communicator );
-  }
-  else {
-
-    MPI_Recv( void* data, int count, MPI_Datatype datatype, int source, int tag,
-              MPI_Comm communicator, MPI_Status* status );
-  }
-*/
-/*  MPI_Finalize(); */
-
-
   return(0);
 
 }
@@ -326,10 +299,12 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
 
 
-/* get_evalpoints: creates the evaluation points for each ray for this grid point                */
+#else
+
+/* get_local_evalpoint: creates the evaluation points for each ray for this grid point           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_evalpoints( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
+int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 {
 
 
@@ -514,3 +489,5 @@ int get_evalpoints( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+
+#endif

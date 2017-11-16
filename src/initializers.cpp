@@ -162,25 +162,22 @@ int initialize_char_array(char *array, long length)
 /* initialize_evalpoint: sets all entries of the linearized array equal to zero or false         */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_evalpoint(EVALPOINT *evalpoint)
+int initialize_evalpoint(EVALPOINT *evalpoint, long length)
 {
 
 
-    for (long n1=0; n1<NGRID; n1++){
+    for (long n=0; n<length; n++){
 
-      for (long n2=0; n2<NGRID; n2++){
+      evalpoint[n].dZ  = 0.0;
+      evalpoint[n].Z   = 0.0;
+      evalpoint[n].vol = 0.0;
 
-        evalpoint[GINDEX(n1,n2)].dZ  = 0.0;
-        evalpoint[GINDEX(n1,n2)].Z   = 0.0;
-        evalpoint[GINDEX(n1,n2)].vol = 0.0;
+      evalpoint[n].ray = 0;
+      evalpoint[n].nr  = 0;
 
-        evalpoint[GINDEX(n1,n2)].ray = 0;
-        evalpoint[GINDEX(n1,n2)].nr  = 0;
+      evalpoint[n].eqp = 0;
 
-        evalpoint[GINDEX(n1,n2)].eqp = 0;
-
-        evalpoint[GINDEX(n1,n2)].onray = false;
-      }
+      evalpoint[n].onray = false;
     }
 
 

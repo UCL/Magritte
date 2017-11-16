@@ -91,11 +91,20 @@ int main()
 
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
-  /* NOTE: gridpoint does not have to be initialized as long as read_input works */
+
+# ifdef ON_THE_FLY
+
+  EVALPOINT evalpoint[NGRID];                              /* evaluation points for a grid point */
+
+  initialize_evalpoint(evalpoint, NGRID*NGRID);
+
+# else
 
   EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
-  initialize_evalpoint(evalpoint);
+  initialize_evalpoint(evalpoint, NGRID*NGRID);
+
+# endif
 
 
   /* Read input file */
@@ -264,6 +273,7 @@ int main()
 
 
 
+# ifndef ON_THE_FLY
 
 
   /*   RAY TRACING                                                                               */
@@ -290,7 +300,8 @@ int main()
 
   /*_____________________________________________________________________________________________*/
 
-  // return(0);
+
+# endif
 
 
 

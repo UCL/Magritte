@@ -5,7 +5,7 @@
 
 
 
-#define RUN_NUMBER "1"
+#define RUN_NUMBER "7"
 
 
 
@@ -29,8 +29,6 @@
 #define THETA_CRIT 1.3
 
 #define RAY_SEPARATION2 0.0
-
-#define TRACE_RAYS_ON_THE_FLY true
 
 
 /* Radiative transfer */

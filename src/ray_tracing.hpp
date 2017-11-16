@@ -21,6 +21,8 @@
 
 
 
+#ifndef ON_THE_FLY
+
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -30,12 +32,16 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
 
 
 
+#else
+
 /* get_evalpoints: creates the evaluation points for each ray for this grid point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_evalpoints( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp );
+int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *local_evalpoint, long gridp );
 
 /*-----------------------------------------------------------------------------------------------*/
+
+#endif
 
 
 

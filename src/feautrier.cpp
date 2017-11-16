@@ -36,9 +36,18 @@ int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, dou
 {
 
 
-  long etot1 = raytot[RINDEX(gridp, ar)];      /* total number of evaluation points along ray ar */
+#ifdef ON_THE_FLY
 
+  long etot1 = local_raytot[ar];               /* total number of evaluation points along ray ar */
+  long etot2 = local_raytot[r];                 /* total number of evaluation points along ray r */
+
+#else
+
+  long etot1 = raytot[RINDEX(gridp, ar)];      /* total number of evaluation points along ray ar */
   long etot2 = raytot[RINDEX(gridp, r)];        /* total number of evaluation points along ray r */
+
+#endif
+
 
   long ndep = etot1 + etot2;               /* nr. of depth points along a pair of antipodal rays */
 
@@ -141,11 +150,6 @@ int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, dou
 
 
 
-  // for (int n=0; n<ndep; n++){
-  //
-  //   printf("%d   %lE   %lE   %lE\n", n, S[n], dtau[n],  P[n] );
-  // }
-
 
 
   /*   CALCULATE THE LAMBDA OPERATOR                                                             */
@@ -177,9 +181,22 @@ int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, dou
   // printf("(feautrier): for point %ld and ray %ld \n", gridp, r);
 
   {
-    long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1);   /* grid point nr. of the considered evalpoint */
 
-    if ( evalpoint[GINDEX(gridp,g_p)].eqp == gridp ){
+
+#   ifdef ON_THE_FLY
+
+    long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1);   /* grid point nr. of the considered evalpoint */
+    long e_p = g_p;
+
+#   else
+
+    long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1);   /* grid point nr. of the considered evalpoint */
+    long e_p = GINDEX(gridp,g_p);
+
+#   endif
+
+
+    if ( evalpoint[e_p].eqp == gridp ){
 
       P_intensity[RINDEX(g_p,ar)] = P[0];
 
@@ -190,9 +207,21 @@ int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, dou
 
   for (long n=1; n<=etot1-1; n++){
 
-    long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
 
-    if ( evalpoint[GINDEX(gridp,g_p)].eqp == gridp ){
+#   ifdef ON_THE_FLY
+
+    long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
+    long e_p = g_p;
+
+#   else
+
+    long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
+    long e_p = GINDEX(gridp,g_p);
+
+#   endif
+
+
+    if ( evalpoint[e_p].eqp == gridp ){
 
       P_intensity[RINDEX(g_p,ar)] = (P[n] + P[n-1]) / 2.0;
 
@@ -207,9 +236,21 @@ int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, dou
 
   for (long n=etot1+1; n<ndep; n++){
 
-    long g_p = GP_NR_OF_EVALP(gridp,r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
 
-    if ( evalpoint[GINDEX(gridp,g_p)].eqp == gridp ){
+#   ifdef ON_THE_FLY
+
+    long g_p = LOCAL_GP_NR_OF_EVALP(r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
+    long e_p = g_p;
+
+#   else
+
+    long g_p = GP_NR_OF_EVALP(gridp,r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
+    long e_p = GINDEX(gridp,g_p);
+
+#   endif
+
+
+    if ( evalpoint[e_p].eqp == gridp ){
 
       P_intensity[RINDEX(g_p,r)] = (P[n] + P[n-1]) / 2.0;
 
@@ -219,9 +260,22 @@ int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, dou
 
 
   {
-    long g_p = GP_NR_OF_EVALP(gridp,r,etot2-1);    /* grid point nr. of the considered evalpoint */
 
-    if ( evalpoint[GINDEX(gridp,g_p)].eqp == gridp ){
+
+#   ifdef ON_THE_FLY
+
+    long g_p = LOCAL_GP_NR_OF_EVALP(r,etot2-1);    /* grid point nr. of the considered evalpoint */
+    long e_p = g_p;
+
+#   else
+
+    long g_p = GP_NR_OF_EVALP(gridp,r,etot2-1);    /* grid point nr. of the considered evalpoint */
+    long e_p = GINDEX(gridp,g_p);
+
+#   endif
+
+
+    if ( evalpoint[e_p].eqp == gridp ){
 
       P_intensity[RINDEX(g_p,r)] = P[ndep-1];
 

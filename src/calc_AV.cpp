@@ -31,7 +31,7 @@ int calc_AV( double *column_tot, double *AV )
 {
 
 
-  double A_V0 = 6.289E-22*METALLICITY;                  /* AV_fac in 3D-PDR code (A_V0 in paper) */
+  const double A_V0 = 6.289E-22*METALLICITY;            /* AV_fac in 3D-PDR code (A_V0 in paper) */
 
 
   /* For all grid points n and rays r */

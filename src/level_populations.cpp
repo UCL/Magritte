@@ -28,6 +28,7 @@
 #include "initializers.hpp"
 #include "radiative_transfer.hpp"
 #include "level_population_solver.hpp"
+#include "ray_tracing.hpp"
 #include "write_output.hpp"
 
 
@@ -240,6 +241,13 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
           long m_ij = LSPECGRIDRAD(lspec,n,kr);
 
           mean_intensity[m_ij] = 0.0;
+
+
+#ifdef ON_THE_FLY
+
+          get_local_evalpoint(gridpoint, evalpoint, n);
+
+#endif
 
 
           /* Calculate the mean intensity */

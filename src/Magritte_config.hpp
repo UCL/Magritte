@@ -60,3 +60,5 @@
 
 #define ANTIPOD { 10, 11, 8, 9, 6, 7, 4, 5, 2, 3, 0, 1 } 
 
+#define ON_THE_FLY 
+

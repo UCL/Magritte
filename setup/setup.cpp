@@ -377,6 +377,12 @@ int main(){
   write_long_array(config_file, "ANTIPOD", antipod, nrays);
 
 
+  if (TRACE_RAYS_ON_THE_FLY){
+
+    fprintf( config_file, "#define ON_THE_FLY \n\n" );
+  }
+
+
   fclose(config_file);
 
 
