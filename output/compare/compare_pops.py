@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-print "efepfjegpjgpigjg"
 
 
 # Check whether the date stamp of the datafile is given
@@ -23,8 +22,6 @@ else:
 
 
 file_name = "../files/" + date_stamp + "_output/level_populations_"+ name + tag + ".txt"
-
-print file_name
 
 my_data = np.loadtxt(file_name)
 

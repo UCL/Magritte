@@ -78,7 +78,7 @@
 #else
 
   #define GP_NR_OF_EVALP(gridpoint, ray, evalp)                                                   \
-        ( key[ GINDEX( (gridpoint), (evalp) + cum_raytot[RINDEX((gridpoint), (ray))] ) ] )        \
+          ( key[ GINDEX( (gridpoint), (evalp) + cum_raytot[RINDEX((gridpoint), (ray))] ) ] )      \
                /* GP_NR_OF_EVALP(gridpoint, ray, evalp) gives the grid point number corresponding \
                        to the "evalp"'th evaluation point on ray "ray" of grid point "gridpoint" */
 #endif

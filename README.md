@@ -4,6 +4,7 @@
 
 <img src="/docs/Images/Magritte_name.png" height="30">
 
+---
 
 ## How to get started:
 

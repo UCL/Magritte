@@ -4,15 +4,29 @@ import sys
 
 
 
-name = str(sys.argv[1])
+# Check whether the date stamp of the datafile is given
 
-if(len(sys.argv) > 2):
-    tag  = "_" + str(sys.argv[2])
+if (len(sys.argv)>1):
+    date_stamp = str(sys.argv[1])
+else:
+    print "ERROR : No date stamp given !\n"
+    print "Please try again and give the date stamp of the output file you want to plot\n"
+
+
+if (len(sys.argv)>2):
+    name = str(sys.argv[2])
+else:
+    print "ERROR : No name given !\n"
+    print "Please try again and give the name of the output file you want to plot\n"
+
+
+if(len(sys.argv) > 3):
+    tag  = "_" + str(sys.argv[3])
 else:
     tag = ""
 
 
-file_name = "../files/line_intensities_" + name + tag + ".txt"
+file_name = "../files/" + date_stamp + "_output/line_intensities_" + name + tag + ".txt"
 
 print file_name
 

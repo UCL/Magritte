@@ -96,7 +96,7 @@ int main()
 
   EVALPOINT evalpoint[NGRID];                              /* evaluation points for a grid point */
 
-  initialize_evalpoint(evalpoint, NGRID*NGRID);
+  initialize_evalpoint(evalpoint, NGRID);
 
 # else
 
@@ -365,6 +365,7 @@ int main()
 
   calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
 
+  // return(0);
 
   /* Calculate the visual extinction */
 
@@ -386,9 +387,12 @@ int main()
   calc_temperature_dust(UV_field, rad_surface, temperature_dust);
 
 
-  write_temperature_gas("guess", temperature_gas);
+  write_double_2("column_tot", "", NGRID, NRAYS, column_tot);
 
-  write_temperature_dust("guess", temperature_dust);
+
+  // write_temperature_gas("guess", temperature_gas);
+
+  // write_temperature_dust("guess", temperature_dust);
 
 
   printf("(Magritte): gas temperature guessed and dust temperature calculated \n\n");

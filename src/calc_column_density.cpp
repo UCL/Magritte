@@ -117,11 +117,15 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       long evnrp      = LOCAL_GP_NR_OF_EVALP(ray,e-1);
       long gridp_evnr = evnr;
 
+      // if (gridp == 95) {printf("%ld,   %ld\n", e, evnr);}
+
 #     else
 
       long evnr       = GP_NR_OF_EVALP(gridp,ray,e);
       long evnrp      = GP_NR_OF_EVALP(gridp,ray,e-1);
       long gridp_evnr = GINDEX(gridp,evnr);
+
+      // if (gridp == 95) {printf("%ld,   %ld\n", e, evnr);}
 
 #     endif
 

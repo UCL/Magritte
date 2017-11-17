@@ -82,7 +82,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
   long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
 
-
+  // printf("%ld %ld\n", start, stop );
 
   for (long gridp=start; gridp<stop; gridp++){
 
@@ -127,10 +127,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
     time_sort += omp_get_wtime();
 
 
-    long   nr[NRAYS];                      /* current number of evaluation points along each ray */
-
-    initialize_long_array(nr, NRAYS);
-
     double Z[NRAYS];                                                       /* distance along ray */
 
     initialize_double_array(Z, NRAYS);
@@ -173,7 +169,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 	                           + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
 
       double cosine = (rvec_dot_uhpv - Z[ipix])
-		                  / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
+		                  / sqrt(ra2[n] - 2.0*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
 
 
       /* Avoid nan angles because of rounding errors */
@@ -191,24 +187,24 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
       if (angle < THETA_CRIT){
 
-        evalpoint[GINDEX(gridp,rb[n])].dZ  = rvec_dot_uhpv - Z[ipix];
+        evalpoint[GINDEX(gridp,rb[n])].onray = true;
+
+        evalpoint[GINDEX(gridp,rb[n])].dZ    = rvec_dot_uhpv - Z[ipix];
+
+        evalpoint[GINDEX(gridp,rb[n])].ray   = ipix;
+
+	      evalpoint[GINDEX(gridp,rb[n])].Z     = Z[ipix] = rvec_dot_uhpv;
 
         evalpoint[GINDEX(gridp,rb[n])].vol
           = (gridpoint[rb[n]].vx - gridpoint[gridp].vx)*unit_healpixvector[VINDEX(ipix,0)]
             + (gridpoint[rb[n]].vy - gridpoint[gridp].vy)*unit_healpixvector[VINDEX(ipix,1)]
             + (gridpoint[rb[n]].vz - gridpoint[gridp].vz)*unit_healpixvector[VINDEX(ipix,2)];
 
-        evalpoint[GINDEX(gridp,rb[n])].ray = ipix;
+        succes = succes + 1;
 
         raytot[RINDEX(gridp,ipix)] = raytot[RINDEX(gridp,ipix)] + 1;
 
-        Z[ipix] = rvec_dot_uhpv;
-
-	      evalpoint[GINDEX(gridp,rb[n])].Z = Z[ipix];
-
-        evalpoint[GINDEX(gridp,rb[n])].onray = true;
-
-        succes = succes + 1;
+        // if (gridp == 95) {printf("%ld,   %lE\n", rb[n], evalpoint[GINDEX(gridp,rb[n])].Z);}
 
 
         /* Check whether ipix ray for evaluation point can be considered equivalent */
@@ -244,20 +240,27 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
     cum_raytot[RINDEX(gridp,0)] = 0;
 
-    cum_raytot[RINDEX(gridp,1)] = raytot[RINDEX(gridp,0)];
 
-
-    for (long r=2; r<NRAYS; r++){
+    for (long r=1; r<NRAYS; r++){
 
       cum_raytot[RINDEX(gridp,r)] = cum_raytot[RINDEX(gridp,r-1)] + raytot[RINDEX(gridp,r-1)];
+
+      // if (gridp == 95) {printf("%ld,   %ld\n", r, cum_raytot[RINDEX(gridp,r)]);}
     }
 
 
     /* Make a key to find back which evaluation point is where on which ray */
 
+    long nr[NRAYS];                        /* current number of evaluation points along each ray */
+
+    initialize_long_array(nr, NRAYS);
+
     time_key -= omp_get_wtime();
 
+
     for (long n=0; n<NGRID; n++){
+
+      // if (gridp == 95) {printf("%ld\n", rb[n]);}
 
       if (evalpoint[GINDEX(gridp,rb[n])].onray == true){
 
@@ -266,6 +269,8 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
         GP_NR_OF_EVALP(gridp, ray, nr[ray]) = rb[n];
 
         nr[ray] = nr[ray] + 1;
+
+        // if (gridp == 95) {printf("%ld, %ld, %ld\n", n, rb[n], GP_NR_OF_EVALP(gridp, ray, nr[ray]));}
       }
 
     }
@@ -315,6 +320,14 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
   initialize_long_array(local_raytot, NRAYS);
 
   initialize_long_array(local_cum_raytot, NRAYS);
+
+
+  /* Initialize on ray, might still be true from previous call to get_local_evalpoint */
+
+  for (long n=0; n<NGRID; n++){
+
+    evalpoint[n].onray = false;
+  }
 
 
   /* Place the origin at the location of the grid point under consideration */
@@ -393,7 +406,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
 	                         + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
 
     double cosine = (rvec_dot_uhpv - Z[ipix])
-	                  / sqrt(ra2[n] - 2*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
+	                  / sqrt(ra2[n] - 2.0*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
 
 
     /* Avoid nan angles because of rounding errors */
@@ -419,7 +432,9 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
 
 	    evalpoint[rb[n]].Z     = Z[ipix] = rvec_dot_uhpv;
 
-      local_raytot[ipix] = local_raytot[ipix] + 1;
+      local_raytot[ipix]     = local_raytot[ipix] + 1;
+
+      // if (gridp == 95) {printf("%ld,   %lE\n", rb[n], evalpoint[rb[n]].Z);}
 
 
       /* Check whether ipix ray for evaluation point can be considered equivalent */
@@ -451,23 +466,27 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  long nr[NRAYS];                              /* current number of evaluation points on the ray */
-
-  initialize_long_array(nr, NRAYS);
-
-
   local_cum_raytot[0] = 0;
 
 
   for (long r=1; r<NRAYS; r++){
 
     local_cum_raytot[r] = local_cum_raytot[r-1] + local_raytot[r-1];
+
+    // if (gridp == 95) {printf("%ld,   %ld\n", r, local_cum_raytot[r]);}
   }
 
 
   /* Make a key to find back which evaluation point is where on which ray */
 
+  long nr[NRAYS];                              /* current number of evaluation points on the ray */
+
+  initialize_long_array(nr, NRAYS);
+
+
   for (long n=0; n<NGRID; n++){
+
+    // if (gridp == 95) {printf("%ld\n", rb[n]);}
 
     if (evalpoint[rb[n]].onray == true){
 
@@ -476,6 +495,8 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
       LOCAL_GP_NR_OF_EVALP(ray, nr[ray]) = rb[n];
 
       nr[ray] = nr[ray] + 1;
+
+      // if (gridp == 95) {printf("%ld, %ld, %ld\n", n, rb[n], LOCAL_GP_NR_OF_EVALP(ray, nr[ray]));}
     }
 
   }

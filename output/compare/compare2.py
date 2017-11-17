@@ -4,17 +4,26 @@ import sys
 
 
 
-name = str(sys.argv[1])
+# Check whether the date stamp of the datafile is given
 
-if(len(sys.argv) > 2):
-    tag  = "_" + str(sys.argv[2])
+if (len(sys.argv)>1):
+    date_stamp = str(sys.argv[1])
+else:
+    print "ERROR : No date stamp given !\n"
+    print "Please try again and give the date stamp of the output file you want to plot\n"
+
+
+name = str(sys.argv[2])
+
+
+if(len(sys.argv) > 3):
+    tag  = "_" + str(sys.argv[3])
 else:
     tag = ""
 
 
-file_name = "../files/" + name + tag + ".txt"
+file_name = "../files/" + date_stamp + "_output/" + name + tag + ".txt"
 
-print file_name
 
 my_data = np.loadtxt(file_name)
 
@@ -22,7 +31,7 @@ ngrid  = np.shape(my_data)[0]
 nindex = np.shape(my_data)[1]
 
 
-file_name = "output_3D-PDR/" + name + tag + "_3D-PDR.txt"
+file_name = "output_3D-PDR/1Dn30/" + name + tag + "_3D-PDR.txt"
 
 their_data = np.loadtxt(file_name)
 
@@ -69,9 +78,9 @@ for index in range(nindex):
 
         ax1.plot(data_line, label=index)
 
-        data_line1 = data[:,index]
+        data_line1 = my_data[:,index]
         ax2.plot(data_line1, label=index)
-        data_line2 = data2[:,index]
+        data_line2 = their_data[:,index]
         ax2.plot(data_line2, label=index)
 
 # ax1.legend()
@@ -94,8 +103,8 @@ ax2.set_yscale("log")
 fig2.tight_layout()
 
 
-plot_name1 = "error_" + name + tag + ".png"
-plot_name2 = "both_" + name + tag + ".png"
+plot_name1 = "../files/" + date_stamp + "_output/plots/error_" + name + tag + ".png"
+plot_name2 = "../files/" + date_stamp + "_output/plots/both_" + name + tag + ".png"
 
 
 # Save the plot
