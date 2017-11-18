@@ -34,29 +34,6 @@ const std::string line_datafile[NLSPEC] = LINE_DATAFILES;        /* list of line
 /* Declaration of external variables */
 
 
-/* Grid and evaluation points */
-
-
-# ifdef ON_THE_FLY
-
-  long cum_raytot[NRAYS];               /* cumulative number of evaluation points along each ray */
-
-  long key[NGRID];                 /* stores the numbers of the grid points on the rays in order */
-
-  long raytot[NRAYS];                   /* cumulative number of evaluation points along each ray */
-
-# else
-
-  long cum_raytot[NGRID*NRAYS];         /* cumulative number of evaluation points along each ray */
-
-  long key[NGRID*NGRID];           /* stores the numbers of the grid points on the rays in order */
-
-  long raytot[NGRID*NRAYS];             /* cumulative number of evaluation points along each ray */
-
-# endif
-
-
-
 /* HEALPix vectors */
 
 double const unit_healpixvector[3*NRAYS] = UNIT_HEALPIXVECTOR;

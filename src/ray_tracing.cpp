@@ -67,20 +67,16 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   /* For all grid points */
 
-  #pragma omp parallel                                                                \
-   shared( unit_healpixvector, gridpoint, evalpoint, key, raytot, cum_raytot, succes, \
-           time_de, time_key, time_sort )                                             \
-   default( none )
+# pragma omp parallel                                                                             \
+  shared( unit_healpixvector, gridpoint, evalpoint, key, raytot, cum_raytot, succes,              \
+          time_de, time_key, time_sort )                                                          \
+  default( none )
   {
 
-
   int num_threads = omp_get_num_threads();
-
   int thread_num  = omp_get_thread_num();
 
-
   long start = (thread_num*NGRID)/num_threads;
-
   long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
 
 
@@ -274,7 +270,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  } /* end of gridp loop over gridpoints (origins) */
+  } /* end of gridp loop over grid points (origins) */
   } /* end of OpenMP parallel region */
 
 

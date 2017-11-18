@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -44,7 +45,32 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
 {
 
 
-  /* For all grid points n and rays r */
+  /* For all grid points n */
+
+
+# ifdef ON_THE_FLY
+
+# pragma omp parallel                                                                             \
+  shared( gridpoint, column_density, spec )                                                       \
+  default( none )
+
+# else
+
+# pragma omp parallel                                                                             \
+  shared( gridpoint, evalpoint, key, raytot, cum_raytot, column_density, spec )                   \
+  default( none )
+
+# endif
+
+
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+
 
   for (long n=0; n<NGRID; n++){
 
@@ -70,7 +96,9 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
       column_density[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
                                                              cum_raytot, n, spec, r);
     }
-  }
+
+  } /* end of n loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -93,6 +121,18 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
 
 
   /* For all grid points n and rays r */
+
+# pragma omp parallel                                                                             \
+  shared( gridpoint, column_H2, column_HD, column_C, column_CO )                                  \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+
 
   for (long n=0; n<NGRID; n++){
 
@@ -119,7 +159,9 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
       column_CO[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
                                                         cum_raytot, n, CO_nr, r );
     }
-  }
+
+  } /* end of n loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);

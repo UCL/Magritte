@@ -211,29 +211,6 @@ typedef struct REACTION {
 /* Declaration of external variables */
 
 
-/* Grid and evaluation points */
-
-
-// # ifdef ON_THE_FLY
-//
-//   extern long cum_raytot[NRAYS];           /* cumulative nr. of evaluation points along each ray */
-//
-//   extern long key[NGRID];             /* stores the nrs. of the grid points on the rays in order */
-//
-//   extern long raytot[NRAYS];               /* cumulative nr. of evaluation points along each ray */
-//
-// # else
-//
-//   extern long cum_raytot[NGRID*NRAYS];     /* cumulative nr. of evaluation points along each ray */
-//
-//   extern long key[NGRID*NGRID];       /* stores the nrs. of the grid points on the rays in order */
-//
-//   extern long raytot[NGRID*NRAYS];         /* cumulative nr. of evaluation points along each ray */
-//
-// # endif
-
-
-
 /* HEALPix vectors */
 
 extern const double unit_healpixvector[3*NRAYS];

@@ -55,9 +55,8 @@
 
 In a first parallelization round we simply paralellize every big outer loop. This has been done in:
 
- - calc_rad_surface.cpp
  - calc_column_density.cpp
- - chemistry.cpp
+
 
 
 ---
