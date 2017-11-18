@@ -28,8 +28,19 @@
 /* calc_column_density: calculates column density for each species, ray and grid point           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                          double *column_density, int spec )
+
+#ifdef ON_THE_FLY
+
+int calc_column_density( GRIDPOINT *gridpoint, double *column_density, int spec )
+
+#else
+
+int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+                         long *cum_raytot, double *column_density, int spec )
+
+#endif
+
+
 {
 
 
@@ -40,15 +51,24 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 #   ifdef ON_THE_FLY
 
-    get_local_evalpoint(gridpoint, evalpoint, n);
+    long key[NGRID];                  /* stores the nrs. of the grid points on the rays in order */
+
+    long raytot[NRAYS];                    /* cumulative nr. of evaluation points along each ray */
+
+    long cum_raytot[NRAYS];                /* cumulative nr. of evaluation points along each ray */
+
+
+    EVALPOINT evalpoint[NGRID];
+
+    get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
 
 #   endif
 
 
     for (long r=0; r<NRAYS; r++){
 
-      column_density[RINDEX(n,r)] = column_density_at_point(gridpoint, evalpoint, n, spec, r);
-
+      column_density[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+                                                             cum_raytot, n, spec, r);
     }
   }
 
@@ -62,12 +82,62 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
 
+#ifdef ON_THE_FLY
+
+/* calc_column_densities: calculates column densities for the species needed in chemistry        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *column_HD,
+                           double *column_C, double *column_CO )
+{
+
+
+  /* For all grid points n and rays r */
+
+  for (long n=0; n<NGRID; n++){
+
+    long key[NGRID];                  /* stores the nrs. of the grid points on the rays in order */
+
+    long raytot[NRAYS];                    /* cumulative nr. of evaluation points along each ray */
+
+    long cum_raytot[NRAYS];                /* cumulative nr. of evaluation points along each ray */
+
+
+    EVALPOINT evalpoint[NGRID];
+
+    get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
+
+
+    for (long r=0; r<NRAYS; r++){
+
+      column_H2[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+                                                        cum_raytot, n, H2_nr, r );
+      column_HD[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+                                                        cum_raytot, n, HD_nr, r );
+      column_C[RINDEX(n,r)]  = column_density_at_point( gridpoint, evalpoint, key, raytot,
+                                                        cum_raytot, n, C_nr,  r );
+      column_CO[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+                                                        cum_raytot, n, CO_nr, r );
+    }
+  }
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+#endif
+
+
+
 
 /* column_density: calculates the column density for one species along one ray                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                long gridp, int spec, long ray )
+double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key,
+                                long *raytot, long *cum_raytot, long gridp, int spec, long ray )
 {
 
 
@@ -76,7 +146,7 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 # ifdef ON_THE_FLY
 
-  long etot = local_raytot[ray];
+  long etot = raytot[ray];
 
 # else
 

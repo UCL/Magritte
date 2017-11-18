@@ -24,7 +24,8 @@
 /* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, double *dtau,
+int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
+               long gridp, long r, long ar, double *S, double *dtau,
                double *P_intensity, double *Lambda_diagonal );
 
 /*-----------------------------------------------------------------------------------------------*/

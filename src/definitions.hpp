@@ -21,13 +21,13 @@
 
 /* Input and data files */
 
-std::string grid_inputfile = GRID_INPUTFILE;    /* path to input file containing the grid points */
+const std::string grid_inputfile = GRID_INPUTFILE;    /* path to input file with the grid points */
 
-std::string spec_datafile = SPEC_DATAFILE;           /* path to data file containing the species */
+const std::string spec_datafile = SPEC_DATAFILE;           /* path to data file with the species */
 
-std::string reac_datafile = REAC_DATAFILE;         /* path to data file containing the reactions */
+const std::string reac_datafile = REAC_DATAFILE;         /* path to data file with the reactions */
 
-std::string line_datafile[NLSPEC] = LINE_DATAFILES;              /* list of line data file paths */
+const std::string line_datafile[NLSPEC] = LINE_DATAFILES;        /* list of line data file paths */
 
 
 
@@ -39,11 +39,11 @@ std::string line_datafile[NLSPEC] = LINE_DATAFILES;              /* list of line
 
 # ifdef ON_THE_FLY
 
-  long local_cum_raytot[NRAYS];         /* cumulative number of evaluation points along each ray */
+  long cum_raytot[NRAYS];               /* cumulative number of evaluation points along each ray */
 
-  long local_key[NGRID];           /* stores the numbers of the grid points on the rays in order */
+  long key[NGRID];                 /* stores the numbers of the grid points on the rays in order */
 
-  long local_raytot[NRAYS];             /* cumulative number of evaluation points along each ray */
+  long raytot[NRAYS];                   /* cumulative number of evaluation points along each ray */
 
 # else
 

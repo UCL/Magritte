@@ -168,7 +168,7 @@ int write_eval(std::string tag, EVALPOINT *evalpoint)
 /* write_key: write the key to find which grid point corresponds to which evaluation point       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_key(std::string tag)
+int write_key(std::string tag, long *key)
 {
 
 
@@ -215,7 +215,7 @@ int write_key(std::string tag)
 /* write_raytot: write the total of evaluation points along each ray                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_raytot(std::string tag)
+int write_raytot(std::string tag, long *raytot)
 {
 
 
@@ -262,7 +262,7 @@ int write_raytot(std::string tag)
 /* write_cum_raytot: write the cumulative total of evaluation points along each ray              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_cum_raytot(std::string tag)
+int write_cum_raytot(std::string tag, long *cum_raytot)
 {
 
 

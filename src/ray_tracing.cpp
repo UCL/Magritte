@@ -33,7 +33,8 @@
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
+int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                 long *key, long *raytot, long *cum_raytot )
 {
 
 
@@ -82,7 +83,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
   long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
 
-  // printf("%ld %ld\n", start, stop );
 
   for (long gridp=start; gridp<stop; gridp++){
 
@@ -204,8 +204,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
         raytot[RINDEX(gridp,ipix)] = raytot[RINDEX(gridp,ipix)] + 1;
 
-        // if (gridp == 95) {printf("%ld,   %lE\n", rb[n], evalpoint[GINDEX(gridp,rb[n])].Z);}
-
 
         /* Check whether ipix ray for evaluation point can be considered equivalent */
 
@@ -244,8 +242,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
     for (long r=1; r<NRAYS; r++){
 
       cum_raytot[RINDEX(gridp,r)] = cum_raytot[RINDEX(gridp,r-1)] + raytot[RINDEX(gridp,r-1)];
-
-      // if (gridp == 95) {printf("%ld,   %ld\n", r, cum_raytot[RINDEX(gridp,r)]);}
     }
 
 
@@ -260,8 +256,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
     for (long n=0; n<NGRID; n++){
 
-      // if (gridp == 95) {printf("%ld\n", rb[n]);}
-
       if (evalpoint[GINDEX(gridp,rb[n])].onray == true){
 
         long ray = evalpoint[GINDEX(gridp,rb[n])].ray;
@@ -270,7 +264,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 
         nr[ray] = nr[ray] + 1;
 
-        // if (gridp == 95) {printf("%ld, %ld, %ld\n", n, rb[n], GP_NR_OF_EVALP(gridp, ray, nr[ray]));}
       }
 
     }
@@ -309,17 +302,18 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint )
 /* get_local_evalpoint: creates the evaluation points for each ray for this grid point           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp )
+int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                         long *key, long *raytot, long *cum_raytot, long gridp )
 {
 
 
   /* Initialize the data structures that will store the evaluation points */
 
-  initialize_long_array(local_key, NGRID);
+  initialize_long_array(key, NGRID);
 
-  initialize_long_array(local_raytot, NRAYS);
+  initialize_long_array(raytot, NRAYS);
 
-  initialize_long_array(local_cum_raytot, NRAYS);
+  initialize_long_array(cum_raytot, NRAYS);
 
 
   /* Initialize on ray, might still be true from previous call to get_local_evalpoint */
@@ -432,9 +426,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
 
 	    evalpoint[rb[n]].Z     = Z[ipix] = rvec_dot_uhpv;
 
-      local_raytot[ipix]     = local_raytot[ipix] + 1;
-
-      // if (gridp == 95) {printf("%ld,   %lE\n", rb[n], evalpoint[rb[n]].Z);}
+      raytot[ipix]           = raytot[ipix] + 1;
 
 
       /* Check whether ipix ray for evaluation point can be considered equivalent */
@@ -466,14 +458,12 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  local_cum_raytot[0] = 0;
+  cum_raytot[0] = 0;
 
 
   for (long r=1; r<NRAYS; r++){
 
-    local_cum_raytot[r] = local_cum_raytot[r-1] + local_raytot[r-1];
-
-    // if (gridp == 95) {printf("%ld,   %ld\n", r, local_cum_raytot[r]);}
+    cum_raytot[r] = cum_raytot[r-1] + raytot[r-1];
   }
 
 
@@ -486,8 +476,6 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
 
   for (long n=0; n<NGRID; n++){
 
-    // if (gridp == 95) {printf("%ld\n", rb[n]);}
-
     if (evalpoint[rb[n]].onray == true){
 
       long ray = evalpoint[rb[n]].ray;
@@ -496,7 +484,6 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long gridp 
 
       nr[ray] = nr[ray] + 1;
 
-      // if (gridp == 95) {printf("%ld, %ld, %ld\n", n, rb[n], LOCAL_GP_NR_OF_EVALP(ray, nr[ray]));}
     }
 
   }

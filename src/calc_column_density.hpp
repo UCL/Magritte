@@ -22,18 +22,40 @@
 /* calc_column_density: calculates column density for each species, ray and grid point           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                         double *column_density, int spec );
+
+#ifdef ON_THE_FLY
+
+int calc_column_density( GRIDPOINT *gridpoint, double *column_density, int spec );
+
+#else
+
+int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+                         long *cum_raytot, double *column_density, int spec );
+
+#endif
+
 
 /*-----------------------------------------------------------------------------------------------*/
 
+
+#ifdef ON_THE_FLY
+
+/* calc_column_densities: calculates column densities for the species needed in chemistry        */
+/*-----------------------------------------------------------------------------------------------*/
+
+int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *column_HD,
+                           double *column_C, double *column_CO );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+#endif
 
 
 /* column_density: calculates the column density for one species along one ray                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                                long gridp, int spec, long ray );
+double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key,
+                                long *raytot, long *cum_raytot, long gridp, int spec, long ray );
 
 /*-----------------------------------------------------------------------------------------------*/
 

@@ -36,7 +36,10 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+
+#ifdef ON_THE_FLY
+
+int level_populations( GRIDPOINT *gridpoint,
                        int *irad, int*jrad, double *frequency,
                        double *A_coeff, double *B_coeff, double *C_coeff, double *R,
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
@@ -44,6 +47,22 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        double *temperature_gas, double *temperature_dust,
                        double *weight, double *energy, double *mean_intensity,
                        double *Lambda_diagonal, double *mean_intensity_eff )
+
+#else
+
+int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                       long *key, long *raytot, long *cum_raytot,
+                       int *irad, int*jrad, double *frequency,
+                       double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                       double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
+                       double *C_data, double *coltemp, int *icol, int *jcol,
+                       double *temperature_gas, double *temperature_dust,
+                       double *weight, double *energy, double *mean_intensity,
+                       double *Lambda_diagonal, double *mean_intensity_eff )
+
+#endif
+
+
 {
 
 
@@ -245,15 +264,24 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 #ifdef ON_THE_FLY
 
-          get_local_evalpoint(gridpoint, evalpoint, n);
+          long key[NGRID];            /* stores the nrs. of the grid points on the rays in order */
+
+          long raytot[NRAYS];              /* cumulative nr. of evaluation points along each ray */
+
+          long cum_raytot[NRAYS];          /* cumulative nr. of evaluation points along each ray */
+
+
+          EVALPOINT evalpoint[NGRID];
+
+          get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
 
 #endif
 
 
           /* Calculate the mean intensity */
 
-          radiative_transfer( gridpoint, evalpoint, P_intensity, mean_intensity,
-                              Lambda_diagonal, mean_intensity_eff,
+          radiative_transfer( gridpoint, evalpoint, key, raytot, cum_raytot,
+                              P_intensity, mean_intensity, Lambda_diagonal, mean_intensity_eff,
                               Source, opacity, frequency, temperature_gas, temperature_dust,
                               irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
 

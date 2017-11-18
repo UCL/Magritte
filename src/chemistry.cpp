@@ -34,18 +34,40 @@
 /* abundances: calculate abundances for each species at each grid point                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+
+#ifdef ON_THE_FLY
+
+int chemistry( GRIDPOINT *gridpoint,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
                double *column_H2, double *column_HD, double *column_C, double *column_CO )
+
+#else
+
+int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+               long *key, long *raytot, long *cum_raytot,
+               double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
+               double *column_H2, double *column_HD, double *column_C, double *column_CO )
+
+#endif
+
+
 {
 
 
   /* Calculate column densities */
 
-  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+# ifdef ON_THE_FLY
+
+  calc_column_densities(gridpoint, column_H2, column_HD, column_C, column_CO);
+
+# else
+
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_C, C_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
+
+# endif
 
 
   /* For all gridpoints */

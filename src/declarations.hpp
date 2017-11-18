@@ -72,7 +72,7 @@
 
 #ifdef ON_THE_FLY
 
-  #define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( local_key[ (evalp) + local_cum_raytot[(ray)] ] )   \
+  #define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )               \
                                 /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \
                                    corresponding to the "evalp"'th evaluation point on ray "ray" */
 #else
@@ -214,23 +214,23 @@ typedef struct REACTION {
 /* Grid and evaluation points */
 
 
-# ifdef ON_THE_FLY
-
-  extern long local_cum_raytot[NRAYS];     /* cumulative nr. of evaluation points along each ray */
-
-  extern long local_key[NGRID];       /* stores the nrs. of the grid points on the rays in order */
-
-  extern long local_raytot[NRAYS];         /* cumulative nr. of evaluation points along each ray */
-
-# else
-
-  extern long cum_raytot[NGRID*NRAYS];     /* cumulative nr. of evaluation points along each ray */
-
-  extern long key[NGRID*NGRID];       /* stores the nrs. of the grid points on the rays in order */
-
-  extern long raytot[NGRID*NRAYS];         /* cumulative nr. of evaluation points along each ray */
-
-# endif
+// # ifdef ON_THE_FLY
+//
+//   extern long cum_raytot[NRAYS];           /* cumulative nr. of evaluation points along each ray */
+//
+//   extern long key[NGRID];             /* stores the nrs. of the grid points on the rays in order */
+//
+//   extern long raytot[NRAYS];               /* cumulative nr. of evaluation points along each ray */
+//
+// # else
+//
+//   extern long cum_raytot[NGRID*NRAYS];     /* cumulative nr. of evaluation points along each ray */
+//
+//   extern long key[NGRID*NGRID];       /* stores the nrs. of the grid points on the rays in order */
+//
+//   extern long raytot[NGRID*NRAYS];         /* cumulative nr. of evaluation points along each ray */
+//
+// # endif
 
 
 

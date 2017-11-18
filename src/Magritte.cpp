@@ -92,21 +92,6 @@ int main()
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
 
-# ifdef ON_THE_FLY
-
-  EVALPOINT evalpoint[NGRID];                              /* evaluation points for a grid point */
-
-  initialize_evalpoint(evalpoint, NGRID);
-
-# else
-
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
-
-  initialize_evalpoint(evalpoint, NGRID*NGRID);
-
-# endif
-
-
   /* Read input file */
 
   read_input(grid_inputfile, gridpoint);
@@ -280,14 +265,26 @@ int main()
   /*_____________________________________________________________________________________________*/
 
 
-  printf("(Magritte): tracing rays \n");
+  printf("(Magritte): tracing rays (not ON_THE_FLY) \n");
+
+
+  /* Declare and initialize the evaluation points */
+
+  long key[NGRID*NGRID];              /* stores the nrs. of the grid points on the rays in order */
+
+  long raytot[NGRID*NRAYS];                /* cumulative nr. of evaluation points along each ray */
+
+  long cum_raytot[NGRID*NRAYS];            /* cumulative nr. of evaluation points along each ray */
+
+
+  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
 
 
   /* Execute ray_tracing */
 
   time_ray_tracing -= omp_get_wtime();
 
-  ray_tracing(gridpoint, evalpoint);
+  ray_tracing(gridpoint, evalpoint, key, raytot, cum_raytot);
 
   time_ray_tracing += omp_get_wtime();
 
@@ -363,7 +360,17 @@ int main()
 
   /* Calculate the total column density */
 
-  calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+
+# ifdef ON_THE_FLY
+
+  calc_column_density(gridpoint, column_tot, NSPEC-1);
+
+# else
+
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_tot, NSPEC-1);
+
+# endif
+
 
   // return(0);
 
@@ -439,8 +446,19 @@ int main()
 
     time_chemistry -= omp_get_wtime();
 
-    chemistry( gridpoint, evalpoint, temperature_gas, temperature_dust, rad_surface, AV,
+
+#   ifdef ON_THE_FLY
+
+    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
+
+#   else
+
+    chemistry( gridpoint, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
+               rad_surface, AV, column_H2, column_HD, column_C, column_CO );
+
+#   endif
+
 
     time_chemistry += omp_get_wtime();
 
@@ -542,7 +560,21 @@ int main()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance_iteration( gridpoint, evalpoint, column_H2, column_HD, column_C,
+#   ifdef ON_THE_FLY
+
+    thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
+                               UV_field, temperature_gas, temperature_dust,
+                               rad_surface, AV, irad, jrad, energy, weight, frequency,
+                               A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
+                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               Lambda_diagonal, mean_intensity_eff,
+                               thermal_ratio,
+                               &time_chemistry, &time_level_pop );
+
+#   else
+
+    thermal_balance_iteration( gridpoint, evalpoint, key, raytot, cum_raytot,
+                               column_H2, column_HD, column_C,
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
@@ -550,6 +582,8 @@ int main()
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
                                &time_chemistry, &time_level_pop );
+
+#   endif
 
 
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
@@ -606,7 +640,21 @@ int main()
     long n_not_converged = 0;                /* number of grid points that are not yet converged */
 
 
-    thermal_balance_iteration( gridpoint, evalpoint, column_H2, column_HD, column_C,
+#   ifdef ON_THE_FLY
+
+    thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
+                               UV_field, temperature_gas, temperature_dust,
+                               rad_surface, AV, irad, jrad, energy, weight, frequency,
+                               A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
+                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               Lambda_diagonal, mean_intensity_eff,
+                               thermal_ratio,
+                               &time_chemistry, &time_level_pop );
+
+#   else
+
+    thermal_balance_iteration( gridpoint, evalpoint, key, raytot, cum_raytot,
+                               column_H2, column_HD, column_C,
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
@@ -614,6 +662,8 @@ int main()
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
                                &time_chemistry, &time_level_pop );
+
+#   endif
 
 
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);

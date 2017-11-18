@@ -35,7 +35,10 @@
 /* thermal_balance: perform a thermal balance iteration to calculate the thermal flux            */
 /*-----------------------------------------------------------------------------------------------*/
 
-int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+#ifdef ON_THE_FLY
+
+
+int thermal_balance_iteration( GRIDPOINT *gridpoint,
                                double *column_H2, double *column_HD, double *column_C,
                                double *column_CO, double *UV_field,
                                double *temperature_gas, double *temperature_dust,
@@ -48,6 +51,28 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                                double *Lambda_diagonal, double *mean_intensity_eff,
                                double *thermal_ratio,
                                double *time_chemistry, double *time_level_pop )
+
+
+#else
+
+int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                               long *key, long *raytot, long *cum_raytot,
+                               double *column_H2, double *column_HD, double *column_C,
+                               double *column_CO, double *UV_field,
+                               double *temperature_gas, double *temperature_dust,
+                               double *rad_surface, double *AV, int *irad, int *jrad,
+                               double *energy, double *weight, double *frequency,
+                               double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                               double *C_data, double *coltemp, int *icol, int *jcol,
+                               double *prev1_pop, double *prev2_pop, double *prev3_pop,
+                               double *pop, double *mean_intensity,
+                               double *Lambda_diagonal, double *mean_intensity_eff,
+                               double *thermal_ratio,
+                               double *time_chemistry, double *time_level_pop )
+
+#endif
+
+
 {
 
 
@@ -72,8 +97,19 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     *time_chemistry -= omp_get_wtime();
 
-    chemistry( gridpoint, evalpoint, temperature_gas, temperature_dust, rad_surface, AV,
+
+#   ifdef ON_THE_FLY
+
+    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
+
+#   else
+
+    chemistry( gridpoint, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
+               rad_surface, AV, column_H2, column_HD, column_C, column_CO );
+
+#   endif
+
 
     *time_chemistry += omp_get_wtime();
 
@@ -107,10 +143,23 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   *time_level_pop -= omp_get_wtime();
 
-  level_populations( gridpoint, evalpoint, irad, jrad, frequency,
+
+# ifdef ON_THE_FLY
+
+  level_populations( gridpoint, irad, jrad, frequency,
                      A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
                      C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
                      weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
+
+# else
+
+  level_populations( gridpoint, evalpoint, key, raytot, cum_raytot, irad, jrad, frequency,
+                     A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
+                     C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
+                     weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
+
+# endif
+
 
   *time_level_pop += omp_get_wtime();
 
@@ -135,10 +184,19 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   /* Calculate column densities to get the most recent reaction rates */
 
-  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+
+# ifdef ON_THE_FLY
+
+  calc_column_densities(gridpoint, column_H2, column_HD, column_C, column_CO);
+
+# else
+
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_C, C_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
+
+# endif
 
 
   /* Calculate the thermal balance for each gridpoint */

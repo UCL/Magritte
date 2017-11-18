@@ -31,6 +31,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                         long *key, long *raytot, long *cum_raytot,
                          double *P_intensity, double *mean_intensity,
                          double *Lambda_diagonal, double *mean_intensity_eff,
                          double *Source, double *opacity, double *frequency,
@@ -98,8 +99,8 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 #     ifdef ON_THE_FLY
 
-      long etot1 = local_raytot[ar];           /* total number of evaluation points along ray ar */
-      long etot2 = local_raytot[r];             /* total number of evaluation points along ray r */
+      long etot1 = raytot[ar];                 /* total number of evaluation points along ray ar */
+      long etot2 = raytot[r];                   /* total number of evaluation points along ray r */
 
 #     else
 

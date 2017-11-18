@@ -22,9 +22,10 @@
 /* read_linedata: read data files containing the line information in LAMBDA/RADEX format         */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_linedata( std::string *line_datafile, int *irad, int *jrad, double *energy, double *weight,
-                    double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
-                    double *C_data, int *icol, int *jcol );
+int read_linedata( const std::string *line_datafile, int *irad, int *jrad,
+                   double *energy, double *weight,
+                   double *frequency, double *A_coeff, double *B_coeff, double *coltemp,
+                   double *C_data, int *icol, int *jcol );
 
 /*-----------------------------------------------------------------------------------------------*/
 

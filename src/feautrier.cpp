@@ -31,15 +31,16 @@
 /* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int feautrier( EVALPOINT *evalpoint, long gridp, long r, long ar, double *S, double *dtau,
+int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
+               long gridp, long r, long ar, double *S, double *dtau,
                double *P_intensity, double *Lambda_diagonal )
 {
 
 
 #ifdef ON_THE_FLY
 
-  long etot1 = local_raytot[ar];               /* total number of evaluation points along ray ar */
-  long etot2 = local_raytot[r];                 /* total number of evaluation points along ray r */
+  long etot1 = raytot[ar];                     /* total number of evaluation points along ray ar */
+  long etot2 = raytot[r];                       /* total number of evaluation points along ray r */
 
 #else
 

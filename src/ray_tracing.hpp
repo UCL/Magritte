@@ -26,7 +26,8 @@
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
+int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                 long *key, long *raytot, long *cum_raytot );
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -37,7 +38,8 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint );
 /* get_evalpoints: creates the evaluation points for each ray for this grid point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *local_evalpoint, long gridp );
+int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                         long *key, long *raytot, long *cum_raytot, long gridp );
 
 /*-----------------------------------------------------------------------------------------------*/
 

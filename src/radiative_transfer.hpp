@@ -26,12 +26,14 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                         long *key, long *raytot, long *cum_raytot,
                          double *P_intensity, double *mean_intensity,
                          double *Lambda_diagonal, double *mean_intensity_eff,
                          double *Source, double *opacity, double *frequency,
                          double *temperature_gas, double *temperature_dust,
                          int *irad, int*jrad, long gridp, int lspec, int kr,
                          long *nshortcuts, long *nno_shortcuts );
+
 /*-----------------------------------------------------------------------------------------------*/
 
 
