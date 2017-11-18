@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
 <img src="/docs/Images/Magritte_name.png" height="30">
----
+
 ---
 
 ## How to get started:
