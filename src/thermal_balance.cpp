@@ -44,7 +44,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint,
                                double *temperature_gas, double *temperature_dust,
                                double *rad_surface, double *AV, int *irad, int *jrad,
                                double *energy, double *weight, double *frequency,
-                               double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                               double *A_coeff, double *B_coeff, double *R,
                                double *C_data, double *coltemp, int *icol, int *jcol,
                                double *prev1_pop, double *prev2_pop, double *prev3_pop,
                                double *pop, double *mean_intensity,
@@ -62,7 +62,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                                double *temperature_gas, double *temperature_dust,
                                double *rad_surface, double *AV, int *irad, int *jrad,
                                double *energy, double *weight, double *frequency,
-                               double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                               double *A_coeff, double *B_coeff, double *R,
                                double *C_data, double *coltemp, int *icol, int *jcol,
                                double *prev1_pop, double *prev2_pop, double *prev3_pop,
                                double *pop, double *mean_intensity,
@@ -147,14 +147,14 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 # ifdef ON_THE_FLY
 
   level_populations( gridpoint, irad, jrad, frequency,
-                     A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
+                     A_coeff, B_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
                      C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
                      weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
 
 # else
 
   level_populations( gridpoint, evalpoint, key, raytot, cum_raytot, irad, jrad, frequency,
-                     A_coeff, B_coeff, C_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
+                     A_coeff, B_coeff, R, pop, prev1_pop, prev2_pop, prev3_pop,
                      C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
                      weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
 

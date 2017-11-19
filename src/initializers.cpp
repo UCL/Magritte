@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Initializers.cpp: Initialization functions for all (linearized) arrays                          */
+/* initializers.cpp: Initialization functions for all (linearized) arrays                        */
 /*                                                                                               */
 /* (NEW)                                                                                         */
 /*                                                                                               */
@@ -13,6 +13,7 @@
 
 
 #include <math.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -29,10 +30,22 @@ int initialize_int_array(int *array, long length)
 {
 
 
-  for (long i=0; i<length; i++){
+# pragma omp parallel                                                                             \
+  shared( array, length )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
 
     array[i] = 0;
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -159,33 +172,33 @@ int initialize_char_array(char *array, long length)
 
 
 
-/* initialize_evalpoint: sets all entries of the linearized array equal to zero or false         */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_evalpoint(EVALPOINT *evalpoint, long length)
-{
-
-
-    for (long n=0; n<length; n++){
-
-      evalpoint[n].dZ  = 0.0;
-      evalpoint[n].Z   = 0.0;
-      evalpoint[n].vol = 0.0;
-
-      evalpoint[n].ray = 0;
-      evalpoint[n].nr  = 0;
-
-      evalpoint[n].eqp = 0;
-
-      evalpoint[n].onray = false;
-    }
-
-
-  return(0);
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
+// /* initialize_evalpoint: sets all entries of the linearized array equal to zero or false         */
+// /*-----------------------------------------------------------------------------------------------*/
+//
+// int initialize_evalpoint(EVALPOINT *evalpoint, long length)
+// {
+//
+//
+//     for (long n=0; n<length; n++){
+//
+//       evalpoint[n].dZ  = 0.0;
+//       evalpoint[n].Z   = 0.0;
+//       evalpoint[n].vol = 0.0;
+//
+//       evalpoint[n].ray = 0;
+//       evalpoint[n].nr  = 0;
+//
+//       evalpoint[n].eqp = 0;
+//
+//       evalpoint[n].onray = false;
+//     }
+//
+//
+//   return(0);
+//
+// }
+//
+// /*-----------------------------------------------------------------------------------------------*/
 
 
 

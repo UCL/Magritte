@@ -194,10 +194,6 @@ int main()
 
   initialize_double_array(B_coeff, TOT_NLEV2);
 
-  double C_coeff[TOT_NLEV2];                                        /* Einstein C_ij coefficient */
-
-  initialize_double_array(C_coeff, TOT_NLEV2);
-
   double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
 
   initialize_double_array(R, NGRID*TOT_NLEV2);
@@ -565,7 +561,7 @@ int main()
     thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
                                UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
+                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
@@ -577,7 +573,7 @@ int main()
                                column_H2, column_HD, column_C,
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
+                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
@@ -645,7 +641,7 @@ int main()
     thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
                                UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
+                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
@@ -657,7 +653,7 @@ int main()
                                column_H2, column_HD, column_C,
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, C_coeff, R, C_data, coltemp, icol, jcol,
+                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
                                prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,

@@ -72,7 +72,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
   long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=start; n<stop; n++){
 
 
 #   ifdef ON_THE_FLY
@@ -123,7 +123,7 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
   /* For all grid points n and rays r */
 
 # pragma omp parallel                                                                             \
-  shared( gridpoint, column_H2, column_HD, column_C, column_CO )                                  \
+  shared( gridpoint, column_H2, column_HD, column_C, column_CO, H2_nr, HD_nr, C_nr, CO_nr )       \
   default( none )
   {
 
@@ -134,7 +134,7 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
   long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=start; n<stop; n++){
 
     long key[NGRID];                  /* stores the nrs. of the grid points on the rays in order */
 

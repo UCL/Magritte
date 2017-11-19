@@ -16,7 +16,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
-#include <signal.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -41,7 +41,7 @@
 
 int level_populations( GRIDPOINT *gridpoint,
                        int *irad, int*jrad, double *frequency,
-                       double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                       double *A_coeff, double *B_coeff, double *R,
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
                        double *C_data, double *coltemp, int *icol, int *jcol,
                        double *temperature_gas, double *temperature_dust,
@@ -53,7 +53,7 @@ int level_populations( GRIDPOINT *gridpoint,
 int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        long *key, long *raytot, long *cum_raytot,
                        int *irad, int*jrad, double *frequency,
-                       double *A_coeff, double *B_coeff, double *C_coeff, double *R,
+                       double *A_coeff, double *B_coeff, double *R,
                        double *pop, double *prev1_pop, double *prev2_pop, double *prev3_pop,
                        double *C_data, double *coltemp, int *icol, int *jcol,
                        double *temperature_gas, double *temperature_dust,
@@ -85,7 +85,22 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     /* For all grid points */
 
-    for (long n=0; n<NGRID; n++){
+#   pragma omp parallel                                                                          \
+    shared( gridpoint, C_data, coltemp, icol, jcol, temperature_gas, weight, energy,             \
+            lspec, nlev, R_temp, A_coeff, B_coeff, cum_nlev2 )                                   \
+    default( none )
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NGRID)/num_threads;
+    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+
+
+    for (long n=start; n<stop; n++){
+
+      double C_coeff[TOT_NLEV2];                                    /* Einstein C_ij coefficient */
 
 
       /* Calculate collisional (C) coefficients for temperature_gas */
@@ -109,6 +124,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
     } /* end of n loop over grid points */
+    } /* end of OpenMP parallel region */
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -164,11 +180,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
       double Source[NGRID*TOT_NRAD];                                          /* source function */
 
-      initialize_double_array(Source, NGRID*TOT_NRAD);
-
       double opacity[NGRID*TOT_NRAD];                                                 /* opacity */
-
-      initialize_double_array(opacity, NGRID*TOT_NRAD);
 
 
       /* Calculate source function and opacity for all gridpoints                                */
@@ -207,8 +219,15 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
           }
 
+          else {
+
+            Source[s_ij]  = 0.0;
+            opacity[s_ij] = 1.0E-99;
+          }
+
 
           if (opacity[s_ij] < 1.0E-99){
+            
             opacity[s_ij] = 1.0E-99;
           }
 

@@ -18,6 +18,7 @@
 
 
 #include <stdio.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -64,7 +65,7 @@ int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
   calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
-  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_C, C_nr);
+  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_C,  C_nr);
   calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
 
 # endif
@@ -72,7 +73,20 @@ int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   /* For all gridpoints */
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+# pragma omp parallel                                                                             \
+  shared( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,                          \
+          column_H2, column_HD, column_C, column_CO )                                             \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+
+
+  for (long gridp=start; gridp<stop; gridp++){
 
 
     /* Calculate the reaction rates */
@@ -87,6 +101,7 @@ int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
   } /* end of gridp loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);
