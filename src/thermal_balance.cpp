@@ -201,7 +201,21 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   /* Calculate the thermal balance for each gridpoint */
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+# pragma omp parallel                                                                             \
+  shared( gridpoint, temperature_gas, temperature_dust, irad, jrad, A_coeff, B_coeff, pop,        \
+          frequency, weight, column_H2, column_HD, column_C, column_CO, cum_nlev, species,        \
+          mean_intensity, AV, rad_surface, UV_field, thermal_ratio )                              \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;            /* Note the brackets are important */
+
+
+  for (long gridp=start; gridp<stop; gridp++){
 
     double heating_components[12];
 
@@ -231,6 +245,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
   } /* end of gridp loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   printf("(thermal_balance): heating and cooling calculated \n\n");

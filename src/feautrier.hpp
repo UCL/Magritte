@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for feautrier.cpp                                                                */
+/* Header for feautrier.cpp                                                                      */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -21,7 +21,7 @@
 
 
 
-/* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2       */
+/* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2             */
 /*-----------------------------------------------------------------------------------------------*/
 
 int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,

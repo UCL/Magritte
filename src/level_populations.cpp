@@ -81,7 +81,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
     double R_temp[NGRID*TOT_NLEV2];                   /* temporary storage the transition matrix */
-
+    double R_
 
     /* For all grid points */
 
@@ -187,7 +187,19 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
-      for (long n=0; n<NGRID; n++){
+#     pragma omp parallel                                                                         \
+      shared( nrad, lspec, irad, jrad, Source, opacity, pop, frequency, A_coeff, B_coeff, nlev, cum_nrad, cum_nlev, cum_nlev2 )        \
+      default( none )
+      {
+
+      int num_threads = omp_get_num_threads();
+      int thread_num  = omp_get_thread_num();
+
+      long start = (thread_num*NGRID)/num_threads;
+      long stop  = ((thread_num+1)*NGRID)/num_threads;   /* Note the brackets are important here */
+
+
+      for (long n=start; n<stop; n++){
 
         for (int kr=0; kr<nrad[lspec]; kr++){
 
@@ -227,7 +239,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
           if (opacity[s_ij] < 1.0E-99){
-            
+
             opacity[s_ij] = 1.0E-99;
           }
 
@@ -235,6 +247,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         } /* end of kr loop over transitions */
 
       } /* end of n loop over gridpoints */
+      } /* end of OpenMP parallel region */
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
@@ -267,7 +280,22 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
         /* For all grid points */
 
-        for (long n=0; n<NGRID; n++){
+#       pragma omp parallel                                                                       \
+        shared( i, j, nlev, kr, nrad, lspec, irad, jrad, Source, opacity, pop, frequency,         \
+                A_coeff, B_coeff, temperature_gas, temperature_dust, mean_intensity,              \
+                Lambda_diagonal, R, mean_intensity_eff, P_intensity, gridpoint,                   \
+                nno_shortcuts, nshortcuts, cum_nrad, cum_nlev, cum_nlev2 )                        \
+        default( none )
+        {
+
+        int num_threads = omp_get_num_threads();
+        int thread_num  = omp_get_thread_num();
+
+        long start = (thread_num*NGRID)/num_threads;
+        long stop  = ((thread_num+1)*NGRID)/num_threads;      /* Note the brackets are important */
+
+
+        for (long n=start; n<stop; n++){
 
 
           long r_ij = LSPECGRIDLEVLEV(lspec,n,i,j);
@@ -281,7 +309,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
           mean_intensity[m_ij] = 0.0;
 
 
-#ifdef ON_THE_FLY
+#         ifdef ON_THE_FLY
 
           long key[NGRID];            /* stores the nrs. of the grid points on the rays in order */
 
@@ -294,7 +322,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
           get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
 
-#endif
+#         endif
 
 
           /* Calculate the mean intensity */
@@ -317,6 +345,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
         } /* end of n loop over grid points */
+        } /* end of OpenMP parallel region */
 
       } /* end of kr loop over radiative transitions */
 
@@ -330,7 +359,20 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
-      for (long n=0; n<NGRID; n++){
+#     pragma omp parallel                                                                         \
+      shared( gridpoint, lspec, R, pop, prev1_pop, nlev, cum_nlev,not_converged,                  \
+              n_not_converged, lspec_nr, species )                                                \
+      default( none )
+      {
+
+      int num_threads = omp_get_num_threads();
+      int thread_num  = omp_get_thread_num();
+
+      long start = (thread_num*NGRID)/num_threads;
+      long stop  = ((thread_num+1)*NGRID)/num_threads;      /* Note the brackets are important */
+
+
+      for (long n=start; n<stop; n++){
 
 
         /* Solve the radiative balance equation for the level populations */
@@ -360,7 +402,6 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
               not_converged = true;
 
               n_not_converged++;
-
             }
 
           }
@@ -369,6 +410,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         } /* end of i loop over levels */
 
       } /* end of n loop over grid points */
+      } /* end of OpenMP parallel region */
 
 
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/

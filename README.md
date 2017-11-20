@@ -56,6 +56,10 @@
 In a first parallelization round we simply paralellize every big outer loop. This has been done in:
 
  - calc_column_density.cpp
+ - chemistry.cpp
+ - acceleration_Ng.cpp
+ - level_populations.cpp
+ - thermal_balance.cpp
 
 
 

@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -34,7 +35,20 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    for (long n=0; n<NGRID; n++){
+#   pragma omp parallel                                                                           \
+    shared( gridpoint, energy, weight, temperature_gas, pop, nlev, cum_nlev, species, lspec_nr,   \
+            lspec )                                                                               \
+    default( none )
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NGRID)/num_threads;
+    long stop  = ((thread_num+1)*NGRID)/num_threads;          /* Note the brackets are important */
+
+
+    for (long n=start; n<stop; n++){
 
 
       /* Calculate the partition function */
@@ -84,6 +98,7 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
       }
 
     } /* end of n loop over grid points */
+    } /* end of OpenMP parallel region */
 
   } /* end of lspec loop over line producin species */
 

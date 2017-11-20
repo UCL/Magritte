@@ -31,7 +31,8 @@ int initialize_int_array(int *array, long length)
 
 
 # pragma omp parallel                                                                             \
-  shared( array, length )
+  shared( array, length )                                                                         \
+  default( none )
   {
 
   int num_threads = omp_get_num_threads();
@@ -63,10 +64,23 @@ int initialize_long_array(long *array, long length)
 {
 
 
-  for (long i=0; i<length; i++){
+# pragma omp parallel                                                                             \
+  shared( array, length )                                                                         \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
 
     array[i] = 0;
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -86,10 +100,23 @@ int initialize_double_array(double *array, long length)
 {
 
 
-  for (long i=0; i<length; i++){
+# pragma omp parallel                                                                             \
+  shared( array, length )                                                                         \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
 
     array[i] = 0.0;
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -109,10 +136,23 @@ int initialize_double_array_with(double *array1, double *array2, long length)
 {
 
 
-  for (long i=0; i<length; i++){
+# pragma omp parallel                                                                             \
+  shared( array1, array2, length )                                                                \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
 
     array1[i] = array2[i];
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -132,10 +172,23 @@ int initialize_double_array_with_value(double *array, double value, long length)
 {
 
 
-  for (long i=0; i<length; i++){
+# pragma omp parallel                                                                             \
+  shared( array, value, length )                                                                  \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
 
     array[i] = value;
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -155,10 +208,23 @@ int initialize_char_array(char *array, long length)
 {
 
 
-  for (long i=0; i<length; i++){
+# pragma omp parallel                                                                             \
+  shared( array, length )                                                                         \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
 
     array[i] = 'i';
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -211,10 +277,23 @@ int initialize_temperature_gas(double *temperature_gas)
 {
 
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( temperature_gas )                                                                       \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
     temperature_gas[n] = 10.0;
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -234,10 +313,23 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
 {
 
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( previous_temperature_gas, temperature_gas )                                             \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
     previous_temperature_gas[n] = 0.9*temperature_gas[n];
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -257,10 +349,23 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas)
 {
 
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( UV_field, temperature_gas )                                                             \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
     temperature_gas[n] = 10.0*( 1.0 + pow(2.0*UV_field[n], 1.0/3.0) );
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);
@@ -280,10 +385,23 @@ int initialize_bool(bool value, long length, bool *variable)
 {
 
 
-  for (long n=0; n<length; n++){
+# pragma omp parallel                                                                             \
+  shared( value, length, variable )                                                               \
+  default( none )
+  {
 
-    variable[n] = value;
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;      /* Note the brackets are important here */
+
+
+  for (long i=start; i<stop; i++){
+
+    variable[i] = value;
   }
+  } /* end of OpenMP parallel region */
 
 
   return(0);

@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -41,7 +42,19 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
   double Wt[NGRID*nlev[lspec]];                                  /* weights of the inner product */
 
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+# pragma omp parallel                                                                             \
+  shared( Q1, Q2, Q3, Wt, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop )           \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+
+
+  for (long gridp=start; gridp<stop; gridp++){
 
     for (int i=0; i<nlev[lspec]; i++){
 
@@ -65,6 +78,7 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
     } /* end of i loop over levels */
 
   } /* end of gridp loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   double A1 = 0.0;
@@ -76,6 +90,8 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
   double C1 = 0.0;
   double C2 = 0.0;
 
+
+# pragma omp parallel for reduction( + : A1, A2, B1, B2, C1, C2)
 
   for (long gi=0; gi<NGRID*nlev[lspec]; gi++){
 
@@ -100,7 +116,19 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
     double b = (C2*A1 - C1*A2) / denominator;
 
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+#   pragma omp parallel                                                                           \
+    shared( a, b, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop )                   \
+    default( none )
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NGRID)/num_threads;
+    long stop  = ((thread_num+1)*NGRID)/num_threads;                        /* Note the brackets */
+
+
+    for (long gridp=start; gridp<stop; gridp++){
 
       for (int i=0; i<nlev[lspec]; i++){
 
@@ -118,6 +146,7 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
       } /* end of i loop over levels */
 
     } /* end of gridp loop over grid points */
+    } /* end of OpenMP parallel region */
 
   }
 
@@ -140,7 +169,19 @@ int store_populations( int lspec, double *prev3_pop, double *prev2_pop, double *
 {
 
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+# pragma omp parallel                                                                             \
+  shared( lspec, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop, pop )                           \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+
+
+  for (long gridp=start; gridp<stop; gridp++){
 
     for (int i=0; i<nlev[lspec]; i++){
 
@@ -153,6 +194,7 @@ int store_populations( int lspec, double *prev3_pop, double *prev2_pop, double *
     } /* end of i loop over levels */
 
   } /* end of gridp loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);
