@@ -81,7 +81,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
     double R_temp[NGRID*TOT_NLEV2];                   /* temporary storage the transition matrix */
-    double R_
+
 
     /* For all grid points */
 
