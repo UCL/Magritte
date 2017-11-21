@@ -194,9 +194,14 @@ int main()
 
   initialize_double_array(B_coeff, TOT_NLEV2);
 
+
+# ifndef ON_THE_FLY
+
   double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
 
   initialize_double_array(R, NGRID*TOT_NLEV2);
+
+# endif
 
 
   /* Define the collision related variables */
@@ -368,8 +373,6 @@ int main()
 # endif
 
 
-  // return(0);
-
   /* Calculate the visual extinction */
 
   calc_AV(column_tot, AV);
@@ -495,18 +498,6 @@ int main()
 
   initialize_double_array(pop, NGRID*TOT_NLEV);
 
-  double prev1_pop[NGRID*TOT_NLEV];                      /* level population n_i 1 iteration ago */
-
-  initialize_double_array(prev1_pop, NGRID*TOT_NLEV);
-
-  double prev2_pop[NGRID*TOT_NLEV];                     /* level population n_i 2 iterations ago */
-
-  initialize_double_array(prev2_pop, NGRID*TOT_NLEV);
-
-  double prev3_pop[NGRID*TOT_NLEV];                     /* level population n_i 3 iterations ago */
-
-  initialize_double_array(prev3_pop, NGRID*TOT_NLEV);
-
 
   double temperature_a[NGRID];                                 /* variable for Brent's algorithm */
 
@@ -561,8 +552,8 @@ int main()
     thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
                                UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
-                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               A_coeff, B_coeff, C_data, coltemp, icol, jcol,
+                               pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
                                &time_chemistry, &time_level_pop );
@@ -574,7 +565,7 @@ int main()
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
-                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
                                &time_chemistry, &time_level_pop );
@@ -641,8 +632,8 @@ int main()
     thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
                                UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
-                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               A_coeff, B_coeff, C_data, coltemp, icol, jcol,
+                               pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
                                &time_chemistry, &time_level_pop );
@@ -654,7 +645,7 @@ int main()
                                column_CO, UV_field, temperature_gas, temperature_dust,
                                rad_surface, AV, irad, jrad, energy, weight, frequency,
                                A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
-                               prev1_pop, prev2_pop, prev3_pop, pop, mean_intensity,
+                               pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
                                thermal_ratio,
                                &time_chemistry, &time_level_pop );

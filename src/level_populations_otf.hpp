@@ -2,9 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* line_profile: Calculates the line profile function                                            */
-/*                                                                                               */
-/* (NEW)                                                                                         */
+/* Header for level_populations_otf.cpp                                                          */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -12,44 +10,37 @@
 
 
 
-#include <math.h>
+#ifndef __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
+#define __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
+
+
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
 
-#include "line_profile.hpp"
 
 
+#ifdef ONT_THE_FLY
 
-/* line_profile: calculate the line profile function                                             */
+/* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-double line_profile( EVALPOINT evalpoint, double *temperature_gas, double frequency,
-                     long gridp, long evalp )
-{
+int level_populations_otf( GRIDPOINT *gridpoint,
+                           int *irad, int*jrad, double *frequency,
+                           double *A_coeff, double *B_coeff,
+                           double *pop,
+                           double *C_data, double *coltemp, int *icol, int *jcol,
+                           double *temperature_gas, double *temperature_dust,
+                           double *weight, double *energy, double *mean_intensity,
+                           double *Lambda_diagonal, double *mean_intensity_eff );
 
+/*-----------------------------------------------------------------------------------------------*/
 
-  long gpe = GP_NR_OF_EVALP(gridp, evalp);
-
-  double profile = 0.0;
-
-  double
-
-  double mass            =
-
-  double velocity        = evalpoint[GINDEX(gridp, )].vol;
-
-  double frequency_shift = frequency * (1.0 -  velocity/CC);
-
-  double frequency_width2 = frequency / CC * ( 2.0*KB*temperature_gas[gridp]/PI/mass + V_TURB*V_TURB );
+#endif
 
 
 
-  profile =
-
-  return profile;
-
-}
+#endif /* __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

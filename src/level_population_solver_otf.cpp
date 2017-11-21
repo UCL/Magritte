@@ -20,7 +20,7 @@
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
 
-#include "level_population_solver.hpp"
+#include "level_population_solver_otf.hpp"
 
 
 
@@ -30,7 +30,7 @@
 
 
 
-int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
+int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
 {
 
 
@@ -53,9 +53,9 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
 
     for (int j=0; j<n; j++){
 
-      out = out + R[LSPECGRIDLEVLEV(lspec,gridp,i,j)];
+      out = out + R[LSPECLEVLEV(lspec,i,j)];
 
-      a[LINDEX(i,j)] = R[LSPECGRIDLEVLEV(lspec,gridp,j,i)];
+      a[LINDEX(i,j)] = R[LSPECLEVLEV(lspec,j,i)];
     }
 
     a[LINDEX(i,i)] = -out;

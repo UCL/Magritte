@@ -30,7 +30,7 @@
 
 #define RAY_SEPARATION2 0.0
 
-#define TRACE_RAYS_ON_THE_FLY false
+#define TRACE_RAYS_ON_THE_FLY true
 
 
 /* Radiative transfer */
