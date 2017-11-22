@@ -33,22 +33,10 @@
 
 
 
+#ifndef ON_THE_FLY
+
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
-
-
-#ifdef ON_THE_FLY
-
-int level_populations( GRIDPOINT *gridpoint,
-                       int *irad, int*jrad, double *frequency,
-                       double *A_coeff, double *B_coeff, double *R,
-                       double *pop,
-                       double *C_data, double *coltemp, int *icol, int *jcol,
-                       double *temperature_gas, double *temperature_dust,
-                       double *weight, double *energy, double *mean_intensity,
-                       double *Lambda_diagonal, double *mean_intensity_eff )
-
-#else
 
 int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        long *key, long *raytot, long *cum_raytot,
@@ -59,10 +47,6 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        double *temperature_gas, double *temperature_dust,
                        double *weight, double *energy, double *mean_intensity,
                        double *Lambda_diagonal, double *mean_intensity_eff )
-
-#endif
-
-
 {
 
   double prev1_pop[NGRID*TOT_NLEV];                      /* level population n_i 1 iteration ago */
@@ -283,28 +267,12 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
         /* For all grid points */
 
-
-#       ifdef ON_THE_FLY
-
-#       pragma omp parallel                                                                       \
-        shared( i, j, nlev, kr, nrad, lspec, irad, jrad, Source, opacity, pop, frequency,         \
-                A_coeff, B_coeff, temperature_gas, temperature_dust, mean_intensity,              \
-                Lambda_diagonal, R, mean_intensity_eff, P_intensity, gridpoint,                   \
-                nno_shortcuts, nshortcuts, cum_nrad, cum_nlev, cum_nlev2 )                        \
-        default( none )
-
-#       else
-
 #       pragma omp parallel                                                                       \
         shared( evalpoint, key, raytot, cum_raytot, i, j, nlev, kr, nrad, lspec, irad, jrad,      \
                 Source, opacity, pop, frequency, A_coeff, B_coeff, temperature_gas,               \
                 temperature_dust, mean_intensity, Lambda_diagonal, R, mean_intensity_eff,         \
                 P_intensity, gridpoint, nno_shortcuts, nshortcuts, cum_nrad, cum_nlev, cum_nlev2 )\
         default( none )
-
-#       endif
-
-
         {
 
         int num_threads = omp_get_num_threads();
@@ -326,22 +294,6 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
           long m_ij = LSPECGRIDRAD(lspec,n,kr);
 
           mean_intensity[m_ij] = 0.0;
-
-
-#         ifdef ON_THE_FLY
-
-          long key[NGRID];            /* stores the nrs. of the grid points on the rays in order */
-
-          long raytot[NRAYS];              /* cumulative nr. of evaluation points along each ray */
-
-          long cum_raytot[NRAYS];          /* cumulative nr. of evaluation points along each ray */
-
-
-          EVALPOINT evalpoint[NGRID];
-
-          get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
-
-#         endif
 
 
           /* Calculate the mean intensity */
@@ -479,3 +431,5 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 }
 
 /*-----------------------------------------------------------------------------------------------*/
+
+#endif

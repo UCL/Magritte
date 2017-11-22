@@ -21,37 +21,23 @@
 
 
 
+#ifndef ON_THE_FLY
+
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
-
-
-#ifdef ON_THE_FLY
-
-int level_populations( GRIDPOINT *gridpoint,
-                       int *irad, int*jrad, double *frequency,
-                       double *A_coeff, double *B_coeff, double *R,
-                       double *pop,
-                       double *C_data, double *coltemp, int *icol, int *jcol,
-                       double *temperature_gas, double *temperature_dust,
-                       double *weight, double *energy, double *mean_intensity,
-                       double *Lambda_diagonal, double *mean_intensity_eff );
-
-#else
 
 int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                        long *key, long *raytot, long *cum_raytot,
                        int *irad, int*jrad, double *frequency,
-                       double *A_coeff, double *B_coeff, double *R,
-                       double *pop,
+                       double *A_coeff, double *B_coeff, double *R, double *pop,
                        double *C_data, double *coltemp, int *icol, int *jcol,
                        double *temperature_gas, double *temperature_dust,
                        double *weight, double *energy, double *mean_intensity,
                        double *Lambda_diagonal, double *mean_intensity_eff );
 
-#endif
-
-
 /*-----------------------------------------------------------------------------------------------*/
+
+#endif
 
 
 

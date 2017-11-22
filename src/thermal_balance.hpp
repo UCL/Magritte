@@ -38,7 +38,6 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint,
                                double *thermal_ratio,
                                double *time_chemistry, double *time_level_pop );
 
-
 #else
 
 int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,

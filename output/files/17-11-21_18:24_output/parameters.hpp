@@ -44,7 +44,7 @@
 
 /* Number of various iterations */
 
-#define MAX_NITERATIONS 301
+#define MAX_NITERATIONS 300
 
 #define PRELIM_CHEM_ITER 5
 
