@@ -13,6 +13,7 @@
 
 
 #include <math.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -43,7 +44,19 @@ int line_source( int *irad, int *jrad, double *A_coeff, double *B_coeff, double 
     double B_ji = B_coeff[b_ji];
 
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+#   pragma omp parallel                                                                           \
+    shared( A_ij, B_ij, B_ji, pop, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source )      \
+    default( none )
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NGRID)/num_threads;
+    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+
+
+    for (long gridp=start; gridp<stop; gridp++){
 
       long s_ij = LSPECGRIDRAD(lspec,gridp,kr);                      /* source and opacity index */
 
@@ -63,6 +76,7 @@ int line_source( int *irad, int *jrad, double *A_coeff, double *B_coeff, double 
 
 
     } /* end of gridp loop over grid points */
+    } /* end of OpenMP parallel region */
 
   } /* end of kr loop over transitions */
 
@@ -96,7 +110,20 @@ int line_opacity( int *irad, int *jrad, double *frequency, double *B_coeff, doub
     double B_ji = B_coeff[b_ji];
 
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+#   pragma omp parallel                                                                           \
+    shared( frequency, b_ij, B_ij, B_ji, pop, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev,    \
+            opacity )                                                                             \
+    default( none )
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NGRID)/num_threads;
+    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+
+
+    for (long gridp=start; gridp<stop; gridp++){
 
       long s_ij = LSPECGRIDRAD(lspec,gridp,kr);                      /* source and opacity index */
 
@@ -115,6 +142,7 @@ int line_opacity( int *irad, int *jrad, double *frequency, double *B_coeff, doub
 
 
     } /* end of gridp loop over grid points */
+    } /* end of OpenMP parallel region */
 
   } /* end of kr loop over transitions */
 

@@ -30,15 +30,18 @@
 
 
 
-int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
+int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec,
+                                 double *R, double *pop )
 {
 
 
   const int n = nlev[lspec];                /* number of rows and columns of the matrix to solve */
   const int m = 1;                                             /* number of solution vectors 'b' */
 
-  double a[n*n];
-  double b[n*m];
+  double *a;
+  a = (double*) malloc( n*n*sizeof(double) );
+  double *b;
+  b = (double*) malloc( n*m*sizeof(double)  );
 
 
 
@@ -130,9 +133,14 @@ int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec, do
 int GaussJordan(int n, int m, double *a, double *b)
 {
 
-  int indexc[n];                              /* note that our vectors are indexed from 0 to n-1 */
-  int indexr[n];                              /* note that our vectors are indexed from 0 to n-1 */
-  int ipiv[n];
+  int *indexc;                                /* note that our vectors are indexed from 0 to n-1 */
+  indexc = (int*) malloc( n*sizeof(int) );
+
+  int *indexr;                                /* note that our vectors are indexed from 0 to n-1 */
+  indexr = (int*) malloc( n*sizeof(int) );
+
+  int *ipiv;
+  ipiv = (int*) malloc( n*sizeof(int) );
 
   int icol, irow;
 

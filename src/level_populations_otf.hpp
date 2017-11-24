@@ -26,10 +26,8 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_populations_otf( GRIDPOINT *gridpoint,
-                           int *irad, int*jrad, double *frequency,
-                           double *A_coeff, double *B_coeff,
-                           double *pop,
+int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *frequency,
+                           double *A_coeff, double *B_coeff, double *pop,
                            double *C_data, double *coltemp, int *icol, int *jcol,
                            double *temperature_gas, double *temperature_dust,
                            double *weight, double *energy, double *mean_intensity,

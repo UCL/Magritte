@@ -15,11 +15,11 @@ else:
 if(name=="all"):
     name = "reaction"
 
-print "Comparing"
+print("Comparing")
 
 file_name = "../files/" + name + "_rates" + tag + ".txt"
 
-print file_name
+print(file_name)
 
 my_rates = np.loadtxt(file_name)
 
@@ -29,7 +29,7 @@ nreac = np.shape(my_rates)[1]
 
 file_name = "output_3D-PDR/" + name + "_rates" + tag + "_3D-PDR.txt"
 
-print file_name
+print(file_name)
 
 their_rates = np.loadtxt(file_name)
 
@@ -86,7 +86,7 @@ plot_name2 = "both_" + name + tag + ".png"
 fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
 
-print "Plots saved as "
-print "   " + plot_name1
-print "   " + plot_name2
-print " "
+print("Plots saved as ")
+print("   " + plot_name1)
+print("   " + plot_name2)
+print(" ")

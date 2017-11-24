@@ -15,7 +15,7 @@ else:
 
 file_name = "../files" + name + tag + ".txt"
 
-print file_name
+print(file_name)
 
 data = np.loadtxt(file_name)
 
@@ -45,8 +45,8 @@ relative_error = 2.0*abs(error)/abs(data+data2)
 
 # Make the plots
 
-print " "
-print "Plotting " + file_name
+print(" ")
+print("Plotting " + file_name)
 
 fig1 = plt.figure()
 
@@ -81,8 +81,8 @@ plot_name = "error_" + name + ".png"
 
 fig1.savefig(plot_name, bbox_inches='tight')
 
-print "Plot saved as " + plot_name
-print " "
+print("Plot saved as " + plot_name)
+print(" ")
 
 
 # fig2 = plt.figure(2)

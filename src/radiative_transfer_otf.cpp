@@ -153,7 +153,7 @@ void radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       }
 
 
-      if (SOBOLEV == true){
+      if ( SOBOLEV ){
 
         /* Sobolev approximation    */
         /* NOTE: Make sure RAY_SEPARATION2=0.0 when SOBOLEV=true !!! */
@@ -288,15 +288,24 @@ void radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  if(SOBOLEV == true){
+  if ( SOBOLEV ){
 
     mean_intensity[m_ij] = (1.0 - escape_probability) * source[m_ij]
                            + escape_probability * continuum_mean_intensity;
 
+    if ( ACCELERATION_APPROX_LAMBDA ){
 
-    Lambda_diagonal[m_ij]    = (1.0 - escape_probability);
+      Lambda_diagonal[m_ij]    = (1.0 - escape_probability);
 
-    mean_intensity_eff[m_ij] = escape_probability * continuum_mean_intensity;
+      mean_intensity_eff[m_ij] = escape_probability * continuum_mean_intensity;
+    }
+
+    else{
+
+      Lambda_diagonal[m_ij]    = 0.0;
+
+      mean_intensity_eff[m_ij] = mean_intensity[m_ij];
+    }
 
   }
   // else {

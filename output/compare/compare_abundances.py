@@ -9,8 +9,8 @@ import sys
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
-    print "ERROR : No date stamp given !\n"
-    print "Please try again and give the date stamp of the output file you want to plot\n"
+    print("ERROR : No date stamp given !\n")
+    print("Please try again and give the date stamp of the output file you want to plot\n")
 
 
 # Check the tag of the data that is to be plotted
@@ -74,7 +74,7 @@ def get_species_nr(name):
         if spec == name:
             return nr
         nr=nr+1
-    print "WARNING species not found!"
+    print("WARNING species not found!")
     return 0
 
 
@@ -92,9 +92,9 @@ else:
 
 # Make the plots
 
-print " "
-print "Plotting for" + file_name
-print "and " + my_file_name
+print(" ")
+print("Plotting for" + file_name)
+print("and " + my_file_name)
 
 fig1 = plt.figure()
 fig2 = plt.figure()
@@ -140,7 +140,7 @@ fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
 
 
-print "Plots saved as "
-print "   " + plot_name1
-print "   " + plot_name2
-print " "
+print("Plots saved as ")
+print("   " + plot_name1)
+print("   " + plot_name2)
+print(" ")

@@ -9,15 +9,15 @@ import sys
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
-    print "ERROR : No date stamp given !\n"
-    print "Please try again and give the date stamp of the output file you want to plot\n"
+    print("ERROR : No date stamp given !\n")
+    print("Please try again and give the date stamp of the output file you want to plot\n")
 
 
 if (len(sys.argv)>2):
     name = str(sys.argv[2])
 else:
-    print "ERROR : No name given !\n"
-    print "Please try again and give the name of the output file you want to plot\n"
+    print("ERROR : No name given !\n")
+    print("Please try again and give the name of the output file you want to plot\n")
 
 
 if(len(sys.argv) > 3):
@@ -28,7 +28,7 @@ else:
 
 file_name = "../files/" + date_stamp + "_output/line_intensities_" + name + tag + ".txt"
 
-print file_name
+print(file_name)
 
 my_data = np.loadtxt(file_name)
 
@@ -41,7 +41,7 @@ file_name = "../files/transition_levels_" + name + ".txt"
 ilev, jlev = np.loadtxt(file_name, unpack=True)
 
 nlev = int(np.max(ilev) + 1)
-print nlev
+print(nlev)
 
 file_name = "output_3D-PDR/line_intensities_" + name + tag + "_3D-PDR.txt"
 
@@ -75,8 +75,8 @@ relative_error = 2.0*abs(error)/abs(my_data+their_data)
 
 # Make the plots
 
-print " "
-print "Plotting " + file_name
+print(" ")
+print("Plotting " + file_name)
 
 
 fig1 = plt.figure()
@@ -131,7 +131,7 @@ fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
 
 
-print "Plots saved as "
-print "   " + plot_name1
-print "   " + plot_name2
-print " "
+print("Plots saved as ")
+print("   " + plot_name1)
+print("   " + plot_name2)
+print(" ")

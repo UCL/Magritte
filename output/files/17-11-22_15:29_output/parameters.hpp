@@ -5,13 +5,13 @@
 
 
 
-#define RUN_NUMBER "13"
+#define RUN_NUMBER "1"
 
 
 
 /* Input files */
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv_refined_refined_refined_refined_refined_refined_refined_refined_refined_refined_refined_refined.txt"
+#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
@@ -29,6 +29,8 @@
 #define THETA_CRIT 1.3
 
 #define RAY_SEPARATION2 0.0
+
+#define TRACE_RAYS_ON_THE_FLY true
 
 
 /* Radiative transfer */
@@ -81,6 +83,14 @@
 /* Turbulent velocity */
 
 #define V_TURB 1.0E5
+
+
+/* Cosmic ray variables */
+
+#define ZETA   3.846153846153846
+
+#define OMEGA  0.42
+
 
 
 #endif /* __PARAMETERS_HPP_INCLUDED__ */

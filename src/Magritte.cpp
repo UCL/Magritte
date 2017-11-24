@@ -86,6 +86,8 @@ int main()
 
   printf("(Magritte): reading grid input \n");
 
+  printf("\n(Magritte): NGRID = %d \n\n", NGRID);
+
 
   /* Define grid (using types defined in definitions.h)*/
 
@@ -393,7 +395,7 @@ int main()
   calc_temperature_dust(UV_field, rad_surface, temperature_dust);
 
 
-  write_double_2("column_tot", "", NGRID, NRAYS, column_tot);
+  // write_double_2("column_tot", "", NGRID, NRAYS, column_tot);
 
 
   // write_temperature_gas("guess", temperature_gas);

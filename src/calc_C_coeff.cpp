@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include "../parameters.hpp"
@@ -32,29 +33,6 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
                   double *temperature_gas, double *weight, double *energy, double *C_coeff,
                   long gridp, int lspec )
 {
-
-
-  double step;                                                    /* (linear) interpolation step */
-
-
-  // printf("(calc_C_coeff): intput C_data = \n");
-
-  // for (par=0; par<ncolpar[lspec]; par++){
-
-  //   for (int ctran=0; ctran<ncoltran[LSPECPAR(lspec,par)]; ctran++){
-
-  //     for (int ctemp=0; ctemp<ncoltemp[LSPECPAR(lspec,par)]; ctemp++){
-
-  //       printf( "  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par,ctran,ctemp)] );
-  //     }
-
-  //     printf("\n");
-  //   }
-
-  //   printf("\n");
-  // }
-
-
 
 
   /* Calculate H2 ortho/para fraction at equilibrium for given temperature */
@@ -117,11 +95,13 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
     }
 
 
-    double C_T_low[nlev[lspec]*nlev[lspec]];
+    double *C_T_low;
+    C_T_low = (double*) malloc( nlev[lspec]*nlev[lspec]*sizeof(double) );
 
     initialize_double_array(C_T_low, nlev[lspec]*nlev[lspec]);
 
-    double C_T_high[nlev[lspec]*nlev[lspec]];
+    double *C_T_high;
+    C_T_high = (double*) malloc( nlev[lspec]*nlev[lspec]*sizeof(double) );
 
     initialize_double_array(C_T_high, nlev[lspec]*nlev[lspec]);
 
@@ -176,8 +156,6 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
                   - coltemp[LSPECPARTEMP(lspec,par,tindex_low)] );
     }
 
-    // printf("(calc_C_coeff): step %.2lf \n", step);
-
 
     /* For all C matrix elements */
 
@@ -189,10 +167,6 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
         /* Make a linear interpolation for C in the temperature */
 
         double C_tmp = C_T_low[LINDEX(i,j)] + (C_T_high[LINDEX(i,j)]-C_T_low[LINDEX(i,j)]) * step;
-
-        // printf( "(calc_C_coeff): C_tmp = %.2lE \t tindex_low %d \t tindex_high %d \n",
-        //         C_tmp, tindex_low, tindex_high );
-
 
 
         /* Weigh contributions to C by abundance */
@@ -216,19 +190,6 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
     }
 
   } /* end of par loop ovrer collision partners */
-
-
-  // printf("(calc_C_coeff): output [C_ij]= \n");
-
-  // for (i=0; i<nlev[lspec]; i++){
-
-  //   for (j=0; j<nlev[lspec]; j++){
-
-  //     printf( "\t %.2lE", C_coeff[LSPECLEVLEV(lspec,i,j)] );
-  //   }
-
-  //   printf("\n");
-  // }
 
 
   return(0);

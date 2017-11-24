@@ -103,7 +103,7 @@
 #define LSPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                         \
                 /* when first index is line producing species and second is radiative transition */
 
-#define LSPECGRIDRAD(lspec,gridp,kr)   ( (kr) + (gridp)*nrad[(lspec)] + NGRID*cum_nlev[(lspec)] )
+#define LSPECGRIDRAD(lspec,gridp,kr)   ( (kr) + (gridp)*nrad[(lspec)] + NGRID*cum_nrad[(lspec)] )
 /* when first index is line producing species, second is grid point and third is rad. transition */
 
 

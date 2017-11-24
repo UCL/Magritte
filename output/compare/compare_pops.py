@@ -9,8 +9,8 @@ import sys
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
-    print "ERROR : No date stamp given !\n"
-    print "Please try again and give the date stamp of the output file you want to plot\n"
+    print("ERROR : No date stamp given !\n")
+    print("Please try again and give the date stamp of the output file you want to plot\n")
 
 
 name = str(sys.argv[2])
@@ -52,8 +52,8 @@ relative_error = 2.0*abs(error)/abs(my_data+their_data)
 
 # Make the plots
 
-print " "
-print "Plotting " + file_name
+print(" ")
+print("Plotting " + file_name)
 
 
 fig1 = plt.figure()
@@ -108,7 +108,7 @@ fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
 
 
-print "Plots saved as "
-print "   " + plot_name1
-print "   " + plot_name2
-print " "
+print("Plots saved as ")
+print("   " + plot_name1)
+print("   " + plot_name2)
+print(" ")
