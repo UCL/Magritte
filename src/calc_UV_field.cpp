@@ -68,7 +68,7 @@ int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
 
       // if ( (raytot[nr] > 0) || (raytot[nar] > 0) ){
       // if ( (AV[nr] > 0) || (AV[nar] > 0) ){
-      if ( (r == 0) || (antipod[r] == 0) ){
+      if ( (r == 0) || (antipod[r] == 0) || (r==10) ){
 
         UV_field[n] = UV_field[n] + rad_surface[nr]*exp(-tau_UV*AV[nr]);
       }

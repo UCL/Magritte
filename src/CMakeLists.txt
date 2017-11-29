@@ -55,6 +55,7 @@ level_populations_otf.cpp
 lines.cpp
 acceleration_Ng.cpp
 calc_C_coeff.cpp
+sobolev.cpp
 radiative_transfer.cpp
 radiative_transfer_otf.cpp
 feautrier.cpp

@@ -83,7 +83,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
 
       rad_surface[RINDEX(n,r_max)] = max_product;
 
-    } /* end if UNIform radiation field */
+    } /* end if UNIdirectional radiation field */
 
 
     /* In case of an ISOtropic radiation field */

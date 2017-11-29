@@ -27,6 +27,7 @@
 #include "lines.hpp"
 #include "calc_C_coeff.hpp"
 #include "initializers.hpp"
+#include "sobolev.hpp"
 #include "radiative_transfer_otf.hpp"
 #include "level_population_solver_otf.hpp"
 #include "ray_tracing.hpp"
@@ -232,9 +233,19 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
           /* Calculate the mean intensity */
 
-          radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
-                                  Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
-                                  temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
+          if ( SOBOLEV ){
+
+            sobolev( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
+                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
+          }
+
+          else {
+
+            radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+                                    Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
+                                    temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
+          }
 
 
           /* Fill the i>j part */
@@ -270,24 +281,26 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
           long p_i = LSPECGRIDLEV(lspec,n,i);                              /* pop and dpop index */
 
+          double dpop = pop[p_i] - prev1_pop[p_i];
+          double spop = pop[p_i] + prev1_pop[p_i];
 
-          if ( ( pop[p_i] > 1.0E-10 * species[ lspec_nr[lspec] ].abn[n] )
-               && !( pop[p_i]==0.0 && prev1_pop[p_i]==0.0 ) ){
+          double min_pop = 1.0E-10 * species[ lspec_nr[lspec] ].abn[n];
 
 
-            double dpoprel = 2.0 * fabs(pop[p_i] - prev1_pop[p_i]) / (pop[p_i] + prev1_pop[p_i]);
+          if ( (pop[p_i] > min_pop) && (spop != 0.0) ){
+
+            double dpop_rel = 2.0 * fabs(dpop) / spop;
 
 
             /* If the population of any of the levels is not converged */
 
-            if (dpoprel > POP_PREC){
+            if (dpop_rel > POP_PREC){
 
               not_converged[lspec] = true;
               some_not_converged   = true;
 
               n_not_converged[lspec]++;
             }
-
           }
 
 

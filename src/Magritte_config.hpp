@@ -1,4 +1,4 @@
-#define NGRID 294 
+#define NGRID 122 
 
 #define NRAYS 12 
 

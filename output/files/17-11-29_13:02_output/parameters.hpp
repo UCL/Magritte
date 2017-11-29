@@ -50,7 +50,7 @@
 
 #define PRELIM_CHEM_ITER 5
 
-#define PRELIM_TB_ITER 15
+#define PRELIM_TB_ITER 45
 
 #define CHEM_ITER 3
 
@@ -68,18 +68,18 @@
 
 #define GAS_TO_DUST 100.0;
 
-#define TIME_END_IN_YEARS 1.0E+7
+#define TIME_END_IN_YEARS 1.000000E+7
 
 
 /* External UV field */
 
 #define FIELD_FORM "UNI"
 
-#define G_EXTERNAL_X 5.270460E+00
+#define G_EXTERNAL_X -5.270460E+00
 
-#define G_EXTERNAL_Y 5.270460E+00
+#define G_EXTERNAL_Y -5.270460E+00
 
-#define G_EXTERNAL_Z 6.666670E+00
+#define G_EXTERNAL_Z -6.666670E+00
 
 
 /* Turbulent velocity */

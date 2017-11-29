@@ -75,11 +75,11 @@
 
 #define FIELD_FORM "UNI"
 
-#define G_EXTERNAL_X 5.270460E+00
+#define G_EXTERNAL_X -5.270460E+00
 
-#define G_EXTERNAL_Y 5.270460E+00
+#define G_EXTERNAL_Y -5.270460E+00
 
-#define G_EXTERNAL_Z 6.666670E+00
+#define G_EXTERNAL_Z -6.666670E+00
 
 
 /* Turbulent velocity */
