@@ -18,10 +18,10 @@
 /* update_temperature_gas: update the gas temperature after a thermal balance iteration          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int update_temperature_gas( double *thermal_ratio, long gridp, double *temperature_gas,
-                            double *previous_temperature_gas,
-                            double *temperature_a, double *temperature_b,
-                            double *thermal_ratio_a, double *thermal_ratio_b );
+int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
+                            double *previous_temperature_gas, double *temperature_a,
+                            double *temperature_b, double *thermal_ratio_a,
+                            double *thermal_ratio_b );
 
 /*-----------------------------------------------------------------------------------------------*/
 

@@ -40,6 +40,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -58,16 +59,26 @@ int calc_temperature_dust( double *UV_field, double *rad_surface, double *temper
 
   /* Parameters as defined in the paper Hollenbach, Takahashi & Tielens (1991) */
 
-  double temperature_min = 0.0;                                      /* minimum dust temperature */
+  const double tau_100 = 1.0E-3;                         /* emission optical depth at 100 micron */
 
-  double tau_100 = 1.0E-3;                               /* emission optical depth at 100 micron */
-
-  double nu_0 = 2.65E15;                               /* parameter in the absorption efficiency */
+  const double nu_0 = 2.65E15;                         /* parameter in the absorption efficiency */
 
 
   /* For all grid points */
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( UV_field, rad_surface, temperature_dust )                                               \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
 
     /* Contribution to the dust temperature from the local FUV flux and the CMB background */
@@ -81,7 +92,7 @@ int calc_temperature_dust( double *UV_field, double *rad_surface, double *temper
       /* The minimum dust temperature is related to the incident FUV flux along each ray
          Convert the incident FUV flux from Draine to Habing units by multiplying by 1.71 */
 
-      temperature_min = 12.2*pow(1.71*rad_surface[RINDEX(n,r)], 0.2);
+      double temperature_min = 12.2*pow(1.71*rad_surface[RINDEX(n,r)], 0.2);
 
 
       /* Add the contribution to the dust temperature from the FUV flux incident along this ray */
@@ -117,6 +128,7 @@ int calc_temperature_dust( double *UV_field, double *rad_surface, double *temper
     }
 
   } /* end of n loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);

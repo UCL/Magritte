@@ -166,7 +166,7 @@ L_{\nu}(\gamma) = \frac{}{}
 
 The \emph{intensity} $I_{\nu}\equiv I( \textbf{x},t;\hat{\textbf{n}},\nu)$ is defined as the energy $d\mathcal{E}$ propagated through a surface $d^{2}\textbf{S}$, in the direction $\hat{\textbf{n}}$, over a solid angle $d^{2}\omega$, within the frequency bin $[\nu,\nu+d\nu]$, in a time $dt$.
 \begin{equation}
-	\D \mathcal{E} = I_{\nu} \ \ \hat{\textbf{n}} \cdot \D^{2}\textbf{S} \ \D^{2}\omega \ \D\nu \ \D t
+	\D \mathcal{E} \ = \ I_{\nu} \ \ \hat{\textbf{n}} \cdot \D^{2}\textbf{S} \ \D^{2}\omega \ \D\nu \ \D t
 \end{equation}
 For simplicity we only consider the time-independent problem. (Add figure.)
 
@@ -186,8 +186,8 @@ Next we will discuss all different components of the radiation field and how the
 \paragraph{Lines} Electronic transitions in atoms or molecules lead to sharply peaked emissions in frequency. The corresponding emissivity and opacity of these transition can be formulated in terms of the (radiative) Einstein coefficients.
 \begin{equation}
 \begin{split}
-\eta^{(ij)}_{\nu}(\textbf{x}) &= \frac{h \nu}{4 \pi} \ n_{i}(\textbf{x}) A_{ij} \ \phi^{(ij)}_{\nu}(\textbf{x}), \\
-\chi^{(ij)}_{\nu}(\textbf{x}) &= \frac{h \nu}{4 \pi} \ \big( n_{j}(\textbf{x}) B_{ji} - n_{i}(\textbf{x}) B_{ij} \big) \ \phi^{(ij)}_{\nu}(\textbf{x}).
+\eta^{(ij)}_{\nu}(\textbf{x}) \ &= \ \frac{h \nu}{4 \pi} \ n_{i}(\textbf{x}) A_{ij} \ \phi^{(ij)}_{\nu}(\textbf{x}), \\
+\chi^{(ij)}_{\nu}(\textbf{x}) \ &= \ \frac{h \nu}{4 \pi} \ \big( n_{j}(\textbf{x}) B_{ji} - n_{i}(\textbf{x}) B_{ij} \big) \ \phi^{(ij)}_{\nu}(\textbf{x}).
 \end{split}
 \end{equation}
 Note that we make the assumption of complete redistribution by giving both the emissivity and opacity the same profile function.
@@ -523,6 +523,17 @@ This is the way in which the radiative cooling is implemented in the code (\text
 
 
 \section{Applications}
+
+\subsection{Composite galaxies}
+
+\subsubsection{Parameter space}
+
+\begin{tabular}{ l | l | l}
+  \textit{parameter} & \textit{min.} & \textit{max.} \\ \hline
+  $n_{H}$            & $10^2$        & $10^4$ \\
+\end{tabular}
+
+
 
 \subsection{Stellar winds}
 

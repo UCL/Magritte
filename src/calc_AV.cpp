@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -36,13 +37,27 @@ int calc_AV( double *column_tot, double *AV )
 
   /* For all grid points n and rays r */
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( column_tot, AV)                                                                         \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
     for (long r=0; r<NRAYS; r++){
 
       AV[RINDEX(n,r)] = A_V0 * column_tot[RINDEX(n,r)];
     }
-  }
+
+  } /* end of n loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);

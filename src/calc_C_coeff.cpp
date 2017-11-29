@@ -189,6 +189,10 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
 
     }
 
+
+    free(C_T_low);
+    free(C_T_high);
+
   } /* end of par loop ovrer collision partners */
 
 

@@ -175,7 +175,7 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
 
 
 
-/* column_density: calculates the column density for one species along one ray                   */
+/* column_density_at_point: calculates column density for a species along a ray at a point       */
 /*-----------------------------------------------------------------------------------------------*/
 
 double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key,
@@ -229,15 +229,11 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long
       long evnrp      = LOCAL_GP_NR_OF_EVALP(ray,e-1);
       long gridp_evnr = evnr;
 
-      // if (gridp == 95) {printf("%ld,   %ld\n", e, evnr);}
-
 #     else
 
       long evnr       = GP_NR_OF_EVALP(gridp,ray,e);
       long evnrp      = GP_NR_OF_EVALP(gridp,ray,e-1);
       long gridp_evnr = GINDEX(gridp,evnr);
-
-      // if (gridp == 95) {printf("%ld,   %ld\n", e, evnr);}
 
 #     endif
 

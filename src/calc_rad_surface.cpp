@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include <string>
 
@@ -35,7 +36,19 @@ int calc_rad_surface(double *G_external, double *rad_surface)
 
   /* For all grid points */
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( G_external, rad_surface, unit_healpixvector )                                           \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
 
     /* In case of a UNIdirectional radiation field */
@@ -87,6 +100,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
 
 
   } /* end of n loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);

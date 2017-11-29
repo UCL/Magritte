@@ -578,16 +578,14 @@ int main()
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
 
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+    update_temperature_gas( thermal_ratio, temperature_gas, prev_temperature_gas,
+                            temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
 
-      update_temperature_gas( thermal_ratio, gridp, temperature_gas, prev_temperature_gas,
-                              temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
+  } /* end of tb_iteration loop over preliminary tb iterations */
 
-    }
-
-  }
 
   initialize_double_array_with(temperature_gas, temperature_b, NGRID);
+
 
   write_double_1("temperature_a", "", NGRID, temperature_a );
   write_double_1("temperature_b", "", NGRID, temperature_b );
@@ -658,9 +656,24 @@ int main()
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
 
 
+
     /* Calculate the thermal balance for each gridpoint */
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+#   pragma omp parallel                                                                           \
+    shared( thermal_ratio, temperature_gas, prev_temperature_gas, temperature_a, temperature_b,   \
+            temperature_c, temperature_d, temperature_e, thermal_ratio_a, thermal_ratio_b,        \
+            thermal_ratio_c, n_not_converged, no_thermal_balance )                                \
+    default( none )
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NGRID)/num_threads;
+    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+
+
+    for (long gridp=start; gridp<stop; gridp++){
 
       shuffle_Brent( gridp, temperature_a, temperature_b, temperature_c, temperature_d,
                      temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c );
@@ -673,7 +686,6 @@ int main()
         update_temperature_gas_Brent( gridp, temperature_a, temperature_b, temperature_c,
                                       temperature_d, temperature_e, thermal_ratio_a,
                                       thermal_ratio_b, thermal_ratio_c );
-
 
         temperature_gas[gridp] = temperature_b[gridp];
 
@@ -689,6 +701,15 @@ int main()
 
 
     } /* end of gridp loop over grid points */
+    } /* end of OpenMP parallel region */
+
+
+    // if (no_thermal_balance){
+    //
+    //   update_temperature_gas( thermal_ratio, temperature_gas, prev_temperature_gas,
+    //                           temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
+    //
+    // }
 
 
     printf("(Magritte): heating and cooling calculated \n\n");

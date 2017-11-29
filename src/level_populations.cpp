@@ -173,7 +173,8 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
 
 #     pragma omp parallel                                                                         \
-      shared( nrad, lspec, irad, jrad, Source, opacity, pop, frequency, A_coeff, B_coeff, nlev, cum_nrad, cum_nlev, cum_nlev2 )        \
+      shared( nrad, lspec, irad, jrad, Source, opacity, pop, frequency, A_coeff, B_coeff, nlev,   \
+              cum_nrad, cum_nlev, cum_nlev2 )                                                     \
       default( none )
       {
 

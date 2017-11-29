@@ -32,12 +32,10 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
-                             long *key, long *raytot, long *cum_raytot,
-                             double *mean_intensity,
-                             double *Lambda_diagonal, double *mean_intensity_eff,
-                             double *source, double *opacity, double *frequency,
-                             double *temperature_gas, double *temperature_dust,
+void radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+                             long *cum_raytot, double *mean_intensity, double *Lambda_diagonal,
+                             double *mean_intensity_eff, double *source, double *opacity,
+                             double *frequency, double *temperature_gas, double *temperature_dust,
                              int *irad, int*jrad, long gridp, int lspec, int kr )
 {
 

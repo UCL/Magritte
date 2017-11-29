@@ -13,6 +13,7 @@
 
 
 #include <math.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -23,7 +24,6 @@
 
 
 #define EPSILON 3.0E-8                             /* lower bound on the precision we can obtain */
-
 #define PREC    5.0E-3                                   /* precision we need on the temperature */
 
 
@@ -31,106 +31,126 @@
 /* update_temperature_gas: update the gas temperature after a thermal balance iteration          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int update_temperature_gas( double *thermal_ratio, long gridp, double *temperature_gas,
-                            double *prev_temperature_gas,
-                            double *temperature_a, double *temperature_b,
-                            double *thermal_ratio_a, double *thermal_ratio_b )
+int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
+                            double *prev_temperature_gas, double *temperature_a,
+                            double *temperature_b, double *thermal_ratio_a,
+                            double *thermal_ratio_b )
 {
 
 
+  /* For all grid points */
 
-  /* When there is net heating, the temperature was too low -> increase temperature */
+# pragma omp parallel                                                                             \
+  shared( thermal_ratio, temperature_gas, prev_temperature_gas, temperature_a, temperature_b,     \
+          thermal_ratio_a, thermal_ratio_b  )                                                     \
+  default( none )
+  {
 
-  if (thermal_ratio[gridp] > 0.0){
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
 
 
-    /* Get a lower bound on the temperature for Brent's algorithm */
+  for (long gridp=start; gridp<stop; gridp++){
 
-    if (temperature_gas[gridp] < temperature_a[gridp]){
 
-      temperature_a[gridp]   = /*0.5**/temperature_gas[gridp];
+    /* When there is net heating, the temperature was too low -> increase temperature */
 
-      thermal_ratio_a[gridp] = thermal_ratio[gridp];
+    if (thermal_ratio[gridp] > 0.0){
+
+
+      /* Get a lower bound on the temperature for Brent's algorithm */
+
+      // if (temperature_gas[gridp] < temperature_a[gridp]){
+
+        temperature_a[gridp]   = 0.9*temperature_gas[gridp];
+
+        thermal_ratio_a[gridp] = thermal_ratio[gridp];
+      // }
+
+
+      /* When we also increrased the tempoerature previous iteration */
+
+      if (prev_temperature_gas[gridp] < temperature_gas[gridp]){
+
+        prev_temperature_gas[gridp] = temperature_gas[gridp];
+
+        temperature_gas[gridp]      = 1.3 * temperature_gas[gridp];
+      }
+
+
+      /* When we decreased the temperature previous iteration */
+
+      else {
+
+        double temp = temperature_gas[gridp];
+
+        temperature_gas[gridp]      = ( temp + prev_temperature_gas[gridp] ) / 2.0;
+
+        prev_temperature_gas[gridp] = temp;
+      }
+
+
+    } /* end of net heating */
+
+
+
+    /* When there is net cooling, the temperature was too high -> decrease temperature */
+
+    if (thermal_ratio[gridp] < 0.0){
+
+
+      /* Get an upper bound on the temperature for Brent's algorithm */
+
+      // if (temperature_gas[gridp] > temperature_b[gridp]){
+
+        temperature_b[gridp]   = 1.1*temperature_gas[gridp];
+
+        thermal_ratio_b[gridp] = thermal_ratio[gridp];
+      // }
+
+
+      /* When we also decrerased the tempoerature previous iteration */
+
+      if (prev_temperature_gas[gridp] > temperature_gas[gridp]){
+
+        prev_temperature_gas[gridp] = temperature_gas[gridp];
+
+        temperature_gas[gridp]      = 0.7 * temperature_gas[gridp];
+      }
+
+
+      /* When we increased the temperature previous iteration */
+
+      else {
+
+        double temp = temperature_gas[gridp];
+
+        temperature_gas[gridp]      = ( temp + prev_temperature_gas[gridp] ) / 2.0;
+
+        prev_temperature_gas[gridp] = temp;
+      }
+
+    } /* end of net cooling */
+
+
+
+    /* Enforce the minimun and maximum temperature */
+
+    if (temperature_gas[gridp] < TEMPERATURE_MIN){
+
+      temperature_gas[gridp] = TEMPERATURE_MIN;
     }
 
+    else if (temperature_gas[gridp] > TEMPERATURE_MAX){
 
-    /* When we also increrased the tempoerature previous iteration */
-
-    if (prev_temperature_gas[gridp] < temperature_gas[gridp]){
-
-      prev_temperature_gas[gridp] = temperature_gas[gridp];
-
-      temperature_gas[gridp]          = 2.0 * temperature_gas[gridp];
+      temperature_gas[gridp] = TEMPERATURE_MAX;
     }
 
-
-    /* When we decreased the temperature previous iteration */
-
-    else {
-
-      double temp = temperature_gas[gridp];
-
-      temperature_gas[gridp]          = ( temp + prev_temperature_gas[gridp] ) / 2.0;
-
-      prev_temperature_gas[gridp] = temp;
-    }
-
-
-  } /* end of net heating */
-
-
-
-  /* When there is net cooling, the temperature was too high -> decrease temperature */
-
-  if (thermal_ratio[gridp] < 0.0){
-
-
-    /* Get an upper bound on the temperature for Brent's algorithm */
-
-    if (temperature_gas[gridp] > temperature_b[gridp]){
-
-      temperature_b[gridp]   = /*1.5**/temperature_gas[gridp];
-
-      thermal_ratio_b[gridp] = thermal_ratio[gridp];
-    }
-
-
-    /* When we also decrerased the tempoerature previous iteration */
-
-    if (prev_temperature_gas[gridp] > temperature_gas[gridp]){
-
-      prev_temperature_gas[gridp] = temperature_gas[gridp];
-
-      temperature_gas[gridp]          = 0.5 * temperature_gas[gridp];
-    }
-
-
-    /* When we increased the temperature previous iteration */
-
-    else {
-
-      double temp = temperature_gas[gridp];
-
-      temperature_gas[gridp]          = ( temp + prev_temperature_gas[gridp] ) / 2.0;
-
-      prev_temperature_gas[gridp] = temp;
-    }
-
-  } /* end of net cooling */
-
-
-
-  /* Enforce the minimun and maximum temperature */
-
-  if (temperature_gas[gridp] < TEMPERATURE_MIN){
-
-    temperature_gas[gridp] = TEMPERATURE_MIN;
-  }
-
-  else if (temperature_gas[gridp] > TEMPERATURE_MAX){
-
-    temperature_gas[gridp] = TEMPERATURE_MAX;
-  }
+  } /* end of gridp loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);

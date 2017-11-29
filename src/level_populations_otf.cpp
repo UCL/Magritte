@@ -232,10 +232,9 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
           /* Calculate the mean intensity */
 
-          radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot,
-                                  mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                                  source, opacity, frequency, temperature_gas, temperature_dust,
-                                  irad, jrad, n, lspec, kr );
+          radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+                                  Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
+                                  temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
 
 
           /* Fill the i>j part */

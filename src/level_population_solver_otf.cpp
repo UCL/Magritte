@@ -117,6 +117,10 @@ int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec,
   }
 
 
+  free(a);
+  free(b);
+
+
   return(0);
 
 }
@@ -225,6 +229,11 @@ int GaussJordan(int n, int m, double *a, double *b)
     }
 
   }
+
+
+  free(indexc);
+  free(indexr);
+  free(ipiv);
 
 
   return(0);

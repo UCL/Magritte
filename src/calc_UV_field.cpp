@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
@@ -36,9 +37,25 @@ int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
 
   /* For all grid points */
 
-  for (long n=0; n<NGRID; n++){
+# pragma omp parallel                                                                             \
+  shared( AV, rad_surface, UV_field, antipod)                                                     \
+  default( none )
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NGRID)/num_threads;
+  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+
+
+  for (long n=start; n<stop; n++){
 
     UV_field[n] = 0.0;
+
+
+    /* External UV radiation field                                                               */
+    /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
     /* For all rays */
@@ -58,7 +75,21 @@ int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
     }
 
 
+    /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+
+
+
+
+    /* External UV radiation field                                                               */
+    /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+
+
+
+    /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+
+
   } /* end of n loop over grid points */
+  } /* end of OpenMP parallel region */
 
 
   return(0);
