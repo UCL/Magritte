@@ -65,7 +65,7 @@ int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
 
       // if (temperature_gas[gridp] < temperature_a[gridp]){
 
-        temperature_a[gridp]   = 0.9*temperature_gas[gridp];
+        temperature_a[gridp]   = 0.95*temperature_gas[gridp];
 
         thermal_ratio_a[gridp] = thermal_ratio[gridp];
       // }
@@ -77,7 +77,7 @@ int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
 
         prev_temperature_gas[gridp] = temperature_gas[gridp];
 
-        temperature_gas[gridp]      = 1.3 * temperature_gas[gridp];
+        temperature_gas[gridp]      = 1.05 * temperature_gas[gridp];
       }
 
 
@@ -106,7 +106,7 @@ int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
 
       // if (temperature_gas[gridp] > temperature_b[gridp]){
 
-        temperature_b[gridp]   = 1.1*temperature_gas[gridp];
+        temperature_b[gridp]   = 1.05*temperature_gas[gridp];
 
         thermal_ratio_b[gridp] = thermal_ratio[gridp];
       // }
@@ -118,7 +118,7 @@ int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
 
         prev_temperature_gas[gridp] = temperature_gas[gridp];
 
-        temperature_gas[gridp]      = 0.7 * temperature_gas[gridp];
+        temperature_gas[gridp]      = 0.95 * temperature_gas[gridp];
       }
 
 

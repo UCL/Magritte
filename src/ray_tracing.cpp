@@ -494,4 +494,103 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 /*-----------------------------------------------------------------------------------------------*/
 
+
+
+
+
+/* get_velocities: get the velocity of the evaluation point with respect to the grid point       */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                    long *key, long *raytot, long *cum_raytot, long gridp, long *first_velo )
+{
+
+
+  /* Since we are in the comoving frame the point itself is at rest */
+
+  evalpoint[gridp].vol = 0.0;
+
+
+  /* Get the increments in velocity space along each ray/antipodal ray pair */
+
+  for (long r=0; r<NRAYS/2; r++ ){
+
+    long ar = antipod[r];                                         /* index of antipodal ray to r */
+
+    long etot1 = raytot[ar];                   /* total number of evaluation points along ray ar */
+    long etot2 = raytot[r];                     /* total number of evaluation points along ray r */
+
+    long ndep = etot1 + etot2;
+
+    double *velocities;
+    velocities = (double*) malloc( ndep*sizeof(double) );
+
+    long *evalps;
+    evalps = (long*) malloc( ndep*sizeof(long) );
+
+
+    if (etot1 > 0){
+    for (long e1=0; e1<etot1; e1++){
+
+      long evnr = LOCAL_GP_NR_OF_EVALP(ar,e1);
+
+      evalpoint[evnr].vol
+                =   (gridpoint[evnr].vx - gridpoint[gridp].vx) * unit_healpixvector[VINDEX(ar,0)]
+                  + (gridpoint[evnr].vy - gridpoint[gridp].vy) * unit_healpixvector[VINDEX(ar,1)]
+                  + (gridpoint[evnr].vz - gridpoint[gridp].vz) * unit_healpixvector[VINDEX(ar,2)];
+
+      velocities[e1] = evalpoint[evnr].vol;
+
+      evalps[e1]     = evnr;
+
+    } /* end of e loop over evaluation points */
+    }
+
+
+    if (etot2 > 0){
+    for (long e2=0; e2<etot2; e2++){
+
+      long evnr = LOCAL_GP_NR_OF_EVALP(r,e2);
+
+      evalpoint[evnr].vol
+                =   (gridpoint[evnr].vx - gridpoint[gridp].vx) * unit_healpixvector[VINDEX(r,0)]
+                  + (gridpoint[evnr].vy - gridpoint[gridp].vy) * unit_healpixvector[VINDEX(r,1)]
+                  + (gridpoint[evnr].vz - gridpoint[gridp].vz) * unit_healpixvector[VINDEX(r,2)];
+
+      velocities[etot1+e2] = evalpoint[evnr].vol;
+
+      evalps[etot1+e2]     = evnr;
+
+    } /* end of e loop over evaluation points */
+    }
+
+
+    /* Sort the velocities by magnitude */
+
+    heapsort(velocities, evalps, ndep);
+
+
+    first_velo[r] = evalps[0];
+
+
+    for (long dep=0; dep<ndep-1; dep++){
+
+      evalpoint[evalps[dep]].dvc = evalpoint[evalps[dep+1]].vol - evalpoint[evalps[dep]].vol;
+
+      evalpoint[evalps[dep]].next_in_velo = evalps[dep+1];
+    }
+
+
+    free(velocities);
+    free(evalps);
+
+  } /* end of r loop over rays */
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
 #endif

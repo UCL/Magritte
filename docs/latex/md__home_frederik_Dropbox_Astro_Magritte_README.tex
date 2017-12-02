@@ -1,0 +1,65 @@
+
+
+\href{https://travis-ci.com/UCL/Magritte}{\tt }
+
+ 
+
+
+
+\subsection*{How to get started\+:}
+
+
+\begin{DoxyItemize}
+\item Run the {\ttfamily cofigure.\+sh} bash script to produce the Makefile. 
+\begin{DoxyCode}
+$ bash configure.sh
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+\subsection*{How to use\+:}
+
+
+\begin{DoxyItemize}
+\item Specify the parameters in the {\ttfamily \mbox{\hyperlink{parameters_8hpp_source}{parameters.\+hpp}}} file. (Data files are stored in the {\ttfamily /data} folder. Grids are stored in the {\ttfamily /input} folder.)
+\item Run make to setup and compile the source code given the specified parameters. This will create the Magritte executable. 
+\begin{DoxyCode}
+$ make
+\end{DoxyCode}
+
+\item Run the executable to generate the ouput in the {\ttfamily /output/files/\+Y\+Y-\/\+M\+M-\/\+D\+D\+\_\+hh\+:mm\+\_\+output} folder, where first part of the last folder idicates the date and time when the makefile was executed. 
+\begin{DoxyCode}
+$ ./Magritte.exe
+\end{DoxyCode}
+
+\item The output can be visualized using the python scripts in the {\ttfamily output/plot\+\_\+scripts} folder. The results of these plot scripts will be saved in a seperate file {\ttfamily /plots} in the output folder.
+\end{DoxyItemize}
+
+\subsection*{Current issues and warnings}
+
+(!) Look out for devisions by 4\+PI which should be devisions by the number of rays.
+
+(!) 1D models assume N\+R\+A\+YS=12.
+
+(!) Rounding errors in the angle calculation in ray tracing (temporary fix).
+
+(!) The first and last species are \char`\"{}dummies\char`\"{}.
+
+\subsection*{A first parallelization (Open\+MP)}
+
+In a first parallelization round we simply paralellize every big outer loop. This has been done in\+:
+
+
+\begin{DoxyItemize}
+\item calc\+\_\+column\+\_\+density.\+cpp
+\item chemistry.\+cpp
+\item acceleration\+\_\+\+Ng.\+cpp
+\item level\+\_\+populations.\+cpp
+\item thermal\+\_\+balance.\+cpp
+\end{DoxyItemize}
+
+
+
+
+
+Developed by \href{https://github.com/FrederikDeCeuster}{\tt Frederik De Ceuster} at \href{https://github.com/ucl}{\tt U\+CL} and \href{https://github.com/IvS-KULeuven}{\tt KU Leuven} 

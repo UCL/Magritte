@@ -495,11 +495,14 @@ int main()
 
   initialize_double_array(Lambda_diagonal, NGRID*TOT_NRAD);
 
+  double source_scatter[NGRID*TOT_NRAD];   /* mean contribution of scattering to source function */
+
+  initialize_double_array(source_scatter, NGRID*TOT_NRAD);
+
 
   double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
   initialize_double_array(pop, NGRID*TOT_NLEV);
-
 
   double temperature_a[NGRID];                                 /* variable for Brent's algorithm */
 

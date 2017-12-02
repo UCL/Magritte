@@ -36,55 +36,63 @@ const std::string line_datafile[NLSPEC] = LINE_DATAFILES;        /* list of line
 
 /* HEALPix vectors */
 
-double const unit_healpixvector[3*NRAYS] = UNIT_HEALPIXVECTOR;
+const double unit_healpixvector[3*NRAYS] = UNIT_HEALPIXVECTOR;
 
-long const antipod[NRAYS] = ANTIPOD;
+const long antipod[NRAYS] = ANTIPOD;
 
 
 
 /* Level populations */
 
-int const nlev[NLSPEC] = NLEV;
+const int nlev[NLSPEC] = NLEV;
 
-int const nrad[NLSPEC] = NRAD;
-
-
-int const cum_nlev[NLSPEC]  = CUM_NLEV;
-
-int const cum_nlev2[NLSPEC] = CUM_NLEV2;
-
-int const cum_nrad[NLSPEC]  = CUM_NRAD;
+const int nrad[NLSPEC] = NRAD;
 
 
-int const ncolpar[NLSPEC]     = NCOLPAR;
+const int cum_nlev[NLSPEC]  = CUM_NLEV;
 
-int const cum_ncolpar[NLSPEC] = CUM_NCOLPAR;
+const int cum_nlev2[NLSPEC] = CUM_NLEV2;
 
-
-int const ncoltemp[TOT_NCOLPAR] = NCOLTEMP;
-
-int const ncoltran[TOT_NCOLPAR] = NCOLTRAN;
+const int cum_nrad[NLSPEC]  = CUM_NRAD;
 
 
-int const cum_ncoltemp[TOT_NCOLPAR] = CUM_NCOLTEMP;
+const int ncolpar[NLSPEC]     = NCOLPAR;
 
-int const cum_ncoltran[TOT_NCOLPAR] = CUM_NCOLTRAN;
-
-int const cum_ncoltrantemp[TOT_NCOLPAR] = CUM_NCOLTRANTEMP;
+const int cum_ncolpar[NLSPEC] = CUM_NCOLPAR;
 
 
-int const tot_ncoltemp[NLSPEC] = TOT_NCOLTEMP;
+const int ncoltemp[TOT_NCOLPAR] = NCOLTEMP;
 
-int const tot_ncoltran[NLSPEC] = TOT_NCOLTRAN;
-
-int const tot_ncoltrantemp[NLSPEC] = TOT_NCOLTRANTEMP;
+const int ncoltran[TOT_NCOLPAR] = NCOLTRAN;
 
 
-int const cum_tot_ncoltemp[NLSPEC] = CUM_TOT_NCOLTRAN;
+const int cum_ncoltemp[TOT_NCOLPAR] = CUM_NCOLTEMP;
 
-int const cum_tot_ncoltran[NLSPEC] = CUM_TOT_NCOLTRAN;
+const int cum_ncoltran[TOT_NCOLPAR] = CUM_NCOLTRAN;
 
-int const cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
+const int cum_ncoltrantemp[TOT_NCOLPAR] = CUM_NCOLTRANTEMP;
+
+
+const int tot_ncoltemp[NLSPEC] = TOT_NCOLTEMP;
+
+const int tot_ncoltran[NLSPEC] = TOT_NCOLTRAN;
+
+const int tot_ncoltrantemp[NLSPEC] = TOT_NCOLTRANTEMP;
+
+
+const int cum_tot_ncoltemp[NLSPEC] = CUM_TOT_NCOLTRAN;
+
+const int cum_tot_ncoltran[NLSPEC] = CUM_TOT_NCOLTRAN;
+
+const int cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
+
+
+
+/* Roots of the 7th (physicists') Hermite polynomial */
+
+const double H_7_weights[NFREQ] = WEIGHTS_7;
+
+const double H_7_roots[NFREQ] = ROOTS_7;
 
 
 

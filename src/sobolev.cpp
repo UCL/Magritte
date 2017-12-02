@@ -185,7 +185,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
       }
 
 
-      /* Free the allocated memory for temporary variables */
+      /* Free the allocated memory for temporary variable */
 
       free(dtau);
 

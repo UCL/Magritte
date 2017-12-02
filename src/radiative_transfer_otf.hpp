@@ -35,6 +35,18 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
 
 /*-----------------------------------------------------------------------------------------------*/
 
+
+
+/* intensity: calculate the intensity along a certain ray through a certain point                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int intensities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+                 long *cum_raytot, double *source, double *opacity, double *frequency, double freq,
+                 double *temperature_gas,  int *irad, int*jrad, long gridp, long r, int lspec,
+                 int kr, double *u_local, double *v_local, double *L_local );
+
+/*-----------------------------------------------------------------------------------------------*/
+
 #endif
 
 

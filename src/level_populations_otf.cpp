@@ -127,9 +127,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
       /* Calculate the source and opacity for all transitions over the whole grid */
 
-
       line_source( irad, jrad, A_coeff, B_coeff, pop, lspec, source );
-
 
       line_opacity( irad, jrad, frequency, B_coeff, pop, lspec, opacity );
 
@@ -164,10 +162,13 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
       long cum_raytot[NRAYS];              /* cumulative nr. of evaluation points along each ray */
 
+      long first_velo[NRAYS/2];                    /* grid point with lowest velocity on the ray */
 
       EVALPOINT evalpoint[NGRID];
 
       get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
+
+      get_velocities(gridpoint, evalpoint, key, raytot, cum_raytot, n, first_velo);
 
 
       double R[TOT_NLEV2];                                             /* Transition matrix R_ij */

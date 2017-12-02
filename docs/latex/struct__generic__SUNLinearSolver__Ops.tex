@@ -1,0 +1,49 @@
+\hypertarget{struct__generic__SUNLinearSolver__Ops}{}\section{\+\_\+generic\+\_\+\+S\+U\+N\+Linear\+Solver\+\_\+\+Ops Struct Reference}
+\label{struct__generic__SUNLinearSolver__Ops}\index{\+\_\+generic\+\_\+\+S\+U\+N\+Linear\+Solver\+\_\+\+Ops@{\+\_\+generic\+\_\+\+S\+U\+N\+Linear\+Solver\+\_\+\+Ops}}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a9a3a4a40305fc1c011959cf57a4f4372}\label{struct__generic__SUNLinearSolver__Ops_a9a3a4a40305fc1c011959cf57a4f4372}} 
+S\+U\+N\+Linear\+Solver\+\_\+\+Type($\ast$ {\bfseries gettype} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a3478e45527ec432956f4c983b3ea294d}\label{struct__generic__SUNLinearSolver__Ops_a3478e45527ec432956f4c983b3ea294d}} 
+int($\ast$ {\bfseries setatimes} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}}, void $\ast$, A\+Times\+Fn)
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_ae8a77ae798ecfce19056b5520d195338}\label{struct__generic__SUNLinearSolver__Ops_ae8a77ae798ecfce19056b5520d195338}} 
+int($\ast$ {\bfseries setpreconditioner} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}}, void $\ast$, P\+Setup\+Fn, P\+Solve\+Fn)
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a1f5bf8656f32d0383bf9f26906fa10ed}\label{struct__generic__SUNLinearSolver__Ops_a1f5bf8656f32d0383bf9f26906fa10ed}} 
+int($\ast$ {\bfseries setscalingvectors} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}}, \mbox{\hyperlink{struct__generic__N__Vector}{N\+\_\+\+Vector}}, \mbox{\hyperlink{struct__generic__N__Vector}{N\+\_\+\+Vector}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a0685ad3d94df329fd2961538a593ebb5}\label{struct__generic__SUNLinearSolver__Ops_a0685ad3d94df329fd2961538a593ebb5}} 
+int($\ast$ {\bfseries initialize} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a574951047e769e0fe14bcd1f14a6b17c}\label{struct__generic__SUNLinearSolver__Ops_a574951047e769e0fe14bcd1f14a6b17c}} 
+int($\ast$ {\bfseries setup} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}}, \mbox{\hyperlink{struct__generic__SUNMatrix}{S\+U\+N\+Matrix}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a9393894c8a6e5030f5afc2d95932901b}\label{struct__generic__SUNLinearSolver__Ops_a9393894c8a6e5030f5afc2d95932901b}} 
+int($\ast$ {\bfseries solve} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}}, \mbox{\hyperlink{struct__generic__SUNMatrix}{S\+U\+N\+Matrix}}, \mbox{\hyperlink{struct__generic__N__Vector}{N\+\_\+\+Vector}}, \mbox{\hyperlink{struct__generic__N__Vector}{N\+\_\+\+Vector}}, realtype)
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_ad4c817032c5152c30d3119a1885fc200}\label{struct__generic__SUNLinearSolver__Ops_ad4c817032c5152c30d3119a1885fc200}} 
+int($\ast$ {\bfseries numiters} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_af7de894396deb4091ffa39cda59bcb9b}\label{struct__generic__SUNLinearSolver__Ops_af7de894396deb4091ffa39cda59bcb9b}} 
+realtype($\ast$ {\bfseries resnorm} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a7e11155415591337b5a83b571fbaa389}\label{struct__generic__SUNLinearSolver__Ops_a7e11155415591337b5a83b571fbaa389}} 
+long int($\ast$ {\bfseries lastflag} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a38712c36ec8c5f0b6947f627a9dda81e}\label{struct__generic__SUNLinearSolver__Ops_a38712c36ec8c5f0b6947f627a9dda81e}} 
+int($\ast$ {\bfseries space} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}}, long int $\ast$, long int $\ast$)
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_ab0f97ccc715665f56b09d15b4bfcae05}\label{struct__generic__SUNLinearSolver__Ops_ab0f97ccc715665f56b09d15b4bfcae05}} 
+\mbox{\hyperlink{struct__generic__N__Vector}{N\+\_\+\+Vector}}($\ast$ {\bfseries resid} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\item 
+\mbox{\Hypertarget{struct__generic__SUNLinearSolver__Ops_a01826954dbecf1a8aea0dd07fd94fdf2}\label{struct__generic__SUNLinearSolver__Ops_a01826954dbecf1a8aea0dd07fd94fdf2}} 
+int($\ast$ {\bfseries free} )(\mbox{\hyperlink{struct__generic__SUNLinearSolver}{S\+U\+N\+Linear\+Solver}})
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/sundials/include/sundials/sundials\+\_\+linearsolver.\+h\end{DoxyCompactItemize}

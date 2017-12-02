@@ -132,6 +132,7 @@ int line_opacity( int *irad, int *jrad, double *frequency, double *B_coeff, doub
 
       double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
 
+
       opacity[s_ij] =  hv_4pi * (pop[p_j]*B_ji - pop[p_i]*B_ij);
 
 
@@ -160,31 +161,23 @@ int line_opacity( int *irad, int *jrad, double *frequency, double *B_coeff, doub
 /* line_profile: calculate the line profile function                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-// double line_profile( EVALPOINT evalpoint, double *temperature_gas, double frequency,
-//                      long gridp, long evalp )
-// {
-//
-//
-//   long gpe = GP_NR_OF_EVALP(gridp, evalp);
-//
-//   double profile = 0.0;
-//
-//   double
-//
-//   double mass            =
-//
-//   double velocity        = evalpoint[GINDEX(gridp, )].vol;
-//
-//   double frequency_shift = frequency * (1.0 -  velocity/CC);
-//
-//   double frequency_width2 = frequency / CC * ( 2.0*KB*temperature_gas[gridp]/PI/mass + V_TURB*V_TURB );
-//
-//
-//
-//   profile = 0.0;
-//
-//   return profile;
-//
-// }
+double line_profile( EVALPOINT *evalpoint, double *temperature_gas, double frequency,
+                     double line_frequency, long gridp )
+{
+
+
+  double frequency_shift = line_frequency * evalpoint[gridp].vol / CC;
+
+  double frequency_width = line_frequency / CC
+                           * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
+
+
+  double profile = exp( -pow( (frequency - line_frequency - frequency_shift )/frequency_width, 2) )
+                   / sqrt(PI) / frequency_width;
+
+
+  return profile;
+
+}
 
 /*-----------------------------------------------------------------------------------------------*/

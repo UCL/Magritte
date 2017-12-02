@@ -122,7 +122,7 @@ The physical meaning of the Einstein coefficients is best seen from the expressi
 \end{equation}
 The mean intensity $J_{ij}$ is defined as
 \begin{equation}
-J_{ij}(\textbf{x}) \equiv \oint \frac{\D \hat{\textbf{n}}}{4 \pi} \int_{0}^{\infty} \D \nu \ \phi^{(ij)}_{\nu}(\textbf{x}) I_{\nu}(\textbf{x},\hat{\textbf{n}}).
+J_{ij}(\textbf{x}) \equiv \oint \frac{\D \hat{\textbf{n}}}{4 \pi} \int_{0}^{\infty} \D \nu \ \phi^{(ij)}_{\nu}(\textbf{x}) \ I_{\nu}(\textbf{x},\hat{\textbf{n}}).
 \end{equation}
 This is the average of the radiation's specific intensity  $I_{\nu}(\textbf{x},\hat{\textbf{n}})$ over all directions and integrated over all frequencies in the line. Due to quantum effects and statistical effects there is not one frequency, but a whole profile of frequencies associated to a certain transition. The weight of each frequency is given by the line profile function $\phi^{(ij)}_{\nu}(\textbf{x})$.
 
@@ -149,7 +149,7 @@ The profile is the result of the Doppler shift caused by the above velocity dist
 \end{equation}
 Normalizing this as distribution over frequency gives
 \begin{equation}
-\phi^{(ij)}_{\nu} \ = \ \frac{1}{\sqrt{\pi}\Delta\nu_{ij}} \exp\left( -\frac{(\nu-\nu_{ij})^{2} }{\Delta\nu_{ij}^{2}} \right),
+\phi^{(ij)}_{\nu} \ = \ \frac{1}{\sqrt{\pi}\Delta\nu_{ij}} \ \exp\left( -\frac{(\nu-\nu_{ij})^{2} }{\Delta\nu_{ij}^{2}} \right),
 \end{equation}
 where we defined
 \begin{equation}
@@ -196,8 +196,8 @@ Note that we make the assumption of complete redistribution by giving both the e
 \paragraph{Continuum radiation} Appart from the lines, we also consider a continuum background originating from both the cosmic microwave background (CMB) and the dust. For both we assume a Planck distribution with temperature $T_{\text{CMB}} = 2.725$ K for the CMB and for the dust we assume a local temperature field $T_{\text{dust}}(\textbf{x})$ which is calculated from the UV radiation field. Using Stefan's law, we find
 \begin{equation}
 \begin{split}
-\eta^{\text{cont.}}_{\nu}(\textbf{x}) &= \chi^{\text{cont.}}_{\nu}(\textbf{x}) \big( B_{\nu}(T_{\text{CMB}}) + \nu \epsilon_{\text{dust}} B_{\nu}(T_{\text{dust}}) \big), \\
-\chi^{\text{cont.}}_{\nu}(\textbf{x}) &= 1
+\eta^{\text{con.}}_{\nu}(\textbf{x}) &= \chi^{\text{con.}}_{\nu}(\textbf{x}) \big( B_{\nu}(T_{\text{CMB}}) + \nu \epsilon_{\text{dust}} B_{\nu}(T_{\text{dust}}) \big), \\
+\chi^{\text{con.}}_{\nu}(\textbf{x}) &= 1
 \end{split}
 \end{equation}
 where we used the Planck distribution
@@ -250,7 +250,7 @@ By adding and subtracting the two forms of the transfer equation and substitutin
 \end{equation}
 where the source function is defined as usual. Note that this is not the usual Feautrier equation since we did not assume that the emissivity is isotropic. This is neded if we want to consider scattering. To elucidate the structure of this equation we can rewrite it as
 \begin{equation}
-\frac{\D^{2} u_{\nu}(\textbf{x},\hat{\textbf{n}})}{\D \tau_{\nu}^{2}} \ = \ u_{\nu}(\textbf{x},\hat{\textbf{n}}) - S_{\nu}^{\text{eff}}(\textbf{x},\hat{\textbf{n}}) ,
+\frac{\D^{2} u_{\nu}(\textbf{x},\hat{\textbf{n}})}{\D \tau_{\nu}^{2}} \ = \ u_{\nu}(\textbf{x},\hat{\textbf{n}}) - S_{\nu}^{\text{eff.}}(\textbf{x},\hat{\textbf{n}}) ,
 \end{equation}
 
 

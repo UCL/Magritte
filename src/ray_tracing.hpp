@@ -43,6 +43,16 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 /*-----------------------------------------------------------------------------------------------*/
 
+
+
+/* get_velocities: get the velocity of the evaluation point with respect to the grid point       */
+/*-----------------------------------------------------------------------------------------------*/
+
+int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+                    long *key, long *raytot, long *cum_raytot, long gridp, long *first_velo );
+
+/*-----------------------------------------------------------------------------------------------*/
+
 #endif
 
 

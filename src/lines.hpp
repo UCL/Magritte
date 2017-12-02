@@ -44,8 +44,8 @@ int line_opacity( int *irad, int *jrad, double *frequency, double *B_coeff, doub
 /* line_profile: calculate the line profile function                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-double line_profile( EVALPOINT evalpoint, double *temperature_gas, double frequency,
-                     long gridp, long evalp );
+double line_profile( EVALPOINT *evalpoint, double *temperature_gas, double frequency,
+                     double line_frequency, long gridp );
 
 /*-----------------------------------------------------------------------------------------------*/
 

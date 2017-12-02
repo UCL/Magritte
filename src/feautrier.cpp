@@ -28,13 +28,15 @@
 
 
 
-/* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2             */
+/* feautrier: fill Feautrier matrix and solve it                                                 */
 /*-----------------------------------------------------------------------------------------------*/
 
-int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
-               long gridp, long r, long ar, double *S, double *dtau,
-               double *P_intensity, double *Lambda_diagonal )
+int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long gridp, long r,
+               double *S, double *dtau, double *u, double *L_diag_approx )
 {
+
+
+  long ar = antipod[r];
 
 
 #ifdef ON_THE_FLY
@@ -65,10 +67,6 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
   double *G;                                                                  /* helper variable */
   G = (double*) malloc( ndep*sizeof(double) );
 
-  double *P;                                                         /* Feautrier mean intensity */
-  P = (double*) malloc( ndep*sizeof(double) );
-
-
 
 
 
@@ -97,11 +95,11 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
   double Bndepm1 = 1.0 + 2.0/dtau[ndep-1] + 2.0/dtau[ndep-1]/dtau[ndep-1];
 
 
-  /* Store the source function S initially in P */
+  /* Store the source function S initially in u */
 
   for (long n=0; n<ndep; n++){
 
-    P[n] = S[n];
+    u[n] = S[n];
   }
 
 
@@ -117,7 +115,8 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
 
   /* Elimination step */
 
-  P[0] = P[0] / B0;
+  u[0] = u[0] / B0;
+
   F[0] = (B0 - C[0])/ C[0];
 
 
@@ -125,11 +124,11 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
 
     F[n] = ( 1.0 + A[n]*F[n-1]/(1.0 + F[n-1]) ) / C[n];
 
-    P[n] = (P[n] + A[n]*P[n-1]) / (1.0 + F[n]) / C[n];
+    u[n] = (u[n] + A[n]*u[n-1]) / (1.0 + F[n]) / C[n];
   }
 
 
-  P[ndep-1] = (P[ndep-1] + A[ndep-1]*P[ndep-2]) / (Bndepm1 - A[ndep-1]/(1.0 + F[ndep-2]) );
+  u[ndep-1] = (u[ndep-1] + A[ndep-1]*u[ndep-2]) / ( Bndepm1 - A[ndep-1]/(1.0 + F[ndep-2]) );
 
   G[ndep-1] = (Bndepm1 - A[ndep-1]) / A[ndep-1];
 
@@ -138,13 +137,13 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
 
   for (long n=ndep-2; n>0; n--){
 
-    P[n] = P[n] + P[n+1]/(1.0+F[n]);
+    u[n] = u[n] + u[n+1]/(1.0+F[n]);
 
     G[n] = (1.0 + C[n]*G[n+1]/(1.0+G[n+1])) / A[n];
   }
 
 
-  P[0] = P[0] + P[1]/(1.0+F[0]);
+  u[0] = u[0] + u[1]/(1.0+F[0]);
 
 
   /*_____________________________________________________________________________________________*/
@@ -157,16 +156,16 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
   /*_____________________________________________________________________________________________*/
 
 
-  Lambda_diagonal[0] = 1.0 / (B0 - C[0]/(1.0+G[1]));
+  L_diag_approx[0] = 1.0 / (B0 - C[0]/(1.0+G[1]));
 
 
   for (long n=1; n<ndep-1; n++){
 
-    Lambda_diagonal[n] = (1.0 + G[n+1]) / (F[n-1] + G[n+1] + F[n-1]*G[n+1]) / C[n];
+    L_diag_approx[n] = (1.0 + G[n+1]) / (F[n-1] + G[n+1] + F[n-1]*G[n+1]) / C[n];
   }
 
 
-  Lambda_diagonal[ndep-1] = 1.0 / (Bndepm1 - A[ndep-1]/(1.0+F[ndep-2]));
+  L_diag_approx[ndep-1] = 1.0 / (Bndepm1 - A[ndep-1]/(1.0+F[ndep-2]));
 
 
   /*_____________________________________________________________________________________________*/
@@ -175,161 +174,115 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
 
 
 
-  /*   RELATE THE RESULTS BACK TO THE EVALUATION POINTS VIA P_intensity                          */
+  /*   RELATE THE RESULTS BACK TO THE EVALUATION POINTS VIA                                      */
   /*_____________________________________________________________________________________________*/
 
 
-  // printf("(feautrier): for point %ld and ray %ld \n", gridp, r);
-
-  {
-
-
-#   ifdef ON_THE_FLY
-
-    long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1);   /* grid point nr. of the considered evalpoint */
-    long e_p = g_p;
-
-#   else
-
-    long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1);   /* grid point nr. of the considered evalpoint */
-    long e_p = GINDEX(gridp,g_p);
-
-#   endif
-
-
-    if ( evalpoint[e_p].eqp == gridp ){
-
-      P_intensity[RINDEX(g_p,ar)] = P[0];
-
-      // printf( "In! ar for %ld is %lE\n", g_p, P_intensity[RINDEX(g_p,ar)] );
-    }
-  }
-
-
-  for (long n=1; n<=etot1-1; n++){
-
-
-#   ifdef ON_THE_FLY
-
-    long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
-    long e_p = g_p;
-
-#   else
-
-    long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
-    long e_p = GINDEX(gridp,g_p);
-
-#   endif
-
-
-    if ( evalpoint[e_p].eqp == gridp ){
-
-      P_intensity[RINDEX(g_p,ar)] = (P[n] + P[n-1]) / 2.0;
-
-      // printf( "In! ar for %ld is %lE\n", g_p, P_intensity[RINDEX(g_p,ar)] );
-    }
-  }
+//   {
+//
+//
+// #   ifdef ON_THE_FLY
+//
+//     long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1);   /* grid point nr. of the considered evalpoint */
+//     long e_p = g_p;
+//
+// #   else
+//
+//     long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1);   /* grid point nr. of the considered evalpoint */
+//     long e_p = GINDEX(gridp,g_p);
+//
+// #   endif
+//
+//
+//     if ( evalpoint[e_p].eqp == gridp ){
+//
+//       u_intensity[RINDEX(g_p,ar)] = P[0];
+//     }
+//   }
+//
+//
+//   for (long n=1; n<=etot1-1; n++){
+//
+//
+// #   ifdef ON_THE_FLY
+//
+//     long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
+//     long e_p = g_p;
+//
+// #   else
+//
+//     long g_p = GP_NR_OF_EVALP(gridp,ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
+//     long e_p = GINDEX(gridp,g_p);
+//
+// #   endif
+//
+//
+//     if ( evalpoint[e_p].eqp == gridp ){
+//
+//       u_intensity[RINDEX(g_p,ar)] = (P[n] + P[n-1]) / 2.0;
+//     }
+//   }
 
 
-  P_intensity[RINDEX(gridp,ar)] = (P[etot1] + P[etot1-1]) / 2.0;
-  P_intensity[RINDEX(gridp,r)]  = (P[etot1] + P[etot1-1]) / 2.0;
+//   u_intensity[RINDEX(gridp,r)]  = (P[etot1] + P[etot1-1]) / 2.0;
+//   u_intensity[RINDEX(gridp,ar)] = (P[etot1] + P[etot1-1]) / 2.0;
 
 
-  for (long n=etot1+1; n<ndep; n++){
+//   for (long n=etot1+1; n<ndep; n++){
+//
+//
+// #   ifdef ON_THE_FLY
+//
+//     long g_p = LOCAL_GP_NR_OF_EVALP(r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
+//     long e_p = g_p;
+//
+// #   else
+//
+//     long g_p = GP_NR_OF_EVALP(gridp,r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
+//     long e_p = GINDEX(gridp,g_p);
+//
+// #   endif
+//
+//
+//     if ( evalpoint[e_p].eqp == gridp ){
+//
+//       u_intensity[RINDEX(g_p,r)] = (P[n] + P[n-1]) / 2.0;
+//     }
+//   }
+//
+//
+//   {
+//
+//
+// #   ifdef ON_THE_FLY
+//
+//     long g_p = LOCAL_GP_NR_OF_EVALP(r,etot2-1);    /* grid point nr. of the considered evalpoint */
+//     long e_p = g_p;
+//
+// #   else
+//
+//     long g_p = GP_NR_OF_EVALP(gridp,r,etot2-1);    /* grid point nr. of the considered evalpoint */
+//     long e_p = GINDEX(gridp,g_p);
+//
+// #   endif
+//
+//
+//     if ( evalpoint[e_p].eqp == gridp ){
+//
+//       u_intensity[RINDEX(g_p,r)] = P[ndep-1];
+//     }
+//   }
 
-
-#   ifdef ON_THE_FLY
-
-    long g_p = LOCAL_GP_NR_OF_EVALP(r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
-    long e_p = g_p;
-
-#   else
-
-    long g_p = GP_NR_OF_EVALP(gridp,r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
-    long e_p = GINDEX(gridp,g_p);
-
-#   endif
-
-
-    if ( evalpoint[e_p].eqp == gridp ){
-
-      P_intensity[RINDEX(g_p,r)] = (P[n] + P[n-1]) / 2.0;
-
-      // printf( "In! r for %ld is %lE\n", g_p, P_intensity[RINDEX(g_p,r)] );
-    }
-  }
-
-
-  {
-
-
-#   ifdef ON_THE_FLY
-
-    long g_p = LOCAL_GP_NR_OF_EVALP(r,etot2-1);    /* grid point nr. of the considered evalpoint */
-    long e_p = g_p;
-
-#   else
-
-    long g_p = GP_NR_OF_EVALP(gridp,r,etot2-1);    /* grid point nr. of the considered evalpoint */
-    long e_p = GINDEX(gridp,g_p);
-
-#   endif
-
-
-    if ( evalpoint[e_p].eqp == gridp ){
-
-      P_intensity[RINDEX(g_p,r)] = P[ndep-1];
-
-      // printf( "In! r for %ld is %lE\n", g_p, P_intensity[RINDEX(g_p,r)] );
-    }
-  }
 
   /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /* Write the source function and opacity at each point to a file (only for testing) */
-
-
-    // for (long n=0; n<ndep; n++){
-    //
-    //   printf(" for gridp %ld we have S= %lE , dtau= %lE , P= %lE\n", gridp, S[n], dtau[n], P[n]);
-    // }
-
-    // for (long gp=0; gp<NGRID; gp++){
-    //   for(long ray=0; ray<NRAYS; ray++){
-    //
-    //     printf("%.2lE \t", P_intensity[RINDEX(gp,ray)]);
-    //   }
-    //   printf("\n");
-    // }
-
-  // FILE *SandOP = fopen("output/SandOP.txt", "w");
-
-  // if (SandOP == NULL){
-
-  //   printf("Error opening file!\n");
-  //   exit(1);
-  // }
-
-
-  // for (long n=0; n<ndep; n++){
-
-  //   fprintf( SandOP, "%lE\t%lE\t%lE\t%lE\t%lE\t%lE\n",
-  //            Fd1[n], Fd2[n], Fd3[n], S[n], dtau[n], P[n] );
-  // }
-
-  // fclose(SandOP);
-
-
+  /* Free the allocated memory for temporary variables */
 
   free( A );
   free( C );
   free( F );
   free( G );
-  free( P );
 
 
   return(0);

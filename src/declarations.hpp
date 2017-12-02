@@ -38,6 +38,13 @@
 #define T_CMB 2.725             /* temperature of the cosmic microwave background radiation in K */
 
 
+/* Roots of the 7th (physicists') Hermite polynomial */
+
+#define NFREQ 7
+
+#define WEIGHTS_7 {0.8102646175568075, 0.0009717812450995204, 0.0009717812450995204, 0.42560725261012744, 0.42560725261012744, 0.05451558281912704, 0.05451558281912704}
+#define ROOTS_7 {0.0, -2.6519613568352334, 2.6519613568352334, 0.8162878828589648 , -0.8162878828589648, -1.6735516287674714, 1.6735516287674714}
+
 
 /* Helper constants */
 
@@ -161,7 +168,11 @@ typedef struct EVALPOINTS {
 
   double dZ;                                                 /* distance increment along the ray */
   double Z;                                      /* distance between evaluation point and origin */
+
   double vol;                  /* velocity along the ray between grid point and evaluation point */
+  double dvc;                              /* velocity increment to next point in velocity space */
+
+  long next_in_velo;                                             /* next point in velocity space */
 
 } EVALPOINT;
 
@@ -258,6 +269,14 @@ extern const int cum_ncoltrantemp[TOT_NCOLPAR]; /* cumulative of ntran*ntemp ove
 extern const int tot_ncoltrantemp[NLSPEC];           /* total of ntran*ntemp over specs & prtnrs */
 
 extern const int cum_tot_ncoltrantemp[NLSPEC];   /* cum. of tot. of ntran*ntemp o specs & prtnrs */
+
+
+
+/* Roots of the 7th (physicists') Hermite polynomial */
+
+extern const double H_7_weights[NFREQ];
+
+extern const double H_7_roots[NFREQ];
 
 
 
