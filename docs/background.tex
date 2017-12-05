@@ -161,6 +161,18 @@ The Lorentzian profile is given by
 L_{\nu}(\gamma) = \frac{}{}
 \end{equation}
 
+\subsubsection{Numerical evaluation of line profiles}
+
+To calculate the level populations we need the intensity integrated over all frequencies and weighted with the line profile function. As a result we often have to evaluate integrals weighted with a Gaussian. In practice this can be done efficient using Gauss-Hermite quadrature. Gauss' quadrature theorem states that for every polynomial $p_{d}(x)$ of degree $d$, one can use the integral approximation
+\begin{equation}
+\int_{-\infty}^{+\infty} \D x \ e^{-x^{2}} \ p_{d}(x) \ \approx \ \frac{2^{N-1}N!\sqrt{\pi}}{N^{2}} \ \sum_{n=1}^{N} \ \frac{p_{d}(x_{n})}{\big( H_{N-1}(x_{n}) \big)^{2}},
+\end{equation}
+where $H_{N-1}(x)$ is the (physicists') Hermite polynomial of degree $N-1$ and the $x_{n}$ are the roots  the Hermite polynomial of degree $N$. The equality is exact for polynomials of degree $d\leq2N-1$. Using this we can approximate frequency integrated intensities as
+\begin{equation}
+I_{ij} \ \equiv \ \int_{0}^{\infty} \D \nu \ \phi_{\nu}^{(ij)} \ I_{\nu} \ \approx \ \frac{2^{N-1}N!}{\Delta\nu_{ij} N^{2}} \ \sum_{n=1}^{N} \ \frac{ I_{ x_{n} \Delta\nu_{ij} + \nu_{ij} } }{\big( H_{N-1}(x_{n}) \big)^{2}},
+\end{equation}
+
+
 
 \subsection{Radiative transfer}
 
@@ -473,10 +485,28 @@ Including scattering in the transfer equation makes it a lot harder to solve: we
 
 \section{Thermal balance}
 
-The change in the internal energy is determined by the pressure(?) and temperature fields.
+The change in the internal energy is at constant volume is determined by the temperature field. Hence one can write the change in internal energy in terms of a heating and a cooling term which are both functionals of the temperature field.
 \begin{equation}
-\frac{\D E}{\D t} \ = \ \mathcal{H}\left[T(\textbf{x})\right] - \mathcal{C}\left[T(\textbf{x})\right]
+\frac{\D U}{\D t} \ \equiv \ \mathcal{F}\left[T(\textbf{x})\right]  \ = \ \mathcal{H}\left[T(\textbf{x})\right] - \mathcal{C}\left[T(\textbf{x})\right]
 \end{equation}
+They are functionals instead of functions because of the non-local contributions of the radiation field. The condition of thermal balance means that the internal energy is constant, or in other words that heating and cooling are equal.
+\begin{equation}
+\mathcal{H}\left[T_{0}(\textbf{x})\right] \ = \ \mathcal{C}\left[T_{0}(\textbf{x})\right]
+\end{equation}
+This condition can be used to calculate the temperature iteratively.
+
+\bigskip
+
+To check whether this is a valid assumption, one can check the timescale at which deviations from thermal balance are resolved. This can be found by comparing the net heating or cooling rate with the total internal energy. For a gas of simple molecules the intenral energy density of the gas can be approximated by
+\begin{equation}
+U \ \approx \ n \kb T ,
+\end{equation}
+where $n$ is the number density of the gas. Now thermal balance is a valid assumpsion if
+\begin{equation}
+\text{t} \ \gg \ \frac{n \kb T_{0}}{ \mathcal{F}\left[T_{0}(\textbf{x})\right] },
+\end{equation}
+where t is the typical timescale we can resolve.
+
 
 \subsection{Dust temperature}
 

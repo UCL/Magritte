@@ -172,7 +172,7 @@ double line_profile( EVALPOINT *evalpoint, double *temperature_gas, double frequ
                            * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
 
 
-  double profile = exp( -pow( (frequency - line_frequency - frequency_shift )/frequency_width, 2) )
+  double profile = exp( -pow( (frequency - line_frequency - frequency_shift)/frequency_width, 2) )
                    / sqrt(PI) / frequency_width;
 
 

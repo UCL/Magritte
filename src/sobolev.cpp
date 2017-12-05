@@ -234,7 +234,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
     mean_intensity_eff[m_ij] = escape_probability * continuum_mean_intensity;
   }
 
-  else{
+  else {
 
     Lambda_diagonal[m_ij]    = 0.0;
 

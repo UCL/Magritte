@@ -773,6 +773,9 @@ int main()
 
   write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
 
+  write_LTE_deviation(tag, gridpoint, energy, weight, temperature_gas, pop);
+
+  write_true_level_populations(tag, gridpoint, pop);
 
   printf("(Magritte): output written \n\n");
 

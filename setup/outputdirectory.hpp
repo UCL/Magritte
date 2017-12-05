@@ -1,1 +1,1 @@
-std::string OUTPUT_DIRECTORY = "output/files/17-12-02_20:44_output/";
+std::string OUTPUT_DIRECTORY = "output/files/17-12-05_14:21_output/";

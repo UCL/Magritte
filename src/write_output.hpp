@@ -233,6 +233,24 @@ int write_performance_log( double time_total, double time_level_pop, double time
 
 
 
+/* write_LTE_deviation: write the relative deviation of the level populations from the LTE value */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, double* weight,
+                         double *temperature_gas, double *pop );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* write_true_level_populations: write the true level populations                                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double *pop );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

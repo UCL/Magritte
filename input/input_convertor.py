@@ -17,9 +17,9 @@ x = 0.527046276694729*data[:,0]
 y = 0.527046276694729*data[:,0]
 z = 0.666666666666667*data[:,0]
 
-vx = np.zeros(ngrid)
-vy = np.zeros(ngrid)
-vz = np.zeros(ngrid)
+vx = 0.527046276694729*data[:,0]*1.0E-50
+vy = 0.527046276694729*data[:,0]*1.0E-50
+vz = 0.666666666666667*data[:,0]*1.0E-50
 
 density = data[:,3]
 

@@ -94,6 +94,9 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 
   double Bndepm1 = 1.0 + 2.0/dtau[ndep-1] + 2.0/dtau[ndep-1]/dtau[ndep-1];
 
+  double Bnd_min_And = 1.0 + 2.0/dtau[ndep-1];                          /* B[ndep-1] - A[ndep-1] */
+
+  double B0_min_C0   = 1.0 + 2.0/dtau[0];                                         /* B[0] - C[0] */
 
   /* Store the source function S initially in u */
 
@@ -102,6 +105,9 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
     u[n] = S[n];
   }
 
+  // printf("u = %lE\n", u[etot1]);
+  // printf("B0 = %lE\n", B0);
+  // printf("dtau = %lE\n", dtau[0]);
 
   /*_____________________________________________________________________________________________*/
 
@@ -117,8 +123,9 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 
   u[0] = u[0] / B0;
 
-  F[0] = (B0 - C[0])/ C[0];
+  F[0] = B0_min_C0 / C[0];
 
+  // printf("u0 = %lE\n", u[0]);
 
   for (long n=1; n<ndep-1; n++){
 
@@ -127,11 +134,14 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
     u[n] = (u[n] + A[n]*u[n-1]) / (1.0 + F[n]) / C[n];
   }
 
+  // printf("u1 = %lE\n", u[1]);
 
-  u[ndep-1] = (u[ndep-1] + A[ndep-1]*u[ndep-2]) / ( Bndepm1 - A[ndep-1]/(1.0 + F[ndep-2]) );
+  u[ndep-1] = (u[ndep-1] + A[ndep-1]*u[ndep-2])
+              / (Bnd_min_And + Bndepm1*F[ndep-2]) * (1.0 + F[ndep-2]);
 
-  G[ndep-1] = (Bndepm1 - A[ndep-1]) / A[ndep-1];
+  G[ndep-1] = Bnd_min_And / A[ndep-1];
 
+  // printf("u1 = %lE\n", u[ndep-2]);
 
   /* Back substitution */
 
@@ -145,6 +155,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 
   u[0] = u[0] + u[1]/(1.0+F[0]);
 
+  // printf("u1 = %lE\n", u[1]);
 
   /*_____________________________________________________________________________________________*/
 
@@ -156,7 +167,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
   /*_____________________________________________________________________________________________*/
 
 
-  L_diag_approx[0] = 1.0 / (B0 - C[0]/(1.0+G[1]));
+  L_diag_approx[0] = (1.0 + G[1]) / (B0_min_C0 + B0*G[1]);
 
 
   for (long n=1; n<ndep-1; n++){
@@ -165,7 +176,13 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
   }
 
 
-  L_diag_approx[ndep-1] = 1.0 / (Bndepm1 - A[ndep-1]/(1.0+F[ndep-2]));
+  L_diag_approx[ndep-1] = (1.0 + F[ndep-2]) / (Bnd_min_And + Bndepm1*F[ndep-2]);
+
+  // printf("u 0 = %lE\n", u[0]);
+  // printf("L_diag_approx 0 = %lE\n", L_diag_approx[0]);
+  //
+  // printf("u = %lE\n", u[etot1]);
+  // printf("L_diag_approx = %lE\n", L_diag_approx[etot1]);
 
 
   /*_____________________________________________________________________________________________*/

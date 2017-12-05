@@ -249,6 +249,8 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
           }
 
 
+          // printf("mean_intensity_eff = %lE\n", mean_intensity_eff[m_ij]);
+
           /* Fill the i>j part */
 
           R[b_ij] = R[b_ij] - A_ij*Lambda_diagonal[m_ij] + B_ij*mean_intensity_eff[m_ij];

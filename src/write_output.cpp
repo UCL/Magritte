@@ -26,6 +26,8 @@
 #include "write_output.hpp"
 #include "species_tools.hpp"
 #include "radfield_tools.hpp"
+#include "initializers.hpp"
+#include "calc_LTE_populations.hpp"
 #include "../setup/outputdirectory.hpp"
 
 
@@ -1285,6 +1287,132 @@ int write_performance_log( double time_total, double time_level_pop, double time
   fclose(file);
 
 
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_LTE_deviation: write the relative deviation of the level populations from the LTE value */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, double* weight,
+                         double *temperature_gas, double *pop )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+
+  double LTE_pop[NGRID*TOT_NLEV];                                        /* level population n_i */
+
+  initialize_double_array(LTE_pop, NGRID*TOT_NLEV);
+
+  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, LTE_pop);
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+
+    std::string file_name = OUTPUT_DIRECTORY + "LTE_deviations_" + lspec_name + tag + ".txt";
+
+    FILE *file = fopen(file_name.c_str(), "w");
+
+
+    if (file == NULL){
+
+      std :: cout << "Error opening file " << file_name << "!\n";
+      std::cout << file_name + "\n";
+      exit(1);
+    }
+
+
+    for (long n=0; n<NGRID; n++){
+
+      for (int i=0; i<nlev[lspec]; i++){
+
+        double dev = 2.0*(pop[LSPECGRIDLEV(lspec,n, i)] - LTE_pop[LSPECGRIDLEV(lspec,n, i)])
+                         / (pop[LSPECGRIDLEV(lspec,n, i)] + LTE_pop[LSPECGRIDLEV(lspec,n, i)]);
+
+        fprintf(file, "%lE\t", dev);
+      }
+
+      fprintf(file, "\n");
+    }
+
+
+    fclose(file);
+
+  } /* end of lspec loop over line producing species */
+
+
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_true_level_populations: write the true level populations                                */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double *pop )
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+
+  for (int lspec=0; lspec<NLSPEC; lspec++){
+
+    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+
+    std::string file_name = OUTPUT_DIRECTORY + "true_level_populations_" + lspec_name + tag + ".txt";
+
+    FILE *file = fopen(file_name.c_str(), "w");
+
+
+    if (file == NULL){
+
+      std :: cout << "Error opening file " << file_name << "!\n";
+      std::cout << file_name + "\n";
+      exit(1);
+    }
+
+
+    for (long n=0; n<NGRID; n++){
+
+      for (int i=0; i<nlev[lspec]; i++){
+
+        double rel = pop[LSPECGRIDLEV(lspec,n, i)]
+                     / gridpoint[n].density / species[lspec_nr[lspec]].abn[n];
+
+        fprintf(file, "%lE\t", rel);
+      }
+
+      fprintf(file, "\n");
+    }
+
+
+    fclose(file);
+
+  } /* end of lspec loop over line producing species */
 
 
   return(0);

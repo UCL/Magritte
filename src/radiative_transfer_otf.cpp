@@ -77,9 +77,9 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
                    temperature_gas, irad, jrad, gridp, ray, lspec, kr, &u_local, &v_local, &L_local );
 
 
-      mean_intensity[m_ij]  = mean_intensity[m_ij]  + H_7_weights[ny]*u_local/sqrt(PI)/frequency_width;
+      mean_intensity[m_ij]  = mean_intensity[m_ij]  + H_7_weights[ny]/frequency_width*u_local;
 
-      Lambda_diagonal[m_ij] = Lambda_diagonal[m_ij] + H_7_weights[ny]*L_local/sqrt(PI)/frequency_width;
+      Lambda_diagonal[m_ij] = Lambda_diagonal[m_ij] + H_7_weights[ny]/frequency_width*L_local;
 
     } /* end of ny loop over frequencies */
 
@@ -111,7 +111,18 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
 
   mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
 
-  mean_intensity_eff[m_ij] = mean_intensity[m_ij] - Lambda_diagonal[m_ij]*source[m_ij];
+
+  if ( ACCELERATION_APPROX_LAMBDA ){
+
+    mean_intensity_eff[m_ij] = mean_intensity[m_ij] - Lambda_diagonal[m_ij]*source[m_ij];
+  }
+
+  else {
+
+    Lambda_diagonal[m_ij] = 0.0;
+
+    mean_intensity_eff[m_ij] = mean_intensity[m_ij];
+  }
 
 
   return(0);
@@ -251,6 +262,23 @@ int intensities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *ra
     }
     }
 
+
+    /*___________________________________________________________________________________________*/
+
+
+
+
+    /* Avoid too small optical depth increments                                                  */
+    /*___________________________________________________________________________________________*/
+
+    for (long dep=0; dep<ndep; dep++){
+
+      if (dtau[dep]<1.0E-99){
+
+        dtau[dep] = 1.0E-99;
+      }
+
+    }
 
     /*___________________________________________________________________________________________*/
 
