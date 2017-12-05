@@ -37,8 +37,7 @@
 
 /* Radiative transfer */
 
-#define SOBOLEV false
-
+#define SOBOLEV true
 
 #define ACCELERATION_POP_NG true
 
@@ -85,7 +84,7 @@
 
 /* Turbulent velocity */
 
-#define V_TURB 1.0E5
+#define V_TURB 1.0E3
 
 
 /* Cosmic ray variables */

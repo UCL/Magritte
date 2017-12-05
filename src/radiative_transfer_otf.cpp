@@ -70,16 +70,16 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
                                * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
 
 
-      double freq = H_7_roots[ny]*frequency_width + frequency_shift;
+      double freq = H_4_roots[ny]*frequency_width + frequency_shift;
 
 
       intensities( gridpoint, evalpoint, key, raytot, cum_raytot, source, opacity, frequency, freq,
                    temperature_gas, irad, jrad, gridp, ray, lspec, kr, &u_local, &v_local, &L_local );
 
 
-      mean_intensity[m_ij]  = mean_intensity[m_ij]  + H_7_weights[ny]/frequency_width*u_local;
+      mean_intensity[m_ij]  = mean_intensity[m_ij]  + H_4_weights[ny]/frequency_width*u_local;
 
-      Lambda_diagonal[m_ij] = Lambda_diagonal[m_ij] + H_7_weights[ny]/frequency_width*L_local;
+      Lambda_diagonal[m_ij] = Lambda_diagonal[m_ij] + H_4_weights[ny]/frequency_width*L_local;
 
     } /* end of ny loop over frequencies */
 

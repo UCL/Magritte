@@ -37,8 +37,7 @@
 
 /* Radiative transfer */
 
-#define SOBOLEV false
-
+#define SOBOLEV true
 
 #define ACCELERATION_POP_NG true
 

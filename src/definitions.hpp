@@ -88,11 +88,27 @@ const int cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
 
 
 
+/* Roots of the 5th (physicists') Hermite polynomial */
+
+const double H_4_weights[NFREQ] = WEIGHTS_4;
+
+const double H_4_roots[NFREQ] = ROOTS_4;
+
+
+
+/* Roots of the 5th (physicists') Hermite polynomial */
+
+// const double H_5_weights[NFREQ] = WEIGHTS_5;
+//
+// const double H_5_roots[NFREQ] = ROOTS_5;
+
+
+
 /* Roots of the 7th (physicists') Hermite polynomial */
 
-const double H_7_weights[NFREQ] = WEIGHTS_7;
-
-const double H_7_roots[NFREQ] = ROOTS_7;
+// const double H_7_weights[NFREQ] = WEIGHTS_7;
+//
+// const double H_7_roots[NFREQ] = ROOTS_7;
 
 
 

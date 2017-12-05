@@ -38,9 +38,28 @@
 #define T_CMB 2.725             /* temperature of the cosmic microwave background radiation in K */
 
 
+
+/* Roots of the 4th (physicists') Hermite polynomial */
+
+#define NFREQ 4
+
+#define WEIGHTS_4 {0.0458759, 0.0458759, 0.454124, 0.454124}
+#define ROOTS_4 {-1.6506801238857844, 1.6506801238857844, -0.5246476232752905, 0.5246476232752905}
+
+
+
+/* Roots of the 5th (physicists') Hermite polynomial */
+
+// #define NFREQ 5
+
+#define WEIGHTS_5 {0.533333, 0.0112574, 0.0112574, 0.222076, 0.222076}
+#define ROOTS_5 {0.0, -2.0201828704560856, 2.0201828704560856, -0.9585724646138185, 0.9585724646138185}
+
+
+
 /* Roots of the 7th (physicists') Hermite polynomial */
 
-#define NFREQ 7
+// #define NFREQ 7
 
 #define WEIGHTS_7 {0.45714285714285724, 0.0005482688559722185, 0.0005482688559722185, 0.24012317860501253, 0.24012317860501253, 0.0307571239675865, 0.0307571239675865}
 #define ROOTS_7 {0.0, -2.6519613568352334, 2.6519613568352334, 0.8162878828589648 , -0.8162878828589648, -1.6735516287674714, 1.6735516287674714}
@@ -269,6 +288,22 @@ extern const int cum_ncoltrantemp[TOT_NCOLPAR]; /* cumulative of ntran*ntemp ove
 extern const int tot_ncoltrantemp[NLSPEC];           /* total of ntran*ntemp over specs & prtnrs */
 
 extern const int cum_tot_ncoltrantemp[NLSPEC];   /* cum. of tot. of ntran*ntemp o specs & prtnrs */
+
+
+
+/* Roots of the 4th (physicists') Hermite polynomial */
+
+extern const double H_4_weights[NFREQ];
+
+extern const double H_4_roots[NFREQ];
+
+
+
+/* Roots of the 5th (physicists') Hermite polynomial */
+
+extern const double H_5_weights[NFREQ];
+
+extern const double H_5_roots[NFREQ];
 
 
 

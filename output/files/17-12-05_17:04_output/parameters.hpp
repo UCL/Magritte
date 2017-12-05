@@ -39,7 +39,6 @@
 
 #define SOBOLEV false
 
-
 #define ACCELERATION_POP_NG true
 
 #define ACCELERATION_APPROX_LAMBDA true
@@ -85,7 +84,7 @@
 
 /* Turbulent velocity */
 
-#define V_TURB 1.0E5
+#define V_TURB 1.0E4
 
 
 /* Cosmic ray variables */

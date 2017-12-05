@@ -1341,7 +1341,7 @@ int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, 
 
       for (int i=0; i<nlev[lspec]; i++){
 
-        double dev = 2.0*(pop[LSPECGRIDLEV(lspec,n, i)] - LTE_pop[LSPECGRIDLEV(lspec,n, i)])
+        double dev = 2.0 * (pop[LSPECGRIDLEV(lspec,n, i)] - LTE_pop[LSPECGRIDLEV(lspec,n, i)])
                          / (pop[LSPECGRIDLEV(lspec,n, i)] + LTE_pop[LSPECGRIDLEV(lspec,n, i)]);
 
         fprintf(file, "%lE\t", dev);
