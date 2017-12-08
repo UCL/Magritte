@@ -37,7 +37,7 @@ int write_healpixvectors(std::string tag, double *unit_healpixvector);
 
 
 
-#ifndef ON_THE_FLY
+#if !( ON_THE_FLY )
 
 /* write_eval: Write the evaluation points (Z along ray and number of the ray)                   */
 /*-----------------------------------------------------------------------------------------------*/

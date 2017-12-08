@@ -36,7 +36,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 int chemistry( GRIDPOINT *gridpoint,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
@@ -57,7 +57,7 @@ int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   /* Calculate column densities */
 
-# ifdef ON_THE_FLY
+# if ( ON_THE_FLY )
 
   calc_column_densities(gridpoint, column_H2, column_HD, column_C, column_CO);
 

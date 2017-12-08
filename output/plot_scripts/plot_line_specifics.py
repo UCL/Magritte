@@ -43,14 +43,14 @@ ngrid = np.shape(xg)[0]
 # Read the level populations file
 
 
-date_stamp = "17-12-05_17:56"
+date_stamp = "17-12-07_16:46"
 file_name = "../files/" + date_stamp + "_output/LTE_deviations_" + lspec + tag + ".txt"
 
 data1 = np.loadtxt(file_name)
 nlev = np.shape(data1)[1]
 
 
-date_stamp = "17-12-05_17:58"
+date_stamp = "17-12-07_16:33"
 file_name = "../files/" + date_stamp + "_output/LTE_deviations_" + lspec + tag + ".txt"
 
 data2 = np.loadtxt(file_name)

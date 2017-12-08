@@ -30,7 +30,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 int calc_column_density( GRIDPOINT *gridpoint, double *column_density, int spec )
 
@@ -48,7 +48,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
   /* For all grid points n */
 
 
-# ifdef ON_THE_FLY
+# if ( ON_THE_FLY )
 
 # pragma omp parallel                                                                             \
   shared( gridpoint, column_density, spec )                                                       \
@@ -75,7 +75,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
   for (long n=start; n<stop; n++){
 
 
-#   ifdef ON_THE_FLY
+#   if ( ON_THE_FLY )
 
     long key[NGRID];                  /* stores the nrs. of the grid points on the rays in order */
 
@@ -110,7 +110,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
 
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 /* calc_column_densities: calculates column densities for the species needed in chemistry        */
 /*-----------------------------------------------------------------------------------------------*/
@@ -186,7 +186,7 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long
   double column_density_res = 0.0;                                   /* resulting column density */
 
 
-# ifdef ON_THE_FLY
+# if ( ON_THE_FLY )
 
   long etot = raytot[ray];
 
@@ -200,7 +200,7 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long
   if (etot > 0){
 
 
-#   ifdef ON_THE_FLY
+#   if ( ON_THE_FLY )
 
     long evnr       = LOCAL_GP_NR_OF_EVALP(ray,0);
     long gridp_evnr = evnr;
@@ -223,7 +223,7 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long
     for (long e=1; e<etot; e++){
 
 
-#     ifdef ON_THE_FLY
+#     if ( ON_THE_FLY )
 
       long evnr       = LOCAL_GP_NR_OF_EVALP(ray,e);
       long evnrp      = LOCAL_GP_NR_OF_EVALP(ray,e-1);

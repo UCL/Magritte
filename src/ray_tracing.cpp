@@ -28,7 +28,7 @@
 
 
 
-#ifndef ON_THE_FLY
+#if !( ON_THE_FLY )
 
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/

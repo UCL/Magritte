@@ -197,7 +197,9 @@ int main()
   initialize_double_array(B_coeff, TOT_NLEV2);
 
 
-# ifndef ON_THE_FLY
+# if !( ON_THE_FLY )
+
+  printf("NOOOOOOT\n");
 
   double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
 
@@ -261,7 +263,7 @@ int main()
 
 
 
-# ifndef ON_THE_FLY
+# if !( ON_THE_FLY )
 
 
   /*   RAY TRACING                                                                               */
@@ -364,7 +366,7 @@ int main()
   /* Calculate the total column density */
 
 
-# ifdef ON_THE_FLY
+# if ( ON_THE_FLY )
 
   calc_column_density(gridpoint, column_tot, NSPEC-1);
 
@@ -448,7 +450,7 @@ int main()
     time_chemistry -= omp_get_wtime();
 
 
-#   ifdef ON_THE_FLY
+#   if ( ON_THE_FLY )
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
@@ -552,7 +554,7 @@ int main()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-#   ifdef ON_THE_FLY
+#   if ( ON_THE_FLY )
 
     thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
                                UV_field, temperature_gas, temperature_dust,
@@ -630,7 +632,7 @@ int main()
     long n_not_converged = 0;                /* number of grid points that are not yet converged */
 
 
-#   ifdef ON_THE_FLY
+#   if ( ON_THE_FLY )
 
     thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
                                UV_field, temperature_gas, temperature_dust,

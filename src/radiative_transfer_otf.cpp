@@ -27,7 +27,7 @@
 
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 /* radiative_transfer: calculate mean intensity at grid point "gridp", by solving the transfer   */
 /*                     equation along all pairs of a rays and their antipodals                   */
@@ -109,7 +109,7 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
+  mean_intensity[m_ij] = mean_intensity[m_ij]; // + continuum_mean_intensity;
 
 
   if ( ACCELERATION_APPROX_LAMBDA ){

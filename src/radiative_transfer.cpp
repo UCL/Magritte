@@ -97,7 +97,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       /* Fill the source function and the optical depth increment along ray r */
 
 
-#     ifdef ON_THE_FLY
+#     if ( ON_THE_FLY )
 
       long etot1 = raytot[ar];                 /* total number of evaluation points along ray ar */
       long etot2 = raytot[r];                   /* total number of evaluation points along ray r */
@@ -132,7 +132,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         for (long e1=1; e1<etot1; e1++){
 
 
-#         ifdef ON_THE_FLY
+#         if ( ON_THE_FLY )
 
           long e_n  = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1);
 
@@ -162,7 +162,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         if (etot1 > 0){
 
 
-#         ifdef ON_THE_FLY
+#         if ( ON_THE_FLY )
 
           long e_a0 = LOCAL_GP_NR_OF_EVALP(ar, 0);
 
@@ -189,7 +189,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         if (etot2 > 0){
 
 
-#         ifdef ON_THE_FLY
+#         if ( ON_THE_FLY )
 
           long e_0  = LOCAL_GP_NR_OF_EVALP(r, 0);
 
@@ -217,7 +217,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         for (long e2=1; e2<etot2; e2++){
 
 
-#         ifdef ON_THE_FLY
+#         if ( ON_THE_FLY )
 
           long e_n  = LOCAL_GP_NR_OF_EVALP(r, e2);
 

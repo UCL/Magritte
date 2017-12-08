@@ -35,7 +35,7 @@
 
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
@@ -112,12 +112,17 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
       n_not_converged[lspec] = 0;            /* number of grid points that are not yet converged */
 
 
+#     if ( ACCELERATION_POP_NG )
+
+
       /* Perform an Ng acceleration step every 4th iteration */
 
-      if ( ACCELERATION_POP_NG && (niterations[lspec]%4 == 0) ){
+      if ( niterations[lspec]%4 == 0 ){
 
         acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
       }
+
+#     endif
 
 
       /* Store the populations of the previous 3 iterations */
@@ -234,19 +239,19 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
           /* Calculate the mean intensity */
 
-          if ( SOBOLEV ){
+#         if ( SOBOLEV )
 
-            sobolev( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
-                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
-                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
-          }
+          sobolev( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+                   Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
+                   temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
 
-          else {
+#         else
 
-            radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
-                                    Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
-                                    temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
-          }
+          radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+                                  Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
+                                  temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
+
+#         endif
 
 
           /* Fill the i>j part */

@@ -21,7 +21,7 @@
 
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 /* radiative_transfer: calculate mean intensity at grid point "gridp", by solving the transfer   */
 /*                     equation along all pairs of a rays and their antipodals                   */

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.22)  5 DEC 2017 13:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.22)  7 DEC 2017 17:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -380,7 +380,11 @@ LaTeX Warning: Command \@footnotemark  has changed.
                Check if current package is valid.
 
 LaTeX Info: Redefining \textsubscript on input line 1277.
-) (/home/frederik/Dropbox/Astro/Magritte/docs/background.aux)
+) (/home/frederik/Dropbox/Astro/Magritte/docs/background.aux
+
+LaTeX Warning: Label `RTEscat' multiply defined.
+
+)
 \openout1 = `background.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
@@ -485,7 +489,7 @@ LaTeX Info: Redefining \nameref on input line 44.
 \@outlinefile=\write3
 \openout3 = `background.out'.
 
- <Images/Magritte_logo_v2_BW.pdf, id=4, 363.97342pt x 367.7486pt>
+ <Images/Magritte_logo_v2_BW.pdf, id=108, 363.97342pt x 367.7486pt>
 File: Images/Magritte_logo_v2_BW.pdf Graphic file (type pdf)
  <use Images/Magritte_logo_v2_BW.pdf>
 Package pdftex.def Info: Images/Magritte_logo_v2_BW.pdf used on input line 47.
@@ -504,122 +508,44 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} </home/frederik/Dropbox/Astro/Magritte/docs/Images/Magritte_logo_v2_BW.pdf>]
-
-Package hyperref Warning: old toc file detected, not used; run LaTeX again.
-
+(/home/frederik/Dropbox/Astro/Magritte/docs/background.toc)
 \tf@toc=\write4
 \openout4 = `background.toc'.
 
-[2]
-
-LaTeX Warning: Citation `3DPDR' on page 3 undefined on input line 67.
-
-[3] [4] [5] [6]
-
-LaTeX Warning: Reference `Feau' on page 7 undefined on input line 271.
-
-
-LaTeX Warning: Citation `Mihalas_s' on page 7 undefined on input line 271.
-
-
-LaTeX Warning: Citation `MihalasMihalas' on page 7 undefined on input line 271.
-
-
-LaTeX Warning: Reference `grid' on page 7 undefined on input line 271.
-
-<Images/grid.pdf, id=90, 575.96135pt x 196.9452pt>
+ [2] [3] [4] [5] [6] <Images/grid.pdf, id=218, 575.96135pt x 196.9452pt>
 File: Images/grid.pdf Graphic file (type pdf)
  <use Images/grid.pdf>
-Package pdftex.def Info: Images/grid.pdf used on input line 274.
+Package pdftex.def Info: Images/grid.pdf used on input line 288.
 (pdftex.def)             Requested size: 172.78973pt x 59.08401pt.
-
-
-LaTeX Warning: Reference `Feau' on page 7 undefined on input line 280.
-
-
-LaTeX Warning: Reference `dis' on page 7 undefined on input line 285.
-
-[7 </home/frederik/Dropbox/Astro/Magritte/docs/Images/grid.pdf>]
-
-LaTeX Warning: Reference `rec' on page 8 undefined on input line 323.
-
-
-LaTeX Warning: Reference `rec2' on page 8 undefined on input line 336.
-
-
-LaTeX Warning: Citation `Rybicki1991' on page 8 undefined on input line 340.
-
-
-LaTeX Warning: Reference `elim' on page 8 undefined on input line 344.
-
-
-LaTeX Warning: Reference `init' on page 8 undefined on input line 351.
-
-
-LaTeX Warning: Reference `mateq' on page 8 undefined on input line 368.
-
-[8]
-
-LaTeX Warning: Reference `uv' on page 9 undefined on input line 373.
-
-
-LaTeX Warning: Citation `MihalasMihalas' on page 9 undefined on input line 389.
-
-
-LaTeX Warning: Reference `mateq' on page 9 undefined on input line 400.
-
-
-LaTeX Warning: Citation `Rybicki1991' on page 9 undefined on input line 408.
-
-[9]
-
-LaTeX Warning: Reference `updown' on page 10 undefined on input line 434.
-
-
-LaTeX Warning: Reference `downup' on page 10 undefined on input line 442.
-
-[10]
-
-LaTeX Warning: Reference `RTEscat' on page 11 undefined on input line 479.
-
-[11] [12] [13] (/home/frederik/Dropbox/Astro/Magritte/docs/background.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 594.
+ [7 </home/frederik/Dropbox/Astro/Magritte/docs/Images/grid.pdf>] [8] [9] [10] [11] [12] [13] (/home/frederik/Dropbox/Astro/Magritte/docs/background.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 608.
  [14]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 594.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 608.
  (/home/frederik/Dropbox/Astro/Magritte/docs/background.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 594.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 594.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 608.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 608.
+Package rerunfilecheck Info: File `background.out' has not changed.
+(rerunfilecheck)             Checksum: 0130ECAF38444416387B9E4BC3615B24;1701.
 
 
-Package rerunfilecheck Warning: File `background.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
+LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: Checksums for `background.out':
-(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
-(rerunfilecheck)             After:  0130ECAF38444416387B9E4BC3615B24;1701.
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 594.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 608.
  ) 
 Here is how much of TeX's memory you used:
- 8569 strings out of 493029
- 124833 string characters out of 6136234
- 247262 words of memory out of 5000000
- 11846 multiletter control sequences out of 15000+600000
+ 8600 strings out of 493029
+ 125392 string characters out of 6136234
+ 249171 words of memory out of 5000000
+ 11873 multiletter control sequences out of 15000+600000
  15135 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  33i,19n,32p,954b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on /home/frederik/Dropbox/Astro/Magritte/docs/background.pdf (14 pages, 293135 bytes).
+Output written on /home/frederik/Dropbox/Astro/Magritte/docs/background.pdf (14 pages, 297777 bytes).
 PDF statistics:
- 291 PDF objects out of 1000 (max. 8388607)
- 248 compressed objects within 3 object streams
- 117 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 419 PDF objects out of 1000 (max. 8388607)
+ 375 compressed objects within 4 object streams
+ 119 named destinations out of 1000 (max. 500000)
+ 219 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -96,7 +96,7 @@
 /* Special key to find the number of the grid point associated to a certain evaluation point */
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
   #define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )               \
                                 /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \

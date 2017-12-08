@@ -1,15 +1,14 @@
 # Fdb version 3
-["bibtex background"] 1512403811 "background.aux" "background.bbl" "background" 1512480633
+["bibtex background"] 1512666667 "background.aux" "background.bbl" "background" 1512666668
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "background.aux" 1512480633 4949 0d97624a98acedfc295177459e3574bb ""
+  "background.aux" 1512666668 4949 9559a946d044cf0ed56f6794e516d380 ""
   "background.bcf" 0 -1 0 ""
   "library.bib" 1503382267 71619 287357f9a35e17aa96fd5ef12e5572fe ""
   (generated)
-  "background.blg"
   "background.bbl"
-["pdflatex"] 1512480633 "background.tex" "/home/frederik/Dropbox/Astro/Magritte/docs/background.pdf" "background" 1512480633
+["pdflatex"] 1512666667 "background.tex" "/home/frederik/Dropbox/Astro/Magritte/docs/background.pdf" "background" 1512666668
   "/etc/texmf/web2c/texmf.cnf" 1490782050 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/frederik/Dropbox/Astro/Magritte/docs/background.aux" 1512480633 4949 0d97624a98acedfc295177459e3574bb ""
+  "/home/frederik/Dropbox/Astro/Magritte/docs/background.aux" 1512666668 4949 9559a946d044cf0ed56f6794e516d380 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -127,16 +126,16 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1503421733 3861264 4d6d2aea1e9ec06a6aa565dd168f16d9 ""
   "Images/Magritte_logo_v2_BW.pdf" 1509719364 2884 7a476343752d4f53ade96b76724aba69 ""
   "Images/grid.pdf" 1510082441 12148 a6d77a9e95a0d7838ee942c0c69b67c2 ""
-  "background.aux" 1512480633 4949 0d97624a98acedfc295177459e3574bb ""
-  "background.bbl" 1512403811 852 22f2382dc4fd107c853cf197bf5ad55e "bibtex background"
-  "background.out" 1512480633 1701 0130ecaf38444416387b9e4bc3615b24 ""
-  "background.tex" 1512480633 33993 d77583797b3340c74a3c5f2dc57500d8 ""
-  "background.toc" 1512480633 2336 74efe5c78b29e13f2f9ed50245212258 ""
+  "background.aux" 1512666668 4949 9559a946d044cf0ed56f6794e516d380 ""
+  "background.bbl" 1512666667 852 22f2382dc4fd107c853cf197bf5ad55e "bibtex background"
+  "background.out" 1512666668 1701 0130ecaf38444416387b9e4bc3615b24 ""
+  "background.tex" 1512666658 34517 dfbadfc5950843490b8fda0af235d9a2 ""
+  "background.toc" 1512666668 2336 74efe5c78b29e13f2f9ed50245212258 ""
   (generated)
   "background.pdf"
-  "background.out"
-  "background.aux"
   "background.log"
-  "/home/frederik/Dropbox/Astro/Magritte/docs/background.log"
   "background.toc"
+  "/home/frederik/Dropbox/Astro/Magritte/docs/background.log"
+  "background.aux"
+  "background.out"
   "/home/frederik/Dropbox/Astro/Magritte/docs/background.pdf"

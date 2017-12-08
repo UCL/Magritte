@@ -36,7 +36,7 @@
 /* thermal_balance: perform a thermal balance iteration to calculate the thermal flux            */
 /*-----------------------------------------------------------------------------------------------*/
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 
 int thermal_balance_iteration( GRIDPOINT *gridpoint,
@@ -97,7 +97,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
     *time_chemistry -= omp_get_wtime();
 
 
-#   ifdef ON_THE_FLY
+#   if ( ON_THE_FLY )
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
@@ -143,7 +143,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   *time_level_pop -= omp_get_wtime();
 
 
-# ifdef ON_THE_FLY
+# if ( ON_THE_FLY )
 
   level_populations_otf( gridpoint, irad, jrad, frequency,
                          A_coeff, B_coeff, pop,
@@ -184,7 +184,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   /* Calculate column densities to get the most recent reaction rates */
 
 
-# ifdef ON_THE_FLY
+# if ( ON_THE_FLY )
 
   calc_column_densities(gridpoint, column_H2, column_HD, column_C, column_CO);
 

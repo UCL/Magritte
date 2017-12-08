@@ -23,7 +23,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 int chemistry( GRIDPOINT *gridpoint,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,

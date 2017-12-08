@@ -23,7 +23,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 int thermal_balance_iteration( GRIDPOINT *gridpoint,
                                double *column_H2, double *column_HD, double *column_C,

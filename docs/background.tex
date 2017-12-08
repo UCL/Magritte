@@ -221,10 +221,24 @@ B_{\nu}(T) \equiv \frac{2 h \nu^{3}}{c^{2}} \left[ \exp\left( \frac{h \nu}{ \kb 
 \begin{equation}
 \begin{split}
 \eta^{\text{sca.}}_{\nu}(\textbf{x}, \hat{\textbf{n}}) &= \chi_{\nu}^{\text{sca}}(\textbf{x}) \oint \D \hat{\textbf{n}}' \ \Phi(\hat{\textbf{n}},\hat{\textbf{n}}') I_{\nu}(\textbf{x},\hat{\textbf{n}}'), \\
-\chi^{\text{sca.}}_{\nu}(\textbf{x}) &= 1
+\chi^{\text{sca.}}_{\nu}(\textbf{x})
 \end{split}
 \end{equation}
 where we used the phase function  $\Phi(\hat{\textbf{n}},\hat{\textbf{n}}')$ that gives the probability for an incoming photon from direction $\hat{\textbf{n}}'$ to be scattered into direction $\hat{\textbf{n}}$.
+
+\bigskip
+
+Total opacity at a point is given by
+\begin{equation}
+\chi^{\text{tot}}_{\nu}(\textbf{x}) \ = \  \chi^{(ij)}_{\nu}(\textbf{x}) + \chi^{\text{con}}_{\nu}(\textbf{x}) + \chi^{\text{sca}}_{\nu}(\textbf{x})
+\end{equation}
+
+
+
+The total source function
+\begin{equation}
+S(\textbf{x}, \hat{\textbf{n}}) \ = \ \frac{1}{\chi^{\text{tot}}_{\nu}(\textbf{x})} \left( \eta^{(ij)}_{\nu}(\textbf{x}) + \eta^{\text{con.}}_{\nu}(\textbf{x}) + \eta^{\text{sca.}}_{\nu}(\textbf{x}, \hat{\textbf{n}}) \right)
+\end{equation}
 
 
 \subsubsection{Feautrier solution method}

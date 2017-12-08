@@ -23,7 +23,7 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 int calc_column_density( GRIDPOINT *gridpoint, double *column_density, int spec );
 
@@ -38,7 +38,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
 /*-----------------------------------------------------------------------------------------------*/
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
 /* calc_column_densities: calculates column densities for the species needed in chemistry        */
 /*-----------------------------------------------------------------------------------------------*/

@@ -39,7 +39,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
   long ar = antipod[r];
 
 
-#ifdef ON_THE_FLY
+#if ( ON_THE_FLY )
 
   long etot1 = raytot[ar];                     /* total number of evaluation points along ray ar */
   long etot2 = raytot[r];                       /* total number of evaluation points along ray r */
@@ -198,7 +198,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 //   {
 //
 //
-// #   ifdef ON_THE_FLY
+// #   if ( ON_THE_FLY )
 //
 //     long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1);   /* grid point nr. of the considered evalpoint */
 //     long e_p = g_p;
@@ -221,7 +221,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 //   for (long n=1; n<=etot1-1; n++){
 //
 //
-// #   ifdef ON_THE_FLY
+// #   if ( ON_THE_FLY )
 //
 //     long g_p = LOCAL_GP_NR_OF_EVALP(ar,etot1-1-n); /* grid point nr. of the considered evalpoint */
 //     long e_p = g_p;
@@ -248,7 +248,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 //   for (long n=etot1+1; n<ndep; n++){
 //
 //
-// #   ifdef ON_THE_FLY
+// #   if ( ON_THE_FLY )
 //
 //     long g_p = LOCAL_GP_NR_OF_EVALP(r,n-etot1-1);  /* grid point nr. of the considered evalpoint */
 //     long e_p = g_p;
@@ -271,7 +271,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
 //   {
 //
 //
-// #   ifdef ON_THE_FLY
+// #   if ( ON_THE_FLY )
 //
 //     long g_p = LOCAL_GP_NR_OF_EVALP(r,etot2-1);    /* grid point nr. of the considered evalpoint */
 //     long e_p = g_p;

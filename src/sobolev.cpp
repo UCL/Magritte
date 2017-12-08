@@ -220,7 +220,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
   /* NOTE: Continuum radiation is assumed to be local */
 
-  double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
+  double continuum_mean_intensity = 0.0; // factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
   mean_intensity[m_ij] = (1.0 - escape_probability) * source[m_ij]
@@ -234,7 +234,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
     mean_intensity_eff[m_ij] = escape_probability * continuum_mean_intensity;
   }
 
-  else {
+  else{
 
     Lambda_diagonal[m_ij]    = 0.0;
 

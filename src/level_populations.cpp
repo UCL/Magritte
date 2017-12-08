@@ -33,7 +33,7 @@
 
 
 
-#ifndef ON_THE_FLY
+#if !( ON_THE_FLY )
 
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
