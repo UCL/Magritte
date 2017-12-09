@@ -124,7 +124,7 @@ int spline( double *x, double *y, long n, double yp0, double ypn, double *d2y )
   free(u);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -214,7 +214,7 @@ int splint(double *xa, double *ya, double *d2ya, long n, double x, double *y)
             + (pow(B,3)-B)*d2ya[j_hi] ) * pow(xa[j_hi]-xa[j_lo],2) / 6.0;
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -276,7 +276,7 @@ int splie2( double *x1a, double *x2a, double *ya, long m, long n, double *d2ya )
   free(d2ya_temp);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -347,7 +347,7 @@ int splin2( double *x1a, double *x2a, double *ya, double *d2ya, long m, long n,
   free(d2yy_temp);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

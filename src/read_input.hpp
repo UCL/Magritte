@@ -23,12 +23,23 @@
 
 
 
-/* read_input: read the input file                                                               */
+/* read_txt_input: read the input file                                                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_input(std::string grid_inputfile, GRIDPOINT *gridpoint);
+int read_txt_input(std::string grid_inputfile, GRIDPOINT *gridpoint);
 
 /*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* read_vtu_input: read the input file                                                           */
+/*-----------------------------------------------------------------------------------------------*/
+
+int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
 
 
 

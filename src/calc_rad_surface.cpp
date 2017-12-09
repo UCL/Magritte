@@ -103,7 +103,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

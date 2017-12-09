@@ -283,7 +283,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
           (double) succes/(NGRID*NGRID-NGRID) );
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -488,7 +488,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -587,7 +587,7 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   } /* end of r loop over rays */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

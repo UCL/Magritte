@@ -61,7 +61,7 @@ int setup_healpixvectors(long nrays, double *unit_healpixvector, long *antipod)
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 }
 
 /*-----------------------------------------------------------------------------------------------*/

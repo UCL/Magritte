@@ -302,7 +302,7 @@ int feautrier( EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, 
   free( G );
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

@@ -16,6 +16,10 @@
 
 #include <stdio.h>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
+#include "declarations.hpp"
+
 #include "heapsort.hpp"
 
 
@@ -65,7 +69,7 @@ int downheap(double *a, long *b, long n, long i)
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -98,7 +102,7 @@ int heapsort(double *a, long *b, long n)
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

@@ -96,7 +96,15 @@ int main()
 
   /* Read input file */
 
-  read_input(grid_inputfile, gridpoint);
+# if ( INPUT_FORMAT == VTU )
+
+  read_vtu_input(grid_inputfile, gridpoint);
+
+# elif ( INPUT_FORMAT == TXT )
+
+  read_vtu_input(grid_inputfile, gridpoint);
+
+# endif
 
 
   printf("(Magritte): grid input read \n\n");
@@ -497,10 +505,13 @@ int main()
 
   initialize_double_array(Lambda_diagonal, NGRID*TOT_NRAD);
 
-  double source_scatter[NGRID*TOT_NRAD];   /* mean contribution of scattering to source function */
+  double scatter_u[NGRID*TOT_NRAD*NFREQ];                    /* angle averaged u scattering term */
 
-  initialize_double_array(source_scatter, NGRID*TOT_NRAD);
+  initialize_double_array(scatter_u, NGRID*TOT_NRAD*NFREQ);
 
+  double scatter_v[NGRID*TOT_NRAD*NFREQ];                    /* angle averaged v scattering term */
+
+  initialize_double_array(scatter_v, NGRID*TOT_NRAD*NFREQ);
 
   double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
 
@@ -619,7 +630,7 @@ int main()
 
   /* Thermal balance iterations */
 
-  while (no_thermal_balance){
+  while (false){//no_thermal_balance){
 
     no_thermal_balance = false;
 
@@ -791,7 +802,7 @@ int main()
   printf("(Magritte): done \n\n");
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

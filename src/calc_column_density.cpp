@@ -101,7 +101,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -164,7 +164,7 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

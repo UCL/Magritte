@@ -63,7 +63,7 @@ int write_grid(std::string tag, GRIDPOINT *gridpoint)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -107,7 +107,7 @@ int write_healpixvectors(std::string tag, double *unit_healpixvector)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -157,7 +157,7 @@ int write_eval(std::string tag, EVALPOINT *evalpoint)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -204,7 +204,7 @@ int write_key(std::string tag, long *key)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -251,7 +251,7 @@ int write_raytot(std::string tag, long *raytot)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -298,7 +298,7 @@ int write_cum_raytot(std::string tag, long *cum_raytot)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -348,7 +348,7 @@ int write_abundances(std::string tag)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -404,7 +404,7 @@ int write_level_populations(std::string tag, double *pop)
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -459,7 +459,7 @@ int write_line_intensities(std::string tag, double *mean_intensity)
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -502,7 +502,7 @@ int write_temperature_gas(std::string tag, double *temperature_gas)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -545,7 +545,7 @@ int write_temperature_dust(std::string tag, double *temperature_dust)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -588,7 +588,7 @@ int write_UV_field(std::string tag, double *UV_field)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -636,7 +636,7 @@ int write_AV(std::string tag, double *AV)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -684,7 +684,7 @@ int write_rad_surface(std::string tag, double *rad_surface)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -732,7 +732,7 @@ int write_reaction_rates(std::string tag, REACTION *reaction)
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -812,7 +812,7 @@ int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -855,7 +855,7 @@ int write_double_1(std::string name, std::string tag, long length, double *varia
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -903,7 +903,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
   fclose(file);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -1050,7 +1050,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 //
 //   // cout << "X lambda " << X_lambda(1000.0) << "\n";
 //
-//   return(0);
+//   return EXIT_SUCCESS;
 //
 // }
 
@@ -1133,7 +1133,7 @@ int write_Einstein_coeff( std::string tag, double *A_coeff, double *B_coeff, dou
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -1190,7 +1190,7 @@ int write_R( std::string tag, long gridp, double *R )
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -1245,7 +1245,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -1289,7 +1289,7 @@ int write_performance_log( double time_total, double time_level_pop, double time
 
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -1356,7 +1356,7 @@ int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, 
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -1415,7 +1415,7 @@ int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double 
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

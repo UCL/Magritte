@@ -175,7 +175,7 @@ int update_x( long gridp, double *temperature_a, double *temperature_b, double *
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -211,7 +211,7 @@ int shuffle_x( long gridp, double *temperature_a, double *temperature_b, double 
 
   }
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -279,6 +279,6 @@ int main()
 
   printf("The root is %lf \n", root );
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }

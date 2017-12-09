@@ -49,7 +49,7 @@ int initialize_int_array(int *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -83,7 +83,7 @@ int initialize_long_array(long *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -119,7 +119,7 @@ int initialize_double_array(double *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -155,7 +155,7 @@ int initialize_double_array_with(double *array1, double *array2, long length)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -191,7 +191,7 @@ int initialize_double_array_with_value(double *array, double value, long length)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -227,7 +227,7 @@ int initialize_char_array(char *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -260,7 +260,7 @@ int initialize_char_array(char *array, long length)
 //     }
 //
 //
-//   return(0);
+//   return EXIT_SUCCESS;
 //
 // }
 //
@@ -296,7 +296,7 @@ int initialize_temperature_gas(double *temperature_gas)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -332,7 +332,7 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -368,7 +368,7 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -404,7 +404,7 @@ int initialize_bool(bool value, long length, bool *variable)
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -446,7 +446,7 @@ int initialize_bool(bool value, long length, bool *variable)
 //   }
 //
 //
-//   return(0);
+//   return EXIT_SUCCESS;
 // }
 
 /*-----------------------------------------------------------------------------------------------*/

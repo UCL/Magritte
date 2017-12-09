@@ -28,7 +28,7 @@
 
 
 
-/* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2             */
+/* sobolev: calculate the mean intensity using the LVG approximation and escape probabilities    */
 /*-----------------------------------------------------------------------------------------------*/
 
 int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
@@ -242,7 +242,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 }
 
 /*-----------------------------------------------------------------------------------------------*/

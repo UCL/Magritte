@@ -35,8 +35,8 @@
 int main(){
 
 
-  printf("\n");
-  printf("Setup Magritte \n");
+  printf("                \n");
+  printf("Setup Magritte  \n");
   printf("--------------\n\n");
 
 
@@ -61,8 +61,16 @@ int main(){
 
   grid_inputfile = "../" + grid_inputfile;
 
-  long ngrid = get_NGRID(grid_inputfile);
 
+# if ( INPUT_FORMAT == VTU )
+
+  long ngrid = get_NGRID_vtu(grid_inputfile);
+
+# elif ( INPUT_FORMAT == TXT )
+
+  long ngrid = get_NGRID_txt(grid_inputfile);
+
+# endif
 
   /* Get the number of species from the species data file */
 
@@ -390,7 +398,7 @@ int main(){
 
   printf("(setup): done, Magritte can now be compiled \n\n");
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -416,7 +424,7 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -442,7 +450,7 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -468,7 +476,7 @@ int write_double_array(FILE *file, std::string NAME, double *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

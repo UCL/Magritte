@@ -21,6 +21,8 @@
 #include "../parameters.hpp"
 
 
+#define EXIT_SUCCESS 0
+
 
 #define TOL 1.0E-9                                               /* tolerance for antipodal rays */
 

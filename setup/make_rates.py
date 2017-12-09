@@ -549,7 +549,7 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
             output.write('  Ith(ydot,'+str(n)+') = Ith(ydot,'+str(n)+')/Ith(y,'+str(n)+');\n')
 
     # Write the function footer
-    fileFooter = '\n\n  return(0);\n}\n /*-----------------------------------------------------------------------------------------------*/\n\n'
+    fileFooter = '\n\n  return EXIT_SUCCESS;\n}\n /*-----------------------------------------------------------------------------------------------*/\n\n'
     output.write(fileFooter)
     output.close()
 
@@ -739,7 +739,7 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     output.write('  IJth(J,'+str(formatCode % m)+','+str(formatCode % n)+') = IJth(J,'+str(m)+','+str(n)+')*Ith(y,'+str(m)+')/Ith(y,'+str(n)+');\n')
 
     # Write the function footer
-    fileFooter = '\n  return(0);\n}\n/*-----------------------------------------------------------------------------------------------*/\n\n'
+    fileFooter = '\n  return EXIT_SUCCESS;\n}\n/*-----------------------------------------------------------------------------------------------*/\n\n'
     output.write(fileFooter)
     output.close()
 

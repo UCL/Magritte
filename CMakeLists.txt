@@ -47,6 +47,12 @@ add_custom_target( MAKE_SETUP
 add_subdirectory(src)
 
 
+# VTK includes
+
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+
+
 # Add compiler flags
 
 find_package(OpenMP REQUIRED)

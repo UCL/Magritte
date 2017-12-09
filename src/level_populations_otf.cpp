@@ -363,7 +363,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
   } /* end of lspec loop over line producing species */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

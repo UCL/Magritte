@@ -178,7 +178,7 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data)
   Ith(ydot,31) = form+Ith(y,31)*loss;
 
 
-  return(0);
+  return EXIT_SUCCESS;
 }
  /*-----------------------------------------------------------------------------------------------*/
 

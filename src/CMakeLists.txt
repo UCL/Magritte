@@ -1,5 +1,12 @@
 # CMakeLists.txt for Magritte (/src directory)
-# -----------------------------------------
+# --------------------------------------------
+
+
+
+# VTK includes
+
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
 
 # Add compiler flags
@@ -76,3 +83,4 @@ write_output.cpp )
 
 target_link_libraries( _MAGRITTE   _HEALPix )
 target_link_libraries( _MAGRITTE   _sundials )
+target_link_libraries( _MAGRITTE   ${VTK_LIBRARIES} )

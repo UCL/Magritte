@@ -17,15 +17,22 @@
 
 #include <string>
 
+#include <vtkXMLUnstructuredGridReader.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkSmartPointer.h>
+#include <vtkCellCenters.h>
+#include <vtkPointData.h>
+#include <vtkCellData.h>
+
 #include "setup_definitions.hpp"
 #include "setup_data_tools.hpp"
 
 
 
-/* get_NGRID: Count number of grid points in input file input/iNGRID.txt                         */
+/* get_NGRID_txt: Count number of grid points in the .txt input file                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-long get_NGRID(std::string grid_inputfile)
+long get_NGRID_txt(std::string grid_inputfile)
 {
 
 
@@ -46,6 +53,71 @@ long get_NGRID(std::string grid_inputfile)
   }
 
   fclose(file);
+
+
+  return ngrid;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* get_NGRID_vtu: Count number of grid points in the .vtu input file                             */
+/*-----------------------------------------------------------------------------------------------*/
+
+long get_NGRID_vtu(std::string grid_inputfile)
+{
+
+
+  /* Read the data from the .vtu file */
+
+  vtkSmartPointer<vtkXMLUnstructuredGridReader> reader =
+    vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+
+  reader->SetFileName(grid_inputfile.c_str());
+  reader->Update();
+
+  vtkUnstructuredGrid* ugrid = reader->GetOutput();
+
+
+  /* Extract the cell centers */
+
+  vtkSmartPointer<vtkCellCenters> cellCentersFilter =
+    vtkSmartPointer<vtkCellCenters>::New();
+
+# if VTK_MAJOR_VERSION <= 5
+  cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
+# else
+  cellCentersFilter->SetInputData(ugrid);
+# endif
+  cellCentersFilter->VertexCellsOn();
+  cellCentersFilter->Update();
+
+
+  long ngrid = cellCentersFilter->GetOutput()->GetNumberOfPoints();
+
+
+  /* Check whether there is cell data for every cell */
+
+  vtkCellData *cellData  = ugrid->GetCellData();
+
+  int nr_of_arrays = cellData->GetNumberOfArrays();
+
+
+  for (int a=0; a<nr_of_arrays; a++){
+
+    vtkDataArray* data = cellData->GetArray(a);
+
+    std::string name = data->GetName();
+
+    if ( (ngrid != data->GetNumberOfTuples()) ){
+
+      printf("ERROR: wrong number of %s values\n", name.c_str());
+    }
+  }
 
 
   return ngrid;

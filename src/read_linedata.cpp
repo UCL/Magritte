@@ -293,7 +293,7 @@ int read_linedata( const std::string *line_datafile, int *irad, int *jrad,
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -361,7 +361,7 @@ int extract_spec_par(char *buffer, int lspec, int par)
   ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

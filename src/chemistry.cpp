@@ -104,7 +104,7 @@ int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

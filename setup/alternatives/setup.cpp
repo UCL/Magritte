@@ -501,7 +501,7 @@ int main(){
 
   cout << "(setup): done, Magritte can now be compiled \n\n";
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

@@ -107,7 +107,7 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
 
   if (denominator == 0.0){
 
-    return(0);
+    return EXIT_SUCCESS;
   }
 
   else {
@@ -151,7 +151,7 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -197,7 +197,7 @@ int store_populations( int lspec, double *prev3_pop, double *prev2_pop, double *
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

@@ -307,7 +307,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
   } /* end of reac loop over reactions */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

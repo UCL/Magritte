@@ -92,7 +92,7 @@ int calc_UV_field( double *AV, double *rad_surface, double *UV_field )
   } /* end of OpenMP parallel region */
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

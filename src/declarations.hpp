@@ -39,6 +39,11 @@
 
 
 
+#define EXIT_SUCCESS 0
+#define VTU '.vtu'
+#define TXT '.txt'
+
+
 /* Roots of the 4th (physicists') Hermite polynomial */
 
 #define NFREQ 4

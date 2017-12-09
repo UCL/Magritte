@@ -255,7 +255,7 @@ int thermal_balance_iteration( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 

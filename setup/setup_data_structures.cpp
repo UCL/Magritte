@@ -82,7 +82,7 @@ int setup_data_structures1( std::string *line_datafile, int *nlev, int *nrad, in
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
@@ -194,7 +194,7 @@ int setup_data_structures2( std::string *line_datafile, int* ncolpar, int *cum_n
   }
 
 
-  return(0);
+  return EXIT_SUCCESS;
 
 }
 
