@@ -7,18 +7,18 @@
 
 #define RUN_NUMBER "1"
 
-#define WRITE_INTERMEDIATE_OUTPUT true
+#define WRITE_INTERMEDIATE_OUTPUT false
 
 
 /* Input files */
 
-// #define INPUT_FORMAT '.txt'
+#define INPUT_FORMAT '.txt'
 
-// #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
+#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 
-#define INPUT_FORMAT '.vtu'
+// #define INPUT_FORMAT VTU
 
-#define GRID_INPUTFILE "input/Aori_0001.vtu"
+// #define GRID_INPUTFILE "input/Aori_0001.vtu"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
@@ -35,7 +35,7 @@
 
 /* Ray tracing parameters */
 
-#define NSIDES 4
+#define NSIDES 2
 
 #define THETA_CRIT 1.3
 

@@ -1,6 +1,10 @@
 language:
   - cpp
   - python
+  - bash
+
+install:
+  - sudo apt-get update
 
 python:
   - "2.7"
@@ -11,6 +15,5 @@ addons:
       - cmake
 
 script:
-  - python --version
   - ./configure.sh
   - make

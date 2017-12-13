@@ -751,7 +751,7 @@ int main()
 
     /* Limit the number of iterations */
 
-    if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/20){
+    if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10){
 
       no_thermal_balance = false;
     }
@@ -789,29 +789,31 @@ int main()
 
   std::string tag = "final";
 
+
 # if ( INPUT_FORMAT == '.vtu' )
 
   write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
 
+# elif ( INPUT_FORMAT == '.txt' )
+
+  write_abundances(tag);
+
+  write_level_populations(tag, pop);
+
+  write_line_intensities(tag, mean_intensity);
+
+  write_temperature_gas(tag, temperature_gas);
+
+  write_temperature_dust(tag, temperature_dust);
+
+  write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
+
+  write_LTE_deviation(tag, gridpoint, energy, weight, temperature_gas, pop);
+
+  write_true_level_populations(tag, gridpoint, pop);
+
 # endif
 
-  write_healpixvectors("");
-
-  // write_abundances(tag);
-  //
-  // write_level_populations(tag, pop);
-  //
-  // write_line_intensities(tag, mean_intensity);
-  //
-  // write_temperature_gas(tag, temperature_gas);
-  //
-  // write_temperature_dust(tag, temperature_dust);
-  //
-  // write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
-  //
-  // write_LTE_deviation(tag, gridpoint, energy, weight, temperature_gas, pop);
-  //
-  // write_true_level_populations(tag, gridpoint, pop);
 
   printf("(Magritte): output written \n\n");
 
