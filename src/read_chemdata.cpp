@@ -32,7 +32,7 @@
 /* read_species: read the species from the data file                                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_species(std::string spec_datafile)
+int read_species(std::string spec_datafile, double *initial_abn)
 {
 
 
@@ -80,6 +80,7 @@ int read_species(std::string spec_datafile)
 
     species[l].sym  = sym_buff;
     species[l].mass = mass_buff;
+    initial_abn[l]  = abn_buff;
 
 
     for (long gridp=0; gridp<NGRID; gridp++){
@@ -100,6 +101,8 @@ int read_species(std::string spec_datafile)
     species[electron_nr].abn[gridp] = 0.0;
     species[electron_nr].abn[gridp] = get_electron_abundance(gridp);
   }
+
+  initial_abn[electron_nr] = species[electron_nr].abn[0];
 
   fclose(specdata);
 

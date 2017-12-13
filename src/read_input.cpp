@@ -23,6 +23,7 @@
 #include <vtkCellCenters.h>
 #include <vtkPointData.h>
 #include <vtkCellData.h>
+#include <vtkVersion.h>
 
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"

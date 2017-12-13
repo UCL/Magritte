@@ -31,13 +31,11 @@ int write_grid(std::string tag, GRIDPOINT *gridpoint);
 /* write_healpixvectors: write the unit HEALPix vectors                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_healpixvectors(std::string tag, double *unit_healpixvector);
+int write_healpixvectors(std::string tag);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
-
-#if !( ON_THE_FLY )
 
 /* write_eval: Write the evaluation points (Z along ray and number of the ray)                   */
 /*-----------------------------------------------------------------------------------------------*/
@@ -72,8 +70,6 @@ int write_raytot(std::string tag, long *raytot);
 int write_cum_raytot(std::string tag, long *cum_raytot);
 
 /*-----------------------------------------------------------------------------------------------*/
-
-#endif
 
 
 
@@ -249,6 +245,17 @@ int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, 
 int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double *pop );
 
 /*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* write_vtu_output: write all physical variables to the vtu input grid                          */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_vtu_output( std::string grid_inputfile,
+                      double *temperature_gas, double *temperature_dust );
+
+/*-----------------------------------------------------------------------------------------------*/
+
 
 
 #endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */

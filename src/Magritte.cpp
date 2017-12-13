@@ -96,13 +96,15 @@ int main()
 
   /* Read input file */
 
-# if ( INPUT_FORMAT == VTU )
+# if ( INPUT_FORMAT == '.vtu' )
+
+  printf("WRONG!!\n");
 
   read_vtu_input(grid_inputfile, gridpoint);
 
-# elif ( INPUT_FORMAT == TXT )
+# elif ( INPUT_FORMAT == '.txt' )
 
-  read_vtu_input(grid_inputfile, gridpoint);
+  read_txt_input(grid_inputfile, gridpoint);
 
 # endif
 
@@ -125,7 +127,9 @@ int main()
 
   /* Read the species (and their initial abundances) */
 
-  read_species(spec_datafile);
+  double initial_abn[NSPEC];
+
+  read_species(spec_datafile, initial_abn);
 
 
   /* Get and store the species numbers of some inportant species */
@@ -206,8 +210,6 @@ int main()
 
 
 # if !( ON_THE_FLY )
-
-  printf("NOOOOOOT\n");
 
   double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
 
@@ -471,6 +473,15 @@ int main()
 #   endif
 
 
+    /* Write the output for restart */
+
+#   if ( INPUT_FORMAT == '.vtu' )
+
+    write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
+
+#   endif
+
+
     time_chemistry += omp_get_wtime();
 
   } /* End of chemistry iteration */
@@ -573,7 +584,7 @@ int main()
                                A_coeff, B_coeff, C_data, coltemp, icol, jcol,
                                pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio,
+                               thermal_ratio, initial_abn,
                                &time_chemistry, &time_level_pop );
 
 #   else
@@ -585,7 +596,7 @@ int main()
                                A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
                                pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio,
+                               thermal_ratio, initial_abn,
                                &time_chemistry, &time_level_pop );
 
 #   endif
@@ -597,14 +608,18 @@ int main()
     update_temperature_gas( thermal_ratio, temperature_gas, prev_temperature_gas,
                             temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
 
+
+    // write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
+
+
   } /* end of tb_iteration loop over preliminary tb iterations */
 
 
   initialize_double_array_with(temperature_gas, temperature_b, NGRID);
 
 
-  write_double_1("temperature_a", "", NGRID, temperature_a );
-  write_double_1("temperature_b", "", NGRID, temperature_b );
+  // write_double_1("temperature_a", "", NGRID, temperature_a );
+  // write_double_1("temperature_b", "", NGRID, temperature_b );
 
 
   printf("(Magritte): minimal and maximal thermal flux calculated \n\n");
@@ -651,7 +666,7 @@ int main()
                                A_coeff, B_coeff, C_data, coltemp, icol, jcol,
                                pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio,
+                               thermal_ratio, initial_abn,
                                &time_chemistry, &time_level_pop );
 
 #   else
@@ -663,7 +678,7 @@ int main()
                                A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
                                pop, mean_intensity,
                                Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio,
+                               thermal_ratio, initial_abn,
                                &time_chemistry, &time_level_pop );
 
 #   endif
@@ -774,21 +789,29 @@ int main()
 
   std::string tag = "final";
 
-  write_abundances(tag);
+# if ( INPUT_FORMAT == '.vtu' )
 
-  write_level_populations(tag, pop);
+  write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
 
-  write_line_intensities(tag, mean_intensity);
+# endif
 
-  write_temperature_gas(tag, temperature_gas);
+  write_healpixvectors("");
 
-  write_temperature_dust(tag, temperature_dust);
-
-  write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
-
-  write_LTE_deviation(tag, gridpoint, energy, weight, temperature_gas, pop);
-
-  write_true_level_populations(tag, gridpoint, pop);
+  // write_abundances(tag);
+  //
+  // write_level_populations(tag, pop);
+  //
+  // write_line_intensities(tag, mean_intensity);
+  //
+  // write_temperature_gas(tag, temperature_gas);
+  //
+  // write_temperature_dust(tag, temperature_dust);
+  //
+  // write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
+  //
+  // write_LTE_deviation(tag, gridpoint, energy, weight, temperature_gas, pop);
+  //
+  // write_true_level_populations(tag, gridpoint, pop);
 
   printf("(Magritte): output written \n\n");
 

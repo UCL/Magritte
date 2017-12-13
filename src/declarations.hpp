@@ -25,23 +25,23 @@
 
 
 
+/* Default success return value */
+
+#define EXIT_SUCCESS 0
+
+
 /* Numerical constants */
 
-#define PI    3.141592653589793238462643383279502884197                                    /* pi */
+#define PI    3.141592653589793238462643383279502884197  /* pi (circle circumference / diameter) */
 #define CC    2.99792458E+10                                      /* speed of light in cgs units */
 #define HH    6.62606896E-27                                   /* Planck's constant in cgs units */
 #define KB    1.38065040E-16                                /* Boltzmann's constant in cgs units */
-#define EV    1.60217646E-12                                             /* electron Volt in erg */
+#define EV    1.60217646E-12                                         /* one electron Volt in erg */
 #define MP    1.67262164E-24                                         /* proton mass in cgs units */
-#define PC    3.08568025E+18                                                   /* cm in a parsec */
+#define PC    3.08568025E+18                                                 /* one parsec in cm */
 #define AU    1.66053878E-24                                                 /* atomic mass unit */
 #define T_CMB 2.725             /* temperature of the cosmic microwave background radiation in K */
 
-
-
-#define EXIT_SUCCESS 0
-#define VTU '.vtu'
-#define TXT '.txt'
 
 
 /* Roots of the 4th (physicists') Hermite polynomial */
@@ -170,7 +170,7 @@
 
 /* Data types */
 
-typedef struct GRIDPOINTS {
+typedef struct {
 
   double x, y, z;                                     /* x, y and z coordinate of the grid point */
   double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
@@ -181,7 +181,7 @@ typedef struct GRIDPOINTS {
 
 
 
-typedef struct EVALPOINTS {
+typedef struct {
 
   bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
 
@@ -202,11 +202,11 @@ typedef struct EVALPOINTS {
 
 
 
-typedef struct SPECIES {
+typedef struct {
 
   std::string sym;                                                            /* chemical symbol */
 
-  double mass;                                                                       /* mol mass */
+  double mass;                                                                 /* molecular mass */
 
   double abn[NGRID];                                                                /* abundance */
 
@@ -214,7 +214,7 @@ typedef struct SPECIES {
 
 
 
-typedef struct REACTION {
+typedef struct {
 
   std::string R1;                                                                  /* reactant 1 */
   std::string R2;                                                                  /* reactant 2 */
@@ -363,6 +363,7 @@ extern int H3Ox_nr;                                          /* species nr corre
 extern int Hex_nr;                                            /* species nr corresponding to He+ */
 
 extern int CO_nr;                                              /* species nr corresponding to CO */
+
 
 
 /* Reaction numbers */

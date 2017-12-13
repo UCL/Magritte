@@ -62,11 +62,11 @@ int main(){
   grid_inputfile = "../" + grid_inputfile;
 
 
-# if ( INPUT_FORMAT == VTU )
+# if ( INPUT_FORMAT == '.vtu' )
 
   long ngrid = get_NGRID_vtu(grid_inputfile);
 
-# elif ( INPUT_FORMAT == TXT )
+# elif ( INPUT_FORMAT == '.txt' )
 
   long ngrid = get_NGRID_txt(grid_inputfile);
 

@@ -7,19 +7,15 @@
 
 #define RUN_NUMBER "1"
 
-#define WRITE_INTERMEDIATE_OUTPUT false
 
-#define d d
 
 /* Input files */
 
-#define INPUT_FORMAT '.txt'
+// #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
+#define INPUT_FORMAT VTU
 
-// #define INPUT_FORMAT VTU
-
-// #define GRID_INPUTFILE "input/Aori_0001.vtu"
+#define GRID_INPUTFILE "input/Aori_0001.vtu"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
@@ -58,7 +54,7 @@
 
 #define MAX_NITERATIONS 0
 
-#define PRELIM_CHEM_ITER 5
+#define PRELIM_CHEM_ITER 0
 
 #define PRELIM_TB_ITER 0
 
@@ -79,8 +75,6 @@
 #define GAS_TO_DUST 100.0;
 
 #define TIME_END_IN_YEARS 1.0E+7
-
-#define ALWAYS_INITIALIZE_CHEMISTRY false
 
 
 /* External UV field */

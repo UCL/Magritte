@@ -23,6 +23,7 @@
 #include <vtkCellCenters.h>
 #include <vtkPointData.h>
 #include <vtkCellData.h>
+#include <vtkVersion.h>
 
 #include "setup_definitions.hpp"
 #include "setup_data_tools.hpp"

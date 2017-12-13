@@ -7,13 +7,11 @@
 
 #define RUN_NUMBER "1"
 
-#define WRITE_INTERMEDIATE_OUTPUT false
 
-#define d d
 
 /* Input files */
 
-#define INPUT_FORMAT '.txt'
+#define INPUT_FORMAT TXT
 
 #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 

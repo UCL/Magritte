@@ -1,0 +1,72 @@
+\documentclass[]{article}
+\usepackage[margin=1.1in, portrait]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage[english]{babel}
+\usepackage{multirow}
+\usepackage{graphicx}
+\newtheorem{stel}{Stelling}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{footmisc}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue, pdfborder={0 0 0}, linktoc=page]{hyperref}
+\setlength{\parindent}{0 pt}
+\usepackage{etoolbox}
+\usepackage{scrextend}
+
+\newcommand{\ba}{\begin{addmargin}[9mm]{0cm}}
+\newcommand{\ea}{\end{addmargin}}
+\newcommand{\cm}{\color{blue} \hspace{3mm}}
+
+\newcommand{\kb}{k_{\text{B}}}
+\newcommand{\D}{\text{d}}
+
+
+\title{ The modern problem of computational radiative transfer }
+
+\author{ Frederik De Ceuster }
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The aim is to formulate the modern problem of computational radiative transfer and explain how it is solved in the \texttt{Magritte} code.
+\end{abstract}
+
+
+\section{Problem definition}
+
+Consider a multidimensional space with a scalar field $I(\textbf{x},\hat{\textbf{n}})$, depending on both the position $\textbf{x}$ and the viewing direction $\hat{\textbf{n}}$ in that space. Consider a
+
+\subsection{Method of rays}
+
+We choose to solve the problem by directly integrating the transfer equation along each ray. The result of this calculation is the intensity at a certain point in a certain direction.
+
+
+\section{Input data}
+
+Since we want to develop a general-purpose code, we need to make sure that it can handle many different types of input. We input can come from the output of a hydrodynamics code For every differemt type we will consider the best way to handle the
+
+\subsection{Model input}
+
+
+\subsection{Hydro output as input}
+
+\subsubsection{AMR grid}
+
+The simplest way to handle an AMR grid input is to use the centers of the grid cells as set input grid points $G$.
+
+\subsubsection{SPH data}
+
+
+\bibliography{library}
+\bibliographystyle{ieeetr}
+
+
+
+\end{document}

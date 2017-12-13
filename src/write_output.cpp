@@ -19,6 +19,15 @@
 #include <string>
 #include <sstream>
 
+#include <vtkXMLUnstructuredGridReader.h>
+#include <vtkXMLUnstructuredGridWriter.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkSmartPointer.h>
+#include <vtkDoubleArray.h>
+
+#include <vtkCellData.h>
+#include <vtkVersion.h>
+
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
@@ -76,7 +85,7 @@ int write_grid(std::string tag, GRIDPOINT *gridpoint)
 /* write_healpixvectors: write the unit HEALPix vectors                                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_healpixvectors(std::string tag, double *unit_healpixvector)
+int write_healpixvectors(std::string tag)
 {
 
 
@@ -100,8 +109,8 @@ int write_healpixvectors(std::string tag, double *unit_healpixvector)
   for (long r=0; r<NRAYS; r++){
 
     fprintf(file, "%.15f\t%.15f\t%.15f\n", unit_healpixvector[VINDEX(r,0)],
-                                          unit_healpixvector[VINDEX(r,1)],
-                                          unit_healpixvector[VINDEX(r,2)] );
+                                           unit_healpixvector[VINDEX(r,1)],
+                                           unit_healpixvector[VINDEX(r,2)] );
   }
 
   fclose(file);
@@ -1413,6 +1422,101 @@ int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double 
     fclose(file);
 
   } /* end of lspec loop over line producing species */
+
+
+  return EXIT_SUCCESS;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
+/* write_vtu_output: write all physical variables to the vtu input grid                          */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_vtu_output( std::string grid_inputfile,
+                      double *temperature_gas, double *temperature_dust )
+{
+
+
+  /* Read the data from the .vtu file */
+
+  vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
+    = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+
+  reader->SetFileName(grid_inputfile.c_str());
+  reader->Update();
+
+  vtkUnstructuredGrid* ugrid = reader->GetOutput();
+
+
+  /* Reformat the Magritte output to append it to the grid */
+
+  vtkSmartPointer<vtkDoubleArray> temp_gas
+    = vtkSmartPointer<vtkDoubleArray>::New();
+
+  vtkSmartPointer<vtkDoubleArray> temp_dust
+    = vtkSmartPointer<vtkDoubleArray>::New();
+
+  vtkSmartPointer<vtkDoubleArray> abn
+    = vtkSmartPointer<vtkDoubleArray>::New();
+
+  temp_gas->SetNumberOfComponents(1);
+  temp_gas->SetNumberOfTuples(NGRID);
+  temp_gas->SetName("temperature_gas");
+
+  temp_dust->SetNumberOfComponents(1);
+  temp_dust->SetNumberOfTuples(NGRID);
+  temp_dust->SetName("temperature_dust");
+
+  abn->SetNumberOfComponents(NSPEC);
+  abn->SetNumberOfTuples(NGRID);
+  abn->SetName("abundance");
+
+
+  for (long n=0; n<NGRID; n++){
+
+    temp_gas ->InsertValue(n, temperature_gas[n]);
+    temp_dust->InsertValue(n, temperature_dust[n]);
+
+
+    double abundance[NSPEC];
+
+    for (int spec=0; spec<NSPEC; spec++){
+
+      abundance[spec] = species[spec].abn[n];
+    }
+
+    abn->InsertTuple(n, abundance);
+
+  } /* end of n loop over grid points */
+
+
+  /* Add the new arrays to the grid */
+
+  ugrid->GetCellData()->AddArray(temp_gas);
+  ugrid->GetCellData()->AddArray(temp_dust);
+  ugrid->GetCellData()->AddArray(abn);
+
+
+  /* Write the .vtu file */
+
+  std::string file_name = OUTPUT_DIRECTORY + "grid.vtu";
+
+  vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer
+    = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
+
+  writer->SetFileName(file_name.c_str());
+
+# if VTK_MAJOR_VERSION <= 5
+  writer->SetInput(ugrid);
+# else
+  writer->SetInputData(ugrid);
+# endif
+  writer->Write();
 
 
   return EXIT_SUCCESS;
