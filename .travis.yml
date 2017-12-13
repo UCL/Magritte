@@ -4,7 +4,7 @@ language:
   - bash
 
 install:
-  - sudo apt-get update
+  - sudo apt-get install libvtk5-dev
 
 python:
   - "2.7"
