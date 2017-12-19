@@ -306,16 +306,14 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   /* Initialize the data structures that will store the evaluation points */
 
   initialize_long_array(key, NGRID);
-
   initialize_long_array(raytot, NRAYS);
-
   initialize_long_array(cum_raytot, NRAYS);
 
 
   /* Initialize on ray, might still be true from previous call to get_local_evalpoint */
 
-  for (long n=0; n<NGRID; n++){
-
+  for (long n=0; n<NGRID; n++)
+  {
     evalpoint[n].onray = false;
   }
 
@@ -336,8 +334,8 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   long rb[NGRID];                    /* array with the identifiers of the local position vectors */
 
 
-  for (long n=0; n<NGRID; n++){
-
+  for (long n=0; n<NGRID; n++)
+  {
     double rvec[3];                       /* local position vector of a grid point w.r.t. origin */
 
     rvec[0] = gridpoint[n].x - origin[0];
@@ -355,7 +353,6 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   double radius = sqrt( ra2[NGRID-1]  );
 
-
   double Z[NRAYS];                                                         /* distance along ray */
 
   initialize_double_array(Z, NRAYS);
@@ -369,8 +366,8 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   /* Start from the second point in rb (first point is gridpoint itself) */
 
 
-  for (long n=1; n<NGRID; n++){
-
+  for (long n=1; n<NGRID; n++)
+  {
     double rvec[3];                       /* local position vector of a grid point w.r.t. origin */
 
     rvec[0] = gridpoint[rb[n]].x - origin[0];
@@ -401,27 +398,22 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     /* Avoid nan angles because of rounding errors */
 
-    if(cosine>1.0){
-
+    if (cosine > 1.0)
+    {
       cosine = 1.0;
     }
-
 
     double angle = acos( cosine );
 
 
     /* If angle < THETA_CRIT, add the new evaluation point */
 
-    if (angle < THETA_CRIT){
-
+    if (angle < THETA_CRIT)
+    {
       evalpoint[rb[n]].onray = true;
-
       evalpoint[rb[n]].dZ    = rvec_dot_uhpv - Z[ipix];
-
       evalpoint[rb[n]].ray   = ipix;
-
 	    evalpoint[rb[n]].Z     = Z[ipix] = rvec_dot_uhpv;
-
       raytot[ipix]           = raytot[ipix] + 1;
 
 
@@ -429,16 +421,15 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
       double distance_to_ray2 = ra2[n] - rvec_dot_uhpv * rvec_dot_uhpv;
 
-      if (distance_to_ray2 < RAY_SEPARATION2){
-
+      if (distance_to_ray2 < RAY_SEPARATION2)
+      {
         evalpoint[rb[n]].eqp = gridp;
       }
 
-      else {
-
+      else
+      {
         evalpoint[rb[n]].eqp = rb[n];
       }
-
 
     } /* end of if angle < THETA_CRIT */
 
@@ -457,8 +448,8 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   cum_raytot[0] = 0;
 
 
-  for (long r=1; r<NRAYS; r++){
-
+  for (long r=1; r<NRAYS; r++)
+  {
     cum_raytot[r] = cum_raytot[r-1] + raytot[r-1];
   }
 
@@ -522,11 +513,11 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     long ndep = etot1 + etot2;
 
-    double *velocities;
-    velocities = (double*) malloc( ndep*sizeof(double) );
+    // double *velocities;
+    // velocities = (double*) malloc( ndep*sizeof(double) );
 
-    long *evalps;
-    evalps = (long*) malloc( ndep*sizeof(long) );
+    // long *evalps;
+    // evalps = (long*) malloc( ndep*sizeof(long) );
 
 
     if (etot1 > 0){
@@ -539,9 +530,9 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                   + (gridpoint[evnr].vy - gridpoint[gridp].vy) * unit_healpixvector[VINDEX(ar,1)]
                   + (gridpoint[evnr].vz - gridpoint[gridp].vz) * unit_healpixvector[VINDEX(ar,2)];
 
-      velocities[e1] = evalpoint[evnr].vol;
+      // velocities[e1] = evalpoint[evnr].vol;
 
-      evalps[e1]     = evnr;
+      // evalps[e1]     = evnr;
 
     } /* end of e loop over evaluation points */
     }
@@ -557,32 +548,32 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                   + (gridpoint[evnr].vy - gridpoint[gridp].vy) * unit_healpixvector[VINDEX(r,1)]
                   + (gridpoint[evnr].vz - gridpoint[gridp].vz) * unit_healpixvector[VINDEX(r,2)];
 
-      velocities[etot1+e2] = evalpoint[evnr].vol;
+      // velocities[etot1+e2] = evalpoint[evnr].vol;
 
-      evalps[etot1+e2]     = evnr;
+      // evalps[etot1+e2]     = evnr;
 
     } /* end of e loop over evaluation points */
     }
 
 
-    /* Sort the velocities by magnitude */
-
-    heapsort(velocities, evalps, ndep);
-
-
-    first_velo[r] = evalps[0];
-
-
-    for (long dep=0; dep<ndep-1; dep++){
-
-      evalpoint[evalps[dep]].dvc = evalpoint[evalps[dep+1]].vol - evalpoint[evalps[dep]].vol;
-
-      evalpoint[evalps[dep]].next_in_velo = evalps[dep+1];
-    }
-
-
-    free(velocities);
-    free(evalps);
+    // /* Sort the velocities by magnitude */
+    //
+    // heapsort(velocities, evalps, ndep);
+    //
+    //
+    // first_velo[r] = evalps[0];
+    //
+    //
+    // for (long dep=0; dep<ndep-1; dep++){
+    //
+    //   evalpoint[evalps[dep]].dvc = evalpoint[evalps[dep+1]].vol - evalpoint[evalps[dep]].vol;
+    //
+    //   evalpoint[evalps[dep]].next_in_velo = evalps[dep+1];
+    // }
+    //
+    //
+    // free(velocities);
+    // free(evalps);
 
   } /* end of r loop over rays */
 

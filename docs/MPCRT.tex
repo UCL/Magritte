@@ -16,17 +16,17 @@
 \usepackage{etoolbox}
 \usepackage{scrextend}
 
-\newcommand{\ba}{\begin{addmargin}[9mm]{0cm}}
-\newcommand{\ea}{\end{addmargin}}
-\newcommand{\cm}{\color{blue} \hspace{3mm}}
-
 \newcommand{\kb}{k_{\text{B}}}
 \newcommand{\D}{\text{d}}
+\newcommand{\x}{\textbf{x}}
+\newcommand{\n}{\hat{\textbf{n}}}
+\newcommand{\e}{ \ = \ }
+\newcommand{\Magritte}{\texttt{Magritte}}
 
 
 \title{ The modern problem of computational radiative transfer }
 
-\author{ Frederik De Ceuster }
+\author{ Team \Magritte }
 \date{}
 
 
@@ -34,34 +34,85 @@
 
 \maketitle
 
+
 \begin{abstract}
-The aim is to formulate the modern problem of computational radiative transfer and explain how it is solved in the \texttt{Magritte} code.
+The aim is to formulate the modern problem of computational radiative transfer and develop the solution strategy that is used in \Magritte: a new multidimensional accelerated general-purpose radiative transfer code.
 \end{abstract}
+
 
 
 \section{Problem definition}
 
-Consider a multidimensional space with a scalar field $I(\textbf{x},\hat{\textbf{n}})$, depending on both the position $\textbf{x}$ and the viewing direction $\hat{\textbf{n}}$ in that space. Consider a
+
+We want to model the physical state at each point of a region in space at a certain time. To do this, we are given a set of
+
+\bigskip
+
+We want to
+
+\bigskip
+
+Consider a multidimensional space with a scalar field $I(\x,\n)$, depending on both the position $\x$ and the viewing direction $\n$ in that space. The geometric nature of the problem can be deduced from the the transfer equation by explicitly writing all geometric (i.e. $\x$ and $\n$) dependencies
+
+
+\begin{equation}
+\n \cdot \nabla I(\x,\n) \e \eta(\x,\n) - \chi(\x) I(\x,\n)
+\end{equation}
+
 
 \subsection{Method of rays}
 
+\subsection{What is a good input for \Magritte?}
 We choose to solve the problem by directly integrating the transfer equation along each ray. The result of this calculation is the intensity at a certain point in a certain direction.
 
 
-\section{Input data}
+\Magritte's input consists of an unstructered set of $N$ points in 3D space. For each of these points we have three position coordinates, three components of the velocity and a density.
 
-Since we want to develop a general-purpose code, we need to make sure that it can handle many different types of input. We input can come from the output of a hydrodynamics code For every differemt type we will consider the best way to handle the
+\bigskip
+
+We need to determine which point configurations are well-sampled by the ray tracer in \Magritte.
+
+Angular versus radial resolution
+
+
+
+\section{Input/output strategy}
+
+Since we want to develop a general-purpose code, we need to make sure that it can handle many different types of input. The input can be user generated or come from the output of a hydrodynamics code. For both cases we will consider the best way to handle the conversion.
+
 
 \subsection{Model input}
 
+\Magritte needs as input a velocity and density distribution.
+
 
 \subsection{Hydro output as input}
+\bigskip
+
+\emph{Fast conversion from the input grid to the grid used by $\Magritte$ and back.}
 
 \subsubsection{AMR grid}
 
-The simplest way to handle an AMR grid input is to use the centers of the grid cells as set input grid points $G$.
+The simplest way to handle an AMR grid input is to use the centers of the grid cells as set input grid points $G$. However, this tends to produce an oversampled grid.
+
+
 
 \subsubsection{SPH data}
+
+A truely general-purpose code should be able to tackle problems of any size i.e. the only restriction on the problem size should come from the amount of available CPU time.  In order to achieve this one needs a way to devide the problem into smaller pieces which can be solved individually and communicated efficiently to form the solution.
+
+
+\section{Parallellisation strategy}
+
+How are we going to devide the grid? Are there smart ways to cut over high opacities?
+
+\bigskip
+
+At which point in the calculation do we want to communicate
+
+\section{Self-consistent temperature determination}
+
+The physical parameters at each point in space strongly depend on the temperature.
 
 
 \bibliography{library}

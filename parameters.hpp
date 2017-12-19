@@ -7,18 +7,18 @@
 
 #define RUN_NUMBER "1"
 
-#define WRITE_INTERMEDIATE_OUTPUT true
+#define WRITE_INTERMEDIATE_OUTPUT false
 
 
 /* Input files */
 
-// #define INPUT_FORMAT '.txt'
+#define INPUT_FORMAT '.txt'
 
-// #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
+#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 
-#define INPUT_FORMAT '.vtu'
+// #define INPUT_FORMAT '.vtu'
 
-#define GRID_INPUTFILE "input/Aori_0001.vtu"
+// #define GRID_INPUTFILE "input/reduced.vtu"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
@@ -35,7 +35,7 @@
 
 /* Ray tracing parameters */
 
-#define NSIDES 4
+#define NSIDES 1
 
 #define THETA_CRIT 1.3
 
@@ -55,13 +55,13 @@
 
 /* Number of various iterations */
 
-#define MAX_NITERATIONS 0
+#define MAX_NITERATIONS 300
 
-#define PRELIM_CHEM_ITER 5
+#define PRELIM_CHEM_ITER 0
 
-#define PRELIM_TB_ITER 0
+#define PRELIM_TB_ITER 30
 
-#define CHEM_ITER 0
+#define CHEM_ITER 8
 
 
 /* Temperature range */
@@ -79,12 +79,12 @@
 
 #define TIME_END_IN_YEARS 1.0E+7
 
-#define ALWAYS_INITIALIZE_CHEMISTRY false
+#define ALWAYS_INITIALIZE_CHEMISTRY true
 
 
 /* External UV field */
 
-#define FIELD_FORM "ISO"
+#define FIELD_FORM "UNI"
 
 #define G_EXTERNAL_X 3.270460E+1
 

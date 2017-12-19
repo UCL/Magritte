@@ -67,14 +67,15 @@ int main()
 
 
 
-  printf("\n");
-  printf("Magritte : \n");
-  printf("\n");
+
+  printf("                                                               \n");
+  printf("Magritte :                                                     \n");
+  printf("                                                               \n");
   printf("Multidimensional Accelerated General-purpose RadIaTive TransEr \n");
-  printf("\n");
+  printf("                                                               \n");
   printf("-------------------------------------------------------------- \n");
-  printf("\n");
-  printf("\n");
+  printf("                                                               \n");
+  printf("                                                               \n");
 
 
 
@@ -97,8 +98,6 @@ int main()
   /* Read input file */
 
 # if ( INPUT_FORMAT == '.vtu' )
-
-  printf("WRONG!!\n");
 
   read_vtu_input(grid_inputfile, gridpoint);
 
@@ -450,8 +449,8 @@ int main()
 
   /* Preliminary chemistry iterations */
 
-  for (int chem_iteration=0; chem_iteration<PRELIM_CHEM_ITER; chem_iteration++){
-
+  for (int chem_iteration=0; chem_iteration<PRELIM_CHEM_ITER; chem_iteration++)
+  {
     printf("(Magritte):   chemistry iteration %d of %d \n", chem_iteration+1, PRELIM_CHEM_ITER);
 
 
@@ -571,8 +570,8 @@ int main()
   initialize_previous_temperature_gas(prev_temperature_gas, temperature_gas);
 
 
-  for (int tb_iteration=0; tb_iteration<PRELIM_TB_ITER; tb_iteration++){
-
+  for (int tb_iteration=0; tb_iteration<PRELIM_TB_ITER; tb_iteration++)
+  {
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
@@ -645,8 +644,8 @@ int main()
 
   /* Thermal balance iterations */
 
-  while (false){//no_thermal_balance){
-
+  while (no_thermal_balance)
+  {
     no_thermal_balance = false;
 
     niterations++;
@@ -704,16 +703,16 @@ int main()
     long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
 
 
-    for (long gridp=start; gridp<stop; gridp++){
-
+    for (long gridp=start; gridp<stop; gridp++)
+    {
       shuffle_Brent( gridp, temperature_a, temperature_b, temperature_c, temperature_d,
                      temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c );
 
 
       /* Check for thermal balance (convergence) */
 
-      if (fabs(thermal_ratio[gridp]) > THERMAL_PREC){
-
+      if (fabs(thermal_ratio[gridp]) > THERMAL_PREC)
+      {
         update_temperature_gas_Brent( gridp, temperature_a, temperature_b, temperature_c,
                                       temperature_d, temperature_e, thermal_ratio_a,
                                       thermal_ratio_b, thermal_ratio_c );
@@ -721,8 +720,8 @@ int main()
         temperature_gas[gridp] = temperature_b[gridp];
 
 
-        if (temperature_gas[gridp] != T_CMB){
-
+        if (temperature_gas[gridp] != T_CMB)
+        {
           no_thermal_balance = true;
 
           n_not_converged++;
@@ -751,8 +750,8 @@ int main()
 
     /* Limit the number of iterations */
 
-    if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10){
-
+    if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10)
+    {
       no_thermal_balance = false;
     }
 

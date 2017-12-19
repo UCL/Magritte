@@ -82,8 +82,8 @@ int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 
   /* Read the data from the .vtu file */
 
-  vtkSmartPointer<vtkXMLUnstructuredGridReader> reader =
-    vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+  vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
+    = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
 
   reader->SetFileName(grid_inputfile.c_str());
   reader->Update();
@@ -93,8 +93,8 @@ int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 
   /* Extract the cell centers */
 
-  vtkSmartPointer<vtkCellCenters> cellCentersFilter =
-    vtkSmartPointer<vtkCellCenters>::New();
+  vtkSmartPointer<vtkCellCenters> cellCentersFilter
+    = vtkSmartPointer<vtkCellCenters>::New();
 
 # if VTK_MAJOR_VERSION <= 5
   cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
@@ -105,7 +105,7 @@ int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
   cellCentersFilter->Update();
 
 
-  for (vtkIdType n=0; n<NGRID; n++){
+  for (long n=0; n<NGRID; n++){
 
     double point[3];
 
@@ -119,7 +119,7 @@ int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 
   /* Extract the cell data */
 
-  vtkCellData *cellData  = ugrid->GetCellData();
+  vtkCellData *cellData = ugrid->GetCellData();
 
   int nr_of_arrays = cellData->GetNumberOfArrays();
 
