@@ -584,26 +584,19 @@ int main()
 
 #   if ( ON_THE_FLY )
 
-    thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
-                               UV_field, temperature_gas, temperature_dust,
-                               rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, C_data, coltemp, icol, jcol,
-                               pop, mean_intensity,
-                               Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio, initial_abn,
-                               &time_chemistry, &time_level_pop );
+    thermal_balance( gridpoint, column_H2, column_HD, column_C, column_CO, UV_field,
+                     temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
+                     weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
+                     mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
+                     initial_abn, &time_chemistry, &time_level_pop );
 
 #   else
 
-    thermal_balance_iteration( gridpoint, evalpoint, key, raytot, cum_raytot,
-                               column_H2, column_HD, column_C,
-                               column_CO, UV_field, temperature_gas, temperature_dust,
-                               rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
-                               pop, mean_intensity,
-                               Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio, initial_abn,
-                               &time_chemistry, &time_level_pop );
+    thermal_balance( gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
+                     column_CO, UV_field, temperature_gas, temperature_dust, rad_surface, AV,
+                     irad, jrad, energy, weight, frequency, A_coeff, B_coeff, R, C_data, coltemp,
+                     icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop );
 
 #   endif
 
@@ -684,26 +677,19 @@ int main()
 
 #   if ( ON_THE_FLY )
 
-    thermal_balance_iteration( gridpoint, column_H2, column_HD, column_C, column_CO,
-                               UV_field, temperature_gas, temperature_dust,
-                               rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, C_data, coltemp, icol, jcol,
-                               pop, mean_intensity,
-                               Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio, initial_abn,
-                               &time_chemistry, &time_level_pop );
+    thermal_balance( gridpoint, column_H2, column_HD, column_C, column_CO, UV_field,
+                     temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
+                     weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
+                     mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
+                     initial_abn, &time_chemistry, &time_level_pop );
 
 #   else
 
-    thermal_balance_iteration( gridpoint, evalpoint, key, raytot, cum_raytot,
-                               column_H2, column_HD, column_C,
-                               column_CO, UV_field, temperature_gas, temperature_dust,
-                               rad_surface, AV, irad, jrad, energy, weight, frequency,
-                               A_coeff, B_coeff, R, C_data, coltemp, icol, jcol,
-                               pop, mean_intensity,
-                               Lambda_diagonal, mean_intensity_eff,
-                               thermal_ratio, initial_abn,
-                               &time_chemistry, &time_level_pop );
+    thermal_balance( gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
+                     column_CO, UV_field, temperature_gas, temperature_dust, rad_surface, AV,
+                     irad, jrad, energy, weight, frequency, A_coeff, B_coeff, R, C_data, coltemp,
+                     icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop );
 
 #   endif
 

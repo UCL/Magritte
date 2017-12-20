@@ -1,15 +1,14 @@
 # Fdb version 3
-["bibtex MPCRT"] 1513539140 "MPCRT.aux" "MPCRT.bbl" "MPCRT" 1513539441
+["bibtex MPCRT"] 1513801513 "MPCRT.aux" "MPCRT.bbl" "MPCRT" 1513801513
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "MPCRT.aux" 1513539440 1878 c422f3c6bf0843d331b72ef612abc7e0 ""
+  "MPCRT.aux" 1513801513 1993 110e39ccb055cf738625f5aa6874caff ""
   "MPCRT.bcf" 0 -1 0 ""
   "library.bib" 1503382267 71619 287357f9a35e17aa96fd5ef12e5572fe ""
   (generated)
-  "MPCRT.blg"
   "MPCRT.bbl"
-["pdflatex"] 1513539440 "MPCRT.tex" "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.pdf" "MPCRT" 1513539441
+["pdflatex"] 1513801513 "MPCRT.tex" "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.pdf" "MPCRT" 1513801513
   "/etc/texmf/web2c/texmf.cnf" 1490782050 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.aux" 1513539440 1878 c422f3c6bf0843d331b72ef612abc7e0 ""
+  "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.aux" 1513801513 1993 110e39ccb055cf738625f5aa6874caff ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -121,14 +120,14 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1503343927 31343 93828589fb0cea665e553ee5a17ad2d4 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1503421706 1863403 f3ff9a4253bcb5fb9a9baaf0c572cb01 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1503421733 3861264 4d6d2aea1e9ec06a6aa565dd168f16d9 ""
-  "MPCRT.aux" 1513539440 1878 c422f3c6bf0843d331b72ef612abc7e0 ""
-  "MPCRT.bbl" 1513539440 49 0eba253fc001332e731e8aba3f23127b "bibtex MPCRT"
-  "MPCRT.out" 1513539440 656 5a8363d44562dbae08bc624473dcc4cc ""
-  "MPCRT.tex" 1513539440 3881 627c26b3d60fff30f472bb3983be4ad7 ""
+  "MPCRT.aux" 1513801513 1993 110e39ccb055cf738625f5aa6874caff ""
+  "MPCRT.bbl" 1513801513 49 0eba253fc001332e731e8aba3f23127b "bibtex MPCRT"
+  "MPCRT.out" 1513801513 738 62dc8251b9ad58bf8eca9a8f444d6c2a ""
+  "MPCRT.tex" 1513801486 3985 e37bfd2a85419c6383eb5e23cf9cdd3a ""
   (generated)
   "MPCRT.pdf"
-  "MPCRT.aux"
-  "MPCRT.log"
-  "MPCRT.out"
-  "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.log"
   "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.pdf"
+  "MPCRT.log"
+  "/home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.log"
+  "MPCRT.aux"
+  "MPCRT.out"

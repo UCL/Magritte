@@ -183,6 +183,21 @@ typedef struct {
 
 typedef struct {
 
+  double x, y, z;                                     /* x, y and z coordinate of the grid point */
+  double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
+
+  double density;                                                   /* density at the grid point */
+
+  const long n_neighbors;
+
+  long neighbor[NRAYS];     /* MAKE FLEXI_ARRAY */
+
+} CELL;
+
+
+
+typedef struct {
+
   bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
 
   long   ray;                               /* number of the ray the evaluation point belongs to */

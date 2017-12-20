@@ -142,7 +142,7 @@ for i in new_IDs:
     box_density[n_x, n_y] = box_density[n_x, n_y] / box_npoints[n_x, n_y]
 
 
-# Remove neighbours if theiy are similar to the center
+# Remove neighbors if theiy are similar to the center
 
 pre = 1.0E-3
 
