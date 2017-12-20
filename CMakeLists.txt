@@ -31,7 +31,7 @@ set(MAGRITTE_VERSION_MINOR 1)
 #                   COMMAND ulimit -S -s 131072 )
 
 
-# Make the setup executable and execute setup
+# Run setup script (if parameters.hpp changed)
 
 add_custom_command( OUTPUT src/sundials/rate_equations.cpp
                     COMMAND bash run_setup.sh

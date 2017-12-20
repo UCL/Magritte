@@ -9,7 +9,7 @@
 
 #define WRITE_INTERMEDIATE_OUTPUT true
 
-#define RESTART true
+#define RESTART false
 
 // #define GRID_INPUTFILE "output/files/_output/grid.vtu"
 
@@ -17,7 +17,7 @@
 
 #define INPUT_FORMAT '.txt'
 
-#define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
+#define RESTART_DIRECTORY "output/files/2424_output/"
 
 #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 

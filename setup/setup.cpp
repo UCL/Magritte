@@ -32,7 +32,8 @@
 /* main: Sets up the definitions.hpp file                                                        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int main(){
+int main()
+{
 
 
   printf("                \n");
@@ -85,8 +86,8 @@ int main(){
 
   std::string line_datafile[NLSPEC] = LINE_DATAFILES;
 
-  for (int l=0; l<NLSPEC; l++){
-
+  for (int l=0; l<NLSPEC; l++)
+  {
     line_datafile[l] = "../" + line_datafile[l];
   }
 
@@ -117,8 +118,8 @@ int main(){
 
   printf("(setup):   NLSPEC            : %d\n", NLSPEC);
 
-  for (int l=0; l<NLSPEC; l++){
-
+  for (int l=0; l<NLSPEC; l++)
+  {
     printf("(setup):   line file %d       : %s\n", l, line_datafile[l].c_str());
   }
 
@@ -416,8 +417,8 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
 
   fprintf( file, "#define %s { %d", NAME.c_str(), array[0]);
 
-  for (long i=1; i<length; i++){
-
+  for (long i=1; i<length; i++)
+  {
     fprintf( file, ", %d", array[i] );
   }
 
@@ -442,8 +443,8 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length)
 
   fprintf( file, "#define %s { %ld", NAME.c_str(), array[0]);
 
-  for (long i=1; i<length; i++){
-
+  for (long i=1; i<length; i++)
+  {
     fprintf( file, ", %ld", array[i] );
   }
 
@@ -468,8 +469,8 @@ int write_double_array(FILE *file, std::string NAME, double *array, long length)
 
   fprintf( file, "#define %s { %lE", NAME.c_str(), array[0]);
 
-  for (long i=1; i<length; i++){
-
+  for (long i=1; i<length; i++)
+  {
     fprintf( file, ", %lE", array[i] );
   }
 

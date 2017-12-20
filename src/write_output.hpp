@@ -118,6 +118,15 @@ int write_temperature_dust(std::string tag, double *temperature_dust);
 
 
 
+/* write_prev_temperature_gas: write the previous gas temperatures at each point                 */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_prev_temperature_gas(std::string tag, double *prev_temperature_gas);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 /* write_UV_field: write the UV field at each point                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -261,8 +270,8 @@ int write_vtu_output( std::string grid_inputfile,
 /* write_vtu_output: write all physical variables to the vtu input grid                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_vtu_output( std::string grid_inputfile,
-                      double *temperature_gas, double *temperature_dust );
+int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
+                      double *temperature_dust, double *prev_temperature_gas );
 
 /*-----------------------------------------------------------------------------------------------*/
 

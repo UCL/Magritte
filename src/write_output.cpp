@@ -564,6 +564,49 @@ int write_temperature_dust(std::string tag, double *temperature_dust)
 
 
 
+/* write_prev_temperature_gas: write the previous gas temperatures at each point                 */
+/*-----------------------------------------------------------------------------------------------*/
+
+int write_prev_temperature_gas(std::string tag, double *prev_temperature_gas)
+{
+
+
+  if ( !tag.empty() ){
+
+    tag = "_" + tag;
+  }
+
+  std::string file_name = OUTPUT_DIRECTORY + "prev_temperature_gas" + tag + ".txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+  if (file == NULL){
+
+    printf("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit(1);
+  }
+
+
+  for (long n=0; n<NGRID; n++){
+
+    fprintf( file, "%lE\n", prev_temperature_gas[n] );
+  }
+
+
+  fclose(file);
+
+
+  return EXIT_SUCCESS;
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+
+
 /* write_UV_field: write the UV field at each point                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -1437,8 +1480,8 @@ int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double 
 /* write_vtu_output: write all physical variables to the vtu input grid                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_vtu_output( std::string grid_inputfile,
-                      double *temperature_gas, double *temperature_dust )
+int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
+                      double *temperature_dust, double *prev_temperature_gas )
 {
 
 
@@ -1461,6 +1504,9 @@ int write_vtu_output( std::string grid_inputfile,
   vtkSmartPointer<vtkDoubleArray> temp_dust
     = vtkSmartPointer<vtkDoubleArray>::New();
 
+  vtkSmartPointer<vtkDoubleArray> prev_temp_gas
+    = vtkSmartPointer<vtkDoubleArray>::New();
+
   vtkSmartPointer<vtkDoubleArray> abn
     = vtkSmartPointer<vtkDoubleArray>::New();
 
@@ -1472,6 +1518,10 @@ int write_vtu_output( std::string grid_inputfile,
   temp_dust->SetNumberOfTuples(NGRID);
   temp_dust->SetName("temperature_dust");
 
+  prev_temp_gas->SetNumberOfComponents(1);
+  prev_temp_gas->SetNumberOfTuples(NGRID);
+  prev_temp_gas->SetName("prev_temperature_gas");
+
   abn->SetNumberOfComponents(NSPEC);
   abn->SetNumberOfTuples(NGRID);
   abn->SetName("abundance");
@@ -1481,6 +1531,7 @@ int write_vtu_output( std::string grid_inputfile,
 
     temp_gas ->InsertValue(n, temperature_gas[n]);
     temp_dust->InsertValue(n, temperature_dust[n]);
+    prev_temp_gas->InsertValue(n, prev_temperature_gas[n]);
 
 
     double abundance[NSPEC];
@@ -1499,6 +1550,7 @@ int write_vtu_output( std::string grid_inputfile,
 
   ugrid->GetCellData()->AddArray(temp_gas);
   ugrid->GetCellData()->AddArray(temp_dust);
+  ugrid->GetCellData()->AddArray(prev_temp_gas);
   ugrid->GetCellData()->AddArray(abn);
 
 

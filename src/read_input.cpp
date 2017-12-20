@@ -30,12 +30,15 @@
 #include "declarations.hpp"
 
 #include "read_input.hpp"
+#include "initializers.hpp"
+
 
 
 /* read_txt_input: read the .txt input file                                                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_txt_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
+int read_txt_input( std::string grid_inputfile, GRIDPOINT *gridpoint, double *temperature_gas,
+                    double *temperature_dust, double *prev_temperature_gas )
 {
 
 
@@ -49,8 +52,8 @@ int read_txt_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 
   /* For all lines in the input file */
 
-  for (long n=0; n<NGRID; n++){
-
+  for (long n=0; n<NGRID; n++)
+  {
     fgets( buffer, BUFFER_SIZE, input );
 
     sscanf( buffer, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
@@ -61,6 +64,48 @@ int read_txt_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 
 
   fclose(input);
+
+
+# if !( RESTART )
+
+  initialize_temperature_gas(prev_temperature_gas);
+
+# else
+
+  std::string INPUT_DIRECTORY = RESTART_DIRECTORY;
+
+
+  /* Read input temperature files to restart */
+
+  std::string tgas_file_name      = INPUT_DIRECTORY + "temperature_gas.txt";
+  std::string tdust_file_name     = INPUT_DIRECTORY + "temperature_dust.txt";
+  std::string prev_tgas_file_name = INPUT_DIRECTORY + "prev_temperature_gas.txt";
+
+  FILE *tgas      = fopen(tgas_file_name.c_str(), "r");
+  FILE *tdust     = fopen(tdust_file_name.c_str(), "r");
+  FILE *prev_tgas = fopen(prev_tgas_file_name.c_str(), "r");
+
+
+  /* For all lines in the input file */
+
+  for (long n=0; n<NGRID; n++)
+  {
+    fgets( buffer, BUFFER_SIZE, tgas );
+    sscanf( buffer, "%lf", &(temperature_gas[n]) );
+
+    fgets( buffer, BUFFER_SIZE, tdust );
+    sscanf( buffer, "%lf", &(temperature_dust[n]) );
+
+    fgets( buffer, BUFFER_SIZE, prev_tgas );
+    sscanf( buffer, "%lf", &(prev_temperature_gas[n]) );
+  }
+
+
+  fclose(tgas);
+  fclose(tdust);
+  fclose(prev_tgas);
+
+# endif
 
 
   return EXIT_SUCCESS;
@@ -76,7 +121,8 @@ int read_txt_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
 /* read_vtu_input: read the input file                                                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
+int read_vtu_input( std::string grid_inputfile, GRIDPOINT *gridpoint, double *temperature_gas,
+                    double *temperature_dust, double *prev_temperature_gas )
 {
 
 
@@ -105,8 +151,8 @@ int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
   cellCentersFilter->Update();
 
 
-  for (long n=0; n<NGRID; n++){
-
+  for (long n=0; n<NGRID; n++)
+  {
     double point[3];
 
     cellCentersFilter->GetOutput()->GetPoint(n, point);
@@ -124,40 +170,66 @@ int read_vtu_input(std::string grid_inputfile, GRIDPOINT *gridpoint)
   int nr_of_arrays = cellData->GetNumberOfArrays();
 
 
-  for (int a = 0; a < nr_of_arrays; a++){
-
+  for (int a = 0; a < nr_of_arrays; a++)
+  {
     vtkDataArray* data = cellData->GetArray(a);
 
     std::string name = data->GetName();
 
 
-    if (name == "rho"){
-    for (long n=0; n<NGRID; n++){
-
-      gridpoint[n].density = data->GetTuple1(n);
-    }
-    }
-
-    if (name == "v1"){
-    for (long n=0; n<NGRID; n++){
-
-      gridpoint[n].vx = data->GetTuple1(n);
-    }
+    if (name == "rho")
+    {
+      for (long n=0; n<NGRID; n++)
+      {
+        gridpoint[n].density = data->GetTuple1(n);
+      }
     }
 
-    if (name == "v2"){
-    for (long n=0; n<NGRID; n++){
+    if (name == "v1")
+    {
+      for (long n=0; n<NGRID; n++)
+      {
+        gridpoint[n].vx = data->GetTuple1(n);
+      }
+    }
 
-      gridpoint[n].vy = data->GetTuple1(n);
-    }
+    if (name == "v2")
+    {
+      for (long n=0; n<NGRID; n++)
+      {
+        gridpoint[n].vy = data->GetTuple1(n);
+      }
     }
 
-    if (name == "v3"){
-    for (long n=0; n<NGRID; n++){
 
-      gridpoint[n].vz = data->GetTuple1(n);
+#   if ( RESTART )
+
+    if (name == "temperature_gas")
+    {
+      for (long n=0; n<NGRID; n++)
+      {
+        temperature_gas[n] = data->GetTuple1(n);
+      }
     }
+
+    if (name == "temperature_dust")
+    {
+      for (long n=0; n<NGRID; n++)
+      {
+        temperature_dust[n] = data->GetTuple1(n);
+      }
     }
+
+    if (name == "prev_temperature_gas")
+    {
+      for (long n=0; n<NGRID; n++)
+      {
+        prev_temperature_gas[n] = data->GetTuple1(n);
+      }
+    }
+
+#   endif
+
 
   }
 

@@ -7,7 +7,7 @@
 
 #define RUN_NUMBER "1"
 
-#define WRITE_INTERMEDIATE_OUTPUT true
+#define WRITE_INTERMEDIATE_OUTPUT false
 
 #define RESTART true
 
@@ -16,8 +16,6 @@
 /* Input files */
 
 #define INPUT_FORMAT '.txt'
-
-#define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
 #define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
 

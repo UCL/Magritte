@@ -94,16 +94,24 @@ int main()
 
   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
 
+  double temperature_gas[NGRID];                           /* gas temperature at each grid point */
+
+  double prev_temperature_gas[NGRID];
+
+  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
+
 
   /* Read input file */
 
 # if ( INPUT_FORMAT == '.vtu' )
 
-  read_vtu_input(grid_inputfile, gridpoint);
+  read_vtu_input( grid_inputfile, gridpoint, temperature_gas,
+                  temperature_dust, prev_temperature_gas );
 
 # elif ( INPUT_FORMAT == '.txt' )
 
-  read_txt_input(grid_inputfile, gridpoint);
+  read_txt_input( grid_inputfile, gridpoint, temperature_gas,
+                  temperature_dust, prev_temperature_gas );
 
 # endif
 
@@ -355,10 +363,6 @@ int main()
   printf("(Magritte): making a guess for gas temperature and calculating dust temperature \n");
 
 
-  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
-
-  initialize_double_array(temperature_dust, NGRID);
-
   double column_tot[NGRID*NRAYS];                                        /* total column density */
 
   initialize_double_array(column_tot, NGRID*NRAYS);
@@ -396,7 +400,9 @@ int main()
   calc_UV_field(AV, rad_surface, UV_field);
 
 
-  double temperature_gas[NGRID];                           /* gas temperature at each grid point */
+# if !( RESTART )
+
+  /* Make a guess for the gas temperature based on the UV field */
 
   guess_temperature_gas(UV_field, temperature_gas);
 
@@ -405,13 +411,7 @@ int main()
 
   calc_temperature_dust(UV_field, rad_surface, temperature_dust);
 
-
-  // write_double_2("column_tot", "", NGRID, NRAYS, column_tot);
-
-
-  // write_temperature_gas("guess", temperature_gas);
-  //
-  // write_temperature_dust("guess", temperature_dust);
+# endif
 
 
   printf("(Magritte): gas temperature guessed and dust temperature calculated \n\n");
@@ -472,14 +472,25 @@ int main()
 #   endif
 
 
-    /* Write the output for restart */
+    /* Write the intermediate output for (potential) restart */
 
-#   if ( INPUT_FORMAT == '.vtu' )
+#   if ( WRITE_INTERMEDIATE_OUTPUT )
 
-    write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
+#   if ( INPUT_FORMAT == '.txt' )
+
+    write_temperature_gas("", temperature_gas);
+
+    write_temperature_dust("", temperature_dust);
+
+    write_prev_temperature_gas("", prev_temperature_gas);
+
+#   elif ( INPUT_FORMAT == '.vtu' )
+
+    write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 #   endif
 
+#   endif
 
     time_chemistry += omp_get_wtime();
 
@@ -565,10 +576,6 @@ int main()
   initialize_double_array(thermal_ratio, NGRID);
 
 
-  double prev_temperature_gas[NGRID];
-
-  initialize_previous_temperature_gas(prev_temperature_gas, temperature_gas);
-
 
   for (int tb_iteration=0; tb_iteration<PRELIM_TB_ITER; tb_iteration++)
   {
@@ -608,7 +615,25 @@ int main()
                             temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
 
 
-    // write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
+    /* Write the intermediate output for (potential) restart */
+
+#   if ( WRITE_INTERMEDIATE_OUTPUT )
+
+#   if ( INPUT_FORMAT == '.txt' )
+
+    write_temperature_gas("", temperature_gas);
+
+    write_temperature_dust("", temperature_dust);
+
+    write_prev_temperature_gas("", prev_temperature_gas);
+
+#   elif ( INPUT_FORMAT == '.vtu' )
+
+    write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+
+#   endif
+
+#   endif
 
 
   } /* end of tb_iteration loop over preliminary tb iterations */
