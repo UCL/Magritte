@@ -1068,7 +1068,7 @@ static int Jac( realtype t, N_Vector y, N_Vector fy, SUNMatrix J, void *user_dat
   IJth(J, 31, 31) = (+0.0)*Ith(y,31)-reaction[0].k[gridp]*Ith(y,20)*n_H-reaction[1].k[gridp]*Ith(y,16)*n_H-reaction[2].k[gridp]*Ith(y,21)*n_H-reaction[3].k[gridp]*Ith(y,11)*n_H-reaction[4].k[gridp]*Ith(y,28)*n_H-reaction[5].k[gridp]*Ith(y,17)*n_H-reaction[6].k[gridp]*Ith(y,27)*n_H-reaction[7].k[gridp]*Ith(y,5)*n_H-reaction[41].k[gridp]*Ith(y,26)*n_H-reaction[43].k[gridp]*Ith(y,23)*n_H-reaction[44].k[gridp]*Ith(y,19)*n_H-reaction[46].k[gridp]*Ith(y,6)*n_H-reaction[47].k[gridp]*Ith(y,4)*n_H-reaction[154].k[gridp]*Ith(y,3)*n_H-reaction[155].k[gridp]*Ith(y,1)*n_H-reaction[156].k[gridp]*Ith(y,1)*n_H-reaction[160].k[gridp]*Ith(y,7)*n_H-reaction[167].k[gridp]*Ith(y,14)*n_H-reaction[249].k[gridp]*Ith(y,18)*n_H-reaction[250].k[gridp]*Ith(y,18)*n_H-reaction[251].k[gridp]*Ith(y,24)*n_H-reaction[252].k[gridp]*Ith(y,10)*n_H-reaction[253].k[gridp]*Ith(y,29)*n_H-reaction[254].k[gridp]*Ith(y,28)*n_H-reaction[292].k[gridp]-reaction[315].k[gridp]*Ith(y,30)*n_H-reaction[316].k[gridp]*Ith(y,20)*n_H-reaction[317].k[gridp]*Ith(y,28)*n_H-reaction[318].k[gridp]*Ith(y,17)*n_H-reaction[319].k[gridp]*Ith(y,5)*n_H-2*reaction[327].k[gridp]*n_H+3*reaction[315].k[gridp]*Ith(y,30)*n_H+2*reaction[316].k[gridp]*Ith(y,20)*n_H+2*reaction[317].k[gridp]*Ith(y,28)*n_H+2*reaction[318].k[gridp]*Ith(y,17)*n_H+reaction[319].k[gridp]*Ith(y,5)*n_H+0.0;
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

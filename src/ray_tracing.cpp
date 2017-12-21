@@ -68,7 +68,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   /* For all grid points */
 
 # pragma omp parallel                                                                             \
-  shared( unit_healpixvector, gridpoint, evalpoint, key, raytot, cum_raytot, succes,              \
+  shared( healpixvector, gridpoint, evalpoint, key, raytot, cum_raytot, succes,                   \
           time_de, time_key, time_sort )                                                          \
   default( none )
   {
@@ -158,9 +158,9 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
       /* Calculate the angle between the gridpoint and its corresponding ray */
 
-      double rvec_dot_uhpv = rvec[0]*unit_healpixvector[VINDEX(ipix,0)]
-	                           + rvec[1]*unit_healpixvector[VINDEX(ipix,1)]
-	                           + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
+      double rvec_dot_uhpv = rvec[0]*healpixvector[VINDEX(ipix,0)]
+	                           + rvec[1]*healpixvector[VINDEX(ipix,1)]
+	                           + rvec[2]*healpixvector[VINDEX(ipix,2)];
 
       double cosine = (rvec_dot_uhpv - Z[ipix])
 		                  / sqrt(ra2[n] - 2.0*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
@@ -190,9 +190,9 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 	      evalpoint[GINDEX(gridp,rb[n])].Z     = Z[ipix] = rvec_dot_uhpv;
 
         evalpoint[GINDEX(gridp,rb[n])].vol
-          = (gridpoint[rb[n]].vx - gridpoint[gridp].vx)*unit_healpixvector[VINDEX(ipix,0)]
-            + (gridpoint[rb[n]].vy - gridpoint[gridp].vy)*unit_healpixvector[VINDEX(ipix,1)]
-            + (gridpoint[rb[n]].vz - gridpoint[gridp].vz)*unit_healpixvector[VINDEX(ipix,2)];
+          = (gridpoint[rb[n]].vx - gridpoint[gridp].vx)*healpixvector[VINDEX(ipix,0)]
+            + (gridpoint[rb[n]].vy - gridpoint[gridp].vy)*healpixvector[VINDEX(ipix,1)]
+            + (gridpoint[rb[n]].vz - gridpoint[gridp].vz)*healpixvector[VINDEX(ipix,2)];
 
         succes = succes + 1;
 
@@ -279,7 +279,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
           (double) succes/(NGRID*NGRID-NGRID) );
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -383,9 +383,9 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
     /* Calculate the angle between the gridpoint and its corresponding ray */
 
-    double rvec_dot_uhpv = rvec[0]*unit_healpixvector[VINDEX(ipix,0)]
-	                         + rvec[1]*unit_healpixvector[VINDEX(ipix,1)]
-	                         + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
+    double rvec_dot_uhpv = rvec[0]*healpixvector[VINDEX(ipix,0)]
+	                         + rvec[1]*healpixvector[VINDEX(ipix,1)]
+	                         + rvec[2]*healpixvector[VINDEX(ipix,2)];
 
     double cosine = (rvec_dot_uhpv - Z[ipix])
 	                  / sqrt(ra2[n] - 2.0*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
@@ -472,7 +472,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -520,9 +520,9 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       long evnr = LOCAL_GP_NR_OF_EVALP(ar,e1);
 
       evalpoint[evnr].vol
-                =   (gridpoint[evnr].vx - gridpoint[gridp].vx) * unit_healpixvector[VINDEX(ar,0)]
-                  + (gridpoint[evnr].vy - gridpoint[gridp].vy) * unit_healpixvector[VINDEX(ar,1)]
-                  + (gridpoint[evnr].vz - gridpoint[gridp].vz) * unit_healpixvector[VINDEX(ar,2)];
+                =   (gridpoint[evnr].vx - gridpoint[gridp].vx) * healpixvector[VINDEX(ar,0)]
+                  + (gridpoint[evnr].vy - gridpoint[gridp].vy) * healpixvector[VINDEX(ar,1)]
+                  + (gridpoint[evnr].vz - gridpoint[gridp].vz) * healpixvector[VINDEX(ar,2)];
 
       // velocities[e1] = evalpoint[evnr].vol;
 
@@ -539,9 +539,9 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       long evnr = LOCAL_GP_NR_OF_EVALP(r,e2);
 
       evalpoint[evnr].vol
-                =   (gridpoint[evnr].vx - gridpoint[gridp].vx) * unit_healpixvector[VINDEX(r,0)]
-                  + (gridpoint[evnr].vy - gridpoint[gridp].vy) * unit_healpixvector[VINDEX(r,1)]
-                  + (gridpoint[evnr].vz - gridpoint[gridp].vz) * unit_healpixvector[VINDEX(r,2)];
+                =   (gridpoint[evnr].vx - gridpoint[gridp].vx) * healpixvector[VINDEX(r,0)]
+                  + (gridpoint[evnr].vy - gridpoint[gridp].vy) * healpixvector[VINDEX(r,1)]
+                  + (gridpoint[evnr].vz - gridpoint[gridp].vz) * healpixvector[VINDEX(r,2)];
 
       // velocities[etot1+e2] = evalpoint[evnr].vol;
 
@@ -573,7 +573,7 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   } /* end of r loop over rays */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -586,44 +586,44 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 /* find_neighbors: creates the evaluation points for each ray for each cell                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-int find_neighbors( CELL *cell )
+int find_neighbors( long ncells, CELL *cell )
 {
 
 
   /* For all cells */
 
 # pragma omp parallel                                                                             \
-  shared( unit_healpixvector, cell )                                                              \
+  shared( ncells, healpixvector, cell )                                                           \
   default( none )
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;     /* Note that brackets are important here */
 
 
-  for (long gridp=start; gridp<stop; gridp++)
+  for (long p=start; p<stop; p++)
   {
 
     /* Place the origin at the location of the cell under consideration */
 
     double origin[3];                   /* position vector of the cell under consideration */
 
-    origin[0] = cell[gridp].x;
-    origin[1] = cell[gridp].y;
-    origin[2] = cell[gridp].z;
+    origin[0] = cell[p].x;
+    origin[1] = cell[p].y;
+    origin[2] = cell[p].z;
 
 
     /* Locate all cell centers w.r.t. the origin */
 
-    double ra2[NGRID];        /* array with the squares of the lengths of local position vectors */
+    double *ra2 = new double[ncells]; /* array with squares of lengths of local position vectors */
 
-    long   rb[NGRID];                /* array with the identifiers of the local position vectors */
+    long    *rb = new long[ncells];          /* array with identifiers of local position vectors */
 
 
-    for (long n=0; n<NGRID; n++)
+    for (long n=0; n<ncells; n++)
     {
       double rvec[3];                    /* local position vector of a cell center w.r.t. origin */
 
@@ -638,30 +638,30 @@ int find_neighbors( CELL *cell )
 
     /* Sort the cells w.r.t their distance from the origin */
 
-    heapsort(ra2, rb, NGRID);
+    heapsort(ra2, rb, ncells);
 
 
     double Z[NRAYS];                                                       /* distance along ray */
 
     initialize_double_array(Z, NRAYS);
 
-    long neighbor[NRAYS];                                       /* cell numbers of the neighbors */
+    long possible_neighbor[NRAYS];                                  /* cell numbers of neighbors */
 
-    initialize_long_array(neighbor, NRAYS);
+    initialize_long_array(possible_neighbor, NRAYS);
 
     bool too_far[NRAYS];
 
     initialize_bool(false, NRAYS, too_far);
 
 
-    /*   FIND neighborS FOR gridp                                                                */
+    /*   FIND NEIGHBORS FOR p                                                                    */
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
     /* Devide the cells over the rays through the origin */
     /* Start from the second point in rb (first point is cell itself) */
 
-    for (long n=1; n<NGRID; n++)
+    for (long n=1; n<ncells; n++)
     {
       double rvec[3];                    /* local position vector of a cell center w.r.t. origin */
 
@@ -670,15 +670,17 @@ int find_neighbors( CELL *cell )
       rvec[2] = cell[rb[n]].z - origin[2];
 
 
-      /* Get ipix ray where rvec belongs to (using HEALPix functions) */
+      /* Get ray where rvec belongs to (using HEALPix functions) */
 
       double theta, phi;                                            /* angles of the HEALPix ray */
 
       long ipix;                                        /* ray index (as reference to the pixel) */
 
+      long nsides = (long) sqrt(NRAYS/12);
+
       vec2ang(rvec, &theta, &phi);
 
-      ang2pix_nest(NSIDES, theta, phi, &ipix);
+      ang2pix_nest(nsides, theta, phi, &ipix);
 
 
       /* If there is no neighbor for this ray yet */
@@ -686,11 +688,11 @@ int find_neighbors( CELL *cell )
       if ( Z[ipix] == 0.0 )
       {
 
-        neighbor[ipix] = rb[n];
+        possible_neighbor[ipix] = rb[n];
 
-        Z[ipix] = rvec[0]*unit_healpixvector[VINDEX(ipix,0)]
-                  + rvec[1]*unit_healpixvector[VINDEX(ipix,1)]
-                  + rvec[2]*unit_healpixvector[VINDEX(ipix,2)];
+        Z[ipix] = rvec[0]*healpixvector[VINDEX(ipix,0)]
+                  + rvec[1]*healpixvector[VINDEX(ipix,1)]
+                  + rvec[2]*healpixvector[VINDEX(ipix,2)];
 
       } /* end of if Z[ipix] == 0.0 */
 
@@ -704,32 +706,97 @@ int find_neighbors( CELL *cell )
     {
       double rvec[3];                    /* local position vector of a cell center w.r.t. origin */
 
-      rvec[0] = cell[neighbor[ray]].x - origin[0];
-      rvec[1] = cell[neighbor[ray]].y - origin[1];
-      rvec[2] = cell[neighbor[ray]].z - origin[2];
+      rvec[0] = cell[possible_neighbor[ray]].x - origin[0];
+      rvec[1] = cell[possible_neighbor[ray]].y - origin[1];
+      rvec[2] = cell[possible_neighbor[ray]].z - origin[2];
 
       for (long r=0; r<NRAYS; r++)
       {
-        double proj = rvec[0]*unit_healpixvector[VINDEX(r,0)]
-                      + rvec[1]*unit_healpixvector[VINDEX(r,1)]
-                      + rvec[2]*unit_healpixvector[VINDEX(r,2)];
+        double proj = rvec[0]*healpixvector[VINDEX(r,0)]
+                      + rvec[1]*healpixvector[VINDEX(r,1)]
+                      + rvec[2]*healpixvector[VINDEX(r,2)];
 
         if (proj >= Z[r])
         {
           too_far[ray] = true;
         }
       }
+
+    } /* end of ray loop over rays */
+
+
+    for (long ray=0; ray<NRAYS; ray++)
+    {
+
+      if ( !too_far[ray] )
+      {
+        cell[p].neighbor[ray] = possible_neighbor[ray];
+        cell[p].n_neighbors   = cell[p].n_neighbors + 1;
+      }
+
     }
 
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-  } /* end of gridp loop over cells (origins) */
+  } /* end of p loop over cells (origins) */
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
+
+}
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* next_cell_on_ray: find the number of the next cell on the ray and its distance along the ray  */
+/*-----------------------------------------------------------------------------------------------*/
+
+int next_cell_on_ray( long ncells, CELL *cell, long current, long origin, long ray, double Z,
+                      long *next, double *dZ )
+{
+
+  /* Pick the neighbor on the "right side" closesd to the ray */
+
+  double D_min = 1.0E99;
+
+  *next = ncells;
+
+  for (long n=0; n<cell[current].n_neighbors; n++)
+  {
+    long neighbor = cell[current].neighbor[n];
+
+    double rvec[3];
+
+    rvec[0] = cell[neighbor].x - cell[origin].x;
+    rvec[1] = cell[neighbor].y - cell[origin].y;
+    rvec[2] = cell[neighbor].z - cell[origin].z;
+
+    double new_Z = rvec[0]*healpixvector[VINDEX(ray,0)]
+                   + rvec[1]*healpixvector[VINDEX(ray,1)]
+                   + rvec[2]*healpixvector[VINDEX(ray,2)];
+
+    if (Z < new_Z)
+    {
+      double rvec2 = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
+
+      double D = rvec2 - new_Z*new_Z;
+
+      if (D < D_min)
+      {
+        D_min = D;
+        *next = neighbor;
+        *dZ   = new_Z - Z;
+      }
+    }
+
+  } /* end of n loop over neighbors */
+
+
+  return(0);
 
 }
 

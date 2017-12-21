@@ -837,7 +837,7 @@ int main()
   printf("(Magritte): done \n\n");
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

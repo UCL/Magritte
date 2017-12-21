@@ -270,7 +270,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
 
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -387,7 +387,7 @@ static int check_flag(void *flagvalue, const char *funcname, int opt)
     return(1);
   }
 
-  return EXIT_SUCCESS;
+  return(0);
 }
 
 /*-----------------------------------------------------------------------------------------------*/

@@ -24,21 +24,25 @@
 
 
 
-long max (double *a, long n, long i, long j, long k)
+long max(double *a, long n, long i, long j, long k)
 {
 
   long m = i;
 
 
-  if (j<n && a[j]>a[m]) {
+  if ( (j < n) && (a[j] > a[m]) )
+  {
     m = j;
   }
 
-  if (k<n && a[k]>a[m]) {
+  if ( (k < n) && (a[k] > a[m]) )
+  {
     m = k;
   }
 
+
   return m;
+
 }
 
 
@@ -47,16 +51,17 @@ int downheap(double *a, long *b, long n, long i)
 {
 
 
-  while (1){
+  while (1)
+  {
+    long j = max(a, n, i, 2*i+1, 2*i+2);
 
-    long j=max(a, n, i, 2*i+1, 2*i+2);
-
-    if (j == i){
+    if (j == i)
+    {
       break;
     }
 
     double temp1 = a[i];
-    long    temp2 = b[i];
+    long   temp2 = b[i];
 
     a[i] = a[j];
     a[j] = temp1;
@@ -69,7 +74,7 @@ int downheap(double *a, long *b, long n, long i)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -81,15 +86,15 @@ int heapsort(double *a, long *b, long n)
 {
 
 
-  for (long i=(n-2)/2; i>=0; i--){
-
+  for (long i=(n-2)/2; i>=0; i--)
+  {
     downheap(a, b, n, i);
   }
 
-  for (long i=0; i<n; i++){
-
+  for (long i=0; i<n; i++)
+  {
     double temp1 = a[n-i-1];
-    long    temp2 = b[n-i-1];
+    long   temp2 = b[n-i-1];
 
     a[n-i-1] = a[0];
     a[0]     = temp1;
@@ -98,11 +103,10 @@ int heapsort(double *a, long *b, long n)
     b[0]     = temp2;
 
     downheap(a, b, n-i-1, 0);
-
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

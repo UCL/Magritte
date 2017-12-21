@@ -125,4 +125,4 @@ with open("../src/sundials/rate_equations.cpp", 'r') as read_file, open("../src/
 
     # Write the footer for the jacobian.cpp file
 
-    write_file.write("\n\n  return EXIT_SUCCESS;\n\n}\n\n/*-----------------------------------------------------------------------------------------------*/")
+    write_file.write("\n\n  return(0);\n\n}\n\n/*-----------------------------------------------------------------------------------------------*/")

@@ -196,7 +196,7 @@ int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *ic
   } /* end of par loop ovrer collision partners */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

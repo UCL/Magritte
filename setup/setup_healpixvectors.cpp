@@ -24,7 +24,7 @@
 /* setup_healpixvector: store the HEALPix vectors and find the antipodal pairs                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int setup_healpixvectors(long nrays, double *unit_healpixvector, long *antipod)
+int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
 {
 
 
@@ -36,9 +36,9 @@ int setup_healpixvectors(long nrays, double *unit_healpixvector, long *antipod)
 
     pix2vec_nest(NSIDES, ipix, vector);
 
-    unit_healpixvector[VINDEX(ipix,0)] = vector[0];
-    unit_healpixvector[VINDEX(ipix,1)] = vector[1];
-    unit_healpixvector[VINDEX(ipix,2)] = vector[2];
+    healpixvector[VINDEX(ipix,0)] = vector[0];
+    healpixvector[VINDEX(ipix,1)] = vector[1];
+    healpixvector[VINDEX(ipix,2)] = vector[2];
   }
 
 
@@ -50,9 +50,9 @@ int setup_healpixvectors(long nrays, double *unit_healpixvector, long *antipod)
 
     for (long r2=0; r2<nrays; r2++){
 
-      if (    (fabs(unit_healpixvector[VINDEX(r1,0)] + unit_healpixvector[VINDEX(r2,0)]) < TOL)
-           && (fabs(unit_healpixvector[VINDEX(r1,1)] + unit_healpixvector[VINDEX(r2,1)]) < TOL)
-           && (fabs(unit_healpixvector[VINDEX(r1,2)] + unit_healpixvector[VINDEX(r2,2)]) < TOL) ){
+      if (    (fabs(healpixvector[VINDEX(r1,0)] + healpixvector[VINDEX(r2,0)]) < TOL)
+           && (fabs(healpixvector[VINDEX(r1,1)] + healpixvector[VINDEX(r2,1)]) < TOL)
+           && (fabs(healpixvector[VINDEX(r1,2)] + healpixvector[VINDEX(r2,2)]) < TOL) ){
 
         antipod[r1] = r2;
       }
@@ -61,7 +61,7 @@ int setup_healpixvectors(long nrays, double *unit_healpixvector, long *antipod)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 }
 
 /*-----------------------------------------------------------------------------------------------*/

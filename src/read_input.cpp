@@ -108,7 +108,7 @@ int read_txt_input( std::string grid_inputfile, GRIDPOINT *gridpoint, double *te
 # endif
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -234,7 +234,7 @@ int read_vtu_input( std::string grid_inputfile, GRIDPOINT *gridpoint, double *te
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

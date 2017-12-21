@@ -60,7 +60,7 @@ int calc_AV( double *column_tot, double *AV )
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

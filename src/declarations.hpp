@@ -25,11 +25,6 @@
 
 
 
-/* Default success return value */
-
-#define EXIT_SUCCESS 0
-
-
 /* Numerical constants */
 
 #define PI    3.141592653589793238462643383279502884197  /* pi (circle circumference / diameter) */
@@ -188,9 +183,8 @@ typedef struct {
 
   double density;                                                   /* density at the grid point */
 
-  const long n_neighbors;
-
-  long neighbor[NRAYS];     /* MAKE FLEXI_ARRAY */
+  long neighbor[NRAYS];                                          /* cell numbers of the neighors */
+  long n_neighbors;                                                       /* number of neighbors */
 
 } CELL;
 
@@ -263,7 +257,7 @@ typedef struct {
 
 /* HEALPix vectors */
 
-extern const double unit_healpixvector[3*NRAYS];
+extern const double healpixvector[3*NRAYS];
 
 extern const long antipod[NRAYS];
 

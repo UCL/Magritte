@@ -49,7 +49,7 @@ int initialize_int_array(int *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -83,7 +83,7 @@ int initialize_long_array(long *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -119,7 +119,7 @@ int initialize_double_array(double *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -155,7 +155,7 @@ int initialize_double_array_with(double *array1, double *array2, long length)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -191,7 +191,7 @@ int initialize_double_array_with_value(double *array, double value, long length)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -227,7 +227,7 @@ int initialize_char_array(char *array, long length)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -260,7 +260,7 @@ int initialize_char_array(char *array, long length)
 //     }
 //
 //
-//   return EXIT_SUCCESS;
+//   return(0);
 //
 // }
 //
@@ -296,7 +296,7 @@ int initialize_temperature_gas(double *temperature_gas)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -332,7 +332,7 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -368,7 +368,7 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -407,7 +407,7 @@ int initialize_abn(double *initial_abn)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -443,7 +443,7 @@ int initialize_bool(bool value, long length, bool *variable)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -485,7 +485,7 @@ int initialize_bool(bool value, long length, bool *variable)
 //   }
 //
 //
-//   return EXIT_SUCCESS;
+//   return(0);
 // }
 
 /*-----------------------------------------------------------------------------------------------*/

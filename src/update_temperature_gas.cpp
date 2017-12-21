@@ -153,7 +153,7 @@ int update_temperature_gas( double *thermal_ratio, double *temperature_gas,
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -201,7 +201,7 @@ int shuffle_Brent( long gridp, double *temperature_a, double *temperature_b, dou
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -320,7 +320,7 @@ int update_temperature_gas_Brent( long gridp, double *temperature_a, double *tem
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

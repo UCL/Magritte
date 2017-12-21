@@ -103,7 +103,7 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
   } /* end of lspec loop over line producin species */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 }
 
 /*-----------------------------------------------------------------------------------------------*/

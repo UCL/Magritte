@@ -425,7 +425,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
   } /* end of lspec loop over line producing species */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

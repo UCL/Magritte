@@ -12,6 +12,17 @@ cmake_minimum_required(VERSION 2.8)
 project(Magritte_tests)
 
 
+# Set build type to Release to get optimal performance
+
+set(CMAKE_BUILD_TYPE Debug)
+
+
+# VTK includes
+
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+
+
 # Resize the stack to 128 Mb (UNIX version)
 
 # add_custom_target( RESIZE_STACK ALL
@@ -39,7 +50,6 @@ test_main.cpp
 ../../../src/read_input.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
-../../../src/create_healpixvectors.cpp
 ../../../src/write_output.cpp )
 
 

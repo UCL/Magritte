@@ -37,7 +37,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
   /* For all grid points */
 
 # pragma omp parallel                                                                             \
-  shared( G_external, rad_surface, unit_healpixvector )                                           \
+  shared( G_external, rad_surface, healpixvector )                                           \
   default( none )
   {
 
@@ -69,9 +69,9 @@ int calc_rad_surface(double *G_external, double *rad_surface)
 
         rad_surface[RINDEX(n,r)] = 0.0;
 
-        product = - ( G_external[0]*unit_healpixvector[VINDEX(r,0)]
-                      + G_external[1]*unit_healpixvector[VINDEX(r,1)]
-                      + G_external[2]*unit_healpixvector[VINDEX(r,2)] );
+        product = - ( G_external[0]*healpixvector[VINDEX(r,0)]
+                      + G_external[1]*healpixvector[VINDEX(r,1)]
+                      + G_external[2]*healpixvector[VINDEX(r,2)] );
 
         if (product > max_product){
 
@@ -103,7 +103,7 @@ int calc_rad_surface(double *G_external, double *rad_surface)
   } /* end of OpenMP parallel region */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

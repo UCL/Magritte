@@ -124,17 +124,17 @@ TEST_CASE("Test chemistry"){
 
   /* Create the HEALPix vectors */
 
-  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+  double healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
 
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  create_healpixvectors(unit_healpixvector, antipod);
+  create_healpixvectors(healpixvector, antipod);
 
 
   /* Ray tracing */
 
-  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, gridpoint, evalpoint);
 
 
 
@@ -184,7 +184,7 @@ TEST_CASE("Test chemistry"){
 
   /* Calculate the radiation surface */
 
-  calc_rad_surface(G_external, unit_healpixvector, rad_surface);
+  calc_rad_surface(G_external, healpixvector, rad_surface);
 
   write_abundances("0");
 
@@ -212,7 +212,7 @@ TEST_CASE("Test chemistry"){
 
   write_eval("0", evalpoint);
 
-  write_healpixvectors("", unit_healpixvector);
+  write_healpixvectors("", healpixvector);
 
   /* Calculate the visual extinction */
 

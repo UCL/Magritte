@@ -49,7 +49,7 @@ TEST_CASE("Feautrier solver"){
   /*_____________________________________________________________________________________________*/
 
 
-  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+  double healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
 
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
@@ -84,12 +84,12 @@ TEST_CASE("Feautrier solver"){
 
   /* Setup the (unit) HEALPix vectors */
 
-  create_healpixvectors(unit_healpixvector, antipod);
+  create_healpixvectors(healpixvector, antipod);
 
 
   /* Ray tracing */
 
-  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, gridpoint, evalpoint);
 
 
 

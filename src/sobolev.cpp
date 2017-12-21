@@ -242,7 +242,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 }
 
 /*-----------------------------------------------------------------------------------------------*/

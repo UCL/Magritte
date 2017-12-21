@@ -286,14 +286,14 @@ int main()
 
   /* Create the (unit) HEALPix vectors and find antipodal pairs */
 
-  double *unit_healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
-  unit_healpixvector = (double*) malloc( 3*nrays*sizeof(double) );
+  double *healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
+  healpixvector = (double*) malloc( 3*nrays*sizeof(double) );
 
   long *antipod;                                             /* gives antipodal ray for each ray */
   antipod = (long*) malloc( nrays*sizeof(long) );
 
 
-  setup_healpixvectors(nrays, unit_healpixvector, antipod);
+  setup_healpixvectors(nrays, healpixvector, antipod);
 
 
   printf("(setup): HEALPix vectors created \n\n");
@@ -381,7 +381,7 @@ int main()
   write_int_array(config_file, "CUM_TOT_NCOLTRANTEMP", cum_tot_ncoltrantemp, NLSPEC);
 
 
-  write_double_array(config_file, "UNIT_HEALPIXVECTOR", unit_healpixvector, 3*nrays);
+  write_double_array(config_file, "UNIT_HEALPIXVECTOR", healpixvector, 3*nrays);
 
   write_long_array(config_file, "ANTIPOD", antipod, nrays);
 
@@ -399,7 +399,7 @@ int main()
 
   printf("(setup): done, Magritte can now be compiled \n\n");
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -425,7 +425,7 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -451,7 +451,7 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -477,7 +477,7 @@ int write_double_array(FILE *file, std::string NAME, double *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

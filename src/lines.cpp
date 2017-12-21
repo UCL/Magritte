@@ -81,7 +81,7 @@ int line_source( int *irad, int *jrad, double *A_coeff, double *B_coeff, double 
   } /* end of kr loop over transitions */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -148,7 +148,7 @@ int line_opacity( int *irad, int *jrad, double *frequency, double *B_coeff, doub
   } /* end of kr loop over transitions */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

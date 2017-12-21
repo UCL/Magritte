@@ -15,7 +15,7 @@
 
 
 
-long max (double *a, long n, long i, long j, long k);
+long max(double *a, long n, long i, long j, long k);
 
 int downheap(double *a, long *b, long n, long i);
 

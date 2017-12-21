@@ -166,6 +166,6 @@ int main()
   fclose(file);
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }

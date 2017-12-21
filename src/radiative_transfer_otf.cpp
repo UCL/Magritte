@@ -125,7 +125,7 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -321,7 +321,7 @@ int intensities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *ra
   } /* end of if etot1>1 && etot2>1 */
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

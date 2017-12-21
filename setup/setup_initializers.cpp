@@ -32,7 +32,7 @@ int initialize_int_array(int *array, long length)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -53,7 +53,7 @@ int initialize_long_array(long *array, long length)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -76,7 +76,7 @@ int initialize_double_array(double *array, long length)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -99,7 +99,7 @@ int initialize_double_array_with(double *array1, double *array2, long length)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -122,7 +122,7 @@ int initialize_char_array(char *array, long length)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -146,7 +146,7 @@ int initialize_bool(bool value, long length, bool *variable)
   }
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

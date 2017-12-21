@@ -107,7 +107,7 @@ int read_species(std::string spec_datafile, double *initial_abn)
   fclose(specdata);
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 
@@ -271,7 +271,7 @@ int read_reactions(std::string reac_datafile)
 
 
 
-  return EXIT_SUCCESS;
+  return(0);
 
 }
 

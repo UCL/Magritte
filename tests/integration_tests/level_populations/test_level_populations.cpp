@@ -218,17 +218,17 @@ TEST_CASE("Test level populations"){
 
   /* Create the (unit) HEALPix vectors and find antipodal pairs */
 
-  double unit_healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
+  double healpixvector[3*NRAYS];            /* array of HEALPix vectors for each ipix pixel */
 
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  create_healpixvectors(unit_healpixvector, antipod);
+  create_healpixvectors(healpixvector, antipod);
 
 
   /* Execute ray_tracing */
 
-  ray_tracing(unit_healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, gridpoint, evalpoint);
 
 
   double G_external[3];                                       /* external radiation field vector */
@@ -245,7 +245,7 @@ TEST_CASE("Test level populations"){
 
   /* Calculate the radiation surface */
 
-  calc_rad_surface(G_external, unit_healpixvector, rad_surface);
+  calc_rad_surface(G_external, healpixvector, rad_surface);
 
 
 
