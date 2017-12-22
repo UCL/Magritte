@@ -23,6 +23,7 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 
+
 # Resize the stack to 128 Mb (UNIX version)
 
 # add_custom_target( RESIZE_STACK ALL
@@ -32,12 +33,12 @@ include(${VTK_USE_FILE})
 # Make the setup executable and execute setup
 
 add_custom_command( OUTPUT ../../../src/declarations.hpp
-                    COMMAND make PARAMETERS_FILE=../tests/unit_tests/ray_tracing/parameters.txt && ./setup.exe
+                    COMMAND bash run_test_setup.sh unit_tests/ray_tracing
                     WORKING_DIRECTORY ../../../setup
-                    DEPENDS parameters.txt )
+                    DEPENDS ../../../parameters.hpp )
 
 add_custom_target( MAKE_SETUP
-                   DEPENDS ../../../src/declarations.hpp  )
+                   DEPENDS ../../../src/declarations.hpp )
 
 
 # Add the test main and the MAGRITTE source code (which is to be tested)
@@ -76,6 +77,12 @@ find_library( HEALPix
 add_executable( test_ray_tracing   test_ray_tracing.cpp )
 
 
+# Ensure that test_ray_tracing depends on the setup command defined above
+
+add_dependencies( test_ray_tracing   MAKE_SETUP )
+
+
 # Link the necessary libraries
 
 target_link_libraries( test_ray_tracing   _ray_tracing ${HEALPix} )
+target_link_libraries( test_ray_tracing   ${VTK_LIBRARIES} )

@@ -30,11 +30,13 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
 
   /* Create the (unit) HEALPix vectors  */
 
-  for (long ipix=0; ipix<nrays; ipix++){
-
+  for (long ipix=0; ipix<nrays; ipix++)
+  {
     double vector[3];                      /* unit vector in the direction of the HEALPix vector */
 
-    pix2vec_nest(NSIDES, ipix, vector);
+    long nsides = (long) sqrt(nrays/12);
+
+    pix2vec_nest(nsides, ipix, vector);
 
     healpixvector[VINDEX(ipix,0)] = vector[0];
     healpixvector[VINDEX(ipix,1)] = vector[1];
@@ -46,14 +48,14 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
   /* Find the antipodal pairs */
   /* HEALPix vectors are not perfectly antipodal, TOL gives the allowed tolerance */
 
-  for (long r1=0; r1<nrays; r1++){
-
-    for (long r2=0; r2<nrays; r2++){
-
+  for (long r1=0; r1<nrays; r1++)
+  {
+    for (long r2=0; r2<nrays; r2++)
+    {
       if (    (fabs(healpixvector[VINDEX(r1,0)] + healpixvector[VINDEX(r2,0)]) < TOL)
            && (fabs(healpixvector[VINDEX(r1,1)] + healpixvector[VINDEX(r2,1)]) < TOL)
-           && (fabs(healpixvector[VINDEX(r1,2)] + healpixvector[VINDEX(r2,2)]) < TOL) ){
-
+           && (fabs(healpixvector[VINDEX(r1,2)] + healpixvector[VINDEX(r2,2)]) < TOL) )
+      {
         antipod[r1] = r2;
       }
 

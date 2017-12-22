@@ -37,29 +37,17 @@
 
 
 
-
-
-
 ## Current issues and warnings
-
-(!) Look out for devisions by 4PI which should be devisions by the number of rays.
 
 (!) 1D models assume NRAYS=12.
 
 (!) Rounding errors in the angle calculation in ray tracing (temporary fix).
 
-(!) The first and last species are "dummies".
 
 
 ## A first parallelization (OpenMP)
 
-In a first parallelization round we simply paralellize every big outer loop. This has been done in:
-
- - calc_column_density.cpp
- - chemistry.cpp
- - acceleration_Ng.cpp
- - level_populations.cpp
- - thermal_balance.cpp
+In a first parallelization round we simply paralellize every big outer loop.
 
 
 

@@ -21,10 +21,10 @@
 
 #include "catch.hpp"
 
-// #include "../../../parameters.hpp"
+#include "../../../parameters.hpp"
 // #include "../../../src/Magritte_config.hpp"
-// #include "../../../src/declarations.hpp"
-// #include "../../../src/definitions.hpp"
+#include "../../../src/declarations.hpp"
+#include "../../../src/definitions.hpp"
 
 #include "../../../setup/setup_healpixvectors.hpp"
 #include "../../../src/initializers.hpp"
@@ -36,17 +36,17 @@
 
 
 
-typedef struct {
-
-  double x, y, z;                                     /* x, y and z coordinate of the grid point */
-  double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
-
-  double density;                                                   /* density at the grid point */
-
-  long neighbor[NRAYS];                                          /* cell numbers of the neighors */
-  long n_neighbors;                                                       /* number of neighbors */
-
-} CELL;
+// typedef struct {
+//
+//   double x, y, z;                                     /* x, y and z coordinate of the grid point */
+//   double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
+//
+//   double density;                                                   /* density at the grid point */
+//
+//   long neighbor[NRAYS];                                          /* cell numbers of the neighors */
+//   long n_neighbors;                                                       /* number of neighbors */
+//
+// } CELL;
 
 
 
@@ -176,10 +176,10 @@ typedef struct {
 
 
 
-#define NRAYS 12
-
-double healpixvector[3*NRAYS];
-long   antipod[NRAYS];
+// #define NRAYS 12
+//
+// double healpixvector[3*NRAYS];
+// long   antipod[NRAYS];
 
 
 TEST_CASE("Cell structure")
@@ -189,11 +189,63 @@ TEST_CASE("Cell structure")
 
   CELL *cell = new CELL[ncells];
 
+  cell[0].x =  1.0;
+  cell[0].y =  1.0;
+  cell[0].z =  0.0;
 
-  setup_healpixvectors(NRAYS, healpixvector, antipod);
+  cell[1].x = -1.0;
+  cell[1].y = -1.0;
+  cell[1].z =  0.0;
+
+  cell[2].x =  0.0;
+  cell[2].y =  1.0;
+  cell[2].z =  0.0;
+
+  cell[3].x =  0.0;
+  cell[3].y = -1.0;
+  cell[3].z =  0.0;
+
+  cell[4].x =  1.0;
+  cell[4].y =  0.0;
+  cell[4].z =  0.0;
+
+  cell[5].x = -1.0;
+  cell[5].y =  0.0;
+  cell[5].z =  0.0;
+
+  cell[6].x = -1.0;
+  cell[6].y =  1.0;
+  cell[6].z =  0.0;
+
+  cell[7].x =  1.0;
+  cell[7].y = -1.0;
+  cell[7].z =  0.0;
+
+  cell[8].x =  0.0;
+  cell[8].y =  0.0;
+  cell[8].z =  0.0;
+
+
+  // setup_healpixvectors(NRAYS, healpixvector, antipod);
 
   find_neighbors(ncells, cell);
 
+  for (long c=0; c<ncells; c++)
+  {
+
+    // long c = 0;
+
+    printf("%ld\n", cell[c].n_neighbors);
+
+    for (long n=0; n<cell[c].n_neighbors; n++)
+    {
+      printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
+    }
+  }
+
+  // printf("%ld\n", NRAYS);
+
+  // write_healpixvectors("");
 
   CHECK(true);
 
