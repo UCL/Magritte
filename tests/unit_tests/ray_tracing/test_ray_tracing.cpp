@@ -230,10 +230,10 @@ TEST_CASE("Cell structure")
 
   find_neighbors(ncells, cell);
 
-  for (long c=0; c<ncells; c++)
-  {
+  // for (long c=0; c<ncells; c++)
+  // {
 
-    // long c = 0;
+    long c = 0;
 
     printf("%ld\n", cell[c].n_neighbors);
 
@@ -241,7 +241,7 @@ TEST_CASE("Cell structure")
     {
       printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
     }
-  }
+  // }
 
   // printf("%ld\n", NRAYS);
 

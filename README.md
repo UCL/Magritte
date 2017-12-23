@@ -32,16 +32,11 @@
   $ ./Magritte.exe
   ```
 
-- The output can be visualized using the python scripts in the `output/plot_scripts` folder.
-  The results of these plot scripts will be saved in a seperate file `/plots` in the output folder.
-
-
-
-## Current issues and warnings
-
-(!) 1D models assume NRAYS=12.
-
-(!) Rounding errors in the angle calculation in ray tracing (temporary fix).
+- The output can be visualized in multiple depending in the input format:
+  - For .txt input files one can use the python scripts in the `output/plot_scripts` folder.
+    The results of these plot scripts will be saved in a seperate file `/plots` in the output folder.
+  - For .vtu input files one can use the same visualization tool that was used for the input.
+    The results are just appended to the input file and stored in the output folder.
 
 
 

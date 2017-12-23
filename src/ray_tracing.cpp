@@ -724,7 +724,7 @@ int find_neighbors( long ncells, CELL *cell )
         }
       }
 
-      if ( !too_far[ray] )
+      if (!too_far[ray])
       {
         cell[p].neighbor[index] = possible_neighbor[ray];
         index++;
@@ -734,6 +734,7 @@ int find_neighbors( long ncells, CELL *cell )
 
 
     cell[p].n_neighbors = index;
+
 
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 

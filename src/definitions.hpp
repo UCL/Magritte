@@ -17,6 +17,14 @@
 
 #include <string>
 
+#include "../setup/output_directory.hpp"
+
+
+
+/* Output directory */
+
+const std::string output_directory = OUTPUT_DIRECTORY;
+
 
 
 /* Input and data files */

@@ -255,6 +255,11 @@ typedef struct {
 /* Declaration of external variables */
 
 
+/* Output directory */
+
+extern const std::string output_directory;
+
+
 /* HEALPix vectors */
 
 extern const double healpixvector[3*NRAYS];

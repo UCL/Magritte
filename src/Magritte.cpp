@@ -43,6 +43,8 @@
 #include "update_temperature_gas.hpp"
 
 #include "write_output.hpp"
+#include "write_txt_tools.hpp"
+#include "write_vtu_tools.hpp"
 
 
 
@@ -795,34 +797,18 @@ int main()
   printf("(Magritte): writing output \n");
 
 
-  /* Write the output files */
-
-  std::string tag = "final";
-
-
 # if ( INPUT_FORMAT == '.vtu' )
 
-  write_vtu_output(grid_inputfile, temperature_gas, temperature_dust);
+  write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 # elif ( INPUT_FORMAT == '.txt' )
 
-  write_abundances(tag);
-
-  write_level_populations(tag, pop);
-
-  write_line_intensities(tag, mean_intensity);
-
-  write_temperature_gas(tag, temperature_gas);
-
-  write_temperature_dust(tag, temperature_dust);
-
-  write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
-
-  write_LTE_deviation(tag, gridpoint, energy, weight, temperature_gas, pop);
-
-  write_true_level_populations(tag, gridpoint, pop);
+  write_txt_output(pop, mean_intensity, temperature_gas, temperature_dust);
 
 # endif
+
+
+  write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
 
 
   printf("(Magritte): output written \n\n");

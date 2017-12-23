@@ -7,7 +7,7 @@
 
 #define RUN_NUMBER "1"
 
-#define WRITE_INTERMEDIATE_OUTPUT false
+#define WRITE_INTERMEDIATE_OUTPUT true
 
 #define RESTART false
 

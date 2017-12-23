@@ -27,7 +27,7 @@ date_stamp=`date +%y-%m-%d_%H:%M`;
 output_directory="tests/$1/output/files/${date_stamp}_output/";
 
 
-echo "std::string OUTPUT_DIRECTORY = \"output/files/${date_stamp}_output/\";" > outputdirectory.hpp
+echo "#define OUTPUT_DIRECTORY \"output/files/${date_stamp}_output/\"" > output_directory.hpp
 
 
 # Make the rate_equation file for the chemistry, based on parameters.hpp

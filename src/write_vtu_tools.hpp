@@ -2,7 +2,7 @@
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/* Header for write_output.cpp                                                                   */
+/* Header for write_vtu_output.cpp                                                               */
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
@@ -10,36 +10,25 @@
 
 
 
-#ifndef __WRITE_OUTPUT_HPP_INCLUDED__
-#define __WRITE_OUTPUT_HPP_INCLUDED__
+#ifndef __WRITE_VTU_TOOLS_HPP_INCLUDED__
+#define __WRITE_VTU_TOOLS_HPP_INCLUDED__
 
 
 #include <string>
 
-#include "declarations.hpp"
 
 
 
-/* write_performance_log: write the performance results of the run                               */
+/* write_vtu_output: write all physical variables to the vtu input grid                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_txt_output( double *pop, double *mean_intensity, double *temperature_gas,
-                      double *temperature_dust );
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* write_performance_log: write the performance results of the run                               */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_performance_log( double time_total, double time_level_pop, double time_chemistry,
-                           double time_ray_tracing, int niterations );
+int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
+                      double *temperature_dust, double *prev_temperature_gas );
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-#endif /* __WRITE_OUTPUT_HPP_INCLUDED__ */
+#endif /* __WRITE_VTU_TOOLS_HPP_INCLUDED__ */
 
 /*-----------------------------------------------------------------------------------------------*/

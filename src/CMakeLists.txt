@@ -76,7 +76,9 @@ calc_temperature_dust.cpp
 heating.cpp
 cooling.cpp
 update_temperature_gas.cpp
-write_output.cpp )
+write_output.cpp
+write_txt_tools.cpp
+write_vtu_tools.cpp )
 
 
 # Link the libraries of the subdirectories to this library
