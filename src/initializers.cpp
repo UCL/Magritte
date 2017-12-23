@@ -420,7 +420,7 @@ int initialize_abn(double *initial_abn)
 /* initialize_bool: initialize a boolean variable                                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_bool(bool value, long length, bool *variable)
+int initialize_bool(bool value, bool *variable, long length)
 {
 
 

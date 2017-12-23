@@ -110,7 +110,7 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas);
 /* initialize_bool: initialize a boolean variable                                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_bool(bool value, long length, bool *variable);
+int initialize_bool(bool value, bool *variable, long length);
 
 /*-----------------------------------------------------------------------------------------------*/
 

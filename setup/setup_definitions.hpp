@@ -24,6 +24,7 @@
 
 #define TOL 1.0E-9                                               /* tolerance for antipodal rays */
 
+#define PI  3.141592653589793238462643383279502884197    /* pi (circle circumference / diameter) */
 
 #define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \
                    /* when first index is line producing species and second is collision partner */

@@ -65,7 +65,7 @@ int initialize_char_array(char *array, long length);
 /* initialize_bool: initialize a boolean variable                                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_bool(bool value, long length, bool *variable);
+int initialize_bool(bool value, bool *variable, long length);
 
 /*-----------------------------------------------------------------------------------------------*/
 

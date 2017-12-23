@@ -145,15 +145,44 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       rvec[2] = gridpoint[rb[n]].z - origin[2];
 
 
-      /* Get ipix ray where rvec belongs to (using HEALPix functions) */
+      /* Get ray where rvec belongs to (using HEALPix functions) */
+
+      long ipix;                                        /* ray index (as reference to the pixel) */
+
+
+#     if (DIMENSIONS == 1)
+
+      if (rvec[0] > 0)
+      {
+        ipix = 0;
+      }
+      else
+      {
+        ipix = 1;
+      }
+
+#     elif (DIMENSIONS == 2)
+
+      double theta = acos(rvec[0]/ra2[n]);
+
+      if (rvec[1] > 0)
+      {
+        ipix = (long) round(NRAYS * theta / 2.0 / PI);
+      }
+      else
+      {
+        ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
+      }
+
+#     elif (DIMENSIONS == 3)
 
       double theta, phi;                                            /* angles of the HEALPix ray */
-
-      long   ipix;                                      /* ray index (as reference to the pixel) */
 
       vec2ang(rvec, &theta, &phi);
 
       ang2pix_nest(NSIDES, theta, phi, &ipix);
+
+#     endif
 
 
       /* Calculate the angle between the gridpoint and its corresponding ray */
@@ -370,15 +399,44 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
     rvec[2] = gridpoint[rb[n]].z - origin[2];
 
 
-    /* Get ipix ray where rvec belongs to (using HEALPix functions) */
+    /* Get ray where rvec belongs to (using HEALPix functions) */
+
+    long ipix;                                          /* ray index (as reference to the pixel) */
+
+
+#   if (DIMENSIONS == 1)
+
+    if (rvec[0] > 0)
+    {
+      ipix = 0;
+    }
+    else
+    {
+      ipix = 1;
+    }
+
+#   elif (DIMENSIONS == 2)
+
+    double theta = acos(rvec[0]/ra2[n]);
+
+    if (rvec[1] > 0)
+    {
+      ipix = (long) round(NRAYS * theta / 2.0 / PI);
+    }
+    else
+    {
+      ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
+    }
+
+#   elif (DIMENSIONS == 3)
 
     double theta, phi;                                              /* angles of the HEALPix ray */
-
-    long   ipix;                                        /* ray index (as reference to the pixel) */
 
     vec2ang(rvec, &theta, &phi);
 
     ang2pix_nest(NSIDES, theta, phi, &ipix);
+
+#   endif
 
 
     /* Calculate the angle between the gridpoint and its corresponding ray */
@@ -619,20 +677,19 @@ int find_neighbors( long ncells, CELL *cell )
     /* Locate all cell centers w.r.t. the origin */
 
     double *ra2 = new double[ncells];               /* squares lengths of local position vectors */
-
     long    *rb = new long[ncells];                     /* identifiers of local position vectors */
 
 
     for (long n=0; n<ncells; n++)
     {
-      double rvec[3];                    /* local position vector of a cell center w.r.t. origin */
+      double rvec[3];                      /* local position vector of cell center w.r.t. origin */
 
       rvec[0] = cell[n].x - origin[0];
       rvec[1] = cell[n].y - origin[1];
       rvec[2] = cell[n].z - origin[2];
 
       ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];            /* SQUARE length! */
-      rb[n]  = n;
+      rb[n] = n;
     }
 
 
@@ -651,7 +708,7 @@ int find_neighbors( long ncells, CELL *cell )
 
     bool too_far[NRAYS];
 
-    initialize_bool(false, NRAYS, too_far);
+    initialize_bool(false, too_far, NRAYS);
 
 
     /*   FIND NEIGHBORS FOR p                                                                    */
@@ -672,16 +729,42 @@ int find_neighbors( long ncells, CELL *cell )
 
       /* Get ray where rvec belongs to (using HEALPix functions) */
 
-      double theta, phi;                                            /* angles of the HEALPix ray */
-
       long ipix;                                        /* ray index (as reference to the pixel) */
 
-      long nsides = (long) sqrt(NRAYS/12);
 
+#     if (DIMENSIONS == 1)
+
+      if (rvec[0] > 0)
+      {
+        ipix = 0;
+      }
+      else
+      {
+        ipix = 1;
+      }
+
+#     elif (DIMENSIONS == 2)
+
+      double theta = acos(rvec[0]/ra2[n]);
+
+      if (rvec[1] > 0)
+      {
+        ipix = (long) round(NRAYS * theta / 2.0 / PI);
+      }
+      else
+      {
+        ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
+      }
+
+#     elif (DIMENSIONS == 3)
+
+      double theta, phi;                                            /* angles of the HEALPix ray */
 
       vec2ang(rvec, &theta, &phi);
 
-      ang2pix_nest(nsides, theta, phi, &ipix);
+      ang2pix_nest(NSIDES, theta, phi, &ipix);
+
+#     endif
 
 
       /* If there is no neighbor for this ray yet */
@@ -699,38 +782,51 @@ int find_neighbors( long ncells, CELL *cell )
 
 
     /* Assuming cell boundaries orthogonal to the HEALPix ray */
-    /* Check along which ray the next point is too far to be a neighbor */
+    /* Check for each possible neighbor if it is too far to be a neighbor */
 
     long index = 0;
 
+    /* For all possible neighbors */
 
-    for (long ray=0; ray<NRAYS; ray++)
+    for (long pn=0; pn<NRAYS; pn++)
     {
-      double rvec[3];                    /* local position vector of a cell center w.r.t. origin */
-
-      rvec[0] = cell[possible_neighbor[ray]].x - origin[0];
-      rvec[1] = cell[possible_neighbor[ray]].y - origin[1];
-      rvec[2] = cell[possible_neighbor[ray]].z - origin[2];
-
-      for (long r=0; r<NRAYS; r++)
+      if (Z[pn] != 0.0)
       {
-        double projection =   rvec[0]*healpixvector[VINDEX(r,0)]
-                            + rvec[1]*healpixvector[VINDEX(r,1)]
-                            + rvec[2]*healpixvector[VINDEX(r,2)];
 
-        if ( (ray != r) && (Z[r] != 0.0) && (projection >= Z[r]) )
+        double rvec[3];                  /* local position vector of a cell center w.r.t. origin */
+
+        rvec[0] = cell[possible_neighbor[pn]].x - origin[0];
+        rvec[1] = cell[possible_neighbor[pn]].y - origin[1];
+        rvec[2] = cell[possible_neighbor[pn]].z - origin[2];
+
+
+        /* For all other possible neighbors */
+
+        for (long r=0; r<NRAYS; r++)
         {
-          too_far[ray] = true;
+          if ( (Z[r] != 0.0) && (pn != r) )
+          {
+            double projection =   rvec[0]*healpixvector[VINDEX(r,0)]
+                                + rvec[1]*healpixvector[VINDEX(r,1)]
+                                + rvec[2]*healpixvector[VINDEX(r,2)];
+
+            if (projection >= Z[r])
+            {
+              too_far[pn] = true;
+            }
+          }
+        }
+
+
+        /* If there is a possible neighbor that is not too far */
+
+        if ( (Z[pn] != 0.0) && (!too_far[pn]) )
+        {
+          cell[p].neighbor[index] = possible_neighbor[pn];
+          index++;
         }
       }
-
-      if (!too_far[ray])
-      {
-        cell[p].neighbor[index] = possible_neighbor[ray];
-        index++;
-      }
-
-    } /* end of ray loop over rays */
+    } /* end of pn loop over possible neighbors */
 
 
     cell[p].n_neighbors = index;

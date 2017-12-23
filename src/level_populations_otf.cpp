@@ -58,11 +58,11 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
   bool not_converged[NLSPEC];            /* true when popualations are not converged per species */
 
-  initialize_bool(true, NLSPEC, not_converged);
+  initialize_bool(true, not_converged, NLSPEC);
 
   bool prev_not_converged[NLSPEC];   /* true when popualations were not converged last iteration */
 
-  initialize_bool(true, NLSPEC, prev_not_converged);
+  initialize_bool(true, prev_not_converged, NLSPEC);
 
   int niterations[NLSPEC];                                   /* number of iterations per species */
 

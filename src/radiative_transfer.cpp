@@ -355,11 +355,25 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   } /* end of r loop over half of the rays */
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij]; // / NRAYS;
+# if (DIMENSIONS == 1)
 
-  escape_probability = escape_probability; // / NRAYS;
+  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
 
+  escape_probability = escape_probability / NRAYS;
 
+# elif (DIMENSIONS == 2)
+
+  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
+
+  escape_probability = escape_probability / NRAYS;
+
+# elif (DIMENSIONS == 3)
+
+  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
+
+  escape_probability = escape_probability / NRAYS;
+
+# endif
 
 
   /* Add the continuum radiation (due to dust and CMB) */

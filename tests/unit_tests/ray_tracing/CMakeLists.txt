@@ -84,5 +84,4 @@ add_dependencies( test_ray_tracing   MAKE_SETUP )
 
 # Link the necessary libraries
 
-target_link_libraries( test_ray_tracing   _ray_tracing ${HEALPix} )
-target_link_libraries( test_ray_tracing   ${VTK_LIBRARIES} )
+target_link_libraries( test_ray_tracing   _ray_tracing ${HEALPix} ${VTK_LIBRARIES} )

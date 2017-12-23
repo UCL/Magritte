@@ -367,7 +367,7 @@ TEST_CASE("Test level populations"){
 
   bool no_thermal_balance[NGRID];
 
-  initialize_bool(true, NGRID, no_thermal_balance);
+  initialize_bool(true, no_thermal_balance, NGRID);
 
   int niterations = 0;
 

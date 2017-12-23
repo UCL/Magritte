@@ -28,7 +28,43 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
 {
 
 
-  /* Create the (unit) HEALPix vectors  */
+  /* Create the (unit) HEALPix vectors in 3D */
+
+# if (DIMENSIONS == 1)
+
+  if (nrays != 2)
+  {
+    printf("\nERROR: In 1D there can only be rays in 2 rays !\n\n");
+  }
+
+  /* Only 2 rays along the x-axis */
+
+  healpixvector[VINDEX(0,0)] = +1.0;
+  healpixvector[VINDEX(0,1)] =  0.0;
+  healpixvector[VINDEX(0,2)] =  0.0;
+
+  healpixvector[VINDEX(1,0)] = -1.0;
+  healpixvector[VINDEX(1,1)] =  0.0;
+  healpixvector[VINDEX(1,2)] =  0.0;
+
+# elif (DIMENSIONS == 2)
+
+  if (nrays <= 2)
+  {
+    printf("\nERROR: In 2D there must be more than 2 rays !\n\n");
+  }
+
+
+  for (long ray=0; ray<nrays; ray++)
+  {
+    double theta = ray / 2.0 / PI;
+
+    healpixvector[VINDEX(ray,0)] = cos(theta);
+    healpixvector[VINDEX(ray,1)] = sin(theta);
+    healpixvector[VINDEX(ray,2)] = 0.0;
+  }
+
+# elif (DIMENSIONS == 3)
 
   for (long ipix=0; ipix<nrays; ipix++)
   {
@@ -43,6 +79,7 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
     healpixvector[VINDEX(ipix,2)] = vector[2];
   }
 
+# endif
 
 
   /* Find the antipodal pairs */
