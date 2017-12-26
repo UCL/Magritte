@@ -17,7 +17,7 @@
 
 #define DIMENSIONS 2
 
-#define NRAYS 8
+#define NRAYS 4
 
 #define INPUT_FORMAT '.txt'
 

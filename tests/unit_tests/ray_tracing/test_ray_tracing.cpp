@@ -30,7 +30,7 @@
 #include "../../../src/initializers.hpp"
 #include "../../../src/read_input.hpp"
 #include "../../../src/ray_tracing.hpp"
-#include "../../../src/write_output.hpp"
+#include "../../../src/write_txt_tools.hpp"
 
 #define EPS 1.0E-5
 
@@ -227,6 +227,7 @@ TEST_CASE("Cell structure")
 
 
   // setup_healpixvectors(NRAYS, healpixvector, antipod);
+  write_healpixvectors("");
 
   find_neighbors(ncells, cell);
 

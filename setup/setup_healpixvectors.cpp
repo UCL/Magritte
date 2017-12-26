@@ -32,6 +32,7 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
 
 # if (DIMENSIONS == 1)
 
+
   if (nrays != 2)
   {
     printf("\nERROR: In 1D there can only be rays in 2 rays !\n\n");
@@ -47,7 +48,9 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
   healpixvector[VINDEX(1,1)] =  0.0;
   healpixvector[VINDEX(1,2)] =  0.0;
 
+
 # elif (DIMENSIONS == 2)
+
 
   if (nrays <= 2)
   {
@@ -57,14 +60,16 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
 
   for (long ray=0; ray<nrays; ray++)
   {
-    double theta = ray / 2.0 / PI;
+    double theta = (2.0*PI*ray) / nrays;
 
     healpixvector[VINDEX(ray,0)] = cos(theta);
     healpixvector[VINDEX(ray,1)] = sin(theta);
     healpixvector[VINDEX(ray,2)] = 0.0;
   }
 
+
 # elif (DIMENSIONS == 3)
+
 
   for (long ipix=0; ipix<nrays; ipix++)
   {
@@ -78,6 +83,7 @@ int setup_healpixvectors(long nrays, double *healpixvector, long *antipod)
     healpixvector[VINDEX(ipix,1)] = vector[1];
     healpixvector[VINDEX(ipix,2)] = vector[2];
   }
+
 
 # endif
 

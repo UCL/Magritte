@@ -152,6 +152,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 #     if (DIMENSIONS == 1)
 
+
       if (rvec[0] > 0)
       {
         ipix = 0;
@@ -161,7 +162,9 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         ipix = 1;
       }
 
+
 #     elif (DIMENSIONS == 2)
+
 
       double theta = acos(rvec[0]/ra2[n]);
 
@@ -174,13 +177,16 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
       }
 
+
 #     elif (DIMENSIONS == 3)
+
 
       double theta, phi;                                            /* angles of the HEALPix ray */
 
       vec2ang(rvec, &theta, &phi);
 
       ang2pix_nest(NSIDES, theta, phi, &ipix);
+
 
 #     endif
 
@@ -406,6 +412,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 #   if (DIMENSIONS == 1)
 
+
     if (rvec[0] > 0)
     {
       ipix = 0;
@@ -415,7 +422,9 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       ipix = 1;
     }
 
+
 #   elif (DIMENSIONS == 2)
+
 
     double theta = acos(rvec[0]/ra2[n]);
 
@@ -428,13 +437,16 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
     }
 
+
 #   elif (DIMENSIONS == 3)
+
 
     double theta, phi;                                              /* angles of the HEALPix ray */
 
     vec2ang(rvec, &theta, &phi);
 
     ang2pix_nest(NSIDES, theta, phi, &ipix);
+
 
 #   endif
 
@@ -734,6 +746,7 @@ int find_neighbors( long ncells, CELL *cell )
 
 #     if (DIMENSIONS == 1)
 
+
       if (rvec[0] > 0)
       {
         ipix = 0;
@@ -743,11 +756,13 @@ int find_neighbors( long ncells, CELL *cell )
         ipix = 1;
       }
 
+
 #     elif (DIMENSIONS == 2)
+
 
       double theta = acos(rvec[0]/ra2[n]);
 
-      if (rvec[1] > 0)
+      if (rvec[1] >= 0)
       {
         ipix = (long) round(NRAYS * theta / 2.0 / PI);
       }
@@ -756,13 +771,18 @@ int find_neighbors( long ncells, CELL *cell )
         ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
       }
 
+
+      printf("cell %ld sees %ld in ray %ld\n", p, n, ipix);
+
 #     elif (DIMENSIONS == 3)
+
 
       double theta, phi;                                            /* angles of the HEALPix ray */
 
       vec2ang(rvec, &theta, &phi);
 
       ang2pix_nest(NSIDES, theta, phi, &ipix);
+
 
 #     endif
 

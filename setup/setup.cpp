@@ -53,7 +53,15 @@ int main()
 
   /* Get nrays from line 11 in PARAMETERS_FILE */
 
+# if (DIMENSIONS == 3)
+
   long nrays = 12*NSIDES*NSIDES;
+
+# else
+
+  long nrays = NRAYS;
+
+# endif
 
 
   /* Get the number of grid points from the input file */
@@ -317,7 +325,13 @@ int main()
 
   fprintf( config_file, "#define NGRID %ld \n\n", ngrid );
 
+
+# if (DIMENSIONS == 3)
+
   fprintf( config_file, "#define NRAYS %ld \n\n", nrays );
+
+# endif
+
 
   fprintf( config_file, "#define NSPEC %d \n\n", nspec );
 
@@ -381,7 +395,7 @@ int main()
   write_int_array(config_file, "CUM_TOT_NCOLTRANTEMP", cum_tot_ncoltrantemp, NLSPEC);
 
 
-  write_double_array(config_file, "UNIT_HEALPIXVECTOR", healpixvector, 3*nrays);
+  write_double_array(config_file, "HEALPIXVECTOR", healpixvector, 3*nrays);
 
   write_long_array(config_file, "ANTIPOD", antipod, nrays);
 

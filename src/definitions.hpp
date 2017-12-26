@@ -44,7 +44,7 @@ const std::string line_datafile[NLSPEC] = LINE_DATAFILES;        /* list of line
 
 /* HEALPix vectors */
 
-const double healpixvector[3*NRAYS] = UNIT_HEALPIXVECTOR;
+const double healpixvector[3*NRAYS] = HEALPIXVECTOR;
 
 const long antipod[NRAYS] = ANTIPOD;
 

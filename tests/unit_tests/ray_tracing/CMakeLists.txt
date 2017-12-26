@@ -35,7 +35,7 @@ include(${VTK_USE_FILE})
 add_custom_command( OUTPUT ../../../src/declarations.hpp
                     COMMAND bash run_test_setup.sh unit_tests/ray_tracing
                     WORKING_DIRECTORY ../../../setup
-                    DEPENDS ../../../parameters.hpp )
+                    DEPENDS parameters.hpp )
 
 add_custom_target( MAKE_SETUP
                    DEPENDS ../../../src/declarations.hpp )
@@ -51,7 +51,8 @@ test_main.cpp
 ../../../src/read_input.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
-../../../src/write_output.cpp )
+../../../src/write_output.cpp
+../../../src/write_txt_tools.cpp )
 
 
 # Add compiler flags
@@ -79,7 +80,7 @@ add_executable( test_ray_tracing   test_ray_tracing.cpp )
 
 # Ensure that test_ray_tracing depends on the setup command defined above
 
-add_dependencies( test_ray_tracing   MAKE_SETUP )
+# add_dependencies( test_ray_tracing   MAKE_SETUP )
 
 
 # Link the necessary libraries
