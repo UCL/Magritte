@@ -244,16 +244,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
         if (SOBOLEV == true){
 
-          /* Sobolev approximation    */
-          /* NOTE: Make sure RAY_SEPARATION2=0.0 when SOBOLEV=true !!! */
-
-
-          if (RAY_SEPARATION2 != 0.0){
-
-            printf("\n\n !!! ERROR in ray tracing !!! \n\n");
-            printf("   [ERROR]:   SOBOLEV = true   while   RAY_SEPARATION2 != 0.0 \n\n");
-          }
-
+          /* Sobolev approximation */
 
           double optical_depth1 = 0.0;
           double optical_depth2 = 0.0;

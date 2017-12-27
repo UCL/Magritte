@@ -5,12 +5,8 @@
 /* Use the escape probability formalism and the Sobolev approximation to find the intensity      */
 /*                                                                                               */
 /* (based on code by Dr. Jeremy Yates)                                                           */
-/*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
-/*     ndep          = number of depth points (evaluation points) along the ray   (IN)           */
-/*     P             = (Iup + Idown)/2 = Feautrier's mean intensity              (OUT)           */
-/*     A, B and C    = coefficients in the Feautrier recursion relation          ( - )           */
-/*     Fd1, Fd2, Fd3 = tridiagonal elements of the Feautrier matrix              ( - )           */
+/*-----------------------------------------------------------------------------------------------*/
 /*                                                                                               */
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -50,8 +46,8 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
   /* For half of the rays (only half is needed since we also consider the antipodals) */
 
-  for (long r=0; r<NRAYS/2; r++){
-
+  for (long r=0; r<NRAYS/2; r++)
+  {
 
     /* Get the antipodal ray for r */
 
@@ -68,8 +64,8 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
     long etot2 = raytot[r];                     /* total number of evaluation points along ray r */
 
 
-    if ( etot1>0 || etot2>0 ){
-
+    if ( etot1>0 || etot2>0 )
+    {
       long ndep = etot1 + etot2;           /* nr. of depth points along a pair of antipodal rays */
 
       double *dtau;                                              /* optical depth along this ray */
@@ -78,24 +74,25 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
       /* For the antipodal ray to ray r */
 
-      if (etot1 > 1){
-      for (long e1=1; e1<etot1; e1++){
+      if (etot1 > 1)
+      {
+        for (long e1=1; e1<etot1; e1++)
+        {
+          long e_n   = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1);
+          long e_np  = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1-1);
 
-        long e_n   = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1);
-        long e_np  = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1-1);
+          long s_n  = LSPECGRIDRAD(lspec,e_n,kr);
+          long s_np = LSPECGRIDRAD(lspec,e_np,kr);
 
-        long s_n  = LSPECGRIDRAD(lspec,e_n,kr);
-        long s_np = LSPECGRIDRAD(lspec,e_np,kr);
-
-        dtau[e1-1] = evalpoint[e_n].dZ * PC * (opacity[s_n] + opacity[s_np]) / 2.0;
-      }
+          dtau[e1-1] = evalpoint[e_n].dZ * PC * (opacity[s_n] + opacity[s_np]) / 2.0;
+        }
       }
 
 
       /* Adding the piece that contains the origin for ar */
 
-      if (etot1 > 0){
-
+      if (etot1 > 0)
+      {
         long e_a0 = LOCAL_GP_NR_OF_EVALP(ar, 0);
 
         long s_an = LSPECGRIDRAD(lspec,e_a0,kr);
@@ -106,8 +103,8 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
       /* Adding the piece that contains the origin for r */
 
-      if (etot2 > 0){
-
+      if (etot2 > 0)
+      {
         long e_0  = LOCAL_GP_NR_OF_EVALP(r, 0);
 
         long s_n  = LSPECGRIDRAD(lspec,e_0,kr);
@@ -119,17 +116,18 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
       /* For ray r itself */
 
-      if (etot2 > 1){
-      for (long e2=1; e2<etot2; e2++){
+      if (etot2 > 1)
+      {
+        for (long e2=1; e2<etot2; e2++)
+        {
+          long e_n  = LOCAL_GP_NR_OF_EVALP(r, e2);
+          long e_np = LOCAL_GP_NR_OF_EVALP(r, e2-1);
 
-        long e_n  = LOCAL_GP_NR_OF_EVALP(r, e2);
-        long e_np = LOCAL_GP_NR_OF_EVALP(r, e2-1);
+          long s_n  = LSPECGRIDRAD(lspec,e_n,kr);
+          long s_np = LSPECGRIDRAD(lspec,e_np,kr);
 
-        long s_n  = LSPECGRIDRAD(lspec,e_n,kr);
-        long s_np = LSPECGRIDRAD(lspec,e_np,kr);
-
-        dtau[etot1+e2] = evalpoint[e_n].dZ * PC * (opacity[s_n] + opacity[s_np]) / 2.0;
-      }
+          dtau[etot1+e2] = evalpoint[e_n].dZ * PC * (opacity[s_n] + opacity[s_np]) / 2.0;
+        }
       }
 
 
@@ -139,48 +137,48 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
       double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(V_TURB,2) );
 
 
-      for (long e1=0; e1<etot1; e1++){
-
+      for (long e1=0; e1<etot1; e1++)
+      {
         optical_depth1 = optical_depth1 + dtau[e1];
       }
 
       optical_depth1 = CC / frequency[b_ij] / speed_width * optical_depth1;
 
-      if (optical_depth1 < -5.0){
-
+      if (optical_depth1 < -5.0)
+      {
         escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
       }
 
-      else if( fabs(optical_depth1) < 1.0E-8){
-
+      else if( fabs(optical_depth1) < 1.0E-8)
+      {
         escape_probability = escape_probability + 1.0;
       }
 
-      else{
-
+      else
+      {
         escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
       }
 
 
 
-      for (long e2=0; e2<etot2; e2++){
-
+      for (long e2=0; e2<etot2; e2++)
+      {
         optical_depth2 = optical_depth2 + dtau[etot1+e2];
       }
 
 
-      if (optical_depth2 < -5.0){
-
+      if (optical_depth2 < -5.0)
+      {
         escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
       }
 
-      else if( fabs(optical_depth2) < 1.0E-8){
-
+      else if( fabs(optical_depth2) < 1.0E-8)
+      {
         escape_probability = escape_probability + 1.0;
       }
 
-      else{
-
+      else
+      {
         escape_probability = escape_probability + (1 - exp(-optical_depth2)) / optical_depth2;
       }
 
@@ -227,15 +225,15 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
                          + escape_probability * continuum_mean_intensity;
 
 
-  if ( ACCELERATION_APPROX_LAMBDA ){
-
+  if (ACCELERATION_APPROX_LAMBDA)
+  {
     Lambda_diagonal[m_ij]    = (1.0 - escape_probability);
 
     mean_intensity_eff[m_ij] = escape_probability * continuum_mean_intensity;
   }
 
-  else{
-
+  else
+  {
     Lambda_diagonal[m_ij]    = 0.0;
 
     mean_intensity_eff[m_ij] = mean_intensity[m_ij];

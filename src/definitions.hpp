@@ -23,7 +23,7 @@
 
 /* Output directory */
 
-const std::string output_directory = OUTPUT_DIRECTORY;
+std::string output_directory = OUTPUT_DIRECTORY;
 
 
 

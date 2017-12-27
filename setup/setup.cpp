@@ -71,11 +71,11 @@ int main()
   grid_inputfile = "../" + grid_inputfile;
 
 
-# if ( INPUT_FORMAT == '.vtu' )
+# if (INPUT_FORMAT == '.vtu')
 
   long ngrid = get_NGRID_vtu(grid_inputfile);
 
-# elif ( INPUT_FORMAT == '.txt' )
+# elif (INPUT_FORMAT == '.txt')
 
   long ngrid = get_NGRID_txt(grid_inputfile);
 
@@ -136,7 +136,6 @@ int main()
   printf("(setup):   nspec             : %d\n",  nspec);
   printf("(setup):   nrays             : %ld\n", nrays);
   printf("(setup):   theta_crit        : %le\n", THETA_CRIT);
-  printf("(setup):   ray_separation2   : %le\n", RAY_SEPARATION2);
   printf("(setup):   sobolev           : %s\n",  sobolev.c_str());
   printf("(setup):   field_form        : %s\n",  field_form.c_str());
   printf("(setup):   time_end_in_years : %le\n", TIME_END_IN_YEARS);

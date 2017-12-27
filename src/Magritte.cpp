@@ -21,7 +21,10 @@
 #include <string>
 #include <iostream>
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
 #include "definitions.hpp"
 
 #include "initializers.hpp"
@@ -105,14 +108,14 @@ int main()
 
   /* Read input file */
 
-# if ( INPUT_FORMAT == '.vtu' )
+# if (INPUT_FORMAT == '.vtu')
 
-  read_vtu_input( grid_inputfile, gridpoint, temperature_gas,
+  read_vtu_input( grid_inputfile, NGRID, gridpoint, temperature_gas,
                   temperature_dust, prev_temperature_gas );
 
-# elif ( INPUT_FORMAT == '.txt' )
+# elif (INPUT_FORMAT == '.txt')
 
-  read_txt_input( grid_inputfile, gridpoint, temperature_gas,
+  read_txt_input( grid_inputfile, NGRID, gridpoint, temperature_gas,
                   temperature_dust, prev_temperature_gas );
 
 # endif
@@ -218,7 +221,7 @@ int main()
   initialize_double_array(B_coeff, TOT_NLEV2);
 
 
-# if !( ON_THE_FLY )
+# if (!ON_THE_FLY)
 
   double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
 
@@ -282,7 +285,7 @@ int main()
 
 
 
-# if !( ON_THE_FLY )
+# if (!ON_THE_FLY)
 
 
   /*   RAY TRACING                                                                               */
@@ -381,7 +384,7 @@ int main()
   /* Calculate the total column density */
 
 
-# if ( ON_THE_FLY )
+# if (ON_THE_FLY)
 
   calc_column_density(gridpoint, column_tot, NSPEC-1);
 
@@ -402,7 +405,7 @@ int main()
   calc_UV_field(AV, rad_surface, UV_field);
 
 
-# if !( RESTART )
+# if (!RESTART)
 
   /* Make a guess for the gas temperature based on the UV field */
 
@@ -461,7 +464,7 @@ int main()
     time_chemistry -= omp_get_wtime();
 
 
-#   if ( ON_THE_FLY )
+#   if (ON_THE_FLY)
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
@@ -584,7 +587,7 @@ int main()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-#   if ( ON_THE_FLY )
+#   if (ON_THE_FLY)
 
     thermal_balance( gridpoint, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
@@ -612,9 +615,9 @@ int main()
 
     /* Write the intermediate output for (potential) restart */
 
-#   if ( WRITE_INTERMEDIATE_OUTPUT )
+#   if (WRITE_INTERMEDIATE_OUTPUT)
 
-#   if ( INPUT_FORMAT == '.txt' )
+#   if (INPUT_FORMAT == '.txt')
 
     write_temperature_gas("", temperature_gas);
 
@@ -622,7 +625,7 @@ int main()
 
     write_prev_temperature_gas("", prev_temperature_gas);
 
-#   elif ( INPUT_FORMAT == '.vtu' )
+#   elif (INPUT_FORMAT == '.vtu')
 
     write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
@@ -677,7 +680,7 @@ int main()
     long n_not_converged = 0;                /* number of grid points that are not yet converged */
 
 
-#   if ( ON_THE_FLY )
+#   if (ON_THE_FLY)
 
     thermal_balance( gridpoint, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
@@ -797,11 +800,11 @@ int main()
   printf("(Magritte): writing output \n");
 
 
-# if ( INPUT_FORMAT == '.vtu' )
+# if (INPUT_FORMAT == '.vtu')
 
   write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
-# elif ( INPUT_FORMAT == '.txt' )
+# elif (INPUT_FORMAT == '.txt')
 
   write_txt_output(pop, mean_intensity, temperature_gas, temperature_dust);
 

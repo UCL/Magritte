@@ -22,11 +22,13 @@
 #include "declarations.hpp"
 
 #include "thermal_balance.hpp"
+#include "initializers.hpp"
 #include "calc_column_density.hpp"
 #include "chemistry.hpp"
 #include "calc_LTE_populations.hpp"
 #include "level_populations.hpp"
 #include "level_populations_otf.hpp"
+#include "cell_level_populations.hpp"
 #include "reaction_rates.hpp"
 #include "heating.hpp"
 #include "cooling.hpp"
@@ -78,17 +80,9 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   printf("(thermal_balance): calculating chemical abundances \n\n");
 
 
-# if ( ALWAYS_INITIALIZE_CHEMISTRY )
+# if (ALWAYS_INITIALIZE_CHEMISTRY)
 
-  /* Initialize chemical abundances */
-
-  for (long gridp=0; gridp<NGRID; gridp++){
-
-    for (int spec=0; spec<NSPEC; spec++){
-
-      species[spec].abn[gridp] = initial_abn[spec];
-    }
-  }
+  initialize_abn(initial_abn, species);
 
 # endif
 
@@ -106,7 +100,7 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
     *time_chemistry -= omp_get_wtime();
 
 
-#   if ( ON_THE_FLY )
+#   if (ON_THE_FLY)
 
     chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
@@ -152,19 +146,24 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   *time_level_pop -= omp_get_wtime();
 
 
-# if ( ON_THE_FLY )
+# if (CELL_BASED)
 
-  level_populations_otf( gridpoint, irad, jrad, frequency,
-                         A_coeff, B_coeff, pop,
-                         C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
-                         weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
+  cell_level_populations( gridpoint, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+                          icol, jcol, temperature_gas, temperature_dust, weight, energy,
+                          mean_intensity, Lambda_diagonal, mean_intensity_eff );
+
+# elif (ON_THE_FLY)
+
+  level_populations_otf( gridpoint, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+                         icol, jcol, temperature_gas, temperature_dust, weight, energy,
+                         mean_intensity, Lambda_diagonal, mean_intensity_eff );
 
 # else
 
   level_populations( gridpoint, evalpoint, key, raytot, cum_raytot, irad, jrad, frequency,
-                     A_coeff, B_coeff, R, pop,
-                     C_data, coltemp, icol, jcol, temperature_gas, temperature_dust,
-                     weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff );
+                     A_coeff, B_coeff, R, pop, C_data, coltemp, icol, jcol,
+                     temperature_gas, temperature_dust, weight, energy, mean_intensity,
+                     Lambda_diagonal, mean_intensity_eff );
 
 # endif
 

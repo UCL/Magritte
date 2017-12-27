@@ -5,7 +5,7 @@
 
 
 
-#define RUN_NUMBER "1"
+#define RUN_NUMBER "0"
 
 #define WRITE_INTERMEDIATE_OUTPUT false
 
@@ -17,17 +17,17 @@
 
 #define DIMENSIONS 2
 
-#define NRAYS 8
+#define NRAYS 32
 
-#define INPUT_FORMAT '.txt'
+#define INPUT_FORMAT '.vtu'
 
-#define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
+// #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv.txt"
+// #define GRID_INPUTFILE "input/files/1Dn30.dat_conv.txt"
 
 // #define INPUT_FORMAT '.vtu'
 
-// #define GRID_INPUTFILE "input/reduced.vtu"
+#define GRID_INPUTFILE "input/files/Aori_0001.vtu"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
@@ -48,9 +48,9 @@
 
 #define THETA_CRIT 1.3
 
-#define RAY_SEPARATION2 0.0
-
 #define ON_THE_FLY true
+
+#define CELL_BASED true
 
 
 /* Radiative transfer */
@@ -64,7 +64,7 @@
 
 /* Number of various iterations */
 
-#define MAX_NITERATIONS 300
+#define MAX_NITERATIONS 299
 
 #define PRELIM_CHEM_ITER 0
 

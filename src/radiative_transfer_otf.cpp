@@ -27,7 +27,7 @@
 
 
 
-#if ( ON_THE_FLY )
+#if (ON_THE_FLY)
 
 /* radiative_transfer: calculate mean intensity at grid point "gridp", by solving the transfer   */
 /*                     equation along all pairs of a rays and their antipodals                   */
@@ -235,9 +235,9 @@ int intensities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *ra
       long s_0  = LSPECGRIDRAD(lspec,e_0,kr);
 
 
-      S[etot1]      = (source[s_0] + source[m_ij]) / 2.0;
+      S[etot1]    = (source[s_0] + source[m_ij]) / 2.0;
 
-      dtau[etot1]   = evalpoint[e_0].dZ * PC * (opacity[s_0]*phi_0 + opacity[m_ij]*phi) / 2.0;
+      dtau[etot1] = evalpoint[e_0].dZ * PC * (opacity[s_0]*phi_0 + opacity[m_ij]*phi) / 2.0;
     }
 
 

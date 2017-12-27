@@ -244,9 +244,25 @@ TEST_CASE("Cell structure")
     }
   }
 
+
+
   // printf("%ld\n", NRAYS);
 
   // write_healpixvectors("");
+
+  long next = 21;
+  
+  double dZ = 0.0;
+
+  long current = 3;
+  long origin  = 1;
+  long ray     = 1;
+
+  double Z = 0.7;
+
+  next_cell_on_ray(ncells, cell, current, origin, ray, Z, &next, &dZ);
+
+  printf("next %ld,  dZ %lE\n", next, dZ);
 
   CHECK(true);
 

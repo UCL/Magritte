@@ -37,7 +37,7 @@ vz = np.zeros(ngrid)
 density = np.ones(ngrid)
 
 data = np.stack((x, y, z, vx, vy, vz, density), axis=1)
-filename = "1D_regular_" + str(ngrid) + ".txt"
+filename = "files/1D_regular_" + str(ngrid) + ".txt"
 np.savetxt(filename, data, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 
 print("Grid (1D) created with", ngrid, "grid points!")

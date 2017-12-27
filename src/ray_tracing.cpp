@@ -61,7 +61,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   printf("(ray_tracing): number of HEALPix sides   %*d\n", MAX_WIDTH, NSIDES);
   printf("(ray_tracing): number of HEALPix rays    %*d\n", MAX_WIDTH, NRAYS);
   printf("(ray_tracing): critical angle THETA_CRIT %*.2lf\n", MAX_WIDTH, THETA_CRIT);
-  printf("(ray_tracing): equivalent ray distance   %*.2lE\n", MAX_WIDTH, RAY_SEPARATION2);
 
 
 
@@ -232,21 +231,6 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
         succes = succes + 1;
 
         raytot[RINDEX(gridp,ipix)] = raytot[RINDEX(gridp,ipix)] + 1;
-
-
-        /* Check whether ipix ray for evaluation point can be considered equivalent */
-
-        double distance_to_ray2 = ra2[n] - rvec_dot_uhpv * rvec_dot_uhpv;
-
-        if (distance_to_ray2 < RAY_SEPARATION2)
-        {
-          evalpoint[GINDEX(gridp,rb[n])].eqp = gridp;
-        }
-
-        else
-        {
-          evalpoint[GINDEX(gridp,rb[n])].eqp = rb[n];
-        }
 
       } /* end of if angle < THETA_CRIT */
 
@@ -480,23 +464,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
       evalpoint[rb[n]].ray   = ipix;
 	    evalpoint[rb[n]].Z     = Z[ipix] = rvec_dot_uhpv;
       raytot[ipix]           = raytot[ipix] + 1;
-
-
-      /* Check whether ipix ray for evaluation point can be considered equivalent */
-
-      double distance_to_ray2 = ra2[n] - rvec_dot_uhpv*rvec_dot_uhpv;
-
-      if (distance_to_ray2 < RAY_SEPARATION2)
-      {
-        evalpoint[rb[n]].eqp = gridp;
-      }
-
-      else
-      {
-        evalpoint[rb[n]].eqp = rb[n];
-      }
-
-    } /* end of if angle < THETA_CRIT */
+    }
 
   } /* end of n loop over gridpoints (around an origin) */
 
@@ -772,8 +740,6 @@ int find_neighbors( long ncells, CELL *cell )
       }
 
 
-      printf("cell %ld sees %ld in ray %ld\n", p, n, ipix);
-
 #     elif (DIMENSIONS == 3)
 
 
@@ -830,7 +796,7 @@ int find_neighbors( long ncells, CELL *cell )
                                 + rvec[1]*healpixvector[VINDEX(r,1)]
                                 + rvec[2]*healpixvector[VINDEX(r,2)];
 
-            if (projection >= Z[r])
+            if (projection > Z[r] *1.0000001)
             {
               too_far[pn] = true;
             }

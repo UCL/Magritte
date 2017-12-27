@@ -18,9 +18,9 @@ include(${VTK_USE_FILE})
 
 add_library( _setup
 setup_data_structures.cpp
+setup_healpixvectors.cpp
 setup_initializers.cpp
-setup_data_tools.cpp
-setup_healpixvectors.cpp )
+setup_data_tools.cpp )
 
 
 # Add the HEALPix directory

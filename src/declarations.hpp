@@ -172,12 +172,14 @@ typedef struct {
 
   double density;                                                   /* density at the grid point */
 
+  long neighbor[NRAYS];                                          /* cell numbers of the neighors */
+  long n_neighbors;                                                       /* number of neighbors */
+
 } GRIDPOINT;
 
 
 
 typedef struct {
-
   double x, y, z;                                     /* x, y and z coordinate of the grid point */
   double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
 
@@ -219,6 +221,10 @@ typedef struct {
 
   double abn[NGRID];                                                                /* abundance */
 
+  bool lines;
+
+
+
 } SPECIES;
 
 
@@ -251,13 +257,22 @@ typedef struct {
 
 
 
+typedef struct {
+
+  double dust;
+  double gas;
+  double gas_prev;
+
+} TEMPERATURE;
+
+
 
 /* Declaration of external variables */
 
 
 /* Output directory */
 
-extern const std::string output_directory;
+extern std::string output_directory;
 
 
 /* HEALPix vectors */

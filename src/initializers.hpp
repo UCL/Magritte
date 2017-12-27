@@ -107,6 +107,15 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas);
 
 
 
+/* initialize_abn: set the abundanceces to the initial values                                    */
+/*-----------------------------------------------------------------------------------------------*/
+
+int initialize_abn( double *initial_abn, SPECIES *species );
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
 /* initialize_bool: initialize a boolean variable                                                */
 /*-----------------------------------------------------------------------------------------------*/
 
