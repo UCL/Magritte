@@ -23,7 +23,7 @@ print file_name
 
 my_rates = np.loadtxt(file_name)
 
-ngrid = np.shape(my_rates)[0]
+ncells = np.shape(my_rates)[0]
 nreac = np.shape(my_rates)[1]
 
 
@@ -50,7 +50,7 @@ fig2 = plt.figure()
 ax1 = fig1.add_subplot(111)
 ax2 = fig2.add_subplot(111)
 
-data_line = np.zeros(ngrid+1)
+data_line = np.zeros(ncells+1)
 
 for reac in range(nreac):
     data_line = relative_error[:,reac]

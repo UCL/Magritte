@@ -24,7 +24,7 @@
 /* feautrier: fill Feautrier matrix, solve exactly, return (P[etot1-1]+P[etot1-2])/2             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
+int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
              double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
              double *source, double *opacity, double *frequency, double *temperature_gas,
              double *temperature_dust, int *irad, int*jrad, long gridp, int lspec, int kr );

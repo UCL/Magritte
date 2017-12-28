@@ -56,30 +56,30 @@ TEST_CASE("Feautrier solver"){
 
   /* Define grid (using types defined in definitions.h) */
 
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+  CELL cell[NCELLS];                                                     /* grid points */
 
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 
   initialize_evalpoint(evalpoint);
 
 
   /* Initialize the data structures which will store the evaluation pointa */
 
-  initialize_long_array(key, NGRID*NGRID);
+  initialize_long_array(key, NCELLS*NCELLS);
 
-  initialize_long_array(raytot, NGRID*NRAYS);
+  initialize_long_array(raytot, NCELLS*NRAYS);
 
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
+  initialize_long_array(cum_raytot, NCELLS*NRAYS);
 
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  std::string test_grid_inputfile   = "../../../" + grid_inputfile;
+  std::string test_inputfile   = "../../../" + inputfile;
 
 
   /* Read input file */
 
-  read_input(test_grid_inputfile, gridpoint);
+  read_input(test_inputfile, cell);
 
 
   /* Setup the (unit) HEALPix vectors */
@@ -89,7 +89,7 @@ TEST_CASE("Feautrier solver"){
 
   /* Ray tracing */
 
-  ray_tracing(healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, cell, evalpoint);
 
 
 
@@ -100,7 +100,7 @@ TEST_CASE("Feautrier solver"){
   std::string testdata0 = "test_data/intens_0.dat";
   std::string testdata1 = "test_data/intens_1.dat";
 
-  long ndep=NGRID-1;
+  long ndep=NCELLS-1;
 
   double S[ndep];
 
@@ -112,9 +112,9 @@ TEST_CASE("Feautrier solver"){
 
   /* Define and initialize the resulting P_intensity array */
 
-  double P_intensity[NGRID*NRAYS];                       /* Feautrier's mean intensity for a ray */
+  double P_intensity[NCELLS*NRAYS];                       /* Feautrier's mean intensity for a ray */
 
-  initialize_double_array(P_intensity, NGRID*NRAYS);
+  initialize_double_array(P_intensity, NCELLS*NRAYS);
 
   long r=0;
 

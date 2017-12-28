@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 xg,yg,zg, vx,vy,vz, density = np.loadtxt("../../../../input/1D_regular_101.txt", unpack=True)
-ngrid = np.shape(xg)[0]
+ncells = np.shape(xg)[0]
 
 data = np.loadtxt('level_populations.txt', skiprows=1)
 nlev = np.shape(data)[1]
@@ -12,22 +12,22 @@ nlev = np.shape(data)[1]
 
 # print( np.shape(mean_intensity_data) )
 
-print("ngrid =", ngrid)
+print("ncells =", ncells)
 print("nlev =", nlev)
 
-gridpoint = 0
+cell = 0
 
 
 fig = plt.figure()
 ax1 = fig.add_subplot(211)
 
-pop = np.zeros(ngrid)
-mean_intensity = np.zeros(ngrid)
+pop = np.zeros(ncells)
+mean_intensity = np.zeros(ncells)
 
 print(np.shape(data))
 
 for level in range(nlev):
-    for point in range(ngrid):
+    for point in range(ncells):
         pop[point] = data[point][level]
 
     ax1.plot(pop, label=level)
@@ -41,7 +41,7 @@ ax2 = fig.add_subplot(212)
 
 
 # for rad in range(nrad):
-#     for point in range(ngrid):
+#     for point in range(ncells):
 #
 #         mean_intensity[point] = mean_intensity_data[rad][point]
 #

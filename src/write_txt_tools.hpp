@@ -23,7 +23,7 @@
 /* write_grid: write the grid again (for debugging)                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_grid(std::string tag, GRIDPOINT *gridpoint);
+int write_grid(std::string tag, CELL *cell);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -231,7 +231,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad );
 /* write_LTE_deviation: write the relative deviation of the level populations from the LTE value */
 /*-----------------------------------------------------------------------------------------------*/
 
-// int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, double* weight,
+// int write_LTE_deviation( std::string tag, CELL *cell, double *energy, double* weight,
 //                          double *temperature_gas, double *pop );
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -241,7 +241,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad );
 /* write_true_level_populations: write the true level populations                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-// int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double *pop );
+// int write_true_level_populations( std::string tag, CELL *cell, double *pop );
 
 /*-----------------------------------------------------------------------------------------------*/
 

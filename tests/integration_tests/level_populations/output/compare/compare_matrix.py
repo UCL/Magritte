@@ -18,7 +18,7 @@ print file_name
 
 my_data = np.loadtxt(file_name)
 
-ngrid  = np.shape(my_data)[0]
+ncells  = np.shape(my_data)[0]
 nindex = np.shape(my_data)[1]
 
 
@@ -54,7 +54,7 @@ plt.colorbar()
 plot_name1 = "error_" + name + tag + ".png"
 fig1.savefig(plot_name1, bbox_inches='tight')
 
-# data_line = np.zeros(ngrid)
+# data_line = np.zeros(ncells)
 #
 #
 # for index in range(nindex):

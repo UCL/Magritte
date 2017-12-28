@@ -30,7 +30,7 @@
 
 
 
-int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop )
+int level_population_solver( CELL *cell, long gridp, int lspec, double *R, double *pop )
 {
 
 
@@ -71,7 +71,7 @@ int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double
   }
 
 
-  b[nlev[lspec]-1] = gridpoint[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
+  b[nlev[lspec]-1] = cell[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
 
 
   /*_____________________________________________________________________________________________*/

@@ -33,7 +33,7 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
                             long *cum_raytot, double *mean_intensity, double *Lambda_diagonal,
                             double *mean_intensity_eff, double *source, double *opacity,
                             double *frequency, double *temperature_gas, double *temperature_dust,
@@ -73,7 +73,7 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
       double freq = H_4_roots[ny]*frequency_width + frequency_shift;
 
 
-      intensities( gridpoint, evalpoint, key, raytot, cum_raytot, source, opacity, frequency, freq,
+      intensities( cell, evalpoint, key, raytot, cum_raytot, source, opacity, frequency, freq,
                    temperature_gas, irad, jrad, gridp, ray, lspec, kr, &u_local, &v_local, &L_local );
 
 
@@ -95,7 +95,7 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*gridpoint[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cell[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
@@ -138,7 +138,7 @@ int radiative_transfer_otf( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *ke
 /* intensity: calculate the intensity along a certain ray through a certain point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int intensities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
                  long *cum_raytot, double *source, double *opacity, double *frequency, double freq,
                  double *temperature_gas,  int *irad, int*jrad, long gridp, long r, int lspec,
                  int kr, double *u_local, double *v_local, double *L_local )

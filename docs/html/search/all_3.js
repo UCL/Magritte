@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gridpoints',['GRIDPOINTS',['../structGRIDPOINTS.html',1,'']]]
+  ['cells',['CELLS',['../structCELLS.html',1,'']]]
 ];

@@ -18,7 +18,7 @@ file_name = "../files/" + name + tag + ".txt"
 
 my_data  = np.loadtxt(file_name)
 
-ngrid = np.shape(my_data)[0]
+ncells = np.shape(my_data)[0]
 
 
 
@@ -44,7 +44,7 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(111)
 
-data_line = np.zeros(ngrid)
+data_line = np.zeros(ncells)
 
 data_line = relative_error
 

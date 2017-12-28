@@ -19,7 +19,7 @@ print file_name
 
 data = np.loadtxt(file_name)
 
-ngrid  = np.shape(data)[0]
+ncells  = np.shape(data)[0]
 nindex = np.shape(data)[1]
 
 
@@ -52,7 +52,7 @@ fig1 = plt.figure()
 
 ax1 = fig1.add_subplot(111)
 
-data_line = np.zeros(ngrid)
+data_line = np.zeros(ncells)
 
 for index in range(nindex):
     if(index==0 or False):
@@ -89,7 +89,7 @@ print " "
 #
 # ax1 = fig2.add_subplot(121)
 #
-# data_line = np.zeros(ngrid)
+# data_line = np.zeros(ncells)
 #
 # for index in range(nindex):
 #     data_line = relative_error[:,index]

@@ -14,8 +14,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 
-xg,yg,zg = np.loadtxt("input/ingrid.txt", unpack=True)
-ngrid = np.shape(xg)[0]
+xg,yg,zg = np.loadtxt("input/incells.txt", unpack=True)
+ncells = np.shape(xg)[0]
 
 uhpx, uhpy, uhpz = np.loadtxt("output/healpix.txt", unpack=True)
 NRAYS = np.shape(uhpx)[0]
@@ -34,11 +34,11 @@ def numray(point, ray, rnr):
 
 
 
-xe=np.zeros(ngrid*ngrid)
-ye=np.zeros(ngrid*ngrid)
-ze=np.zeros(ngrid*ngrid)
+xe=np.zeros(ncells*ncells)
+ye=np.zeros(ncells*ncells)
+ze=np.zeros(ncells*ncells)
 
-radius = np.zeros((ngrid,NRAYS))
+radius = np.zeros((ncells,NRAYS))
 
 
 # PLOT

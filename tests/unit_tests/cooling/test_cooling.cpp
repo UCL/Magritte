@@ -46,7 +46,7 @@ TEST_CASE("Test chemistry"){
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  string test_grid_inputfile = "../../../" + grid_inputfile;
+  string test_inputfile = "../../../" + inputfile;
 
   string test_spec_datafile  = "../../../" + spec_datafile;
 
@@ -59,16 +59,16 @@ TEST_CASE("Test chemistry"){
 
   /* Define grid (using types defined in definitions.h)*/
 
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+  CELL cell[NCELLS];                                                     /* grid points */
 
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 
   initialize_evalpoint(evalpoint);
 
 
   /* Read input file */
 
-  read_input(test_grid_inputfile, gridpoint);
+  read_input(test_inputfile, cell);
 
 
   /* Read the species (and their initial abundances) */
@@ -108,11 +108,11 @@ TEST_CASE("Test chemistry"){
 
   /* Initialize the data structures which will store the evaluation pointa */
 
-  initialize_long_array(key, NGRID*NGRID);
+  initialize_long_array(key, NCELLS*NCELLS);
 
-  initialize_long_array(raytot, NGRID*NRAYS);
+  initialize_long_array(raytot, NCELLS*NRAYS);
 
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
+  initialize_long_array(cum_raytot, NCELLS*NRAYS);
 
 
   /* Setup the data structures which will store the line data */
@@ -154,9 +154,9 @@ TEST_CASE("Test chemistry"){
 
   initialize_double_array(C_coeff, TOT_NLEV2);
 
-  double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
+  double R[NCELLS*TOT_NLEV2];                                           /* transition matrix R_ij */
 
-  initialize_double_array(R, NGRID*TOT_NLEV2);
+  initialize_double_array(R, NCELLS*TOT_NLEV2);
 
 
   /* Define the collision related variables */
@@ -202,29 +202,29 @@ TEST_CASE("Test chemistry"){
 
   /* Execute ray_tracing */
 
-  ray_tracing(healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, cell, evalpoint);
 
 
-  double temperature_gas[NGRID];                    /* temperature of the gas at each grid point */
+  double temperature_gas[NCELLS];                    /* temperature of the gas at each grid point */
 
   initialize_temperature_gas(temperature_gas);
 
-  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
+  double pop[NCELLS*TOT_NLEV];                                            /* level population n_i */
 
   initialize_level_populations(energy, temperature_gas, pop);
 
-  double dpop[NGRID*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
+  double dpop[NCELLS*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
 
-  initialize_double_array(dpop, NGRID*TOT_NLEV);
+  initialize_double_array(dpop, NCELLS*TOT_NLEV);
 
-  double mean_intensity[NGRID*TOT_NRAD];                             /* mean intensity for a ray */
+  double mean_intensity[NCELLS*TOT_NRAD];                             /* mean intensity for a ray */
 
-  initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
+  initialize_double_array(mean_intensity, NCELLS*TOT_NRAD);
 
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    for (long n=0; n<NGRID; n++){
+    for (long n=0; n<NCELLS; n++){
 
       for (int i=0; i<nlev[lspec]; i++){
 
@@ -237,14 +237,14 @@ TEST_CASE("Test chemistry"){
 
   /* Calculate level populations for each line producing species */
 
-  level_populations( antipod, gridpoint, evalpoint, irad, jrad, frequency,
+  level_populations( antipod, cell, evalpoint, irad, jrad, frequency,
                      A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
                      coltemp, icol, jcol, temperature_gas, weight, energy, mean_intensity );
 
 
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
-    for (long n=0; n<NGRID; n++){
+    for (long n=0; n<NCELLS; n++){
 
       for (int i=0; i<nlev[lspec]; i++){
 
@@ -254,7 +254,7 @@ TEST_CASE("Test chemistry"){
   }
 
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+  for (long gridp=0; gridp<NCELLS; gridp++){
 
     double cooling_total = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency,
                                     pop, mean_intensity );
@@ -271,7 +271,7 @@ TEST_CASE("Test chemistry"){
 
   /* Write output */
 
-  write_output(healpixvector, antipod, gridpoint, evalpoint, pop, weight, energy);
+  write_output(healpixvector, antipod, cell, evalpoint, pop, weight, energy);
 
 
 

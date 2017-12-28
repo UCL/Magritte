@@ -37,7 +37,7 @@
 /* read_txt_input: read the .txt input file                                                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_txt_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint,
+int read_txt_input( std::string inputfile, long ncells, CELL *cell,
                     double *temperature_gas, double *temperature_dust,
                     double *prev_temperature_gas )
 {
@@ -48,30 +48,31 @@ int read_txt_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 
   /* Read input file */
 
-  FILE *input = fopen(grid_inputfile.c_str(), "r");
+  FILE *input = fopen(inputfile.c_str(), "r");
 
 
   /* For all lines in the input file */
 
-  for (long n=0; n<NGRID; n++)
+  for (long n=0; n<NCELLS; n++)
   {
     fgets( buffer, BUFFER_SIZE, input );
 
     sscanf( buffer, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
-            &(gridpoint[n].x), &(gridpoint[n].y), &(gridpoint[n].z),
-            &(gridpoint[n].vx), &(gridpoint[n].vy), &(gridpoint[n].vz),
-            &(gridpoint[n].density) );
+            &(cell[n].x), &(cell[n].y), &(cell[n].z),
+            &(cell[n].vx), &(cell[n].vy), &(cell[n].vz),
+            &(cell[n].density) );
   }
 
 
   fclose(input);
 
 
-# if !( RESTART )
+# if (!RESTART)
 
-  initialize_temperature_gas(prev_temperature_gas);
+  initialize_temperature_gas (NCELLS, prev_temperature_gas);
 
 # else
+
 
   std::string INPUT_DIRECTORY = RESTART_DIRECTORY;
 
@@ -89,7 +90,7 @@ int read_txt_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 
   /* For all lines in the input file */
 
-  for (long n=0; n<NGRID; n++)
+  for (long n=0; n<NCELLS; n++)
   {
     fgets( buffer, BUFFER_SIZE, tgas );
     sscanf( buffer, "%lf", &(temperature_gas[n]) );
@@ -122,7 +123,7 @@ int read_txt_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 /* read_vtu_input: read the input file                                                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint,
+int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
                     double *temperature_gas, double *temperature_dust,
                     double *prev_temperature_gas )
 {
@@ -133,7 +134,7 @@ int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
   vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
     = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
 
-  reader->SetFileName(grid_inputfile.c_str());
+  reader->SetFileName(inputfile.c_str());
   reader->Update();
 
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
@@ -153,15 +154,15 @@ int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
   cellCentersFilter->Update();
 
 
-  for (long n=0; n<NGRID; n++)
+  for (long n=0; n<NCELLS; n++)
   {
     double point[3];
 
     cellCentersFilter->GetOutput()->GetPoint(n, point);
 
-    gridpoint[n].x = point[0];
-    gridpoint[n].y = point[1];
-    gridpoint[n].z = point[2];
+    cell[n].x = point[0];
+    cell[n].y = point[1];
+    cell[n].z = point[2];
   }
 
 
@@ -181,25 +182,25 @@ int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 
     if (name == "rho")
     {
-      for (long n=0; n<NGRID; n++)
+      for (long n=0; n<NCELLS; n++)
       {
-        gridpoint[n].density = data->GetTuple1(n);
+        cell[n].density = data->GetTuple1(n);
       }
     }
 
     if (name == "v1")
     {
-      for (long n=0; n<NGRID; n++)
+      for (long n=0; n<NCELLS; n++)
       {
-        gridpoint[n].vx = data->GetTuple1(n);
+        cell[n].vx = data->GetTuple1(n);
       }
     }
 
     if (name == "v2")
     {
-      for (long n=0; n<NGRID; n++)
+      for (long n=0; n<NCELLS; n++)
       {
-        gridpoint[n].vy = data->GetTuple1(n);
+        cell[n].vy = data->GetTuple1(n);
       }
     }
 
@@ -208,7 +209,7 @@ int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 
     if (name == "temperature_gas")
     {
-      for (long n=0; n<NGRID; n++)
+      for (long n=0; n<NCELLS; n++)
       {
         temperature_gas[n] = data->GetTuple1(n);
       }
@@ -216,7 +217,7 @@ int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 
     if (name == "temperature_dust")
     {
-      for (long n=0; n<NGRID; n++)
+      for (long n=0; n<NCELLS; n++)
       {
         temperature_dust[n] = data->GetTuple1(n);
       }
@@ -224,7 +225,7 @@ int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 
     if (name == "prev_temperature_gas")
     {
-      for (long n=0; n<NGRID; n++)
+      for (long n=0; n<NCELLS; n++)
       {
         prev_temperature_gas[n] = data->GetTuple1(n);
       }

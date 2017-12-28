@@ -26,7 +26,7 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int cell_level_populations( GRIDPOINT *gridpoint, int *irad, int*jrad, double *frequency,
+int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
                             double *A_coeff, double *B_coeff, double *pop,
                             double *C_data, double *coltemp, int *icol, int *jcol,
                             double *temperature_gas, double *temperature_dust,

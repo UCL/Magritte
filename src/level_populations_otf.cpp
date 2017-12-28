@@ -40,7 +40,7 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *frequency,
+int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
                            double *A_coeff, double *B_coeff, double *pop,
                            double *C_data, double *coltemp, int *icol, int *jcol,
                            double *temperature_gas, double *temperature_dust,
@@ -49,9 +49,9 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 {
 
 
-  double prev1_pop[NGRID*TOT_NLEV];                      /* level population n_i 1 iteration ago */
-  double prev2_pop[NGRID*TOT_NLEV];                     /* level population n_i 2 iterations ago */
-  double prev3_pop[NGRID*TOT_NLEV];                     /* level population n_i 3 iterations ago */
+  double prev1_pop[NCELLS*TOT_NLEV];                      /* level population n_i 1 iteration ago */
+  double prev2_pop[NCELLS*TOT_NLEV];                     /* level population n_i 2 iterations ago */
+  double prev3_pop[NCELLS*TOT_NLEV];                     /* level population n_i 3 iterations ago */
 
 
   bool some_not_converged = true;            /*  true when some of the species are not converged */
@@ -68,7 +68,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
   initialize_int_array(niterations, NLSPEC);
 
-  int n_not_converged[NLSPEC];                 /* number of not converged gridpoints per species */
+  int n_not_converged[NLSPEC];                 /* number of not converged cells per species */
 
   initialize_int_array(n_not_converged, NLSPEC);
 
@@ -93,9 +93,9 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
     }
 
 
-    double source[NGRID*TOT_NRAD];                                            /* source function */
+    double source[NCELLS*TOT_NRAD];                                            /* source function */
 
-    double opacity[NGRID*TOT_NRAD];                                                   /* opacity */
+    double opacity[NCELLS*TOT_NRAD];                                                   /* opacity */
 
 
     /* For each line producing species */
@@ -144,7 +144,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
 #   pragma omp parallel                                                                           \
     shared( energy, weight, temperature_gas, temperature_dust, icol, jcol, coltemp, C_data, pop,  \
-            gridpoint, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,     \
+            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,     \
             mean_intensity_eff, species, prev1_pop, not_converged, n_not_converged, nlev,         \
             cum_nlev, cum_nlev2, irad, jrad, nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged,\
             some_not_converged )                                                                  \
@@ -154,14 +154,14 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
 
-    long start = (thread_num*NGRID)/num_threads;
-    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+    long start = (thread_num*NCELLS)/num_threads;
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;     /* Note the brackets are important here */
 
 
     for (long n=start; n<stop; n++)
     {
 
-      long key[NGRID];                /* stores the nrs. of the grid points on the rays in order */
+      long key[NCELLS];                /* stores the nrs. of the grid points on the rays in order */
 
       long raytot[NRAYS];                  /* cumulative nr. of evaluation points along each ray */
 
@@ -169,11 +169,11 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
       long first_velo[NRAYS/2];                    /* grid point with lowest velocity on the ray */
 
-      EVALPOINT evalpoint[NGRID];
+      EVALPOINT evalpoint[NCELLS];
 
-      get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
+      get_local_evalpoint(cell, evalpoint, key, raytot, cum_raytot, n);
 
-      get_velocities(gridpoint, evalpoint, key, raytot, cum_raytot, n, first_velo);
+      get_velocities(cell, evalpoint, key, raytot, cum_raytot, n, first_velo);
 
 
       double R[TOT_NLEV2];                                             /* Transition matrix R_ij */
@@ -192,7 +192,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
           /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
-          calc_C_coeff( gridpoint, C_data, coltemp, icol, jcol, temperature_gas,
+          calc_C_coeff( cell, C_data, coltemp, icol, jcol, temperature_gas,
                         weight, energy, C_coeff, n, lspec );
 
 
@@ -242,7 +242,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 #           if (SOBOLEV)
 
 
-            sobolev( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+            sobolev( cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                      Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
                      temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
 
@@ -250,7 +250,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 #           else
 
 
-            radiative_transfer_otf( gridpoint, evalpoint, key, raytot, cum_raytot, mean_intensity,
+            radiative_transfer_otf( cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
                                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
 
@@ -280,7 +280,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
           /* Solve the radiative balance equation for the level populations */
 
-          level_population_solver_otf( gridpoint, n, lspec, R, pop );
+          level_population_solver_otf( cell, n, lspec, R, pop );
 
 
           /* Check for convergence */
@@ -321,7 +321,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
       } /* end of lspec loop over line producing species */
 
 
-    } /* end of n loop over gridpoints */
+    } /* end of n loop over cells */
     } /* end of OpenMP parallel region */
 
 
@@ -335,7 +335,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
         /* Limit the number of iterations */
 
-        if ( (niterations[lspec] > MAX_NITERATIONS) || (n_not_converged[lspec] < NGRID/10) )
+        if ( (niterations[lspec] > MAX_NITERATIONS) || (n_not_converged[lspec] < NCELLS/10) )
         {
           not_converged[lspec] = false;
           some_not_converged   = false;
@@ -343,7 +343,7 @@ int level_populations_otf( GRIDPOINT *gridpoint, int *irad, int*jrad, double *fr
 
 
         printf( "(level_populations): Not yet converged for %ld of %d\n",
-                n_not_converged[lspec], NGRID*nlev[lspec] );
+                n_not_converged[lspec], NCELLS*nlev[lspec] );
 
       }
     }

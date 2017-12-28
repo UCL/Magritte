@@ -63,7 +63,7 @@ TEST_CASE("Test level populations"){
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  string test_grid_inputfile = "../../../" + grid_inputfile;
+  string test_inputfile = "../../../" + inputfile;
 
   string test_spec_datafile  = "../../../" + spec_datafile;
 
@@ -80,20 +80,20 @@ TEST_CASE("Test level populations"){
 
   /* Define grid (using types defined in definitions.h)*/
 
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+  CELL cell[NCELLS];                                                     /* grid points */
 
-  /* NOTE: gridpoint does not have to be initialized as long as read_input works */
+  /* NOTE: cell does not have to be initialized as long as read_input works */
 
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 
   initialize_evalpoint(evalpoint);
 
 
   /* Read input file */
 
-  cout << "   ! file :" << grid_inputfile << "\n";
+  cout << "   ! file :" << inputfile << "\n";
 
-  read_input(test_grid_inputfile, gridpoint);
+  read_input(test_inputfile, cell);
 
 
   /* Read the species (and their initial abundances) */
@@ -133,11 +133,11 @@ TEST_CASE("Test level populations"){
 
   /* Initialize the data structures which will store the evaluation pointa */
 
-  initialize_long_array(key, NGRID*NGRID);
+  initialize_long_array(key, NCELLS*NCELLS);
 
-  initialize_long_array(raytot, NGRID*NRAYS);
+  initialize_long_array(raytot, NCELLS*NRAYS);
 
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
+  initialize_long_array(cum_raytot, NCELLS*NRAYS);
 
 
   /* Setup the data structures which will store the line data */
@@ -179,9 +179,9 @@ TEST_CASE("Test level populations"){
 
   initialize_double_array(C_coeff, TOT_NLEV2);
 
-  double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
+  double R[NCELLS*TOT_NLEV2];                                           /* transition matrix R_ij */
 
-  initialize_double_array(R, NGRID*TOT_NLEV2);
+  initialize_double_array(R, NCELLS*TOT_NLEV2);
 
 
   /* Define the collision related variables */
@@ -228,7 +228,7 @@ TEST_CASE("Test level populations"){
 
   /* Execute ray_tracing */
 
-  ray_tracing(healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, cell, evalpoint);
 
 
   double G_external[3];                                       /* external radiation field vector */
@@ -238,9 +238,9 @@ TEST_CASE("Test level populations"){
   G_external[2] = G_EXTERNAL_Z;
 
 
-  double rad_surface[NGRID*NRAYS];
+  double rad_surface[NCELLS*NRAYS];
 
-  initialize_double_array(rad_surface, NGRID*NRAYS);
+  initialize_double_array(rad_surface, NCELLS*NRAYS);
 
 
   /* Calculate the radiation surface */
@@ -249,64 +249,64 @@ TEST_CASE("Test level populations"){
 
 
 
-  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
+  double temperature_dust[NCELLS];                  /* temperature of the dust at each grid point */
 
-  initialize_double_array(temperature_dust, NGRID);
+  initialize_double_array(temperature_dust, NCELLS);
 
-  double column_tot[NGRID*NRAYS];
+  double column_tot[NCELLS*NRAYS];
 
-  initialize_double_array(column_tot, NGRID*NRAYS);
+  initialize_double_array(column_tot, NCELLS*NRAYS);
 
-  double column_H[NGRID*NRAYS];                  /* H column density for each ray and grid point */
+  double column_H[NCELLS*NRAYS];                  /* H column density for each ray and grid point */
 
-  initialize_double_array(column_H, NGRID*NRAYS);
+  initialize_double_array(column_H, NCELLS*NRAYS);
 
-  double column_H2[NGRID*NRAYS];                /* H2 column density for each ray and grid point */
+  double column_H2[NCELLS*NRAYS];                /* H2 column density for each ray and grid point */
 
-  initialize_double_array(column_H2, NGRID*NRAYS);
+  initialize_double_array(column_H2, NCELLS*NRAYS);
 
-  double column_HD[NGRID*NRAYS];                /* HD column density for each ray and grid point */
+  double column_HD[NCELLS*NRAYS];                /* HD column density for each ray and grid point */
 
-  initialize_double_array(column_HD, NGRID*NRAYS);
+  initialize_double_array(column_HD, NCELLS*NRAYS);
 
-  double column_C[NGRID*NRAYS];                  /* C column density for each ray and grid point */
+  double column_C[NCELLS*NRAYS];                  /* C column density for each ray and grid point */
 
-  initialize_double_array(column_C, NGRID*NRAYS);
+  initialize_double_array(column_C, NCELLS*NRAYS);
 
-  double column_CO[NGRID*NRAYS];                /* CO column density for each ray and grid point */
+  double column_CO[NCELLS*NRAYS];                /* CO column density for each ray and grid point */
 
-  initialize_double_array(column_CO, NGRID*NRAYS);
+  initialize_double_array(column_CO, NCELLS*NRAYS);
 
-  double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
+  double AV[NCELLS*NRAYS];                       /* Visual extinction (only takes into account H) */
 
-  initialize_double_array(AV, NGRID*NRAYS);
+  initialize_double_array(AV, NCELLS*NRAYS);
 
-  double UV_field[NGRID];
+  double UV_field[NCELLS];
 
-  initialize_double_array(UV_field, NGRID);
+  initialize_double_array(UV_field, NCELLS);
 
-  double dpop[NGRID*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
+  double dpop[NCELLS*TOT_NLEV];        /* change in level population n_i w.r.t previous iteration */
 
-  initialize_double_array(dpop, NGRID*TOT_NLEV);
+  initialize_double_array(dpop, NCELLS*TOT_NLEV);
 
-  double mean_intensity[NGRID*TOT_NRAD];                             /* mean intensity for a ray */
+  double mean_intensity[NCELLS*TOT_NRAD];                             /* mean intensity for a ray */
 
-  initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
+  initialize_double_array(mean_intensity, NCELLS*TOT_NRAD);
 
 
   /* Make a guess for the gas temperature, based on he UV field */
 
-  calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+  calc_column_density(cell, evalpoint, column_tot, NSPEC-1);
 
   calc_AV(column_tot, AV);
 
   calc_UV_field(antipod, AV, rad_surface, UV_field);
 
-  double temperature_gas[NGRID];                    /* temperature of the gas at each grid point */
+  double temperature_gas[NCELLS];                    /* temperature of the gas at each grid point */
 
   guess_temperature_gas(UV_field, temperature_gas);
 
-  double previous_temperature_gas[NGRID];    /* temp. of gas at each grid point, prev. iteration */
+  double previous_temperature_gas[NCELLS];    /* temp. of gas at each grid point, prev. iteration */
 
   initialize_previous_temperature_gas(previous_temperature_gas, temperature_gas);
 
@@ -318,13 +318,13 @@ TEST_CASE("Test level populations"){
 
     /* Calculate column densities */
 
-    calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
+    calc_column_density(cell, evalpoint, column_tot, NSPEC-1);
 
-    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+    calc_column_density(cell, evalpoint, column_H, H_nr);
+    calc_column_density(cell, evalpoint, column_H2, H2_nr);
+    calc_column_density(cell, evalpoint, column_HD, HD_nr);
+    calc_column_density(cell, evalpoint, column_C, C_nr);
+    calc_column_density(cell, evalpoint, column_CO, CO_nr);
 
 
     /* Calculate the visual extinction */
@@ -344,7 +344,7 @@ TEST_CASE("Test level populations"){
 
     /* Calculate the chemical abundances given the current temperatures and radiation field */
 
-    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
 
@@ -356,18 +356,18 @@ TEST_CASE("Test level populations"){
 
   /* Initialize the level populations with their LTE values */
 
-  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
+  double pop[NCELLS*TOT_NLEV];                                            /* level population n_i */
 
-  // calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+  // calc_LTE_populations(cell, energy, weight, temperature_gas, pop);
 
   write_level_populations("0", pop);
 
 
   bool somewhere_no_thermal_balance = true;
 
-  bool no_thermal_balance[NGRID];
+  bool no_thermal_balance[NCELLS];
 
-  initialize_bool(true, no_thermal_balance, NGRID);
+  initialize_bool(true, no_thermal_balance, NCELLS);
 
   int niterations = 0;
 
@@ -392,16 +392,16 @@ TEST_CASE("Test level populations"){
 
       /* Calculate column densities */
 
-      calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-      calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-      calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-      calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-      calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+      calc_column_density(cell, evalpoint, column_H, H_nr);
+      calc_column_density(cell, evalpoint, column_H2, H2_nr);
+      calc_column_density(cell, evalpoint, column_HD, HD_nr);
+      calc_column_density(cell, evalpoint, column_C, C_nr);
+      calc_column_density(cell, evalpoint, column_CO, CO_nr);
 
 
       /* Calculate the chemical abundances given the current temperatures and radiation field */
 
-      chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+      chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                  column_H2, column_HD, column_C, column_CO );
 
 
@@ -419,12 +419,12 @@ TEST_CASE("Test level populations"){
 
     /* Initialize the level populations to their LTE values */
 
-    calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+    calc_LTE_populations(cell, energy, weight, temperature_gas, pop);
 
 
     /* Calculate level populations for each line producing species */
 
-    level_populations( gridpoint, evalpoint, antipod, irad, jrad, frequency,
+    level_populations( cell, evalpoint, antipod, irad, jrad, frequency,
                        A_coeff, B_coeff, C_coeff, R, pop, dpop, C_data,
                        coltemp, icol, jcol, temperature_gas, temperature_dust,
                        weight, energy, mean_intensity );
@@ -446,24 +446,24 @@ TEST_CASE("Test level populations"){
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    double heating_total[NGRID];
+    double heating_total[NCELLS];
 
-    double heating_1[NGRID];
-    double heating_2[NGRID];
-    double heating_3[NGRID];
-    double heating_4[NGRID];
-    double heating_5[NGRID];
-    double heating_6[NGRID];
-    double heating_7[NGRID];
-    double heating_8[NGRID];
-    double heating_9[NGRID];
-    double heating_10[NGRID];
-    double heating_11[NGRID];
+    double heating_1[NCELLS];
+    double heating_2[NCELLS];
+    double heating_3[NCELLS];
+    double heating_4[NCELLS];
+    double heating_5[NCELLS];
+    double heating_6[NCELLS];
+    double heating_7[NCELLS];
+    double heating_8[NCELLS];
+    double heating_9[NCELLS];
+    double heating_10[NCELLS];
+    double heating_11[NCELLS];
 
 
-    double cooling_total[NGRID];
+    double cooling_total[NCELLS];
 
-    // calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+    // calc_LTE_populations(cell, energy, weight, temperature_gas, pop);
 
     int nr_can_reac = 0;
     int nr_can_phot = 0;
@@ -474,11 +474,11 @@ TEST_CASE("Test level populations"){
     int can_photo_reactions[NREAC];
     int all_reactions[NREAC];
 
-    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+    calc_column_density(cell, evalpoint, column_H, H_nr);
+    calc_column_density(cell, evalpoint, column_H2, H2_nr);
+    calc_column_density(cell, evalpoint, column_HD, HD_nr);
+    calc_column_density(cell, evalpoint, column_C, C_nr);
+    calc_column_density(cell, evalpoint, column_CO, CO_nr);
 
 
     write_reaction_rates("preheat", reaction);
@@ -486,9 +486,9 @@ TEST_CASE("Test level populations"){
     write_abundances("preheat");
 
 
-    /* Calculate the thermal balance for each gridpoint */
+    /* Calculate the thermal balance for each cell */
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+    for (long gridp=0; gridp<NCELLS; gridp++){
 
       if (no_thermal_balance[gridp]){
 
@@ -507,7 +507,7 @@ TEST_CASE("Test level populations"){
                         &nr_all, all_reactions );
 
 
-        heating_total[gridp] = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+        heating_total[gridp] = heating( cell, gridp, temperature_gas, temperature_dust,
                                         UV_field, heating_components );
 
         cooling_total[gridp] = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
@@ -565,22 +565,22 @@ TEST_CASE("Test level populations"){
 
     string file_name ="cool_" + name;
 
-    write_double_1(file_name, "level1c", NGRID, cooling_total);
+    write_double_1(file_name, "level1c", NCELLS, cooling_total);
 
 
-    write_double_1("heat_1", "level1c", NGRID, heating_1);
-    write_double_1("heat_2", "level1c", NGRID, heating_2);
-    write_double_1("heat_3", "level1c", NGRID, heating_3);
-    write_double_1("heat_4", "level1c", NGRID, heating_4);
-    write_double_1("heat_5", "level1c", NGRID, heating_5);
-    write_double_1("heat_6", "level1c", NGRID, heating_6);
-    write_double_1("heat_7", "level1c", NGRID, heating_7);
-    write_double_1("heat_8", "level1c", NGRID, heating_8);
-    write_double_1("heat_9", "level1c", NGRID, heating_9);
-    write_double_1("heat_10", "level1c", NGRID, heating_10);
-    write_double_1("heat_11", "level1c", NGRID, heating_11);
+    write_double_1("heat_1", "level1c", NCELLS, heating_1);
+    write_double_1("heat_2", "level1c", NCELLS, heating_2);
+    write_double_1("heat_3", "level1c", NCELLS, heating_3);
+    write_double_1("heat_4", "level1c", NCELLS, heating_4);
+    write_double_1("heat_5", "level1c", NCELLS, heating_5);
+    write_double_1("heat_6", "level1c", NCELLS, heating_6);
+    write_double_1("heat_7", "level1c", NCELLS, heating_7);
+    write_double_1("heat_8", "level1c", NCELLS, heating_8);
+    write_double_1("heat_9", "level1c", NCELLS, heating_9);
+    write_double_1("heat_10", "level1c", NCELLS, heating_10);
+    write_double_1("heat_11", "level1c", NCELLS, heating_11);
 
-    write_double_1("heat", "level1c", NGRID, heating_total);
+    write_double_1("heat", "level1c", NCELLS, heating_total);
 
 
 

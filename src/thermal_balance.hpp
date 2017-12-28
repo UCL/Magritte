@@ -25,7 +25,7 @@
 
 #if ( ON_THE_FLY )
 
-int thermal_balance( GRIDPOINT *gridpoint,
+int thermal_balance( CELL *cell,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double *UV_field, double *temperature_gas, double *temperature_dust,
                      double *rad_surface, double *AV, int *irad, int *jrad, double *energy,
@@ -37,7 +37,7 @@ int thermal_balance( GRIDPOINT *gridpoint,
 
 #else
 
-int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
                      long *key, long *raytot, long *cum_raytot,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double *UV_field, double *temperature_gas, double *temperature_dust,

@@ -1,14 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Magritte: main                                                                                */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -51,140 +44,112 @@
 
 
 
-/* main for Magritte                                                                             */
-/*-----------------------------------------------------------------------------------------------*/
+// main for Magritte
+// -----------------
 
-int main()
+int main ()
 {
 
+  // Initialize all timers
 
-  /* Initialize all timers */
-
-  double time_total = 0.0;                      /* total time in Magritte without writing output */
+  double time_total       = 0.0;   // total time in Magritte
+  double time_ray_tracing = 0.0;   // total time in ray_tracing
+  double time_chemistry   = 0.0;   // total time in abundances
+  double time_level_pop   = 0.0;   // total time in level_populations
 
   time_total -= omp_get_wtime();
 
 
-  double time_ray_tracing = 0.0;                                    /* total time in ray_tracing */
-  double time_chemistry   = 0.0;                                     /* total time in abundances */
-  double time_level_pop   = 0.0;                              /* total time in level_populations */
+  printf ("                                                               \n");
+  printf ("Magritte :                                                     \n");
+  printf ("                                                               \n");
+  printf ("Multidimensional Accelerated General-purpose RadIaTive TransEr \n");
+  printf ("                                                               \n");
+  printf ("-------------------------------------------------------------- \n");
+  printf ("                                                               \n");
+  printf ("                                                               \n");
 
 
 
+  // READ GRID INPUT
+  // _______________
 
 
-  printf("                                                               \n");
-  printf("Magritte :                                                     \n");
-  printf("                                                               \n");
-  printf("Multidimensional Accelerated General-purpose RadIaTive TransEr \n");
-  printf("                                                               \n");
-  printf("-------------------------------------------------------------- \n");
-  printf("                                                               \n");
-  printf("                                                               \n");
+  printf ("(Magritte): reading grid input \n");
 
 
+  // Define cells (using types defined in declarations.hpp
+
+  CELL cell[NCELLS];
+
+  double temperature_gas[NCELLS];                          /* gas temperature at each grid point */
+
+  double prev_temperature_gas[NCELLS];
+
+  double temperature_dust[NCELLS];                 /* temperature of the dust at each grid point */
 
 
+  // Read input file
 
-  /*   READ GRID INPUT                                                                           */
-  /*_____________________________________________________________________________________________*/
+# if   (INPUT_FORMAT == '.vtu')
 
-
-  printf("(Magritte): reading grid input \n");
-
-  printf("\n(Magritte): NGRID = %d \n\n", NGRID);
-
-
-  /* Define grid (using types defined in definitions.h)*/
-
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
-
-  double temperature_gas[NGRID];                           /* gas temperature at each grid point */
-
-  double prev_temperature_gas[NGRID];
-
-  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
-
-
-  /* Read input file */
-
-# if (INPUT_FORMAT == '.vtu')
-
-  read_vtu_input( grid_inputfile, NGRID, gridpoint, temperature_gas,
-                  temperature_dust, prev_temperature_gas );
+  read_vtu_input (inputfile, NCELLS, cell, temperature_gas,
+                  temperature_dust, prev_temperature_gas);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  read_txt_input( grid_inputfile, NGRID, gridpoint, temperature_gas,
-                  temperature_dust, prev_temperature_gas );
+  read_txt_input (inputfile, NCELLS, cell, temperature_gas,
+                  temperature_dust, prev_temperature_gas);
 
 # endif
 
 
-  printf("(Magritte): grid input read \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
+  printf ("(Magritte): grid input read \n\n");
 
 
 
 
-
-  /*   READ INPUT CHEMISTRY                                                                      */
-  /*_____________________________________________________________________________________________*/
+  // READ INPUT CHEMISTRY
+  // ____________________
 
 
   printf("(Magritte): reading chemistry input \n");
 
 
-  /* Read the species (and their initial abundances) */
+  // Read the species (and their initial abundances)
 
   double initial_abn[NSPEC];
 
-  read_species(spec_datafile, initial_abn);
+  read_species (spec_datafile, initial_abn);
 
 
-  /* Get and store the species numbers of some inportant species */
+  // Get and store the species numbers of some inportant species
 
-  e_nr    = get_species_nr("e-");                       /* species nr corresponding to electrons */
-
-  H2_nr   = get_species_nr("H2");                              /* species nr corresponding to H2 */
-
-  HD_nr   = get_species_nr("HD");                              /* species nr corresponding to HD */
-
-  C_nr    = get_species_nr("C");                                /* species nr corresponding to C */
-
-  H_nr    = get_species_nr("H");                                /* species nr corresponding to H */
-
-  H2x_nr  = get_species_nr("H2+");                            /* species nr corresponding to H2+ */
-
-  HCOx_nr = get_species_nr("HCO+");                          /* species nr corresponding to HCO+ */
-
-  H3x_nr  = get_species_nr("H3+");                            /* species nr corresponding to H3+ */
-
-  H3Ox_nr = get_species_nr("H3O+");                          /* species nr corresponding to H3O+ */
-
-  Hex_nr  = get_species_nr("He+");                            /* species nr corresponding to He+ */
-
-  CO_nr   = get_species_nr("CO");                              /* species nr corresponding to CO */
+  e_nr    = get_species_nr("e-");     // species nr corresponding to electrons
+  H2_nr   = get_species_nr("H2");     // species nr corresponding to H2
+  HD_nr   = get_species_nr("HD");     // species nr corresponding to HD
+  C_nr    = get_species_nr("C");      // species nr corresponding to C
+  H_nr    = get_species_nr("H");      // species nr corresponding to H
+  H2x_nr  = get_species_nr("H2+");    // species nr corresponding to H2+
+  HCOx_nr = get_species_nr("HCO+");   // species nr corresponding to HCO+
+  H3x_nr  = get_species_nr("H3+");    // species nr corresponding to H3+
+  H3Ox_nr = get_species_nr("H3O+");   // species nr corresponding to H3O+
+  Hex_nr  = get_species_nr("He+");    // species nr corresponding to He+
+  CO_nr   = get_species_nr("CO");     // species nr corresponding to CO
 
 
-  /* Read the reactions */
+  // Read the reactions
 
-  read_reactions(reac_datafile);
-
-
-  printf("(Magritte): chemistry input read \n\n");
+  read_reactions (reac_datafile);
 
 
-  /*_____________________________________________________________________________________________*/
+  printf ("(Magritte): chemistry input read \n\n");
 
 
 
 
-
-  /*   DECLARE AND INITIALIZE LINE VARIABLES                                                     */
-  /*_____________________________________________________________________________________________*/
+  // DECLARE AND INITIALIZE LINE VARIABLES
+  // _____________________________________
 
 
   printf("(Magritte): declaring and initializing line variables \n");
@@ -223,9 +188,9 @@ int main()
 
 # if (!ON_THE_FLY)
 
-  double R[NGRID*TOT_NLEV2];                                           /* transition matrix R_ij */
+  double R[NCELLS*TOT_NLEV2];                                           /* transition matrix R_ij */
 
-  initialize_double_array(R, NGRID*TOT_NLEV2);
+  initialize_double_array(R, NCELLS*TOT_NLEV2);
 
 # endif
 
@@ -297,21 +262,21 @@ int main()
 
   /* Declare and initialize the evaluation points */
 
-  long key[NGRID*NGRID];              /* stores the nrs. of the grid points on the rays in order */
+  long key[NCELLS*NCELLS];              /* stores the nrs. of the grid points on the rays in order */
 
-  long raytot[NGRID*NRAYS];                /* cumulative nr. of evaluation points along each ray */
+  long raytot[NCELLS*NRAYS];                /* cumulative nr. of evaluation points along each ray */
 
-  long cum_raytot[NGRID*NRAYS];            /* cumulative nr. of evaluation points along each ray */
+  long cum_raytot[NCELLS*NRAYS];            /* cumulative nr. of evaluation points along each ray */
 
 
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 
 
   /* Execute ray_tracing */
 
   time_ray_tracing -= omp_get_wtime();
 
-  ray_tracing(gridpoint, evalpoint, key, raytot, cum_raytot);
+  ray_tracing(cell, evalpoint, key, raytot, cum_raytot);
 
   time_ray_tracing += omp_get_wtime();
 
@@ -343,9 +308,9 @@ int main()
   G_external[2] = G_EXTERNAL_Z;
 
 
-  double rad_surface[NGRID*NRAYS];
+  double rad_surface[NCELLS*NRAYS];
 
-  initialize_double_array(rad_surface, NGRID*NRAYS);
+  initialize_double_array(rad_surface, NCELLS*NRAYS);
 
 
   /* Calculate the radiation surface */
@@ -368,17 +333,17 @@ int main()
   printf("(Magritte): making a guess for gas temperature and calculating dust temperature \n");
 
 
-  double column_tot[NGRID*NRAYS];                                        /* total column density */
+  double column_tot[NCELLS*NRAYS];                                        /* total column density */
 
-  initialize_double_array(column_tot, NGRID*NRAYS);
+  initialize_double_array(column_tot, NCELLS*NRAYS);
 
-  double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
+  double AV[NCELLS*NRAYS];                       /* Visual extinction (only takes into account H) */
 
-  initialize_double_array(AV, NGRID*NRAYS);
+  initialize_double_array(AV, NCELLS*NRAYS);
 
-  double UV_field[NGRID];
+  double UV_field[NCELLS];
 
-  initialize_double_array(UV_field, NGRID);
+  initialize_double_array(UV_field, NCELLS);
 
 
   /* Calculate the total column density */
@@ -386,11 +351,11 @@ int main()
 
 # if (ON_THE_FLY)
 
-  calc_column_density(gridpoint, column_tot, NSPEC-1);
+  calc_column_density(cell, column_tot, NSPEC-1);
 
 # else
 
-  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_tot, NSPEC-1);
+  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_tot, NSPEC-1);
 
 # endif
 
@@ -409,7 +374,7 @@ int main()
 
   /* Make a guess for the gas temperature based on the UV field */
 
-  guess_temperature_gas(UV_field, temperature_gas);
+  guess_temperature_gas (NCELLS, UV_field, temperature_gas);
 
 
   /* Calculate the dust temperature */
@@ -435,21 +400,21 @@ int main()
   printf("(Magritte): starting preliminary chemistry iterations \n\n");
 
 
-  double column_H2[NGRID*NRAYS];                /* H2 column density for each ray and grid point */
+  double column_H2[NCELLS*NRAYS];                /* H2 column density for each ray and grid point */
 
-  initialize_double_array(column_H2, NGRID*NRAYS);
+  initialize_double_array(column_H2, NCELLS*NRAYS);
 
-  double column_HD[NGRID*NRAYS];                /* HD column density for each ray and grid point */
+  double column_HD[NCELLS*NRAYS];                /* HD column density for each ray and grid point */
 
-  initialize_double_array(column_HD, NGRID*NRAYS);
+  initialize_double_array(column_HD, NCELLS*NRAYS);
 
-  double column_C[NGRID*NRAYS];                  /* C column density for each ray and grid point */
+  double column_C[NCELLS*NRAYS];                  /* C column density for each ray and grid point */
 
-  initialize_double_array(column_C, NGRID*NRAYS);
+  initialize_double_array(column_C, NCELLS*NRAYS);
 
-  double column_CO[NGRID*NRAYS];                /* CO column density for each ray and grid point */
+  double column_CO[NCELLS*NRAYS];                /* CO column density for each ray and grid point */
 
-  initialize_double_array(column_CO, NGRID*NRAYS);
+  initialize_double_array(column_CO, NCELLS*NRAYS);
 
 
   /* Preliminary chemistry iterations */
@@ -466,12 +431,12 @@ int main()
 
 #   if (ON_THE_FLY)
 
-    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
 #   else
 
-    chemistry( gridpoint, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
+    chemistry( cell, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
                rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
 #   endif
@@ -491,7 +456,7 @@ int main()
 
 #   elif ( INPUT_FORMAT == '.vtu' )
 
-    write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+    write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 #   endif
 
@@ -518,67 +483,67 @@ int main()
   printf("(Magritte): calculating the minimal and maximal thermal flux \n\n");
 
 
-  double mean_intensity[NGRID*TOT_NRAD];                             /* mean intensity for a ray */
+  double mean_intensity[NCELLS*TOT_NRAD];                             /* mean intensity for a ray */
 
-  initialize_double_array(mean_intensity, NGRID*TOT_NRAD);
-
-
-  double mean_intensity_eff[NGRID*TOT_NRAD];                         /* mean intensity for a ray */
-
-  initialize_double_array(mean_intensity_eff, NGRID*TOT_NRAD);
-
-  double Lambda_diagonal[NGRID*TOT_NRAD];                            /* mean intensity for a ray */
-
-  initialize_double_array(Lambda_diagonal, NGRID*TOT_NRAD);
-
-  double scatter_u[NGRID*TOT_NRAD*NFREQ];                    /* angle averaged u scattering term */
-
-  initialize_double_array(scatter_u, NGRID*TOT_NRAD*NFREQ);
-
-  double scatter_v[NGRID*TOT_NRAD*NFREQ];                    /* angle averaged v scattering term */
-
-  initialize_double_array(scatter_v, NGRID*TOT_NRAD*NFREQ);
-
-  double pop[NGRID*TOT_NLEV];                                            /* level population n_i */
-
-  initialize_double_array(pop, NGRID*TOT_NLEV);
-
-  double temperature_a[NGRID];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_a, NGRID);
-
-  double temperature_b[NGRID];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_b, NGRID);
-
-  double temperature_c[NGRID];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_c, NGRID);
-
-  double temperature_d[NGRID];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_d, NGRID);
-
-  double temperature_e[NGRID];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_e, NGRID);
-
-  double thermal_ratio_a[NGRID];                               /* variable for Brent's algorithm */
-
-  initialize_double_array(thermal_ratio_a, NGRID);
-
-  double thermal_ratio_b[NGRID];                               /* variable for Brent's algorithm */
-
-  initialize_double_array(thermal_ratio_b, NGRID);
-
-  double thermal_ratio_c[NGRID];                               /* variable for Brent's algorithm */
-
-  initialize_double_array(thermal_ratio_c, NGRID);
+  initialize_double_array(mean_intensity, NCELLS*TOT_NRAD);
 
 
-  double thermal_ratio[NGRID];
+  double mean_intensity_eff[NCELLS*TOT_NRAD];                         /* mean intensity for a ray */
 
-  initialize_double_array(thermal_ratio, NGRID);
+  initialize_double_array(mean_intensity_eff, NCELLS*TOT_NRAD);
+
+  double Lambda_diagonal[NCELLS*TOT_NRAD];                            /* mean intensity for a ray */
+
+  initialize_double_array(Lambda_diagonal, NCELLS*TOT_NRAD);
+
+  double scatter_u[NCELLS*TOT_NRAD*NFREQ];                    /* angle averaged u scattering term */
+
+  initialize_double_array(scatter_u, NCELLS*TOT_NRAD*NFREQ);
+
+  double scatter_v[NCELLS*TOT_NRAD*NFREQ];                    /* angle averaged v scattering term */
+
+  initialize_double_array(scatter_v, NCELLS*TOT_NRAD*NFREQ);
+
+  double pop[NCELLS*TOT_NLEV];                                            /* level population n_i */
+
+  initialize_double_array(pop, NCELLS*TOT_NLEV);
+
+  double temperature_a[NCELLS];                                 /* variable for Brent's algorithm */
+
+  initialize_double_array(temperature_a, NCELLS);
+
+  double temperature_b[NCELLS];                                 /* variable for Brent's algorithm */
+
+  initialize_double_array(temperature_b, NCELLS);
+
+  double temperature_c[NCELLS];                                 /* variable for Brent's algorithm */
+
+  initialize_double_array(temperature_c, NCELLS);
+
+  double temperature_d[NCELLS];                                 /* variable for Brent's algorithm */
+
+  initialize_double_array(temperature_d, NCELLS);
+
+  double temperature_e[NCELLS];                                 /* variable for Brent's algorithm */
+
+  initialize_double_array(temperature_e, NCELLS);
+
+  double thermal_ratio_a[NCELLS];                               /* variable for Brent's algorithm */
+
+  initialize_double_array(thermal_ratio_a, NCELLS);
+
+  double thermal_ratio_b[NCELLS];                               /* variable for Brent's algorithm */
+
+  initialize_double_array(thermal_ratio_b, NCELLS);
+
+  double thermal_ratio_c[NCELLS];                               /* variable for Brent's algorithm */
+
+  initialize_double_array(thermal_ratio_c, NCELLS);
+
+
+  double thermal_ratio[NCELLS];
+
+  initialize_double_array(thermal_ratio, NCELLS);
 
 
 
@@ -589,7 +554,7 @@ int main()
 
 #   if (ON_THE_FLY)
 
-    thermal_balance( gridpoint, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance( cell, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
                      weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
                      mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
@@ -597,7 +562,7 @@ int main()
 
 #   else
 
-    thermal_balance( gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
+    thermal_balance( cell, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
                      column_CO, UV_field, temperature_gas, temperature_dust, rad_surface, AV,
                      irad, jrad, energy, weight, frequency, A_coeff, B_coeff, R, C_data, coltemp,
                      icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
@@ -606,7 +571,7 @@ int main()
 #   endif
 
 
-    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
+    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NCELLS);
 
 
     update_temperature_gas( thermal_ratio, temperature_gas, prev_temperature_gas,
@@ -627,7 +592,7 @@ int main()
 
 #   elif (INPUT_FORMAT == '.vtu')
 
-    write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+    write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 #   endif
 
@@ -637,11 +602,11 @@ int main()
   } /* end of tb_iteration loop over preliminary tb iterations */
 
 
-  initialize_double_array_with(temperature_gas, temperature_b, NGRID);
+  initialize_double_array_with(temperature_gas, temperature_b, NCELLS);
 
 
-  // write_double_1("temperature_a", "", NGRID, temperature_a );
-  // write_double_1("temperature_b", "", NGRID, temperature_b );
+  // write_double_1("temperature_a", "", NCELLS, temperature_a );
+  // write_double_1("temperature_b", "", NCELLS, temperature_b );
 
 
   printf("(Magritte): minimal and maximal thermal flux calculated \n\n");
@@ -682,7 +647,7 @@ int main()
 
 #   if (ON_THE_FLY)
 
-    thermal_balance( gridpoint, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance( cell, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
                      weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
                      mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
@@ -690,7 +655,7 @@ int main()
 
 #   else
 
-    thermal_balance( gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
+    thermal_balance( cell, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
                      column_CO, UV_field, temperature_gas, temperature_dust, rad_surface, AV,
                      irad, jrad, energy, weight, frequency, A_coeff, B_coeff, R, C_data, coltemp,
                      icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
@@ -699,11 +664,11 @@ int main()
 #   endif
 
 
-    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NGRID);
+    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NCELLS);
 
 
 
-    /* Calculate the thermal balance for each gridpoint */
+    /* Calculate the thermal balance for each cell */
 
 #   pragma omp parallel                                                                           \
     shared( thermal_ratio, temperature_gas, prev_temperature_gas, temperature_a, temperature_b,   \
@@ -715,8 +680,8 @@ int main()
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
 
-    long start = (thread_num*NGRID)/num_threads;
-    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+    long start = (thread_num*NCELLS)/num_threads;
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;     /* Note the brackets are important here */
 
 
     for (long gridp=start; gridp<stop; gridp++)
@@ -766,13 +731,13 @@ int main()
 
     /* Limit the number of iterations */
 
-    if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10)
+    if (niterations > MAX_NITERATIONS || n_not_converged < NCELLS/10)
     {
       no_thermal_balance = false;
     }
 
 
-    printf("(Magritte): Not yet converged for %ld of %d\n", n_not_converged, NGRID);
+    printf("(Magritte): Not yet converged for %ld of %d\n", n_not_converged, NCELLS);
 
 
   } /* end of thermal balance iterations */
@@ -802,7 +767,7 @@ int main()
 
 # if (INPUT_FORMAT == '.vtu')
 
-  write_vtu_output(grid_inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+  write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 # elif (INPUT_FORMAT == '.txt')
 

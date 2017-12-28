@@ -18,7 +18,7 @@ file_name = "../files/" + name + tag + ".txt"
 
 data = np.loadtxt(file_name)
 
-ngrid  = np.shape(data)[0]
+ncells  = np.shape(data)[0]
 nindex = np.shape(data)[1]
 
 
@@ -32,7 +32,7 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(111)
 
-data_line = np.zeros(ngrid)
+data_line = np.zeros(ncells)
 
 for index in range(nindex):
     data_line = data[:,index]

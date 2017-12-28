@@ -74,8 +74,8 @@ int calc_temperature_dust( double *UV_field, double *rad_surface, double *temper
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;       /* Note the brackets are important here */
 
 
   for (long n=start; n<stop; n++){

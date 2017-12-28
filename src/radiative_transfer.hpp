@@ -25,7 +25,7 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+void radiative_transfer( CELL *cell, EVALPOINT *evalpoint,
                          long *key, long *raytot, long *cum_raytot,
                          double *P_intensity, double *mean_intensity,
                          double *Lambda_diagonal, double *mean_intensity_eff,

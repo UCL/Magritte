@@ -30,15 +30,15 @@ else:
 with open("../../parameters.txt") as parameters_file:
     parameters = parameters_file.readlines()
 
-grid_inputfile = "../../../../../" + parameters[38].split()[0]
+inputfile = "../../../../../" + parameters[38].split()[0]
 spec_datafile  = "../../../../../" + parameters[40].split()[0]
 
 
 
 # Read the grid input file
 
-xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
-ngrid = np.shape(xg)[0]
+xg,yg,zg, vx,vy,vz, density = np.loadtxt(inputfile, unpack=True)
+ncells = np.shape(xg)[0]
 
 
 
@@ -95,10 +95,10 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(111)
 
-abundance = np.zeros(ngrid)
+abundance = np.zeros(ncells)
 
 for spec in range(1,nspec-1):
-    for point in range(ngrid):
+    for point in range(ncells):
         abundance[point] = abundances_data[spec][point]
 
     if( (max(abundance) > 1.0E-9 and not species_specified) or (species_I_want == spec and species_specified) ):

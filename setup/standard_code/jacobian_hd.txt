@@ -1,44 +1,27 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* jacobian: Calculates the Jacobian of the rate equations                                       */
-/*                                                                                               */
-/* ( based on calculate_abundances in 3D-PDR                                                     */
-/*   and the cvRobers_dns example that comes with Sundials )                                     */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
+// User-defined vector and matrix accessor macros: Ith, IJth
 
-/*
- * Jacobian routine. Compute J(t,y) = df/dy.
- */
-
-
-
-/* User-defined vector and matrix accessor macros: Ith, IJth */
-
-#define Ith(v,i)    NV_Ith_S(v,i)                             /* Ith numbers components 0..NEQ-1 */
-#define IJth(A,i,j) SM_ELEMENT_D(A,i,j)                       /* IJth numbers rows,cols 0..NEQ-1 */
+#define Ith(v,i)    NV_Ith_S(v,i)         // Ith numbers components 0..NEQ-1
+#define IJth(A,i,j) SM_ELEMENT_D(A,i,j)   // IJth numbers rows,cols 0..NEQ-1
 
 
+// Jac: Computes J(t,y) = df/dy
+// ----------------------------
 
-static int Jac( realtype t, N_Vector y, N_Vector fy, SUNMatrix J, void *user_data,
-                N_Vector tmp1, N_Vector tmp2, N_Vector tmp3 )
+static int Jac (realtype t, N_Vector y, N_Vector fy, SUNMatrix J, void *user_data,
+                N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
 
-
   USER_DATA data = (USER_DATA) user_data;
-  
+
   long gridp = data->gp;
 
-  GRIDPOINT *gridpoint = data->gridpointer;
+  CELL *cell = data->cellpointer;
 
-  realtype n_H = (realtype) gridpoint[gridp].density;
-
+  realtype n_H = (realtype) cell[gridp].density;
   realtype x_e = data->electron_abundance;
-
-

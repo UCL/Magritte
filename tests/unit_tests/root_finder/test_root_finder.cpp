@@ -7,7 +7,7 @@
 #define EPSILON 3.0E-8
 #define PREC    5.0E-3
 #define tol1    PREC
-#define NGRID   1
+#define NCELLS   1
 
 
 double f(double T)
@@ -223,17 +223,17 @@ int main()
 
   int gridp = 0;
 
-  double temperature_a[NGRID]  = {     0.0 };
-  double temperature_b[NGRID]  = { 1000.0 };
+  double temperature_a[NCELLS]  = {     0.0 };
+  double temperature_b[NCELLS]  = { 1000.0 };
 
-  double thermal_ratio_a[NGRID] = { f(temperature_a[0]) };
-  double thermal_ratio_b[NGRID] = { f(temperature_b[0]) };
+  double thermal_ratio_a[NCELLS] = { f(temperature_a[0]) };
+  double thermal_ratio_b[NCELLS] = { f(temperature_b[0]) };
 
-  double temperature_c[NGRID]   = { temperature_b[0] };
-  double thermal_ratio_c[NGRID] = { thermal_ratio_b[0] };
+  double temperature_c[NCELLS]   = { temperature_b[0] };
+  double thermal_ratio_c[NCELLS] = { thermal_ratio_b[0] };
 
-  double temperature_d[NGRID];
-  double temperature_e[NGRID];
+  double temperature_d[NCELLS];
+  double temperature_e[NCELLS];
 
   int niter     = 0;
   int MAX_niter = 100;

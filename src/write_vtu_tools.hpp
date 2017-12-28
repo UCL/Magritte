@@ -22,7 +22,7 @@
 /* write_vtu_output: write all physical variables to the vtu input grid                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
+int write_vtu_output( std::string inputfile, double *temperature_gas,
                       double *temperature_dust, double *prev_temperature_gas );
 
 /*-----------------------------------------------------------------------------------------------*/

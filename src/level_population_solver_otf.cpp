@@ -30,7 +30,7 @@
 
 
 
-int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec,
+int level_population_solver_otf( CELL *cell, long gridp, int lspec,
                                  double *R, double *pop )
 {
 
@@ -74,7 +74,7 @@ int level_population_solver_otf( GRIDPOINT *gridpoint, long gridp, int lspec,
   }
 
 
-  b[nlev[lspec]-1] = gridpoint[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
+  b[nlev[lspec]-1] = cell[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
 
 
   /*_____________________________________________________________________________________________*/

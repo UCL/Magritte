@@ -38,10 +38,10 @@
 /* thermal_balance: perform a thermal balance iteration to calculate the thermal flux            */
 /*-----------------------------------------------------------------------------------------------*/
 
-#if ( ON_THE_FLY )
+#if (ON_THE_FLY)
 
 
-int thermal_balance( GRIDPOINT *gridpoint,
+int thermal_balance( CELL *cell,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double *UV_field, double *temperature_gas, double *temperature_dust,
                      double *rad_surface, double *AV, int *irad, int *jrad, double *energy,
@@ -54,7 +54,7 @@ int thermal_balance( GRIDPOINT *gridpoint,
 
 #else
 
-int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
                      long *key, long *raytot, long *cum_raytot,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double *UV_field, double *temperature_gas, double *temperature_dust,
@@ -82,7 +82,7 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
 
-  initialize_abn(initial_abn, species);
+  initialize_abn (NCELLS, initial_abn, species);
 
 # endif
 
@@ -102,12 +102,12 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 #   if (ON_THE_FLY)
 
-    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
 #   else
 
-    chemistry( gridpoint, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
+    chemistry( cell, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
                rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
 #   endif
@@ -138,7 +138,7 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   /* Initialize the level populations to their LTE values */
 
-  calc_LTE_populations(gridpoint, energy, weight, temperature_gas, pop);
+  calc_LTE_populations(cell, energy, weight, temperature_gas, pop);
 
 
   /* Calculate level populations for each line producing species */
@@ -146,21 +146,21 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   *time_level_pop -= omp_get_wtime();
 
 
-# if (CELL_BASED)
+# if   (CELL_BASED)
 
-  cell_level_populations( gridpoint, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+  cell_level_populations (cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
                           icol, jcol, temperature_gas, temperature_dust, weight, energy,
-                          mean_intensity, Lambda_diagonal, mean_intensity_eff );
+                          mean_intensity, Lambda_diagonal, mean_intensity_eff);
 
 # elif (ON_THE_FLY)
 
-  level_populations_otf( gridpoint, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+  level_populations_otf( cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
                          icol, jcol, temperature_gas, temperature_dust, weight, energy,
                          mean_intensity, Lambda_diagonal, mean_intensity_eff );
 
 # else
 
-  level_populations( gridpoint, evalpoint, key, raytot, cum_raytot, irad, jrad, frequency,
+  level_populations( cell, evalpoint, key, raytot, cum_raytot, irad, jrad, frequency,
                      A_coeff, B_coeff, R, pop, C_data, coltemp, icol, jcol,
                      temperature_gas, temperature_dust, weight, energy, mean_intensity,
                      Lambda_diagonal, mean_intensity_eff );
@@ -194,22 +194,22 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
 # if ( ON_THE_FLY )
 
-  calc_column_densities(gridpoint, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities(cell, column_H2, column_HD, column_C, column_CO);
 
 # else
 
-  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
-  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
-  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_C, C_nr);
-  calc_column_density(gridpoint, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
+  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
+  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
+  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_C, C_nr);
+  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
 
 # endif
 
 
-  /* Calculate the thermal balance for each gridpoint */
+  /* Calculate the thermal balance for each cell */
 
 # pragma omp parallel                                                                             \
-  shared( gridpoint, temperature_gas, temperature_dust, irad, jrad, A_coeff, B_coeff, pop,        \
+  shared( cell, temperature_gas, temperature_dust, irad, jrad, A_coeff, B_coeff, pop,        \
           frequency, weight, column_H2, column_HD, column_C, column_CO, cum_nlev, species,        \
           mean_intensity, AV, rad_surface, UV_field, thermal_ratio )                              \
   default( none )
@@ -218,8 +218,8 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;            /* Note the brackets are important */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;            /* Note the brackets are important */
 
 
   for (long gridp=start; gridp<stop; gridp++){
@@ -231,7 +231,7 @@ int thermal_balance( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
                     column_H2, column_HD, column_C, column_CO, gridp );
 
 
-    double heating_total = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+    double heating_total = heating( cell, gridp, temperature_gas, temperature_dust,
                                     UV_field, heating_components );
 
     double cooling_total = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,

@@ -35,11 +35,11 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
 
   /* All variable names are based on the lecture notes on radiative transfer by C.P. Dullemond */
 
-  double Q1[NGRID*nlev[lspec]];
-  double Q2[NGRID*nlev[lspec]];
-  double Q3[NGRID*nlev[lspec]];
+  double Q1[NCELLS*nlev[lspec]];
+  double Q2[NCELLS*nlev[lspec]];
+  double Q3[NCELLS*nlev[lspec]];
 
-  double Wt[NGRID*nlev[lspec]];                                  /* weights of the inner product */
+  double Wt[NCELLS*nlev[lspec]];                                  /* weights of the inner product */
 
 
 # pragma omp parallel                                                                             \
@@ -50,8 +50,8 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
 
 
   for (long gridp=start; gridp<stop; gridp++){
@@ -93,7 +93,7 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
 
 # pragma omp parallel for reduction( + : A1, A2, B1, B2, C1, C2)
 
-  for (long gi=0; gi<NGRID*nlev[lspec]; gi++){
+  for (long gi=0; gi<NCELLS*nlev[lspec]; gi++){
 
     A1      = A1 + Wt[gi]*Q1[gi]*Q1[gi];
     A2 = B1 = A2 + Wt[gi]*Q1[gi]*Q2[gi];
@@ -124,8 +124,8 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
 
-    long start = (thread_num*NGRID)/num_threads;
-    long stop  = ((thread_num+1)*NGRID)/num_threads;                        /* Note the brackets */
+    long start = (thread_num*NCELLS)/num_threads;
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;                        /* Note the brackets */
 
 
     for (long gridp=start; gridp<stop; gridp++){
@@ -177,8 +177,8 @@ int store_populations( int lspec, double *prev3_pop, double *prev2_pop, double *
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
 
 
   for (long gridp=start; gridp<stop; gridp++){

@@ -24,7 +24,7 @@
 /* calc_LTE_populations: Calculates the LTE level populations                                    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
+int calc_LTE_populations( CELL *cell, double *energy, double *weight,
                           double *temperature_gas, double *pop );
 
 /*-----------------------------------------------------------------------------------------------*/

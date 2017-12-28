@@ -28,7 +28,7 @@ typedef struct {
 
   long gp;
 
-  GRIDPOINT* gridpointer;
+  CELL* cellpointer;
 
   double electron_abundance;
 
@@ -39,7 +39,7 @@ typedef struct {
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int rate_equation_solver(GRIDPOINT *gridpoint, long gridp);
+int rate_equation_solver(CELL *cell, long gridp);
 
 /*-----------------------------------------------------------------------------------------------*/
 

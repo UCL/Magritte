@@ -27,7 +27,7 @@
 /* sobolev: calculate the mean intensity using the LVG approximation and escape probabilities    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
+int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
              double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
              double *source, double *opacity, double *frequency, double *temperature_gas,
              double *temperature_dust, int *irad, int*jrad, long gridp, int lspec, int kr )
@@ -207,7 +207,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*gridpoint[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cell[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
@@ -218,7 +218,7 @@ int sobolev( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot
 
   /* NOTE: Continuum radiation is assumed to be local */
 
-  double continuum_mean_intensity = 0.0; // factor * (Planck_CMB + emissivity_dust*Planck_dust);
+  double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
   mean_intensity[m_ij] = (1.0 - escape_probability) * source[m_ij]

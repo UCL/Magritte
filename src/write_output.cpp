@@ -84,7 +84,7 @@ int write_performance_log( double time_total, double time_level_pop, double time
     exit(1);
   }
 
-  fprintf( file, "NGRID            %d\n",  NGRID );
+  fprintf( file, "NCELLS            %d\n",  NCELLS );
   fprintf( file, "time_total       %lE\n", time_total );
   fprintf( file, "time_ray_tracing %lE\n", time_ray_tracing );
   fprintf( file, "time_level_pop   %lE\n", time_level_pop );

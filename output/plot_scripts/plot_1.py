@@ -47,7 +47,7 @@ else:
 file_name = "../files/" + date_stamp + "_output/" + name + tag + ".txt"
 
 temperature_gas = np.loadtxt(file_name)
-ngrid = np.shape(temperature_gas)[0]
+ncells = np.shape(temperature_gas)[0]
 
 print "Plotting the data as specified in " + file_name
 

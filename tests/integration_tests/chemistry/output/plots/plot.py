@@ -30,7 +30,7 @@ ax1 = fig.add_subplot(111)
 
 
 # for spec in range(nspec):
-#     for point in range(ngrid):
+#     for point in range(ncells):
 #         abundance[point] = abundances_data[spec][point]
 #
 #     if( max(abundance) > 1.0E-10 ):

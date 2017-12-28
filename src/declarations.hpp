@@ -77,6 +77,7 @@
 #define POP_PREC        1.0E-2                        /* precision used in convergence criterion */
 #define POP_LOWER_LIMIT 1.0E-26                                    /* lowest non-zero population */
 #define POP_UPPER_LIMIT 1.0E+15                                            /* highest population */
+#define TAU_MAX         1.0E+3
 
 
 /* Parameters for thermal balance iteration */
@@ -86,7 +87,7 @@
 
 /* Grid related index definitions */
 
-#define GINDEX(r,c) ( (c) + (r)*NGRID )                       /* when second index is grid point */
+#define GINDEX(r,c) ( (c) + (r)*NCELLS )                       /* when second index is grid point */
 
 #define RINDEX(r,c) ( (c) + (r)*NRAYS )                              /* when second index is ray */
 
@@ -103,10 +104,10 @@
                                    corresponding to the "evalp"'th evaluation point on ray "ray" */
 #else
 
-  #define GP_NR_OF_EVALP(gridpoint, ray, evalp)                                                   \
-          ( key[ GINDEX( (gridpoint), (evalp) + cum_raytot[RINDEX((gridpoint), (ray))] ) ] )      \
-               /* GP_NR_OF_EVALP(gridpoint, ray, evalp) gives the grid point number corresponding \
-                       to the "evalp"'th evaluation point on ray "ray" of grid point "gridpoint" */
+  #define GP_NR_OF_EVALP(cell, ray, evalp)                                                   \
+          ( key[ GINDEX( (cell), (evalp) + cum_raytot[RINDEX((cell), (ray))] ) ] )      \
+               /* GP_NR_OF_EVALP(cell, ray, evalp) gives the grid point number corresponding \
+                       to the "evalp"'th evaluation point on ray "ray" of grid point "cell" */
 #endif
 
 
@@ -120,16 +121,16 @@
 
 #define LSPECGRIDLEVLEV(lspec,gridp,i,j)   ( (j) + (i)*nlev[(lspec)]                              \
                                              + (gridp)*nlev[(lspec)]*nlev[(lspec)]                \
-                                             + NGRID*cum_nlev2[(lspec)] )                         \
+                                             + NCELLS*cum_nlev2[(lspec)] )                         \
 /* when first index is line producing species, second is grid point, third and fourth are levels */
 
-#define LSPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + NGRID*cum_nlev[lspec] )     \
+#define LSPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + NCELLS*cum_nlev[lspec] )     \
           /* when first index is line producing species, second is grid point and third is level */
 
 #define LSPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                         \
                 /* when first index is line producing species and second is radiative transition */
 
-#define LSPECGRIDRAD(lspec,gridp,kr)   ( (kr) + (gridp)*nrad[(lspec)] + NGRID*cum_nrad[(lspec)] )
+#define LSPECGRIDRAD(lspec,gridp,kr)   ( (kr) + (gridp)*nrad[(lspec)] + NCELLS*cum_nrad[(lspec)] )
 /* when first index is line producing species, second is grid point and third is rad. transition */
 
 
@@ -165,21 +166,8 @@
 
 /* Data types */
 
-typedef struct {
-
-  double x, y, z;                                     /* x, y and z coordinate of the grid point */
-  double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
-
-  double density;                                                   /* density at the grid point */
-
-  long neighbor[NRAYS];                                          /* cell numbers of the neighors */
-  long n_neighbors;                                                       /* number of neighbors */
-
-} GRIDPOINT;
-
-
-
-typedef struct {
+typedef struct
+{
   double x, y, z;                                     /* x, y and z coordinate of the grid point */
   double vx, vy, vz;             /* x, y and z component of the velocity field of the grid point */
 
@@ -192,9 +180,9 @@ typedef struct {
 
 
 
-typedef struct {
-
-  bool   onray;             /* is true when the gridpoint is on any ray thus an evaluation point */
+typedef struct
+{
+  bool   onray;             /* is true when the cell is on any ray thus an evaluation point */
 
   long   ray;                               /* number of the ray the evaluation point belongs to */
   long   nr;                                     /* number of the evaluation point along the ray */
@@ -213,24 +201,20 @@ typedef struct {
 
 
 
-typedef struct {
-
+typedef struct
+{
   std::string sym;                                                            /* chemical symbol */
 
   double mass;                                                                 /* molecular mass */
 
-  double abn[NGRID];                                                                /* abundance */
-
-  bool lines;
-
-
+  double abn[NCELLS];                                                                /* abundance */
 
 } SPECIES;
 
 
 
-typedef struct {
-
+typedef struct
+{
   std::string R1;                                                                  /* reactant 1 */
   std::string R2;                                                                  /* reactant 2 */
   std::string R3;                                                                  /* reactant 3 */
@@ -249,7 +233,7 @@ typedef struct {
   double RT_max;                           /* RT_max coefficient to calculate rate coefficient k */
 
 
-  double k[NGRID];                                                  /* reaction rate coefficient */
+  double k[NCELLS];                                                  /* reaction rate coefficient */
 
   int    dup;                                           /* Number of duplicates of this reaction */
 
@@ -257,8 +241,8 @@ typedef struct {
 
 
 
-typedef struct {
-
+typedef struct
+{
   double dust;
   double gas;
   double gas_prev;

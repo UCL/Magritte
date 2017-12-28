@@ -32,11 +32,11 @@
 
 #if ( ON_THE_FLY )
 
-int calc_column_density( GRIDPOINT *gridpoint, double *column_density, int spec )
+int calc_column_density( CELL *cell, double *column_density, int spec )
 
 #else
 
-int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+int calc_column_density( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
                          long *cum_raytot, double *column_density, int spec )
 
 #endif
@@ -51,13 +51,13 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
 # if ( ON_THE_FLY )
 
 # pragma omp parallel                                                                             \
-  shared( gridpoint, column_density, spec )                                                       \
+  shared( cell, column_density, spec )                                                       \
   default( none )
 
 # else
 
 # pragma omp parallel                                                                             \
-  shared( gridpoint, evalpoint, key, raytot, cum_raytot, column_density, spec )                   \
+  shared( cell, evalpoint, key, raytot, cum_raytot, column_density, spec )                   \
   default( none )
 
 # endif
@@ -68,8 +68,8 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
 
 
   for (long n=start; n<stop; n++){
@@ -77,23 +77,23 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
 
 #   if ( ON_THE_FLY )
 
-    long key[NGRID];                  /* stores the nrs. of the grid points on the rays in order */
+    long key[NCELLS];                  /* stores the nrs. of the grid points on the rays in order */
 
     long raytot[NRAYS];                    /* cumulative nr. of evaluation points along each ray */
 
     long cum_raytot[NRAYS];                /* cumulative nr. of evaluation points along each ray */
 
 
-    EVALPOINT evalpoint[NGRID];
+    EVALPOINT evalpoint[NCELLS];
 
-    get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
+    get_local_evalpoint(cell, evalpoint, key, raytot, cum_raytot, n);
 
 #   endif
 
 
     for (long r=0; r<NRAYS; r++){
 
-      column_density[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+      column_density[RINDEX(n,r)] = column_density_at_point( cell, evalpoint, key, raytot,
                                                              cum_raytot, n, spec, r);
     }
 
@@ -115,7 +115,7 @@ int calc_column_density( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, 
 /* calc_column_densities: calculates column densities for the species needed in chemistry        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *column_HD,
+int calc_column_densities( CELL *cell, double *column_H2, double *column_HD,
                            double *column_C, double *column_CO )
 {
 
@@ -123,40 +123,40 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
   /* For all grid points n and rays r */
 
 # pragma omp parallel                                                                             \
-  shared( gridpoint, column_H2, column_HD, column_C, column_CO, H2_nr, HD_nr, C_nr, CO_nr )       \
+  shared( cell, column_H2, column_HD, column_C, column_CO, H2_nr, HD_nr, C_nr, CO_nr )       \
   default( none )
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;  /* Note that the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
 
 
   for (long n=start; n<stop; n++){
 
-    long key[NGRID];                  /* stores the nrs. of the grid points on the rays in order */
+    long key[NCELLS];                  /* stores the nrs. of the grid points on the rays in order */
 
     long raytot[NRAYS];                    /* cumulative nr. of evaluation points along each ray */
 
     long cum_raytot[NRAYS];                /* cumulative nr. of evaluation points along each ray */
 
 
-    EVALPOINT evalpoint[NGRID];
+    EVALPOINT evalpoint[NCELLS];
 
-    get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, n);
+    get_local_evalpoint(cell, evalpoint, key, raytot, cum_raytot, n);
 
 
     for (long r=0; r<NRAYS; r++){
 
-      column_H2[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+      column_H2[RINDEX(n,r)] = column_density_at_point( cell, evalpoint, key, raytot,
                                                         cum_raytot, n, H2_nr, r );
-      column_HD[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+      column_HD[RINDEX(n,r)] = column_density_at_point( cell, evalpoint, key, raytot,
                                                         cum_raytot, n, HD_nr, r );
-      column_C[RINDEX(n,r)]  = column_density_at_point( gridpoint, evalpoint, key, raytot,
+      column_C[RINDEX(n,r)]  = column_density_at_point( cell, evalpoint, key, raytot,
                                                         cum_raytot, n, C_nr,  r );
-      column_CO[RINDEX(n,r)] = column_density_at_point( gridpoint, evalpoint, key, raytot,
+      column_CO[RINDEX(n,r)] = column_density_at_point( cell, evalpoint, key, raytot,
                                                         cum_raytot, n, CO_nr, r );
     }
 
@@ -178,7 +178,7 @@ int calc_column_densities( GRIDPOINT *gridpoint, double *column_H2, double *colu
 /* column_density_at_point: calculates column density for a species along a ray at a point       */
 /*-----------------------------------------------------------------------------------------------*/
 
-double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key,
+double column_density_at_point( CELL *cell, EVALPOINT *evalpoint, long *key,
                                 long *raytot, long *cum_raytot, long gridp, int spec, long ray )
 {
 
@@ -214,8 +214,8 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long
 
 
     column_density_res = evalpoint[gridp_evnr].dZ * PC
-                         *( gridpoint[gridp].density*species[spec].abn[gridp]
-                            + gridpoint[evnr].density*species[spec].abn[evnr] ) / 2.0;
+                         *( cell[gridp].density*species[spec].abn[gridp]
+                            + cell[evnr].density*species[spec].abn[evnr] ) / 2.0;
 
 
     /* Numerical integration along the ray (line of sight) */
@@ -240,8 +240,8 @@ double column_density_at_point( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long
 
       column_density_res = column_density_res
                            + evalpoint[gridp_evnr].dZ * PC
-                             * ( gridpoint[evnrp].density*species[spec].abn[evnrp]
-                                 + gridpoint[evnr].density*species[spec].abn[evnr] ) / 2.0;
+                             * ( cell[evnrp].density*species[spec].abn[evnrp]
+                                 + cell[evnr].density*species[spec].abn[evnr] ) / 2.0;
 
     } /* end of e loop over evaluation points */
 

@@ -18,7 +18,7 @@
 /* calc_C_coeff: calculates the collisional coefficients (C_ij) from the line data               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_C_coeff( GRIDPOINT *gridpoint, double *C_data, double *coltemp, int *icol, int *jcol,
+int calc_C_coeff( CELL *cell, double *C_data, double *coltemp, int *icol, int *jcol,
                   double *temperature, double *weight, double *energy, double *C_coeff,
                   long gridp, int lspec );
 

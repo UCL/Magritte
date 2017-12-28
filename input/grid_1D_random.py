@@ -19,25 +19,25 @@ def randrange(n, vmin, vmax):
 
 
 
-ngrid = int(sys.argv[1])
+ncells = int(sys.argv[1])
 
 np.random.seed(9001)
 
-x = 0.523797/ngrid*np.array(range(ngrid))
-y = 0.783917/ngrid*np.array(range(ngrid))
-z = 0.333333/ngrid*np.array(range(ngrid))
+x = 0.523797/ncells*np.array(range(ncells))
+y = 0.783917/ncells*np.array(range(ncells))
+z = 0.333333/ncells*np.array(range(ncells))
 
-vx = np.zeros(ngrid)
-vy = np.zeros(ngrid)
-vz = np.zeros(ngrid)
+vx = np.zeros(ncells)
+vy = np.zeros(ncells)
+vz = np.zeros(ncells)
 
-density = 10*np.ones(ngrid)
+density = 10*np.ones(ncells)
 
 
 data = np.stack((x, y, z, vx, vy, vz, density), axis=1)
 np.savetxt('files/grid.txt', data, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 
-print("Grid (1D) created with", ngrid, "grid points!")
+print("Grid (1D) created with", ncells, "grid points!")
 
 # Plot the resulting grid
 

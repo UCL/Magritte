@@ -39,7 +39,7 @@ TEST_CASE("Test reaction_rates"){
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  string test_grid_inputfile = "../../../" + grid_inputfile;
+  string test_inputfile = "../../../" + inputfile;
 
   string test_spec_datafile  = "../../../" + spec_datafile;
 
@@ -48,12 +48,12 @@ TEST_CASE("Test reaction_rates"){
 
   /* Define grid (using types defined in definitions.h)*/
 
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+  CELL cell[NCELLS];                                                     /* grid points */
 
 
   /* Read input file */
 
-  read_input(test_grid_inputfile, gridpoint);
+  read_input(test_inputfile, cell);
 
 
   /* Read the species (and their initial abundances) */
@@ -91,39 +91,39 @@ TEST_CASE("Test reaction_rates"){
   read_reactions(test_reac_datafile);
 
 
-  double temperature_gas[NGRID];                          /* temperature of the gas atgrid point */
+  double temperature_gas[NCELLS];                          /* temperature of the gas atgrid point */
 
   initialize_temperature_gas(temperature_gas);
 
-  double temperature_dust[NGRID];                  /* temperature of the dust at each grid point */
+  double temperature_dust[NCELLS];                  /* temperature of the dust at each grid point */
 
-  initialize_double_array(temperature_dust, NGRID);
+  initialize_double_array(temperature_dust, NCELLS);
 
-  double rad_surface[NGRID];
+  double rad_surface[NCELLS];
 
   rad_surface[0] = 0.0;
 
-  double AV[NGRID];
+  double AV[NCELLS];
 
   AV[0] = 0.0;
 
-  double UV_field[NGRID];
+  double UV_field[NCELLS];
 
   UV_field[0] = 0.0;
 
-  double column_H2[NGRID];
+  double column_H2[NCELLS];
 
   column_H2[0] = 0.0;
 
-  double column_HD[NGRID];
+  double column_HD[NCELLS];
 
   column_HD[0] = 0.0;
 
-  double column_C[NGRID];
+  double column_C[NCELLS];
 
   column_C[0] = 0.0;
 
-  double column_CO[NGRID];
+  double column_CO[NCELLS];
 
   column_CO[0] = 0.0;
 
@@ -131,11 +131,11 @@ TEST_CASE("Test reaction_rates"){
   long gridp = 0;
 
 
-  chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+  chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
              column_H2, column_HD, column_C, column_CO );
 
 
-  double heating_total = heating( gridpoint, gridp, temperature_gas, temperature_dust,
+  double heating_total = heating( cell, gridp, temperature_gas, temperature_dust,
                                   UV_field );
 
   cout << "Heating total " << heating_total << "\n";

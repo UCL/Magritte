@@ -35,9 +35,9 @@ static int Jac( realtype t, N_Vector y, N_Vector fy, SUNMatrix J, void *user_dat
   
   long gridp = data->gp;
 
-  GRIDPOINT *gridpoint = data->gridpointer;
+  CELL *cell = data->celler;
 
-  realtype n_H = (realtype) gridpoint[gridp].density;
+  realtype n_H = (realtype) cell[gridp].density;
 
   realtype x_e = data->electron_abundance;
 

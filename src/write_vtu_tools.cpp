@@ -39,7 +39,7 @@
 /* write_vtu_output: write all physical variables to the vtu input grid                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
+int write_vtu_output( std::string inputfile, double *temperature_gas,
                       double *temperature_dust, double *prev_temperature_gas )
 {
 
@@ -49,7 +49,7 @@ int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
   vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
     = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
 
-  reader->SetFileName(grid_inputfile.c_str());
+  reader->SetFileName(inputfile.c_str());
   reader->Update();
 
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
@@ -70,23 +70,23 @@ int write_vtu_output( std::string grid_inputfile, double *temperature_gas,
     = vtkSmartPointer<vtkDoubleArray>::New();
 
   temp_gas->SetNumberOfComponents(1);
-  temp_gas->SetNumberOfTuples(NGRID);
+  temp_gas->SetNumberOfTuples(NCELLS);
   temp_gas->SetName("temperature_gas");
 
   temp_dust->SetNumberOfComponents(1);
-  temp_dust->SetNumberOfTuples(NGRID);
+  temp_dust->SetNumberOfTuples(NCELLS);
   temp_dust->SetName("temperature_dust");
 
   prev_temp_gas->SetNumberOfComponents(1);
-  prev_temp_gas->SetNumberOfTuples(NGRID);
+  prev_temp_gas->SetNumberOfTuples(NCELLS);
   prev_temp_gas->SetName("prev_temperature_gas");
 
   abn->SetNumberOfComponents(NSPEC);
-  abn->SetNumberOfTuples(NGRID);
+  abn->SetNumberOfTuples(NCELLS);
   abn->SetName("abundance");
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     temp_gas ->InsertValue(n, temperature_gas[n]);
     temp_dust->InsertValue(n, temperature_dust[n]);

@@ -49,7 +49,7 @@ else:
 file_name = "../files/" + date_stamp + "_output/" + name + ".txt"
 
 data = np.loadtxt(file_name)
-ngrid = np.shape(data)[0]
+ncells = np.shape(data)[0]
 
 print "Plotting the data as specified in " + file_name
 
@@ -60,7 +60,7 @@ print "Plotting the data as specified in " + file_name
 file_name2 = "../files/" + date_stamp + "_output/" + name2 + ".txt"
 
 data2 = np.loadtxt(file_name2)
-ngrid = np.shape(data2)[0]
+ncells = np.shape(data2)[0]
 
 print "Plotting the data as specified in " + file_name2
 

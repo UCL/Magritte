@@ -55,7 +55,7 @@ TEST_CASE("Test chemistry"){
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  std::string test_grid_inputfile = "../../../" + grid_inputfile;
+  std::string test_inputfile = "../../../" + inputfile;
 
   std::string test_spec_datafile  = "../../../" + spec_datafile;
 
@@ -64,18 +64,18 @@ TEST_CASE("Test chemistry"){
 
   /* Define grid (using types defined in definitions.h)*/
 
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+  CELL cell[NCELLS];                                                     /* grid points */
 
-  /* NOTE: gridpoint does not have to be initialized as long as read_input works */
+  /* NOTE: cell does not have to be initialized as long as read_input works */
 
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 
   initialize_evalpoint(evalpoint);
 
 
   /* Read input file */
 
-  read_input(test_grid_inputfile, gridpoint);
+  read_input(test_inputfile, cell);
 
 
   /* Read the species (and their initial abundances) */
@@ -115,11 +115,11 @@ TEST_CASE("Test chemistry"){
 
   /* Initialize the data structures which will store the evaluation pointa */
 
-  initialize_long_array(key, NGRID*NGRID);
+  initialize_long_array(key, NCELLS*NCELLS);
 
-  initialize_long_array(raytot, NGRID*NRAYS);
+  initialize_long_array(raytot, NCELLS*NRAYS);
 
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
+  initialize_long_array(cum_raytot, NCELLS*NRAYS);
 
 
   /* Create the HEALPix vectors */
@@ -134,46 +134,46 @@ TEST_CASE("Test chemistry"){
 
   /* Ray tracing */
 
-  ray_tracing(healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, cell, evalpoint);
 
 
 
-  double AV[NGRID*NRAYS];
+  double AV[NCELLS*NRAYS];
 
-  initialize_double_array(AV, NGRID*NRAYS);
+  initialize_double_array(AV, NCELLS*NRAYS);
 
-  double UV_field[NGRID];
+  double UV_field[NCELLS];
 
-  initialize_double_array(UV_field, NGRID);
+  initialize_double_array(UV_field, NCELLS);
 
-  double column_tot[NGRID*NRAYS];
+  double column_tot[NCELLS*NRAYS];
 
-  initialize_double_array(column_tot, NGRID*NRAYS);
+  initialize_double_array(column_tot, NCELLS*NRAYS);
 
-  double column_H[NGRID*NRAYS];
+  double column_H[NCELLS*NRAYS];
 
-  initialize_double_array(column_H, NGRID*NRAYS);
+  initialize_double_array(column_H, NCELLS*NRAYS);
 
-  double column_H2[NGRID*NRAYS];
+  double column_H2[NCELLS*NRAYS];
 
-  initialize_double_array(column_H2, NGRID*NRAYS);
+  initialize_double_array(column_H2, NCELLS*NRAYS);
 
-  double column_HD[NGRID*NRAYS];
+  double column_HD[NCELLS*NRAYS];
 
-  initialize_double_array(column_HD, NGRID*NRAYS);
+  initialize_double_array(column_HD, NCELLS*NRAYS);
 
-  double column_C[NGRID*NRAYS];
+  double column_C[NCELLS*NRAYS];
 
-  initialize_double_array(column_C, NGRID*NRAYS);
+  initialize_double_array(column_C, NCELLS*NRAYS);
 
-  double column_CO[NGRID*NRAYS];
+  double column_CO[NCELLS*NRAYS];
 
-  initialize_double_array(column_CO, NGRID*NRAYS);
+  initialize_double_array(column_CO, NCELLS*NRAYS);
 
 
-  double rad_surface[NGRID*NRAYS];
+  double rad_surface[NCELLS*NRAYS];
 
-  initialize_double_array(rad_surface, NGRID*NRAYS);
+  initialize_double_array(rad_surface, NCELLS*NRAYS);
 
 
   double G_external[3];                                       /* external radiation field vector */
@@ -197,18 +197,18 @@ TEST_CASE("Test chemistry"){
 
   /* Calculate column densities */
 
-  calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
-  calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-  calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-  calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-  calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-  calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+  calc_column_density(cell, evalpoint, column_tot, NSPEC-1);
+  calc_column_density(cell, evalpoint, column_H, H_nr);
+  calc_column_density(cell, evalpoint, column_H2, H2_nr);
+  calc_column_density(cell, evalpoint, column_HD, HD_nr);
+  calc_column_density(cell, evalpoint, column_C, C_nr);
+  calc_column_density(cell, evalpoint, column_CO, CO_nr);
 
 
-  write_double_2("column_tot", "0", NGRID, NRAYS, column_tot);
-  write_double_2("column_density_C","0", NGRID, NRAYS, column_C);
-  write_double_2("column_density_H2", "0", NGRID, NRAYS, column_H2);
-  write_double_2("column_density_CO", "0", NGRID, NRAYS, column_CO);
+  write_double_2("column_tot", "0", NCELLS, NRAYS, column_tot);
+  write_double_2("column_density_C","0", NCELLS, NRAYS, column_C);
+  write_double_2("column_density_H2", "0", NCELLS, NRAYS, column_H2);
+  write_double_2("column_density_CO", "0", NCELLS, NRAYS, column_CO);
 
   write_eval("0", evalpoint);
 
@@ -224,13 +224,13 @@ TEST_CASE("Test chemistry"){
   calc_UV_field(antipod, AV, rad_surface, UV_field);
 
 
-  double temperature_gas[NGRID];
+  double temperature_gas[NCELLS];
 
   initialize_temperature_gas(temperature_gas);
 
-  double temperature_dust[NGRID];
+  double temperature_dust[NCELLS];
 
-  initialize_double_array(temperature_dust, NGRID);
+  initialize_double_array(temperature_dust, NCELLS);
 
 
   write_UV_field("0", UV_field);
@@ -287,18 +287,18 @@ TEST_CASE("Test chemistry"){
 
     /* Calculate column densities */
 
-    calc_column_density(gridpoint, evalpoint, column_tot, NSPEC-1);
-    calc_column_density(gridpoint, evalpoint, column_H, H_nr);
-    calc_column_density(gridpoint, evalpoint, column_H2, H2_nr);
-    calc_column_density(gridpoint, evalpoint, column_HD, HD_nr);
-    calc_column_density(gridpoint, evalpoint, column_C, C_nr);
-    calc_column_density(gridpoint, evalpoint, column_CO, CO_nr);
+    calc_column_density(cell, evalpoint, column_tot, NSPEC-1);
+    calc_column_density(cell, evalpoint, column_H, H_nr);
+    calc_column_density(cell, evalpoint, column_H2, H2_nr);
+    calc_column_density(cell, evalpoint, column_HD, HD_nr);
+    calc_column_density(cell, evalpoint, column_C, C_nr);
+    calc_column_density(cell, evalpoint, column_CO, CO_nr);
 
 
-    write_double_2("column_tot", tag, NGRID, NRAYS, column_tot);
-    write_double_2("column_density_C", tag, NGRID, NRAYS, column_C);
-    write_double_2("column_density_H2", tag, NGRID, NRAYS, column_H2);
-    write_double_2("column_density_CO", tag, NGRID, NRAYS, column_CO);
+    write_double_2("column_tot", tag, NCELLS, NRAYS, column_tot);
+    write_double_2("column_density_C", tag, NCELLS, NRAYS, column_C);
+    write_double_2("column_density_H2", tag, NCELLS, NRAYS, column_H2);
+    write_double_2("column_density_CO", tag, NCELLS, NRAYS, column_CO);
 
 
 
@@ -334,7 +334,7 @@ TEST_CASE("Test chemistry"){
 
     time_chem -= omp_get_wtime();
 
-    chemistry( gridpoint, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
     time_chem += omp_get_wtime();
@@ -345,7 +345,7 @@ TEST_CASE("Test chemistry"){
 
       double max_difference = 0.0;
 
-      for (long n=0; n<NGRID; n++){
+      for (long n=0; n<NCELLS; n++){
 
         double difference = fabs(old_species[spec].abn[n] - species[spec].abn[n]);
 

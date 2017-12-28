@@ -19,19 +19,19 @@
 
 
 
-/* get_NGRID_txt: Count number of grid points in the .txt input file                             */
+/* get_NCELLS_txt: Count number of grid points in the .txt input file                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-long get_NGRID_txt(std::string grid_inputfile);
+long get_NCELLS_txt(std::string inputfile);
 
 /*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* get_NGRID_vtu: Count number of grid points in the .vtu input file                             */
+/* get_NCELLS_vtu: Count number of grid points in the .vtu input file                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-long get_NGRID_vtu(std::string grid_inputfile);
+long get_NCELLS_vtu(std::string inputfile);
 
 /*-----------------------------------------------------------------------------------------------*/
 

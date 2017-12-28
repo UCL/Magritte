@@ -33,7 +33,7 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int cell_radiative_transfer( GRIDPOINT *gridpoint, double *mean_intensity, double *Lambda_diagonal,
+int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
                              double *mean_intensity_eff, double *source, double *opacity,
                              double *frequency, double *temperature_gas, double *temperature_dust,
                              int *irad, int*jrad, long gridp, int lspec, int kr )
@@ -72,7 +72,7 @@ int cell_radiative_transfer( GRIDPOINT *gridpoint, double *mean_intensity, doubl
       double freq = H_4_roots[ny]*frequency_width + frequency_shift;
 
 
-      intensities( gridpoint, source, opacity, frequency, freq, temperature_gas, irad, jrad,
+      intensities( cell, source, opacity, frequency, freq, temperature_gas, irad, jrad,
                    gridp, ray, lspec, kr, &u_local, &v_local, &L_local );
 
 
@@ -94,7 +94,7 @@ int cell_radiative_transfer( GRIDPOINT *gridpoint, double *mean_intensity, doubl
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*gridpoint[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cell[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
@@ -137,7 +137,7 @@ int cell_radiative_transfer( GRIDPOINT *gridpoint, double *mean_intensity, doubl
 /* intensity: calculate the intensity along a certain ray through a certain point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int intensities( GRIDPOINT *gridpoint, double *source, double *opacity, double *frequency,
+int intensities( CELL *cell, double *source, double *opacity, double *frequency,
                  double freq, double *temperature_gas,  int *irad, int*jrad, long gridp, long r,
                  int lspec, int kr, double *u_local, double *v_local, double *L_local )
 {

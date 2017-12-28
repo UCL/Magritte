@@ -23,19 +23,19 @@ else:
 with open("../../parameters.txt") as parameters_file:
     parameters = parameters_file.readlines()
 
-grid_inputfile = "../../../../../" + parameters[38].split()[0]
+inputfile = "../../../../../" + parameters[38].split()[0]
 spec_datafile  = "../../../../../" + parameters[40].split()[0]
 
 
 print "Plot chemical abundances"
 
-print "grid inputfile : " + grid_inputfile
+print "grid inputfile : " + inputfile
 
 
 # Read the grid input file
 
-xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
-ngrid = np.shape(xg)[0]
+xg,yg,zg, vx,vy,vz, density = np.loadtxt(inputfile, unpack=True)
+ncells = np.shape(xg)[0]
 
 
 # Read the abundances file
@@ -45,7 +45,7 @@ file_name = "../abundances" + tag + ".txt"
 abundances_data = np.loadtxt("../abundances.txt")
 nspec = np.shape(abundances_data)[0]
 
-print "ngrid is " + str(ngrid)
+print "ncells is " + str(ncells)
 print "nspec is " + str(nspec)
 
 
@@ -87,10 +87,10 @@ fig = plt.figure()
 
 ax1 = fig.add_subplot(111)
 
-abundance = np.zeros(ngrid)
+abundance = np.zeros(ncells)
 
 for spec in range(nspec):
-    for point in range(ngrid):
+    for point in range(ncells):
         abundance[point] = abundances_data[spec][point]
 
     if( max(abundance) > 1.0E-5 ):

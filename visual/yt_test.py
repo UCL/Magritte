@@ -11,7 +11,7 @@ Magritte_input = '../input/CC_112_b.txt'
 
 x, y, z, density = np.loadtxt(Magritte_input, unpack=True)
 
-NGRID = np.shape(density)[0]
+NCELLS = np.shape(density)[0]
 
 x_min = min(x)
 x_max = max(x)
@@ -23,7 +23,7 @@ z_max = max(z)
 box_density = np.zeros( (box_size, box_size, box_size) )
 box_npoints = np.zeros( (box_size, box_size, box_size) )
 
-for gridp in range(NGRID):
+for gridp in range(NCELLS):
     n_x = int( (x[gridp] - x_min) / (x_max-x_min) * (box_size-1) )
     n_y = int( (y[gridp] - y_min) / (y_max-y_min) * (box_size-1) )
     n_z = int( (z[gridp] - z_min) / (z_max-z_min) * (box_size-1) )

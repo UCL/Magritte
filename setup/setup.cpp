@@ -66,18 +66,18 @@ int main()
 
   /* Get the number of grid points from the input file */
 
-  std::string grid_inputfile = GRID_INPUTFILE;
+  std::string inputfile = GRID_INPUTFILE;
 
-  grid_inputfile = "../" + grid_inputfile;
+  inputfile = "../" + inputfile;
 
 
 # if (INPUT_FORMAT == '.vtu')
 
-  long ngrid = get_NGRID_vtu(grid_inputfile);
+  long ncells = get_NCELLS_vtu(inputfile);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  long ngrid = get_NGRID_txt(grid_inputfile);
+  long ncells = get_NCELLS_txt(inputfile);
 
 # endif
 
@@ -120,7 +120,7 @@ int main()
   printf("\n");
   printf("(setup): parameters are: \n");
 
-  printf("(setup):   grid file         : %s\n", grid_inputfile.c_str());
+  printf("(setup):   input file        : %s\n", inputfile.c_str());
   printf("(setup):   species file      : %s\n", spec_datafile.c_str());
   printf("(setup):   reactions file    : %s\n", reac_datafile.c_str());
 
@@ -131,7 +131,7 @@ int main()
     printf("(setup):   line file %d       : %s\n", l, line_datafile[l].c_str());
   }
 
-  printf("(setup):   ngrid             : %ld\n", ngrid);
+  printf("(setup):   ncells            : %ld\n", ncells);
   printf("(setup):   nsides            : %d\n",  NSIDES);
   printf("(setup):   nspec             : %d\n",  nspec);
   printf("(setup):   nrays             : %ld\n", nrays);
@@ -321,8 +321,15 @@ int main()
 
   FILE *config_file = fopen("../src/Magritte_config.hpp", "w");
 
+# if (FIXED_NCELLS)
 
-  fprintf( config_file, "#define NGRID %ld \n\n", ngrid );
+  fprintf( config_file, "#define NCELLS %ld \n\n", ncells );
+
+# else
+
+  fprintf( config_file, "#define NCELLS ncells \n\n");
+
+# endif
 
 
 # if (DIMENSIONS == 3)

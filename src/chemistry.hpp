@@ -25,13 +25,13 @@
 
 #if ( ON_THE_FLY )
 
-int chemistry( GRIDPOINT *gridpoint,
+int chemistry( CELL *cell,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
                double *column_H2, double *column_HD, double *column_C, double *column_CO );
 
 #else
 
-int chemistry( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+int chemistry( CELL *cell, EVALPOINT *evalpoint,
                long *key, long *raytot, long *cum_raytot,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
                double *column_H2, double *column_HD, double *column_C, double *column_CO );

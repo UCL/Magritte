@@ -19,28 +19,28 @@ def randrange(n, vmin, vmax):
     return (vmax - vmin)*np.random.rand(n) + vmin
 
 
-# Get the desired number of gridpoints form the argument
+# Get the desired number of cells form the argument
 
-ngrid = int(sys.argv[1])
+ncells = int(sys.argv[1])
 
 
 np.random.seed(9001)
 
-x = 0.527046*np.array(range(ngrid))
-y = 0.527046*np.array(range(ngrid))
-z = 0.666667*np.array(range(ngrid))
+x = 0.527046*np.array(range(ncells))
+y = 0.527046*np.array(range(ncells))
+z = 0.666667*np.array(range(ncells))
 
-vx = np.zeros(ngrid)
-vy = np.zeros(ngrid)
-vz = np.zeros(ngrid)
+vx = np.zeros(ncells)
+vy = np.zeros(ncells)
+vz = np.zeros(ncells)
 
-density = np.ones(ngrid)
+density = np.ones(ncells)
 
 data = np.stack((x, y, z, vx, vy, vz, density), axis=1)
-filename = "files/1D_regular_" + str(ngrid) + ".txt"
+filename = "files/1D_regular_" + str(ncells) + ".txt"
 np.savetxt(filename, data, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 
-print("Grid (1D) created with", ngrid, "grid points!")
+print("Grid (1D) created with", ncells, "grid points!")
 
 # Plot the resulting grid
 

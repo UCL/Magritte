@@ -39,7 +39,7 @@ C read in background INTENSITY
       read(10,*) IBC
 C read in text line
       read(10,*)
-C read in source function and optical depth at each gridpoint k
+C read in source function and optical depth at each cell k
       do 10 i=1,1000,1
         read(10,*,end=20) k,s(i),dtauq(i)
         ntrani = ntrani+1

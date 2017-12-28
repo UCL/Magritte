@@ -27,7 +27,7 @@ Magritte_input = '../input/CC_112_b_0.001.txt'
 
 x,y,z, vx,vy,vz, density = np.loadtxt(Magritte_input, unpack=True)
 
-NGRID = np.shape(density)[0]
+NCELLS = np.shape(density)[0]
 
 temperature_a = np.loadtxt('temperature_a.txt')
 temperature_b = np.loadtxt('temperature_b.txt')
@@ -44,7 +44,7 @@ box_tempe_a = np.zeros( (box_size, box_size, box_size) )
 box_tempe_b = np.zeros( (box_size, box_size, box_size) )
 box_npoints = np.zeros( (box_size, box_size, box_size) )
 
-for gridp in range(NGRID):
+for gridp in range(NCELLS):
     n_x = int( (x[gridp] - x_min) / (x_max-x_min) * (box_size-1) )
     n_y = int( (y[gridp] - y_min) / (y_max-y_min) * (box_size-1) )
     n_z = int( (z[gridp] - z_min) / (z_max-z_min) * (box_size-1) )

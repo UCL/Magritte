@@ -30,7 +30,7 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+void radiative_transfer( CELL *cell, EVALPOINT *evalpoint,
                          long *key, long *raytot, long *cum_raytot,
                          double *P_intensity, double *mean_intensity,
                          double *Lambda_diagonal, double *mean_intensity_eff,
@@ -373,7 +373,7 @@ void radiative_transfer( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*gridpoint[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cell[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 

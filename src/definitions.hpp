@@ -29,7 +29,7 @@ std::string output_directory = OUTPUT_DIRECTORY;
 
 /* Input and data files */
 
-const std::string grid_inputfile = GRID_INPUTFILE;    /* path to input file with the grid points */
+const std::string inputfile = GRID_INPUTFILE;    /* path to input file with the grid points */
 
 const std::string spec_datafile = SPEC_DATAFILE;           /* path to data file with the species */
 

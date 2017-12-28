@@ -26,7 +26,7 @@
 /* read_txt_input: read the input file                                                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_txt_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint,
+int read_txt_input( std::string inputfile, long ncells, CELL *cell,
                     double *temperature_gas, double *temperature_dust,
                     double *prev_temperature_gas );
 
@@ -37,7 +37,7 @@ int read_txt_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint
 /* read_vtu_input: read the input file                                                           */
 /*-----------------------------------------------------------------------------------------------*/
 
-int read_vtu_input( std::string grid_inputfile, long ngrid, GRIDPOINT *gridpoint,
+int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
                     double *temperature_gas, double *temperature_dust,
                     double *prev_temperature_gas );
 

@@ -19,7 +19,7 @@
 
 #include "../setup/setup_data_tools.hpp"
 
-// #define NGRID ngrid
+// #define NCELLS ncells
 
 
 
@@ -27,21 +27,21 @@ int main()
 {
 
 
-  // std::string grid_inputfile = "Aori_0001.vtu";
+  // std::string inputfile = "Aori_0001.vtu";
 
-  GRIDPOINT gridpoint[NGRID];
+  CELL cell[NCELLS];
 
-  double temperature_gas[NGRID];
-  double temperature_dust[NGRID];
-  double pre_temperature_gas[NGRID];
+  double temperature_gas[NCELLS];
+  double temperature_dust[NCELLS];
+  double pre_temperature_gas[NCELLS];
 
 
-  read_vtu_input( "../" + grid_inputfile, NGRID, gridpoint, temperature_gas, temperature_dust,
+  read_vtu_input( "../" + inputfile, NCELLS, cell, temperature_gas, temperature_dust,
                   pre_temperature_gas );
 
   output_directory = "";
 
-  write_grid("", gridpoint);
+  write_grid("", cell);
 
 
 //   /* Read the data from the .vtu file */
@@ -49,7 +49,7 @@ int main()
 //   vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
 //     = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
 //
-//   reader->SetFileName(grid_inputfile.c_str());
+//   reader->SetFileName(inputfile.c_str());
 //   reader->Update();
 //
 //   vtkUnstructuredGrid* ugrid = reader->GetOutput();
@@ -71,33 +71,33 @@ int main()
 //
 //   /* Extract the number of cell centers = number of grid points */
 //
-//   long ngrid = cellCentersFilter->GetOutput()->GetNumberOfPoints();
+//   long ncells = cellCentersFilter->GetOutput()->GetNumberOfPoints();
 //
 //
-//   // GRIDPOINT *gridpoint = new GRIDPOINT[ngrid];
+//   // CELL *cell = new CELL[ncells];
 //
-//   // double *x = new double[ngrid];
-//   // double *y = new double[ngrid];
-//   // double *z = new double[ngrid];
+//   // double *x = new double[ncells];
+//   // double *y = new double[ncells];
+//   // double *z = new double[ncells];
 //   //
-//   // double *vx = new double[ngrid];
-//   // double *vy = new double[ngrid];
-//   // double *vz = new double[ngrid];
+//   // double *vx = new double[ncells];
+//   // double *vy = new double[ncells];
+//   // double *vz = new double[ncells];
 //   //
-//   // double *density = new double[ngrid];
+//   // double *density = new double[ncells];
 //
 //
 //   /* Extract the locations of the cell centers */
 //
-//   for (long n=0; n<ngrid; n++){
+//   for (long n=0; n<ncells; n++){
 //
 //     double point[3];
 //
 //     cellCentersFilter->GetOutput()->GetPoint(n, point);
 //
-//     gridpoint[n].x = point[0];
-//     gridpoint[n].y = point[1];
-//     gridpoint[n].z = point[2];
+//     cell[n].x = point[0];
+//     cell[n].y = point[1];
+//     cell[n].z = point[2];
 //   }
 //
 //
@@ -116,30 +116,30 @@ int main()
 //
 //
 //     if (name == "rho"){
-//     for (long n=0; n<ngrid; n++){
+//     for (long n=0; n<ncells; n++){
 //
-//       gridpoint[n].density = data->GetTuple1(n);
+//       cell[n].density = data->GetTuple1(n);
 //     }
 //     }
 //
 //     if (name == "v1"){
-//     for (long n=0; n<ngrid; n++){
+//     for (long n=0; n<ncells; n++){
 //
-//       gridpoint[n].vx = data->GetTuple1(n);
+//       cell[n].vx = data->GetTuple1(n);
 //     }
 //     }
 //
 //     if (name == "v2"){
-//     for (long n=0; n<ngrid; n++){
+//     for (long n=0; n<ncells; n++){
 //
-//       gridpoint[n].vy = data->GetTuple1(n);
+//       cell[n].vy = data->GetTuple1(n);
 //     }
 //     }
 //
 //     if (name == "v3"){
-//     for (long n=0; n<ngrid; n++){
+//     for (long n=0; n<ncells; n++){
 //
-//       gridpoint[n].vz = data->GetTuple1(n);
+//       cell[n].vz = data->GetTuple1(n);
 //     }
 //     }
 //
@@ -148,18 +148,18 @@ int main()
 //
 //   /* Trace rays through the grid */
 //
-//   EVALPOINT *evalpoint = new EVALPOINT[ngrid];
+//   EVALPOINT *evalpoint = new EVALPOINT[ncells];
 //
-//   long *key = new long[NGRID*NGRID];
+//   long *key = new long[NCELLS*NCELLS];
 //
-//   long *raytot = new long[NGRID*NRAYS];
+//   long *raytot = new long[NCELLS*NRAYS];
 //
-//   long *cum_raytot = new long[NGRID*NRAYS];
+//   long *cum_raytot = new long[NCELLS*NRAYS];
 //
 //
-//   // for (gridp=0; gridp<ngrid; gridp++){
+//   // for (gridp=0; gridp<ncells; gridp++){
 //   //
-//   //   get_local_evalpoint(gridpoint, evalpoint, key, raytot, cum_raytot, gridp);
+//   //   get_local_evalpoint(cell, evalpoint, key, raytot, cum_raytot, gridp);
 //   // }
 //
 //   /* Write grid in .txt format */
@@ -176,13 +176,13 @@ int main()
   //   exit(1);
   // }
   //
-  // for (long n=0; n<ngrid; n++){
+  // for (long n=0; n<ncells; n++){
   //
   //   fprintf( file, "%ld\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\n",
   //            n,
-  //            gridpoint[n].x, gridpoint[n].y, gridpoint[n].z,
-  //            gridpoint[n].vx, gridpoint[n].vy, gridpoint[n].vz,
-  //            gridpoint[n].density );
+  //            cell[n].x, cell[n].y, cell[n].z,
+  //            cell[n].vx, cell[n].vy, cell[n].vz,
+  //            cell[n].density );
   // }
   //
   // fclose(file);

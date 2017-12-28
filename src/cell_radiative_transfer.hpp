@@ -27,7 +27,7 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int cell_radiative_transfer( GRIDPOINT *gridpoint, double *mean_intensity, double *Lambda_diagonal,
+int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
                              double *mean_intensity_eff, double *Source, double *opacity,
                              double *frequency, double *temperature_gas, double *temperature_dust,
                              int *irad, int*jrad, long gridp, int lspec, int kr );
@@ -39,7 +39,7 @@ int cell_radiative_transfer( GRIDPOINT *gridpoint, double *mean_intensity, doubl
 /* intensity: calculate the intensity along a certain ray through a certain point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int intensities( GRIDPOINT *gridpoint, double *source, double *opacity, double *frequency,
+int intensities( CELL *cell, double *source, double *opacity, double *frequency,
                  double freq, double *temperature_gas,  int *irad, int*jrad, long gridp, long r,
                  int lspec, int kr, double *u_local, double *v_local, double *L_local );
 

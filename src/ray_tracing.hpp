@@ -26,7 +26,7 @@
 /* ray_tracing: creates the evaluation points for each ray for each grid point                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+int ray_tracing( CELL *cell, EVALPOINT *evalpoint,
                  long *key, long *raytot, long *cum_raytot );
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -38,7 +38,7 @@ int ray_tracing( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 /* get_evalpoints: creates the evaluation points for each ray for this grid point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+int get_local_evalpoint( CELL *cell, EVALPOINT *evalpoint,
                          long *key, long *raytot, long *cum_raytot, long gridp );
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -48,7 +48,7 @@ int get_local_evalpoint( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 /* get_velocities: get the velocity of the evaluation point with respect to the grid point       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
+int get_velocities( CELL *cell, EVALPOINT *evalpoint,
                     long *key, long *raytot, long *cum_raytot, long gridp, long *first_velo );
 
 /*-----------------------------------------------------------------------------------------------*/
@@ -60,7 +60,7 @@ int get_velocities( GRIDPOINT *gridpoint, EVALPOINT *evalpoint,
 /* find_neighbors: creates the evaluation points for each ray for each cell                      */
 /*-----------------------------------------------------------------------------------------------*/
 
-int find_neighbors( long ncells, CELL *cell );
+int find_neighbors(long ncells, CELL *cell);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -69,8 +69,16 @@ int find_neighbors( long ncells, CELL *cell );
 /* next_cell_on_ray: find the number of the next cell on the ray and its distance along the ray  */
 /*-----------------------------------------------------------------------------------------------*/
 
-int next_cell_on_ray( long ncells, CELL *cell, long current, long origin, long ray, double Z,
-                      long *next, double *dZ );
+long next_cell(long ncells, CELL *cell, long origin, long ray, double Z, long current, double *dZ);
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+
+/* relative_velocity: get the relative velocity of (cell) current w.r.t. (cell) origin along ray */
+/*-----------------------------------------------------------------------------------------------*/
+
+double relative_velocity(long ncells, CELL *cell, long origin, long ray, long current);
 
 /*-----------------------------------------------------------------------------------------------*/
 

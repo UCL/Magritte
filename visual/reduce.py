@@ -21,7 +21,7 @@ else:
 
 x, y, z, density = np.loadtxt(input_file, unpack=True)
 
-NGRID = np.shape(density)[0]
+NCELLS = np.shape(density)[0]
 
 x_new = []
 y_new = []
@@ -31,7 +31,7 @@ density_new = []
 
 np.random.seed(9001)
 
-for gridp in range(NGRID):
+for gridp in range(NCELLS):
     if ( reduction > np.random.rand() ):
         x_new.append(x[gridp])
         y_new.append(y[gridp])
@@ -40,15 +40,15 @@ for gridp in range(NGRID):
         density_new.append(density[gridp])
 
 
-NGRID_NEW = len(x_new)
+NCELLS_NEW = len(x_new)
 
-print("New grid size is :" + str(NGRID_NEW))
+print("New grid size is :" + str(NCELLS_NEW))
 
 
 
-vx = np.zeros(NGRID_NEW)
-vy = np.zeros(NGRID_NEW)
-vz = np.zeros(NGRID_NEW)
+vx = np.zeros(NCELLS_NEW)
+vy = np.zeros(NCELLS_NEW)
+vz = np.zeros(NCELLS_NEW)
 
 file_name = "{}_{}.txt".format(name, reduction)
 

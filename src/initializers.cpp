@@ -26,7 +26,7 @@
 /* initialize_int_array: sets all entries of the linearized array of ints equal to zero          */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_int_array(int *array, long length)
+int initialize_int_array (int *array, long length)
 {
 
 
@@ -60,7 +60,7 @@ int initialize_int_array(int *array, long length)
 /* initialize_long_array: sets all entries of the linearized array of longs equal to zero        */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_long_array(long *array, long length)
+int initialize_long_array (long *array, long length)
 {
 
 
@@ -96,7 +96,7 @@ int initialize_long_array(long *array, long length)
 /* initialize_double_array: sets all entries of the linearized array of doubles equal to zero    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_double_array(double *array, long length)
+int initialize_double_array (double *array, long length)
 {
 
 
@@ -132,7 +132,7 @@ int initialize_double_array(double *array, long length)
 /* initialize_double_array_with: sets entries of the first array of doubles equal to the second  */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_double_array_with(double *array1, double *array2, long length)
+int initialize_double_array_with (double *array1, double *array2, long length)
 {
 
 
@@ -168,7 +168,7 @@ int initialize_double_array_with(double *array1, double *array2, long length)
 /* initialize_double_array_with_value: sets entries of the array of doubles equal to value       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_double_array_with_value(double *array, double value, long length)
+int initialize_double_array_with_value (double *array, double value, long length)
 {
 
 
@@ -204,7 +204,7 @@ int initialize_double_array_with_value(double *array, double value, long length)
 /* initialize_char_array: sets all entries of the linearized array of doubles equal to 'i'       */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_char_array(char *array, long length)
+int initialize_char_array (char *array, long length)
 {
 
 
@@ -241,7 +241,7 @@ int initialize_char_array(char *array, long length)
 // /* initialize_evalpoint: sets all entries of the linearized array equal to zero or false         */
 // /*-----------------------------------------------------------------------------------------------*/
 //
-// int initialize_evalpoint(EVALPOINT *evalpoint, long length)
+// int initialize_evalpoint (long ncells, EVALPOINT *evalpoint, long length)
 // {
 //
 //
@@ -273,7 +273,7 @@ int initialize_char_array(char *array, long length)
 /* initialize_temperature_gas: set the gas temperature to a certain initial value                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_temperature_gas(double *temperature_gas)
+int initialize_temperature_gas (long ncells, double *temperature_gas)
 {
 
 
@@ -285,8 +285,8 @@ int initialize_temperature_gas(double *temperature_gas)
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;       /* Note the brackets are important here */
 
 
   for (long n=start; n<stop; n++){
@@ -309,7 +309,8 @@ int initialize_temperature_gas(double *temperature_gas)
 /* initialize_previous_temperature_gas: set the "previous" gas temperature 0.9*temperature_gas   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_previous_temperature_gas(double *previous_temperature_gas, double *temperature_gas)
+int initialize_previous_temperature_gas (long ncells, double *previous_temperature_gas,
+                                         double *temperature_gas)
 {
 
 
@@ -321,8 +322,8 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;       /* Note the brackets are important here */
 
 
   for (long n=start; n<stop; n++){
@@ -345,7 +346,7 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
 /* guess_temperature_gas: make a guess for the gas temperature based on the UV field             */
 /*-----------------------------------------------------------------------------------------------*/
 
-int guess_temperature_gas(double *UV_field, double *temperature_gas)
+int guess_temperature_gas (long ncells, double *UV_field, double *temperature_gas)
 {
 
 
@@ -357,8 +358,8 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas)
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;       /* Note the brackets are important here */
 
 
   for (long n=start; n<stop; n++){
@@ -381,7 +382,7 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas)
 /* initialize_abn: set the abundanceces to the initial values                                    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_abn( double *initial_abn, SPECIES *species )
+int initialize_abn (long ncells, double *initial_abn, SPECIES *species)
 {
 
 
@@ -393,8 +394,8 @@ int initialize_abn( double *initial_abn, SPECIES *species )
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NGRID)/num_threads;
-  long stop  = ((thread_num+1)*NGRID)/num_threads;       /* Note the brackets are important here */
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;       /* Note the brackets are important here */
 
 
   for (long n=start; n<stop; n++){
@@ -420,7 +421,7 @@ int initialize_abn( double *initial_abn, SPECIES *species )
 /* initialize_bool: initialize a boolean variable                                                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_bool(bool value, bool *variable, long length)
+int initialize_bool (bool value, bool *variable, long length)
 {
 
 
@@ -462,7 +463,7 @@ int initialize_bool(bool value, bool *variable, long length)
 //
 //   for (int lspec=0; lspec<NLSPEC; lspec++){
 //
-//     for (int n=0; n<NGRID; n++){
+//     for (int n=0; n<NCELLS; n++){
 //
 //       for (int i=0; i<nlev[lspec]; i++){
 //

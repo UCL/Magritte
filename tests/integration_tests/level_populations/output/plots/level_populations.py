@@ -24,7 +24,7 @@ with open("../../parameters.txt") as parameters_file:
 
 nlspec = int(parameters[45].split()[0])
 
-grid_inputfile = "../../../../../" + parameters[38].split()[0]
+inputfile = "../../../../../" + parameters[38].split()[0]
 line_datafile  = ["../../../../../" + parameters[48+2*lspec].split()[0] for lspec in range(nlspec) ]
 
 
@@ -40,7 +40,7 @@ for lspec in range(nlspec):
 # Print the results
 
 print "nlspec         : " + str(nlspec)
-print "grid inputfile : " + grid_inputfile
+print "grid inputfile : " + inputfile
 
 for lspec in range(nlspec):
     print "line datafile " + str(lspec) + " for " + lspec_name[lspec] + " : " + line_datafile[lspec]
@@ -48,9 +48,9 @@ for lspec in range(nlspec):
 
 # Read the grid input file
 
-xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
+xg,yg,zg, vx,vy,vz, density = np.loadtxt(inputfile, unpack=True)
 
-ngrid = np.shape(xg)[0]
+ncells = np.shape(xg)[0]
 
 
 
@@ -77,8 +77,8 @@ for lspec in range(nlspec):
     fig = plt.figure()
 
 
-    pop = np.zeros(ngrid)
-    mean_intensity = np.zeros(ngrid)
+    pop = np.zeros(ncells)
+    mean_intensity = np.zeros(ncells)
 
 
 
@@ -87,7 +87,7 @@ for lspec in range(nlspec):
     ax1 = fig.add_subplot(211)
 
     for level in range(nlev):
-        for point in range(ngrid):
+        for point in range(ncells):
             pop[point] = data[point][level]
 
         ax1.plot(pop, label=level)
@@ -104,7 +104,7 @@ for lspec in range(nlspec):
     ax2 = fig.add_subplot(212)
 
     for rad in range(nrad):
-        for point in range(ngrid):
+        for point in range(ncells):
 
             mean_intensity[point] = mean_intensity_data[rad][point]
 

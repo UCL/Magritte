@@ -83,7 +83,7 @@ int initialize_char_array(char *array, long length);
 /* initialize_temperature_gas: set the gas temperature to a certain initial value                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_temperature_gas(double *temperature_gas);
+int initialize_temperature_gas (long ncells, double *temperature_gas);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -92,7 +92,7 @@ int initialize_temperature_gas(double *temperature_gas);
 /* initialize_previous_temperature_gas: set the "previous" gas temperature 0.9*temperature_gas   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_previous_temperature_gas(double *previous_temperature_gas, double *temperature_gas);
+int initialize_previous_temperature_gas (long ncells, double *previous_temperature_gas, double *temperature_gas);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -101,7 +101,7 @@ int initialize_previous_temperature_gas(double *previous_temperature_gas, double
 /* gueess_temperature_gas: make a guess for the gas temperature based on the UV field            */
 /*-----------------------------------------------------------------------------------------------*/
 
-int guess_temperature_gas(double *UV_field, double *temperature_gas);
+int guess_temperature_gas (long ncells, double *UV_field, double *temperature_gas);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -110,7 +110,7 @@ int guess_temperature_gas(double *UV_field, double *temperature_gas);
 /* initialize_abn: set the abundanceces to the initial values                                    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int initialize_abn( double *initial_abn, SPECIES *species );
+int initialize_abn (long ncells, double *initial_abn, SPECIES *species);
 
 /*-----------------------------------------------------------------------------------------------*/
 

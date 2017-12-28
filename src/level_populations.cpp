@@ -38,7 +38,7 @@
 /* level_populations: iteratively calculates the level populations                               */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, long *raytot,
+int level_populations( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
                        long *cum_raytot, int *irad, int*jrad, double *frequency, double *A_coeff,
                        double *B_coeff, double *R, double *pop, double *C_data, double *coltemp,
                        int *icol, int *jcol, double *temperature_gas, double *temperature_dust,
@@ -47,9 +47,9 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 {
 
 
-  double prev1_pop[NGRID*TOT_NLEV];                      /* level population n_i 1 iteration ago */
-  double prev2_pop[NGRID*TOT_NLEV];                     /* level population n_i 2 iterations ago */
-  double prev3_pop[NGRID*TOT_NLEV];                     /* level population n_i 3 iterations ago */
+  double prev1_pop[NCELLS*TOT_NLEV];                      /* level population n_i 1 iteration ago */
+  double prev2_pop[NCELLS*TOT_NLEV];                     /* level population n_i 2 iterations ago */
+  double prev3_pop[NCELLS*TOT_NLEV];                     /* level population n_i 3 iterations ago */
 
   long nshortcuts = 0;                                  /* number of times the shortcut is taken */
 
@@ -65,13 +65,13 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
     /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    double R_temp[NGRID*TOT_NLEV2];                   /* temporary storage the transition matrix */
+    double R_temp[NCELLS*TOT_NLEV2];                   /* temporary storage the transition matrix */
 
 
     /* For all grid points */
 
 #   pragma omp parallel                                                                          \
-    shared( gridpoint, C_data, coltemp, icol, jcol, temperature_gas, weight, energy,             \
+    shared( cell, C_data, coltemp, icol, jcol, temperature_gas, weight, energy,             \
             lspec, nlev, R_temp, A_coeff, B_coeff, cum_nlev2 )                                   \
     default( none )
     {
@@ -79,8 +79,8 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
 
-    long start = (thread_num*NGRID)/num_threads;
-    long stop  = ((thread_num+1)*NGRID)/num_threads;     /* Note the brackets are important here */
+    long start = (thread_num*NCELLS)/num_threads;
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;     /* Note the brackets are important here */
 
 
     for (long n=start; n<stop; n++){
@@ -90,7 +90,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
       /* Calculate collisional (C) coefficients for temperature_gas */
 
-      calc_C_coeff( gridpoint, C_data, coltemp, icol, jcol, temperature_gas,
+      calc_C_coeff( cell, C_data, coltemp, icol, jcol, temperature_gas,
                     weight, energy, C_coeff, n, lspec );
 
 
@@ -158,17 +158,17 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
       /* Set R equal to R_temp */
 
-      initialize_double_array_with( R, R_temp, NGRID*TOT_NLEV2 );
+      initialize_double_array_with( R, R_temp, NCELLS*TOT_NLEV2 );
 
 
       /* Initialize the Source and opacity with zero's */
 
-      double Source[NGRID*TOT_NRAD];                                          /* source function */
+      double Source[NCELLS*TOT_NRAD];                                          /* source function */
 
-      double opacity[NGRID*TOT_NRAD];                                                 /* opacity */
+      double opacity[NCELLS*TOT_NRAD];                                                 /* opacity */
 
 
-      /* Calculate source function and opacity for all gridpoints                                */
+      /* Calculate source function and opacity for all cells                                */
       /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
@@ -181,8 +181,8 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
       int num_threads = omp_get_num_threads();
       int thread_num  = omp_get_thread_num();
 
-      long start = (thread_num*NGRID)/num_threads;
-      long stop  = ((thread_num+1)*NGRID)/num_threads;   /* Note the brackets are important here */
+      long start = (thread_num*NCELLS)/num_threads;
+      long stop  = ((thread_num+1)*NCELLS)/num_threads;   /* Note the brackets are important here */
 
 
       for (long n=start; n<stop; n++){
@@ -232,7 +232,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
         } /* end of kr loop over transitions */
 
-      } /* end of n loop over gridpoints */
+      } /* end of n loop over cells */
       } /* end of OpenMP parallel region */
 
 
@@ -254,9 +254,9 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
         int j = jrad[LSPECRAD(lspec,kr)];        /* j level index corresponding to transition kr */
 
 
-        double P_intensity[NGRID*NRAYS];                 /* Feautrier's mean intensity for a ray */
+        double P_intensity[NCELLS*NRAYS];                 /* Feautrier's mean intensity for a ray */
 
-        initialize_double_array(P_intensity, NGRID*NRAYS);
+        initialize_double_array(P_intensity, NCELLS*NRAYS);
 
 
         nshortcuts = 0;
@@ -270,15 +270,15 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
         shared( evalpoint, key, raytot, cum_raytot, i, j, nlev, kr, nrad, lspec, irad, jrad,      \
                 Source, opacity, pop, frequency, A_coeff, B_coeff, temperature_gas,               \
                 temperature_dust, mean_intensity, Lambda_diagonal, R, mean_intensity_eff,         \
-                P_intensity, gridpoint, nno_shortcuts, nshortcuts, cum_nrad, cum_nlev, cum_nlev2 )\
+                P_intensity, cell, nno_shortcuts, nshortcuts, cum_nrad, cum_nlev, cum_nlev2 )\
         default( none )
         {
 
         int num_threads = omp_get_num_threads();
         int thread_num  = omp_get_thread_num();
 
-        long start = (thread_num*NGRID)/num_threads;
-        long stop  = ((thread_num+1)*NGRID)/num_threads;      /* Note the brackets are important */
+        long start = (thread_num*NCELLS)/num_threads;
+        long stop  = ((thread_num+1)*NCELLS)/num_threads;      /* Note the brackets are important */
 
 
         for (long n=start; n<stop; n++){
@@ -297,7 +297,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
           /* Calculate the mean intensity */
 
-          radiative_transfer( gridpoint, evalpoint, key, raytot, cum_raytot,
+          radiative_transfer( cell, evalpoint, key, raytot, cum_raytot,
                               P_intensity, mean_intensity, Lambda_diagonal, mean_intensity_eff,
                               Source, opacity, frequency, temperature_gas, temperature_dust,
                               irad, jrad, n, lspec, kr, &nshortcuts, &nno_shortcuts );
@@ -330,7 +330,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
 
 #     pragma omp parallel                                                                         \
-      shared( gridpoint, lspec, R, pop, prev1_pop, nlev, cum_nlev,not_converged,                  \
+      shared( cell, lspec, R, pop, prev1_pop, nlev, cum_nlev,not_converged,                  \
               n_not_converged, lspec_nr, species )                                                \
       default( none )
       {
@@ -338,8 +338,8 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
       int num_threads = omp_get_num_threads();
       int thread_num  = omp_get_thread_num();
 
-      long start = (thread_num*NGRID)/num_threads;
-      long stop  = ((thread_num+1)*NGRID)/num_threads;      /* Note the brackets are important */
+      long start = (thread_num*NCELLS)/num_threads;
+      long stop  = ((thread_num+1)*NCELLS)/num_threads;      /* Note the brackets are important */
 
 
       for (long n=start; n<stop; n++){
@@ -347,7 +347,7 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
         /* Solve the radiative balance equation for the level populations */
 
-        level_population_solver( gridpoint, n, lspec, R, pop );
+        level_population_solver( cell, n, lspec, R, pop );
 
 
         /* Check for convergence */
@@ -388,13 +388,13 @@ int level_populations( GRIDPOINT *gridpoint, EVALPOINT *evalpoint, long *key, lo
 
       /* Limit the number of iterations */
 
-      if (niterations > MAX_NITERATIONS || n_not_converged < NGRID/10){
+      if (niterations > MAX_NITERATIONS || n_not_converged < NCELLS/10){
 
         not_converged = false;
       }
 
 
-      printf("(level_populations): Not yet converged for %ld of %d\n", n_not_converged, NGRID);
+      printf("(level_populations): Not yet converged for %ld of %d\n", n_not_converged, NCELLS);
 
 
     } /* end of while loop of iterations */

@@ -34,7 +34,7 @@
 /* write_grid: write the grid again (for debugging)                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int write_grid(std::string tag, GRIDPOINT *gridpoint)
+int write_grid(std::string tag, CELL *cell)
 {
 
 
@@ -54,9 +54,9 @@ int write_grid(std::string tag, GRIDPOINT *gridpoint)
     exit(1);
   }
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
-    fprintf(file, "%f\t%f\t%f\n", gridpoint[n].x, gridpoint[n].y, gridpoint[n].z);
+    fprintf(file, "%f\t%f\t%f\n", cell[n].x, cell[n].y, cell[n].z);
   }
 
   fclose(file);
@@ -141,9 +141,9 @@ int write_eval(std::string tag, EVALPOINT *evalpoint)
     exit(1);
   }
 
-  for (long n1=0; n1<NGRID; n1++){
+  for (long n1=0; n1<NCELLS; n1++){
 
-    for (long n2=0; n2<NGRID; n2++){
+    for (long n2=0; n2<NCELLS; n2++){
 
       fprintf( file, "%lE\t%ld\t%d\n",
                evalpoint[GINDEX(n1,n2)].Z,
@@ -190,9 +190,9 @@ int write_key(std::string tag, long *key)
   }
 
 
-  for (long n1=0; n1<NGRID; n1++){
+  for (long n1=0; n1<NCELLS; n1++){
 
-    for (long n2=0; n2<NGRID; n2++){
+    for (long n2=0; n2<NCELLS; n2++){
 
       fprintf(file, "%ld\t", key[GINDEX(n1,n2)] );
     }
@@ -237,7 +237,7 @@ int write_raytot(std::string tag, long *raytot)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (long r=0; r<NRAYS; r++){
 
@@ -284,7 +284,7 @@ int write_cum_raytot(std::string tag, long *cum_raytot)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (long r=0; r<NRAYS; r++){
 
@@ -333,7 +333,7 @@ int write_abundances(std::string tag)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (int spec=0; spec<NSPEC; spec++){
 
@@ -387,7 +387,7 @@ int write_level_populations(std::string tag, double *pop)
     }
 
 
-    for (long n=0; n<NGRID; n++){
+    for (long n=0; n<NCELLS; n++){
 
       for (int i=0; i<nlev[lspec]; i++){
 
@@ -443,7 +443,7 @@ int write_line_intensities(std::string tag, double *mean_intensity)
     }
 
 
-    for (long n=0; n<NGRID; n++){
+    for (long n=0; n<NCELLS; n++){
 
       for (int kr=0; kr<nrad[lspec]; kr++){
 
@@ -492,7 +492,7 @@ int write_temperature_gas(std::string tag, double *temperature_gas)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     fprintf( file, "%lE\n", temperature_gas[n] );
   }
@@ -535,7 +535,7 @@ int write_temperature_dust(std::string tag, double *temperature_dust)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     fprintf( file, "%lE\n", temperature_dust[n] );
   }
@@ -578,7 +578,7 @@ int write_prev_temperature_gas(std::string tag, double *prev_temperature_gas)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     fprintf( file, "%lE\n", prev_temperature_gas[n] );
   }
@@ -621,7 +621,7 @@ int write_UV_field(std::string tag, double *UV_field)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     fprintf( file, "%lE\n", UV_field[n] );
   }
@@ -664,7 +664,7 @@ int write_AV(std::string tag, double *AV)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (long r=0; r<NRAYS; r++){
 
@@ -712,7 +712,7 @@ int write_rad_surface(std::string tag, double *rad_surface)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (long r=0; r<NRAYS; r++){
 
@@ -760,7 +760,7 @@ int write_reaction_rates(std::string tag, REACTION *reaction)
   }
 
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (int reac=0; reac<NREAC; reac++){
 
@@ -840,7 +840,7 @@ int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
 
   fprintf( file, "\n" );
 
-  for (long n=0; n<NGRID; n++){
+  for (long n=0; n<NCELLS; n++){
 
     for (int reac=0; reac<nr_certain_reac; reac++){
 
@@ -983,7 +983,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 //   }
 //
 //
-//   for (long n=0; n<NGRID; n++){
+//   for (long n=0; n<NCELLS; n++){
 //
 //     for (long r=0; r<NRAYS; r++){
 //
@@ -1022,7 +1022,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 //   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
 //
 //
-//   for (long n=0; n<NGRID; n++){
+//   for (long n=0; n<NCELLS; n++){
 //
 //     for (long r=0; r<NRAYS; r++){
 //
@@ -1050,7 +1050,7 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 //
 //
 //
-//   for (long n=0; n<NGRID; n++){
+//   for (long n=0; n<NCELLS; n++){
 //
 //     for (long r=0; r<NRAYS; r++){
 //
@@ -1300,7 +1300,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 // /* write_LTE_deviation: write the relative deviation of the level populations from the LTE value */
 // /*-----------------------------------------------------------------------------------------------*/
 //
-// int write_LTE_deviation( std::string tag, GRIDPOINT *gridpoint, double *energy, double* weight,
+// int write_LTE_deviation( std::string tag, CELL *cell, double *energy, double* weight,
 //                          double *temperature_gas, double *pop )
 // {
 //
@@ -1311,11 +1311,11 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 //   }
 //
 //
-//   double LTE_pop[NGRID*TOT_NLEV];                                        /* level population n_i */
+//   double LTE_pop[NCELLS*TOT_NLEV];                                        /* level population n_i */
 //
-//   initialize_double_array(LTE_pop, NGRID*TOT_NLEV);
+//   initialize_double_array(LTE_pop, NCELLS*TOT_NLEV);
 //
-//   calc_LTE_populations(gridpoint, energy, weight, temperature_gas, LTE_pop);
+//   calc_LTE_populations(cell, energy, weight, temperature_gas, LTE_pop);
 //
 //
 //   for (int lspec=0; lspec<NLSPEC; lspec++){
@@ -1335,7 +1335,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 //     }
 //
 //
-//     for (long n=0; n<NGRID; n++){
+//     for (long n=0; n<NCELLS; n++){
 //
 //       for (int i=0; i<nlev[lspec]; i++){
 //
@@ -1367,7 +1367,7 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 // /* write_true_level_populations: write the true level populations                                */
 // /*-----------------------------------------------------------------------------------------------*/
 //
-// int write_true_level_populations( std::string tag, GRIDPOINT *gridpoint, double *pop )
+// int write_true_level_populations( std::string tag, CELL *cell, double *pop )
 // {
 //
 //
@@ -1394,12 +1394,12 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 //     }
 //
 //
-//     for (long n=0; n<NGRID; n++){
+//     for (long n=0; n<NCELLS; n++){
 //
 //       for (int i=0; i<nlev[lspec]; i++){
 //
 //         double rel = pop[LSPECGRIDLEV(lspec,n, i)]
-//                      / gridpoint[n].density / species[lspec_nr[lspec]].abn[n];
+//                      / cell[n].density / species[lspec_nr[lspec]].abn[n];
 //
 //         fprintf(file, "%lE\t", rel);
 //       }

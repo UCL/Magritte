@@ -25,7 +25,7 @@ file_name = "../files/" + date_stamp + "_output/level_populations_"+ name + tag 
 
 my_data = np.loadtxt(file_name)
 
-ngrid  = np.shape(my_data)[0]
+ncells  = np.shape(my_data)[0]
 nindex = np.shape(my_data)[1]
 
 
@@ -62,7 +62,7 @@ fig2 = plt.figure()
 ax1 = fig1.add_subplot(111)
 ax2 = fig2.add_subplot(111)
 
-data_line = np.zeros(ngrid)
+data_line = np.zeros(ncells)
 
 
 for index in range(nindex):

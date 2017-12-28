@@ -49,7 +49,7 @@ int read_species(std::string spec_datafile, double *initial_abn)
 
   species[0].sym = "dummy0";
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+  for (long gridp=0; gridp<NCELLS; gridp++){
 
     species[0].abn[gridp] = 0.0;
   }
@@ -59,7 +59,7 @@ int read_species(std::string spec_datafile, double *initial_abn)
 
   species[NSPEC-1].sym = "dummy1";
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+  for (long gridp=0; gridp<NCELLS; gridp++){
 
     species[NSPEC-1].abn[gridp] = 1.0;
   }
@@ -83,7 +83,7 @@ int read_species(std::string spec_datafile, double *initial_abn)
     initial_abn[l]  = abn_buff;
 
 
-    for (long gridp=0; gridp<NGRID; gridp++){
+    for (long gridp=0; gridp<NCELLS; gridp++){
 
       species[l].abn[gridp] = abn_buff;
     }
@@ -96,7 +96,7 @@ int read_species(std::string spec_datafile, double *initial_abn)
 
   int electron_nr = get_species_nr("e-");
 
-  for (long gridp=0; gridp<NGRID; gridp++){
+  for (long gridp=0; gridp<NCELLS; gridp++){
 
     species[electron_nr].abn[gridp] = 0.0;
     species[electron_nr].abn[gridp] = get_electron_abundance(gridp);

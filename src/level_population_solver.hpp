@@ -24,7 +24,7 @@
 /* level_population_solver: sets up and solves the matrix equation corresp. to equilibrium eq.   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int level_population_solver( GRIDPOINT *gridpoint, long gridp, int lspec, double *R, double *pop );
+int level_population_solver( CELL *cell, long gridp, int lspec, double *R, double *pop );
 
 /*-----------------------------------------------------------------------------------------------*/
 

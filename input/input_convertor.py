@@ -8,7 +8,7 @@ filename = str(sys.argv[1])
 
 data = np.loadtxt(filename)
 
-ngrid = np.shape(data)[0]
+ncells = np.shape(data)[0]
 
 
 # Rotate the gid such that the 1D line coincides with a HEALPix ray
@@ -28,4 +28,4 @@ input_data = np.stack((x, y, z, vx, vy, vz, density), axis=1)
 input_filename = filename + "_conv.txt"
 np.savetxt(input_filename, input_data, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 
-print("Grid (1D) created with", ngrid, "grid points!")
+print("Grid (1D) created with", ncells, "grid points!")

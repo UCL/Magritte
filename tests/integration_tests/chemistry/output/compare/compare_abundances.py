@@ -37,7 +37,7 @@ my_file_name = "../files/" + date_stamp + "_output/abundances" + tag + ".txt"
 
 my_abn = np.loadtxt(my_file_name)
 
-ngrid = np.shape(my_abn)[0]
+ncells = np.shape(my_abn)[0]
 nspec = np.shape(my_abn)[1]
 
 
@@ -102,7 +102,7 @@ fig2 = plt.figure()
 ax1 = fig1.add_subplot(111)
 ax2 = fig2.add_subplot(111)
 
-data_line = np.zeros(ngrid+1)
+data_line = np.zeros(ncells+1)
 
 for spec in range(nspec):
     data_line = relative_error[:,spec]

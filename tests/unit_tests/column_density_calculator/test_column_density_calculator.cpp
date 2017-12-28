@@ -54,7 +54,7 @@ TEST_CASE("1D regular grid"){
 
   /* Since the executables are now in the directory /tests, we have to change the paths */
 
-  grid_inputfile   = "../" + grid_inputfile;
+  inputfile   = "../" + inputfile;
   spec_datafile    = "../" + spec_datafile;
   line_datafile[0] = "../" + line_datafile[0];
 
@@ -62,25 +62,25 @@ TEST_CASE("1D regular grid"){
 
   /* Define grid (using types defined in definitions.h) */
 
-  GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+  CELL cell[NCELLS];                                                     /* grid points */
 
-  EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 
 
   initialize_evalpoint(evalpoint);
 
   /* Initialize the data structures which will store the evaluation pointa */
 
-  initialize_long_array(key, NGRID*NGRID);
+  initialize_long_array(key, NCELLS*NCELLS);
 
-  initialize_long_array(raytot, NGRID*NRAYS);
+  initialize_long_array(raytot, NCELLS*NRAYS);
 
-  initialize_long_array(cum_raytot, NGRID*NRAYS);
+  initialize_long_array(cum_raytot, NCELLS*NRAYS);
 
 
   /* Read input file */
 
-  read_input(grid_inputfile, gridpoint);
+  read_input(inputfile, cell);
 
 
   /* Read the species and their abundances */
@@ -95,18 +95,18 @@ TEST_CASE("1D regular grid"){
 
   /* Trace the rays */
 
-  ray_tracing(healpixvector, gridpoint, evalpoint);
+  ray_tracing(healpixvector, cell, evalpoint);
 
 
   /* Define and initialize */
 
-  double column_density[NGRID*NRAYS];                   /* column density for each ray and gridp */
+  double column_density[NCELLS*NRAYS];                   /* column density for each ray and gridp */
 
-  initialize_double_array(column_density, NGRID*NRAYS);
+  initialize_double_array(column_density, NCELLS*NRAYS);
 
-  double AV[NGRID*NRAYS];                       /* Visual extinction (only takes into account H) */
+  double AV[NCELLS*NRAYS];                       /* Visual extinction (only takes into account H) */
 
-  initialize_double_array(AV, NGRID*NRAYS);
+  initialize_double_array(AV, NCELLS*NRAYS);
 
   METALLICITY = 1.0;
 
@@ -122,7 +122,7 @@ TEST_CASE("1D regular grid"){
 
   int spec =0;
 
-  calc_column_density(gridpoint, evalpoint, column_density, spec);
+  calc_column_density(cell, evalpoint, column_density, spec);
 
 
   CHECK( 1==1 );

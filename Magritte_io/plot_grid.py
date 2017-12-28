@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 def crop_data( xl, xh, yl, yh ):
     # Crop the data to be in the range [xl, xh] and [yl, yh]
     cropped_IDs = []
-    for gridp in range(NGRID):
+    for gridp in range(NCELLS):
         if ( (x[gridp] > xl) and (x[gridp] < xh) and (y[gridp] > yl) and (y[gridp] < yh) ):
             cropped_IDs.append( int(ID[gridp]) )
     return cropped_IDs
@@ -23,7 +23,7 @@ def crop_data( xl, xh, yl, yh ):
 
 ID, x,y,z, vx,vy,vz, density = np.loadtxt(fname="grid.txt",unpack=True)
 
-NGRID = len(density)
+NCELLS = len(density)
 
 
 # Crop data

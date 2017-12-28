@@ -76,35 +76,35 @@ TEST_CASE("Test reaction_rates"){
   read_reactions(test_reac_datafile);
 
 
-  double temperature_gas[NGRID];
+  double temperature_gas[NCELLS];
 
   temperature_gas[0] = 10.0;
 
-  double temperature_dust[NGRID];
+  double temperature_dust[NCELLS];
 
   temperature_dust[0] = 0.0;
 
-  double rad_surface[NGRID];
+  double rad_surface[NCELLS];
 
   rad_surface[0] = 0.0;
 
-  double AV[NGRID];
+  double AV[NCELLS];
 
   AV[0] = 0.0;
 
-  double column_H2[NGRID];
+  double column_H2[NCELLS];
 
   column_H2[0] = 0.0;
 
-  double column_HD[NGRID];
+  double column_HD[NCELLS];
 
   column_HD[0] = 0.0;
 
-  double column_C[NGRID];
+  double column_C[NCELLS];
 
   column_C[0] = 0.0;
 
-  double column_CO[NGRID];
+  double column_CO[NCELLS];
 
   column_CO[0] = 0.0;
 

@@ -49,13 +49,13 @@ with open("../../parameters.hpp") as parameters_file:
         line = line.split()
         if len(line) is 3:
             if line[1] == 'GRID_INPUTFILE':
-                grid_inputfile = "../../" + line[2].split("\"")[1]
+                inputfile = "../../" + line[2].split("\"")[1]
 
 
 # Read the grid input file
 
-xg,yg,zg, vx,vy,vz, density = np.loadtxt(grid_inputfile, unpack=True)
-ngrid = np.shape(xg)[0]
+xg,yg,zg, vx,vy,vz, density = np.loadtxt(inputfile, unpack=True)
+ncells = np.shape(xg)[0]
 
 
 
@@ -75,7 +75,7 @@ nlev = np.shape(data)[1]
 
 fig1 = plt.figure()
 
-pop = np.zeros(ngrid)
+pop = np.zeros(ncells)
 
 
 
@@ -84,7 +84,7 @@ pop = np.zeros(ngrid)
 ax1 = fig1.add_subplot(111)
 
 for level in range(nlev):
-    for point in range(ngrid):
+    for point in range(ncells):
         pop[point] = data[point,level]
 
     ax1.plot(pop, label=level)
@@ -119,7 +119,7 @@ nrad = np.shape(mean_intensity_data)[1]
 
 fig2 = plt.figure()
 
-mean_intensity = np.zeros(ngrid)
+mean_intensity = np.zeros(ncells)
 
 
 
@@ -128,7 +128,7 @@ mean_intensity = np.zeros(ngrid)
 ax2 = fig2.add_subplot(111)
 
 for rad in range(nrad):
-    for point in range(ngrid):
+    for point in range(ncells):
 
         mean_intensity[point] = mean_intensity_data[point][rad]
 

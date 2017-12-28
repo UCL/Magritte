@@ -26,7 +26,7 @@
 /* calc_LTE_populations: Calculates the LTE level populations                                    */
 /*-----------------------------------------------------------------------------------------------*/
 
-int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
+int calc_LTE_populations( CELL *cell, double *energy, double *weight,
                           double *temperature_gas, double *pop )
 {
 
@@ -36,7 +36,7 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
   for (int lspec=0; lspec<NLSPEC; lspec++){
 
 #   pragma omp parallel                                                                           \
-    shared( gridpoint, energy, weight, temperature_gas, pop, nlev, cum_nlev, species, lspec_nr,   \
+    shared( cell, energy, weight, temperature_gas, pop, nlev, cum_nlev, species, lspec_nr,   \
             lspec )                                                                               \
     default( none )
     {
@@ -44,8 +44,8 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
 
-    long start = (thread_num*NGRID)/num_threads;
-    long stop  = ((thread_num+1)*NGRID)/num_threads;          /* Note the brackets are important */
+    long start = (thread_num*NCELLS)/num_threads;
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;          /* Note the brackets are important */
 
 
     for (long n=start; n<stop; n++){
@@ -75,7 +75,7 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
         long p_i = LSPECGRIDLEV(lspec,n,i);
         int  l_i = LSPECLEV(lspec,i);
 
-        pop[p_i] = gridpoint[n].density * species[lspec_nr[lspec]].abn[n] * weight[l_i]
+        pop[p_i] = cell[n].density * species[lspec_nr[lspec]].abn[n] * weight[l_i]
                    * exp( -energy[l_i]/(KB*temperature_gas[n]) ) / partition_function;
 
         total_population = total_population + pop[p_i];
@@ -92,7 +92,7 @@ int calc_LTE_populations( GRIDPOINT *gridpoint, double *energy, double *weight,
 
       /* Check if total population adds up to the density */
 
-      if ( (total_population-gridpoint[n].density*species[lspec_nr[lspec]].abn[n])/total_population > 1.0E-3 ){
+      if ( (total_population-cell[n].density*species[lspec_nr[lspec]].abn[n])/total_population > 1.0E-3 ){
 
         printf("\nERROR : total of level populations differs from density !\n\n");
       }

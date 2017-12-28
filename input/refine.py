@@ -3,7 +3,7 @@ import sys
 
 
 
-# Doubles the number of gridpoints by interpolation
+# Doubles the number of cells by interpolation
 
 
 
@@ -11,22 +11,22 @@ file_name = str(sys.argv[1])
 
 input_data = np.loadtxt(file_name+".txt")
 
-ngrid     = np.shape(input_data)[0]
-ngrid_new = 2*ngrid-1
+ncells     = np.shape(input_data)[0]
+ncells_new = 2*ncells-1
 
 
-x_new       = np.zeros(ngrid_new)
-y_new       = np.zeros(ngrid_new)
-z_new       = np.zeros(ngrid_new)
+x_new       = np.zeros(ncells_new)
+y_new       = np.zeros(ncells_new)
+z_new       = np.zeros(ncells_new)
 
-vx_new      = np.zeros(ngrid_new)
-vy_new      = np.zeros(ngrid_new)
-vz_new      = np.zeros(ngrid_new)
+vx_new      = np.zeros(ncells_new)
+vy_new      = np.zeros(ncells_new)
+vz_new      = np.zeros(ncells_new)
 
-density_new = np.zeros(ngrid_new)
+density_new = np.zeros(ncells_new)
 
 
-for i in range(ngrid):
+for i in range(ncells):
 
     x_new[2*i]       = input_data[i,0]
     y_new[2*i]       = input_data[i,1]
@@ -39,7 +39,7 @@ for i in range(ngrid):
     density_new[2*i] = input_data[i,6]
 
 
-for i in range(1,ngrid):
+for i in range(1,ncells):
 
     x_new[2*i-1]       = (input_data[i,0]+input_data[i-1,0])/2.0
     y_new[2*i-1]       = (input_data[i,1]+input_data[i-1,1])/2.0

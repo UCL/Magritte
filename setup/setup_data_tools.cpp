@@ -30,17 +30,17 @@
 
 
 
-/* get_NGRID_txt: Count number of grid points in the .txt input file                             */
+/* get_NCELLS_txt: Count number of grid points in the .txt input file                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-long get_NGRID_txt(std::string grid_inputfile)
+long get_NCELLS_txt(std::string inputfile)
 {
 
 
-  long ngrid = 0;                                                       /* number of grid points */
+  long ncells = 0;                                                       /* number of grid points */
 
 
-  FILE *file = fopen(grid_inputfile.c_str(), "r");
+  FILE *file = fopen(inputfile.c_str(), "r");
 
   while ( !feof(file) ){
 
@@ -48,7 +48,7 @@ long get_NGRID_txt(std::string grid_inputfile)
 
     if (ch == '\n'){
 
-      ngrid++;
+      ncells++;
     }
 
   }
@@ -56,7 +56,7 @@ long get_NGRID_txt(std::string grid_inputfile)
   fclose(file);
 
 
-  return ngrid;
+  return ncells;
 
 }
 
@@ -66,10 +66,10 @@ long get_NGRID_txt(std::string grid_inputfile)
 
 
 
-/* get_NGRID_vtu: Count number of grid points in the .vtu input file                             */
+/* get_NCELLS_vtu: Count number of grid points in the .vtu input file                             */
 /*-----------------------------------------------------------------------------------------------*/
 
-long get_NGRID_vtu(std::string grid_inputfile)
+long get_NCELLS_vtu(std::string inputfile)
 {
 
 
@@ -78,7 +78,7 @@ long get_NGRID_vtu(std::string grid_inputfile)
   vtkSmartPointer<vtkXMLUnstructuredGridReader> reader =
     vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
 
-  reader->SetFileName(grid_inputfile.c_str());
+  reader->SetFileName(inputfile.c_str());
   reader->Update();
 
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
@@ -98,7 +98,7 @@ long get_NGRID_vtu(std::string grid_inputfile)
   cellCentersFilter->Update();
 
 
-  long ngrid = cellCentersFilter->GetOutput()->GetNumberOfPoints();
+  long ncells = cellCentersFilter->GetOutput()->GetNumberOfPoints();
 
 
   /* Check whether there is cell data for every cell */
@@ -114,14 +114,14 @@ long get_NGRID_vtu(std::string grid_inputfile)
 
     std::string name = data->GetName();
 
-    if ( (ngrid != data->GetNumberOfTuples()) ){
+    if ( (ncells != data->GetNumberOfTuples()) ){
 
       printf("ERROR: wrong number of %s values\n", name.c_str());
     }
   }
 
 
-  return ngrid;
+  return ncells;
 
 }
 

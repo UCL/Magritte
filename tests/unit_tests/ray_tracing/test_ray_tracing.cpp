@@ -62,20 +62,20 @@
 //
 //   /* Define grid (using types defined in definitions.h) */
 //
-//   GRIDPOINT gridpoint[NGRID];                                                     /* grid points */
+//   CELL cell[NCELLS];                                                     /* grid points */
 //
-//   EVALPOINT evalpoint[NGRID*NGRID];                     /* evaluation points for each grid point */
+//   EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 //
-//   long key[NGRID*NGRID];              /* stores the nrs. of the grid points on the rays in order */
+//   long key[NCELLS*NCELLS];              /* stores the nrs. of the grid points on the rays in order */
 //
-//   long raytot[NGRID*NRAYS];                /* cumulative nr. of evaluation points along each ray */
+//   long raytot[NCELLS*NRAYS];                /* cumulative nr. of evaluation points along each ray */
 //
-//   long cum_raytot[NGRID*NRAYS];            /* cumulative nr. of evaluation points along each ray */
+//   long cum_raytot[NCELLS*NRAYS];            /* cumulative nr. of evaluation points along each ray */
 //
 //
 //   /* Since the executables are now in the directory /tests, we have to change the paths */
 //
-//   // grid_inputfile   = "../../../" + grid_inputfile;
+//   // inputfile   = "../../../" + inputfile;
 //
 //
 //   /* IMPORTANT NOTE: THIS IS EXECUTED FOR EVERY SECTION. SINCE THE FILE NAMES ARE EXTERNALLY
@@ -90,7 +90,7 @@
 //
 //   /* Read input file */
 //
-//   read_input(grid_inputfile, gridpoint);
+//   read_input(inputfile, cell);
 //
 //   write_healpixvectors("");
 //
@@ -105,7 +105,7 @@
 //   /*_____________________________________________________________________________________________*/
 //
 //
-//   ray_tracing(gridpoint, evalpoint, key, raytot, cum_raytot);
+//   ray_tracing(cell, evalpoint, key, raytot, cum_raytot);
 //
 //   // write_eval("", evalpoint);
 //   //
@@ -121,7 +121,7 @@
 //   //
 //   //   /* "Check for zero dZ increments" */
 //   //
-//   //   for (int n=0; n<NGRID; n++){
+//   //   for (int n=0; n<NCELLS; n++){
 //   //
 //   //     for (int r=0; r<NRAYS; r++){
 //   //
@@ -136,9 +136,9 @@
 //   //
 //   //   /* "Check whether all grid points are on a ray (only true in 1D)" */
 //   //
-//   //   for (int n1=0; n1<NGRID; n1++){
+//   //   for (int n1=0; n1<NCELLS; n1++){
 //   //
-//   //     for (int n2=0; n2<NGRID; n2++){
+//   //     for (int n2=0; n2<NCELLS; n2++){
 //   //
 //   //       if (n1 != n2){
 //   //
@@ -151,7 +151,7 @@
 //   //
 //   //   /* "Check the order of the evaluation points" */
 //   //
-//   //   for (int n=0; n<NGRID; n++){
+//   //   for (int n=0; n<NCELLS; n++){
 //   //
 //   //     for (int r=0; r<NRAYS; r++){
 //   //
@@ -185,7 +185,7 @@
 TEST_CASE("Cell structure")
 {
 
-  long ncells =  9;
+  long ncells = 9;
 
   CELL *cell = new CELL[ncells];
 
@@ -227,7 +227,7 @@ TEST_CASE("Cell structure")
 
 
   // setup_healpixvectors(NRAYS, healpixvector, antipod);
-  write_healpixvectors("");
+  // write_healpixvectors("");
 
   find_neighbors(ncells, cell);
 
@@ -250,19 +250,32 @@ TEST_CASE("Cell structure")
 
   // write_healpixvectors("");
 
-  long next = 21;
-  
   double dZ = 0.0;
 
-  long current = 3;
-  long origin  = 1;
-  long ray     = 1;
+  long origin = 7;
+  long ray    = 0;
 
-  double Z = 0.7;
+  double Z = 0.0;
 
-  next_cell_on_ray(ncells, cell, current, origin, ray, Z, &next, &dZ);
+  long current = origin;
 
-  printf("next %ld,  dZ %lE\n", next, dZ);
+  long next = next_cell(ncells, cell, origin, ray, Z, current, &dZ);
+
+  // long next;
+
+  while (next != ncells)
+  {
+    next = next_cell(ncells, cell, origin, ray, Z, current, &dZ);
+
+    printf("current %ld,  Z %lE\n", current, Z);
+
+    Z = Z + dZ;
+
+    current = next;
+  }
+
+
+  // printf("next %ld,  dZ %lE\n", next, dZ);
 
   CHECK(true);
 

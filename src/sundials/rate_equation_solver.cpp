@@ -53,7 +53,7 @@
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
+int rate_equation_solver(CELL *cell, long gridp)
 {
 
 
@@ -65,7 +65,7 @@ int rate_equation_solver(GRIDPOINT *gridpoint, long gridp)
   user_data = (USER_DATA) malloc( sizeof(*user_data) );
 
   user_data->gp          = gridp;
-  user_data->gridpointer = gridpoint;
+  user_data->cellpointer = cell;
   user_data->electron_abundance = species[e_nr].abn[gridp];
 
 

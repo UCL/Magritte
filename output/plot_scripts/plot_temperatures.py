@@ -39,7 +39,7 @@ else:
 file_name = "../files/" + date_stamp + "_output/temperature_gas" + tag + ".txt"
 
 temperature_gas = np.loadtxt(file_name)
-ngrid = np.shape(temperature_gas)[0]
+ncells = np.shape(temperature_gas)[0]
 
 print "Plotting the gas temperatures as specified in " + file_name
 
@@ -60,8 +60,8 @@ print "Plotting the dust temperatures as specified in " + file_name
 fig = plt.figure()
 
 
-pop = np.zeros(ngrid)
-mean_intensity = np.zeros(ngrid)
+pop = np.zeros(ncells)
+mean_intensity = np.zeros(ncells)
 
 
 # Plot gas temperatures

@@ -85,11 +85,11 @@ To model the propagation of light through the grid, we need to trace rays throug
 	\label{grid}
 \end{figure}
 
-\subsection{New types \texttt{GRIDPOINT}, \texttt{EVALPOINT}, \texttt{SPECIES} and \texttt{REACTION} }
-The code defines four new types: \texttt{GRIDPOINT}, \texttt{EVALPOINT}, \texttt{SPECIES} and \texttt{REACTION}. Each of these represents a type of objects that is used extensively in the code.
+\subsection{New types \texttt{CELL}, \texttt{EVALPOINT}, \texttt{SPECIES} and \texttt{REACTION} }
+The code defines four new types: \texttt{CELL}, \texttt{EVALPOINT}, \texttt{SPECIES} and \texttt{REACTION}. Each of these represents a type of objects that is used extensively in the code.
 
 \begin{equation}
-\texttt{GRIDPOINT gridpoint.}
+\texttt{CELL cell.}
 \begin{cases}
 \ \texttt{double x, y, z} & \text{position}\\
 \ \texttt{double vx, vy, vz} &  \text{gas velocity} \\
@@ -97,7 +97,7 @@ The code defines four new types: \texttt{GRIDPOINT}, \texttt{EVALPOINT}, \texttt
 \end{cases}
 \end{equation}
 
-\texttt{GRIDPOINT} stores all informtion that comes with the input gird. This includes the three components of the position vector of the grid point, the three components of the velocity and the density of the gas at that point. These parameters are the typical output of a hydrodynamical simulation. As one could expect, there is one \texttt{GRIDPOINT} object for each point in the gird.
+\texttt{CELL} stores all informtion that comes with the input gird. This includes the three components of the position vector of the grid point, the three components of the velocity and the density of the gas at that point. These parameters are the typical output of a hydrodynamical simulation. As one could expect, there is one \texttt{CELL} object for each point in the gird.
 
 \begin{equation}
 \texttt{EVALPOINT evalpoint.}
@@ -106,14 +106,14 @@ The code defines four new types: \texttt{GRIDPOINT}, \texttt{EVALPOINT}, \texttt
 \end{cases}
 \end{equation}
 
-\texttt{EVALPOINT} represents the so-called evaluation points which store the information on the rays passing through the grid points.  An evaluation point is the projection of a grid point on a ray. Since integrations are often done along a ray, the physical quantities are evaluated at the projections of the grid points these rays. Hence the name: evaluation points. The most important parameters stored for an evaluations points are the distance between consecutive points and the projection of the gas velocity along the ray. For every grid point we have a set of rays. Ideally every other grid point lies on one of such rays. As a result we have (maximally) $\texttt{NGRID}*\texttt{NGRID}$ evaluation points.
+\texttt{EVALPOINT} represents the so-called evaluation points which store the information on the rays passing through the grid points.  An evaluation point is the projection of a grid point on a ray. Since integrations are often done along a ray, the physical quantities are evaluated at the projections of the grid points these rays. Hence the name: evaluation points. The most important parameters stored for an evaluations points are the distance between consecutive points and the projection of the gas velocity along the ray. For every grid point we have a set of rays. Ideally every other grid point lies on one of such rays. As a result we have (maximally) $\texttt{NCELLS}*\texttt{NCELLS}$ evaluation points.
 
 \begin{equation}
 \texttt{SPECIES species.}
 \begin{cases}
 \ \texttt{string sym} & \text{chemical symbol}\\
 \ \texttt{double mass} & \text{molar mass} \\
-\ \texttt{double abn[NGRID]} &  \text{abundance} \\
+\ \texttt{double abn[NCELLS]} &  \text{abundance} \\
 \end{cases}
 \end{equation}
 
@@ -126,7 +126,7 @@ The code defines four new types: \texttt{GRIDPOINT}, \texttt{EVALPOINT}, \texttt
 \ \texttt{string P1, P2, P3, P4} & \text{symbols of reaction products} \\
 \ \texttt{double alpha, beta, gamma} &  \text{parameters determining reaction rate} \\
 \ \texttt{double RT\_min, RT\_max} &  \text{temperature range where parameters apply} \\
-\ \texttt{double k[NGRID]} &  \text{reaction rate at every grid point} \\
+\ \texttt{double k[NCELLS]} &  \text{reaction rate at every grid point} \\
 \ \texttt{int    dup} &  \text{number of duplicates in other T ranges}
 \end{cases}
 \end{equation}
@@ -144,13 +144,13 @@ To be able to simulate 3-dimensional objects we need a way to represent them in 
 
 \bigskip
 
-Space is discretized into \texttt{ngrid} grid points.
+Space is discretized into \texttt{ncells} grid points.
 
 \subsection{Efficiently storing the evaluation points}
 
 THE ORIGIN IS NOT AN EVALUATION POINT!
 
-\texttt{raytot[RINDEX(n,r)]} gives the total number of evaluation points on a ray \texttt{r} through a gridpoint \texttt{n}. Here the origin is not counted as an evaluation point. Otherwise we would store the origin each time as an evaluation point, resulting in \texttt{ngrid} times \texttt{NRAYS} unnecessary doubles. In the radiative transfer part of the code we do want to consider the origin as an eveluation point. Therefore we will systematically add one to \texttt{raytot} in that part of the code.
+\texttt{raytot[RINDEX(n,r)]} gives the total number of evaluation points on a ray \texttt{r} through a cell \texttt{n}. Here the origin is not counted as an evaluation point. Otherwise we would store the origin each time as an evaluation point, resulting in \texttt{ncells} times \texttt{NRAYS} unnecessary doubles. In the radiative transfer part of the code we do want to consider the origin as an eveluation point. Therefore we will systematically add one to \texttt{raytot} in that part of the code.
 
 \subsection{Equivalent rays}
 of
