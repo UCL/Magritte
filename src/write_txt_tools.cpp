@@ -31,21 +31,20 @@
 
 
 
-/* write_grid: write the grid again (for debugging)                                              */
+/* write_grid: write the grid again                                                              */
 /*-----------------------------------------------------------------------------------------------*/
 
 int write_grid(std::string tag, CELL *cell)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "grid" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
   if (file == NULL){
 

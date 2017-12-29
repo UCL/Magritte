@@ -4,57 +4,57 @@
 
 #define NREAC 329 
 
-#define TOT_NLEV 45 
+#define TOT_NLEV 60 
 
-#define TOT_NRAD 158 
+#define TOT_NRAD 181 
 
-#define TOT_NLEV2 2025 
+#define TOT_NLEV2 2100 
 
-#define TOT_NCOLPAR 2 
+#define TOT_NCOLPAR 18 
 
-#define TOT_CUM_TOT_NCOLTRAN 7920 
+#define TOT_CUM_TOT_NCOLTRAN 2140 
 
-#define TOT_CUM_TOT_NCOLTEMP 128 
+#define TOT_CUM_TOT_NCOLTEMP 366 
 
-#define TOT_CUM_TOT_NCOLTRANTEMP 126720 
+#define TOT_CUM_TOT_NCOLTRANTEMP 35020 
 
-#define NLEV { 45, 0, 0, 0 } 
+#define NLEV { 5, 5, 5, 45 } 
 
-#define NRAD { 158, 0, 0, 0 } 
+#define NRAD { 7, 9, 7, 158 } 
 
-#define CUM_NLEV { 0, 45, 45, 45 } 
+#define CUM_NLEV { 0, 5, 10, 15 } 
 
-#define CUM_NLEV2 { 0, 2025, 2025, 2025 } 
+#define CUM_NLEV2 { 0, 25, 50, 75 } 
 
-#define CUM_NRAD { 0, 158, 158, 158 } 
+#define CUM_NRAD { 0, 7, 16, 23 } 
 
-#define NCOLPAR { 2, 0, 0, 0 } 
+#define NCOLPAR { 6, 4, 6, 2 } 
 
-#define CUM_NCOLPAR { 0, 2, 2, 2 } 
+#define CUM_NCOLPAR { 0, 6, 10, 16 } 
 
-#define NCOLTEMP { 16, 16 } 
+#define NCOLTEMP { 28, 28, 27, 29, 17, 12, 17, 17, 9, 18, 26, 26, 18, 27, 19, 16, 16, 16 } 
 
-#define NCOLTRAN { 990, 990 } 
+#define NCOLTRAN { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 990, 990 } 
 
-#define CUM_NCOLTEMP { 0, 16 } 
+#define CUM_NCOLTEMP { 0, 28, 56, 83, 112, 129, 0, 17, 34, 43, 0, 26, 52, 70, 97, 116, 0, 16 } 
 
-#define CUM_NCOLTRAN { 0, 990 } 
+#define CUM_NCOLTRAN { 0, 10, 20, 30, 40, 50, 0, 10, 20, 30, 0, 10, 20, 30, 40, 50, 0, 990 } 
 
-#define CUM_NCOLTRANTEMP { 0, 15840 } 
+#define CUM_NCOLTRANTEMP { 0, 280, 560, 830, 1120, 1290, 0, 170, 340, 430, 0, 260, 520, 700, 970, 1160, 0, 15840 } 
 
-#define TOT_NCOLTEMP { 32, 32, 32, 32 } 
+#define TOT_NCOLTEMP { 141, 61, 132, 32 } 
 
-#define TOT_NCOLTRAN { 1980, 1980, 1980, 1980 } 
+#define TOT_NCOLTRAN { 60, 40, 60, 1980 } 
 
-#define TOT_NCOLTRANTEMP { 31680, 31680, 31680, 31680 } 
+#define TOT_NCOLTRANTEMP { 1410, 610, 1320, 31680 } 
 
-#define CUM_TOT_NCOLTEMP { 0, 32, 64, 96 } 
+#define CUM_TOT_NCOLTEMP { 0, 141, 202, 334 } 
 
-#define CUM_TOT_NCOLTRAN { 0, 1980, 3960, 5940 } 
+#define CUM_TOT_NCOLTRAN { 0, 60, 100, 160 } 
 
-#define CUM_TOT_NCOLTRANTEMP { 0, 31680, 63360, 95040 } 
+#define CUM_TOT_NCOLTRANTEMP { 0, 1410, 2020, 3340 } 
 
-#define HEALPIXVECTOR { 1.000000E+00, 0.000000E+00, 0.000000E+00, -1.000000E+00, 0.000000E+00, 0.000000E+00 } 
+#define HEALPIXVECTOR { 1.000000E+00, 0.000000E+00, 0.000000E+00, 7.071068E-01, 7.071068E-01, 0.000000E+00, 6.123234E-17, 1.000000E+00, 0.000000E+00, -7.071068E-01, 7.071068E-01, 0.000000E+00, -1.000000E+00, 1.224647E-16, 0.000000E+00, -7.071068E-01, -7.071068E-01, 0.000000E+00, -1.836970E-16, -1.000000E+00, 0.000000E+00, 7.071068E-01, -7.071068E-01, 0.000000E+00 } 
 
-#define ANTIPOD { 1, 0 } 
+#define ANTIPOD { 4, 5, 6, 7, 0, 1, 2, 3 } 
 

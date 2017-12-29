@@ -159,7 +159,7 @@ int main()
 //
 //   // for (gridp=0; gridp<ncells; gridp++){
 //   //
-//   //   get_local_evalpoint(cell, evalpoint, key, raytot, cum_raytot, gridp);
+//   //   find_evalpoints(cell, evalpoint, key, raytot, cum_raytot, gridp);
 //   // }
 //
 //   /* Write grid in .txt format */

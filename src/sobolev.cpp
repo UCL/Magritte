@@ -149,7 +149,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
         escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
       }
 
-      else if( fabs(optical_depth1) < 1.0E-8)
+      else if (fabs(optical_depth1) < 1.0E-8)
       {
         escape_probability = escape_probability + 1.0;
       }
@@ -159,7 +159,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
         escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
       }
 
-
+      optical_depth2 = CC / frequency[b_ij] / speed_width * optical_depth2;
 
       for (long e2=0; e2<etot2; e2++)
       {

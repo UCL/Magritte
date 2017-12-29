@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* thermal_balance: Perform a thermal balance iteration to calculate the thermal flux            */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -26,7 +18,6 @@
 #include "calc_column_density.hpp"
 #include "chemistry.hpp"
 #include "calc_LTE_populations.hpp"
-#include "level_populations.hpp"
 #include "level_populations_otf.hpp"
 #include "cell_level_populations.hpp"
 #include "reaction_rates.hpp"
@@ -34,12 +25,8 @@
 #include "cooling.hpp"
 
 
-
-/* thermal_balance: perform a thermal balance iteration to calculate the thermal flux            */
-/*-----------------------------------------------------------------------------------------------*/
-
-#if (ON_THE_FLY)
-
+// thermal_balance: perform a thermal balance iteration to calculate thermal flux
+// ------------------------------------------------------------------------------
 
 int thermal_balance( CELL *cell,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
@@ -50,31 +37,10 @@ int thermal_balance( CELL *cell,
                      double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
                      double *thermal_ratio, double *initial_abn,
                      double *time_chemistry, double *time_level_pop )
-
-
-#else
-
-int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
-                     long *key, long *raytot, long *cum_raytot,
-                     double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double *UV_field, double *temperature_gas, double *temperature_dust,
-                     double *rad_surface, double *AV, int *irad, int *jrad, double *energy,
-                     double *weight, double *frequency, double *A_coeff, double *B_coeff, double *R,
-                     double *C_data, double *coltemp, int *icol, int *jcol, double *pop,
-                     double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
-                     double *thermal_ratio, double *initial_abn,
-                     double *time_chemistry, double *time_level_pop )
-
-#endif
-
-
 {
 
-
-
-
-  /*   CALCULATE CHEMICAL ABUNDANCES                                                             */
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  // CALCULATE CHEMICAL ABUNDANCES
+  // +++++++++++++++++++++++++++++
 
 
   printf("(thermal_balance): calculating chemical abundances \n\n");
@@ -100,17 +66,8 @@ int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
     *time_chemistry -= omp_get_wtime();
 
 
-#   if (ON_THE_FLY)
-
     chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
-
-#   else
-
-    chemistry( cell, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
-               rad_surface, AV, column_H2, column_HD, column_C, column_CO );
-
-#   endif
 
 
     *time_chemistry += omp_get_wtime();
@@ -124,13 +81,10 @@ int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
   printf("(thermal_balance): chemical abundances calculated \n\n");
 
 
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-
-
-  /*   CALCULATE LEVEL POPULATIONS (ITERATIVELY)                                                 */
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  // CALCULATE LEVEL POPULATIONS (ITERATIVELY)
+  // +++++++++++++++++++++++++++++++++++++++++
 
 
   printf("(thermal_balance): calculating level populations \n\n");
@@ -146,24 +100,17 @@ int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
   *time_level_pop -= omp_get_wtime();
 
 
-# if   (CELL_BASED)
+# if (CELL_BASED)
 
   cell_level_populations (cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
                           icol, jcol, temperature_gas, temperature_dust, weight, energy,
                           mean_intensity, Lambda_diagonal, mean_intensity_eff);
 
-# elif (ON_THE_FLY)
-
-  level_populations_otf( cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
-                         icol, jcol, temperature_gas, temperature_dust, weight, energy,
-                         mean_intensity, Lambda_diagonal, mean_intensity_eff );
-
 # else
 
-  level_populations( cell, evalpoint, key, raytot, cum_raytot, irad, jrad, frequency,
-                     A_coeff, B_coeff, R, pop, C_data, coltemp, icol, jcol,
-                     temperature_gas, temperature_dust, weight, energy, mean_intensity,
-                     Lambda_diagonal, mean_intensity_eff );
+  level_populations_otf (cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+                         icol, jcol, temperature_gas, temperature_dust, weight, energy,
+                         mean_intensity, Lambda_diagonal, mean_intensity_eff);
 
 # endif
 
@@ -177,13 +124,10 @@ int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
   printf("(thermal_balance): level populations calculated \n\n");
 
 
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-
-
-  /*   CALCULATE HEATING AND COOLING                                                             */
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  // CALCULATE HEATING AND COOLING
+  // +++++++++++++++++++++++++++++
 
 
   printf("(thermal_balance): calculating heating and cooling \n\n");
@@ -191,27 +135,15 @@ int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
 
   /* Calculate column densities to get the most recent reaction rates */
 
-
-# if ( ON_THE_FLY )
-
   calc_column_densities(cell, column_H2, column_HD, column_C, column_CO);
-
-# else
-
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_C, C_nr);
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
-
-# endif
 
 
   /* Calculate the thermal balance for each cell */
 
-# pragma omp parallel                                                                             \
+# pragma omp parallel                                                                        \
   shared( cell, temperature_gas, temperature_dust, irad, jrad, A_coeff, B_coeff, pop,        \
-          frequency, weight, column_H2, column_HD, column_C, column_CO, cum_nlev, species,        \
-          mean_intensity, AV, rad_surface, UV_field, thermal_ratio )                              \
+          frequency, weight, column_H2, column_HD, column_C, column_CO, cum_nlev, species,   \
+          mean_intensity, AV, rad_surface, UV_field, thermal_ratio )                         \
   default( none )
   {
 
@@ -258,13 +190,6 @@ int thermal_balance( CELL *cell, EVALPOINT *evalpoint,
   printf("(thermal_balance): heating and cooling calculated \n\n");
 
 
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-
-
   return(0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

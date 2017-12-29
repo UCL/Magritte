@@ -44,7 +44,7 @@ radfield_tools.cpp
 spline.cpp
 thermal_balance.cpp
 calc_LTE_populations.cpp
-level_populations.cpp
+# level_populations.cpp
 level_populations_otf.cpp
 cell_level_populations.cpp
 lines.cpp
@@ -52,11 +52,11 @@ acceleration_Ng.cpp
 calc_C_coeff.cpp
 sobolev.cpp
 cell_sobolev.cpp
-radiative_transfer.cpp
+# radiative_transfer.cpp
 radiative_transfer_otf.cpp
 # cell_radiative_transfer.cpp
 feautrier.cpp
-level_population_solver.cpp
+# level_population_solver.cpp
 level_population_solver_otf.cpp
 calc_rad_surface.cpp
 calc_column_density.cpp

@@ -1,0 +1,6 @@
+NCELLS            122
+time_total       3.426481E+01
+time_ray_tracing 0.000000E+00
+time_level_pop   1.792080E+00
+time_chemistry   3.186626E+01
+n_tb_iterations  5

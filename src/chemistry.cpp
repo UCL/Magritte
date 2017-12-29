@@ -35,47 +35,22 @@
 /* abundances: calculate abundances for each species at each grid point                          */
 /*-----------------------------------------------------------------------------------------------*/
 
-
-#if ( ON_THE_FLY )
-
 int chemistry( CELL *cell,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
                double *column_H2, double *column_HD, double *column_C, double *column_CO )
-
-#else
-
-int chemistry( CELL *cell, EVALPOINT *evalpoint,
-               long *key, long *raytot, long *cum_raytot,
-               double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
-               double *column_H2, double *column_HD, double *column_C, double *column_CO )
-
-#endif
-
-
 {
 
 
   /* Calculate column densities */
 
-# if ( ON_THE_FLY )
-
   calc_column_densities(cell, column_H2, column_HD, column_C, column_CO);
-
-# else
-
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_H2, H2_nr);
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_HD, HD_nr);
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_C,  C_nr);
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_CO, CO_nr);
-
-# endif
 
 
   /* For all cells */
 
-# pragma omp parallel                                                                             \
-  shared( cell, temperature_gas, temperature_dust, rad_surface, AV,                          \
-          column_H2, column_HD, column_C, column_CO )                                             \
+# pragma omp parallel                                                 \
+  shared( cell, temperature_gas, temperature_dust, rad_surface, AV,   \
+          column_H2, column_HD, column_C, column_CO )                 \
   default( none )
   {
 

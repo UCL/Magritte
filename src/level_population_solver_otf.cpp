@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* level_population_solver: Solves the equilibrium equation for the level populations            */
-/*                                                                                               */
-/* (based on the Gauss-Jordan solver in Numerical Recipes, Press et al.)                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -23,15 +15,12 @@
 #include "level_population_solver_otf.hpp"
 
 
-
 #define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
 #define IND(r,c) ((c)+(r)*n)
 #define IMD(r,c) ((c)+(r)*m)
 
 
-
-int level_population_solver_otf( CELL *cell, long gridp, int lspec,
-                                 double *R, double *pop )
+int level_population_solver_otf (CELL *cell, long gridp, int lspec, double *R, double *pop)
 {
 
 
@@ -134,8 +123,10 @@ int level_population_solver_otf( CELL *cell, long gridp, int lspec,
 /* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
 /*-----------------------------------------------------------------------------------------------*/
 
-int GaussJordan(int n, int m, double *a, double *b)
+int GaussJordan (int n, int m, double *a, double *b)
 {
+
+  // based on the Gauss-Jordan solver in Numerical Recipes, Press et al.
 
   int *indexc;                                /* note that our vectors are indexed from 0 to n-1 */
   indexc = (int*) malloc( n*sizeof(int) );
@@ -151,83 +142,106 @@ int GaussJordan(int n, int m, double *a, double *b)
   double temp;
 
 
-  for (int j=0; j<n; j++){ ipiv[j] = 0; }
+  for (int j = 0; j < n; j++)
+  {
+    ipiv[j] = 0;
+  }
 
 
-  for (int i=0; i<n; i++){
-
+  for (int i = 0; i < n; i++)
+  {
     double big = 0.0;
 
-    for (int j=0; j<n; j++){
-
-      if (ipiv[j] != 1){
-
-        for (int k=0; k<n; k++){
-
-          if (ipiv[k] == 0){
-
-            if(fabs(a[IND(j,k)]) >= big){
-
+    for (int j = 0; j < n; j++)
+    {
+      if (ipiv[j] != 1)
+      {
+        for (int k = 0; k < n; k++)
+        {
+          if (ipiv[k] == 0)
+          {
+            if (fabs(a[IND(j,k)]) >= big)
+            {
               big = fabs(a[IND(j,k)]);
               irow = j;
               icol = k;
             }
-
           }
-
         }
-
       }
-
     }
 
 
     ipiv[icol] = ipiv[icol] + 1;
 
-    if (irow != icol){
+    if (irow != icol)
+    {
+      for (int l = 0; l < n; l++)
+      {
+        SWAP(a[IND(irow,l)], a[IND(icol,l)]);
+      }
 
-      for (int l=0; l<n; l++){ SWAP(a[IND(irow,l)], a[IND(icol,l)]) }
-      for (int l=0; l<m; l++){ SWAP(b[IMD(irow,l)], b[IMD(icol,l)]) }
+      for (int l = 0; l < m; l++)
+      {
+        SWAP(b[IMD(irow,l)], b[IMD(icol,l)]);
+      }
     }
 
     indexr[i] = irow;
     indexc[i] = icol;
 
-    if (a[IND(icol,icol)] == 0.0){ printf("(GaussJordan): ERROR - singular matrix !!!\n"); }
+    if (a[IND(icol,icol)] == 0.0)
+    {
+      printf("(GaussJordan): ERROR - singular matrix !!!\n");
+    }
 
     double pivinv = 1.0 / a[IND(icol,icol)];
 
     a[IND(icol,icol)] = 1.0;
 
-    for (int l=0; l<n; l++){ a[IND(icol,l)] = pivinv * a[IND(icol,l)]; }
-    for (int l=0; l<m; l++){ b[IMD(icol,l)] = pivinv * b[IMD(icol,l)]; }
+    for (int l = 0; l < n; l++)
+    {
+      a[IND(icol,l)] = pivinv * a[IND(icol,l)];
+    }
+
+    for (int l = 0; l < m; l++)
+    {
+      b[IMD(icol,l)] = pivinv * b[IMD(icol,l)];
+    }
 
 
-    for (int ll=0; ll<n; ll++){
-
-      if (ll != icol) {
-
+    for (int ll = 0; ll < n; ll++)
+    {
+      if (ll != icol)
+      {
         double dum = a[IND(ll,icol)];
 
         a[IND(ll,icol)] = 0.0;
 
-        for (int l=0; l<n; l++){ a[IND(ll,l)] = a[IND(ll,l)] - a[IND(icol,l)]*dum; }
-        for (int l=0; l<m; l++){ b[IMD(ll,l)] = b[IMD(ll,l)] - b[IMD(icol,l)]*dum; }
+        for (int l = 0; l < n; l++)
+        {
+          a[IND(ll,l)] = a[IND(ll,l)] - a[IND(icol,l)]*dum;
+        }
+
+        for (int l = 0; l < m; l++)
+        {
+          b[IMD(ll,l)] = b[IMD(ll,l)] - b[IMD(icol,l)]*dum;
+        }
       }
-
     }
 
-  }
+  } // end of i loop over rows
 
 
-  for (int l=n-1; l>=0; l--){
-
-    if (indexr[l] != indexc[l] ){
-
-      for (int k=0; k<n; k++){ SWAP(a[IND(k,indexr[l])], a[IND(k,indexc[l])]); }
-
+  for (int l = n-1; l >= 0; l--)
+  {
+    if (indexr[l] != indexc[l] )
+    {
+      for (int k = 0; k < n; k++)
+      {
+        SWAP(a[IND(k,indexr[l])], a[IND(k,indexc[l])]);
+      }
     }
-
   }
 
 
@@ -239,5 +253,3 @@ int GaussJordan(int n, int m, double *a, double *b)
   return(0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

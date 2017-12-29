@@ -1,30 +1,20 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for level_populations_otf.cpp                                                          */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
+
+#if (!CELL_BASED)
 
 
 #ifndef __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
 #define __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
 
-
-
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 
-
-#if ( ON_THE_FLY )
-
-/* level_populations: iteratively calculates the level populations                               */
-/*-----------------------------------------------------------------------------------------------*/
+// level_populations: iteratively calculate level populations
+// ----------------------------------------------------------
 
 int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
                            double *A_coeff, double *B_coeff, double *pop,
@@ -33,12 +23,8 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
                            double *weight, double *energy, double *mean_intensity,
                            double *Lambda_diagonal, double *mean_intensity_eff );
 
-/*-----------------------------------------------------------------------------------------------*/
-
-#endif
-
-
 
 #endif /* __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__ */
 
-/*-----------------------------------------------------------------------------------------------*/
+
+#endif // if not CELL_BASED

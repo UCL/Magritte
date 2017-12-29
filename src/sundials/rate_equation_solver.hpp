@@ -9,13 +9,9 @@
 /*-----------------------------------------------------------------------------------------------*/
 
 
-
 #ifndef __RATE_EQUATION_SOLVER_H_INCLUDED__
 #define __RATE_EQUATION_SOLVER_H_INCLUDED__
 
-#include <string>
-#include <iostream>
-using namespace std;
 
 #include <cvode/cvode.h>                                  /* prototypes for CVODE fcts., consts. */
 #include <nvector/nvector_serial.h>                      /* serial N_Vector types, fcts., macros */
@@ -23,23 +19,21 @@ using namespace std;
 #include <sundials/sundials_types.h>                              /* definition of type realtype */
 
 
-
-typedef struct {
-
+typedef struct
+{
   long gp;
 
-  CELL* cellpointer;
+  CELL *cellpointer;
 
   double electron_abundance;
 
 } *USER_DATA;
 
 
-
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int rate_equation_solver(CELL *cell, long gridp);
+int rate_equation_solver (CELL *cell, long gridp);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -48,7 +42,7 @@ int rate_equation_solver(CELL *cell, long gridp);
 /* Private function to print final statistics */
 /*-----------------------------------------------------------------------------------------------*/
 
-static void PrintFinalStats(void *cvode_mem);
+static void PrintFinalStats (void *cvode_mem);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -57,7 +51,7 @@ static void PrintFinalStats(void *cvode_mem);
 /* Private function to check function return values */
 /*-----------------------------------------------------------------------------------------------*/
 
-static int check_flag(void *flagvalue, const char *funcname, int opt);
+static int check_flag (void *flagvalue, const char *funcname, int opt);
 
 /*-----------------------------------------------------------------------------------------------*/
 
@@ -66,7 +60,7 @@ static int check_flag(void *flagvalue, const char *funcname, int opt);
 /* Functions Called by the Solver */
 /*-----------------------------------------------------------------------------------------------*/
 
-static int f(realtype t, N_Vector y, N_Vector ydot, void *user_data);
+static int f (realtype t, N_Vector y, N_Vector ydot, void *user_data);
 
 /*-----------------------------------------------------------------------------------------------*/
 

@@ -4,6 +4,9 @@
 // _________________________________________________________________________
 
 
+#if (CELL_BASED)
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -142,7 +145,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
       escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
     }
 
-    else if( fabs(tau_r) < 1.0E-8)
+    else if (fabs(tau_r) < 1.0E-8)
     {
       escape_probability = escape_probability + 1.0;
     }
@@ -174,9 +177,9 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / ( exp(HH*frequency[b_ij]/KB/temperature_dust[origin])-1.0 );
+  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/temperature_dust[origin]) - 1.0);
 
-  double Planck_CMB      = 1.0 / ( exp(HH*frequency[b_ij]/KB/T_CMB)-1.0 );
+  double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
 
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
@@ -204,3 +207,6 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
   return(0);
 
 }
+
+
+#endif

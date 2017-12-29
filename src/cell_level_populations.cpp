@@ -4,6 +4,9 @@
 // _________________________________________________________________________
 
 
+#if (CELL_BASED)
+
+
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -27,10 +30,8 @@
 #include "write_output.hpp"
 
 
-#if (CELL_BASED)
-
-/* level_populations: iteratively calculates the level populations                               */
-/*-----------------------------------------------------------------------------------------------*/
+// level_populations: iteratively calculates the level populations
+// ---------------------------------------------------------------
 
 int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
                             double *A_coeff, double *B_coeff, double *pop,
@@ -41,9 +42,9 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
 {
 
 
-  double prev1_pop[NCELLS*TOT_NLEV];                      /* level population n_i 1 iteration ago */
-  double prev2_pop[NCELLS*TOT_NLEV];                     /* level population n_i 2 iterations ago */
-  double prev3_pop[NCELLS*TOT_NLEV];                     /* level population n_i 3 iterations ago */
+  double prev1_pop[NCELLS*TOT_NLEV];   // level population n_i 1 iteration ago
+  double prev2_pop[NCELLS*TOT_NLEV];   // level population n_i 2 iterations ago
+  double prev3_pop[NCELLS*TOT_NLEV];   // level population n_i 3 iterations ago
 
 
   bool some_not_converged = true;            /*  true when some of the species are not converged */
@@ -136,7 +137,7 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
 
 #   pragma omp parallel                                                                           \
     shared( energy, weight, temperature_gas, temperature_dust, icol, jcol, coltemp, C_data, pop,  \
-            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,     \
+            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,          \
             mean_intensity_eff, species, prev1_pop, not_converged, n_not_converged, nlev,         \
             cum_nlev, cum_nlev2, irad, jrad, nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged,\
             some_not_converged )                                                                  \
@@ -339,6 +340,5 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
   return(0);
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 #endif

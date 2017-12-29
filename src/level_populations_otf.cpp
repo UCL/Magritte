@@ -1,26 +1,20 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* level_populations.c: Build the statistical equilibrium equations for the level populations    */
-/*                                                                                               */
-/* (based on ITER in the SMMOL code)                                                             */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
+#include "declarations.hpp"
+
+#if (!CELL_BASED)
 
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
-
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
-#include "declarations.hpp"
 
 #include "level_populations_otf.hpp"
 #include "acceleration_Ng.hpp"
@@ -34,11 +28,8 @@
 #include "write_output.hpp"
 
 
-
-#if (ON_THE_FLY)
-
-/* level_populations: iteratively calculates the level populations                               */
-/*-----------------------------------------------------------------------------------------------*/
+// level_populations: iteratively calculates level populations
+// -----------------------------------------------------------
 
 int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
                            double *A_coeff, double *B_coeff, double *pop,
@@ -49,9 +40,9 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
 {
 
 
-  double prev1_pop[NCELLS*TOT_NLEV];                      /* level population n_i 1 iteration ago */
-  double prev2_pop[NCELLS*TOT_NLEV];                     /* level population n_i 2 iterations ago */
-  double prev3_pop[NCELLS*TOT_NLEV];                     /* level population n_i 3 iterations ago */
+  double prev1_pop[NCELLS*TOT_NLEV];   // level population n_i 1 iteration ago
+  double prev2_pop[NCELLS*TOT_NLEV];   // level population n_i 2 iterations ago
+  double prev3_pop[NCELLS*TOT_NLEV];   // level population n_i 3 iterations ago
 
 
   bool some_not_converged = true;            /*  true when some of the species are not converged */
@@ -113,10 +104,9 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
         n_not_converged[lspec] = 0;          /* number of grid points that are not yet converged */
 
 
-#       if (ACCELERATION_POP_NG)
-
-
         /* Perform an Ng acceleration step every 4th iteration */
+
+#       if (ACCELERATION_POP_NG)
 
         if (niterations[lspec]%4 == 0)
         {
@@ -144,7 +134,7 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
 
 #   pragma omp parallel                                                                           \
     shared( energy, weight, temperature_gas, temperature_dust, icol, jcol, coltemp, C_data, pop,  \
-            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,     \
+            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,          \
             mean_intensity_eff, species, prev1_pop, not_converged, n_not_converged, nlev,         \
             cum_nlev, cum_nlev2, irad, jrad, nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged,\
             some_not_converged )                                                                  \
@@ -162,19 +152,18 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
     {
 
       long key[NCELLS];                /* stores the nrs. of the grid points on the rays in order */
-
       long raytot[NRAYS];                  /* cumulative nr. of evaluation points along each ray */
-
       long cum_raytot[NRAYS];              /* cumulative nr. of evaluation points along each ray */
 
       long first_velo[NRAYS/2];                    /* grid point with lowest velocity on the ray */
 
       EVALPOINT evalpoint[NCELLS];
 
-      get_local_evalpoint(cell, evalpoint, key, raytot, cum_raytot, n);
+
+      find_evalpoints(cell, evalpoint, key, raytot, cum_raytot, n);
 
       get_velocities(cell, evalpoint, key, raytot, cum_raytot, n, first_velo);
-
+// # endif
 
       double R[TOT_NLEV2];                                             /* Transition matrix R_ij */
 
@@ -241,14 +230,11 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
 
 #           if (SOBOLEV)
 
-
             sobolev( cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                      Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
                      temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
 
-
 #           else
-
 
             radiative_transfer_otf( cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
@@ -306,7 +292,7 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
               {
                 not_converged[lspec] = true;
                 some_not_converged   = true;
-                
+
                 n_not_converged[lspec]++;
               }
             }
@@ -349,11 +335,11 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
     }
 
 
-  } /* end of while loop of iterations */
+  } // end of while loop of iterations
 
 
 
-  /* Print the stats for the calculations on lspec */
+  // Print stats for calculations on lspec
 
   for (int lspec=0; lspec<NLSPEC; lspec++)
   {
@@ -366,6 +352,5 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
   return(0);
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
-#endif
+#endif // if not CELL_BASED

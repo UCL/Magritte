@@ -60,14 +60,14 @@ int main ()
   time_total -= omp_get_wtime();
 
 
-  printf ("                                                               \n");
-  printf ("Magritte :                                                     \n");
-  printf ("                                                               \n");
-  printf ("Multidimensional Accelerated General-purpose RadIaTive TransEr \n");
-  printf ("                                                               \n");
-  printf ("-------------------------------------------------------------- \n");
-  printf ("                                                               \n");
-  printf ("                                                               \n");
+  printf ("                                                                          \n");
+  printf ("Magritte: Multidimensional Accelerated General-purpose Radiative Transfer \n");
+  printf ("                                                                          \n");
+  printf ("Developed by: Frederik De Ceuster - University College London & KU Leuven \n");
+  printf ("_________________________________________________________________________ \n");
+  printf ("                                                                          \n");
+  printf ("                                                                          \n");
+
 
 
 
@@ -109,14 +109,14 @@ int main ()
 
 
 
-  // READ INPUT CHEMISTRY
-  // ____________________
+  // READ CHEMISTRY DATA
+  // ___________________
 
 
-  printf("(Magritte): reading chemistry input \n");
+  printf("(Magritte): reading chemistry data \n");
 
 
-  // Read the species (and their initial abundances)
+  // Read chemical species data
 
   double initial_abn[NSPEC];
 
@@ -125,25 +125,25 @@ int main ()
 
   // Get and store the species numbers of some inportant species
 
-  e_nr    = get_species_nr("e-");     // species nr corresponding to electrons
-  H2_nr   = get_species_nr("H2");     // species nr corresponding to H2
-  HD_nr   = get_species_nr("HD");     // species nr corresponding to HD
-  C_nr    = get_species_nr("C");      // species nr corresponding to C
-  H_nr    = get_species_nr("H");      // species nr corresponding to H
-  H2x_nr  = get_species_nr("H2+");    // species nr corresponding to H2+
-  HCOx_nr = get_species_nr("HCO+");   // species nr corresponding to HCO+
-  H3x_nr  = get_species_nr("H3+");    // species nr corresponding to H3+
-  H3Ox_nr = get_species_nr("H3O+");   // species nr corresponding to H3O+
-  Hex_nr  = get_species_nr("He+");    // species nr corresponding to He+
-  CO_nr   = get_species_nr("CO");     // species nr corresponding to CO
+  e_nr    = get_species_nr ("e-");     // species nr corresponding to electrons
+  H2_nr   = get_species_nr ("H2");     // species nr corresponding to H2
+  HD_nr   = get_species_nr ("HD");     // species nr corresponding to HD
+  C_nr    = get_species_nr ("C");      // species nr corresponding to C
+  H_nr    = get_species_nr ("H");      // species nr corresponding to H
+  H2x_nr  = get_species_nr ("H2+");    // species nr corresponding to H2+
+  HCOx_nr = get_species_nr ("HCO+");   // species nr corresponding to HCO+
+  H3x_nr  = get_species_nr ("H3+");    // species nr corresponding to H3+
+  H3Ox_nr = get_species_nr ("H3O+");   // species nr corresponding to H3O+
+  Hex_nr  = get_species_nr ("He+");    // species nr corresponding to He+
+  CO_nr   = get_species_nr ("CO");     // species nr corresponding to CO
 
 
-  // Read the reactions
+  // Read chemical reaction data
 
   read_reactions (reac_datafile);
 
 
-  printf ("(Magritte): chemistry input read \n\n");
+  printf ("(Magritte): chemistry data read \n\n");
 
 
 
@@ -186,13 +186,6 @@ int main ()
   initialize_double_array(B_coeff, TOT_NLEV2);
 
 
-# if (!ON_THE_FLY)
-
-  double R[NCELLS*TOT_NLEV2];                                           /* transition matrix R_ij */
-
-  initialize_double_array(R, NCELLS*TOT_NLEV2);
-
-# endif
 
 
   /* Define the collision related variables */
@@ -243,54 +236,12 @@ int main ()
                  A_coeff, B_coeff, coltemp, C_data, icol, jcol );
 
 
-  printf("(Magritte): line data read \n");
+  printf("(Magritte): line data read \n\n");
 
 
   /*_____________________________________________________________________________________________*/
 
 
-
-# if (!ON_THE_FLY)
-
-
-  /*   RAY TRACING                                                                               */
-  /*_____________________________________________________________________________________________*/
-
-
-  printf("(Magritte): tracing rays (not ON_THE_FLY) \n");
-
-
-  /* Declare and initialize the evaluation points */
-
-  long key[NCELLS*NCELLS];              /* stores the nrs. of the grid points on the rays in order */
-
-  long raytot[NCELLS*NRAYS];                /* cumulative nr. of evaluation points along each ray */
-
-  long cum_raytot[NCELLS*NRAYS];            /* cumulative nr. of evaluation points along each ray */
-
-
-  EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
-
-
-  /* Execute ray_tracing */
-
-  time_ray_tracing -= omp_get_wtime();
-
-  ray_tracing(cell, evalpoint, key, raytot, cum_raytot);
-
-  time_ray_tracing += omp_get_wtime();
-
-
-  printf("\n(Magritte): time in ray_tracing: %lf sec \n", time_ray_tracing);
-
-
-  printf("(Magritte): rays traced \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
-
-
-# endif
 
 
 
@@ -317,7 +268,7 @@ int main ()
 
   calc_rad_surface(G_external, rad_surface);
 
-  printf("(Magritte): external radiation field calculated \n");
+  printf("(Magritte): external radiation field calculated \n\n");
 
 
   /*_____________________________________________________________________________________________*/
@@ -348,16 +299,7 @@ int main ()
 
   /* Calculate the total column density */
 
-
-# if (ON_THE_FLY)
-
-  calc_column_density(cell, column_tot, NSPEC-1);
-
-# else
-
-  calc_column_density(cell, evalpoint, key, raytot, cum_raytot, column_tot, NSPEC-1);
-
-# endif
+  calc_column_density (NCELLS, cell, column_tot, NSPEC-1);
 
 
   /* Calculate the visual extinction */
@@ -428,41 +370,31 @@ int main ()
 
     time_chemistry -= omp_get_wtime();
 
-
-#   if (ON_THE_FLY)
-
     chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
-#   else
-
-    chemistry( cell, evalpoint, key, raytot, cum_raytot, temperature_gas, temperature_dust,
-               rad_surface, AV, column_H2, column_HD, column_C, column_CO );
-
-#   endif
-
+    time_chemistry += omp_get_wtime();
 
     /* Write the intermediate output for (potential) restart */
 
 #   if ( WRITE_INTERMEDIATE_OUTPUT )
 
-#   if ( INPUT_FORMAT == '.txt' )
+#     if ( INPUT_FORMAT == '.txt' )
 
-    write_temperature_gas("", temperature_gas);
+      write_temperature_gas("", temperature_gas);
 
-    write_temperature_dust("", temperature_dust);
+      write_temperature_dust("", temperature_dust);
 
-    write_prev_temperature_gas("", prev_temperature_gas);
+      write_prev_temperature_gas("", prev_temperature_gas);
 
-#   elif ( INPUT_FORMAT == '.vtu' )
+#     elif ( INPUT_FORMAT == '.vtu' )
 
-    write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+      write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+
+#     endif
 
 #   endif
 
-#   endif
-
-    time_chemistry += omp_get_wtime();
 
   } /* End of chemistry iteration */
 
@@ -552,23 +484,11 @@ int main ()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-#   if (ON_THE_FLY)
-
     thermal_balance( cell, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
                      weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
                      mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
                      initial_abn, &time_chemistry, &time_level_pop );
-
-#   else
-
-    thermal_balance( cell, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
-                     column_CO, UV_field, temperature_gas, temperature_dust, rad_surface, AV,
-                     irad, jrad, energy, weight, frequency, A_coeff, B_coeff, R, C_data, coltemp,
-                     icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop );
-
-#   endif
 
 
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NCELLS);
@@ -582,19 +502,19 @@ int main ()
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)
 
-#   if (INPUT_FORMAT == '.txt')
+#     if (INPUT_FORMAT == '.txt')
 
-    write_temperature_gas("", temperature_gas);
+      write_temperature_gas("", temperature_gas);
 
-    write_temperature_dust("", temperature_dust);
+      write_temperature_dust("", temperature_dust);
 
-    write_prev_temperature_gas("", prev_temperature_gas);
+      write_prev_temperature_gas("", prev_temperature_gas);
 
-#   elif (INPUT_FORMAT == '.vtu')
+#     elif (INPUT_FORMAT == '.vtu')
 
-    write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+      write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
-#   endif
+#     endif
 
 #   endif
 
@@ -645,23 +565,11 @@ int main ()
     long n_not_converged = 0;                /* number of grid points that are not yet converged */
 
 
-#   if (ON_THE_FLY)
-
     thermal_balance( cell, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
                      weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
                      mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
                      initial_abn, &time_chemistry, &time_level_pop );
-
-#   else
-
-    thermal_balance( cell, evalpoint, key, raytot, cum_raytot, column_H2, column_HD, column_C,
-                     column_CO, UV_field, temperature_gas, temperature_dust, rad_surface, AV,
-                     irad, jrad, energy, weight, frequency, A_coeff, B_coeff, R, C_data, coltemp,
-                     icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop );
-
-#   endif
 
 
     initialize_double_array_with(thermal_ratio_b, thermal_ratio, NCELLS);

@@ -96,20 +96,9 @@
 
 /* Special key to find the number of the grid point associated to a certain evaluation point */
 
-
-#if ( ON_THE_FLY )
-
-  #define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )               \
+#define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )                 \
                                 /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \
                                    corresponding to the "evalp"'th evaluation point on ray "ray" */
-#else
-
-  #define GP_NR_OF_EVALP(cell, ray, evalp)                                                   \
-          ( key[ GINDEX( (cell), (evalp) + cum_raytot[RINDEX((cell), (ray))] ) ] )      \
-               /* GP_NR_OF_EVALP(cell, ray, evalp) gives the grid point number corresponding \
-                       to the "evalp"'th evaluation point on ray "ray" of grid point "cell" */
-#endif
-
 
 /* Level population related index definitions */
 

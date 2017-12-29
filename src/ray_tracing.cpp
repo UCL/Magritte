@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* ray_tracing: Create evaluation points along each ray of of each grid point                    */
-/*                                                                                               */
-/* (based on the evaluation_points routine in 3D-PDR)                                            */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -27,352 +19,71 @@
 #include "HEALPix/chealpix.hpp"
 
 
-#if (!ON_THE_FLY)
+# if (!CELL_BASED)
 
-/* ray_tracing: creates the evaluation points for each ray for each grid point                   */
-/*-----------------------------------------------------------------------------------------------*/
 
-int ray_tracing (CELL *cell, EVALPOINT *evalpoint,
-                 long *key, long *raytot, long *cum_raytot)
+// find_evalpoints: create evaluation points for each ray from this cell
+// ---------------------------------------------------------------------
+
+int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long gridp)
 {
 
-
-  long   succes = 0;                                  /* total number of evaluation points found */
-
-  double time_de = 0.0;                                    /* time in dividing evaluation points */
-  double time_key = 0.0;                                                 /* time to make the key */
-  double time_sort = 0.0;                /* time to sort grid points w.r.t. distance from origin */
-
-
-  /* Initialize the data structures that will store the evaluation points */
-
-  initialize_long_array(key, NCELLS*NCELLS);
-
-  initialize_long_array(raytot, NCELLS*NRAYS);
-
-  initialize_long_array(cum_raytot, NCELLS*NRAYS);
-
-
-  /* Note: GINDEX, RINDEX and GP_NR_OF_EVALP are defined in definitions.h */
-
-
-  printf("(ray_tracing): number of grid points     %*d\n", MAX_WIDTH, NCELLS);
-  printf("(ray_tracing): number of HEALPix sides   %*d\n", MAX_WIDTH, NSIDES);
-  printf("(ray_tracing): number of HEALPix rays    %*d\n", MAX_WIDTH, NRAYS);
-  printf("(ray_tracing): critical angle THETA_CRIT %*.2lf\n", MAX_WIDTH, THETA_CRIT);
-
-
-
-  /* For all grid points */
-
-# pragma omp parallel                                                                             \
-  shared( healpixvector, cell, evalpoint, key, raytot, cum_raytot, succes,                   \
-          time_de, time_key, time_sort )                                                          \
-  default( none )
-  {
-
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
-
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
-
-
-  for (long gridp=start; gridp<stop; gridp++)
-  {
-
-    /* Place the origin at the location of the grid point under consideration */
-
-    double origin[3];                   /* position vector of the grid point under consideration */
-
-    origin[0] = cell[gridp].x;
-    origin[1] = cell[gridp].y;
-    origin[2] = cell[gridp].z;
-
-
-    /* Locate all grid points w.r.t. the origin */
-
-    double ra2[NCELLS];        /* array with the squares of the lengths of local position vectors */
-
-    long   rb[NCELLS];                /* array with the identifiers of the local position vectors */
-
-
-    for (long n=0; n<NCELLS; n++)
-    {
-      double rvec[3];                     /* local position vector of a grid point w.r.t. origin */
-
-      rvec[0] = cell[n].x - origin[0];
-      rvec[1] = cell[n].y - origin[1];
-      rvec[2] = cell[n].z - origin[2];
-
-      ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];            /* SQUARE length! */
-      rb[n]  = n;
-    }
-
-
-    /* Sort the grid points w.r.t their distance from the origin */
-
-    time_sort -= omp_get_wtime();
-
-    heapsort(ra2, rb, NCELLS);
-
-    time_sort += omp_get_wtime();
-
-
-    double Z[NRAYS];                                                       /* distance along ray */
-
-    initialize_double_array(Z, NRAYS);
-
-
-    /*   FIND EVALUATION POINTS FOR gridp                                                        */
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-    /* Devide the grid points over the rays through the origin */
-    /* Start from the second point in rb (first point is cell itself) */
-
-    time_de -= omp_get_wtime();
-
-
-    for (long n=1; n<NCELLS; n++)
-    {
-      double rvec[3];                     /* local position vector of a grid point w.r.t. origin */
-
-      rvec[0] = cell[rb[n]].x - origin[0];
-      rvec[1] = cell[rb[n]].y - origin[1];
-      rvec[2] = cell[rb[n]].z - origin[2];
-
-
-      /* Get ray where rvec belongs to (using HEALPix functions) */
-
-      long ipix;                                        /* ray index (as reference to the pixel) */
-
-
-#     if (DIMENSIONS == 1)
-
-
-      if (rvec[0] > 0)
-      {
-        ipix = 0;
-      }
-      else
-      {
-        ipix = 1;
-      }
-
-
-#     elif (DIMENSIONS == 2)
-
-
-      double theta = acos(rvec[0]/ra2[n]);
-
-      if (rvec[1] > 0)
-      {
-        ipix = (long) round(NRAYS * theta / 2.0 / PI);
-      }
-      else
-      {
-        ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
-      }
-
-
-#     elif (DIMENSIONS == 3)
-
-
-      double theta, phi;                                            /* angles of the HEALPix ray */
-
-      vec2ang(rvec, &theta, &phi);
-
-      ang2pix_nest(NSIDES, theta, phi, &ipix);
-
-
-#     endif
-
-
-      /* Calculate the angle between the cell and its corresponding ray */
-
-      double rvec_dot_uhpv =   rvec[0]*healpixvector[VINDEX(ipix,0)]
-	                           + rvec[1]*healpixvector[VINDEX(ipix,1)]
-	                           + rvec[2]*healpixvector[VINDEX(ipix,2)];
-
-      double cosine = (rvec_dot_uhpv - Z[ipix])
-		                  / sqrt(ra2[n] - 2.0*Z[ipix]*rvec_dot_uhpv + Z[ipix]*Z[ipix]);
-
-
-      /* Avoid nan angles because of rounding errors */
-
-      if (cosine>1.0)
-      {
-        cosine = 1.0;
-      }
-
-
-      double angle = acos( cosine );
-
-
-      /* If angle < THETA_CRIT, add the new evaluation point */
-
-      if (angle < THETA_CRIT)
-      {
-        evalpoint[GINDEX(gridp,rb[n])].onray = true;
-
-        evalpoint[GINDEX(gridp,rb[n])].dZ    = rvec_dot_uhpv - Z[ipix];
-
-        evalpoint[GINDEX(gridp,rb[n])].ray   = ipix;
-
-	      evalpoint[GINDEX(gridp,rb[n])].Z     = Z[ipix] = rvec_dot_uhpv;
-
-        evalpoint[GINDEX(gridp,rb[n])].vol
-          =   (cell[rb[n]].vx - cell[gridp].vx)*healpixvector[VINDEX(ipix,0)]
-            + (cell[rb[n]].vy - cell[gridp].vy)*healpixvector[VINDEX(ipix,1)]
-            + (cell[rb[n]].vz - cell[gridp].vz)*healpixvector[VINDEX(ipix,2)];
-
-        succes = succes + 1;
-
-        raytot[RINDEX(gridp,ipix)] = raytot[RINDEX(gridp,ipix)] + 1;
-
-      } /* end of if angle < THETA_CRIT */
-
-    } /* end of n loop over cells (around an origin) */
-
-
-    time_de += omp_get_wtime();
-
-
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-
-
-    /*   SETUP EVALPOINTS DATA STRUCTURE                                                         */
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-    cum_raytot[RINDEX(gridp,0)] = 0;
-
-
-    for (long r=1; r<NRAYS; r++)
-    {
-      cum_raytot[RINDEX(gridp,r)] = cum_raytot[RINDEX(gridp,r-1)] + raytot[RINDEX(gridp,r-1)];
-    }
-
-
-    /* Make a key to find back which evaluation point is where on which ray */
-
-    long nr[NRAYS];                        /* current number of evaluation points along each ray */
-
-    initialize_long_array(nr, NRAYS);
-
-    time_key -= omp_get_wtime();
-
-
-    for (long n=0; n<NCELLS; n++)
-    {
-      if (evalpoint[GINDEX(gridp,rb[n])].onray == true)
-      {
-        long ray = evalpoint[GINDEX(gridp,rb[n])].ray;
-
-        GP_NR_OF_EVALP(gridp, ray, nr[ray]) = rb[n];
-
-        nr[ray] = nr[ray] + 1;
-      }
-    }
-
-    time_key += omp_get_wtime();
-
-
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-  } /* end of gridp loop over grid points (origins) */
-  } /* end of OpenMP parallel region */
-
-
-  printf( "(ray_tracing): time in dividing evaluation points %lf sec\n", time_de );
-  printf( "(ray_tracing): time in making the key             %lf sec\n", time_key );
-  printf( "(ray_tracing): time in heapsort routine           %lf sec\n", time_sort );
-
-  printf( "(ray_tracing): succes rate %.2lf" \
-          "(# eval. points)/ ((# grid points)^2 - (# grid points)) \n",
-          (double) succes/(NCELLS*NCELLS-NCELLS) );
-
-
-  return(0);
-
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-#else
-
-/* get_local_evalpoint: creates the evaluation points for each ray for this grid point           */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_local_evalpoint (CELL *cell, EVALPOINT *evalpoint,
-                         long *key, long *raytot, long *cum_raytot, long gridp)
-{
-
-
-  /* Initialize the data structures that will store the evaluation points */
+  // Initialize data structures that store evaluation points
 
   initialize_long_array(key, NCELLS);
   initialize_long_array(raytot, NRAYS);
   initialize_long_array(cum_raytot, NRAYS);
 
 
-  /* Initialize on ray, might still be true from previous call to get_local_evalpoint */
+  // Initialize onray (can still be true from previous call)
 
-  for (long n=0; n<NCELLS; n++)
+  for (long n = 0; n < NCELLS; n++)
   {
     evalpoint[n].onray = false;
   }
 
 
-  /* Place the origin at the location of the grid point under consideration */
+  // Place origin at location of cell under consideration
 
-  double origin[3];                     /* position vector of the grid point under consideration */
+  double origin[3];
 
   origin[0] = cell[gridp].x;
   origin[1] = cell[gridp].y;
   origin[2] = cell[gridp].z;
 
 
-  /* Locate all grid points w.r.t. the origin */
+  // Locate all cells w.r.t. origin
 
-  double ra2[NCELLS];          /* array with the squares of the lengths of local position vectors */
+  double ra2[NCELLS];   /* squares of lengths of local position vectors */
 
-  long rb[NCELLS];                    /* array with the identifiers of the local position vectors */
+  long rb[NCELLS];   /* cell number corresponding to local position vectors */
 
 
-  for (long n=0; n<NCELLS; n++)
+  for (long n = 0; n < NCELLS; n++)
   {
-    double rvec[3];                       /* local position vector of a grid point w.r.t. origin */
+    double rvec[3];   // Position vector of cell w.r.t. origin
 
     rvec[0] = cell[n].x - origin[0];
     rvec[1] = cell[n].y - origin[1];
     rvec[2] = cell[n].z - origin[2];
 
-    ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];              /* SQUARE length! */
+    ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
     rb[n]  = n;
   }
 
 
-  /* Sort the grid points w.r.t their distance from the origin */
+  // Sort cells w.r.t distance from origin
 
   heapsort(ra2, rb, NCELLS);
 
 
-  double Z[NRAYS];                                                         /* distance along ray */
+  double Z[NRAYS];   // distance along ray
 
   initialize_double_array(Z, NRAYS);
 
 
-  /*   FIND EVALUATION POINTS FOR gridp                                                          */
-  /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+  // FIND EVALUATION POINTS FOR gridp
+  // ++++++++++++++++++++++++++++++++
 
 
   /* Devide the grid points over the rays through the origin */
@@ -393,8 +104,7 @@ int get_local_evalpoint (CELL *cell, EVALPOINT *evalpoint,
     long ipix;                                          /* ray index (as reference to the pixel) */
 
 
-#   if (DIMENSIONS == 1)
-
+#   if   (DIMENSIONS == 1)
 
     if (rvec[0] > 0)
     {
@@ -405,9 +115,7 @@ int get_local_evalpoint (CELL *cell, EVALPOINT *evalpoint,
       ipix = 1;
     }
 
-
 #   elif (DIMENSIONS == 2)
-
 
     double theta = acos(rvec[0]/ra2[n]);
 
@@ -614,10 +322,8 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
-#endif
-
+#elif (CELL_BASED)
 
 
 /* find_neighbors: creates the evaluation points for each ray for each cell                      */
@@ -828,12 +534,11 @@ int find_neighbors (long ncells, CELL *cell)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-/* next_cell_on_ray: find the number of the next cell on the ray and its distance along the ray  */
-/*-----------------------------------------------------------------------------------------------*/
+// next_cell: find number of next cell on ray and its distance along ray
+// ---------------------------------------------------------------------
 
 long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long current, double *dZ)
 {
@@ -880,14 +585,11 @@ long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long c
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-
-
-/* relative_velocity: get the relative velocity of (cell) current w.r.t. (cell) origin along ray */
-/*-----------------------------------------------------------------------------------------------*/
+// relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray
+// -----------------------------------------------------------------------------------------
 
 double relative_velocity (long ncells, CELL *cell, long origin, long ray, long current)
 {
@@ -898,4 +600,5 @@ double relative_velocity (long ncells, CELL *cell, long origin, long ray, long c
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
+
+#endif
