@@ -31,13 +31,13 @@ CMakeCache.txt
 # input
 # -----
 
-*input/files/
+*input/files*
 
 
 # output
 # ------
 
-*-*-*_*:*_output/
+*-*-*_*:*_output*
 *20*
 
 
