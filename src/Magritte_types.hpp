@@ -3,6 +3,7 @@
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
 
+
 #ifndef __MAGRITTE_TYPES_HPP_INCLUDED__
 #define __MAGRITTE_TYPES_HPP_INCLUDED__
 
@@ -70,6 +71,41 @@ typedef struct
   double abn[NCELLS];   // abundance
 
 } SPECIES;
+
+
+
+
+// typedef struct
+// {
+//
+//   int spec;                    // nr of corresponding species
+//
+//   int irad[ntran];
+//   int jrad[ntran];
+//
+//   double A[nlev*nlev];
+//   double B[nlev*nlev];
+//
+//   double frequency[nlev*nlev];
+//
+//   double energy[nlev];
+//   double weight[nlev];
+//
+//   int icol[ncoltran];
+//   int jcol[ncoltran];
+//
+//
+//
+//
+// } LINE_SPECIES;
+
+
+// typedef struct
+// {
+//
+//
+//
+// } ALL_LINE_SPECIES
 
 
 

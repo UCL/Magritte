@@ -43,7 +43,7 @@ with open("../../parameters.hpp") as parameters_file:
         if len(line) is 3:
             if line[1] == 'SPEC_DATAFILE':
                 spec_datafile = "../../" + line[2].split("\"")[1]
-            if line[1] == 'GRID_INPUTFILE':
+            if line[1] == 'INPUTFILE':
                 inputfile = "../../" + line[2].split("\"")[1]
 
 

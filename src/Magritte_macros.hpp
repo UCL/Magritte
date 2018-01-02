@@ -13,9 +13,9 @@
 
 // Special key to find the number of the grid point associated to a certain evaluation point
 
-#define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )                 \
-                                /* LOCAL_GP_NR_OF_EVALP(ray, evalp) gives the grid point number   \
-                                   corresponding to the "evalp"'th evaluation point on ray "ray" */
+#define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )
+// gives grid point number corresponding to "evalp"'th evaluation point on ray "ray"
+
 
 /* Level population related index definitions */
 

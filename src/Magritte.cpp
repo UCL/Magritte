@@ -557,7 +557,7 @@ int main ()
 
   printf ("(Magritte): minimal and maximal thermal flux calculated \n\n");
 
-
+// return(0);
 
 
   // CALCULATE THERMAL BALANCE (ITERATIVELY)

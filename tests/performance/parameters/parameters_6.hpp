@@ -11,7 +11,7 @@
 
 /* Input files */
 
-#define GRID_INPUTFILE "input/1Dn30.dat_conv_refined_refined_refined_refined_refined.txt"
+#define INPUTFILE "input/1Dn30.dat_conv_refined_refined_refined_refined_refined.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 

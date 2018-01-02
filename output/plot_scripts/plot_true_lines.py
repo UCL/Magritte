@@ -48,7 +48,7 @@ with open("../../parameters.hpp") as parameters_file:
     for line in parameters_file:
         line = line.split()
         if len(line) is 3:
-            if line[1] == 'GRID_INPUTFILE':
+            if line[1] == 'INPUTFILE':
                 inputfile = "../../" + line[2].split("\"")[1]
 
 

@@ -54,9 +54,9 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
   // Locate all cells w.r.t. origin
 
-  double ra2[NCELLS];   /* squares of lengths of local position vectors */
+  double ra2[NCELLS];   // squares of lengths of local position vectors
 
-  long rb[NCELLS];   /* cell number corresponding to local position vectors */
+  long rb[NCELLS];      // cell number corresponding to local position vectors
 
 
   for (long n = 0; n < NCELLS; n++)
@@ -74,7 +74,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
   // Sort cells w.r.t distance from origin
 
-  heapsort(ra2, rb, NCELLS);
+  heapsort (ra2, rb, NCELLS);
 
 
   double Z[NRAYS];   // distance along ray
@@ -90,7 +90,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
   /* Start from the second point in rb (first point is cell itself) */
 
 
-  for (long n=1; n<NCELLS; n++)
+  for (long n = 1; n < NCELLS; n++)
   {
     double rvec[3];                       /* local position vector of a grid point w.r.t. origin */
 
@@ -188,7 +188,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
   cum_raytot[0] = 0;
 
 
-  for (long r=1; r<NRAYS; r++)
+  for (long r = 1; r < NRAYS; r++)
   {
     cum_raytot[r] = cum_raytot[r-1] + raytot[r-1];
   }
@@ -201,7 +201,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
   initialize_long_array(nr, NRAYS);
 
 
-  for (long n=0; n<NCELLS; n++)
+  for (long n = 0; n < NCELLS; n++)
   {
     if (evalpoint[rb[n]].onray == true)
     {
@@ -242,7 +242,7 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
 
   /* Get the increments in velocity space along each ray/antipodal ray pair */
 
-  for (long r=0; r<NRAYS/2; r++ )
+  for (long r = 0; r < NRAYS/2; r++ )
   {
     long ar = antipod[r];                                         /* index of antipodal ray to r */
 
@@ -260,7 +260,7 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
 
     if (etot1 > 0)
     {
-    for (long e1=0; e1<etot1; e1++)
+    for (long e1 = 0; e1 < etot1; e1++)
     {
       long evnr = LOCAL_GP_NR_OF_EVALP(ar,e1);
 
@@ -279,7 +279,7 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
 
     if (etot2 > 0)
     {
-    for (long e2=0; e2<etot2; e2++)
+    for (long e2 = 0; e2 < etot2; e2++)
     {
       long evnr = LOCAL_GP_NR_OF_EVALP(r,e2);
 
@@ -315,7 +315,7 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
     // free(velocities);
     // free(evalps);
 
-  } /* end of r loop over rays */
+  } // end of r loop over rays
 
 
   return(0);
@@ -326,95 +326,94 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
 #elif (CELL_BASED)
 
 
-/* find_neighbors: creates the evaluation points for each ray for each cell                      */
-/*-----------------------------------------------------------------------------------------------*/
+// find_neighbors: find neighboring cells for each cell
+// ----------------------------------------------------
 
 int find_neighbors (long ncells, CELL *cell)
 {
 
+  // For all cells
 
-  /* For all cells */
-
-# pragma omp parallel                                                                             \
-  shared( ncells, healpixvector, cell )                                                           \
-  default( none )
+# pragma omp parallel                    \
+  shared (ncells, healpixvector, cell)   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
   long start = (thread_num*ncells)/num_threads;
-  long stop  = ((thread_num+1)*ncells)/num_threads;     /* Note that brackets are important here */
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
 
-  for (long p=start; p<stop; p++)
+  for (long p = start; p < stop; p++)
   {
-
-    /* Place the origin at the location of the cell under consideration */
-
-    double origin[3];                   /* position vector of the cell under consideration */
+    double origin[3];   // cell center of cell p
 
     origin[0] = cell[p].x;
     origin[1] = cell[p].y;
     origin[2] = cell[p].z;
 
 
-    /* Locate all cell centers w.r.t. the origin */
+    // Locate all cell centers w.r.t. origin
 
-    double *ra2 = new double[ncells];               /* squares lengths of local position vectors */
-    long    *rb = new long[ncells];                     /* identifiers of local position vectors */
+    double *ra2 = new double[ncells];   // squares lengths of local position vectors
+
+    long *rb = new long[ncells];        // identifiers of local position vectors
 
 
-    for (long n=0; n<ncells; n++)
+    for (long n = 0; n < ncells; n++)
     {
-      double rvec[3];                      /* local position vector of cell center w.r.t. origin */
+      double rvec[3];   // position vector w.r.t. origin
 
       rvec[0] = cell[n].x - origin[0];
       rvec[1] = cell[n].y - origin[1];
       rvec[2] = cell[n].z - origin[2];
 
-      ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];            /* SQUARE length! */
+      ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
       rb[n] = n;
     }
 
 
-    /* Sort the cells w.r.t their distance from the origin */
+    // Sort cells w.r.t distance from origin
 
     heapsort(ra2, rb, ncells);
 
 
-    double Z[NRAYS];                                                       /* distance along ray */
+    double Z[NRAYS];                 // distance along ray
 
     initialize_double_array(Z, NRAYS);
 
-    long possible_neighbor[NRAYS];                                  /* cell numbers of neighbors */
+    long possible_neighbor[NRAYS];   // cell numbers of neighbors
 
     initialize_long_array(possible_neighbor, NRAYS);
 
-    bool too_far[NRAYS];
+    bool too_far[NRAYS];             // true when next cell is too far to be a neighbor
 
     initialize_bool(false, too_far, NRAYS);
 
 
-    /*   FIND NEIGHBORS FOR p                                                                    */
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-    /* Devide the cells over the rays through the origin */
-    /* Start from the second point in rb (first point is cell itself) */
+    // FIND NEIGHBORS FOR p
+    // ____________________
 
-    for (long n=1; n<ncells; n++)
+
+    // Devide the cells over the rays through the origin
+    // Start from the second point in rb (first point is cell itself)
+
+    for (long n = 1; n < ncells; n++)
     {
-      double rvec[3];                    /* local position vector of a cell center w.r.t. origin */
+      double rvec[3];   // position vector w.r.t. origin
 
       rvec[0] = cell[rb[n]].x - origin[0];
       rvec[1] = cell[rb[n]].y - origin[1];
       rvec[2] = cell[rb[n]].z - origin[2];
 
 
-      /* Get ray where rvec belongs to (using HEALPix functions) */
+      // Get ray where rvec belongs to (using HEALPix functions)
 
-      long ipix;                                        /* ray index (as reference to the pixel) */
+      long ipix;   // ray index
 
 
 #     if (DIMENSIONS == 1)
@@ -452,7 +451,7 @@ int find_neighbors (long ncells, CELL *cell)
 #     endif
 
 
-      /* If there is no neighbor for this ray yet */
+      // If there is no neighbor for this ray yet
 
       if (Z[ipix] == 0.0)
       {
@@ -463,31 +462,31 @@ int find_neighbors (long ncells, CELL *cell)
                   + rvec[2]*healpixvector[VINDEX(ipix,2)];
       }
 
-    } /* end of n loop over cells (around an origin) */
+    } // end of n loop over cells (around an origin)
 
 
-    /* Assuming cell boundaries orthogonal to the HEALPix ray */
-    /* Check for each possible neighbor if it is too far to be a neighbor */
+    // Assuming cell boundaries orthogonal to the HEALPix ray
+    // Check for each possible neighbor if it is too far to be a neighbor
 
     long index = 0;
 
-    /* For all possible neighbors */
+    // For all possible neighbors
 
-    for (long pn=0; pn<NRAYS; pn++)
+    for (long pn = 0; pn < NRAYS; pn++)
     {
       if (Z[pn] != 0.0)
       {
 
-        double rvec[3];                  /* local position vector of a cell center w.r.t. origin */
+        double rvec[3];   // position vector w.r.t. origin
 
         rvec[0] = cell[possible_neighbor[pn]].x - origin[0];
         rvec[1] = cell[possible_neighbor[pn]].y - origin[1];
         rvec[2] = cell[possible_neighbor[pn]].z - origin[2];
 
 
-        /* For all other possible neighbors */
+        // For all other possible neighbors
 
-        for (long r=0; r<NRAYS; r++)
+        for (long r = 0; r < NRAYS; r++)
         {
           if ( (Z[r] != 0.0) && (pn != r) )
           {
@@ -495,7 +494,7 @@ int find_neighbors (long ncells, CELL *cell)
                                 + rvec[1]*healpixvector[VINDEX(r,1)]
                                 + rvec[2]*healpixvector[VINDEX(r,2)];
 
-            if (projection > Z[r] *1.0000001)
+            if (projection > Z[r]*1.0000001)
             {
               too_far[pn] = true;
             }
@@ -503,7 +502,7 @@ int find_neighbors (long ncells, CELL *cell)
         }
 
 
-        /* If there is a possible neighbor that is not too far */
+        // If there is a possible neighbor that is not too far
 
         if ( (Z[pn] != 0.0) && (!too_far[pn]) )
         {
@@ -511,17 +510,14 @@ int find_neighbors (long ncells, CELL *cell)
           index++;
         }
       }
-    } /* end of pn loop over possible neighbors */
+    } // end of pn loop over possible neighbors
 
 
     cell[p].n_neighbors = index;
 
 
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-
-  } /* end of p loop over cells (origins) */
-  } /* end of OpenMP parallel region */
+  } // end of p loop over cells (origins)
+  } // end of OpenMP parallel region
 
 
   return(0);
@@ -537,14 +533,14 @@ int find_neighbors (long ncells, CELL *cell)
 long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long current, double *dZ)
 {
 
-  /* Pick the neighbor on the "right side" closesd to the ray */
+  // Pick neighbor on the "right side" closesed to the ray
 
   double D_min = 1.0E99;
 
-  long next = ncells;
+  long next = ncells;   // return ncells when there is no next cell
 
 
-  for (long n=0; n<cell[current].n_neighbors; n++)
+  for (long n = 0; n < cell[current].n_neighbors; n++)
   {
     long neighbor = cell[current].neighbor[n];
 
@@ -572,7 +568,7 @@ long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long c
       }
     }
 
-  } /* end of n loop over neighbors */
+  } // end of n loop over neighbors
 
 
   return next;

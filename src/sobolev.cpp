@@ -189,9 +189,9 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
   } /* end of r loop over half of the rays */
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
+  escape_probability = escape_probability / NRAYS;
 
-  escape_probability   = escape_probability / NRAYS;
+  printf("esc prob %lE\n", escape_probability);
 
 
   // ADD CONTINUUM RADIATION (due to dust and CMB)

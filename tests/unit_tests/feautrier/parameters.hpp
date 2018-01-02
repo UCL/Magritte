@@ -7,7 +7,7 @@
 
 /* Input files */
 
-#define GRID_INPUTFILE "input/1D_regular_101.txt"
+#define INPUTFILE "input/1D_regular_101.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 

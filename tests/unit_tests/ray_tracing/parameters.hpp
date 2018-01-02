@@ -11,7 +11,7 @@
 
 #define RESTART false
 
-// #define GRID_INPUTFILE "output/files/_output/grid.vtu"
+// #define INPUTFILE "output/files/_output/grid.vtu"
 
 /* Input files */
 
@@ -25,11 +25,11 @@
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
-#define GRID_INPUTFILE "input/files/1Dn30.dat_conv.txt"
+#define INPUTFILE "input/files/1Dn30.dat_conv.txt"
 
 // #define INPUT_FORMAT '.vtu'
 
-// #define GRID_INPUTFILE "input/files/Aori_0001.vtu"
+// #define INPUTFILE "input/files/Aori_0001.vtu"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 

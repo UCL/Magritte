@@ -34,6 +34,9 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
   long b_ij = LSPECLEVLEV(lspec,i,j);          // frequency index
 
+
+  double speed_width = sqrt(8.0*KB*temperature_gas[origin]/PI/MP + pow(V_TURB, 2));
+
   double escape_probability = 0.0;             // escape probability from Sobolev approximation
 
 
@@ -65,7 +68,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
       double dtau = 0.0;
 
       long current = origin;
-      long next    = next_cell(NCELLS, cell, origin, ar, Z, current, &dZ);
+      long next    = next_cell (NCELLS, cell, origin, ar, Z, current, &dZ);
 
 
       while ( (next != NCELLS) && (tau_ar < TAU_MAX) )
@@ -79,8 +82,29 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
         Z      = Z + dZ;
 
         current = next;
-        next    = next_cell(NCELLS, cell, origin, ar, Z, current, &dZ);
+        next    = next_cell (NCELLS, cell, origin, ar, Z, current, &dZ);
       }
+    }
+
+
+    // Calculate ar's contribution to escape probability
+
+    tau_ar = CC / frequency[b_ij] / speed_width * tau_ar;
+
+
+    if (tau_ar < -5.0)
+    {
+      escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
+    }
+
+    else if (fabs(tau_ar) < 1.0E-8)
+    {
+      escape_probability = escape_probability + 1.0;
+    }
+
+    else
+    {
+      escape_probability = escape_probability + (1.0 - exp(-tau_ar)) / tau_ar;
     }
 
 
@@ -92,7 +116,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
       double dtau = 0.0;
 
       long current = origin;
-      long next    = next_cell(NCELLS, cell, origin, r, Z, current, &dZ);
+      long next    = next_cell (NCELLS, cell, origin, r, Z, current, &dZ);
 
 
       while ( (next != NCELLS) && (tau_r < TAU_MAX) )
@@ -106,31 +130,12 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
         Z     = Z + dZ;
 
         current = next;
-        next    = next_cell(NCELLS, cell, origin, r, Z, current, &dZ);
+        next    = next_cell (NCELLS, cell, origin, r, Z, current, &dZ);
       }
     }
 
 
-    double speed_width = sqrt(8.0*KB*temperature_gas[origin]/PI/MP + pow(V_TURB, 2));
-
-    tau_ar = CC / frequency[b_ij] / speed_width * tau_ar;
-
-
-    if (tau_ar < -5.0)
-    {
-      escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
-    }
-
-    else if(fabs(tau_ar) < 1.0E-8)
-    {
-      escape_probability = escape_probability + 1.0;
-    }
-
-    else
-    {
-      escape_probability = escape_probability + (1.0 - exp(-tau_ar)) / tau_ar;
-    }
-
+    // Calculate r's contribution to escape probability
 
     tau_r = CC / frequency[b_ij] / speed_width * tau_r;
 
@@ -153,9 +158,9 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
   } // end of r loop over half of the rays
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
+  escape_probability = escape_probability / NRAYS;
 
-  escape_probability   = escape_probability / NRAYS;
+  printf("esc prob %lE\n", escape_probability);
 
 
   // ADD CONTINUUM RADIATION (due to dust and CMB)

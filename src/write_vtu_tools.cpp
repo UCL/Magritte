@@ -1,14 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Magritte: writing_output                                                                      */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -36,15 +29,15 @@
 
 
 
-/* write_vtu_output: write all physical variables to the vtu input grid                          */
-/*-----------------------------------------------------------------------------------------------*/
+// write_vtu_output: write all physical variables to vtu input grid
+// ----------------------------------------------------------------
 
-int write_vtu_output( std::string inputfile, double *temperature_gas,
-                      double *temperature_dust, double *prev_temperature_gas )
+int write_vtu_output (std::string inputfile, double *temperature_gas,
+                      double *temperature_dust, double *prev_temperature_gas)
 {
 
 
-  /* Read the data from the .vtu file */
+  // Read data from the .vtu file
 
   vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
     = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
@@ -55,7 +48,7 @@ int write_vtu_output( std::string inputfile, double *temperature_gas,
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
 
 
-  /* Reformat the Magritte output to append it to the grid */
+  // Reformat Magritte output to append it to the grid
 
   vtkSmartPointer<vtkDoubleArray> temp_gas
     = vtkSmartPointer<vtkDoubleArray>::New();
@@ -86,8 +79,8 @@ int write_vtu_output( std::string inputfile, double *temperature_gas,
   abn->SetName("abundance");
 
 
-  for (long n=0; n<NCELLS; n++){
-
+  for (long n = 0; n < NCELLS; n++)
+  {
     temp_gas ->InsertValue(n, temperature_gas[n]);
     temp_dust->InsertValue(n, temperature_dust[n]);
     prev_temp_gas->InsertValue(n, prev_temperature_gas[n]);
@@ -95,17 +88,17 @@ int write_vtu_output( std::string inputfile, double *temperature_gas,
 
     double abundance[NSPEC];
 
-    for (int spec=0; spec<NSPEC; spec++){
-
+    for (int spec = 0; spec < NSPEC; spec++)
+    {
       abundance[spec] = species[spec].abn[n];
     }
 
     abn->InsertTuple(n, abundance);
 
-  } /* end of n loop over grid points */
+  } // end of n loop over grid points
 
 
-  /* Add the new arrays to the grid */
+  // Add new arrays to grid
 
   ugrid->GetCellData()->AddArray(temp_gas);
   ugrid->GetCellData()->AddArray(temp_dust);
@@ -113,7 +106,7 @@ int write_vtu_output( std::string inputfile, double *temperature_gas,
   ugrid->GetCellData()->AddArray(abn);
 
 
-  /* Write the .vtu file */
+  // Write .vtu file
 
   std::string file_name = output_directory + "grid.vtu";
 
@@ -122,16 +115,20 @@ int write_vtu_output( std::string inputfile, double *temperature_gas,
 
   writer->SetFileName(file_name.c_str());
 
+
 # if VTK_MAJOR_VERSION <= 5
-  writer->SetInput(ugrid);
+
+    writer->SetInput(ugrid);
+
 # else
-  writer->SetInputData(ugrid);
+
+    writer->SetInputData(ugrid);
+
 # endif
+
   writer->Write();
 
 
-  return(0);
+  return (0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

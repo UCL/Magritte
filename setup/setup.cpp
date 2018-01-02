@@ -66,7 +66,7 @@ int main()
 
   /* Get the number of grid points from the input file */
 
-  std::string inputfile = GRID_INPUTFILE;
+  std::string inputfile = INPUTFILE;
 
   inputfile = "../" + inputfile;
 

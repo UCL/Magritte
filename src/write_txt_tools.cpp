@@ -1,14 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Magritte: writing_output                                                                      */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -31,10 +24,10 @@
 
 
 
-/* write_grid: write the grid again                                                              */
-/*-----------------------------------------------------------------------------------------------*/
+// write_grid: write input back
+// ----------------------------
 
-int write_grid(std::string tag, CELL *cell)
+int write_grid (std::string tag, CELL *cell)
 {
 
   if (!tag.empty())
@@ -46,40 +39,36 @@ int write_grid(std::string tag, CELL *cell)
 
   FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
-  for (long n=0; n<NCELLS; n++){
-
-    fprintf(file, "%f\t%f\t%f\n", cell[n].x, cell[n].y, cell[n].z);
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%f\t%f\t%f\n", cell[n].x, cell[n].y, cell[n].z);
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_healpixvectors: write HEALPix vectors
+// -------------------------------------------
 
-
-/* write_healpixvectors: write the unit HEALPix vectors                                          */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_healpixvectors(std::string tag)
+int write_healpixvectors (std::string tag)
 {
 
-
-  if ( !tag.empty() ){
-
+  if ( !tag.empty() )
+  {
     tag = "_" + tag;
   }
 
@@ -87,395 +76,368 @@ int write_healpixvectors(std::string tag)
 
   FILE *file = fopen(file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long r=0; r<NRAYS; r++){
-
-    fprintf(file, "%.15f\t%.15f\t%.15f\n", healpixvector[VINDEX(r,0)],
-                                           healpixvector[VINDEX(r,1)],
-                                           healpixvector[VINDEX(r,2)] );
+  for (long r = 0; r < NRAYS; r++)
+  {
+    fprintf (file, "%.15f\t%.15f\t%.15f\n", healpixvector[VINDEX(r,0)],
+                                            healpixvector[VINDEX(r,1)],
+                                            healpixvector[VINDEX(r,2)]);
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
+
+
+
+#if !(ON_THE_FLY)
 
 
 
 
+// write_eval: Write evaluation points (Z along ray and number of ray)
+// -------------------------------------------------------------------
 
-#if !( ON_THE_FLY )
-
-/* write_eval: Write the evaluation points (Z along ray and number of the ray)                   */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_eval(std::string tag, EVALPOINT *evalpoint)
+int write_eval (std::string tag, EVALPOINT *evalpoint)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "eval" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
-  for (long n1=0; n1<NCELLS; n1++){
-
-    for (long n2=0; n2<NCELLS; n2++){
-
-      fprintf( file, "%lE\t%ld\t%d\n",
+  for (long n1 = 0; n1 < NCELLS; n1++)
+  {
+    for (long n2 = 0; n2 < NCELLS; n2++)
+    {
+      fprintf (file, "%lE\t%ld\t%d\n",
                evalpoint[GINDEX(n1,n2)].Z,
                evalpoint[GINDEX(n1,n2)].ray,
-               evalpoint[GINDEX(n1,n2)].onray );
+               evalpoint[GINDEX(n1,n2)].onray);
     }
 
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_key: write key to find which grid point corresponds to which evaluation point
+// -----------------------------------------------------------------------------------
 
-
-/* write_key: write the key to find which grid point corresponds to which evaluation point       */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_key(std::string tag, long *key)
+int write_key (std::string tag, long *key)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "key" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n1=0; n1<NCELLS; n1++){
-
-    for (long n2=0; n2<NCELLS; n2++){
-
-      fprintf(file, "%ld\t", key[GINDEX(n1,n2)] );
+  for (long n1 = 0; n1 < NCELLS; n1++)
+  {
+    for (long n2 = 0; n2 < NCELLS; n2++)
+    {
+      fprintf (file, "%ld\t", key[GINDEX(n1,n2)]);
     }
 
-    fprintf(file, "\n");
+    fprintf (file, "\n");
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_raytot: write total of evaluation points along each ray
+// -------------------------------------------------------------
 
-
-/* write_raytot: write the total of evaluation points along each ray                             */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_raytot(std::string tag, long *raytot)
+int write_raytot (std::string tag, long *raytot)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "raytot" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      fprintf(file, "%ld\t", raytot[RINDEX(n,r)] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (long r = 0; r < NRAYS; r++)
+    {
+      fprintf (file, "%ld\t", raytot[RINDEX(n,r)] );
     }
 
-    fprintf(file, "\n");
+    fprintf (file, "\n");
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_cum_raytot: write cumulative total of evaluation points along each ray
+// ----------------------------------------------------------------------------
 
-
-/* write_cum_raytot: write the cumulative total of evaluation points along each ray              */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_cum_raytot(std::string tag, long *cum_raytot)
+int write_cum_raytot (std::string tag, long *cum_raytot)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "cum_raytot" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      fprintf(file, "%ld\t", cum_raytot[RINDEX(n,r)] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (long r = 0; r < NRAYS; r++)
+    {
+      fprintf (file, "%ld\t", cum_raytot[RINDEX(n,r)]);
     }
 
-    fprintf(file, "\n");
+    fprintf (file, "\n");
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
+
+
 
 #endif
 
 
 
 
+// write_abundances: write abundances at each point
+// ------------------------------------------------
 
-/* write_abundances: write the abundances at each point                                          */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_abundances(std::string tag)
+int write_abundances (std::string tag)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "abundances" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (int spec=0; spec<NSPEC; spec++){
-
-      fprintf( file, "%lE\t", species[spec].abn[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (int spec = 0; spec < NSPEC; spec++)
+    {
+      fprintf (file, "%lE\t", species[spec].abn[n]);
     }
 
-    fprintf( file, "\n" );
+    fprintf (file, "\n");
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_level_populations: write level populations at each point for each transition
+// ----------------------------------------------------------------------------------
 
-
-/* write_level_populations: write the level populations at each point for each transition        */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_level_populations(std::string tag, double *pop)
+int write_level_populations (std::string tag, double *pop)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
+  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  {
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
     std::string file_name = output_directory + "level_populations_" + lspec_name + tag + ".txt";
 
-    FILE *file = fopen(file_name.c_str(), "w");
+    FILE *file = fopen (file_name.c_str(), "w");
 
 
-    if (file == NULL){
-
+    if (file == NULL)
+    {
       std :: cout << "Error opening file " << file_name << "!\n";
       std::cout << file_name + "\n";
-      exit(1);
+      exit (1);
     }
 
 
-    for (long n=0; n<NCELLS; n++){
-
-      for (int i=0; i<nlev[lspec]; i++){
-
-        fprintf(file, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
+    for (long n = 0; n < NCELLS; n++)
+    {
+      for (int i = 0; i < nlev[lspec]; i++)
+      {
+        fprintf (file, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
       }
 
-      fprintf(file, "\n");
+      fprintf (file, "\n");
     }
 
 
-    fclose(file);
+    fclose (file);
 
-  } /* end of lspec loop over line producing species */
+  } // end of lspec loop over line producing species
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_line_intensities: write line intensities for each species, point and transition
+// -------------------------------------------------------------------------------------
 
-
-/* write_line_intensities: write the line intensities for each species, point and transition     */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_line_intensities(std::string tag, double *mean_intensity)
+int write_line_intensities (std::string tag, double *mean_intensity)
 {
 
-
-  if( !tag.empty() ){
-
+  if(!tag.empty())
+  {
     tag = "_" + tag;
   }
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
+  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  {
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
     std::string file_name = output_directory + "line_intensities_" + lspec_name + tag + ".txt";
 
-    FILE *file = fopen(file_name.c_str(), "w");
+    FILE *file = fopen (file_name.c_str(), "w");
 
 
-    if (file == NULL){
-
-      printf("Error opening file!\n");
+    if (file == NULL)
+    {
+      printf ("Error opening file!\n");
       std::cout << file_name + "\n";
-      exit(1);
+      exit (1);
     }
 
 
-    for (long n=0; n<NCELLS; n++){
-
-      for (int kr=0; kr<nrad[lspec]; kr++){
-
-        fprintf( file, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)] );
+    for (long n = 0; n < NCELLS; n++)
+    {
+      for (int kr = 0; kr < nrad[lspec]; kr++)
+      {
+        fprintf (file, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)]);
       }
 
-      fprintf( file, "\n" );
+      fprintf (file, "\n");
     }
 
-    fclose(file);
+    fclose (file);
 
   }
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_temperature_gas: write gas temperatures at each cell
+// ----------------------------------------------------------
 
-
-/* write_temperature_gas: write the gas temperatures at each point                               */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_temperature_gas(std::string tag, double *temperature_gas)
+int write_temperature_gas (std::string tag, double *temperature_gas)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
@@ -483,201 +445,181 @@ int write_temperature_gas(std::string tag, double *temperature_gas)
 
   FILE *file = fopen(file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    fprintf( file, "%lE\n", temperature_gas[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%lE\n", temperature_gas[n]);
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
+// write_temperature_dust: write dust temperatures at each cell
+// ------------------------------------------------------------
 
-
-
-/* write_temperature_dust: write the dust temperatures at each point                             */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_temperature_dust(std::string tag, double *temperature_dust)
+int write_temperature_dust (std::string tag, double *temperature_dust)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "temperature_dust" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    fprintf( file, "%lE\n", temperature_dust[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%lE\n", temperature_dust[n]);
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
 
-
-/* write_prev_temperature_gas: write the previous gas temperatures at each point                 */
-/*-----------------------------------------------------------------------------------------------*/
+// write_prev_temperature_gas: write previous gas temperatures at each cell
+// ------------------------------------------------------------------------
 
 int write_prev_temperature_gas(std::string tag, double *prev_temperature_gas)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "prev_temperature_gas" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    fprintf( file, "%lE\n", prev_temperature_gas[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%lE\n", prev_temperature_gas[n]);
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_UV_field: write UV field at each cell
+// -------------------------------------------
 
-
-/* write_UV_field: write the UV field at each point                                              */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_UV_field(std::string tag, double *UV_field)
+int write_UV_field (std::string tag, double *UV_field)
 {
 
 
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "UV_field" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    fprintf( file, "%lE\n", UV_field[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%lE\n", UV_field[n]);
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_UV_field: write visual extinction (AV) at each point
+// ----------------------------------------------------------
 
-
-/* write_UV_field: write the visual extinction (AV) at each point                                */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_AV(std::string tag, double *AV)
+int write_AV (std::string tag, double *AV)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "AV" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      fprintf( file, "%lE\t", AV[RINDEX(n,r)] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (long r = 0; r < NRAYS; r++)
+    {
+      fprintf (file, "%lE\t", AV[RINDEX(n,r)]);
     }
 
-    fprintf( file, "\n" );
+    fprintf (file, "\n");
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 

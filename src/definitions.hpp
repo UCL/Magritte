@@ -20,11 +20,11 @@ std::string output_directory = OUTPUT_DIRECTORY;
 
 // Input and data files
 
-const std::string inputfile = GRID_INPUTFILE;               // path to input file
+const std::string inputfile             = INPUTFILE;        // path to input file
 
-const std::string spec_datafile = SPEC_DATAFILE;            // path to data file with species
+const std::string spec_datafile         = SPEC_DATAFILE;    // path to data file with species
 
-const std::string reac_datafile = REAC_DATAFILE;            // path to data file with reactions
+const std::string reac_datafile         = REAC_DATAFILE;    // path to data file with reactions
 
 const std::string line_datafile[NLSPEC] = LINE_DATAFILES;   // list of line data file paths
 
