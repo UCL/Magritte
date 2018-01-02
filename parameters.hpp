@@ -50,7 +50,7 @@
 
 #define THETA_CRIT 1.3
 
-#define CELL_BASED false
+#define CELL_BASED true
 
 
 // Radiative transfer
