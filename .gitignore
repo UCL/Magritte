@@ -31,7 +31,9 @@ CMakeCache.txt
 # input
 # -----
 
-*input/files*
+*input/files/*.txt
+*input/files/*.vtu
+*input/files/*.dat
 
 
 # output
