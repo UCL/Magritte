@@ -5,7 +5,6 @@ import sys
 
 
 # Check whether the date stamp of the datafile is given
-
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:

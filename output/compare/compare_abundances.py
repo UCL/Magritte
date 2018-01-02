@@ -3,26 +3,20 @@ import matplotlib.pyplot as plt
 import sys
 
 
-
 # Check whether the date stamp of the datafile is given
-
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
     print("ERROR : No date stamp given !\n")
     print("Please try again and give the date stamp of the output file you want to plot\n")
 
-
 # Check the tag of the data that is to be plotted
-
 if (len(sys.argv)>2):
     tag = "_" + str(sys.argv[2])
 else:
     tag = ""
 
-
 # Get the input files from parameters.hpp
-
 with open("../../parameters.hpp") as parameters_file:
     for line in parameters_file:
         line = line.split()
@@ -35,13 +29,12 @@ my_file_name = "../files/" + date_stamp + "_output/abundances" + tag + ".txt"
 
 
 my_abn = np.loadtxt(my_file_name)
-
 ncells = np.shape(my_abn)[0]
-nspec = np.shape(my_abn)[1]
+nspec  = np.shape(my_abn)[1]
 
 
 
-file_name = "output_3D-PDR/1Dn30/abundances" + tag + "_3D-PDR.txt"
+file_name = "output_3D-PDR/1Dn30/abundances_final" + tag + "_3D-PDR.txt"
 
 their_abn = np.loadtxt(file_name)
 
@@ -55,7 +48,6 @@ relative_error = 2.0*abs(error)/abs(my_abn+their_abn)
 
 
 # Read the species names for the legend
-
 species_name = ["dummy"]
 
 with open(spec_datafile) as spec_file:
@@ -67,7 +59,6 @@ with open(spec_datafile) as spec_file:
 # Helper function
 # ---------------
 
-
 def get_species_nr(name):
     nr = 0
     for spec in species_name:
@@ -78,9 +69,7 @@ def get_species_nr(name):
     return 0
 
 
-
 # Check if there are specific species to be plotted
-
 if (len(sys.argv)>3):
     species_I_want = get_species_nr( str(sys.argv[2]) )
     species_specified = True
@@ -91,7 +80,6 @@ else:
 
 
 # Make the plots
-
 print(" ")
 print("Plotting for" + file_name)
 print("and " + my_file_name)
@@ -135,12 +123,11 @@ plot_name2 = "../files/" + date_stamp + "_output/plots/both_abundances" + tag + 
 
 
 # Save the plot in pdf format
-
 fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
 
 
-print("Plots saved as ")
+print("Plots saved as  ")
 print("   " + plot_name1)
 print("   " + plot_name2)
-print(" ")
+print("                ")

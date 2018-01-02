@@ -3,9 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 
 
-
 # Check whether the date stamp of the datafile is given
-
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
@@ -26,11 +24,10 @@ file_name = "../files/" + date_stamp + "_output/" + name + tag + ".txt"
 
 
 my_data = np.loadtxt(file_name)
-
 ncells  = np.shape(my_data)[0]
 
 
-file_name = "output_3D-PDR/1Dn30/" + name + tag + "_3D-PDR.txt"
+file_name = "output_3D-PDR/1Dn30/" + name + "_final" + tag + "_3D-PDR.txt"
 
 their_data = np.loadtxt(file_name)
 
@@ -47,7 +44,6 @@ relative_error = 2.0*abs(error)/abs(my_data+their_data)
 
 
 # Make the plots
-
 print(" ")
 print("Plotting " + file_name)
 
@@ -92,12 +88,11 @@ plot_name2 = "../files/" + date_stamp + "_output/plots/both_" + name + tag + ".p
 
 
 # Save the plot
-
 fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
 
 
-print("Plots saved as ")
+print("Plots saved as  ")
 print("   " + plot_name1)
 print("   " + plot_name2)
-print(" ")
+print("                ")

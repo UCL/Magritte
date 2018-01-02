@@ -66,7 +66,6 @@ TEST_CASE("Test chemistry"){
 
   CELL cell[NCELLS];                                                     /* grid points */
 
-  /* NOTE: cell does not have to be initialized as long as read_input works */
 
   EVALPOINT evalpoint[NCELLS*NCELLS];                     /* evaluation points for each grid point */
 

@@ -1,37 +1,18 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for heating.cpp                                                                        */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __COOLING_HPP_INCLUDED__
 #define __COOLING_HPP_INCLUDED__
 
 
+// cooling: calculate total cooling
+// --------------------------------
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
-#include "declarations.hpp"
-
-
-
-/* cooling: calculate the total cooling                                                          */
-/*-----------------------------------------------------------------------------------------------*/
-
-double cooling( long gridp, int *irad, int *jrad, double *A_coeff, double *B_coeff,
-                double *frequency, double *weight, double *pop, double *mean_intensity );
-
-/*-----------------------------------------------------------------------------------------------*/
+double cooling (long gridp, int *irad, int *jrad, double *A_coeff, double *B_coeff,
+                double *frequency, double *weight, double *pop, double *mean_intensity);
 
 
-
-
-#endif /* __COOLING_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __COOLING_HPP_INCLUDED__

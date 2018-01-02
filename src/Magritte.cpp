@@ -428,23 +428,19 @@ int main ()
 #   endif
 
 
-  } /* End of chemistry iteration */
+  } // End of chemistry iteration
 
 
-  printf("\n(Magritte): preliminary chemistry iterations done \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
+  printf ("\n(Magritte): preliminary chemistry iterations done \n\n");
 
 
 
 
+  // PRELIMINARY THERMAL BALANCE ITERATIONS
+  // ______________________________________
 
-  /*   PRELIMINARY THERMAL BALANCE ITERATIONS                                                    */
-  /*_____________________________________________________________________________________________*/
 
-
-  printf("(Magritte): calculating the minimal and maximal thermal flux \n\n");
+  printf ("(Magritte): calculating the minimal and maximal thermal flux \n\n");
 
 
   double mean_intensity[NCELLS*TOT_NRAD];                             /* mean intensity for a ray */
@@ -511,26 +507,26 @@ int main ()
 
 
 
-  for (int tb_iteration=0; tb_iteration<PRELIM_TB_ITER; tb_iteration++)
+  for (int tb_iteration = 0; tb_iteration < PRELIM_TB_ITER; tb_iteration++)
   {
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance( cell, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (cell, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
                      weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
                      mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
-                     initial_abn, &time_chemistry, &time_level_pop );
+                     initial_abn, &time_chemistry, &time_level_pop);
 
 
-    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NCELLS);
+    initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
 
 
-    update_temperature_gas( thermal_ratio, temperature_gas, prev_temperature_gas,
-                            temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
+    update_temperature_gas (thermal_ratio, temperature_gas, prev_temperature_gas,
+                            temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b);
 
 
-    /* Write the intermediate output for (potential) restart */
+    // Write intermediate output for (potential) restart
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)
 
@@ -549,7 +545,7 @@ int main ()
 #   endif
 
 
-  } /* end of tb_iteration loop over preliminary tb iterations */
+  } // end of tb_iteration loop over preliminary tb iterations
 
 
   initialize_double_array_with(temperature_gas, temperature_b, NCELLS);
@@ -559,28 +555,24 @@ int main ()
   // write_double_1("temperature_b", "", NCELLS, temperature_b );
 
 
-  printf("(Magritte): minimal and maximal thermal flux calculated \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
+  printf ("(Magritte): minimal and maximal thermal flux calculated \n\n");
 
 
 
 
-
-  /*   CALCULATE THERMAL BALANCE (ITERATIVELY)                                                   */
-  /*_____________________________________________________________________________________________*/
-
-
-  printf("(Magritte): starting thermal balance iterations \n\n");
+  // CALCULATE THERMAL BALANCE (ITERATIVELY)
+  // _______________________________________
 
 
-  bool no_thermal_balance = true;  /* true when the temperature of a grid point is not converged */
+  printf ("(Magritte): starting thermal balance iterations \n\n");
+
+
+  bool no_thermal_balance = true;
 
   int niterations = 0;
 
 
-  /* Thermal balance iterations */
+  // Thermal balance iterations
 
   while (no_thermal_balance)
   {
@@ -589,24 +581,24 @@ int main ()
     niterations++;
 
 
-    printf("(Magritte): thermal balance iteration %d\n", niterations);
+    printf ("(Magritte): thermal balance iteration %d\n", niterations);
 
 
-    long n_not_converged = 0;                /* number of grid points that are not yet converged */
+    long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance( cell, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (cell, column_H2, column_HD, column_C, column_CO, UV_field,
                      temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
                      weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
                      mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
-                     initial_abn, &time_chemistry, &time_level_pop );
+                     initial_abn, &time_chemistry, &time_level_pop);
 
 
-    initialize_double_array_with(thermal_ratio_b, thermal_ratio, NCELLS);
+    initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
 
 
 
-    /* Calculate the thermal balance for each cell */
+    // Calculate thermal balance for each cell
 
 #   pragma omp parallel                                                                           \
     shared( thermal_ratio, temperature_gas, prev_temperature_gas, temperature_a, temperature_b,   \
@@ -619,22 +611,22 @@ int main ()
     int thread_num  = omp_get_thread_num();
 
     long start = (thread_num*NCELLS)/num_threads;
-    long stop  = ((thread_num+1)*NCELLS)/num_threads;     /* Note the brackets are important here */
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp=start; gridp<stop; gridp++)
+    for (long gridp = start; gridp < stop; gridp++)
     {
-      shuffle_Brent( gridp, temperature_a, temperature_b, temperature_c, temperature_d,
-                     temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c );
+      shuffle_Brent (gridp, temperature_a, temperature_b, temperature_c, temperature_d,
+                     temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c);
 
 
       /* Check for thermal balance (convergence) */
 
       if (fabs(thermal_ratio[gridp]) > THERMAL_PREC)
       {
-        update_temperature_gas_Brent( gridp, temperature_a, temperature_b, temperature_c,
+        update_temperature_gas_Brent (gridp, temperature_a, temperature_b, temperature_c,
                                       temperature_d, temperature_e, thermal_ratio_a,
-                                      thermal_ratio_b, thermal_ratio_c );
+                                      thermal_ratio_b, thermal_ratio_c);
 
         temperature_gas[gridp] = temperature_b[gridp];
 
@@ -653,39 +645,31 @@ int main ()
     } /* end of OpenMP parallel region */
 
 
-    // if (no_thermal_balance){
-    //
-    //   update_temperature_gas( thermal_ratio, temperature_gas, prev_temperature_gas,
-    //                           temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b );
-    //
+    // if (no_thermal_balance)
+    // {
+    //   update_temperature_gas (thermal_ratio, temperature_gas, prev_temperature_gas,
+    //                           temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b);
     // }
 
 
-    printf("(Magritte): heating and cooling calculated \n\n");
+    printf ("(Magritte): heating and cooling calculated \n\n");
 
 
-    /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    // Limit number of iterations
 
-
-    /* Limit the number of iterations */
-
-    if (niterations > MAX_NITERATIONS || n_not_converged < NCELLS/10)
+    if ( (niterations > MAX_NITERATIONS) || (n_not_converged < NCELLS/10) )
     {
       no_thermal_balance = false;
     }
 
 
-    printf("(Magritte): Not yet converged for %ld of %d\n", n_not_converged, NCELLS);
+    printf ("(Magritte): Not yet converged for %ld of %d\n", n_not_converged, NCELLS);
 
 
-  } /* end of thermal balance iterations */
+  } // end of thermal balance iterations
 
 
-  printf("(Magritte): thermal balance reached in %d iterations \n\n", niterations);
-
-
-  /*_____________________________________________________________________________________________*/
-
+  printf ("(Magritte): thermal balance reached in %d iterations \n\n", niterations);
 
 
 
@@ -695,42 +679,35 @@ int main ()
 
 
 
-
-  /*   WRITE OUTPUT                                                                              */
-  /*_____________________________________________________________________________________________*/
+  // WRITE OUTPUT
+  // ____________
 
 
   printf("(Magritte): writing output \n");
 
 
-# if (INPUT_FORMAT == '.vtu')
+# if   (INPUT_FORMAT == '.vtu')
 
-  write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+  write_vtu_output (inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  write_txt_output(pop, mean_intensity, temperature_gas, temperature_dust);
+  write_txt_output (pop, mean_intensity, temperature_gas, temperature_dust);
 
 # endif
 
 
-  write_performance_log(time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
+  write_performance_log (time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
 
 
   printf("(Magritte): output written \n\n");
 
 
-  /*_____________________________________________________________________________________________*/
 
 
+  printf ("(Magritte): done \n\n");
 
 
-
-  printf("(Magritte): done \n\n");
-
-
-  return(0);
+  return (0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

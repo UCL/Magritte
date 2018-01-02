@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* heating: calculate the heating                                                                */
-/*                                                                                               */
-/* (based on read_species and read_rates in 3D-PDR)                                              */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -25,26 +17,24 @@
 #include "heating.hpp"
 
 
+// heating: calculate total heating
+// --------------------------------
 
-/* heating: calculate the total heating                                                          */
-/*-----------------------------------------------------------------------------------------------*/
-
-double heating( CELL *cell, long gridp,
+double heating (CELL *cell, long gridp,
                 double *temperature_gas, double *temperature_dust,
-                double *UV_field, double* heating_components )
+                double *UV_field, double* heating_components)
 {
 
 
-  double Habing_field = 1.68 * UV_field[gridp];                  /* UV radiation field in Habing */
+  double Habing_field = 1.68 * UV_field[gridp];            // UV radiation field in Habing
 
-  double electron_density = species[e_nr].abn[gridp] * cell[gridp].density;    /* e density */
-
-  // if(electron_density <= 0.0) { electron_density = 0.1; }
+  double electron_density = species[e_nr].abn[gridp] * cell[gridp].density;   // e density
 
 
 
-  /*   PHOTOELECTRIC DUST HEATING                                                                */
-  /*_____________________________________________________________________________________________*/
+
+  // PHOTOELECTRIC DUST HEATING
+  // __________________________
 
 
   /*  Dust photoelectric heating using the treatment of Tielens & Hollenbach, 1985, ApJ, 291,
@@ -56,10 +46,10 @@ double heating( CELL *cell, long gridp,
 
       The various parameter values are taken from Table 2 of the paper  */
 
-  const double precision = 1.0E-2;                     /* precision of the Newton-Raphson method */
+  const double precision = 1.0E-2;   // precision of Newton-Raphson method
 
 
-  /* Parameters */
+  // Parameters
 
   double Delta_d  = 1.0;
   double Delta_UV = 1.8;
@@ -70,7 +60,7 @@ double heating( CELL *cell, long gridp,
   double hnu_H = 13.6;
 
 
-  /* Derived parameters */
+  // Derived parameters
 
   double x_k = KB*temperature_gas[gridp]/(hnu_H*EV);
   double x_d = hnu_d/hnu_H;
@@ -80,18 +70,18 @@ double heating( CELL *cell, long gridp,
   double Delta = x_k - x_d + gamma;
 
 
-  /* Newton-Raphson iteration to find the zero of F(x) */
+  // Newton-Raphson iteration to find root of F(x)
 
   double F_x = 1.0;
 
   double x = 0.5;
 
-  int iteration = 0;                            /* iteration count for the Newton-Raphson solver */
+  int iteration = 0;   // iteration count for Newton-Raphson solver
 
 
 
-  while( (iteration < 100)  &&  (F_x > precision) ){
-
+  while( (iteration < 100) && (F_x > precision) )
+  {
     double x_0 = x - F(x,Delta,gamma)/dF(x,Delta);
 
     F_x = fabs(x-x_0);
@@ -108,14 +98,10 @@ double heating( CELL *cell, long gridp,
   heating_components[0] = heating_dust;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   PHOTOELECTRIC PAH HEATING                                                                 */
-  /*_____________________________________________________________________________________________*/
+  // PHOTOELECTRIC PAH HEATING
+  // _________________________
 
 
   /*  Grain + PAH photoelectric heating (MRN size distribution; r = 3-100 Å)
@@ -147,21 +133,17 @@ double heating( CELL *cell, long gridp,
                        * electron_density * phi_PAH * cell[gridp].density;
 
 
-  /* Assume the PE heating rate scales linearly with METALLICITY */
+  // Assume PE heating rate scales linearly with METALLICITY
 
   double heating_PAH = (PAH_heating - PAH_cooling)*METALLICITY;
 
   heating_components[1] = heating_PAH;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   WEINGARTNER HEATING                                                                       */
-  /*_____________________________________________________________________________________________*/
+  // WEINGARTNER HEATING
+  // ___________________
 
 
   /*  Weingartner & Draine, 2001, ApJS, 134, 263
@@ -188,14 +170,10 @@ double heating( CELL *cell, long gridp,
   heating_components[2] = heating_Weingartner;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   CARBON PHOTOIONIZATION HEATING                                                            */
-  /*_____________________________________________________________________________________________*/
+  // CARBON PHOTOIONIZATION HEATING
+  // ______________________________
 
 
   /*  Contributes 1 eV on average per carbon ionization
@@ -208,14 +186,10 @@ double heating( CELL *cell, long gridp,
   heating_components[3] = heating_C_ionization;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   H2 FORMATION HEATING                                                                      */
-  /*_____________________________________________________________________________________________*/
+  // H2 FORMATION HEATING
+  // ____________________
 
 
   /*  Hollenbach & Tielens, Review of Modern Physics, 1999, 71, 173
@@ -231,14 +205,10 @@ double heating( CELL *cell, long gridp,
   heating_components[4] = heating_H2_formation;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   H2 PHOTODISSOCIATION HEATING                                                              */
-  /*_____________________________________________________________________________________________*/
+  // H2 PHOTODISSOCIATION HEATING
+  // ____________________________
 
 
   /*  Contributes 0.4 eV on average per photodissociated molecule
@@ -251,14 +221,10 @@ double heating( CELL *cell, long gridp,
   heating_components[5] = heating_H2_photodissociation;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   H2 FUV PUMPING HEATING                                                                    */
-  /*_____________________________________________________________________________________________*/
+  // H2 FUV PUMPING HEATING
+  // ______________________
 
 
   /*  Hollenbach & McKee (1979)
@@ -280,14 +246,10 @@ double heating( CELL *cell, long gridp,
   heating_components[6] = heating_H2_FUV_pumping;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   COSMIC-RAY IONIZATION HEATING                                                             */
-  /*_____________________________________________________________________________________________*/
+  // COSMIC-RAY IONIZATION HEATING
+  // _____________________________
 
 
   /*  Tielens & Hollenbach, 1985, ApJ, 291, 772
@@ -305,14 +267,10 @@ double heating( CELL *cell, long gridp,
   heating_components[7] = heating_cosmic_rays;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   SUPERSONIC TURBULENT DECAY HEATING                                                        */
-  /*_____________________________________________________________________________________________*/
+  // SUPERSONIC TURBULENT DECAY HEATING
+  // __________________________________
 
 
   /*  Most relevant for the inner parsecs of galaxies Black, Interstellar Processes, 1987, p731
@@ -321,7 +279,7 @@ double heating( CELL *cell, long gridp,
       Rodriguez-Fernandez et al., 2001, A&A, 365, 174  */
 
 
-  double l_turb = 5.0;                       /* turbulent length scale (typical value) in parsec */
+  double l_turb = 5.0;   // turbulent length scale (typical value) in parsec
 
 
   double heating_turbulent = 3.5E-28*pow(V_TURB/1.0E5, 3)*(1.0/l_turb)*cell[gridp].density;
@@ -329,14 +287,10 @@ double heating( CELL *cell, long gridp,
   heating_components[8] = heating_turbulent;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   EXOTHERMAL CHEMICAL REACTION HEATING                                                      */
-  /*_____________________________________________________________________________________________*/
+  // EXOTHERMAL CHEMICAL REACTION HEATING
+  // ____________________________________
 
 
   /*  Clavel et al., 1978, A&A, 65, 435
@@ -349,35 +303,35 @@ double heating( CELL *cell, long gridp,
       the densities, K the rate coefficient [cm^3.s^-1], and E the energy [erg]  */
 
 
-  /* For the so-called REDUCED NETWORK of 3D-PDR */
+  // For so-called REDUCED NETWORK of 3D-PDR
 
   double heating_chemical
-                   = species[H2x_nr].abn[gridp] * cell[gridp].density         /* H2+  +  e- */
+                   = species[H2x_nr].abn[gridp] * cell[gridp].density      // H2+  +  e-
                      * electron_density
                      * reaction[215].k[gridp] * (10.9*EV)
 
-                     + species[H2x_nr].abn[gridp] * cell[gridp].density        /* H2+  +  H */
+                     + species[H2x_nr].abn[gridp] * cell[gridp].density    // H2+  +  H
                        * species[H_nr].abn[gridp] * cell[gridp].density
                        * reaction[154].k[gridp] * (0.94*EV)
 
-                     + species[HCOx_nr].abn[gridp] * cell[gridp].density     /* HCO+  +  e- */
+                     + species[HCOx_nr].abn[gridp] * cell[gridp].density   // HCO+  +  e-
                        * electron_density
                        * reaction[239].k[gridp] * (7.51*EV)
 
-                     + species[H3x_nr].abn[gridp] * cell[gridp].density       /* H3+  +  e- */
+                     + species[H3x_nr].abn[gridp] * cell[gridp].density    // H3+  +  e-
                        * electron_density
                        * ( reaction[216].k[gridp] * (4.76*EV) + reaction[217].k[gridp] * (9.23*EV) )
 
-                     + species[H3Ox_nr].abn[gridp]*cell[gridp].density       /* H3O+  +  e- */
+                     + species[H3Ox_nr].abn[gridp]*cell[gridp].density     // H3O+  + e-
                        * electron_density
                        * ( reaction[235].k[gridp] * (1.16*EV) + reaction[236].k[gridp] * (5.63*EV)
                            + reaction[237].k[gridp] * (6.27*EV) )
 
-                     + species[Hex_nr].abn[gridp] * cell[gridp].density        /* He+  + H2 */
+                     + species[Hex_nr].abn[gridp] * cell[gridp].density    // He+  + H2
                        * species[H2_nr].abn[gridp] * cell[gridp].density
                        * ( reaction[49].k[gridp] * (6.51*EV) + reaction[169].k[gridp] * (6.51*EV) )
 
-                     + species[Hex_nr].abn[gridp] * cell[gridp].density       /* He+  +  CO */
+                     + species[Hex_nr].abn[gridp] * cell[gridp].density    // He+  + CO
                        * species[CO_nr].abn[gridp] *cell[gridp].density
                        * ( reaction[88].k[gridp] * (2.22*EV) + reaction[89].k[gridp] * (2.22*EV)
                            + reaction[90].k[gridp] * (2.22*EV) );
@@ -385,14 +339,10 @@ double heating( CELL *cell, long gridp,
   heating_components[9] = heating_chemical;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   GAS-GRAIN COLLISIONAL HEATING                                                             */
-  /*_____________________________________________________________________________________________*/
+  // GAS-GRAIN COLLISIONAL HEATING
+  // _____________________________
 
 
   /*  Use the treatment of Burke & Hollenbach, 1983, ApJ, 265, 223, and
@@ -433,13 +383,9 @@ double heating( CELL *cell, long gridp,
   heating_components[10] = heating_gas_grain;
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /* Sum all contributions to the heating */
+  // Sum all contributions to the heating
 
   double heating_total = /*heating_dust*/
                          + heating_PAH
@@ -470,35 +416,26 @@ double heating( CELL *cell, long gridp,
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// F: mathematical function used in photoelectric dust heating
+// -----------------------------------------------------------
 
-
-/* F: mathematical function used in photoelectric dust heating                                   */
-/*-----------------------------------------------------------------------------------------------*/
-
-double F(double x, double delta, double gamma)
+double F (double x, double delta, double gamma)
 {
 
-  return pow(x,3) + delta*pow(x,2)-gamma;
+  return pow(x,3) + delta*pow(x,2) - gamma;
 }
 
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
+// dF: defivative w.r.t. x of function F defined above
+// ---------------------------------------------------
 
-
-
-/* dF: defivative w.r.t. x of the function F defined above                                       */
-/*-----------------------------------------------------------------------------------------------*/
-
-double dF(double x, double delta)
+double dF (double x, double delta)
 {
 
-  return 3*pow(x,2) + 2*delta*x;
+  return 3.0*pow(x,2) + 2.0*delta*x;
 }
-
-/*-----------------------------------------------------------------------------------------------*/
