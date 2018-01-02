@@ -1,5 +1,5 @@
-# CMake related files #
-#######################
+# CMake related files
+# -------------------
 
 CMakeFiles/
 Makefile
@@ -8,32 +8,33 @@ CMakeCache.txt
 
 
 
-# Executables #
-###############
+# Executables
+# -----------
 
 *.o
 *.exe
 
 
 
-# compiled libraries #
-######################
+# compiled libraries
+# ------------------
 
 *.a
 
 
-# editor generated files #
-##########################
+# editor generated files
+# ----------------------
 
 *~
 
-# output #
-##########
+# output
+# ------
 
-#*20*
+*-*-*_*:*_output/
+*20*
 
 
-# Text files containting old large files #
-##########################################
+# Text files containting old large files
+# --------------------------------------
 
 *.txt

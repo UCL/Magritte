@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Use the escape probability formalism and the Sobolev approximation to find the intensity      */
-/*                                                                                               */
-/* (based on code by Dr. Jeremy Yates)                                                           */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -20,12 +12,14 @@
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
 
+#if (!CELL_BASED)
+
 #include "sobolev.hpp"
 
 
 
-/* sobolev: calculate the mean intensity using the LVG approximation and escape probabilities    */
-/*-----------------------------------------------------------------------------------------------*/
+// sobolev: calculate mean intensity using LVG approximation and escape probabilities
+// ----------------------------------------------------------------------------------
 
 int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
              double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
@@ -134,7 +128,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
       double optical_depth1 = 0.0;
       double optical_depth2 = 0.0;
 
-      double speed_width = sqrt( 8.0*KB*temperature_gas[gridp]/PI/MP + pow(V_TURB,2) );
+      double speed_width = sqrt(8.0*KB*temperature_gas[gridp]/PI/MP + pow(V_TURB, 2));
 
 
       for (long e1=0; e1<etot1; e1++)
@@ -156,7 +150,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
 
       else
       {
-        escape_probability = escape_probability + (1 - exp(-optical_depth1)) / optical_depth1;
+        escape_probability = escape_probability + (1.0 - exp(-optical_depth1)) / optical_depth1;
       }
 
       optical_depth2 = CC / frequency[b_ij] / speed_width * optical_depth2;
@@ -166,10 +160,9 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
         optical_depth2 = optical_depth2 + dtau[etot1+e2];
       }
 
-
       if (optical_depth2 < -5.0)
       {
-        escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
+        escape_probability = escape_probability + (1.0 - exp(5.0)) / (-5.0);
       }
 
       else if( fabs(optical_depth2) < 1.0E-8)
@@ -179,7 +172,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
 
       else
       {
-        escape_probability = escape_probability + (1 - exp(-optical_depth2)) / optical_depth2;
+        escape_probability = escape_probability + (1.0 - exp(-optical_depth2)) / optical_depth2;
       }
 
 
@@ -196,12 +189,16 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
   } /* end of r loop over half of the rays */
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij]; // / NRAYS;
+  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
 
-  escape_probability = escape_probability; // / NRAYS;
+  escape_probability   = escape_probability / NRAYS;
 
 
-  /* Add the continuum radiation (due to dust and CMB) */
+  // ADD CONTINUUM RADIATION (due to dust and CMB)
+  // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+
+  // Continuum radiation is assumed to be local
 
   double factor          = 2.0*HH*pow(frequency[b_ij],3)/pow(CC,2);
 
@@ -211,12 +208,10 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / ( exp(HH*frequency[b_ij]/KB/temperature_dust[gridp])-1.0 );
+  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/temperature_dust[gridp]) - 1.0);
 
-  double Planck_CMB      = 1.0 / ( exp(HH*frequency[b_ij]/KB/T_CMB)-1.0 );
+  double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
 
-
-  /* NOTE: Continuum radiation is assumed to be local */
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
@@ -243,4 +238,5 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
   return(0);
 }
 
-/*-----------------------------------------------------------------------------------------------*/
+
+#endif // if not CELL_BASED

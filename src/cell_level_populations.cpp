@@ -4,9 +4,6 @@
 // _________________________________________________________________________
 
 
-#if (CELL_BASED)
-
-
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -17,6 +14,8 @@
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
 
+#if (CELL_BASED)
+
 #include "cell_level_populations.hpp"
 #include "acceleration_Ng.hpp"
 #include "lines.hpp"
@@ -24,7 +23,7 @@
 #include "initializers.hpp"
 #include "sobolev.hpp"
 #include "cell_sobolev.hpp"
-#include "radiative_transfer_otf.hpp"
+#include "cell_radiative_transfer.hpp"
 #include "level_population_solver_otf.hpp"
 #include "ray_tracing.hpp"
 #include "write_output.hpp"
@@ -33,7 +32,7 @@
 // level_populations: iteratively calculates the level populations
 // ---------------------------------------------------------------
 
-int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
+int cell_level_populations (CELL *cell, int *irad, int*jrad, double *frequency,
                             double *A_coeff, double *B_coeff, double *pop,
                             double *C_data, double *coltemp, int *icol, int *jcol,
                             double *temperature_gas, double *temperature_dust,
@@ -47,36 +46,35 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
   double prev3_pop[NCELLS*TOT_NLEV];   // level population n_i 3 iterations ago
 
 
-  bool some_not_converged = true;            /*  true when some of the species are not converged */
+  bool some_not_converged = true;    // true when not all species are converged
 
-  bool not_converged[NLSPEC];            /* true when popualations are not converged per species */
+  bool not_converged[NLSPEC];        // true when not converged
 
   initialize_bool(true, not_converged, NLSPEC);
 
-  bool prev_not_converged[NLSPEC];   /* true when popualations were not converged last iteration */
+  bool prev_not_converged[NLSPEC];   // true when not converged last iteration
 
   initialize_bool(true, prev_not_converged, NLSPEC);
 
-  int niterations[NLSPEC];                                   /* number of iterations per species */
+  int niterations[NLSPEC];           // number of iterations
 
   initialize_int_array(niterations, NLSPEC);
 
-  int n_not_converged[NLSPEC];                 /* number of not converged cells per species */
+  int n_not_converged[NLSPEC];       // number of not converged cells
 
   initialize_int_array(n_not_converged, NLSPEC);
 
 
-
-  /* Iterate until the level populations converge */
+  // Iterate until level populations converge
 
   while (some_not_converged)
   {
 
-    /* New iteration, assume populations are converged until proven differently... */
+    // New iteration, assume populations are converged until proven differently...
 
     some_not_converged = false;
 
-    for (int lspec=0; lspec<NLSPEC; lspec++)
+    for (int lspec = 0; lspec < NLSPEC; lspec++)
     {
       if (prev_not_converged[lspec])
       {
@@ -86,14 +84,14 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
     }
 
 
-    double source[NCELLS*TOT_NRAD];                                            /* source function */
+    double source[NCELLS*TOT_NRAD];    // source function
 
-    double opacity[NCELLS*TOT_NRAD];                                                   /* opacity */
+    double opacity[NCELLS*TOT_NRAD];   // opacity
 
 
-    /* For each line producing species */
+    // For each line producing species
 
-    for (int lspec=0; lspec<NLSPEC; lspec++)
+    for (int lspec = 0; lspec < NLSPEC; lspec++)
     {
       if  (prev_not_converged[lspec])
       {
@@ -103,37 +101,36 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
                 niterations[lspec], species[lspec_nr[lspec]].sym.c_str() );
 
 
-        n_not_converged[lspec] = 0;          /* number of grid points that are not yet converged */
+        n_not_converged[lspec] = 0;   // number of grid points that are not yet converged
 
+
+        // Perform an Ng acceleration step every 4th iteration
 
 #       if (ACCELERATION_POP_NG)
 
-
-        /* Perform an Ng acceleration step every 4th iteration */
-
-        if (niterations[lspec]%4 == 0)
-        {
-          acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
-        }
+          if (niterations[lspec]%4 == 0)
+          {
+            acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+          }
 
 #       endif
 
 
-        /* Store the populations of the previous 3 iterations */
+        // Store populations of previous 3 iterations
 
         store_populations(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
 
 
-        /* Calculate the source and opacity for all transitions over the whole grid */
+        // Calculate source and opacity for all transitions over whole grid
 
         line_source( irad, jrad, A_coeff, B_coeff, pop, lspec, source );
 
         line_opacity( irad, jrad, frequency, B_coeff, pop, lspec, opacity );
       }
-    } /* end of lspec loop over line producing species */
+    } // end of lspec loop over line producing species
 
 
-    /* For every grid point */
+    // For every grid point
 
 #   pragma omp parallel                                                                           \
     shared( energy, weight, temperature_gas, temperature_dust, icol, jcol, coltemp, C_data, pop,  \
@@ -148,62 +145,57 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
     int thread_num  = omp_get_thread_num();
 
     long start = (thread_num*NCELLS)/num_threads;
-    long stop  = ((thread_num+1)*NCELLS)/num_threads;     /* Note the brackets are important here */
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long n=start; n<stop; n++)
+    for (long n = start; n < stop; n++)
     {
-      double R[TOT_NLEV2];                                             /* Transition matrix R_ij */
+      double R[TOT_NLEV2];         // Transition matrix R_ij
 
-      double C_coeff[TOT_NLEV2];                                    /* Einstein C_ij coefficient */
+      double C_coeff[TOT_NLEV2];   // Einstein C_ij coefficient
 
 
-      /* For each line producing species */
+      // For each line producing species
 
-      for (int lspec=0; lspec<NLSPEC; lspec++)
+      for (int lspec = 0; lspec < NLSPEC; lspec++)
       {
         if (prev_not_converged[lspec])
         {
 
-          /* Calculate the collisional terms and fill the first part of the transition matrix    */
-          /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+          // Calculate collisional terms and fill first part of transition matrix
+          //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
           calc_C_coeff( cell, C_data, coltemp, icol, jcol, temperature_gas,
                         weight, energy, C_coeff, n, lspec );
 
 
-          /* Fill the first part of the transition matrix R */
+          // Fill first part of transition matrix R
 
-          for (int i=0; i<nlev[lspec]; i++)
+          for (int i = 0; i < nlev[lspec]; i++)
           {
-            for (int j=0; j<nlev[lspec]; j++)
+            for (int j = 0; j < nlev[lspec]; j++)
             {
-              long b_ij = LSPECLEVLEV(lspec,i,j);                /* R, A_coeff and C_coeff index */
+              long b_ij = LSPECLEVLEV(lspec,i,j);   // R, A_coeff and C_coeff index
 
               R[b_ij] = A_coeff[b_ij] + C_coeff[b_ij];
             }
           }
 
 
-          /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+          // Calculate and add  B_ij<J_ij> term
+          // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
+          // For all transitions
 
-
-          /* Calculate and add the B_ij<J_ij> term */
-          /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
-
-
-          /* For all transitions */
-
-          for (int kr=0; kr<nrad[lspec]; kr++)
+          for (int kr = 0; kr < nrad[lspec]; kr++)
           {
-            int i     = irad[LSPECRAD(lspec,kr)];        /* i index corresponding to transition kr */
-            int j     = jrad[LSPECRAD(lspec,kr)];        /* j index corresponding to transition kr */
+            int i     = irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
+            int j     = jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
 
-            long b_ij = LSPECLEVLEV(lspec,i,j);            /* A_coeff, B_coeff and frequency index */
-            long b_ji = LSPECLEVLEV(lspec,j,i);            /* A_coeff, B_coeff and frequency index */
+            long b_ij = LSPECLEVLEV(lspec,i,j);     // A_coeff, B_coeff and frequency index
+            long b_ji = LSPECLEVLEV(lspec,j,i);     // A_coeff, B_coeff and frequency index
 
             double A_ij = A_coeff[b_ij];
             double B_ij = B_coeff[b_ij];
@@ -214,54 +206,49 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
             mean_intensity[m_ij] = 0.0;
 
 
-            /* Calculate the mean intensity */
+            // Calculate mean intensity
 
 #           if (SOBOLEV)
 
-            cell_sobolev( cell, mean_intensity, Lambda_diagonal, mean_intensity_eff, source,
-                          opacity, frequency, temperature_gas, temperature_dust, irad, jrad, n,
-                          lspec, kr );
+              cell_sobolev (cell, mean_intensity, Lambda_diagonal, mean_intensity_eff, source,
+                            opacity, frequency, temperature_gas, temperature_dust, irad, jrad, n,
+                            lspec, kr);
 
 #           else
 
-            cell_radiative_transfer( cell, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                                     source, opacity, frequency, temperature_gas, temperature_dust,
-                                     irad, jrad, n, lspec, kr);
+              cell_radiative_transfer (cell, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                                       source, opacity, frequency, temperature_gas, temperature_dust,
+                                       irad, jrad, n, lspec, kr);
 
 #           endif
 
 
-            /* Fill the i>j part */
+            // Fill i > j part
 
             R[b_ij] = R[b_ij] - A_ij*Lambda_diagonal[m_ij] + B_ij*mean_intensity_eff[m_ij];
 
 
-            /* Add the j>i part */
+            // Add j > i part
 
             R[b_ji] = R[b_ji] + B_ji*mean_intensity_eff[m_ij];
 
-          } /* end of kr loop over transitions */
+          } // end of kr loop over transitions
 
 
-          /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+          // Solve equilibrium equation at each point
+          // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
+          // Solve radiative balance equation for level populations
+
+          level_population_solver_otf (cell, n, lspec, R, pop);
 
 
-          /* Solve the equilibrium equation at each point */
-          /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+          // Check for convergence
 
-
-          /* Solve the radiative balance equation for the level populations */
-
-          level_population_solver_otf( cell, n, lspec, R, pop );
-
-
-          /* Check for convergence */
-
-          for (int i=0; i<nlev[lspec]; i++)
+          for (int i = 0; i < nlev[lspec]; i++)
           {
-            long p_i = LSPECGRIDLEV(lspec,n,i);                            /* pop and dpop index */
+            long p_i = LSPECGRIDLEV(lspec,n,i);   // pop and dpop index
 
             double dpop = pop[p_i] - prev1_pop[p_i];
             double spop = pop[p_i] + prev1_pop[p_i];
@@ -274,7 +261,7 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
               double dpop_rel = 2.0 * fabs(dpop) / spop;
 
 
-              /* If the population of any of the levels is not converged */
+              // If population of any level is not converged
 
               if (dpop_rel > POP_PREC)
               {
@@ -285,36 +272,29 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
               }
             }
 
-          } /* end of i loop over levels */
-
-
-          /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
+          } // end of i loop over levels
 
 
         }
-      } /* end of lspec loop over line producing species */
+      } // end of lspec loop over line producing species
 
 
-    } /* end of n loop over cells */
-    } /* end of OpenMP parallel region */
+    } // end of n loop over cells
+    } // end of OpenMP parallel region
 
 
 
-    /* For each line producing species */
+    // Limit the number of iterations
 
-    for (int lspec=0; lspec<NLSPEC; lspec++)
+    for (int lspec = 0; lspec < NLSPEC; lspec++)
     {
       if (prev_not_converged[lspec])
       {
-
-        /* Limit the number of iterations */
-
         if ( (niterations[lspec] > MAX_NITERATIONS) || (n_not_converged[lspec] < NCELLS/10) )
         {
           not_converged[lspec] = false;
           some_not_converged   = false;
         }
-
 
         printf( "(level_populations): Not yet converged for %ld of %d\n",
                 n_not_converged[lspec], NCELLS*nlev[lspec] );
@@ -323,17 +303,17 @@ int cell_level_populations( CELL *cell, int *irad, int*jrad, double *frequency,
     }
 
 
-  } /* end of while loop of iterations */
+  } // end of while loop of iterations
 
 
 
-  /* Print the stats for the calculations on lspec */
+  // Print stats for calculations on lspec
 
-  for (int lspec=0; lspec<NLSPEC; lspec++)
+  for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    printf( "(level_populations): population levels for %s converged after %d iterations\n"
+    printf ("(level_populations): population levels for %s converged after %d iterations\n"
             "                     with precision %.1lE\n",
-            species[lspec_nr[lspec]].sym.c_str(), niterations[lspec], POP_PREC );
+            species[lspec_nr[lspec]].sym.c_str(), niterations[lspec], POP_PREC);
   }
 
 

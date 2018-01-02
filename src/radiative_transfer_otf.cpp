@@ -21,13 +21,12 @@
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
 
+#if (!CELL_BASED)
+
 #include "radiative_transfer_otf.hpp"
 #include "lines.hpp"
 #include "feautrier.hpp"
 
-
-
-#if (ON_THE_FLY)
 
 /* radiative_transfer: calculate mean intensity at grid point "gridp", by solving the transfer   */
 /*                     equation along all pairs of a rays and their antipodals                   */
@@ -86,7 +85,7 @@ int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *r
   } /* end of r loop over half of the rays */
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij]; // / NRAYS;
+  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
 
 
   /* Add the continuum radiation (due to dust and CMB) */
@@ -109,7 +108,7 @@ int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *r
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij]; // + continuum_mean_intensity;
+  mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
 
 
   if ( ACCELERATION_APPROX_LAMBDA ){

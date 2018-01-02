@@ -4,17 +4,17 @@
 // _________________________________________________________________________
 
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
-#include "declarations.hpp"
-
-#if (!CELL_BASED)
-
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+
+#include "../parameters.hpp"
+#include "Magritte_config.hpp"
+#include "declarations.hpp"
+
+#if (!CELL_BASED)
 
 #include "level_populations_otf.hpp"
 #include "acceleration_Ng.hpp"
@@ -31,12 +31,12 @@
 // level_populations: iteratively calculates level populations
 // -----------------------------------------------------------
 
-int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
+int level_populations_otf (CELL *cell, int *irad, int*jrad, double *frequency,
                            double *A_coeff, double *B_coeff, double *pop,
                            double *C_data, double *coltemp, int *icol, int *jcol,
                            double *temperature_gas, double *temperature_dust,
                            double *weight, double *energy, double *mean_intensity,
-                           double *Lambda_diagonal, double *mean_intensity_eff )
+                           double *Lambda_diagonal, double *mean_intensity_eff)
 {
 
 
@@ -108,10 +108,10 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
 
 #       if (ACCELERATION_POP_NG)
 
-        if (niterations[lspec]%4 == 0)
-        {
-          acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
-        }
+          if (niterations[lspec]%4 == 0)
+          {
+            acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+          }
 
 #       endif
 
@@ -163,7 +163,7 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
       find_evalpoints(cell, evalpoint, key, raytot, cum_raytot, n);
 
       get_velocities(cell, evalpoint, key, raytot, cum_raytot, n, first_velo);
-// # endif
+
 
       double R[TOT_NLEV2];                                             /* Transition matrix R_ij */
 
@@ -230,13 +230,13 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
 
 #           if (SOBOLEV)
 
-            sobolev( cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
+            sobolev (cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                      Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
-                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr );
+                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
 
 #           else
 
-            radiative_transfer_otf( cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
+            radiative_transfer_otf (cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
                                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
 

@@ -4,13 +4,14 @@
 // _________________________________________________________________________
 
 
-#if (!CELL_BASED)
-
-
 #ifndef __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
 #define __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
 
+
+#include "../parameters.hpp"
 #include "declarations.hpp"
+
+#if (!CELL_BASED)
 
 
 // level_populations: iteratively calculate level populations
@@ -24,7 +25,7 @@ int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
                            double *Lambda_diagonal, double *mean_intensity_eff );
 
 
-#endif /* __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__ */
-
-
 #endif // if not CELL_BASED
+
+
+#endif // __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__

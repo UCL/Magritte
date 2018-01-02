@@ -1,29 +1,17 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for calc_UV_field.cpp                                                            */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __calc_UV_field_HPP_INCLUDED__
 #define __calc_UV_field_HPP_INCLUDED__
 
 
+// calc_UV_field: calculates UV radiation field at each cell
+// ---------------------------------------------------------
 
-/* calc_UV_field: calculates the UV radiation field at each grid point                     */
-/*-----------------------------------------------------------------------------------------------*/
-
-int calc_UV_field( double *AV, double *rad_surface, double *UV_field );
-
-/*-----------------------------------------------------------------------------------------------*/
+int calc_UV_field (long ncells, double *AV, double *rad_surface, double *UV_field);
 
 
-
-#endif /* __calc_UV_field_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __calc_UV_field_HPP_INCLUDED__

@@ -9,8 +9,9 @@
 
 
 #include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
+
+#if (CELL_BASED)
 
 
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
@@ -21,5 +22,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
                   double *temperature_gas, double *temperature_dust, int *irad, int*jrad,
                   long gridp, int lspec, int kr );
 
+
+#endif // if CELL_BASED
 
 #endif // __CELL_SOBOLEV_HPP_INCLUDED__

@@ -4,9 +4,6 @@
 // _________________________________________________________________________
 
 
-#if (CELL_BASED)
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -14,6 +11,8 @@
 #include "../parameters.hpp"
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
+
+#if (CELL_BASED)
 
 #include "cell_sobolev.hpp"
 #include "ray_tracing.hpp"
@@ -37,8 +36,6 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
   double escape_probability = 0.0;             // escape probability from Sobolev approximation
 
-  double dtau[NCELLS];
-
 
   // DO THE RADIATIVE TRANSFER
   // _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -46,7 +43,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
   // For half of the rays (only half is needed since we also consider the antipodals)
 
-  for (long r=0; r<NRAYS/2; r++)
+  for (long r = 0; r < NRAYS/2; r++)
   {
 
     // Get the antipodal ray for r
@@ -56,16 +53,16 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
     // Fill the source function and the optical depth increment along ray r
 
-    long ndep = 0;
-
     double tau_r  = 0.0;
     double tau_ar = 0.0;
 
 
     // Walk along antipodal ray (ar) of r
+
     {
-      double Z   = 0.0;
-      double dZ  = 0.0;
+      double Z    = 0.0;
+      double dZ   = 0.0;
+      double dtau = 0.0;
 
       long current = origin;
       long next    = next_cell(NCELLS, cell, origin, ar, Z, current, &dZ);
@@ -76,23 +73,23 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
         long s_n = LSPECGRIDRAD(lspec,next,kr);
         long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-        dtau[ndep] = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
+        dtau = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
 
-        tau_ar = tau_ar + dtau[ndep];
+        tau_ar = tau_ar + dtau;
         Z      = Z + dZ;
 
         current = next;
         next    = next_cell(NCELLS, cell, origin, ar, Z, current, &dZ);
-
-        ndep++;
       }
     }
 
 
     // Walk along ray r itself
+
     {
-      double Z   = 0.0;
-      double dZ  = 0.0;
+      double Z    = 0.0;
+      double dZ   = 0.0;
+      double dtau = 0.0;
 
       long current = origin;
       long next    = next_cell(NCELLS, cell, origin, r, Z, current, &dZ);
@@ -103,20 +100,18 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
         long s_n = LSPECGRIDRAD(lspec,next,kr);
         long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-        dtau[ndep] = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
+        dtau = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
 
-        tau_r = tau_r + dtau[ndep];
+        tau_r = tau_r + dtau;
         Z     = Z + dZ;
 
         current = next;
         next    = next_cell(NCELLS, cell, origin, r, Z, current, &dZ);
-
-        ndep++;
       }
     }
 
 
-    double speed_width = sqrt( 8.0*KB*temperature_gas[origin]/PI/MP + pow(V_TURB,2) );
+    double speed_width = sqrt(8.0*KB*temperature_gas[origin]/PI/MP + pow(V_TURB, 2));
 
     tau_ar = CC / frequency[b_ij] / speed_width * tau_ar;
 
@@ -126,14 +121,14 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
       escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
     }
 
-    else if( fabs(tau_ar) < 1.0E-8)
+    else if(fabs(tau_ar) < 1.0E-8)
     {
       escape_probability = escape_probability + 1.0;
     }
 
     else
     {
-      escape_probability = escape_probability + (1 - exp(-tau_ar)) / tau_ar;
+      escape_probability = escape_probability + (1.0 - exp(-tau_ar)) / tau_ar;
     }
 
 
@@ -152,7 +147,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
     else
     {
-      escape_probability = escape_probability + (1 - exp(-tau_r)) / tau_r;
+      escape_probability = escape_probability + (1.0 - exp(-tau_r)) / tau_r;
     }
 
   } // end of r loop over half of the rays
@@ -160,7 +155,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
   mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
 
-  escape_probability = escape_probability / NRAYS;
+  escape_probability   = escape_probability / NRAYS;
 
 
   // ADD CONTINUUM RADIATION (due to dust and CMB)
@@ -209,4 +204,4 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 }
 
 
-#endif
+#endif // if CELL_BASED

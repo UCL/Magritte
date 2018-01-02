@@ -1,13 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for calc_column_density.cpp                                                      */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __calc_AV_HPP_INCLUDED__
@@ -18,16 +12,10 @@
 #include "declarations.hpp"
 
 
+// calc_AV: calculates visual extinction along a ray ray at a grid point
+// ---------------------------------------------------------------------
 
-/* calc_AV: calculates the visual extinction along a ray ray at a grid point               */
-/*-----------------------------------------------------------------------------------------------*/
-
-int calc_AV( double *column_tot, double *AV );
-
-/*-----------------------------------------------------------------------------------------------*/
+int calc_AV (long ncells, double *column_tot, double *AV);
 
 
-
-#endif /* __calc_AV_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __calc_AV_HPP_INCLUDED__

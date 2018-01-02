@@ -93,13 +93,13 @@ int main ()
 
 # if   (INPUT_FORMAT == '.vtu')
 
-  read_vtu_input (inputfile, NCELLS, cell, temperature_gas,
-                  temperature_dust, prev_temperature_gas);
+    read_vtu_input (inputfile, NCELLS, cell, temperature_gas,
+                    temperature_dust, prev_temperature_gas);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  read_txt_input (inputfile, NCELLS, cell, temperature_gas,
-                  temperature_dust, prev_temperature_gas);
+    read_txt_input (inputfile, NCELLS, cell, temperature_gas,
+                    temperature_dust, prev_temperature_gas);
 
 # endif
 
@@ -113,7 +113,7 @@ int main ()
   // ___________________
 
 
-  printf("(Magritte): reading chemistry data \n");
+  printf ("(Magritte): reading chemistry data \n");
 
 
   // Read chemical species data
@@ -152,10 +152,10 @@ int main ()
   // _____________________________________
 
 
-  printf("(Magritte): declaring and initializing line variables \n");
+  printf ("(Magritte): declaring and initializing line variables \n");
 
 
-  /* Define line related variables */
+  // Define line related variables
 
   int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
 
@@ -207,52 +207,91 @@ int main ()
   initialize_int_array(jcol, TOT_CUM_TOT_NCOLTRAN);
 
 
-  /* Define the helper arrays specifying the species of the collisiopn partners */
+  // Define helper arrays specifying species of collisiopn partners
 
-  initialize_int_array(spec_par, TOT_NCOLPAR);
+  initialize_int_array (spec_par, TOT_NCOLPAR);
 
-  initialize_char_array(ortho_para, TOT_NCOLPAR);
+  initialize_char_array (ortho_para, TOT_NCOLPAR);
 
 
   printf("(Magritte): data structures are set up \n\n");
 
 
-  /*_____________________________________________________________________________________________*/
+
+
+  // READ LINE DATA FOR EACH LINE PRODUCING SPECIES
+  // ______________________________________________
+
+
+  printf ("(Magritte): reading line data \n");
+
+
+  // Read the line data files stored in the list(!) line_data
+
+  read_linedata (line_datafile, irad, jrad, energy, weight, frequency,
+                 A_coeff, B_coeff, coltemp, C_data, icol, jcol);
+
+
+  printf ("(Magritte): line data read \n\n");
 
 
 
 
-
-  /*   READ LINE DATA FOR EACH LINE PRODUCING SPECIES                                            */
-  /*_____________________________________________________________________________________________*/
+# if (CELL_BASED)
 
 
-  printf("(Magritte): reading line data \n");
+    // FIND NEIGHBORING CELLS
+    // ______________________
 
 
-  /* Read the line data files stored in the list(!) line_data */
-
-  read_linedata( line_datafile, irad, jrad, energy, weight, frequency,
-                 A_coeff, B_coeff, coltemp, C_data, icol, jcol );
+    printf ("(Magritte): finding neighboring cells \n");
 
 
-  printf("(Magritte): line data read \n\n");
+    // Find for each cell the neighboring cells
+
+    find_neighbors (NCELLS, cell);
 
 
-  /*_____________________________________________________________________________________________*/
+    printf ("(Magritte): neighboring cells found \n\n");
+
+  //   long origin = 0;
+  //   long ray = 0;
+  //
+  // // Walk along ray
+  // {
+  //   double Z   = 0.0;
+  //   double dZ  = 0.0;
+  //
+  //   long current = origin;
+  //   long next    = next_cell(NCELLS, cell, origin, ray, Z, current, &dZ);
+  //
+  //
+  //   while (next != NCELLS)
+  //   {
+  //     Z = Z + dZ;
+  //
+  //     printf("current %ld\n", current);
+  //
+  //     current = next;
+  //     next    = next_cell(NCELLS, cell, origin, ray, Z, current, &dZ);
+  //   }
+  // }
+  //
+  // return(0);
+
+# endif
 
 
 
 
-
-  /*   CALCULATE EXTERNAL RADIATION FIELD                                                        */
-  /*_____________________________________________________________________________________________*/
-
-
-  printf("(Magritte): calculating external radiation field \n");
+  // CALCULATE EXTERNAL RADIATION FIELD
+  // __________________________________
 
 
-  double G_external[3];                                       /* external radiation field vector */
+  printf ("(Magritte): calculating external radiation field \n");
+
+
+  double G_external[3];   // external radiation field vector
 
   G_external[0] = G_EXTERNAL_X;
   G_external[1] = G_EXTERNAL_Y;
@@ -261,135 +300,128 @@ int main ()
 
   double rad_surface[NCELLS*NRAYS];
 
-  initialize_double_array(rad_surface, NCELLS*NRAYS);
+  initialize_double_array (rad_surface, NCELLS*NRAYS);
 
 
-  /* Calculate the radiation surface */
+  // Calculate radiation surface
 
-  calc_rad_surface(G_external, rad_surface);
+  calc_rad_surface (NCELLS, G_external, rad_surface);
 
-  printf("(Magritte): external radiation field calculated \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
+  printf ("(Magritte): external radiation field calculated \n\n");
 
 
 
 
-
-  /*   MAKE GUESS FOR GAS TEMPERATURE AND CALCULATE DUST TEMPERATURE                             */
-  /*_____________________________________________________________________________________________*/
+  // MAKE GUESS FOR GAS TEMPERATURE AND CALCULATE DUST TEMPERATURE
+  // _____________________________________________________________
 
 
   printf("(Magritte): making a guess for gas temperature and calculating dust temperature \n");
 
 
-  double column_tot[NCELLS*NRAYS];                                        /* total column density */
+  double column_tot[NCELLS*NRAYS];   // total column density
 
-  initialize_double_array(column_tot, NCELLS*NRAYS);
+  initialize_double_array (column_tot, NCELLS*NRAYS);
 
-  double AV[NCELLS*NRAYS];                       /* Visual extinction (only takes into account H) */
+  double AV[NCELLS*NRAYS];           // Visual extinction (only takes into account H)
 
-  initialize_double_array(AV, NCELLS*NRAYS);
+  initialize_double_array (AV, NCELLS*NRAYS);
 
-  double UV_field[NCELLS];
+  double UV_field[NCELLS];           // External UV field
 
-  initialize_double_array(UV_field, NCELLS);
+  initialize_double_array (UV_field, NCELLS);
 
 
-  /* Calculate the total column density */
+  // Calculate total column density
 
   calc_column_density (NCELLS, cell, column_tot, NSPEC-1);
 
-
-  /* Calculate the visual extinction */
-
-  calc_AV(column_tot, AV);
+  write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
 
 
-  /* Calculcate the UV field */
+  // Calculate visual extinction
 
-  calc_UV_field(AV, rad_surface, UV_field);
+  calc_AV (NCELLS, column_tot, AV);
+
+
+  // Calculcate UV field
+
+  calc_UV_field (NCELLS, AV, rad_surface, UV_field);
 
 
 # if (!RESTART)
 
-  /* Make a guess for the gas temperature based on the UV field */
+    // Make a guess for gas temperature based on UV field
 
-  guess_temperature_gas (NCELLS, UV_field, temperature_gas);
+    guess_temperature_gas (NCELLS, UV_field, temperature_gas);
 
 
-  /* Calculate the dust temperature */
+    // Calculate the dust temperature
 
-  calc_temperature_dust(UV_field, rad_surface, temperature_dust);
+    calc_temperature_dust (NCELLS, UV_field, rad_surface, temperature_dust);
 
 # endif
 
 
-  printf("(Magritte): gas temperature guessed and dust temperature calculated \n\n");
-
-
-  /*_____________________________________________________________________________________________*/
+  printf ("(Magritte): gas temperature guessed and dust temperature calculated \n\n");
 
 
 
 
-
-  /*   PRELIMINARY CHEMISTRY ITERATIONS                                                          */
-  /*_____________________________________________________________________________________________*/
+  // PRELIMINARY CHEMISTRY ITERATIONS
+  // ________________________________
 
 
   printf("(Magritte): starting preliminary chemistry iterations \n\n");
 
 
-  double column_H2[NCELLS*NRAYS];                /* H2 column density for each ray and grid point */
+  double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and grid point
 
-  initialize_double_array(column_H2, NCELLS*NRAYS);
+  initialize_double_array (column_H2, NCELLS*NRAYS);
 
-  double column_HD[NCELLS*NRAYS];                /* HD column density for each ray and grid point */
+  double column_HD[NCELLS*NRAYS];   // HD column density for each ray and grid point
 
-  initialize_double_array(column_HD, NCELLS*NRAYS);
+  initialize_double_array (column_HD, NCELLS*NRAYS);
 
-  double column_C[NCELLS*NRAYS];                  /* C column density for each ray and grid point */
+  double column_C[NCELLS*NRAYS];    // C column density for each ray and grid point
 
-  initialize_double_array(column_C, NCELLS*NRAYS);
+  initialize_double_array (column_C, NCELLS*NRAYS);
 
-  double column_CO[NCELLS*NRAYS];                /* CO column density for each ray and grid point */
+  double column_CO[NCELLS*NRAYS];   // CO column density for each ray and grid point
 
-  initialize_double_array(column_CO, NCELLS*NRAYS);
+  initialize_double_array (column_CO, NCELLS*NRAYS);
 
 
-  /* Preliminary chemistry iterations */
+  // Preliminary chemistry iterations
 
-  for (int chem_iteration=0; chem_iteration<PRELIM_CHEM_ITER; chem_iteration++)
+  for (int chem_iteration = 0; chem_iteration < PRELIM_CHEM_ITER; chem_iteration++)
   {
     printf("(Magritte):   chemistry iteration %d of %d \n", chem_iteration+1, PRELIM_CHEM_ITER);
 
 
-    /* Calculate the chemical abundances given the current temperatures and radiation field */
+    // Calculate chemical abundances given current temperatures and radiation field
 
     time_chemistry -= omp_get_wtime();
 
-    chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry (NCELLS, cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
     time_chemistry += omp_get_wtime();
 
-    /* Write the intermediate output for (potential) restart */
 
-#   if ( WRITE_INTERMEDIATE_OUTPUT )
+    // Write intermediate output for (potential) restart
 
-#     if ( INPUT_FORMAT == '.txt' )
+#   if (WRITE_INTERMEDIATE_OUTPUT)
 
-      write_temperature_gas("", temperature_gas);
+#     if   (INPUT_FORMAT == '.txt')
 
-      write_temperature_dust("", temperature_dust);
+        write_temperature_gas ("", temperature_gas);
+        write_temperature_dust ("", temperature_dust);
+        write_prev_temperature_gas ("", prev_temperature_gas);
 
-      write_prev_temperature_gas("", prev_temperature_gas);
+#     elif (INPUT_FORMAT == '.vtu')
 
-#     elif ( INPUT_FORMAT == '.vtu' )
-
-      write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+        write_vtu_output (inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 #     endif
 
@@ -502,17 +534,15 @@ int main ()
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)
 
-#     if (INPUT_FORMAT == '.txt')
+#     if   (INPUT_FORMAT == '.txt')
 
-      write_temperature_gas("", temperature_gas);
-
-      write_temperature_dust("", temperature_dust);
-
-      write_prev_temperature_gas("", prev_temperature_gas);
+        write_temperature_gas ("", temperature_gas);
+        write_temperature_dust ("", temperature_dust);
+        write_prev_temperature_gas ("", prev_temperature_gas);
 
 #     elif (INPUT_FORMAT == '.vtu')
 
-      write_vtu_output(inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+        write_vtu_output (inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
 
 #     endif
 

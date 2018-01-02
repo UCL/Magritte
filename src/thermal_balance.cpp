@@ -66,7 +66,7 @@ int thermal_balance( CELL *cell,
     *time_chemistry -= omp_get_wtime();
 
 
-    chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
+    chemistry (NCELLS, cell, temperature_gas, temperature_dust, rad_surface, AV,
                column_H2, column_HD, column_C, column_CO );
 
 
@@ -135,7 +135,7 @@ int thermal_balance( CELL *cell,
 
   /* Calculate column densities to get the most recent reaction rates */
 
-  calc_column_densities(cell, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cell, column_H2, column_HD, column_C, column_CO);
 
 
   /* Calculate the thermal balance for each cell */

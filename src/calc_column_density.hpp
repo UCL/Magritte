@@ -7,8 +7,8 @@
 #ifndef __CALC_COLUMN_DENSITY_HPP_INCLUDED__
 #define __CALC_COLUMN_DENSITY_HPP_INCLUDED__
 
+
 #include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 
@@ -21,15 +21,29 @@ int calc_column_density (long ncells, CELL *cell, double *column_density, int sp
 // calc_column_densities: calculate column densities for species needed in chemistry
 //----------------------------------------------------------------------------------
 
-int calc_column_densities( CELL *cell, double *column_H2, double *column_HD,
-                           double *column_C, double *column_CO );
+int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *column_HD,
+                           double *column_C, double *column_CO);
 
 
-// column_density: calculate column density for one species along one ray
-// ----------------------------------------------------------------------
+#if (!CELL_BASED)
 
-double column_density_at_point( CELL *cell, EVALPOINT *evalpoint, long *key,
-                                long *raytot, long *cum_raytot, long gridp, int spec, long ray );
+
+  // column_density: calculate column density for one species along one ray
+  // ----------------------------------------------------------------------
+
+  double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
+                         long *cum_raytot, long gridp, int spec, long ray);
+
+
+#else
+
+  // cell_column_density: calculates column density for a species along a ray at a point
+  // --------------------------------------------------------------------------------------------
+
+  double cell_column_density (long ncells, CELL *cell, long gridp, int spec, long ray);
+
+
+#endif
 
 
 #endif // __CALC_COLUMN_DENSITY_HPP_INCLUDED__

@@ -419,41 +419,35 @@ int find_neighbors (long ncells, CELL *cell)
 
 #     if (DIMENSIONS == 1)
 
-
-      if (rvec[0] > 0)
-      {
-        ipix = 0;
-      }
-      else
-      {
-        ipix = 1;
-      }
-
+        if (rvec[0] > 0)
+        {
+          ipix = 0;
+        }
+        else
+        {
+          ipix = 1;
+        }
 
 #     elif (DIMENSIONS == 2)
 
+        double theta = acos(rvec[0]/ra2[n]);
 
-      double theta = acos(rvec[0]/ra2[n]);
-
-      if (rvec[1] >= 0)
-      {
-        ipix = (long) round(NRAYS * theta / 2.0 / PI);
-      }
-      else
-      {
-        ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
-      }
-
+        if (rvec[1] >= 0)
+        {
+          ipix = (long) round(NRAYS * theta / 2.0 / PI);
+        }
+        else
+        {
+          ipix = (long) round(NRAYS * (2.0*PI - theta) / 2.0 / PI);
+        }
 
 #     elif (DIMENSIONS == 3)
 
+        double theta, phi;   // angles of HEALPix ray
 
-      double theta, phi;                                            /* angles of the HEALPix ray */
+        vec2ang(rvec, &theta, &phi);
 
-      vec2ang(rvec, &theta, &phi);
-
-      ang2pix_nest(NSIDES, theta, phi, &ipix);
-
+        ang2pix_nest(NSIDES, theta, phi, &ipix);
 
 #     endif
 

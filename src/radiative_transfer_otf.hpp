@@ -16,12 +16,10 @@
 
 
 #include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
+#if (!CELL_BASED)
 
-
-#if ( ON_THE_FLY )
 
 /* radiative_transfer: calculate mean intensity at grid point "gridp", by solving the transfer   */
 /*                     equation along all pairs of a rays and their antipodals                   */
@@ -48,7 +46,6 @@ int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
 /*-----------------------------------------------------------------------------------------------*/
 
 #endif
-
 
 
 #endif /* __RADIATIVE_TRANSFER_OTF_HPP_INCLUDED__ */

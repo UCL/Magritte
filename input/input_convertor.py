@@ -6,25 +6,23 @@ import sys
 
 filename = str(sys.argv[1])
 
-data = np.loadtxt(filename)
-
+data   = np.loadtxt(filename)
 ncells = np.shape(data)[0]
 
 
-# Rotate the gid such that the 1D line coincides with a HEALPix ray
+x = data[:,0]
+y = data[:,1]
+z = data[:,2]
 
-x = 0.527046276694729*data[:,0]
-y = 0.527046276694729*data[:,0]
-z = 0.666666666666667*data[:,0]
-
-vx = 0.527046276694729*data[:,0]*1.0E5
-vy = 0.527046276694729*data[:,0]*1.0E5
-vz = 0.666666666666667*data[:,0]*1.0E5
+vx = np.zeros(ncells) #data[:,0]*1.0E5
+vy = np.zeros(ncells) #data[:,0]*1.0E5
+vz = np.zeros(ncells) #data[:,0]*1.0E5
 
 density = data[:,3]
 
 
-input_data = np.stack((x, y, z, vx, vy, vz, density), axis=1)
+# Save converted input file
+input_data     = np.stack((x, y, z, vx, vy, vz, density), axis=1)
 input_filename = filename + "_conv.txt"
 np.savetxt(input_filename, input_data, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 

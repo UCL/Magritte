@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* culumn_density_calculator: Calculates the column density along each ray at each grid point    */
-/*                                                                                               */
-/* (based on 3DPDR in 3D-PDR)                                                                    */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -25,20 +17,19 @@
 
 
 
-/* calc_AV: calculates the visual extinction along a ray ray at a grid point                     */
-/*-----------------------------------------------------------------------------------------------*/
+// calc_AV: calculates visual extinction along a ray ray at a grid point
+// ---------------------------------------------------------------------
 
-int calc_AV( double *column_tot, double *AV )
+int calc_AV (long ncells, double *column_tot, double *AV)
 {
 
+  const double A_V0 = 6.289E-22*METALLICITY;   // AV_fac in 3D-PDR code (A_V0 in paper)
 
-  const double A_V0 = 6.289E-22*METALLICITY;            /* AV_fac in 3D-PDR code (A_V0 in paper) */
 
+  // For all grid points n and rays r
 
-  /* For all grid points n and rays r */
-
-# pragma omp parallel                                                                             \
-  shared( column_tot, AV)                                                                         \
+# pragma omp parallel       \
+  shared( column_tot, AV)   \
   default( none )
   {
 
@@ -46,22 +37,20 @@ int calc_AV( double *column_tot, double *AV )
   int thread_num  = omp_get_thread_num();
 
   long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;       /* Note the brackets are important here */
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n=start; n<stop; n++){
+  for (long n = start; n < stop; n++){
 
-    for (long r=0; r<NRAYS; r++){
+    for (long r = 0; r < NRAYS; r++){
 
       AV[RINDEX(n,r)] = A_V0 * column_tot[RINDEX(n,r)];
     }
 
-  } /* end of n loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of n loop over grid points
+  } // end of OpenMP parallel region
 
 
   return(0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

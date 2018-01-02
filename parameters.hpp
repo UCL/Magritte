@@ -1,4 +1,4 @@
-/* Parameters file for Magritte */
+// Parameters file for Magritte
 
 #ifndef __PARAMETERS_HPP_INCLUDED__
 #define __PARAMETERS_HPP_INCLUDED__
@@ -13,11 +13,11 @@
 
 // #define GRID_INPUTFILE "output/files/_output/grid.vtu"
 
-/* Input files */
+// Input files
 
-#define DIMENSIONS 2
+#define DIMENSIONS 1
 
-#define NRAYS 8
+#define NRAYS 2
 
 #define FIXED_NCELLS true
 
@@ -40,29 +40,29 @@
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/12CO.txt"}
 
 
-#define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat"}
+#define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/12CO.txt"}
 
 
 
-/* Ray tracing parameters */
+// Ray tracing parameters
 
 #define NSIDES 1
 
 #define THETA_CRIT 1.3
 
-#define CELL_BASED true
+#define CELL_BASED false
 
 
-/* Radiative transfer */
+// Radiative transfer
 
-#define SOBOLEV true
+#define SOBOLEV false
 
 #define ACCELERATION_POP_NG true
 
 #define ACCELERATION_APPROX_LAMBDA true
 
 
-/* Number of various iterations */
+// Number of various iterations
 
 #define MAX_NITERATIONS 299
 
@@ -73,14 +73,14 @@
 #define CHEM_ITER 8
 
 
-/* Temperature range */
+// Temperature range
 
 #define TEMPERATURE_MIN T_CMB
 
 #define TEMPERATURE_MAX 30000.0
 
 
-/* Chemistry */
+// Chemistry
 
 #define METALLICITY 1.0
 
@@ -91,7 +91,7 @@
 #define ALWAYS_INITIALIZE_CHEMISTRY true
 
 
-/* External UV field */
+// External UV field
 
 #define FIELD_FORM "UNI"
 
@@ -102,12 +102,12 @@
 #define G_EXTERNAL_Z 0.0E+0
 
 
-/* Turbulent velocity */
+// Turbulent velocity
 
 #define V_TURB 1.0E5
 
 
-/* Cosmic ray variables */
+// Cosmic ray variables
 
 #define ZETA   3.846153846153846
 
@@ -115,4 +115,4 @@
 
 
 
-#endif /* __PARAMETERS_HPP_INCLUDED__ */
+#endif // __PARAMETERS_HPP_INCLUDED__

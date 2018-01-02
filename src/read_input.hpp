@@ -14,7 +14,6 @@
 #define __READ_INPUT_HPP_INCLUDED__
 
 
-
 #include <string>
 
 #include "../parameters.hpp"

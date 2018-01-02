@@ -1,20 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* abundance: Calculate abundances for each species at each grid point                           */
-/*                                                                                               */
-/* Calculate the abundances of all species at the specified end time based on their initial      */
-/* abundances and the rates for each reaction. This routine calls the CVODE package to solve     */
-/* for the set of ODEs. CVODE is able to handle stiff problems, where the dynamic range of the   */
-/* rates can be very large.                                                                      */
-/*                                                                                               */
-/* (based on calculate_abundances in 3D-PDR)                                                     */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -31,22 +18,20 @@
 #include "write_output.hpp"
 
 
+// abundances: calculate abundances for each species at each grid point
+// --------------------------------------------------------------------
 
-/* abundances: calculate abundances for each species at each grid point                          */
-/*-----------------------------------------------------------------------------------------------*/
-
-int chemistry( CELL *cell,
+int chemistry (long ncells, CELL *cell,
                double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
-               double *column_H2, double *column_HD, double *column_C, double *column_CO )
+               double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
+  // Calculate column densities
 
-  /* Calculate column densities */
-
-  calc_column_densities(cell, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cell, column_H2, column_HD, column_C, column_CO);
 
 
-  /* For all cells */
+  // For all cells
 
 # pragma omp parallel                                                 \
   shared( cell, temperature_gas, temperature_dust, rad_surface, AV,   \
@@ -58,29 +43,27 @@ int chemistry( CELL *cell,
   int thread_num  = omp_get_thread_num();
 
   long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long gridp=start; gridp<stop; gridp++){
+  for (long gridp = start; gridp < stop; gridp++)
+  {
 
-
-    /* Calculate the reaction rates */
+    // Calculate reaction rates
 
     reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
                     column_H2, column_HD, column_C, column_CO, gridp );
 
 
-    /* Solve the rate equations */
+    // Solve rate equations
 
     rate_equation_solver(cell, gridp);
 
 
-  } /* end of gridp loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of gridp loop over grid points
+  } // end of OpenMP parallel region
 
 
   return(0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/
