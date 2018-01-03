@@ -19,9 +19,8 @@
 // calc_C_coeff: calculates collisional coefficients (C_ij) from line data
 // -----------------------------------------------------------------------
 
-int calc_C_coeff (CELL *cell, double *C_data, double *coltemp, int *icol, int *jcol,
-                  double *temperature_gas, double *weight, double *energy, double *C_coeff,
-                  long gridp, int lspec)
+int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int *icol, int *jcol,
+                  double *weight, double *energy, double *C_coeff, long gridp, int lspec)
 {
 
   // Calculate H2 ortho/para fraction at equilibrium for given temperature
@@ -32,7 +31,7 @@ int calc_C_coeff (CELL *cell, double *C_data, double *coltemp, int *icol, int *j
 
   if (species[H2_nr].abn[gridp] > 0.0)
   {
-    frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/temperature_gas[gridp]));
+    frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/cell[gridp].temperature.gas));
     frac_H2_ortho = 1.0 - frac_H2_para;
   }
 
@@ -65,7 +64,7 @@ int calc_C_coeff (CELL *cell, double *C_data, double *coltemp, int *icol, int *j
 
     for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
     {
-      if (temperature_gas[gridp] < coltemp[LSPECPARTEMP(lspec,par,tindex)])
+      if (cell[gridp].temperature.gas < coltemp[LSPECPARTEMP(lspec,par,tindex)])
       {
         tindex_low  = tindex-1;
         tindex_high = tindex;
@@ -139,7 +138,7 @@ int calc_C_coeff (CELL *cell, double *C_data, double *coltemp, int *icol, int *j
 
     if (tindex_high != tindex_low)
     {
-      step = (temperature_gas[gridp] - coltemp[LSPECPARTEMP(lspec,par,tindex_low)])
+      step = (cell[gridp].temperature.gas - coltemp[LSPECPARTEMP(lspec,par,tindex_low)])
               / ( coltemp[LSPECPARTEMP(lspec,par,tindex_high)]
                   - coltemp[LSPECPARTEMP(lspec,par,tindex_low)] );
     }

@@ -32,8 +32,7 @@
 // write_vtu_output: write all physical variables to vtu input grid
 // ----------------------------------------------------------------
 
-int write_vtu_output (std::string inputfile, double *temperature_gas,
-                      double *temperature_dust, double *prev_temperature_gas)
+int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 {
 
 
@@ -81,9 +80,9 @@ int write_vtu_output (std::string inputfile, double *temperature_gas,
 
   for (long n = 0; n < NCELLS; n++)
   {
-    temp_gas ->InsertValue(n, temperature_gas[n]);
-    temp_dust->InsertValue(n, temperature_dust[n]);
-    prev_temp_gas->InsertValue(n, prev_temperature_gas[n]);
+    temp_gas ->InsertValue(n, cell[n].temperature.gas);
+    temp_dust->InsertValue(n, cell[n].temperature.dust);
+    prev_temp_gas->InsertValue(n, cell[n].temperature.gas_prev);
 
 
     double abundance[NSPEC];

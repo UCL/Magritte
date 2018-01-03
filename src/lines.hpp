@@ -31,8 +31,8 @@ int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, doub
   // line_profile: calculate line profile function
   // ---------------------------------------------
 
-  double line_profile (EVALPOINT *evalpoint, double *temperature_gas, double frequency,
-                       double line_frequency, long gridp);
+  double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
+                       double freq, double line_freq, long gridp);
 
 
 #else
@@ -41,8 +41,8 @@ int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, doub
   // line_profile: calculate line profile function
   // ---------------------------------------------
 
-  double cell_line_profile (double velocity, double *temperature_gas, double frequency,
-                           double line_frequency, long gridp);
+  double cell_line_profile (long ncells, CELL *cell, double velocity,
+                            double freq, double line_freq, long gridp);
 
 
 #endif // if not CELL_BASED

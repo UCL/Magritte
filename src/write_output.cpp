@@ -23,8 +23,7 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (double *pop, double *mean_intensity, double *temperature_gas,
-                      double *temperature_dust)
+int write_txt_output (long ncells, CELL *cell, double *pop, double *mean_intensity)
 {
 
   std::string tag = "";
@@ -35,9 +34,9 @@ int write_txt_output (double *pop, double *mean_intensity, double *temperature_g
 
   write_line_intensities (tag, mean_intensity);
 
-  write_temperature_gas (tag, temperature_gas);
+  write_temperature_gas (tag, NCELLS, cell);
 
-  write_temperature_dust (tag, temperature_dust);
+  write_temperature_dust (tag, NCELLS, cell);
 
 
   return (0);

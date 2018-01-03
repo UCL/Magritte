@@ -1,32 +1,20 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for reaction_rates.cpp                                                                      */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __REACTION_RATES_HPP_INCLUDED__
 #define __REACTION_RATES_HPP_INCLUDED__
 
+#include "declarations.hpp"
 
 
-/* reaction_rates: Check which kind of reaction and call appropriate rate calculator b           */
-/*-----------------------------------------------------------------------------------------------*/
+// reaction_rates: Check which kind of reaction and call appropriate rate calculator
+// ---------------------------------------------------------------------------------
 
-int reaction_rates( double *temperature_gas, double *temperature_dust,
-                    double *rad_surface, double *AV,
-                    double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                    long gridp );
-
-/*-----------------------------------------------------------------------------------------------*/
+int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, double *AV,
+                    double *column_H2, double *column_HD, double *column_C, double *column_CO);
 
 
-
-#endif /* __REACTION_RATES_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __REACTION_RATES_HPP_INCLUDED__

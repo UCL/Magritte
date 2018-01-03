@@ -31,10 +31,9 @@
 // level_populations: iteratively calculates level populations
 // -----------------------------------------------------------
 
-int level_populations_otf (CELL *cell, int *irad, int*jrad, double *frequency,
+int level_populations_otf (long ncells, CELL *cell, int *irad, int*jrad, double *frequency,
                            double *A_coeff, double *B_coeff, double *pop,
                            double *C_data, double *coltemp, int *icol, int *jcol,
-                           double *temperature_gas, double *temperature_dust,
                            double *weight, double *energy, double *mean_intensity,
                            double *Lambda_diagonal, double *mean_intensity_eff)
 {
@@ -132,13 +131,12 @@ int level_populations_otf (CELL *cell, int *irad, int*jrad, double *frequency,
 
     /* For every grid point */
 
-#   pragma omp parallel                                                                           \
-    shared( energy, weight, temperature_gas, temperature_dust, icol, jcol, coltemp, C_data, pop,  \
-            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,          \
-            mean_intensity_eff, species, prev1_pop, not_converged, n_not_converged, nlev,         \
-            cum_nlev, cum_nlev2, irad, jrad, nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged,\
-            some_not_converged )                                                                  \
-    default( none )
+#   pragma omp parallel                                                                         \
+    shared (energy, weight, icol, jcol, coltemp, C_data, pop, cell, lspec_nr, frequency,        \
+            opacity, source, mean_intensity, Lambda_diagonal, mean_intensity_eff, species,      \
+            prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2, irad, jrad,   \
+            nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged, some_not_converged)           \
+    default (none)
     {
 
     int num_threads = omp_get_num_threads();
@@ -181,7 +179,7 @@ int level_populations_otf (CELL *cell, int *irad, int*jrad, double *frequency,
           /*_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*/
 
 
-          calc_C_coeff( cell, C_data, coltemp, icol, jcol, temperature_gas,
+          calc_C_coeff (NCELLS, cell, C_data, coltemp, icol, jcol,
                         weight, energy, C_coeff, n, lspec );
 
 
@@ -230,15 +228,14 @@ int level_populations_otf (CELL *cell, int *irad, int*jrad, double *frequency,
 
 #           if (SOBOLEV)
 
-            sobolev (cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
-                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
-                     temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
+            sobolev (NCELLS, cell, evalpoint, key, raytot, cum_raytot, mean_intensity, Lambda_diagonal,
+                     mean_intensity_eff, source, opacity, frequency, irad, jrad, n, lspec, kr);
 
 #           else
 
-            radiative_transfer_otf (cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
+            radiative_transfer_otf (NCELLS, cell, evalpoint, key, raytot, cum_raytot, mean_intensity,
                                     Lambda_diagonal, mean_intensity_eff, source, opacity, frequency,
-                                    temperature_gas, temperature_dust, irad, jrad, n, lspec, kr);
+                                    irad, jrad, n, lspec, kr);
 
 #           endif
 

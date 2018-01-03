@@ -1,139 +1,79 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for initializers.cpp                                                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __INITIALIZERS_HPP_INCLUDED__
 #define __INITIALIZERS_HPP_INCLUDED__
 
+#include "declarations.hpp"
 
 
+// initialize_int_array: sets all entries of array of ints equal to zero
+// ---------------------------------------------------------------------
+
+int initialize_int_array (int *array, long length);
 
 
-/* initialize_int_array: sets all entries of the linearized array of ints equal to zero          */
-/*-----------------------------------------------------------------------------------------------*/
+// initialize_long_array: sets all entries of array of longs equal to zero
+// ------------------------------------------ ----------------------------
 
-int initialize_int_array(int *array, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_long_array (long *array, long length);
 
 
+// initialize_double_array: sets all entries of array of doubles equal to zero
+// ---------------------------------------------------------------------------
 
-/* initialize_long_array: sets all entries of the linearized array of longs equal to zero        */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_long_array(long *array, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_double_array (double *array, long length);
 
 
+// initialize_double_array_with: sets entries of first array of doubles equal to second
+// ------------------------------------------------------------------------------------
 
-/* initialize_double_array: sets all entries of the linearized array of doubles equal to zero    */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_double_array(double *array, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_double_array_with (double *array1, double *array2, long length);
 
 
+// initialize_double_array_with_value: sets entries of array of doubles equal to value
+// -----------------------------------------------------------------------------------
 
-/* initialize_double_array_with: sets entries of the first array of doubles equal to the second  */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_double_array_with(double *array1, double *array2, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_double_array_with_value (double *array, double value, long length);
 
 
+// initialize_char_array: sets all entries of linearized array of doubles equal to 'i'
+// -----------------------------------------------------------------------------------
 
-/* initialize_double_array_with_value: sets entries of the array of doubles equal to value       */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_double_array_with_value(double *array, double value, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_char_array (char *array, long length);
 
 
+// initialize_temperature_gas: set gas temperature to a certain initial value
+// --------------------------------------------------------------------------
 
-/* initialize_char_array: sets all entries of the linearized array of doubles equal to 'i'       */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_char_array(char *array, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_temperature_gas (long ncells, CELL *cell);
 
 
+// initialize_previous_temperature_gas: set "previous" gas temperature 0.9*temperature_gas
+// ---------------------------------------------------------------------------------------
 
-/* initialize_evalpoint: sets all entries of the linearized array equal to zero or false         */
-/*-----------------------------------------------------------------------------------------------*/
-
-// int initialize_evalpoint(EVALPOINT *evalpoint, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
+int initialize_previous_temperature_gas (long ncells, CELL *cell);
 
 
+// gueess_temperature_gas: make a guess for gas temperature based on UV field
+// --------------------------------------------------------------------------
 
-/* initialize_temperature_gas: set the gas temperature to a certain initial value                */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_temperature_gas (long ncells, double *temperature_gas);
-
-/*-----------------------------------------------------------------------------------------------*/
+int guess_temperature_gas (long ncells, CELL *cell, double *UV_field);
 
 
-
-/* initialize_previous_temperature_gas: set the "previous" gas temperature 0.9*temperature_gas   */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_previous_temperature_gas (long ncells, double *previous_temperature_gas, double *temperature_gas);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* gueess_temperature_gas: make a guess for the gas temperature based on the UV field            */
-/*-----------------------------------------------------------------------------------------------*/
-
-int guess_temperature_gas (long ncells, double *UV_field, double *temperature_gas);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* initialize_abn: set the abundanceces to the initial values                                    */
-/*-----------------------------------------------------------------------------------------------*/
+// initialize_abn: set abundanceces to initial values
+// --------------------------------------------------
 
 int initialize_abn (long ncells, double *initial_abn, SPECIES *species);
 
-/*-----------------------------------------------------------------------------------------------*/
+
+// initialize_bool: initialize a boolean variable
+// ----------------------------------------------
+
+int initialize_bool (bool value, bool *variable, long length);
 
 
-
-/* initialize_bool: initialize a boolean variable                                                */
-/*-----------------------------------------------------------------------------------------------*/
-
-int initialize_bool(bool value, bool *variable, long length);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-/* initialize_level_populations: sets pops of all line species to the thermal equilibrium value  */
-/*-----------------------------------------------------------------------------------------------*/
-
-// int initialize_level_populations(double *energy, double *temperature_gas, double *pop);
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-#endif /* __INITIALIZERS_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __INITIALIZERS_HPP_INCLUDED__

@@ -14,8 +14,7 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELL *cell,
-               double *temperature_gas, double *temperature_dust, double *rad_surface, double *AV,
+int chemistry (long ncells, CELL *cell, double *rad_surface, double *AV,
                double *column_H2, double *column_HD, double *column_C, double *column_CO);
 
 

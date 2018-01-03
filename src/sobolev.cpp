@@ -21,10 +21,9 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
-             double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
-             double *source, double *opacity, double *frequency, double *temperature_gas,
-             double *temperature_dust, int *irad, int*jrad, long gridp, int lspec, int kr )
+int sobolev( long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
+             double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff, double *source,
+             double *opacity, double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr )
 {
 
 
@@ -128,7 +127,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
       double optical_depth1 = 0.0;
       double optical_depth2 = 0.0;
 
-      double speed_width = sqrt(8.0*KB*temperature_gas[gridp]/PI/MP + pow(V_TURB, 2));
+      double speed_width = sqrt(8.0*KB*cell[gridp].temperature.gas/PI/MP + pow(V_TURB, 2));
 
 
       for (long e1=0; e1<etot1; e1++)
@@ -208,7 +207,7 @@ int sobolev( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cu
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/temperature_dust[gridp]) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/cell[gridp].temperature.dust) - 1.0);
 
   double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
 

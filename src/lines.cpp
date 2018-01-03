@@ -152,13 +152,13 @@ int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, doub
 // line_profile: calculate line profile function
 // ---------------------------------------------
 
-double line_profile (EVALPOINT *evalpoint, double *temperature_gas,
+double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
                      double freq, double line_freq, long gridp)
 {
 
   double shift = line_freq * evalpoint[gridp].vol / CC;
 
-  double width = line_freq / CC * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
+  double width = line_freq / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
 
 
   return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;
@@ -176,13 +176,13 @@ double line_profile (EVALPOINT *evalpoint, double *temperature_gas,
 // cell_line_profile: calculate line profile function
 // --------------------------------------------------
 
-double cell_line_profile (double velocity, double *temperature_gas,
+double cell_line_profile (long ncells, CELL *cell, double velocity,
                           double freq, double line_freq, long gridp)
 {
 
   double shift = line_freq * velocity / CC;
 
-  double width = line_freq / CC * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
+  double width = line_freq / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
 
 
   return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;

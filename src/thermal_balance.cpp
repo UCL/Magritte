@@ -28,11 +28,10 @@
 // thermal_balance: perform a thermal balance iteration to calculate thermal flux
 // ------------------------------------------------------------------------------
 
-int thermal_balance( CELL *cell,
+int thermal_balance( long ncells, CELL *cell,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double *UV_field, double *temperature_gas, double *temperature_dust,
-                     double *rad_surface, double *AV, int *irad, int *jrad, double *energy,
-                     double *weight, double *frequency, double *A_coeff, double *B_coeff,
+                     double *UV_field, double *rad_surface, double *AV, int *irad, int *jrad,
+                     double *energy, double *weight, double *frequency, double *A_coeff, double *B_coeff,
                      double *C_data, double *coltemp, int *icol, int *jcol, double *pop,
                      double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
                      double *thermal_ratio, double *initial_abn,
@@ -53,27 +52,26 @@ int thermal_balance( CELL *cell,
 # endif
 
 
-  /* Calculate the chemical abundances by solving the rate equations */
+  // Calculate chemical abundances by solving rate equations
 
-  for (int chem_iteration=0; chem_iteration<CHEM_ITER; chem_iteration++){
-
+  for (int chem_iteration = 0; chem_iteration < CHEM_ITER; chem_iteration++)
+  {
     printf( "(thermal_balance):   chemistry iteration %d of %d \n",
             chem_iteration+1, CHEM_ITER );
 
 
-    /* Calculate the chemical abundances given the current temperatures and radiation field */
+    // Calculate chemical abundances given current temperatures and radiation field
 
     *time_chemistry -= omp_get_wtime();
 
 
-    chemistry (NCELLS, cell, temperature_gas, temperature_dust, rad_surface, AV,
-               column_H2, column_HD, column_C, column_CO );
+    chemistry (NCELLS, cell, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
 
     *time_chemistry += omp_get_wtime();
 
 
-  } /* End of chemistry iteration */
+  } // End of chemistry iteration
 
 
   printf("\n(thermal_balance): time in chemistry: %lf sec\n", *time_chemistry);
@@ -90,27 +88,25 @@ int thermal_balance( CELL *cell,
   printf("(thermal_balance): calculating level populations \n\n");
 
 
-  /* Initialize the level populations to their LTE values */
+  // Initialize level populations with LTE values
 
-  calc_LTE_populations(cell, energy, weight, temperature_gas, pop);
+  calc_LTE_populations (NCELLS, cell, energy, weight, pop);
 
 
-  /* Calculate level populations for each line producing species */
+  // Calculate level populations for each line producing species
 
   *time_level_pop -= omp_get_wtime();
 
 
 # if (CELL_BASED)
 
-  cell_level_populations (cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
-                          icol, jcol, temperature_gas, temperature_dust, weight, energy,
-                          mean_intensity, Lambda_diagonal, mean_intensity_eff);
+  cell_level_populations (NCELLS, cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+                          icol, jcol, weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff);
 
 # else
 
-  level_populations_otf (cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
-                         icol, jcol, temperature_gas, temperature_dust, weight, energy,
-                         mean_intensity, Lambda_diagonal, mean_intensity_eff);
+  level_populations_otf (NCELLS, cell, irad, jrad, frequency, A_coeff, B_coeff, pop, C_data, coltemp,
+                         icol, jcol, weight, energy, mean_intensity, Lambda_diagonal, mean_intensity_eff);
 
 # endif
 
@@ -133,41 +129,38 @@ int thermal_balance( CELL *cell,
   printf("(thermal_balance): calculating heating and cooling \n\n");
 
 
-  /* Calculate column densities to get the most recent reaction rates */
+  // Calculate column densities to get most recent reaction rates
 
   calc_column_densities (NCELLS, cell, column_H2, column_HD, column_C, column_CO);
 
 
-  /* Calculate the thermal balance for each cell */
+  // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                        \
-  shared( cell, temperature_gas, temperature_dust, irad, jrad, A_coeff, B_coeff, pop,        \
-          frequency, weight, column_H2, column_HD, column_C, column_CO, cum_nlev, species,   \
-          mean_intensity, AV, rad_surface, UV_field, thermal_ratio )                         \
-  default( none )
+# pragma omp parallel                                                                                   \
+  shared (cell, irad, jrad, A_coeff, B_coeff, pop, frequency, weight, column_H2, column_HD, column_C,   \
+          column_CO, cum_nlev, species, mean_intensity, AV, rad_surface, UV_field, thermal_ratio)       \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
   long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;            /* Note the brackets are important */
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long gridp=start; gridp<stop; gridp++){
-
+  for (long gridp = start; gridp < stop; gridp++)
+  {
     double heating_components[12];
 
 
-    reaction_rates( temperature_gas, temperature_dust, rad_surface, AV,
-                    column_H2, column_HD, column_C, column_CO, gridp );
+    reaction_rates (NCELLS, cell, gridp, rad_surface, AV, column_H2, column_HD, column_C, column_CO);
 
 
-    double heating_total = heating( cell, gridp, temperature_gas, temperature_dust,
-                                    UV_field, heating_components );
+    double heating_total = heating (NCELLS, cell, gridp, UV_field, heating_components);
 
-    double cooling_total = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
-                                    pop, mean_intensity );
+    double cooling_total = cooling (gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
+                                    pop, mean_intensity);
 
 
     double thermal_flux = heating_total - cooling_total;
@@ -177,14 +170,13 @@ int thermal_balance( CELL *cell,
 
     thermal_ratio[gridp] = 0.0;
 
-    if (thermal_sum != 0.0){
-
+    if (thermal_sum != 0.0)
+    {
       thermal_ratio[gridp] = 2.0 * thermal_flux / thermal_sum;
     }
 
-
-  } /* end of gridp loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of gridp loop over cells
+  } // end of OpenMP parallel region
 
 
   printf("(thermal_balance): heating and cooling calculated \n\n");

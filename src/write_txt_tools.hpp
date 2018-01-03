@@ -70,19 +70,19 @@ int write_line_intensities (std::string tag, double *mean_intensity);
 // write_temperature_gas: write gas temperatures at each point
 // -----------------------------------------------------------
 
-int write_temperature_gas (std::string tag, double *temperature_gas);
+int write_temperature_gas (std::string tag, long ncells, CELL *cell);
 
 
 // write_temperature_dust: write dust temperatures at each point
 // -------------------------------------------------------------
 
-int write_temperature_dust (std::string tag, double *temperature_dust);
+int write_temperature_dust (std::string tag, long ncells, CELL *cell);
 
 
 // write_prev_temperature_gas: write previous gas temperatures at each point
 //--------------------------------------------------------------------------
 
-int write_prev_temperature_gas (std::string tag, double *prev_temperature_gas);
+int write_prev_temperature_gas (std::string tag, long ncells, CELL *cell);
 
 
 // write_UV_field: write UV field at each point

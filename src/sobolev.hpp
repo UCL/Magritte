@@ -17,10 +17,9 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
-             double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
-             double *source, double *opacity, double *frequency, double *temperature_gas,
-             double *temperature_dust, int *irad, int*jrad, long gridp, int lspec, int kr);
+int sobolev (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot,
+             double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff, double *source,
+             double *opacity, double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr);
 
 
 #endif // if not CELL_BASED

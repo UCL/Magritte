@@ -35,7 +35,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
   long b_ij = LSPECLEVLEV(lspec,i,j);          // frequency index
 
 
-  double speed_width = sqrt(8.0*KB*temperature_gas[origin]/PI/MP + pow(V_TURB, 2));
+  double speed_width = sqrt(8.0*KB*cell[origin].temperature.gas/PI/MP + pow(V_TURB, 2));
 
   double escape_probability = 0.0;             // escape probability from Sobolev approximation
 
@@ -177,7 +177,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/temperature_dust[origin]) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/cell[origin].temperature.dust) - 1.0);
 
   double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
 

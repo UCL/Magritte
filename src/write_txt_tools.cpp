@@ -433,7 +433,7 @@ int write_line_intensities (std::string tag, double *mean_intensity)
 // write_temperature_gas: write gas temperatures at each cell
 // ----------------------------------------------------------
 
-int write_temperature_gas (std::string tag, double *temperature_gas)
+int write_temperature_gas (std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
@@ -455,7 +455,7 @@ int write_temperature_gas (std::string tag, double *temperature_gas)
 
   for (long n = 0; n < NCELLS; n++)
   {
-    fprintf (file, "%lE\n", temperature_gas[n]);
+    fprintf (file, "%lE\n", cell[n].temperature.gas);
   }
 
   fclose (file);
@@ -470,7 +470,7 @@ int write_temperature_gas (std::string tag, double *temperature_gas)
 // write_temperature_dust: write dust temperatures at each cell
 // ------------------------------------------------------------
 
-int write_temperature_dust (std::string tag, double *temperature_dust)
+int write_temperature_dust (std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
@@ -492,7 +492,7 @@ int write_temperature_dust (std::string tag, double *temperature_dust)
 
   for (long n = 0; n < NCELLS; n++)
   {
-    fprintf (file, "%lE\n", temperature_dust[n]);
+    fprintf (file, "%lE\n", cell[n].temperature.dust);
   }
 
   fclose (file);
@@ -509,7 +509,7 @@ int write_temperature_dust (std::string tag, double *temperature_dust)
 // write_prev_temperature_gas: write previous gas temperatures at each cell
 // ------------------------------------------------------------------------
 
-int write_prev_temperature_gas(std::string tag, double *prev_temperature_gas)
+int write_prev_temperature_gas(std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
@@ -531,7 +531,7 @@ int write_prev_temperature_gas(std::string tag, double *prev_temperature_gas)
 
   for (long n = 0; n < NCELLS; n++)
   {
-    fprintf (file, "%lE\n", prev_temperature_gas[n]);
+    fprintf (file, "%lE\n", cell[n].temperature.gas_prev);
   }
 
   fclose (file);
@@ -671,51 +671,46 @@ int write_rad_surface(std::string tag, double *rad_surface)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_reaction_rates: write rad surface at each cell
+// ----------------------------------------------------
 
-
-/* write_reaction_rates: write the rad surface at each point                                     */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_reaction_rates(std::string tag, REACTION *reaction)
+int write_reaction_rates (std::string tag, REACTION *reaction)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "reaction_rates" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (int reac=0; reac<NREAC; reac++){
-
-      fprintf( file, "%lE\t", reaction[reac].k[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (int reac = 0; reac < NREAC; reac++)
+    {
+      fprintf (file, "%lE\t", reaction[reac].k[n]);
     }
 
-    fprintf( file, "\n" );
+    fprintf (file, "\n");
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 

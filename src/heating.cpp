@@ -20,11 +20,8 @@
 // heating: calculate total heating
 // --------------------------------
 
-double heating (CELL *cell, long gridp,
-                double *temperature_gas, double *temperature_dust,
-                double *UV_field, double* heating_components)
+double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* heating_components)
 {
-
 
   double Habing_field = 1.68 * UV_field[gridp];            // UV radiation field in Habing
 
@@ -62,10 +59,10 @@ double heating (CELL *cell, long gridp,
 
   // Derived parameters
 
-  double x_k = KB*temperature_gas[gridp]/(hnu_H*EV);
+  double x_k = KB*cell[gridp].temperature.gas/(hnu_H*EV);
   double x_d = hnu_d/hnu_H;
 
-  double gamma = 2.9E-4 * Y * sqrt(temperature_gas[gridp]) * Habing_field / electron_density;
+  double gamma = 2.9E-4 * Y * sqrt(cell[gridp].temperature.gas) * Habing_field / electron_density;
 
   double Delta = x_k - x_d + gamma;
 
@@ -119,17 +116,17 @@ double heating (CELL *cell, long gridp,
 
   double alpha = 0.944;
 
-  double beta = 0.735 / pow(temperature_gas[gridp], 0.068);
+  double beta = 0.735 / pow(cell[gridp].temperature.gas, 0.068);
 
-  double delta = Habing_field * sqrt(temperature_gas[gridp]) / (electron_density * phi_PAH);
+  double delta = Habing_field * sqrt(cell[gridp].temperature.gas) / (electron_density * phi_PAH);
 
   double epsilon = 4.87E-2/(1.0 + 4.0E-3*pow(delta, 0.73))
-                   + 3.65E-2*pow(temperature_gas[gridp]/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
+                   + 3.65E-2*pow(cell[gridp].temperature.gas/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
 
 
   double PAH_heating = 1.3E-24 * epsilon * Habing_field * cell[gridp].density;
 
-  double PAH_cooling = 4.65E-30 * pow(temperature_gas[gridp], alpha) * pow(delta, beta)
+  double PAH_cooling = 4.65E-30 * pow(cell[gridp].temperature.gas, alpha) * pow(delta, beta)
                        * electron_density * phi_PAH * cell[gridp].density;
 
 
@@ -163,9 +160,9 @@ double heating (CELL *cell, long gridp,
 
   double heating_Weingartner
         = 1.0E-26 * METALLICITY * (Habing_field * cell[gridp].density)
-          * ( C0 + C1*pow(temperature_gas[gridp], C4) )
-          / ( 1.0 + C2*pow(Habing_field * sqrt(temperature_gas[gridp]) / electron_density, C5)
-          * ( 1.0 + C3*pow(Habing_field * sqrt(temperature_gas[gridp]) / electron_density, C6) ) );
+          * ( C0 + C1*pow(cell[gridp].temperature.gas, C4) )
+          / ( 1.0 + C2*pow(Habing_field * sqrt(cell[gridp].temperature.gas) / electron_density, C5)
+          * ( 1.0 + C3*pow(Habing_field * sqrt(cell[gridp].temperature.gas) / electron_density, C6) ) );
 
   heating_components[2] = heating_Weingartner;
 
@@ -235,9 +232,9 @@ double heating (CELL *cell, long gridp,
 
 
   double critical_density
-          = 1.0E6 / sqrt(temperature_gas[gridp])
-            /( 1.6 * species[H_nr].abn[gridp] * exp(-pow(400.0/temperature_gas[gridp], 2))
-               + 1.4 * species[H2_nr].abn[gridp] * exp(-18100.0/(1200.0+temperature_gas[gridp])) );
+          = 1.0E6 / sqrt(cell[gridp].temperature.gas)
+            /( 1.6 * species[H_nr].abn[gridp] * exp(-pow(400.0/cell[gridp].temperature.gas, 2))
+               + 1.4 * species[H2_nr].abn[gridp] * exp(-18100.0/(1200.0+cell[gridp].temperature.gas)) );
 
   double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * reaction[H2_photodissociation_nr].k[gridp]
                                   * species[H2_nr].abn[gridp] * cell[gridp].density
@@ -370,15 +367,15 @@ double heating (CELL *cell, long gridp,
 
 
   double accommodation = 0.1
-                         + 0.35*exp(-sqrt((temperature_gas[gridp]+temperature_dust[gridp])/5.0E2));
+                         + 0.35*exp(-sqrt((cell[gridp].temperature.gas+cell[gridp].temperature.dust)/5.0E2));
 
   double density_grain = 1.998E-12 * cell[gridp].density * METALLICITY * 100.0 / GAS_TO_DUST;
 
   double cross_section_grain = PI * pow(radius_grain, 2);
 
   double heating_gas_grain = 4.003E-12 * cell[gridp].density * density_grain
-                             * cross_section_grain * accommodation * sqrt(temperature_gas[gridp])
-                             * (temperature_dust[gridp] - temperature_gas[gridp]);
+                             * cross_section_grain * accommodation * sqrt(cell[gridp].temperature.gas)
+                             * (cell[gridp].temperature.dust - cell[gridp].temperature.gas);
 
   heating_components[10] = heating_gas_grain;
 

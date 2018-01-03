@@ -32,11 +32,10 @@
 /*                     equation along all pairs of a rays and their antipodals                   */
 /*-----------------------------------------------------------------------------------------------*/
 
-int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
+int radiative_transfer_otf (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
                             long *cum_raytot, double *mean_intensity, double *Lambda_diagonal,
                             double *mean_intensity_eff, double *source, double *opacity,
-                            double *frequency, double *temperature_gas, double *temperature_dust,
-                            int *irad, int*jrad, long gridp, int lspec, int kr )
+                            double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr )
 {
 
 
@@ -66,14 +65,14 @@ int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *r
       double frequency_shift = line_frequency * evalpoint[gridp].vol / CC;
 
       double frequency_width = line_frequency / CC
-                               * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
+                               * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
 
 
       double freq = H_4_roots[ny]*frequency_width + frequency_shift;
 
 
-      intensities( cell, evalpoint, key, raytot, cum_raytot, source, opacity, frequency, freq,
-                   temperature_gas, irad, jrad, gridp, ray, lspec, kr, &u_local, &v_local, &L_local );
+      intensities (NCELLS, cell, evalpoint, key, raytot, cum_raytot, source, opacity, frequency,
+                   freq, irad, jrad, gridp, ray, lspec, kr, &u_local, &v_local, &L_local );
 
 
       mean_intensity[m_ij]  = mean_intensity[m_ij]  + H_4_weights[ny]/frequency_width*u_local;
@@ -98,7 +97,7 @@ int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *r
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/temperature_dust[gridp]) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/cell[gridp].temperature.dust) - 1.0);
 
   double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
 
@@ -137,10 +136,10 @@ int radiative_transfer_otf( CELL *cell, EVALPOINT *evalpoint, long *key, long *r
 /* intensity: calculate the intensity along a certain ray through a certain point                */
 /*-----------------------------------------------------------------------------------------------*/
 
-int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
+int intensities (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
                  long *cum_raytot, double *source, double *opacity, double *frequency, double freq,
-                 double *temperature_gas,  int *irad, int*jrad, long gridp, long r, int lspec,
-                 int kr, double *u_local, double *v_local, double *L_local )
+                 int *irad, int*jrad, long gridp, long r, int lspec, int kr, double *u_local,
+                 double *v_local, double *L_local )
 {
 
 
@@ -192,8 +191,8 @@ int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
       long e_n   = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1);
       long e_np  = LOCAL_GP_NR_OF_EVALP(ar, etot1-e1-1);
 
-      double phi_n  = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], e_n);
-      double phi_np = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], e_np);
+      double phi_n  = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], e_n);
+      double phi_np = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], e_np);
 
       long s_n  = LSPECGRIDRAD(lspec,e_n,kr);
       long s_np = LSPECGRIDRAD(lspec,e_np,kr);
@@ -211,8 +210,8 @@ int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
     {
       long e_a0 = LOCAL_GP_NR_OF_EVALP(ar, 0);
 
-      double phi_a0 = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], e_a0);
-      double phi    = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], gridp);
+      double phi_a0 = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], e_a0);
+      double phi    = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], gridp);
 
       long s_a0 = LSPECGRIDRAD(lspec,e_a0,kr);
 
@@ -228,8 +227,8 @@ int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
     {
       long e_0  = LOCAL_GP_NR_OF_EVALP(r, 0);
 
-      double phi_0 = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], e_0);
-      double phi   = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], gridp);
+      double phi_0 = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], e_0);
+      double phi   = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], gridp);
 
       long s_0  = LSPECGRIDRAD(lspec,e_0,kr);
 
@@ -248,8 +247,8 @@ int intensities( CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
       long e_n  = LOCAL_GP_NR_OF_EVALP(r, e2);
       long e_np = LOCAL_GP_NR_OF_EVALP(r, e2-1);
 
-      double phi_n  = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], e_n);
-      double phi_np = line_profile(evalpoint, temperature_gas, freq, frequency[b_ij], e_np);
+      double phi_n  = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], e_n);
+      double phi_np = line_profile(NCELLS, cell, evalpoint, freq, frequency[b_ij], e_np);
 
       long s_n  = LSPECGRIDRAD(lspec,e_n,kr);
       long s_np = LSPECGRIDRAD(lspec,e_np,kr);

@@ -54,7 +54,7 @@ int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_
 
       double line_frequency  = frequency[b_ij];
 
-      double width = line_frequency / CC * sqrt(2.0*KB*temperature_gas[gridp]/MP + V_TURB*V_TURB);
+      double width = line_frequency / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
 
       double freq = H_4_roots[ny]*width;
 
@@ -85,7 +85,7 @@ int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/temperature_dust[gridp]) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/cell[gridp].temperature.dust) - 1.0);
 
   double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
 
@@ -173,8 +173,8 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
 
       double velocity = relative_velocity(NCELLS, cell, origin, ar, current);
 
-      double phi_n = cell_line_profile (velocity, temperature_gas, freq, frequency[b_ij], next);
-      double phi_c = cell_line_profile (velocity, temperature_gas, freq, frequency[b_ij], current);
+      double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
+      double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
 
       S[ndep]    = (source[s_n] + source[s_c]) / 2.0;
       dtau[ndep] = dZ * PC * (opacity[s_n]*phi_n + opacity[s_c]*phi_c) / 2.0;
@@ -210,8 +210,8 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
 
       double velocity = relative_velocity(NCELLS, cell, origin, r, current);
 
-      double phi_n = cell_line_profile (velocity, temperature_gas, freq, frequency[b_ij], next);
-      double phi_c = cell_line_profile (velocity, temperature_gas, freq, frequency[b_ij], current);
+      double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
+      double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
 
       S[ndep]    = (source[s_n] + source[s_c]) / 2.0;
       dtau[ndep] = dZ * PC * (opacity[s_n]*phi_n + opacity[s_c]*phi_c) / 2.0;

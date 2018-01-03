@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* read_input: read the input files                                                              */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -34,33 +26,30 @@
 
 
 
-/* read_txt_input: read the .txt input file                                                      */
-/*-----------------------------------------------------------------------------------------------*/
+// read_txt_input: read .txt input file
+// ------------------------------------
 
-int read_txt_input( std::string inputfile, long ncells, CELL *cell,
-                    double *temperature_gas, double *temperature_dust,
-                    double *prev_temperature_gas )
+int read_txt_input (std::string inputfile, long ncells, CELL *cell)
 {
 
+  char buffer[BUFFER_SIZE];   // buffer for a line of data
 
-  char buffer[BUFFER_SIZE];                                         /* buffer for a line of data */
 
-
-  /* Read input file */
+  // Read input file
 
   FILE *input = fopen(inputfile.c_str(), "r");
 
 
-  /* For all lines in the input file */
+  // For all lines in input file
 
-  for (long n=0; n<NCELLS; n++)
+  for (long n = 0; n < NCELLS; n++)
   {
-    fgets( buffer, BUFFER_SIZE, input );
+    fgets (buffer, BUFFER_SIZE, input);
 
-    sscanf( buffer, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
+    sscanf (buffer, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
             &(cell[n].x), &(cell[n].y), &(cell[n].z),
             &(cell[n].vx), &(cell[n].vy), &(cell[n].vz),
-            &(cell[n].density) );
+            &(cell[n].density));
   }
 
 
@@ -69,7 +58,7 @@ int read_txt_input( std::string inputfile, long ncells, CELL *cell,
 
 # if (!RESTART)
 
-  initialize_temperature_gas (NCELLS, prev_temperature_gas);
+  initialize_temperature_gas (NCELLS, cell);
 
 # else
 
@@ -77,7 +66,7 @@ int read_txt_input( std::string inputfile, long ncells, CELL *cell,
   std::string INPUT_DIRECTORY = RESTART_DIRECTORY;
 
 
-  /* Read input temperature files to restart */
+  // Read input temperature files to restart
 
   std::string tgas_file_name      = INPUT_DIRECTORY + "temperature_gas.txt";
   std::string tdust_file_name     = INPUT_DIRECTORY + "temperature_dust.txt";
@@ -88,48 +77,42 @@ int read_txt_input( std::string inputfile, long ncells, CELL *cell,
   FILE *prev_tgas = fopen(prev_tgas_file_name.c_str(), "r");
 
 
-  /* For all lines in the input file */
+  // For all lines in input file
 
-  for (long n=0; n<NCELLS; n++)
+  for (long n = 0; n < NCELLS; n++)
   {
-    fgets( buffer, BUFFER_SIZE, tgas );
-    sscanf( buffer, "%lf", &(temperature_gas[n]) );
+    fgets (buffer, BUFFER_SIZE, tgas);
+    sscanf (buffer, "%lf", &(cell[n].temperature.gas));
 
-    fgets( buffer, BUFFER_SIZE, tdust );
-    sscanf( buffer, "%lf", &(temperature_dust[n]) );
+    fgets (buffer, BUFFER_SIZE, tdust);
+    sscanf (buffer, "%lf", &(cell[n].temperature.dust));
 
-    fgets( buffer, BUFFER_SIZE, prev_tgas );
-    sscanf( buffer, "%lf", &(prev_temperature_gas[n]) );
+    fgets (buffer, BUFFER_SIZE, prev_tgas);
+    sscanf (buffer, "%lf", &(cell[n].temperature.gas_prev));
   }
 
-
-  fclose(tgas);
-  fclose(tdust);
-  fclose(prev_tgas);
+  fclose (tgas);
+  fclose (tdust);
+  fclose (prev_tgas);
 
 # endif
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// read_vtu_input: read input file
+// -------------------------------
 
-
-/* read_vtu_input: read the input file                                                           */
-/*-----------------------------------------------------------------------------------------------*/
-
-int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
-                    double *temperature_gas, double *temperature_dust,
-                    double *prev_temperature_gas )
+int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
 {
 
 
-  /* Read the data from the .vtu file */
+  // Read data from the .vtu file
 
   vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
     = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
@@ -140,7 +123,7 @@ int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
 
 
-  /* Extract the cell centers */
+  // Extract cell centers
 
   vtkSmartPointer<vtkCellCenters> cellCentersFilter
     = vtkSmartPointer<vtkCellCenters>::New();
@@ -154,7 +137,7 @@ int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
   cellCentersFilter->Update();
 
 
-  for (long n=0; n<NCELLS; n++)
+  for (long n = 0; n < NCELLS; n++)
   {
     double point[3];
 
@@ -166,7 +149,7 @@ int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
   }
 
 
-  /* Extract the cell data */
+  // Extract cell data
 
   vtkCellData *cellData = ugrid->GetCellData();
 
@@ -205,13 +188,13 @@ int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
     }
 
 
-#   if ( RESTART )
+#   if (RESTART)
 
     if (name == "temperature_gas")
     {
       for (long n=0; n<NCELLS; n++)
       {
-        temperature_gas[n] = data->GetTuple1(n);
+        cell[n].temperature.gas = data->GetTuple1(n);
       }
     }
 
@@ -219,7 +202,7 @@ int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
     {
       for (long n=0; n<NCELLS; n++)
       {
-        temperature_dust[n] = data->GetTuple1(n);
+        cell[n].temperature.dust = data->GetTuple1(n);
       }
     }
 
@@ -227,7 +210,7 @@ int read_vtu_input( std::string inputfile, long ncells, CELL *cell,
     {
       for (long n=0; n<NCELLS; n++)
       {
-        prev_temperature_gas[n] = data->GetTuple1(n);
+        cell[n].temperature.gas_prev = data->GetTuple1(n);
       }
     }
 

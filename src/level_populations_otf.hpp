@@ -17,10 +17,9 @@
 // level_populations: iteratively calculate level populations
 // ----------------------------------------------------------
 
-int level_populations_otf( CELL *cell, int *irad, int*jrad, double *frequency,
+int level_populations_otf (long ncells, CELL *cell, int *irad, int*jrad, double *frequency,
                            double *A_coeff, double *B_coeff, double *pop,
                            double *C_data, double *coltemp, int *icol, int *jcol,
-                           double *temperature_gas, double *temperature_dust,
                            double *weight, double *energy, double *mean_intensity,
                            double *Lambda_diagonal, double *mean_intensity_eff );
 

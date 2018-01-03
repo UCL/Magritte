@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* reaction_rates: Check which reaction and calculate the reaction rate coefficient (k)          */
-/*                                                                                               */
-/* (based on calc_reac_rates in 3D-PDR)                                                          */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -29,31 +21,28 @@
 
 
 
-/* reaction_rates: Check which kind of reaction and call appropriate rate calculator b           */
-/*-----------------------------------------------------------------------------------------------*/
+// reaction_rates: Check which kind of reaction and call appropriate rate calculator
+// ---------------------------------------------------------------------------------
 
-int reaction_rates( double *temperature_gas, double *temperature_dust,
-                    double *rad_surface, double *AV,
-                    double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                    long gridp )
+int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, double *AV,
+                    double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
+  // For all reactions
 
-  /* For all reactions */
+  for (int reac = 0; reac < NREAC; reac++)
+  {
 
-  for (int reac=0; reac<NREAC; reac++){
+    // Copy reaction data to variables with more convenient names
 
+    std::string R1 = reaction[reac].R1;   // reactant 1
+    std::string R2 = reaction[reac].R2;   // reactant 2
+    std::string R3 = reaction[reac].R3;   // reactant 3
 
-    /* Copy the reaction data to variables with more convenient names */
-
-    std::string R1 = reaction[reac].R1;                                            /* reactant 1 */
-    std::string R2 = reaction[reac].R2;                                            /* reactant 2 */
-    std::string R3 = reaction[reac].R3;                                            /* reactant 3 */
-
-    std::string P1 = reaction[reac].P1;                                    /* reaction product 1 */
-    std::string P2 = reaction[reac].P2;                                    /* reaction product 2 */
-    std::string P3 = reaction[reac].P3;                                    /* reaction product 3 */
-    std::string P4 = reaction[reac].P4;                                    /* reaction product 4 */
+    std::string P1 = reaction[reac].P1;   // reaction product 1
+    std::string P2 = reaction[reac].P2;   // reaction product 2
+    std::string P3 = reaction[reac].P3;   // reaction product 3
+    std::string P4 = reaction[reac].P4;   // reaction product 4
 
 
     /* All rate functions can be found in calc_reac_rates.cpp and calc_reac_rates_rad.cpp */
@@ -71,12 +60,12 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
          &&   R2 == "H"
          && ( R3 == "" || R3 == "#" )
          &&   P1 == "H2"
-         && ( P2 == "" || P2 == "#" ) ){
-
+         && ( P2 == "" || P2 == "#" ) )
+    {
       H2_formation_nr = reac;
 
-      reaction[reac].k[gridp] = rate_H2_formation( reac, temperature_gas[gridp],
-                                                         temperature_dust[gridp] );
+      reaction[reac].k[gridp] = rate_H2_formation (reac, cell[gridp].temperature.gas,
+                                                         cell[gridp].temperature.dust);
     }
 
 
@@ -86,17 +75,17 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
     else if ( R1 == "PAH+"  ||  R2 == "PAH+"  ||  R3 == "PAH+"
               ||  R1 == "PAH-"  ||  R2 == "PAH-"  ||  R3 == "PAH-"
               ||  R1 == "PAH0"  ||  R2 == "PAH0"  ||  R3 == "PAH0"
-              ||  R1 == "PAH"   ||  R2 == "PAH"   ||  R3 == "PAH" ){
-
-      reaction[reac].k[gridp] = rate_PAH(reac, temperature_gas[gridp]);
+              ||  R1 == "PAH"   ||  R2 == "PAH"   ||  R3 == "PAH" )
+    {
+      reaction[reac].k[gridp] = rate_PAH(reac, cell[gridp].temperature.gas);
     }
 
 
     /* Cosmic ray induced ionization */
 
-    else if ( R2 == "CRP" ){
-
-      reaction[reac].k[gridp] = rate_CRP(reac, temperature_gas[gridp]);
+    else if ( R2 == "CRP" )
+    {
+      reaction[reac].k[gridp] = rate_CRP(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -140,7 +129,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R2 == "CRPHOT" ){
 
-      reaction[reac].k[gridp] = rate_CRPHOT(reac, temperature_gas[gridp]);
+      reaction[reac].k[gridp] = rate_CRPHOT(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -148,7 +137,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R2 == "FREEZE" ){
 
-      reaction[reac].k[gridp] = rate_FREEZE(reac, temperature_gas[gridp]);
+      reaction[reac].k[gridp] = rate_FREEZE(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -156,7 +145,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R2 == "ELFRZE" ){
 
-      reaction[reac].k[gridp] = rate_ELFRZE(reac, temperature_gas[gridp]);
+      reaction[reac].k[gridp] = rate_ELFRZE(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -165,7 +154,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R2 == "CRH" ){
 
-      reaction[reac].k[gridp] = rate_CRH(reac, temperature_gas[gridp]);
+      reaction[reac].k[gridp] = rate_CRH(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -174,8 +163,8 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R2 == "THERM" ){
 
-      reaction[reac].k[gridp] = rate_THERM( reac, temperature_gas[gridp],
-                                                  temperature_dust[gridp] );
+      reaction[reac].k[gridp] = rate_THERM( reac, cell[gridp].temperature.gas,
+                                                  cell[gridp].temperature.dust );
     }
 
 
@@ -197,7 +186,7 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R2 == "PHOTD" ){
 
-      reaction[reac].k[gridp] = rate_PHOTD(reac, temperature_gas[gridp], rad_surface, AV, gridp);
+      reaction[reac].k[gridp] = rate_PHOTD(reac, cell[gridp].temperature.gas, rad_surface, AV, gridp);
     }
 
 
@@ -224,54 +213,52 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
 
     else if ( R1 == "CO"  &&  R2 == "PHOTON"  &&  R3 == ""
               && ( P1 == "C"  ||  P2 == "C"  ||  P3 == "C"  || P4 == "C"  )
-              && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O" ) ){
-
-      reaction[reac].k[gridp] = rate_CO_photodissociation( reac, rad_surface, AV,
-                                                           column_CO, column_H2, gridp );
+              && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O" ) )
+    {
+      reaction[reac].k[gridp] = rate_CO_photodissociation (reac, rad_surface, AV,
+                                                           column_CO, column_H2, gridp);
     }
 
 
     /* C photoionization */
 
     else if ( R1 == "C"  &&  R2 == "PHOTON"  &&  R3 == ""
-              && ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) ){
-
+              && ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) )
+    {
       C_ionization_nr = reac;
 
-      reaction[reac].k[gridp] = rate_C_photoionization( reac, temperature_gas[gridp], rad_surface,
-                                                        AV, column_C, column_H2, gridp );
+      reaction[reac].k[gridp] = rate_C_photoionization (reac, cell[gridp].temperature.gas, rad_surface,
+                                                        AV, column_C, column_H2, gridp);
     }
 
 
     /* SI photoionization */
 
-    else if ( R1 == "S"  &&  R2 == "PHOTON"  &&  R3 == ""
-              && ( (P1 == "S+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "S+") ) ){
-
-      reaction[reac].k[gridp] = rate_SI_photoionization(reac, rad_surface, AV, gridp);
+    else if ( (R1 == "S")  &&  (R2 == "PHOTON")  &&  (R3 == "")
+              && ( (P1 == "S+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "S+") ))
+    {
+      reaction[reac].k[gridp] = rate_SI_photoionization (reac, rad_surface, AV, gridp);
     }
 
 
     /* Other (canonical) photoreaction */
 
-    else if ( R2 == "PHOTON" ){
-
-      reaction[reac].k[gridp] = rate_canonical_photoreaction( reac, temperature_gas[gridp],
-                                                              rad_surface, AV, gridp );
-
+    else if (R2 == "PHOTON")
+    {
+      reaction[reac].k[gridp] = rate_canonical_photoreaction (reac, cell[gridp].temperature.gas,
+                                                              rad_surface, AV, gridp);
     }
 
 
 
-    /* The following reactions are again described in calc_reac_rates.s */
+    /* The following reactions are again described in calc_reac_rates.cpp */
 
 
-    /* All other reactions */
+    // All other reactions
 
-    else {
-
-      reaction[reac].k[gridp] = rate_canonical(reac, temperature_gas[gridp]);
-
+    else
+    {
+      reaction[reac].k[gridp] = rate_canonical (reac, cell[gridp].temperature.gas);
     }
 
 
@@ -285,30 +272,28 @@ int reaction_rates( double *temperature_gas, double *temperature_dust,
     /* Rates less than 1E-99 are set to zero.                                                    */
     /* Grain-surface reactions and desorption mechanisms are allowed rates greater than 1.       */
 
-    if (reaction[reac].k[gridp] < 0.0){
-
+    if (reaction[reac].k[gridp] < 0.0)
+    {
       printf("(reaction_rates): ERROR, negative rate for reaction %d \n", reac);
     }
 
-    else if (reaction[reac].k[gridp] > 1.0  &&  R2 != "#"){
-
+    else if ( (reaction[reac].k[gridp] > 1.0) && (R2 != "#") )
+    {
       printf("(reaction_rates): WARNING, rate too large for reaction %d \n", reac);
       printf("(reaction_rates): WARNING, rate is set to 1.0 \n");
 
       reaction[reac].k[gridp] = 1.0;
     }
 
-    else if ( reaction[reac].k[gridp] < 1.0E-99 ){
-
+    else if (reaction[reac].k[gridp] < 1.0E-99)
+    {
       reaction[reac].k[gridp] = 0.0;
     }
 
 
-  } /* end of reac loop over reactions */
+  } // end of reac loop over reactions
 
 
-  return(0);
+  return (0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

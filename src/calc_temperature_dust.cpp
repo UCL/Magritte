@@ -18,8 +18,7 @@
 // calc_temperature_dust: calculate dust temparatures
 // --------------------------------------------------
 
-int calc_temperature_dust (long ncells, double *UV_field, double *rad_surface,
-                           double *temperature_dust)
+int calc_temperature_dust (long ncells, CELL *cell, double *UV_field, double *rad_surface)
 {
 
 /* Calculate the dust temperature for each particle using the treatment of Hollenbach, Takahashi
@@ -57,9 +56,9 @@ int calc_temperature_dust (long ncells, double *UV_field, double *rad_surface,
 
   /* For all grid points */
 
-# pragma omp parallel                                 \
-  shared( UV_field, rad_surface, temperature_dust )   \
-  default( none )
+# pragma omp parallel                    \
+  shared (cell, UV_field, rad_surface)   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
@@ -74,7 +73,7 @@ int calc_temperature_dust (long ncells, double *UV_field, double *rad_surface,
 
     // Contribution to dust temperature from local FUV flux and CMB background
 
-    temperature_dust[n] = 8.9E-11*nu_0*(1.71*UV_field[n]) + pow(T_CMB, 5);
+    cell[n].temperature.dust = 8.9E-11*nu_0*(1.71*UV_field[n]) + pow(T_CMB, 5);
 
 
     for (long r = 0; r < NRAYS; r++)
@@ -89,7 +88,7 @@ int calc_temperature_dust (long ncells, double *UV_field, double *rad_surface,
 
       if (temperature_min > 0.0)
       {
-        temperature_dust[n] = temperature_dust[n]
+        cell[n].temperature.dust = cell[n].temperature.dust
                               + (0.42-log(3.45E-2*tau_100*temperature_min))
                                 *(3.45E-2*tau_100)*pow(temperature_min,6);
       }
@@ -97,21 +96,21 @@ int calc_temperature_dust (long ncells, double *UV_field, double *rad_surface,
     } // end of r loop over rays
 
 
-    temperature_dust[n] = pow(temperature_dust[n], 0.2);
+    cell[n].temperature.dust = pow(cell[n].temperature.dust, 0.2);
 
 
     /* Impose lower limit on dust temperature, since values below 10 K can dramatically
        limit rate of H2 formation on grains (molecule cannot desorb from surface) */
 
-    if (temperature_dust[n] < 10.0)
+    if (cell[n].temperature.dust < 10.0)
     {
-      temperature_dust[n] = 10.0;
+      cell[n].temperature.dust = 10.0;
     }
 
 
     // Check if the dust temperature is physical
 
-    if (temperature_dust[n] > 1000.0)
+    if (cell[n].temperature.dust > 1000.0)
     {
       printf ("(calc_temperature_dust): ERROR," \
               " calculated dust temperature exceeds 1000 K \n");

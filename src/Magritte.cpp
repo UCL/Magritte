@@ -82,24 +82,16 @@ int main ()
 
   CELL cell[NCELLS];
 
-  double temperature_gas[NCELLS];                          /* gas temperature at each grid point */
-
-  double prev_temperature_gas[NCELLS];
-
-  double temperature_dust[NCELLS];                 /* temperature of the dust at each grid point */
-
 
   // Read input file
 
 # if   (INPUT_FORMAT == '.vtu')
 
-    read_vtu_input (inputfile, NCELLS, cell, temperature_gas,
-                    temperature_dust, prev_temperature_gas);
+    read_vtu_input (inputfile, NCELLS, cell);
 
 # elif (INPUT_FORMAT == '.txt')
 
-    read_txt_input (inputfile, NCELLS, cell, temperature_gas,
-                    temperature_dust, prev_temperature_gas);
+    read_txt_input (inputfile, NCELLS, cell);
 
 # endif
 
@@ -254,30 +246,6 @@ int main ()
 
     printf ("(Magritte): neighboring cells found \n\n");
 
-  //   long origin = 0;
-  //   long ray = 0;
-  //
-  // // Walk along ray
-  // {
-  //   double Z   = 0.0;
-  //   double dZ  = 0.0;
-  //
-  //   long current = origin;
-  //   long next    = next_cell(NCELLS, cell, origin, ray, Z, current, &dZ);
-  //
-  //
-  //   while (next != NCELLS)
-  //   {
-  //     Z = Z + dZ;
-  //
-  //     printf("current %ld\n", current);
-  //
-  //     current = next;
-  //     next    = next_cell(NCELLS, cell, origin, ray, Z, current, &dZ);
-  //   }
-  // }
-  //
-  // return(0);
 
 # endif
 
@@ -353,12 +321,12 @@ int main ()
 
     // Make a guess for gas temperature based on UV field
 
-    guess_temperature_gas (NCELLS, UV_field, temperature_gas);
+    guess_temperature_gas (NCELLS, cell, UV_field);
 
 
     // Calculate the dust temperature
 
-    calc_temperature_dust (NCELLS, UV_field, rad_surface, temperature_dust);
+    calc_temperature_dust (NCELLS, cell, UV_field, rad_surface);
 
 # endif
 
@@ -403,8 +371,7 @@ int main ()
 
     time_chemistry -= omp_get_wtime();
 
-    chemistry (NCELLS, cell, temperature_gas, temperature_dust, rad_surface, AV,
-               column_H2, column_HD, column_C, column_CO );
+    chemistry (NCELLS, cell, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
     time_chemistry += omp_get_wtime();
 
@@ -415,13 +382,13 @@ int main ()
 
 #     if   (INPUT_FORMAT == '.txt')
 
-        write_temperature_gas ("", temperature_gas);
-        write_temperature_dust ("", temperature_dust);
-        write_prev_temperature_gas ("", prev_temperature_gas);
+        write_temperature_gas ("", NCELLS, cell);
+        write_temperature_dust ("", NCELLS, cell);
+        write_prev_temperature_gas ("", NCELLS, cell);
 
 #     elif (INPUT_FORMAT == '.vtu')
 
-        write_vtu_output (inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+        write_vtu_output (NCELLS, cell, inputfile);
 
 #     endif
 
@@ -512,17 +479,16 @@ int main ()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance (cell, column_H2, column_HD, column_C, column_CO, UV_field,
-                     temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
-                     weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
-                     mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
-                     initial_abn, &time_chemistry, &time_level_pop);
+    thermal_balance (NCELLS, cell, column_H2, column_HD, column_C, column_CO, UV_field,
+                     rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
+                     C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop);
 
 
     initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
 
 
-    update_temperature_gas (thermal_ratio, temperature_gas, prev_temperature_gas,
+    update_temperature_gas (NCELLS, cell, thermal_ratio,
                             temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b);
 
 
@@ -532,13 +498,13 @@ int main ()
 
 #     if   (INPUT_FORMAT == '.txt')
 
-        write_temperature_gas ("", temperature_gas);
-        write_temperature_dust ("", temperature_dust);
-        write_prev_temperature_gas ("", prev_temperature_gas);
+        write_temperature_gas ("", NCELLS, cell);
+        write_temperature_dust ("", NCELLS, cell);
+        write_prev_temperature_gas ("", NCELLS, cell);
 
 #     elif (INPUT_FORMAT == '.vtu')
 
-        write_vtu_output (inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+        write_vtu_output (NCELLS, cell, inputfile);
 
 #     endif
 
@@ -548,7 +514,23 @@ int main ()
   } // end of tb_iteration loop over preliminary tb iterations
 
 
-  initialize_double_array_with(temperature_gas, temperature_b, NCELLS);
+#   pragma omp parallel            \
+    shared (cell, temperature_b)   \
+    default (none)
+    {
+
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+
+    long start = (thread_num*NCELLS)/num_threads;
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;     // Note brackets
+
+
+    for (long n = start; n < stop; n++)
+    {
+      cell[n].temperature.gas = temperature_b[n];
+    }
+    } // end of OpenMP parallel region
 
 
   // write_double_1("temperature_a", "", NCELLS, temperature_a );
@@ -587,11 +569,10 @@ int main ()
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance (cell, column_H2, column_HD, column_C, column_CO, UV_field,
-                     temperature_gas, temperature_dust, rad_surface, AV, irad, jrad, energy,
-                     weight, frequency, A_coeff, B_coeff, C_data, coltemp, icol, jcol, pop,
-                     mean_intensity, Lambda_diagonal, mean_intensity_eff, thermal_ratio,
-                     initial_abn, &time_chemistry, &time_level_pop);
+    thermal_balance (NCELLS, cell, column_H2, column_HD, column_C, column_CO, UV_field,
+                     rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
+                     C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop);
 
 
     initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
@@ -600,11 +581,11 @@ int main ()
 
     // Calculate thermal balance for each cell
 
-#   pragma omp parallel                                                                           \
-    shared( thermal_ratio, temperature_gas, prev_temperature_gas, temperature_a, temperature_b,   \
-            temperature_c, temperature_d, temperature_e, thermal_ratio_a, thermal_ratio_b,        \
-            thermal_ratio_c, n_not_converged, no_thermal_balance )                                \
-    default( none )
+#   pragma omp parallel                                                                        \
+    shared (cell, thermal_ratio, temperature_a, temperature_b, temperature_c,                  \
+            temperature_d, temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c,   \
+            n_not_converged, no_thermal_balance)                                               \
+    default (none)
     {
 
     int num_threads = omp_get_num_threads();
@@ -628,10 +609,10 @@ int main ()
                                       temperature_d, temperature_e, thermal_ratio_a,
                                       thermal_ratio_b, thermal_ratio_c);
 
-        temperature_gas[gridp] = temperature_b[gridp];
+        cell[gridp].temperature.gas = temperature_b[gridp];
 
 
-        if (temperature_gas[gridp] != T_CMB)
+        if (cell[gridp].temperature.gas != T_CMB)
         {
           no_thermal_balance = true;
 
@@ -647,7 +628,7 @@ int main ()
 
     // if (no_thermal_balance)
     // {
-    //   update_temperature_gas (thermal_ratio, temperature_gas, prev_temperature_gas,
+    //   update_temperature_gas (NCELLS, cell, thermal_ratio,
     //                           temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b);
     // }
 
@@ -688,11 +669,11 @@ int main ()
 
 # if   (INPUT_FORMAT == '.vtu')
 
-  write_vtu_output (inputfile, temperature_gas, temperature_dust, prev_temperature_gas);
+  write_vtu_output (NCELLS, cell, inputfile);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  write_txt_output (pop, mean_intensity, temperature_gas, temperature_dust);
+  write_txt_output (NCELLS, cell, pop, mean_intensity);
 
 # endif
 
