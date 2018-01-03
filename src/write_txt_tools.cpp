@@ -67,7 +67,7 @@ int write_grid (std::string tag, CELL *cell)
 int write_healpixvectors (std::string tag)
 {
 
-  if ( !tag.empty() )
+  if (!tag.empty())
   {
     tag = "_" + tag;
   }
@@ -623,51 +623,46 @@ int write_AV (std::string tag, double *AV)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_rad_surface: write rad surface at each point
+// --------------------------------------------------
 
-
-/* write_rad_surface: write the rad surface at each point                                        */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_rad_surface(std::string tag, double *rad_surface)
+int write_rad_surface (std::string tag, double *rad_surface)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + "rad_surface" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (long r=0; r<NRAYS; r++){
-
-      fprintf( file, "%lE\t", rad_surface[RINDEX(n,r)] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (long r = 0; r < NRAYS; r++)
+    {
+      fprintf (file, "%lE\t", rad_surface[RINDEX(n,r)]);
     }
 
-    fprintf( file, "\n" );
+    fprintf (file, "\n");
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
@@ -714,101 +709,90 @@ int write_reaction_rates (std::string tag, REACTION *reaction)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_certain_reactions: write rates of certain reactions
+// ---------------------------------------------------------
 
-
-/* write_certain_reactions: write rates of certain reactions (as indicated in reaction_rates.cpp)*/
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_certain_rates( std::string tag, std::string name, int nr_certain_reac,
-                         int *certain_reactions, REACTION *reaction )
+int write_certain_rates (std::string tag, std::string name, int nr_certain_reac,
+                         int *certain_reactions, REACTION *reaction)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
-
 
 
   std::string file_name0 = output_directory + name + "_reactions" + tag + ".txt";
 
-  FILE *file0 = fopen(file_name0.c_str(), "w");
+  FILE *file0 = fopen (file_name0.c_str(), "w");
 
-  if (file0 == NULL){
-
-    printf("Error opening file!\n");
+  if (file0 == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name0 + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (int reac=0; reac<nr_certain_reac; reac++){
-
-    fprintf( file0, "%d\n", certain_reactions[reac] );
+  for (int reac = 0; reac < nr_certain_reac; reac++)
+  {
+    fprintf (file0, "%d\n", certain_reactions[reac]);
   }
 
-  fclose(file0);
-
+  fclose (file0);
 
 
   std::string file_name = output_directory + name + "_rates" + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (int reac=0; reac<nr_certain_reac; reac++){
-
-    fprintf( file, "%d \t", certain_reactions[reac] );
+  for (int reac = 0; reac < nr_certain_reac; reac++)
+  {
+    fprintf (file, "%d \t", certain_reactions[reac]);
   }
 
 
-  fprintf( file, "\n" );
+  fprintf (file, "\n");
 
-  for (long n=0; n<NCELLS; n++){
-
-    for (int reac=0; reac<nr_certain_reac; reac++){
-
-      fprintf( file, "%lE \t", reaction[certain_reactions[reac]].k[n] );
+  for (long n = 0; n < NCELLS; n++)
+  {
+    for (int reac = 0; reac < nr_certain_reac; reac++)
+    {
+      fprintf (file, "%lE \t", reaction[certain_reactions[reac]].k[n]);
     }
 
-    fprintf( file, "\n" );
+    fprintf (file, "\n");
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_double_1: write a 1D list of doubles
+// ------------------------------------------
 
-
-/* write_double_1: write a 1D list of doubles                                                    */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_double_1(std::string name, std::string tag, long length, double *variable)
+int write_double_1 (std::string name, std::string tag, long length, double *variable)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
@@ -816,77 +800,68 @@ int write_double_1(std::string name, std::string tag, long length, double *varia
 
   FILE *file = fopen(file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long n=0; n<length; n++){
-
-    fprintf( file, "%lE\n", variable[n] );
+  for (long n = 0; n < length; n++)
+  {
+    fprintf (file, "%lE\n", variable[n]);
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_double_2: write a 2D array of doubles
+// -------------------------------------------
 
-
-/* write_double_2: write a 2D array of doubles                                                   */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_double_2(std::string name, std::string tag, long nrows, long ncols, double *variable)
+int write_double_2 (std::string name, std::string tag, long nrows, long ncols, double *variable)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
   std::string file_name = output_directory + name + tag + ".txt";
 
-  FILE *file = fopen(file_name.c_str(), "w");
+  FILE *file = fopen (file_name.c_str(), "w");
 
-  if (file == NULL){
-
-    printf("Error opening file!\n");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
     std::cout << file_name + "\n";
-    exit(1);
+    exit (1);
   }
 
 
-  for (long row=0; row<nrows; row++){
-
-    for (long col=0; col<ncols; col++){
-
-      fprintf( file, "%lE\t", variable[col + ncols*row] );
+  for (long row = 0; row < nrows; row++)
+  {
+    for (long col = 0; col < ncols; col++)
+    {
+      fprintf (file, "%lE\t", variable[col + ncols*row]);
     }
 
-    fprintf( file, "\n" );
+    fprintf (file, "\n");
   }
 
+  fclose (file);
 
-  fclose(file);
 
-
-  return(0);
+  return (0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/
-
 
 
 
@@ -1032,27 +1007,23 @@ int write_double_2(std::string name, std::string tag, long nrows, long ncols, do
 //
 // }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_Einstein_coeff: write Einstein A, B or C coefficients
+// -----------------------------------------------------------
 
-
-/* write_Einstein_coeff: write the Einstein A, B or C coefficients                               */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_Einstein_coeff( std::string tag, double *A_coeff, double *B_coeff, double *C_coeff )
+int write_Einstein_coeff (std::string tag, double *A_coeff, double *B_coeff, double *C_coeff)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
+  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  {
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
 
@@ -1061,174 +1032,162 @@ int write_Einstein_coeff( std::string tag, double *A_coeff, double *B_coeff, dou
     std::string file_name_C = output_directory + "Einstein_C_" + lspec_name + tag + ".txt";
 
 
-    FILE *file_A = fopen(file_name_A.c_str(), "w");
-    FILE *file_B = fopen(file_name_B.c_str(), "w");
-    FILE *file_C = fopen(file_name_C.c_str(), "w");
+    FILE *file_A = fopen (file_name_A.c_str(), "w");
+    FILE *file_B = fopen (file_name_B.c_str(), "w");
+    FILE *file_C = fopen (file_name_C.c_str(), "w");
 
-    if (file_A == NULL){
-
-      printf("Error opening file!\n");
+    if (file_A == NULL)
+    {
+      printf ("Error opening file!\n");
       std::cout << file_name_A + "\n";
-      exit(1);
+      exit (1);
     }
 
-    if (file_B == NULL){
-
-      printf("Error opening file!\n");
+    if (file_B == NULL)
+    {
+      printf ("Error opening file!\n");
       std::cout << file_name_B + "\n";
-      exit(1);
+      exit (1);
     }
 
-    if (file_C == NULL){
-
-      printf("Error opening file!\n");
+    if (file_C == NULL)
+    {
+      printf ("Error opening file!\n");
       std::cout << file_name_C + "\n";
-      exit(1);
+      exit (1);
     }
 
 
-    for (long row=0; row<nlev[lspec]; row++){
-
-      for (long col=0; col<nlev[lspec]; col++){
-
-        fprintf( file_A, "%lE\t", A_coeff[LSPECLEVLEV(lspec,row,col)] );
-        fprintf( file_B, "%lE\t", B_coeff[LSPECLEVLEV(lspec,row,col)] );
-        fprintf( file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)] );
+    for (long row = 0; row < nlev[lspec]; row++)
+    {
+      for (long col = 0; col < nlev[lspec]; col++)
+      {
+        fprintf (file_A, "%lE\t", A_coeff[LSPECLEVLEV(lspec,row,col)]);
+        fprintf (file_B, "%lE\t", B_coeff[LSPECLEVLEV(lspec,row,col)]);
+        fprintf (file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
 
       }
 
-      fprintf( file_A, "\n" );
-      fprintf( file_B, "\n" );
-      fprintf( file_C, "\n" );
+      fprintf (file_A, "\n");
+      fprintf (file_B, "\n");
+      fprintf (file_C, "\n");
 
     }
 
 
-    fclose(file_A);
-    fclose(file_B);
-    fclose(file_C);
+    fclose (file_A);
+    fclose (file_B);
+    fclose (file_C);
 
-  } /* end of lspec loop over line producing species */
+  } // end of lspec loop over line producing species
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_R: write the transition matrix R
+// --------------------------------------
 
-
-/* write_R: write the transition matrix R                                                        */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_R( std::string tag, long gridp, double *R )
+int write_R (std::string tag, long gridp, double *R)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
+  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  {
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
     std::string file_name = output_directory + "R_" + lspec_name + tag + ".txt";
 
-    FILE *file = fopen(file_name.c_str(), "w");
+    FILE *file = fopen (file_name.c_str(), "w");
 
 
-    if (file == NULL){
-
-      printf("Error opening file!\n");
+    if (file == NULL)
+    {
+      printf ("Error opening file!\n");
       std::cout << file_name + "\n";
-      exit(1);
+      exit (1);
     }
 
 
-    for (long row=0; row<nlev[lspec]; row++){
-
-      for (long col=0; col<nlev[lspec]; col++){
-
-        fprintf( file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,gridp,row,col)] );
+    for (long row = 0; row < nlev[lspec]; row++)
+    {
+      for (long col = 0; col < nlev[lspec]; col++)
+      {
+        fprintf (file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,gridp,row,col)]);
 
       }
 
-      fprintf( file, "\n" );
+      fprintf (file, "\n");
 
     }
 
-    fclose(file);
+    fclose (file);
 
-  } /* end of lspec loop over line producing species */
+  } // end of lspec loop over line producing species
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// write_transition_levels: write levels corresponding to each transition
+// ----------------------------------------------------------------------
 
-
-/* write_transition_levels: write the levels corresponding to each transition                    */
-/*-----------------------------------------------------------------------------------------------*/
-
-int write_transition_levels( std::string tag, int *irad, int *jrad )
+int write_transition_levels (std::string tag, int *irad, int *jrad)
 {
 
-
-  if ( !tag.empty() ){
-
+  if (!tag.empty())
+  {
     tag = "_" + tag;
   }
 
 
-  for (int lspec=0; lspec<NLSPEC; lspec++){
-
+  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  {
     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
 
     std::string file_name = output_directory + "transition_levels_" + lspec_name + tag + ".txt";
 
-    FILE *file = fopen(file_name.c_str(), "w");
+    FILE *file = fopen (file_name.c_str(), "w");
 
 
-    if (file == NULL){
-
-      printf("Error opening file!\n");
+    if (file == NULL)
+    {
+      printf ("Error opening file!\n");
       std::cout << file_name + "\n";
-      exit(1);
+      exit (1);
     }
 
 
-    for (int kr=0; kr<nrad[lspec]; kr++){
+    for (int kr = 0; kr < nrad[lspec]; kr++)
+    {
+      int i = irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+      int j = jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
-      int i = irad[LSPECRAD(lspec,kr)];          /* i level index corresponding to transition kr */
-      int j = jrad[LSPECRAD(lspec,kr)];          /* j level index corresponding to transition kr */
-
-      fprintf( file, "%d \t %d\n", i, j );
+      fprintf (file, "%d \t %d\n", i, j);
 
     }
 
+    fclose (file);
 
-    fclose(file);
-
-  } /* end of lspec loop over line producing species */
+  } // end of lspec loop over line producing species
 
 
-  return(0);
+  return (0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/
-
 
 
 
@@ -1352,5 +1311,3 @@ int write_transition_levels( std::string tag, int *irad, int *jrad )
 //   return(0);
 //
 // }
-//
-// /*-----------------------------------------------------------------------------------------------*/

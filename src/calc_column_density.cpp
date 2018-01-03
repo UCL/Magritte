@@ -222,7 +222,7 @@ double cell_column_density (long ncells, CELL *cell, long origin, int spec, long
     double dZ  = 0.0;
 
     long current = origin;
-    long next    = next_cell (NCELLS, cell, origin, ray, Z, current, &dZ);
+    long next    = next_cell (NCELLS, cell, origin, ray, &Z, current, &dZ);
 
 
     while (next != NCELLS)
@@ -231,10 +231,8 @@ double cell_column_density (long ncells, CELL *cell, long origin, int spec, long
                            + dZ * PC * (cell[next].density*species[spec].abn[next]
                                         + cell[current].density*species[spec].abn[current]) / 2.0;
 
-      Z = Z + dZ;
-
       current = next;
-      next    = next_cell (NCELLS, cell, origin, ray, Z, current, &dZ);
+      next    = next_cell (NCELLS, cell, origin, ray, &Z, current, &dZ);
     }
   }
 

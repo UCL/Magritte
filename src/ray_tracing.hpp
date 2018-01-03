@@ -40,7 +40,7 @@
   // next_cell: find number of next cell on ray and its distance along ray
   // ---------------------------------------------------------------------
 
-  long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long current, double *dZ);
+  long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
 
 
   // relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray

@@ -21,10 +21,9 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
+int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambda_diagonal,
                   double *mean_intensity_eff, double *source, double *opacity, double *frequency,
-                  double *temperature_gas, double *temperature_dust, int *irad, int*jrad,
-                  long origin, int lspec, int kr )
+                  int *irad, int*jrad, long origin, int lspec, int kr)
 {
 
   long m_ij = LSPECGRIDRAD(lspec,origin,kr);   // mean_intensity, S and opacity index
@@ -68,7 +67,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
       double dtau = 0.0;
 
       long current = origin;
-      long next    = next_cell (NCELLS, cell, origin, ar, Z, current, &dZ);
+      long next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
 
       while ( (next != NCELLS) && (tau_ar < TAU_MAX) )
@@ -79,10 +78,9 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
         dtau = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
 
         tau_ar = tau_ar + dtau;
-        Z      = Z + dZ;
 
         current = next;
-        next    = next_cell (NCELLS, cell, origin, ar, Z, current, &dZ);
+        next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
       }
     }
 
@@ -116,7 +114,7 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
       double dtau = 0.0;
 
       long current = origin;
-      long next    = next_cell (NCELLS, cell, origin, r, Z, current, &dZ);
+      long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
 
       while ( (next != NCELLS) && (tau_r < TAU_MAX) )
@@ -127,10 +125,9 @@ int cell_sobolev( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
         dtau = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
 
         tau_r = tau_r + dtau;
-        Z     = Z + dZ;
 
         current = next;
-        next    = next_cell (NCELLS, cell, origin, r, Z, current, &dZ);
+        next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
       }
     }
 

@@ -122,22 +122,21 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
         // Calculate source and opacity for all transitions over whole grid
 
-        line_source( irad, jrad, A_coeff, B_coeff, pop, lspec, source );
+        line_source (irad, jrad, A_coeff, B_coeff, pop, lspec, source);
 
-        line_opacity( irad, jrad, frequency, B_coeff, pop, lspec, opacity );
+        line_opacity (irad, jrad, frequency, B_coeff, pop, lspec, opacity);
       }
     } // end of lspec loop over line producing species
 
 
     // For every grid point
 
-#   pragma omp parallel                                                                           \
-    shared( energy, weight, temperature_gas, temperature_dust, icol, jcol, coltemp, C_data, pop,  \
-            cell, lspec_nr, frequency, opacity, source, mean_intensity, Lambda_diagonal,          \
-            mean_intensity_eff, species, prev1_pop, not_converged, n_not_converged, nlev,         \
-            cum_nlev, cum_nlev2, irad, jrad, nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged,\
-            some_not_converged )                                                                  \
-    default( none )
+#   pragma omp parallel                                                                         \
+    shared (energy, weight, icol, jcol, coltemp, C_data, pop, cell, lspec_nr, frequency,        \
+            opacity, source, mean_intensity, Lambda_diagonal, mean_intensity_eff, species,      \
+            prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2, irad, jrad,   \
+            nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged, some_not_converged)           \
+    default (none)
     {
 
     int num_threads = omp_get_num_threads();
@@ -165,8 +164,8 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
           //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
-          calc_C_coeff( cell, C_data, coltemp, icol, jcol, temperature_gas,
-                        weight, energy, C_coeff, n, lspec );
+          calc_C_coeff (NCELLS, cell, C_data, coltemp, icol, jcol,
+                        weight, energy, C_coeff, n, lspec);
 
 
           // Fill first part of transition matrix R
@@ -209,15 +208,13 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
 #           if (SOBOLEV)
 
-              cell_sobolev (cell, mean_intensity, Lambda_diagonal, mean_intensity_eff, source,
-                            opacity, frequency, temperature_gas, temperature_dust, irad, jrad, n,
-                            lspec, kr);
+              cell_sobolev (NCELLS, cell, mean_intensity, Lambda_diagonal, mean_intensity_eff, source,
+                            opacity, frequency, irad, jrad, n, lspec, kr);
 
 #           else
 
-              cell_radiative_transfer (cell, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                                       source, opacity, frequency, temperature_gas, temperature_dust,
-                                       irad, jrad, n, lspec, kr);
+              cell_radiative_transfer (NCELLS, cell, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                                       source, opacity, frequency, irad, jrad, n, lspec, kr);
 
 #           endif
 

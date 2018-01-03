@@ -1,8 +1,4 @@
-// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
-//
-// Developed by: Frederik De Ceuster - University College London & KU Leuven
-// _________________________________________________________________________
-
+/* Parameters file for Magritte */
 
 #ifndef __PARAMETERS_HPP_INCLUDED__
 #define __PARAMETERS_HPP_INCLUDED__
@@ -17,11 +13,11 @@
 
 // #define INPUTFILE "output/files/_output/grid.vtu"
 
-// Input files
+/* Input files */
 
-#define DIMENSIONS 1
+#define DIMENSIONS 2
 
-#define NRAYS 2
+#define NRAYS 8
 
 #define FIXED_NCELLS true
 
@@ -41,50 +37,52 @@
 
 #define NLSPEC 4
 
-// #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/12CO.txt"}
-
-
 #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/12CO.txt"}
 
 
+// #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
-// Ray tracing parameters
+
+
+/* Ray tracing parameters */
 
 #define NSIDES 1
 
 #define THETA_CRIT 1.3
 
-#define CELL_BASED false
+#define ON_THE_FLY true
+
+#define CELL_BASED true
 
 
-// Radiative transfer
+/* Radiative transfer */
 
-#define SOBOLEV false
+#define SOBOLEV true
 
 #define ACCELERATION_POP_NG true
 
 #define ACCELERATION_APPROX_LAMBDA true
 
 
-// Number of various iterations
+/* Number of various iterations */
 
 #define MAX_NITERATIONS 299
 
-#define PRELIM_CHEM_ITER 5
+#define PRELIM_CHEM_ITER 0
 
-#define PRELIM_TB_ITER 21
+#define PRELIM_TB_ITER 30
 
-#define CHEM_ITER 3
+#define CHEM_ITER 8
 
 
-// Temperature range
+/* Temperature range */
 
 #define TEMPERATURE_MIN T_CMB
 
 #define TEMPERATURE_MAX 30000.0
 
 
-// Chemistry
+/* Chemistry */
 
 #define METALLICITY 1.0
 
@@ -92,26 +90,26 @@
 
 #define TIME_END_IN_YEARS 1.0E+7
 
-#define ALWAYS_INITIALIZE_CHEMISTRY false
+#define ALWAYS_INITIALIZE_CHEMISTRY true
 
 
-// External UV field
+/* External UV field */
 
 #define FIELD_FORM "UNI"
 
-#define G_EXTERNAL_X 1.0E+1
+#define G_EXTERNAL_X 5.270460E+0
 
-#define G_EXTERNAL_Y 0.0E+0
+#define G_EXTERNAL_Y 5.270460E+0
 
-#define G_EXTERNAL_Z 0.0E+0
+#define G_EXTERNAL_Z 5.666670E+0
 
 
-// Turbulent velocity
+/* Turbulent velocity */
 
 #define V_TURB 1.0E5
 
 
-// Cosmic ray variables
+/* Cosmic ray variables */
 
 #define ZETA   3.846153846153846
 
@@ -119,4 +117,4 @@
 
 
 
-#endif // __PARAMETERS_HPP_INCLUDED__
+#endif /* __PARAMETERS_HPP_INCLUDED__ */

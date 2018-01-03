@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* test_ray_tracing: tests the ray_tracing function                                              */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -22,7 +14,7 @@
 #include "catch.hpp"
 
 #include "../../../parameters.hpp"
-// #include "../../../src/Magritte_config.hpp"
+#include "../../../src/Magritte_config.hpp"
 #include "../../../src/declarations.hpp"
 #include "../../../src/definitions.hpp"
 
@@ -229,16 +221,13 @@ TEST_CASE("Cell structure")
   // setup_healpixvectors(NRAYS, healpixvector, antipod);
   // write_healpixvectors("");
 
-  find_neighbors(ncells, cell);
+  find_neighbors (ncells, cell);
 
-  for (long c=0; c<ncells; c++)
+  for (long c = 0; c < ncells; c++)
   {
-
-    // long c = 0;
-
     printf("%ld\n", cell[c].n_neighbors);
 
-    for (long n=0; n<cell[c].n_neighbors; n++)
+    for (long n = 0; n < cell[c].n_neighbors; n++)
     {
       printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
     }
@@ -252,31 +241,26 @@ TEST_CASE("Cell structure")
 
   double dZ = 0.0;
 
-  long origin = 7;
-  long ray    = 0;
+  long origin = 1;
+  long ray    = 1;
 
   double Z = 0.0;
 
   long current = origin;
+  long next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
 
-  long next = next_cell(ncells, cell, origin, ray, Z, current, &dZ);
 
-  // long next;
 
   while (next != ncells)
   {
-    next = next_cell(ncells, cell, origin, ray, Z, current, &dZ);
-
-    printf("current %ld,  Z %lE\n", current, Z);
-
-    Z = Z + dZ;
+    printf("current %ld, next %ld, Z %lE\n", current, next, Z);
 
     current = next;
+    next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
   }
-
 
   // printf("next %ld,  dZ %lE\n", next, dZ);
 
-  CHECK(true);
+  CHECK (true);
 
 }

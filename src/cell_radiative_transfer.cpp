@@ -24,10 +24,9 @@
 // cell_radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_diagonal,
+int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, double *Lambda_diagonal,
                              double *mean_intensity_eff, double *source, double *opacity,
-                             double *frequency, double *temperature_gas, double *temperature_dust,
-                             int *irad, int*jrad, long gridp, int lspec, int kr )
+                             double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr)
 {
 
 
@@ -59,7 +58,7 @@ int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_
       double freq = H_4_roots[ny]*width;
 
 
-      intensities (cell, source, opacity, frequency, freq, temperature_gas, irad, jrad,
+      intensities (NCELLS, cell, source, opacity, frequency, freq, irad, jrad,
                    gridp, ray, lspec, kr, &u_local, &v_local, &L_local);
 
 
@@ -111,7 +110,7 @@ int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_
   }
 
 
-  return(0);
+  return (0);
 
 }
 
@@ -121,9 +120,9 @@ int cell_radiative_transfer( CELL *cell, double *mean_intensity, double *Lambda_
 // intensity: calculate intensity along a certain ray through a certain point
 // --------------------------------------------------------------------------
 
-int intensities( CELL *cell, double *source, double *opacity, double *frequency,
-                 double freq, double *temperature_gas,  int *irad, int*jrad, long origin, long r,
-                 int lspec, int kr, double *u_local, double *v_local, double *L_local )
+int intensities (long ncells, CELL *cell, double *source, double *opacity, double *frequency,
+                 double freq, int *irad, int*jrad, long origin, long r, int lspec, int kr,
+                 double *u_local, double *v_local, double *L_local)
 {
 
   // Get the antipodal ray for r
@@ -163,7 +162,7 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
     double dZ   = 0.0;
 
     long current = origin;
-    long next    = next_cell(NCELLS, cell, origin, ar, Z, current, &dZ);
+    long next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
 
     while ( (next != NCELLS) && (tau_ar < TAU_MAX) )
@@ -171,7 +170,7 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
       long s_n = LSPECGRIDRAD(lspec,next,kr);
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-      double velocity = relative_velocity(NCELLS, cell, origin, ar, current);
+      double velocity = relative_velocity (NCELLS, cell, origin, ar, current);
 
       double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
       double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
@@ -180,10 +179,9 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
       dtau[ndep] = dZ * PC * (opacity[s_n]*phi_n + opacity[s_c]*phi_c) / 2.0;
 
       tau_ar = tau_ar + dtau[ndep];
-      Z      = Z + dZ;
 
       current = next;
-      next    = next_cell(NCELLS, cell, origin, ar, Z, current, &dZ);
+      next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
       ndep++;
     }
@@ -200,7 +198,7 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
     double dZ   = 0.0;
 
     long current = origin;
-    long next    = next_cell(NCELLS, cell, origin, r, Z, current, &dZ);
+    long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
 
     while ( (next != NCELLS) && (tau_r < TAU_MAX) )
@@ -208,7 +206,7 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
       long s_n = LSPECGRIDRAD(lspec,next,kr);
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-      double velocity = relative_velocity(NCELLS, cell, origin, r, current);
+      double velocity = relative_velocity (NCELLS, cell, origin, r, current);
 
       double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
       double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
@@ -217,10 +215,9 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
       dtau[ndep] = dZ * PC * (opacity[s_n]*phi_n + opacity[s_c]*phi_c) / 2.0;
 
       tau_ar = tau_ar + dtau[ndep];
-      Z      = Z + dZ;
 
       current = next;
-      next    = next_cell(NCELLS, cell, origin, r, Z, current, &dZ);
+      next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
       ndep++;
     }
@@ -285,7 +282,7 @@ int intensities( CELL *cell, double *source, double *opacity, double *frequency,
   }
 
 
-  return(0);
+  return (0);
 
 }
 

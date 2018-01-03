@@ -530,10 +530,10 @@ int find_neighbors (long ncells, CELL *cell)
 // next_cell: find number of next cell on ray and its distance along ray
 // ---------------------------------------------------------------------
 
-long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long current, double *dZ)
+long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ)
 {
 
-  // Pick neighbor on the "right side" closesed to the ray
+  // Pick neighbor on "right side" closest to ray
 
   double D_min = 1.0E99;
 
@@ -550,25 +550,28 @@ long next_cell (long ncells, CELL *cell, long origin, long ray, double Z, long c
     rvec[1] = cell[neighbor].y - cell[origin].y;
     rvec[2] = cell[neighbor].z - cell[origin].z;
 
-    double new_Z =   rvec[0]*healpixvector[VINDEX(ray,0)]
+    double Z_new =   rvec[0]*healpixvector[VINDEX(ray,0)]
                    + rvec[1]*healpixvector[VINDEX(ray,1)]
                    + rvec[2]*healpixvector[VINDEX(ray,2)];
 
-    if (Z < new_Z)
+    if (*Z < Z_new)
     {
       double rvec2 = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
 
-      double D = rvec2 - new_Z*new_Z;
+      double D = rvec2 - Z_new*Z_new;
 
       if (D < D_min)
       {
         D_min = D;
         next  = neighbor;
-        *dZ   = new_Z - Z;
+        *dZ   = Z_new - *Z;
       }
     }
 
   } // end of n loop over neighbors
+
+
+  *Z = *Z + *dZ;
 
 
   return next;
