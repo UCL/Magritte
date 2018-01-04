@@ -21,15 +21,15 @@
 
 #define FIXED_NCELLS true
 
-#define INPUT_FORMAT '.txt'
+// #define INPUT_FORMAT '.txt'
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
-#define INPUTFILE "input/files/1Dn30.dat_conv.txt"
+// #define INPUTFILE "input/files/1Dn30.dat_conv.txt"
 
-// #define INPUT_FORMAT '.vtu'
+#define INPUT_FORMAT '.vtu'
 
-// #define INPUTFILE "input/files/Aori_0001.vtu"
+#define INPUTFILE      "input/files/Aori_0001.vtu"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 

@@ -27,13 +27,15 @@
 // write_grid: write input back
 // ----------------------------
 
-int write_grid (std::string tag, CELL *cell)
+int write_grid (std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
   {
     tag = "_" + tag;
   }
+
+  long total = 0;
 
   std::string file_name = output_directory + "grid" + tag + ".txt";
 
@@ -48,11 +50,22 @@ int write_grid (std::string tag, CELL *cell)
 
   for (long n = 0; n < NCELLS; n++)
   {
-    fprintf (file, "%f\t%f\t%f\n", cell[n].x, cell[n].y, cell[n].z);
+    if (cell[n].id == n)
+    {
+      fprintf (file, "%ld\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\n",
+               cell[n].id,
+               cell[n].x,  cell[n].y,  cell[n].z,
+               cell[n].vx, cell[n].vy, cell[n].vz,
+               cell[n].density);
+
+      total++;
+    }
   }
 
   fclose (file);
 
+
+  printf("Printed a grid with %ld cells out of a total of %ld\n", total, NCELLS);
 
   return (0);
 

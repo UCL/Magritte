@@ -26,7 +26,6 @@ typedef struct
   long neighbor[NRAYS];      // cell numbers of neighors
   long n_neighbors;          // number of neighbors
 
-
   double vx, vy, vz;         // x, y and z component of velocity field
 
   double density;            // density
@@ -36,6 +35,8 @@ typedef struct
   double rate[NREAC];        // reaction rate for each reaciton
 
   TEMPERATURE temperature;   // temperatures
+
+  long id;                   // id (is cell number when no id is needed)
 
 } CELL;
 

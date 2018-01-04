@@ -210,6 +210,70 @@ int initialize_char_array (char *array, long length)
 
 
 
+// initialize_cells: initialize the cell array
+// -------------------------------------------
+
+int initialize_cells (CELL *cell, long ncells)
+{
+
+
+# pragma omp parallel     \
+  shared (cell, ncells)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long n = start; n < stop; n++)
+  {
+    cell[n].x = 0.0;
+    cell[n].y = 0.0;
+    cell[n].z = 0.0;
+
+    cell[n].n_neighbors = 0;
+
+    for (long ray = 0; ray < NRAYS; ray++)
+    {
+      cell[n].neighbor[ray] = 0;
+    }
+
+    cell[n].vx = 0.0;
+    cell[n].vy = 0.0;
+    cell[n].vz = 0.0;
+
+    cell[n].density = 0.0;
+
+    for (int spec = 0; spec < NSPEC; spec++)
+    {
+      cell[n].abundance[spec] = 0.0;
+    }
+
+    for (int reac = 0; reac < NREAC; reac++)
+    {
+      cell[n].rate[reac] = 0.0;
+    }
+
+    cell[n].temperature.gas      = 0.0;
+    cell[n].temperature.dust     = 0.0;
+    cell[n].temperature.gas_prev = 0.0;
+
+    cell[n].id = n;
+  }
+  } // end of OpenMP parallel region
+
+
+  return(0);
+
+}
+
+
+
+
 // initialize_temperature_gas: set gas temperature to a certain initial value
 // --------------------------------------------------------------------------
 

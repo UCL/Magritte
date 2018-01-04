@@ -109,7 +109,7 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
           if (niterations[lspec]%4 == 0)
           {
-            acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+            acceleration_Ng (lspec, prev3_pop, prev2_pop, prev1_pop, pop);
           }
 
 #       endif
@@ -117,7 +117,7 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
         // Store populations of previous 3 iterations
 
-        store_populations(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+        store_populations (lspec, prev3_pop, prev2_pop, prev1_pop, pop);
 
 
         // Calculate source and opacity for all transitions over whole grid

@@ -46,6 +46,12 @@ int initialize_double_array_with_value (double *array, double value, long length
 int initialize_char_array (char *array, long length);
 
 
+// initialize_cells: initialize the cell array
+// -------------------------------------------
+
+int initialize_cells (CELL *cell, long ncells);
+
+
 // initialize_temperature_gas: set gas temperature to a certain initial value
 // --------------------------------------------------------------------------
 

@@ -128,11 +128,18 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
   vtkSmartPointer<vtkCellCenters> cellCentersFilter
     = vtkSmartPointer<vtkCellCenters>::New();
 
-# if VTK_MAJOR_VERSION <= 5
-  cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
+
+# if (VTK_MAJOR_VERSION <= 5)
+
+    cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
+
 # else
-  cellCentersFilter->SetInputData(ugrid);
+
+    cellCentersFilter->SetInputData(ugrid);
+
 # endif
+
+
   cellCentersFilter->VertexCellsOn();
   cellCentersFilter->Update();
 
@@ -223,5 +230,3 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
   return(0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

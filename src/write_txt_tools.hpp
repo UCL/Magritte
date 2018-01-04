@@ -16,7 +16,7 @@
 // write_grid: write grid again
 // ----------------------------
 
-int write_grid (std::string tag, CELL *cell);
+int write_grid (std::string tag, long ncells, CELL *cell);
 
 
 // write_healpixvectors: write unit HEALPix vectors

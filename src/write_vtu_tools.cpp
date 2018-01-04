@@ -16,6 +16,7 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkSmartPointer.h>
 #include <vtkDoubleArray.h>
+#include <vtkLongArray.h>
 
 #include <vtkCellData.h>
 #include <vtkVersion.h>
@@ -49,17 +50,24 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
   // Reformat Magritte output to append it to the grid
 
+  vtkSmartPointer<vtkLongArray> id
+    = vtkSmartPointer<vtkLongArray>::New();
+
   vtkSmartPointer<vtkDoubleArray> temp_gas
     = vtkSmartPointer<vtkDoubleArray>::New();
 
   vtkSmartPointer<vtkDoubleArray> temp_dust
     = vtkSmartPointer<vtkDoubleArray>::New();
 
-  vtkSmartPointer<vtkDoubleArray> prev_temp_gas
+  vtkSmartPointer<vtkDoubleArray> temp_gas_prev
     = vtkSmartPointer<vtkDoubleArray>::New();
 
   vtkSmartPointer<vtkDoubleArray> abn
     = vtkSmartPointer<vtkDoubleArray>::New();
+
+  id->SetNumberOfComponents(1);
+  id->SetNumberOfTuples(NCELLS);
+  id->SetName("cell_id");
 
   temp_gas->SetNumberOfComponents(1);
   temp_gas->SetNumberOfTuples(NCELLS);
@@ -69,9 +77,9 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
   temp_dust->SetNumberOfTuples(NCELLS);
   temp_dust->SetName("temperature_dust");
 
-  prev_temp_gas->SetNumberOfComponents(1);
-  prev_temp_gas->SetNumberOfTuples(NCELLS);
-  prev_temp_gas->SetName("prev_temperature_gas");
+  temp_gas_prev->SetNumberOfComponents(1);
+  temp_gas_prev->SetNumberOfTuples(NCELLS);
+  temp_gas_prev->SetName("prev_temperature_gas");
 
   abn->SetNumberOfComponents(NSPEC);
   abn->SetNumberOfTuples(NCELLS);
@@ -80,9 +88,10 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
   for (long n = 0; n < NCELLS; n++)
   {
-    temp_gas ->InsertValue(n, cell[n].temperature.gas);
-    temp_dust->InsertValue(n, cell[n].temperature.dust);
-    prev_temp_gas->InsertValue(n, cell[n].temperature.gas_prev);
+    id           ->InsertValue(n, cell[n].id);
+    temp_gas     ->InsertValue(n, cell[n].temperature.gas);
+    temp_dust    ->InsertValue(n, cell[n].temperature.dust);
+    temp_gas_prev->InsertValue(n, cell[n].temperature.gas_prev);
 
 
     double abundance[NSPEC];
@@ -99,9 +108,10 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
   // Add new arrays to grid
 
+  ugrid->GetCellData()->AddArray(id);
   ugrid->GetCellData()->AddArray(temp_gas);
   ugrid->GetCellData()->AddArray(temp_dust);
-  ugrid->GetCellData()->AddArray(prev_temp_gas);
+  ugrid->GetCellData()->AddArray(temp_gas_prev);
   ugrid->GetCellData()->AddArray(abn);
 
 
@@ -115,7 +125,7 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
   writer->SetFileName(file_name.c_str());
 
 
-# if VTK_MAJOR_VERSION <= 5
+# if (VTK_MAJOR_VERSION <= 5)
 
     writer->SetInput(ugrid);
 
@@ -124,6 +134,7 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
     writer->SetInputData(ugrid);
 
 # endif
+
 
   writer->Write();
 

@@ -357,9 +357,9 @@ int find_neighbors (long ncells, CELL *cell)
 
     // Locate all cell centers w.r.t. origin
 
-    double *ra2 = new double[ncells];   // squares lengths of local position vectors
+    double ra2[NCELLS];   // squares lengths of local position vectors
 
-    long *rb = new long[ncells];        // identifiers of local position vectors
+    long rb[NCELLS];      // identifiers of local position vectors
 
 
     for (long n = 0; n < ncells; n++)
