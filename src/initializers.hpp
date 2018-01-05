@@ -52,6 +52,12 @@ int initialize_char_array (char *array, long length);
 int initialize_cells (CELL *cell, long ncells);
 
 
+// initialize_cell_id: initialize the cell id's
+// --------------------------------------------
+
+int initialize_cell_id (CELL *cell, long ncells);
+
+
 // initialize_temperature_gas: set gas temperature to a certain initial value
 // --------------------------------------------------------------------------
 

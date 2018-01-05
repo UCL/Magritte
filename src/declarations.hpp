@@ -27,7 +27,7 @@
 // Helper constants
 
 #define MAX_WIDTH 13      // for printing
-#define BUFFER_SIZE 500   // max number of characters in a line
+#define BUFFER_SIZE 3500  // max number of characters in a line
 
 
 // Parameters for level population iteration

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
-
+from matplotlib.colors import LogNorm
 
 # Check whether the date stamp of the datafile is given
 if (len(sys.argv) > 1):
@@ -36,7 +36,7 @@ y_max = max(y)
 z_min = min(z)
 z_max = max(z)
 
-box_size = 83
+box_size = 60
 
 box_density = np.zeros( (box_size, box_size) )
 box_npoints = np.zeros( (box_size, box_size) )
@@ -60,24 +60,37 @@ sub2 = fig1.add_subplot(212)
 sta1 = fig2.add_subplot(211)
 sta2 = fig2.add_subplot(212)
 
-log_box_density = np.log(box_density)
+density_min = 1.0E-24
+density_max = 1.0E-18
+
+
+
+log_box_density = np.log(box_density+1.0E-99)
 log_box_npoints = np.log(box_npoints)
 
-im1 = sub1.imshow( log_box_density, aspect=(x_max-x_min)/(y_max-y_min), \
-                   cmap='hot', interpolation='gaussian' )
-im2 = sub2.imshow( box_npoints, aspect=(x_max-x_min)/(y_max-y_min),     \
-                   cmap='hot', interpolation='gaussian' )
+im1 = sub1.imshow( box_density, aspect=(x_max-x_min)/(y_max-y_min), \
+                   cmap='hot', interpolation='gaussian',            \
+                   norm=LogNorm(vmin=density_min, vmax=density_max) )
+im2 = sub2.imshow( box_npoints, aspect=(x_max-x_min)/(y_max-y_min), \
+                   cmap='hot', interpolation='nearest' )
 
 sta1.hist(np.log(density), bins=100)
 
 # sub1.axis('off')
 # sub2.axis('off')
 
+sub1.set_title("Material density")
+sub2.set_title("Cell density")
+
 fig1.colorbar(im1, ax=sub1)
 fig1.colorbar(im2, ax=sub2)
 
-fig1.savefig("../files/" + date_stamp + "_output/plots/grid.pdf", bbox_inches='tight')
-fig2.savefig("../files/" + date_stamp + "_output/plots/grid_stats.pdf", bbox_inches='tight')
+
+fig_name1 = "../files/{}_output/plots/grid{}.pdf".format(date_stamp, tag)
+fig_name2 = "../files/{}_output/plots/grid_stats{}.pdf".format(date_stamp, tag)
+
+fig1.savefig(fig_name1, bbox_inches='tight')
+fig2.savefig(fig_name2, bbox_inches='tight')
 
 
 #

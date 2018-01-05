@@ -1,4 +1,8 @@
-/* Parameters file for Magritte */
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
 
 #ifndef __PARAMETERS_HPP_INCLUDED__
 #define __PARAMETERS_HPP_INCLUDED__
@@ -13,6 +17,8 @@
 
 // #define INPUTFILE "output/files/_output/grid.vtu"
 
+// #define NCELLS ncells
+
 /* Input files */
 
 #define DIMENSIONS 2
@@ -21,15 +27,17 @@
 
 #define FIXED_NCELLS true
 
-#define INPUT_FORMAT '.txt'
+// #define INPUT_FORMAT '.txt'
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
-#define INPUTFILE "input/files/1Dn30.dat_conv.txt"
+// #define INPUTFILE "input/files/1Dn30.dat_conv.txt"
 
-// #define INPUT_FORMAT '.vtu'
+#define INPUT_FORMAT   '.vtu'
 
-// #define INPUTFILE "input/files/Aori_0001.vtu"
+#define INPUTFILE      "input/files/Aori_0001.vtu"
+
+#define APPEND_FILE    INPUTFILE
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
@@ -50,9 +58,7 @@
 
 #define THETA_CRIT 1.3
 
-#define ON_THE_FLY true
-
-#define CELL_BASED false
+#define CELL_BASED true
 
 
 /* Radiative transfer */

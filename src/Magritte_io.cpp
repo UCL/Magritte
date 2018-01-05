@@ -5,6 +5,7 @@
 
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "../parameters.hpp"
@@ -44,12 +45,15 @@ int main ()
 
   std::cout << "Finding neighbors...\n";
 
-  find_neighbors (NCELLS, cell);
+  read_neighbors ("output/files/18-01-05_16:05_output/neighbors.txt", NCELLS, cell);
 
 
-  // Crop grid
+  // find_neighbors (NCELLS, cell);
 
-  std::cout << "Cropping input grid...\n";
+  write_neighbors ("2", NCELLS, cell);
+
+
+  // Specify grid boundaries
 
   double x_min =  0.0E+00;
   double x_max =  8.0E+16;
@@ -58,28 +62,29 @@ int main ()
   double z_min =  0.0E+00;
   double z_max =  0.0E+00;
 
-  crop (NCELLS, cell, x_min, x_max, y_min, y_max, z_min, z_max);
-
 
   // Reduce grid
 
-  std::cout << "Reducing input grid...\n";
+  std::cout << "Reducing grid...\n";
 
-  reduce (NCELLS, cell);
+  double threshold = 100.0;
 
-
-  // write reduced grid as .txt file
-
-  std::cout << "Writing .txt grid...\n";
-
-  write_grid ("", NCELLS, cell);
+  reduce (NCELLS, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
 
 
-  // write inputfile with annotated cell id's
+  // write reduced grid as .txt file and .vtu file
 
-  std::cout << "Writing .vtu grid...\n";
+  std::cout << "  Writing .txt grid...\n";
 
-  write_vtu_output (NCELLS, cell, inputfile);
+  std::ostringstream strs;
+  strs << threshold;
+  std::string thres = strs.str();
+
+
+  write_grid ("reduced_" + thres, NCELLS, cell);
+
+  //
+  // write_vtu_output (NCELLS, cell, inputfile);
 
 
   return (0);

@@ -13,10 +13,16 @@
 #include "declarations.hpp"
 
 
-// write_grid: write grid again
-// ----------------------------
+// write_grid: write grid
+// ----------------------
 
 int write_grid (std::string tag, long ncells, CELL *cell);
+
+
+// write_neighbors: write neighbors of each cell
+// ---------------------------------------------
+
+int write_neighbors (std::string tag, long ncells, CELL *cell);
 
 
 // write_healpixvectors: write unit HEALPix vectors
@@ -79,10 +85,10 @@ int write_temperature_gas (std::string tag, long ncells, CELL *cell);
 int write_temperature_dust (std::string tag, long ncells, CELL *cell);
 
 
-// write_prev_temperature_gas: write previous gas temperatures at each point
+// write_temperature_gas_prev: write previous gas temperatures at each point
 //--------------------------------------------------------------------------
 
-int write_prev_temperature_gas (std::string tag, long ncells, CELL *cell);
+int write_temperature_gas_prev (std::string tag, long ncells, CELL *cell);
 
 
 // write_UV_field: write UV field at each point

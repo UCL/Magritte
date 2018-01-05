@@ -22,6 +22,8 @@ std::string output_directory = OUTPUT_DIRECTORY;
 
 const std::string inputfile             = INPUTFILE;        // path to input file
 
+const std::string append_file           = APPEND_FILE;      // path to input file
+
 const std::string spec_datafile         = SPEC_DATAFILE;    // path to data file with species
 
 const std::string reac_datafile         = REAC_DATAFILE;    // path to data file with reactions

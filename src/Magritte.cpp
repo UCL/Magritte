@@ -384,7 +384,7 @@ int main ()
 
         write_temperature_gas ("", NCELLS, cell);
         write_temperature_dust ("", NCELLS, cell);
-        write_prev_temperature_gas ("", NCELLS, cell);
+        write_temperature_gas_prev ("", NCELLS, cell);
 
 #     elif (INPUT_FORMAT == '.vtu')
 
@@ -500,7 +500,7 @@ int main ()
 
         write_temperature_gas ("", NCELLS, cell);
         write_temperature_dust ("", NCELLS, cell);
-        write_prev_temperature_gas ("", NCELLS, cell);
+        write_temperature_gas_prev ("", NCELLS, cell);
 
 #     elif (INPUT_FORMAT == '.vtu')
 
@@ -669,7 +669,7 @@ int main ()
 
 # if   (INPUT_FORMAT == '.vtu')
 
-  write_vtu_output (NCELLS, cell, inputfile);
+  write_vtu_output (NCELLS, cell, append_file);
 
 # elif (INPUT_FORMAT == '.txt')
 

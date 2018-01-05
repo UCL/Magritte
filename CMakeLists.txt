@@ -19,7 +19,6 @@ set(MAGRITTE_VERSION_MAJOR 0)
 set(MAGRITTE_VERSION_MINOR 1)
 
 
-
 # Resize the stack to 128 Mb (UNIX version)
 #add_custom_target( RESIZE_STACK ALL
 #                   COMMAND ulimit -S -s 131072 )
@@ -30,6 +29,7 @@ add_custom_command(OUTPUT  src/Magritte_config.hpp
                    COMMAND bash run_setup.sh
                    WORKING_DIRECTORY setup
                    DEPENDS parameters.hpp)
+
 add_custom_target(MAKE_SETUP
                   DEPENDS src/Magritte_config.hpp)
 
@@ -58,23 +58,23 @@ endif()
 
 # Create executable for Magritte main code
 add_executable(Magritte.exe src/Magritte.cpp)
-
-
 # Ensure that Magritte depends on setup command defined above
 add_dependencies(Magritte.exe MAKE_SETUP)
-
-
 # Link the library of the /src directory to Magritte main code
 target_link_libraries(Magritte.exe _MAGRITTE)
 
 
 # Create executable for Magritte_io
 add_executable(Magritte_io.exe src/Magritte_io.cpp)
-
-
 # Ensure that Magritte_io depends on setup command defined above
 add_dependencies(Magritte_io.exe MAKE_SETUP)
-
-
 # Link the library of the /src directory to Magritte main code
 target_link_libraries(Magritte_io.exe _IO)
+
+
+# Create executable for Magritte_io
+add_executable(Magritte_o.exe src/Magritte_o.cpp)
+# Ensure that Magritte_io depends on setup command defined above
+add_dependencies(Magritte_o.exe MAKE_SETUP)
+# Link the library of the /src directory to Magritte main code
+target_link_libraries(Magritte_o.exe _O)

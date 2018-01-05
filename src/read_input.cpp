@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <string>
 
 #include <vtkXMLUnstructuredGridReader.h>
@@ -70,11 +71,11 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
 
   std::string tgas_file_name      = INPUT_DIRECTORY + "temperature_gas.txt";
   std::string tdust_file_name     = INPUT_DIRECTORY + "temperature_dust.txt";
-  std::string prev_tgas_file_name = INPUT_DIRECTORY + "prev_temperature_gas.txt";
+  std::string prev_tgas_file_name = INPUT_DIRECTORY + "temperature_gas_prev.txt";
 
   FILE *tgas      = fopen(tgas_file_name.c_str(), "r");
   FILE *tdust     = fopen(tdust_file_name.c_str(), "r");
-  FILE *prev_tgas = fopen(prev_tgas_file_name.c_str(), "r");
+  FILE *tgas_prev = fopen(prev_tgas_file_name.c_str(), "r");
 
 
   // For all lines in input file
@@ -87,15 +88,73 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
     fgets (buffer, BUFFER_SIZE, tdust);
     sscanf (buffer, "%lf", &(cell[n].temperature.dust));
 
-    fgets (buffer, BUFFER_SIZE, prev_tgas);
+    fgets (buffer, BUFFER_SIZE, tgas_prev);
     sscanf (buffer, "%lf", &(cell[n].temperature.gas_prev));
   }
 
   fclose (tgas);
   fclose (tdust);
-  fclose (prev_tgas);
+  fclose (tgas_prev);
 
 # endif
+
+
+  return (0);
+
+}
+
+
+
+
+// read_neighbors: read neighbors
+// ------------------------------
+
+int read_neighbors (std::string file_name, long ncells, CELL *cell)
+{
+
+  char buffer[BUFFER_SIZE];   // buffer for a line of data
+
+
+  // Read input file
+
+  FILE *file = fopen(file_name.c_str(), "r");
+
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+
+  // char buffer[BUFFER_SIZE];   // buffer for a line of data
+
+
+  // For all lines in input file
+
+  for (long n = 0; n < NCELLS; n++)
+  {
+    long buffer1;
+
+    fscanf (file, "%ld", &buffer1);
+    
+    cell[n].n_neighbors = buffer1;
+
+    for (long r = 0; r < NRAYS; r++)
+    {
+      long buffer2;
+
+      fscanf (file, "%ld", &buffer2);
+
+      cell[n].neighbor[r] = buffer2;
+    }
+
+    fgets (buffer, BUFFER_SIZE, file);
+  }
+
+
+  fclose(file);
 
 
   return (0);
@@ -110,7 +169,6 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
 
 int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
 {
-
 
   // Read data from the .vtu file
 
@@ -194,6 +252,14 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
       }
     }
 
+    if (name == "v3")
+    {
+      for (long n=0; n<NCELLS; n++)
+      {
+        cell[n].vz = data->GetTuple1(n);
+      }
+    }
+
 
 #   if (RESTART)
 
@@ -213,7 +279,7 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
       }
     }
 
-    if (name == "prev_temperature_gas")
+    if (name == "temperature_gas_prev")
     {
       for (long n=0; n<NCELLS; n++)
       {

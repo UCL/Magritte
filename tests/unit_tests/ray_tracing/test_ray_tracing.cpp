@@ -223,6 +223,9 @@ TEST_CASE("Cell structure")
 
   find_neighbors (ncells, cell);
 
+  write_neighbors ("", ncells, cell);
+
+
   for (long c = 0; c < ncells; c++)
   {
     printf("%ld\n", cell[c].n_neighbors);
@@ -233,11 +236,7 @@ TEST_CASE("Cell structure")
     }
   }
 
-
-
-  // printf("%ld\n", NRAYS);
-
-  // write_healpixvectors("");
+  write_healpixvectors("");
 
   double dZ = 0.0;
 

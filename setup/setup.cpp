@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Setup: Read the sizes of the datafile and use these in definitions.hpp                        */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -28,43 +20,42 @@
 #include "setup_healpixvectors.hpp"
 
 
-
-/* main: Sets up the definitions.hpp file                                                        */
-/*-----------------------------------------------------------------------------------------------*/
+// main: Sets up Magritte_config.hpp file
+// ------------- ------------------------
 
 int main()
 {
 
 
-  printf("                \n");
-  printf("Setup Magritte  \n");
-  printf("--------------\n\n");
+  printf("              \n");
+  printf("Setup Magritte\n");
+  printf("--------------\n");
+  printf("              \n");
 
 
 
 
-
-  /*   READ PARAMETERS                                                                           */
-  /*_____________________________________________________________________________________________*/
+  // READ PARAMETERS
+  // _______________
 
 
   printf("(setup): reading the parameters \n");
 
 
-  /* Get nrays from line 11 in PARAMETERS_FILE */
+  // Get nrays from line 11 in PARAMETERS_FILE
 
 # if (DIMENSIONS == 3)
 
-  long nrays = 12*NSIDES*NSIDES;
+    long nrays = 12*NSIDES*NSIDES;
 
 # else
 
-  long nrays = NRAYS;
+    long nrays = NRAYS;
 
 # endif
 
 
-  /* Get the number of grid points from the input file */
+  // Get number of grid points from input file
 
   std::string inputfile = INPUTFILE;
 
@@ -81,7 +72,8 @@ int main()
 
 # endif
 
-  /* Get the number of species from the species data file */
+
+  // Get number of species from the species data file
 
   std::string spec_datafile = SPEC_DATAFILE;
 
@@ -90,7 +82,7 @@ int main()
   int nspec = get_NSPEC(spec_datafile);
 
 
-  /* Get the line data files */
+  // Get line data files
 
   std::string line_datafile[NLSPEC] = LINE_DATAFILES;
 
@@ -100,7 +92,7 @@ int main()
   }
 
 
-  /* Get the number of reactions from the reaction data file */
+  // Get number of reactions from reaction data file
 
   std::string reac_datafile = REAC_DATAFILE;
 
@@ -149,20 +141,16 @@ int main()
   printf("(setup): parameters read \n\n");
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   EXTRACT PARAMETERS FROM THE LINE DATA                                                     */
-  /*_____________________________________________________________________________________________*/
+  // EXTRACT PARAMETERS FROM LINE DATA
+  // _________________________________
 
 
   printf("(setup): extracting parameters from line data \n");
 
 
-  /* Setup data structures */
+  // Setup data structures
 
   int nlev[NLSPEC];
 
@@ -278,25 +266,21 @@ int main()
   printf("(setup): parameters extracted from line data \n\n");
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   SETUP HEALPIX VECTORS AND FIND ANTIPODAL PAIRS                                            */
-  /*_____________________________________________________________________________________________*/
+  // SETUP HEALPIX VECTORS AND FIND ANTIPODAL PAIRS
+  // ______________________________________________
 
 
   printf("(setup): creating HEALPix vectors \n");
 
 
-  /* Create the (unit) HEALPix vectors and find antipodal pairs */
+  // Create (unit) HEALPix vectors and find antipodal pairs
 
-  double *healpixvector;                    /* array of HEALPix vectors for each ipix pixel */
+  double *healpixvector;   // array of HEALPix vectors for each ipix pixel
   healpixvector = (double*) malloc( 3*nrays*sizeof(double) );
 
-  long *antipod;                                             /* gives antipodal ray for each ray */
+  long *antipod;           // gives antipodal ray for each ray
   antipod = (long*) malloc( nrays*sizeof(long) );
 
 
@@ -306,14 +290,10 @@ int main()
   printf("(setup): HEALPix vectors created \n\n");
 
 
-  /*_____________________________________________________________________________________________*/
 
 
-
-
-
-  /*   WRITE CONFIG FILE                                                                         */
-  /*_____________________________________________________________________________________________*/
+  // WRITE CONFIG FILE
+  // _________________
 
 
   printf("(setup): setting up Magritte_config.hpp \n");
@@ -321,20 +301,21 @@ int main()
 
   FILE *config_file = fopen("../src/Magritte_config.hpp", "w");
 
+
 # if (FIXED_NCELLS)
 
-  fprintf( config_file, "#define NCELLS %ld \n\n", ncells );
+    fprintf( config_file, "#define NCELLS %ld \n\n", ncells );
 
 # else
 
-  fprintf( config_file, "#define NCELLS ncells \n\n");
+    fprintf( config_file, "#define NCELLS ncells \n\n");
 
 # endif
 
 
 # if (DIMENSIONS == 3)
 
-  fprintf( config_file, "#define NRAYS %ld \n\n", nrays );
+    fprintf( config_file, "#define NRAYS %ld \n\n", nrays );
 
 # endif
 
@@ -412,25 +393,17 @@ int main()
   printf("(setup): Magritte_config.hpp is set up \n\n");
 
 
-  /*_____________________________________________________________________________________________*/
-
-
-
-
   printf("(setup): done, Magritte can now be compiled \n\n");
 
   return(0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-
-
-/* write_int_array: write an array of int to the config file                                     */
-/*-----------------------------------------------------------------------------------------------*/
+// write_int_array: write an array of int to config file
+// -----------------------------------------------------
 
 int write_int_array(FILE *file, std::string NAME, int *array, long length)
 {
@@ -449,14 +422,11 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-
-
-/* write_long_array: write an array of long to the config file                                   */
-/*-----------------------------------------------------------------------------------------------*/
+// write_long_array: write an array of long to config file
+// -------------------------------------------------------
 
 int write_long_array(FILE *file, std::string NAME, long *array, long length)
 {
@@ -475,14 +445,11 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-
-
-/* write_double_array: write an array of int to the config file                                  */
-/*-----------------------------------------------------------------------------------------------*/
+// write_double_array: write an array of int to config file
+// --------------------------------------------------------
 
 int write_double_array(FILE *file, std::string NAME, double *array, long length)
 {
@@ -500,5 +467,3 @@ int write_double_array(FILE *file, std::string NAME, double *array, long length)
   return(0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

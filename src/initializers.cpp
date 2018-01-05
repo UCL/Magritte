@@ -274,6 +274,39 @@ int initialize_cells (CELL *cell, long ncells)
 
 
 
+// initialize_cell_id: initialize the cell id's
+// --------------------------------------------
+
+int initialize_cell_id (CELL *cell, long ncells)
+{
+
+
+# pragma omp parallel     \
+  shared (cell, ncells)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long n = start; n < stop; n++)
+  {
+    cell[n].id = n;
+  }
+  } // end of OpenMP parallel region
+
+
+  return(0);
+
+}
+
+
+
+
 // initialize_temperature_gas: set gas temperature to a certain initial value
 // --------------------------------------------------------------------------
 

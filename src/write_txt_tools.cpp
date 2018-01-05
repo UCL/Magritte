@@ -50,7 +50,7 @@ int write_grid (std::string tag, long ncells, CELL *cell)
 
   for (long n = 0; n < NCELLS; n++)
   {
-    if (cell[n].id == n)
+    if (cell[n].id == n)   // cell[n].id == n means cell was not removed
     {
       fprintf (file, "%ld\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\n",
                cell[n].id,
@@ -66,6 +66,51 @@ int write_grid (std::string tag, long ncells, CELL *cell)
 
 
   printf("Printed a grid with %ld cells out of a total of %ld\n", total, NCELLS);
+
+  return (0);
+
+}
+
+
+
+
+// write_neighbors: write neighbors of each cell
+// ---------------------------------------------
+
+int write_neighbors (std::string tag, long ncells, CELL *cell)
+{
+
+  if (!tag.empty())
+  {
+    tag = "_" + tag;
+  }
+
+
+  std::string file_name = output_directory + "neighbors" + tag + ".txt";
+
+  FILE *file = fopen (file_name.c_str(), "w");
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+  for (long p = 0; p < ncells; p++)
+  {
+    fprintf (file, "%ld\t", cell[p].n_neighbors);
+
+    for (long n = 0; n < NRAYS; n++)
+    {
+      fprintf (file, "%ld\t", cell[p].neighbor[n]);
+    }
+
+    fprintf (file, "\n");
+  }
+
+  fclose (file);
+
 
   return (0);
 
@@ -363,7 +408,7 @@ int write_level_populations (std::string tag, double *pop)
 
     if (file == NULL)
     {
-      std :: cout << "Error opening file " << file_name << "!\n";
+      std::cout << "Error opening file " << file_name << "!\n";
       std::cout << file_name + "\n";
       exit (1);
     }
@@ -519,10 +564,10 @@ int write_temperature_dust (std::string tag, long ncells, CELL *cell)
 
 
 
-// write_prev_temperature_gas: write previous gas temperatures at each cell
+// write_temperature_gas_prev: write previous gas temperatures at each cell
 // ------------------------------------------------------------------------
 
-int write_prev_temperature_gas(std::string tag, long ncells, CELL *cell)
+int write_temperature_gas_prev(std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
@@ -530,7 +575,7 @@ int write_prev_temperature_gas(std::string tag, long ncells, CELL *cell)
     tag = "_" + tag;
   }
 
-  std::string file_name = output_directory + "prev_temperature_gas" + tag + ".txt";
+  std::string file_name = output_directory + "temperature_gas_prev" + tag + ".txt";
 
   FILE *file = fopen (file_name.c_str(), "w");
 

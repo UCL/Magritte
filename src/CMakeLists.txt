@@ -88,3 +88,16 @@ reduce.cpp)
 # Link the libraries of the subdirectories to this library
 target_link_libraries(_IO _HEALPix)
 target_link_libraries(_IO ${VTK_LIBRARIES})
+
+
+# Create a library
+add_library(_O
+read_input.cpp
+initializers.cpp
+write_output.cpp
+write_txt_tools.cpp
+write_vtu_tools.cpp)
+
+# Link the libraries of the subdirectories to this library
+target_link_libraries(_O _HEALPix)
+target_link_libraries(_O ${VTK_LIBRARIES})

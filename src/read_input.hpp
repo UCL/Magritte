@@ -21,6 +21,12 @@
 int read_txt_input (std::string inputfile, long ncells, CELL *cell);
 
 
+// read_neighbors: read neighbors
+// ------------------------------
+
+int read_neighbors (std::string file_name, long ncells, CELL *cell);
+
+
 // read_vtu_input: read input file
 // -------------------------------
 
