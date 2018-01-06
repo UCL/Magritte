@@ -26,7 +26,7 @@ int calc_LTE_populations (long ncells, CELL *cell, double *energy, double *weigh
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    
+
 #   pragma omp parallel                                                            \
     shared (cell, energy, weight, pop, nlev, cum_nlev, species, lspec_nr, lspec)   \
     default (none)
@@ -63,7 +63,7 @@ int calc_LTE_populations (long ncells, CELL *cell, double *energy, double *weigh
         long p_i = LSPECGRIDLEV(lspec,n,i);
         int  l_i = LSPECLEV(lspec,i);
 
-        pop[p_i] = cell[n].density * species[lspec_nr[lspec]].abn[n] * weight[l_i]
+        pop[p_i] = cell[n].density * cell[n].abundance[lspec_nr[lspec]] * weight[l_i]
                    * exp( -energy[l_i]/(KB*cell[n].temperature.gas) ) / partition_function;
 
         total_population = total_population + pop[p_i];
@@ -80,7 +80,7 @@ int calc_LTE_populations (long ncells, CELL *cell, double *energy, double *weigh
 
       // Check if total population adds up to density
 
-      if ((total_population-cell[n].density*species[lspec_nr[lspec]].abn[n])/total_population > 1.0E-3)
+      if ((total_population-cell[n].density*cell[n].abundance[lspec_nr[lspec]])/total_population > 1.0E-3)
       {
         printf ("\nERROR : total of level populations differs from density !\n\n");
       }

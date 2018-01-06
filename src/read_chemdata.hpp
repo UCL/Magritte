@@ -1,42 +1,26 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for read_chemdata.cpp                                                                     */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __READ_CHEMDATA_HPP_INCLUDED__
 #define __READ_CHEMDATA_HPP_INCLUDED__
 
 
-
 #include <string>
 
 
+// read_species: read species from data file
+// -----------------------------------------
 
-/* read_species: read the species from the data file                                             */
-/*-----------------------------------------------------------------------------------------------*/
-
-int read_species(std::string spec_datafile, double *initial_abn);
-
-/*-----------------------------------------------------------------------------------------------*/
+int read_species (std::string spec_datafile, long ncells, CELL *cell, double *initial_abn);
 
 
+// read_reactions: read reactoins from (CSV) data file
+// ---------------------------------------------------
 
-/* read_reactions: read the reactoins from the (CSV) data file                                                  */
-/*-----------------------------------------------------------------------------------------------*/
-
-int read_reactions(std::string reac_datafile);
-
-/*-----------------------------------------------------------------------------------------------*/
+int read_reactions (std::string reac_datafile);
 
 
-
-#endif /* __READ_CHEMDATA_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __READ_CHEMDATA_HPP_INCLUDED__

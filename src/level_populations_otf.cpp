@@ -275,7 +275,7 @@ int level_populations_otf (long ncells, CELL *cell, int *irad, int*jrad, double 
             double dpop = pop[p_i] - prev1_pop[p_i];
             double spop = pop[p_i] + prev1_pop[p_i];
 
-            double min_pop = 1.0E-10 * species[ lspec_nr[lspec] ].abn[n];
+            double min_pop = 1.0E-10 * cell[n].abundance[lspec_nr[lspec]];
 
 
             if ( (pop[p_i] > min_pop) && (spop != 0.0) )

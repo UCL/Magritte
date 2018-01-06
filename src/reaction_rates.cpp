@@ -64,7 +64,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
     {
       H2_formation_nr = reac;
 
-      reaction[reac].k[gridp] = rate_H2_formation (reac, cell[gridp].temperature.gas,
+      cell[gridp].rate[reac] = rate_H2_formation (reac, cell[gridp].temperature.gas,
                                                          cell[gridp].temperature.dust);
     }
 
@@ -77,7 +77,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
               ||  R1 == "PAH0"  ||  R2 == "PAH0"  ||  R3 == "PAH0"
               ||  R1 == "PAH"   ||  R2 == "PAH"   ||  R3 == "PAH" )
     {
-      reaction[reac].k[gridp] = rate_PAH(reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_PAH(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -85,7 +85,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "CRP" )
     {
-      reaction[reac].k[gridp] = rate_CRP(reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_CRP(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -94,7 +94,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "XRAY" ){
 
-      reaction[reac].k[gridp] = 0.0;
+      cell[gridp].rate[reac] = 0.0;
     }
 
 
@@ -103,7 +103,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "XRSEC" ){
 
-      reaction[reac].k[gridp] = 0.0;
+      cell[gridp].rate[reac] = 0.0;
     }
 
 
@@ -112,7 +112,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "XRLYA" ){
 
-      reaction[reac].k[gridp] = 0.0;
+      cell[gridp].rate[reac] = 0.0;
     }
 
 
@@ -121,7 +121,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "XRPHOT" ){
 
-      reaction[reac].k[gridp] = 0.0;
+      cell[gridp].rate[reac] = 0.0;
     }
 
 
@@ -129,7 +129,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "CRPHOT" ){
 
-      reaction[reac].k[gridp] = rate_CRPHOT(reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_CRPHOT(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -137,7 +137,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "FREEZE" ){
 
-      reaction[reac].k[gridp] = rate_FREEZE(reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_FREEZE(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -145,7 +145,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "ELFRZE" ){
 
-      reaction[reac].k[gridp] = rate_ELFRZE(reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_ELFRZE(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -154,7 +154,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "CRH" ){
 
-      reaction[reac].k[gridp] = rate_CRH(reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_CRH(reac, cell[gridp].temperature.gas);
     }
 
 
@@ -163,7 +163,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "THERM" ){
 
-      reaction[reac].k[gridp] = rate_THERM( reac, cell[gridp].temperature.gas,
+      cell[gridp].rate[reac] = rate_THERM( reac, cell[gridp].temperature.gas,
                                                   cell[gridp].temperature.dust );
     }
 
@@ -172,7 +172,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "#" ){
 
-      reaction[reac].k[gridp] = rate_GM(reac);
+      cell[gridp].rate[reac] = rate_GM(reac);
     }
 
 
@@ -186,7 +186,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R2 == "PHOTD" ){
 
-      reaction[reac].k[gridp] = rate_PHOTD(reac, cell[gridp].temperature.gas, rad_surface, AV, gridp);
+      cell[gridp].rate[reac] = rate_PHOTD(reac, cell[gridp].temperature.gas, rad_surface, AV, gridp);
     }
 
 
@@ -197,7 +197,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
       H2_photodissociation_nr = reac;
 
-      reaction[reac].k[gridp] = rate_H2_photodissociation(reac, rad_surface, AV, column_H2, gridp);
+      cell[gridp].rate[reac] = rate_H2_photodissociation(reac, rad_surface, AV, column_H2, gridp);
     }
 
 
@@ -205,7 +205,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if ( R1 == "HD"  &&  R2 == "PHOTON"  &&  R3 == "" ){
 
-      reaction[reac].k[gridp] = rate_H2_photodissociation(reac, rad_surface, AV, column_HD, gridp);
+      cell[gridp].rate[reac] = rate_H2_photodissociation(reac, rad_surface, AV, column_HD, gridp);
     }
 
 
@@ -215,7 +215,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
               && ( P1 == "C"  ||  P2 == "C"  ||  P3 == "C"  || P4 == "C"  )
               && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O" ) )
     {
-      reaction[reac].k[gridp] = rate_CO_photodissociation (reac, rad_surface, AV,
+      cell[gridp].rate[reac] = rate_CO_photodissociation (reac, rad_surface, AV,
                                                            column_CO, column_H2, gridp);
     }
 
@@ -227,7 +227,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
     {
       C_ionization_nr = reac;
 
-      reaction[reac].k[gridp] = rate_C_photoionization (reac, cell[gridp].temperature.gas, rad_surface,
+      cell[gridp].rate[reac] = rate_C_photoionization (reac, cell[gridp].temperature.gas, rad_surface,
                                                         AV, column_C, column_H2, gridp);
     }
 
@@ -237,7 +237,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
     else if ( (R1 == "S")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               && ( (P1 == "S+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "S+") ))
     {
-      reaction[reac].k[gridp] = rate_SI_photoionization (reac, rad_surface, AV, gridp);
+      cell[gridp].rate[reac] = rate_SI_photoionization (reac, rad_surface, AV, gridp);
     }
 
 
@@ -245,7 +245,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else if (R2 == "PHOTON")
     {
-      reaction[reac].k[gridp] = rate_canonical_photoreaction (reac, cell[gridp].temperature.gas,
+      cell[gridp].rate[reac] = rate_canonical_photoreaction (reac, cell[gridp].temperature.gas,
                                                               rad_surface, AV, gridp);
     }
 
@@ -258,7 +258,7 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
 
     else
     {
-      reaction[reac].k[gridp] = rate_canonical (reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_canonical (reac, cell[gridp].temperature.gas);
     }
 
 
@@ -272,22 +272,22 @@ int reaction_rates (long ncells, CELL *cell, long gridp, double *rad_surface, do
     /* Rates less than 1E-99 are set to zero.                                                    */
     /* Grain-surface reactions and desorption mechanisms are allowed rates greater than 1.       */
 
-    if (reaction[reac].k[gridp] < 0.0)
+    if (cell[gridp].rate[reac] < 0.0)
     {
       printf("(reaction_rates): ERROR, negative rate for reaction %d \n", reac);
     }
 
-    else if ( (reaction[reac].k[gridp] > 1.0) && (R2 != "#") )
+    else if ( (cell[gridp].rate[reac] > 1.0) && (R2 != "#") )
     {
       printf("(reaction_rates): WARNING, rate too large for reaction %d \n", reac);
       printf("(reaction_rates): WARNING, rate is set to 1.0 \n");
 
-      reaction[reac].k[gridp] = 1.0;
+      cell[gridp].rate[reac] = 1.0;
     }
 
-    else if (reaction[reac].k[gridp] < 1.0E-99)
+    else if (cell[gridp].rate[reac] < 1.0E-99)
     {
-      reaction[reac].k[gridp] = 0.0;
+      cell[gridp].rate[reac] = 0.0;
     }
 
 

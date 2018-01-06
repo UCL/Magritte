@@ -98,7 +98,6 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
   for (long n = 0; n < NCELLS; n++)
   {
-
     id           ->InsertValue(n, cell[n].id);
     density      ->InsertValue(n, cell[n].density);
     temp_gas     ->InsertValue(n, cell[n].temperature.gas);
@@ -110,12 +109,11 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
     for (int spec = 0; spec < NSPEC; spec++)
     {
-      abundance[spec] = species[spec].abn[n];
+      abundance[spec] = cell[n].abundance[spec];
     }
 
     abn->InsertTuple(n, abundance);
-
-  } // end of n loop over grid points
+  }
 
 
   // Add new arrays to grid
@@ -131,6 +129,8 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
   // Write .vtu file
 
   std::string file_name = output_directory + "new_grid.vtu";
+  // std::string file_name = project_folder + "new_grid.vtu";
+
 
   vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer
     = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
@@ -159,12 +159,13 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
 
 
-// write_vtu_output: write all physical variables to vtu input grid
-// ----------------------------------------------------------------
+// append_vtu_output: append all physical variables to vtu append file
+// -------------------------------------------------------------------
 
 int append_vtu_output (long ncells, CELL *cell, std::string append_file)
 {
 
+  printf("FILE %s\n", append_file.c_str());
 
   // Read data from .vtu file on which we need to append data
 
@@ -298,12 +299,13 @@ int append_vtu_output (long ncells, CELL *cell, std::string append_file)
 
     for (int spec = 0; spec < NSPEC; spec++)
     {
-      abundance[spec] = species[spec].abn[IDs[n]];
+      abundance[spec] = cell[IDs[n]].abundance[spec];
     }
 
     abn->InsertTuple(n, abundance);
 
   } // end of n loop over grid points
+  printf("FILE %s\n", append_file.c_str());
 
 
   // Add new arrays to grid
@@ -318,7 +320,8 @@ int append_vtu_output (long ncells, CELL *cell, std::string append_file)
 
   // Write .vtu file
 
-  std::string file_name = output_directory + "new_grid.vtu";
+  std::string file_name = output_directory + "grid_appended.vtu";
+  // std::string file_name = project_folder + "grid_appended.vtu";
 
   vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer
     = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();

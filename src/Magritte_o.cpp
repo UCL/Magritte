@@ -38,15 +38,14 @@ int main ()
 
   read_txt_input (inputfile, NCELLS, cell);
 
-  read_neighbors ("output/files/18-01-05_output/", NCELLS, cell);
-
-
 
   // Append cell info to vtu input
 
   std::cout << "  Writing .vtu grid...\n";
 
-  write_vtu_output (NCELLS, cell, inputfile);
+  std::string append_file = "input/files/Aori/grid_reduced_0.1.vtu";
+
+  append_vtu_output (NCELLS, cell, append_file);
 
 
   return (0);

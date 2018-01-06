@@ -69,8 +69,6 @@ typedef struct
 
   double mass;       // molecular mass
 
-  double abn[NCELLS];   // abundance
-
 } SPECIES;
 
 
@@ -129,9 +127,6 @@ typedef struct
 
   double RT_min;    // RT_min coefficient to calculate rate coefficient k
   double RT_max;    // RT_max coefficient to calculate rate coefficient k
-
-
-  double k[NCELLS];   // reaction rate coefficient
 
   int    dup;       // Number of duplicates of this reaction
 

@@ -63,7 +63,7 @@ int level_population_solver_otf (CELL *cell, long gridp, int lspec, double *R, d
   }
 
 
-  b[nlev[lspec]-1] = cell[gridp].density * species[ lspec_nr[lspec] ].abn[gridp];
+  b[nlev[lspec]-1] = cell[gridp].density * cell[gridp].abundance[lspec_nr[lspec]];
 
 
   /*_____________________________________________________________________________________________*/

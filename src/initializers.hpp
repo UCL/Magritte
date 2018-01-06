@@ -76,10 +76,10 @@ int initialize_previous_temperature_gas (long ncells, CELL *cell);
 int guess_temperature_gas (long ncells, CELL *cell, double *UV_field);
 
 
-// initialize_abn: set abundanceces to initial values
-// --------------------------------------------------
+// initialize_abundances: set abundanceces to initial values
+// ---------------------------------------------------------
 
-int initialize_abn (long ncells, double *initial_abn, SPECIES *species);
+int initialize_abundances (long ncells, CELL *cell, double *initial_abn);
 
 
 // initialize_bool: initialize a boolean variable

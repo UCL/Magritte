@@ -66,7 +66,7 @@ int rate_equation_solver(CELL *cell, long gridp)
 
   user_data->gp          = gridp;
   user_data->cellpointer = cell;
-  user_data->electron_abundance = species[e_nr].abn[gridp];
+  user_data->electron_abundance = cell[gridp].abundance[e_nr];
 
 
   SUNMatrix       A  = NULL;
@@ -113,9 +113,9 @@ int rate_equation_solver(CELL *cell, long gridp)
 
   for (int i=0; i<NEQ; i++){
 
-    if(species[i+1].abn[gridp]>0.0){
+    if(cell[gridp].abundance[i+1]>0.0){
 
-      Ith(y,i) = (realtype) species[i+1].abn[gridp];
+      Ith(y,i) = (realtype) cell[gridp].abundance[i+1];
     }
     else{
 
@@ -252,16 +252,16 @@ int rate_equation_solver(CELL *cell, long gridp)
 
     if ( Ith(y,i) > 1.0E-30 ){
 
-      species[i+1].abn[gridp] = Ith(y,i);
+      cell[gridp].abundance[i+1] = Ith(y,i);
     }
     else {
 
-      species[i+1].abn[gridp] = 0.0;
+      cell[gridp].abundance[i+1] = 0.0;
     }
   }
 
 
-  species[e_nr].abn[gridp] = user_data->electron_abundance;
+  cell[gridp].abundance[e_nr] = user_data->electron_abundance;
 
 
 

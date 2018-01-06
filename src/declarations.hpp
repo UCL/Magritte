@@ -35,7 +35,7 @@
 #define POP_PREC        1.0E-2    // precision used in convergence criterion
 #define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
 #define POP_UPPER_LIMIT 1.0E+15   // highest population
-#define TAU_MAX         1.0E+3    // cut-off for optical depth along a ray
+#define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray
 
 
 // Parameters for thermal balance iteration
@@ -45,7 +45,9 @@
 
 // Output directory
 
-extern std::string output_directory;
+extern const std::string output_directory;
+
+// extern const std::string project_folder;
 
 
 // HEALPix vectors

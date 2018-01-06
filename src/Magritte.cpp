@@ -112,7 +112,7 @@ int main ()
 
   double initial_abn[NSPEC];
 
-  read_species (spec_datafile, initial_abn);
+  read_species (spec_datafile, NCELLS, cell, initial_abn);
 
 
   // Get and store the species numbers of some inportant species

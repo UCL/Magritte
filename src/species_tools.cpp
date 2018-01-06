@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* species_tools: Some useful functions to find species                                          */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -29,207 +21,180 @@
 
 
 
-/* get_canonical_name: get the name of the species as it appears in the species.dat file         */
-/*-----------------------------------------------------------------------------------------------*/
+// get_canonical_name: get name of species as it appears in species.dat file
+// -------------------------------------------------------------------------
 
-std::string get_canonical_name(std::string name)
+std::string get_canonical_name (std::string name)
 {
 
+  // electrons: e-
 
-  /* electrons: e- */
-
-  if ( name == "e" ){
-
+  if (name == "e")
+  {
     return "e-";
   }
 
 
-  /* di-hydrogen: H2 */
+  // di-hydrogen: H2
 
-  if ( (name == "pH2")  ||  (name == "oH2")  ||  (name == "p-H2")  ||  (name == "o-H2") ){
-
+  if ( (name == "pH2") || (name == "oH2") || (name == "p-H2") || (name == "o-H2") )
+  {
     return "H2";
   }
 
 
   return name;
+
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+//  get_species_nr: get number corresponding to given species symbol
+// -----------------------------------------------------------------
 
-
-/* get_species_nr: get the number corresponding to the given species symbol                      */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_species_nr(std::string name)
+int get_species_nr (std::string name)
 {
 
-
-  std::string canonical_name = get_canonical_name(name);    /* name as it appears in species.dat */
-
-
-  /* For all species */
-
-  for (int spec=0; spec<NSPEC; spec++){
-
-    if ( species[spec].sym == canonical_name ){
+  std::string canonical_name = get_canonical_name(name);    // name as it appears in species.dat
 
 
-      // cout << "I'm checking " << name << " and I think it is " << spec << "\n";
+  // For all species
 
+  for (int spec = 0; spec < NSPEC; spec++)
+  {
+    if (species[spec].sym == canonical_name)
+    {
       return spec;
     }
 
   }
 
 
-  /* If the function did not return yet, no match was found */
+  // If function did not return yet, no match was found
 
-  printf( "\n WARNING : there is no species with symbol %s", canonical_name.c_str() );
+  printf ("\n WARNING : there is no species with symbol %s", canonical_name.c_str());
 
 
-  /* Set the not found species to be the dummy (zeroth species) */
+  // Set not found species to be dummy (zeroth species)
 
   int spec = 0;
 
-  printf( "\n WARNING : the species %s  is set to the \"dummy\" reference with abundance 0.0 \n\n",
-          canonical_name.c_str() );
+  printf ("\n WARNING : the species %s  is set to the \"dummy\" reference with abundance 0.0 \n\n",
+          canonical_name.c_str());
 
 
   return spec;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// check_ortho_para: check whether it is ortho or para H2
+// ------------------------------------------------------
 
-
-/* check_ortho_para: check whether it is ortho or para H2                                        */
-/*-----------------------------------------------------------------------------------------------*/
-
-char check_ortho_para(std::string name)
+char check_ortho_para (std::string name)
 {
 
-  /* ortho-H2 */
+  // ortho-H2
 
-  if ( (name == "oH2")  ||  (name == "o-H2") ){
-
+  if ( (name == "oH2") || (name == "o-H2") )
+  {
     return 'o';
   }
 
 
-  /* para-H2 */
+  // para-H2
 
-  if ( (name == "pH2")  ||  (name == "p-H2") ){
-
+  if ( (name == "pH2") || (name == "p-H2") )
+  {
     return 'p';
   }
 
 
-  /* If the function did not return yet, ortho or para is Not relevant */
-
-  // cout << "NOT RELEVANT \n";
+  // If function did not return yet, ortho or para is not relevant
 
   return 'N';
-}
-
-/*-----------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/* get_charge: get the charge of a species as a multiple of minus the electron charge            */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_charge(std::string name)
-{
-
-
-  /* using the count standard library function */
-
-  int charge = count(name.begin(),name.end(),'+') - count(name.begin(),name.end(),'-');
-
-
-  /* get number of + minus the number of - in the expression */
-
-
-  return charge;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+//  get_charge: get charge of a species as a multiple of minus electron charge
+// ---------------------------------------------------------------------------
 
-
-/* get_electron_abundance: initialize electron abundance so that the gas is neutral              */
-/*-----------------------------------------------------------------------------------------------*/
-
-double get_electron_abundance(long gridp)
+int get_charge (std::string name)
 {
 
+  // get number of + minus the number of - in the expression
+
+  return count(name.begin(),name.end(),'+') - count(name.begin(),name.end(),'-');
+
+}
+
+
+
+
+// get_electron_abundance: initialize electron abundance so that cell is neutral
+// -----------------------------------------------------------------------------
+
+double get_electron_abundance (long ncells, CELL *cell, long gridp)
+{
 
   double charge_total = 0.0;
 
 
-  for (int spec=0; spec<NSPEC; spec++){
-
-    charge_total = charge_total + get_charge(species[spec].sym)*species[spec].abn[gridp];
+  for (int spec = 0; spec < NSPEC; spec++)
+  {
+    charge_total = charge_total + get_charge(species[spec].sym)*cell[gridp].abundance[spec];
   }
 
 
-  if (charge_total < 0.0){
-
+  if (charge_total < 0.0)
+  {
     printf("WARNING: gas is negatively charge even without electrons \n");
   }
+
 
   return charge_total;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-
-
-/* no_better_data: checks whether there data closer to the actual temperature                    */
-/*-----------------------------------------------------------------------------------------------*/
+// no_better_data: checks whether there data closer to actual temperature
+// ----------------------------------------------------------------------
 
 bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
 {
 
 
-  bool no_better_data = true;           /* true if there is no better data available in the file */
+  bool no_better_data = true;   // true if there is no better data available in the file
 
-  int bot_reac = reac - reaction[reac].dup;                   /* first instance of this reaction */
-  int top_reac = reac;                                         /* last instance of this reaction */
+  int bot_reac = reac - reaction[reac].dup;   // first instance of this reaction
+  int top_reac = reac;                        // last instance of this reaction
 
 
-  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) ){
-
+  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) )
+  {
     top_reac = top_reac + 1;
   }
 
 
-  /* If there are duplicates, look through duplicates for better data */
+  // If there are duplicates, look through duplicates for better data
 
-  if(bot_reac != top_reac){
-
-    for (int rc=bot_reac; rc<=top_reac; rc++){
-
+  if(bot_reac != top_reac)
+  {
+    for (int rc = bot_reac; rc <= top_reac; rc++)
+    {
       double RT_min = reaction[rc].RT_min;
       double RT_max = reaction[rc].RT_max;
 
-      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) ){
-
+      if( (rc != reac) && (RT_min <= temperature_gas) && (temperature_gas <= RT_max) )
+      {
         no_better_data = false;
       }
     }
@@ -239,5 +204,3 @@ bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
   return no_better_data;
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

@@ -47,7 +47,7 @@ int thermal_balance( long ncells, CELL *cell,
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
 
-  initialize_abn (NCELLS, initial_abn, species);
+  initialize_abundances (NCELLS, cell, initial_abn);
 
 # endif
 

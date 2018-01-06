@@ -28,7 +28,7 @@ int write_txt_output (long ncells, CELL *cell, double *pop, double *mean_intensi
 
   std::string tag = "";
 
-  write_abundances (tag);
+  write_abundances (tag, NCELLS, cell);
 
   write_level_populations (tag, pop);
 

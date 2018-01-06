@@ -58,7 +58,7 @@ int write_cum_raytot (std::string tag, long *cum_raytot);
 // write_abundances: write abundances at each point
 // ------------------------------------------------
 
-int write_abundances (std::string tag);
+int write_abundances (std::string tag, long ncells, CELL *cell);
 
 
 // write_level_populations: write level populations at each point for each transition
@@ -112,14 +112,14 @@ int write_rad_surface (std::string tag, double *rad_surface);
 // write_reaction_rates: write rad surface at each point
 // -----------------------------------------------------
 
-int write_reaction_rates (std::string tag, REACTION *reaction);
+int write_reaction_rates (std::string tag, long ncells, CELL *cell);
 
 
 // write_certain_reactions: write rates of certain reactions
 // ---------------------------------------------------------
 
-int write_certain_rates (std::string tag, std::string name, int nr_certain_reac,
-                         int *certain_reactions, REACTION *reaction);
+int write_certain_rates (std::string tag, long ncells, CELL *cell, std::string name,
+                         int nr_certain_reac, int *certain_reactions);
 
 
 // write_double_1: write a 1D list of doubles

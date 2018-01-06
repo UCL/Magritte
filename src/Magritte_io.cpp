@@ -39,18 +39,18 @@ int main ()
   std::cout << "Reading input grid...\n";
 
   read_vtu_input (inputfile, NCELLS, cell);
-
-
-  // Find neighboring cells for each cell
-
-  std::cout << "Finding neighbors...\n";
-
-  read_neighbors ("output/files/18-01-05_16:05_output/neighbors.txt", NCELLS, cell);
-
-
+  // read_txt_input (inputfile, NCELLS, cell);
+  //
+  // // Find neighboring cells for each cell
+  //
+  // std::cout << "Finding neighbors...\n";
+  //
+  read_neighbors ("input/files/Aori/neighbors.txt", NCELLS, cell);
+  //
+  //
   // find_neighbors (NCELLS, cell);
-
-  write_neighbors ("2", NCELLS, cell);
+  //
+  // write_neighbors ("", NCELLS, cell);
 
 
   // Specify grid boundaries
@@ -67,7 +67,7 @@ int main ()
 
   std::cout << "Reducing grid...\n";
 
-  double threshold = 100.0;
+  double threshold = 0.1E0;   // keep cells if rel_density_change > threshold
 
   reduce (NCELLS, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
 
@@ -83,7 +83,7 @@ int main ()
 
   write_grid ("reduced_" + thres, NCELLS, cell);
 
-  //
+
   // write_vtu_output (NCELLS, cell, inputfile);
 
 

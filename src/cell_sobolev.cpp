@@ -157,7 +157,7 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
 
   escape_probability = escape_probability / NRAYS;
 
-  printf("esc prob %lE\n", escape_probability);
+  // printf("esc prob %lE\n", escape_probability);
 
 
   // ADD CONTINUUM RADIATION (due to dust and CMB)

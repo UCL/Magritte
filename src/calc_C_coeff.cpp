@@ -29,7 +29,7 @@ int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int 
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
 
-  if (species[H2_nr].abn[gridp] > 0.0)
+  if (cell[gridp].abundance[H2_nr] > 0.0)
   {
     frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/cell[gridp].temperature.gas));
     frac_H2_ortho = 1.0 - frac_H2_para;
@@ -159,7 +159,7 @@ int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int 
 
         // Weigh contributions to C by abundance
 
-        double abundance = cell[gridp].density * species[spec].abn[gridp];
+        double abundance = cell[gridp].density * cell[gridp].abundance[spec];
 
         if      (ortho_para[LSPECPAR(lspec,par)] == 'o')
         {

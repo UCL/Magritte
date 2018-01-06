@@ -47,8 +47,8 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
   {
     fgets (buffer, BUFFER_SIZE, input);
 
-    sscanf (buffer, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
-            &(cell[n].x), &(cell[n].y), &(cell[n].z),
+    sscanf (buffer, "%ld\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
+            &(cell[n].id), &(cell[n].x), &(cell[n].y), &(cell[n].z),
             &(cell[n].vx), &(cell[n].vy), &(cell[n].vz),
             &(cell[n].density));
   }
@@ -64,14 +64,14 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
 # else
 
 
-  std::string INPUT_DIRECTORY = RESTART_DIRECTORY;
+  std::string input_directory = RESTART_DIRECTORY;
 
 
   // Read input temperature files to restart
 
-  std::string tgas_file_name      = INPUT_DIRECTORY + "temperature_gas.txt";
-  std::string tdust_file_name     = INPUT_DIRECTORY + "temperature_dust.txt";
-  std::string prev_tgas_file_name = INPUT_DIRECTORY + "temperature_gas_prev.txt";
+  std::string tgas_file_name      = input_directory + "temperature_gas.txt";
+  std::string tdust_file_name     = input_directory + "temperature_dust.txt";
+  std::string prev_tgas_file_name = input_directory + "temperature_gas_prev.txt";
 
   FILE *tgas      = fopen(tgas_file_name.c_str(), "r");
   FILE *tdust     = fopen(tdust_file_name.c_str(), "r");
@@ -128,26 +128,15 @@ int read_neighbors (std::string file_name, long ncells, CELL *cell)
   }
 
 
-  // char buffer[BUFFER_SIZE];   // buffer for a line of data
-
-
   // For all lines in input file
 
   for (long n = 0; n < NCELLS; n++)
   {
-    long buffer1;
-
-    fscanf (file, "%ld", &buffer1);
-    
-    cell[n].n_neighbors = buffer1;
+    fscanf (file, "%ld", &(cell[n].n_neighbors));
 
     for (long r = 0; r < NRAYS; r++)
     {
-      long buffer2;
-
-      fscanf (file, "%ld", &buffer2);
-
-      cell[n].neighbor[r] = buffer2;
+      fscanf (file, "%ld", &(cell[n].neighbor[r]));
     }
 
     fgets (buffer, BUFFER_SIZE, file);

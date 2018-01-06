@@ -345,7 +345,7 @@ int write_cum_raytot (std::string tag, long *cum_raytot)
 // write_abundances: write abundances at each point
 // ------------------------------------------------
 
-int write_abundances (std::string tag)
+int write_abundances (std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
@@ -369,7 +369,7 @@ int write_abundances (std::string tag)
   {
     for (int spec = 0; spec < NSPEC; spec++)
     {
-      fprintf (file, "%lE\t", species[spec].abn[n]);
+      fprintf (file, "%lE\t", cell[n].abundance[spec]);
     }
 
     fprintf (file, "\n");
@@ -730,7 +730,7 @@ int write_rad_surface (std::string tag, double *rad_surface)
 // write_reaction_rates: write rad surface at each cell
 // ----------------------------------------------------
 
-int write_reaction_rates (std::string tag, REACTION *reaction)
+int write_reaction_rates (std::string tag, long ncells, CELL *cell)
 {
 
   if (!tag.empty())
@@ -754,7 +754,7 @@ int write_reaction_rates (std::string tag, REACTION *reaction)
   {
     for (int reac = 0; reac < NREAC; reac++)
     {
-      fprintf (file, "%lE\t", reaction[reac].k[n]);
+      fprintf (file, "%lE\t", cell[n].rate[reac]);
     }
 
     fprintf (file, "\n");
@@ -773,8 +773,8 @@ int write_reaction_rates (std::string tag, REACTION *reaction)
 // write_certain_reactions: write rates of certain reactions
 // ---------------------------------------------------------
 
-int write_certain_rates (std::string tag, std::string name, int nr_certain_reac,
-                         int *certain_reactions, REACTION *reaction)
+int write_certain_rates (std::string tag, long ncells, CELL *cell, std::string name,
+                         int nr_certain_reac, int *certain_reactions)
 {
 
   if (!tag.empty())
@@ -827,7 +827,7 @@ int write_certain_rates (std::string tag, std::string name, int nr_certain_reac,
   {
     for (int reac = 0; reac < nr_certain_reac; reac++)
     {
-      fprintf (file, "%lE \t", reaction[certain_reactions[reac]].k[n]);
+      fprintf (file, "%lE \t", cell[n].rate[certain_reactions[reac]]);
     }
 
     fprintf (file, "\n");
@@ -1352,7 +1352,7 @@ int write_transition_levels (std::string tag, int *irad, int *jrad)
 //       for (int i=0; i<nlev[lspec]; i++){
 //
 //         double rel = pop[LSPECGRIDLEV(lspec,n, i)]
-//                      / cell[n].density / species[lspec_nr[lspec]].abn[n];
+//                      / cell[n].density / cell[n].abundance[lspec_nr[lspec]];
 //
 //         fprintf(file, "%lE\t", rel);
 //       }

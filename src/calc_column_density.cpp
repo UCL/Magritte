@@ -174,8 +174,8 @@ double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key,
     long gridp_evnr = evnr;
 
     column_density_res = evalpoint[gridp_evnr].dZ * PC
-                         *(cell[gridp].density*species[spec].abn[gridp]
-                           + cell[evnr].density*species[spec].abn[evnr]) / 2.0;
+                         *(cell[gridp].density*cell[gridp].abundance[spec]
+                           + cell[evnr].density*cell[evnr].abundance[spec]) / 2.0;
 
 
     // Numerical integration along ray (line of sight)
@@ -188,8 +188,8 @@ double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key,
 
       column_density_res = column_density_res
                            + evalpoint[gridp_evnr].dZ * PC
-                             * (cell[evnrp].density*species[spec].abn[evnrp]
-                                + cell[evnr].density*species[spec].abn[evnr]) / 2.0;
+                             * (cell[evnrp].density*cell[evnrp].abundance[spec]
+                                + cell[evnr].density*cell[evnr].abundance[spec]) / 2.0;
     }
 
   }
@@ -228,8 +228,8 @@ double cell_column_density (long ncells, CELL *cell, long origin, int spec, long
     while (next != NCELLS)
     {
       column_density_res = column_density_res
-                           + dZ * PC * (cell[next].density*species[spec].abn[next]
-                                        + cell[current].density*species[spec].abn[current]) / 2.0;
+                           + dZ * PC * (cell[next].density*cell[next].abundance[spec]
+                                        + cell[current].density*cell[current].abundance[spec]) / 2.0;
 
       current = next;
       next    = next_cell (NCELLS, cell, origin, ray, &Z, current, &dZ);

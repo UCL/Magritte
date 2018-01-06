@@ -346,7 +346,7 @@ TEST_CASE("Test chemistry"){
 
       for (long n=0; n<NCELLS; n++){
 
-        double difference = fabs(old_species[spec].abn[n] - species[spec].abn[n]);
+        double difference = fabs(old_cell[n].abundance[spec] - cell[n].abundance[spec]);
 
         if (difference > max_difference){
 

@@ -15,14 +15,16 @@
 
 // Output directory
 
-std::string output_directory = OUTPUT_DIRECTORY;
+const std::string output_directory = OUTPUT_DIRECTORY;
 
 
-// Input and data files
+// Input and data file paths (relative to Magritte folder)
+
+// const std::string project_folder        = PROJECT_FOLDER;   // path to project folder
 
 const std::string inputfile             = INPUTFILE;        // path to input file
 
-const std::string append_file           = APPEND_FILE;      // path to input file
+// const std::string append_file           = APPEND_FILE;      // path to append file
 
 const std::string spec_datafile         = SPEC_DATAFILE;    // path to data file with species
 

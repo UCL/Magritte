@@ -36,7 +36,7 @@ y_max = max(y)
 z_min = min(z)
 z_max = max(z)
 
-box_size = 60
+box_size = 43
 
 box_density = np.zeros( (box_size, box_size) )
 box_npoints = np.zeros( (box_size, box_size) )
@@ -80,7 +80,7 @@ sta1.hist(np.log(density), bins=100)
 # sub2.axis('off')
 
 sub1.set_title("Material density")
-sub2.set_title("Cell density")
+sub2.set_title("Cell density, total = "+str(NCELLS))
 
 fig1.colorbar(im1, ax=sub1)
 fig1.colorbar(im2, ax=sub2)
