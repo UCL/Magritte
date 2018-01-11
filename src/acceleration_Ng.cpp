@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* acceleration_Ng: Perform a Ng accelerated iteration for the level populations                 */
-/*                                                                                               */
-/* (based on accelerate in SMMOL)                                                                */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -25,39 +17,51 @@
 
 
 
-/* acceleration_Ng: perform a Ng accelerated iteration for the level populations                 */
-/*-----------------------------------------------------------------------------------------------*/
+// acceleration_Ng: perform a Ng accelerated iteration for level populations
+// -------------------------------------------------------------------------
 
-int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *prev1_pop,
-                     double *pop )
+int acceleration_Ng (long ncells, int lspec,
+                     double *prev3_pop, double *prev2_pop, double *prev1_pop, double *pop)
 {
 
-
-  /* All variable names are based on the lecture notes on radiative transfer by C.P. Dullemond */
-
-  double Q1[NCELLS*nlev[lspec]];
-  double Q2[NCELLS*nlev[lspec]];
-  double Q3[NCELLS*nlev[lspec]];
-
-  double Wt[NCELLS*nlev[lspec]];                                  /* weights of the inner product */
+  // All variable names are based on lecture notes by C.P. Dullemond
 
 
-# pragma omp parallel                                                                             \
-  shared( Q1, Q2, Q3, Wt, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop )           \
-  default( none )
+# if (FIXED_NCELLS)
+
+    double Q1[NCELLS*nlev[lspec]];
+    double Q2[NCELLS*nlev[lspec]];
+    double Q3[NCELLS*nlev[lspec]];
+
+    double Wt[NCELLS*nlev[lspec]];   // weights of inner product
+
+# else
+
+    double *Q1 = new double[ncells*nlev[lspec]];
+    double *Q2 = new double[ncells*nlev[lspec]];
+    double *Q3 = new double[ncells*nlev[lspec]];
+
+    double *Wt = new double[ncells*nlev[lspec]];   // weights of inner product
+
+# endif
+
+
+# pragma omp parallel                                                                            \
+  shared (ncells, Q1, Q2, Q3, Wt, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop)   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
   long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;  // Note brackets
 
 
-  for (long gridp=start; gridp<stop; gridp++){
-
-    for (int i=0; i<nlev[lspec]; i++){
-
+  for (long gridp = start; gridp < stop; gridp++)
+  {
+    for (int i = 0; i < nlev[lspec]; i++)
+    {
       long p_i = LSPECGRIDLEV(lspec,gridp,i);
       long w_i = LINDEX(gridp,i);
 
@@ -65,20 +69,20 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
       Q2[w_i] = pop[p_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
       Q3[w_i] = pop[p_i] - prev1_pop[p_i];
 
-      if (pop[p_i] > 0.0){
-
+      if (pop[p_i] > 0.0)
+      {
         Wt[w_i] = 1.0 / fabs(pop[p_i]);
       }
 
-      else {
-
+      else
+      {
         Wt[w_i] = 1.0;
       }
 
-    } /* end of i loop over levels */
+    } // end of i loop over levels
 
-  } /* end of gridp loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of gridp loop over grid points
+  } // end of OpenMP parallel region
 
 
   double A1 = 0.0;
@@ -93,8 +97,8 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
 
 # pragma omp parallel for reduction( + : A1, A2, B1, B2, C1, C2)
 
-  for (long gi=0; gi<NCELLS*nlev[lspec]; gi++){
-
+  for (long gi = 0; gi < NCELLS*nlev[lspec]; gi++)
+  {
     A1      = A1 + Wt[gi]*Q1[gi]*Q1[gi];
     A2 = B1 = A2 + Wt[gi]*Q1[gi]*Q2[gi];
     B2      = B2 + Wt[gi]*Q2[gi]*Q2[gi];
@@ -103,35 +107,47 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
   }
 
 
+# if (!FIXED_NCELLS)
+
+    delete [] Q1;
+    delete [] Q2;
+    delete [] Q3;
+
+    delete [] Wt;
+
+# endif
+
+
   double denominator = A1*B2 - A2*B1;
 
-  if (denominator == 0.0){
-
-    return(0);
+  if (denominator == 0.0)
+  {
+    return (0);
   }
 
-  else {
+  else
+  {
 
     double a = (C1*B2 - C2*B1) / denominator;
     double b = (C2*A1 - C1*A2) / denominator;
 
 
-#   pragma omp parallel                                                                           \
-    shared( a, b, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop )                   \
-    default( none )
+#   pragma omp parallel                                                                  \
+    shared (ncells, a, b, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop)   \
+    default (none)
     {
 
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
 
     long start = (thread_num*NCELLS)/num_threads;
-    long stop  = ((thread_num+1)*NCELLS)/num_threads;                        /* Note the brackets */
+    long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp=start; gridp<stop; gridp++){
-
-      for (int i=0; i<nlev[lspec]; i++){
-
+    for (long gridp = start; gridp < stop; gridp++)
+    {
+      for (int i = 0; i < nlev[lspec]; i++)
+      {
         long p_i = LSPECGRIDLEV(lspec,gridp,i);
         long w_i = LINDEX(gridp,i);
 
@@ -143,62 +159,56 @@ int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *pr
         prev2_pop[p_i] = prev1_pop[p_i];
         prev1_pop[p_i] = pop_tmp;
 
-      } /* end of i loop over levels */
+      } // end of i loop over levels
 
-    } /* end of gridp loop over grid points */
-    } /* end of OpenMP parallel region */
+    } // end of gridp loop over grid points
+    } // end of OpenMP parallel region
 
   }
 
 
-  return(0);
+  return (0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// store_populations: update previous populations
+// ----------------------------------------------
 
-
-/* store_populations: update the previous populations                                            */
-/*-----------------------------------------------------------------------------------------------*/
-
-int store_populations( int lspec, double *prev3_pop, double *prev2_pop, double *prev1_pop,
-                       double *pop )
+int store_populations (long ncells, int lspec,
+                       double *prev3_pop, double *prev2_pop, double *prev1_pop, double *pop)
 {
 
-
-# pragma omp parallel                                                                             \
-  shared( lspec, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop, pop )                           \
-  default( none )
+# pragma omp parallel                                                            \
+  shared (ncells, lspec, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop, pop)   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
   long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;  /* Note that the brackets are important here */
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long gridp=start; gridp<stop; gridp++){
-
-    for (int i=0; i<nlev[lspec]; i++){
-
+  for (long gridp = start; gridp < stop; gridp++)
+  {
+    for (int i = 0; i < nlev[lspec]; i++)
+    {
       long p_i = LSPECGRIDLEV(lspec,gridp,i);
 
       prev3_pop[p_i] = prev2_pop[p_i];
       prev2_pop[p_i] = prev1_pop[p_i];
       prev1_pop[p_i] = pop[p_i];
 
-    } /* end of i loop over levels */
+    }
 
-  } /* end of gridp loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of gridp loop over grid points
+  } // end of OpenMP parallel region
 
 
-  return(0);
+  return (0);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

@@ -27,8 +27,8 @@ int calc_LTE_populations (long ncells, CELL *cell, double *energy, double *weigh
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
 
-#   pragma omp parallel                                                   \
-    shared (cell, energy, weight, pop, nlev, cum_nlev, lspec_nr, lspec)   \
+#   pragma omp parallel                                                           \
+    shared (ncells, cell, energy, weight, pop, nlev, cum_nlev, lspec_nr, lspec)   \
     default (none)
     {
 

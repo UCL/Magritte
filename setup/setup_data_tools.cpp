@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* setup_data_tools: tools to extract information form the data files                            */
-/*                                                                                               */
-/* (based on read_species and read_rates in 3D-PDR)                                              */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -29,54 +21,47 @@
 #include "setup_data_tools.hpp"
 
 
+// get_NCELLS_txt: Count number of grid points in .txt input file
+// --------------------------------------------------------------
 
-/* get_NCELLS_txt: Count number of grid points in the .txt input file                             */
-/*-----------------------------------------------------------------------------------------------*/
-
-long get_NCELLS_txt(std::string inputfile)
+long get_NCELLS_txt (std::string inputfile)
 {
 
+  long ncells = 0;   // number of cells
 
-  long ncells = 0;                                                       /* number of grid points */
 
+  FILE *file = fopen (inputfile.c_str(), "r");
 
-  FILE *file = fopen(inputfile.c_str(), "r");
-
-  while ( !feof(file) ){
-
+  while (!feof(file))
+  {
     int ch = fgetc(file);
 
-    if (ch == '\n'){
-
+    if (ch == '\n')
+    {
       ncells++;
     }
-
   }
 
-  fclose(file);
+  fclose (file);
 
 
   return ncells;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_NCELLS_vtu: Count number of grid points in .vtu input file
+// --------------------------------------------------------------
 
-
-/* get_NCELLS_vtu: Count number of grid points in the .vtu input file                             */
-/*-----------------------------------------------------------------------------------------------*/
-
-long get_NCELLS_vtu(std::string inputfile)
+long get_NCELLS_vtu (std::string inputfile)
 {
 
+  // Read data from .vtu file
 
-  /* Read the data from the .vtu file */
-
-  vtkSmartPointer<vtkXMLUnstructuredGridReader> reader =
-    vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+  vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
+    = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
 
   reader->SetFileName(inputfile.c_str());
   reader->Update();
@@ -84,10 +69,10 @@ long get_NCELLS_vtu(std::string inputfile)
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
 
 
-  /* Extract the cell centers */
+  // Extract cell centers
 
-  vtkSmartPointer<vtkCellCenters> cellCentersFilter =
-    vtkSmartPointer<vtkCellCenters>::New();
+  vtkSmartPointer<vtkCellCenters> cellCentersFilter
+    = vtkSmartPointer<vtkCellCenters>::New();
 
 
 # if (VTK_MAJOR_VERSION <= 5)
@@ -108,21 +93,21 @@ long get_NCELLS_vtu(std::string inputfile)
   long ncells = cellCentersFilter->GetOutput()->GetNumberOfPoints();
 
 
-  /* Check whether there is cell data for every cell */
+  // Check whether there is cell data for every cell
 
   vtkCellData *cellData  = ugrid->GetCellData();
 
   int nr_of_arrays = cellData->GetNumberOfArrays();
 
 
-  for (int a=0; a<nr_of_arrays; a++){
-
+  for (int a = 0; a < nr_of_arrays; a++)
+  {
     vtkDataArray* data = cellData->GetArray(a);
 
     std::string name = data->GetName();
 
-    if ( (ncells != data->GetNumberOfTuples()) ){
-
+    if (ncells != data->GetNumberOfTuples())
+    {
       printf("ERROR: wrong number of %s values\n", name.c_str());
     }
   }
@@ -132,41 +117,36 @@ long get_NCELLS_vtu(std::string inputfile)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_NSPEC: get number of species in data file
+// ---------------------------------------------
 
-
-/* get_NSPEC: get the number of species in the data file                                         */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_NSPEC(std::string spec_datafile)
+int get_NSPEC (std::string spec_datafile)
 {
 
+  int nspec = 0;   // number of species
 
-  int nspec = 0;                                                            /* number of species */
 
+  // Open species data file
 
-  /* Open species data file */
+  FILE *file = fopen (spec_datafile.c_str(), "r");
 
-  FILE *file = fopen(spec_datafile.c_str(), "r");
-
-  while ( !feof(file) ){
-
+  while (!feof(file))
+  {
     int ch = fgetc(file);
 
-    if (ch == '\n'){
-
+    if (ch == '\n')
+    {
       nspec++;
     }
-
   }
 
-  fclose(file);
+  fclose (file);
 
 
-  /* Add two places, one for the dummy when a species is not found and one for the total */
+  // Add two places, one for dummy when a species is not found and one for total
 
   nspec = nspec + 2;
 
@@ -175,289 +155,267 @@ int get_NSPEC(std::string spec_datafile)
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_NREAC: get number of chemical reactions in data file
+// --------------------------------------------------------
 
-
-/* get_NREAC: get the number of chemical reactions in the data file                              */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_NREAC(std::string reac_datafile)
+int get_NREAC (std::string reac_datafile)
 {
 
+  int nreac = 0;   // number of species
 
-  int nreac = 0;                                                            /* number of species */
 
+  // Open species data file
 
-  /* Open species data file */
+  FILE *file = fopen (reac_datafile.c_str(), "r");
 
-  FILE *file = fopen(reac_datafile.c_str(), "r");
-
-  while ( !feof(file) && EOF ){
-
+  while (!feof(file) && EOF)
+  {
     int ch = fgetc(file);
 
-    if (ch == '\n'){
-
+    if (ch == '\n')
+    {
       nreac++;
     }
-
   }
 
-  fclose(file);
+  fclose (file);
 
 
   return nreac;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_nlev: get number of energy levels from data file in LAMBDA/RADEX format
+// ---------------------------------------------------------------------------
 
-/* get_nlev: get number of energy levels from data file in LAMBDA/RADEX format                   */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_nlev(std::string datafile)
+int get_nlev (std::string datafile)
 {
 
-
-  int nlev = 0;                                                              /* number of levels */
-
-
-  /* Open data file */
-
-  FILE *file = fopen(datafile.c_str(), "r");
+  int nlev = 0;   // number of levels
 
 
-  /* Skip first 5 lines */
+  // Open data file
 
-  for (int l=0; l<5; l++){
+  FILE *file = fopen (datafile.c_str(), "r");
 
-    fscanf(file, "%*[^\n]\n");
+
+  // Skip first 5 lines
+
+  for (int l = 0; l < 5; l++)
+  {
+    fscanf (file, "%*[^\n]\n");
   }
 
 
-  /* Read the number of energy levels */
+  // Read number of energy levels
 
-  fscanf(file, "%d \n", &nlev);
+  fscanf (file, "%d \n", &nlev);
 
 
-  fclose(file);
+  fclose (file);
 
 
   return nlev;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_nrad: get number of radiative transitions from data file in LAMBDA/RADEX format
+// -----------------------------------------------------------------------------------
 
-
-/* get_nrad: get number of radiative transitions from data file in LAMBDA/RADEX format           */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_nrad(std::string datafile)
+int get_nrad (std::string datafile)
 {
 
+  int nrad = 0;                     // number of radiative transitions
 
-  int nrad = 0;                                               /* number of radiative transitions */
-
-  int nlev = get_nlev(datafile);                                             /* number of levels */
-
-
-  /* Open data file */
-
-  FILE *file = fopen(datafile.c_str(), "r");
+  int nlev = get_nlev (datafile);   // number of levels
 
 
-  /* Skip first 8+nlev lines */
+  // Open data file
 
-  for (int l=0; l<8+nlev; l++){
+  FILE *file = fopen (datafile.c_str(), "r");
 
-    fscanf(file, "%*[^\n]\n");
+
+  // Skip first 8+nlev lines
+
+  for (int l = 0; l < 8+nlev; l++)
+  {
+    fscanf (file, "%*[^\n]\n");
   }
 
 
-  /* Read the number of radiative transitions */
+  // Read number of radiative transitions
 
-  fscanf(file, "%d \n", &nrad);
+  fscanf (file, "%d \n", &nrad);
 
 
-  fclose(file);
+  fclose (file);
 
 
   return nrad;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_ncolpar: get number of collision partners from data file in LAMBDA/RADEX format
+// -----------------------------------------------------------------------------------
 
-
-/* get_ncolpar: get number of collision partners from data file in LAMBDA/RADEX format           */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_ncolpar(std::string datafile)
+int get_ncolpar (std::string datafile)
 {
 
 
-  int ncolpar = 0;                                               /* number of collision partners */
+  int ncolpar = 0;                  // number of collision partners
 
-  int nlev = get_nlev(datafile);                                             /* number of levels */
-  int nrad = get_nrad(datafile);                              /* number of radiative transitions */
-
-
-  /* Open data file */
-
-  FILE *file = fopen(datafile.c_str(), "r");
+  int nlev = get_nlev (datafile);   // number of levels
+  int nrad = get_nrad (datafile);   // number of radiative transitions
 
 
-  /* Skip first 11+nlev+nrad lines */
+  // Open data file
 
-  for (int l=0; l<11+nlev+nrad; l++){
+  FILE *file = fopen (datafile.c_str(), "r");
 
-    fscanf(file, "%*[^\n]\n");
+
+  // Skip first 11+nlev+nrad lines
+
+  for (int l = 0; l < 11+nlev+nrad; l++)
+  {
+    fscanf (file, "%*[^\n]\n");
   }
 
 
-  /* Read the number of collision partners */
+  // Read number of collision partners
 
-  fscanf(file, "%d \n", &ncolpar);
+  fscanf (file, "%d \n", &ncolpar);
 
 
-  fclose(file);
+  fclose (file);
 
 
   return ncolpar;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_ncoltran: get number of collisional transitions from data file in LAMBDA/RADEX format
+// -----------------------------------------------------------------------------------------
 
-
-/* get_ncoltran: get number of collisional transitions from data file in LAMBDA/RADEX format     */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_ncoltran(std::string datafile, int *ncoltran, int *ncolpar, int *cum_ncolpar, int lspec)
+int get_ncoltran (std::string datafile, int *ncoltran, int *ncolpar, int *cum_ncolpar, int lspec)
 {
 
 
-  int loc_ncoltran=0;                                            /* number of collision partners */
+  int loc_ncoltran = 0;            // number of collision partners
 
-  int nlev = get_nlev(datafile);                                             /* number of levels */
-  int nrad = get_nrad(datafile);                              /* number of radiative transitions */
-
-
-  /* Open data file */
-
-  FILE *file = fopen(datafile.c_str(), "r");
+  int nlev = get_nlev(datafile);   // number of levels
+  int nrad = get_nrad(datafile);   // number of radiative transitions
 
 
-  /* Skip first 15+nlev+nrad lines */
+  // Open data file
 
-  for (int l=0; l<15+nlev+nrad; l++){
+  FILE *file = fopen (datafile.c_str(), "r");
 
-    fscanf(file, "%*[^\n]\n");
+
+  // Skip first 15+nlev+nrad lines
+
+  for (int l = 0; l < 15+nlev+nrad; l++)
+  {
+    fscanf (file, "%*[^\n]\n");
   }
 
 
-  /* Skip the collision partners that are already done */
+  // Skip collision partners that are already done
 
-  for (int par=0; par<ncolpar[lspec]; par++){
+  for (int par = 0; par < ncolpar[lspec]; par++)
+  {
+    if (ncoltran[LSPECPAR(lspec,par)] > 0)
+    {
 
-    if (ncoltran[LSPECPAR(lspec,par)] > 0){
+      // Skip next 9+ncoltran lines
 
-      /* Skip next 9+ncoltran lines */
-
-      for (int l=0; l<9+ncoltran[LSPECPAR(lspec,par)]; l++){
-
-        fscanf(file, "%*[^\n]\n");
+      for (int l = 0; l < 9+ncoltran[LSPECPAR(lspec,par)]; l++)
+      {
+        fscanf (file, "%*[^\n]\n");
       }
     }
   }
 
 
-  /* Read the number of collisional transitions */
+  // Read number of collisional transitions
 
-  fscanf(file, "%d \n", &loc_ncoltran);
+  fscanf (file, "%d \n", &loc_ncoltran);
 
 
-  fclose(file);
+  fclose (file);
 
 
   return loc_ncoltran;
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
+// get_ncoltemp: get number of collisional temperatures from data file in LAMBDA/RADEX format
+// ------------------------------------------------------------------------------------------
 
-
-/* get_ncoltemp: get number of collisional temperatures from data file in LAMBDA/RADEX format    */
-/*-----------------------------------------------------------------------------------------------*/
-
-int get_ncoltemp(std::string datafile, int *ncoltran, int *cum_ncolpar, int partner, int lspec)
+int get_ncoltemp (std::string datafile, int *ncoltran, int *cum_ncolpar, int partner, int lspec)
 {
 
 
-  int ncoltemp = 0;                                              /* number of collision partners */
+  int ncoltemp = 0;                       // number of collision partners
 
-  int nlev    = get_nlev(datafile);                                          /* number of levels */
-  int nrad    = get_nrad(datafile);                           /* number of radiative transitions */
-  int ncolpar = get_ncolpar(datafile);                           /* number of collision partners */
-
-
-  /* Open data file */
-
-  FILE *file = fopen(datafile.c_str(), "r");
+  int nlev    = get_nlev (datafile);      // number of levels
+  int nrad    = get_nrad (datafile);      // number of radiative transitions
+  int ncolpar = get_ncolpar (datafile);   // number of collision partners
 
 
-  /* Skip first 17+nlev+nrad lines */
+  // Open data file
 
-  for (int l=0; l<17+nlev+nrad; l++){
+  FILE *file = fopen (datafile.c_str(), "r");
 
-    fscanf(file, "%*[^\n]\n");
+
+  // Skip first 17+nlev+nrad lines
+
+  for (int l = 0; l < 17+nlev+nrad; l++)
+  {
+    fscanf (file, "%*[^\n]\n");
   }
 
 
-  /* Skip the collision partners before "partner" */
+  // Skip collision partners before "partner"
 
-  for (int par=0; par<partner; par++){
+  for (int par = 0; par < partner; par++)
+  {
 
+    // Skip next 9+ncoltran lines
 
-    /* Skip next 9+ncoltran lines */
-
-    for (int l=0; l<9+ncoltran[LSPECPAR(lspec,par)]; l++){
-
-      fscanf(file, "%*[^\n]\n");
+    for (int l = 0; l < 9+ncoltran[LSPECPAR(lspec,par)]; l++)
+    {
+      fscanf (file, "%*[^\n]\n");
     }
 
   }
 
 
-  /* Read the number of collisional temperatures */
+  // Read number of collisional temperatures
 
-  fscanf(file, "%d \n", &ncoltemp);
+  fscanf (file, "%d \n", &ncoltemp);
 
 
-  fclose(file);
+  fclose (file);
 
 
   return ncoltemp;
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

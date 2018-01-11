@@ -21,7 +21,7 @@
 // cooling: calculate total cooling
 // --------------------------------
 
-double cooling (long gridp, int *irad, int *jrad, double *A_coeff, double *B_coeff,
+double cooling (long ncells, long gridp, int *irad, int *jrad, double *A_coeff, double *B_coeff,
                 double *frequency, double *weight, double *pop, double *mean_intensity)
 {
 

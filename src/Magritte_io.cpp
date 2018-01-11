@@ -21,6 +21,8 @@
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
 
+#include "../setup/setup_data_tools.hpp"
+
 
 int main ()
 {
@@ -29,7 +31,10 @@ int main ()
 
   std::cout << "Defining and initializing cells...\n";
 
-  CELL cell[NCELLS];
+
+  long ncells = get_NCELLS_vtu (inputfile);
+
+  CELL *cell = new CELL[ncells];
 
   initialize_cells (cell, NCELLS);
 
@@ -110,6 +115,8 @@ int main ()
 
 
   write_vtu_output (NCELLS, cell, inputfile);
+
+  delete [] cell;
 
 
   return (0);

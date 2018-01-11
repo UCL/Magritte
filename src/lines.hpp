@@ -14,19 +14,18 @@
 // line_source: calculate line source function
 //--------------------------------------------
 
-int line_source (int *irad, int *jrad, double *A_coeff, double *B_coeff, double *pop, int lspec,
-                 double *source);
+int line_source (long ncells, int *irad, int *jrad, double *A_coeff, double *B_coeff,
+                 double *pop, int lspec, double *source);
 
 
 // line_opacity: calculate line opacity
 // ------------------------------------
 
-int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, double *pop, int lspec,
-                  double *opacity);
+int line_opacity (long ncells, int *irad, int *jrad, double *frequency, double *B_coeff,
+                  double *pop, int lspec, double *opacity);
 
 
 #if (!CELL_BASED)
-
 
   // line_profile: calculate line profile function
   // ---------------------------------------------
@@ -34,16 +33,13 @@ int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, doub
   double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
                        double freq, double line_freq, long gridp);
 
-
 #else
-
 
   // line_profile: calculate line profile function
   // ---------------------------------------------
 
   double cell_line_profile (long ncells, CELL *cell, double velocity,
                             double freq, double line_freq, long gridp);
-
 
 #endif // if not CELL_BASED
 

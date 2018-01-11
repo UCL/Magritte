@@ -18,8 +18,8 @@
 // line_source: calculate line source function
 // -------------------------------------------
 
-int line_source (int *irad, int *jrad, double *A_coeff, double *B_coeff, double *pop, int lspec,
-                 double *source)
+int line_source (long ncells, int *irad, int *jrad, double *A_coeff, double *B_coeff,
+                 double *pop, int lspec, double *source)
 {
 
 
@@ -36,9 +36,9 @@ int line_source (int *irad, int *jrad, double *A_coeff, double *B_coeff, double 
     double B_ji = B_coeff[b_ji];
 
 
-#   pragma omp parallel                                                                        \
-    shared( A_ij, B_ij, B_ji, pop, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source )   \
-    default( none )
+#   pragma omp parallel                                                                               \
+    shared (ncells, A_ij, B_ij, B_ji, pop, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source)   \
+    default (none)
     {
 
     int num_threads = omp_get_num_threads();
@@ -83,8 +83,8 @@ int line_source (int *irad, int *jrad, double *A_coeff, double *B_coeff, double 
 // line_opacity: calculate line opacity
 // ------------------------------------
 
-int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, double *pop, int lspec,
-                  double *opacity)
+int line_opacity (long ncells, int *irad, int *jrad, double *frequency, double *B_coeff,
+                  double *pop, int lspec, double *opacity)
 {
 
   for (int kr=0; kr<nrad[lspec]; kr++){
@@ -99,10 +99,10 @@ int line_opacity (int *irad, int *jrad, double *frequency, double *B_coeff, doub
     double B_ji = B_coeff[b_ji];
 
 
-#   pragma omp parallel                                                                          \
-    shared( frequency, b_ij, B_ij, B_ji, pop, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev,   \
-            opacity )                                                                            \
-    default( none )
+#   pragma omp parallel                                                  \
+    shared (ncells, frequency, b_ij, B_ij, B_ji, pop, lspec, kr, i, j,   \
+            nrad, cum_nrad, nlev, cum_nlev, opacity)                     \
+    default (none)
     {
 
     int num_threads = omp_get_num_threads();

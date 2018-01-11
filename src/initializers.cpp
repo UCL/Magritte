@@ -277,7 +277,7 @@ int initialize_cell_id (CELL *cell, long ncells)
 {
 
 # pragma omp parallel     \
-  shared (cell, ncells)   \
+  shared (ncells, cell)   \
   default (none)
   {
 
@@ -309,7 +309,7 @@ int initialize_temperature_gas (long ncells, CELL *cell)
 {
 
 # pragma omp parallel   \
-  shared (cell)         \
+  shared (ncells, cell)         \
   default (none)
   {
 
@@ -340,8 +340,8 @@ int initialize_temperature_gas (long ncells, CELL *cell)
 int initialize_previous_temperature_gas (long ncells, CELL *cell)
 {
 
-# pragma omp parallel   \
-  shared (cell)         \
+# pragma omp parallel     \
+  shared (ncells, cell)   \
   default (none)
   {
 
@@ -372,8 +372,8 @@ int initialize_previous_temperature_gas (long ncells, CELL *cell)
 int guess_temperature_gas (long ncells, CELL *cell, double *UV_field)
 {
 
-# pragma omp parallel       \
-  shared (cell, UV_field)   \
+# pragma omp parallel               \
+  shared (ncells, cell, UV_field)   \
   default (none)
   {
 
@@ -440,7 +440,7 @@ int initialize_bool (bool value, bool *variable, long length)
 {
 
 # pragma omp parallel                \
-  shared (value, length, variable)   \
+  shared (length, variable, value)   \
   default (none)
   {
 

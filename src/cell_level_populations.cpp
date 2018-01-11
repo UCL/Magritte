@@ -109,7 +109,7 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
           if (niterations[lspec]%4 == 0)
           {
-            acceleration_Ng (lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+            acceleration_Ng (NCELLS, lspec, prev3_pop, prev2_pop, prev1_pop, pop);
           }
 
 #       endif
@@ -117,25 +117,25 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
         // Store populations of previous 3 iterations
 
-        store_populations (lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+        store_populations (NCELLS, lspec, prev3_pop, prev2_pop, prev1_pop, pop);
 
 
         // Calculate source and opacity for all transitions over whole grid
 
-        line_source (irad, jrad, A_coeff, B_coeff, pop, lspec, source);
+        line_source (NCELLS, irad, jrad, A_coeff, B_coeff, pop, lspec, source);
 
-        line_opacity (irad, jrad, frequency, B_coeff, pop, lspec, opacity);
+        line_opacity (NCELLS, irad, jrad, frequency, B_coeff, pop, lspec, opacity);
       }
     } // end of lspec loop over line producing species
 
 
     // For every grid point
 
-#   pragma omp parallel                                                                         \
-    shared (energy, weight, icol, jcol, coltemp, C_data, pop, cell, lspec_nr, frequency,        \
-            opacity, source, mean_intensity, Lambda_diagonal, mean_intensity_eff, species,      \
-            prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2, irad, jrad,   \
-            nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged, some_not_converged)           \
+#   pragma omp parallel                                                                          \
+    shared (energy, weight, icol, jcol, coltemp, C_data, pop, ncells, cell, lspec_nr, frequency, \
+            opacity, source, mean_intensity, Lambda_diagonal, mean_intensity_eff, species,       \
+            prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2, irad, jrad,    \
+            nrad, cum_nrad, A_coeff, B_coeff, prev_not_converged, some_not_converged)            \
     default (none)
     {
 
@@ -237,7 +237,7 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
           // Solve radiative balance equation for level populations
 
-          level_population_solver_otf (cell, n, lspec, R, pop);
+          level_population_solver_otf (NCELLS, cell, n, lspec, R, pop);
 
 
           // Check for convergence

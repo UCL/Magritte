@@ -15,9 +15,9 @@
 
 #define RESTART false
 
+
 // #define INPUTFILE "output/files/_output/grid.vtu"
 
-// #define NCELLS ncells
 
 /* Input files */
 
@@ -25,7 +25,8 @@
 
 #define NRAYS 8
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
+
 
 // #define INPUT_FORMAT '.txt'
 

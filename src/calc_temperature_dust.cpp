@@ -56,8 +56,8 @@ int calc_temperature_dust (long ncells, CELL *cell, double *UV_field, double *ra
 
   /* For all grid points */
 
-# pragma omp parallel                    \
-  shared (cell, UV_field, rad_surface)   \
+# pragma omp parallel                            \
+  shared (ncells, cell, UV_field, rad_surface)   \
   default (none)
   {
 

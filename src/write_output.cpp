@@ -31,9 +31,9 @@ int write_txt_output (long ncells, CELL *cell, SPECIES *species,
 
   write_abundances (tag, NCELLS, cell);
 
-  write_level_populations (tag, species, pop);
+  write_level_populations (tag, NCELLS, species, pop);
 
-  write_line_intensities (tag, species, mean_intensity);
+  write_line_intensities (tag, NCELLS, species, mean_intensity);
 
   write_temperature_gas (tag, NCELLS, cell);
 
@@ -70,7 +70,6 @@ int write_performance_log (double time_total, double time_level_pop, double time
     exit (1);
   }
 
-  fprintf (file, "NCELLS            %d\n",  NCELLS);
   fprintf (file, "time_total       %lE\n", time_total);
   fprintf (file, "time_ray_tracing %lE\n", time_ray_tracing);
   fprintf (file, "time_level_pop   %lE\n", time_level_pop);

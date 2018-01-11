@@ -46,7 +46,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species,
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
 
-  initialize_abundances (NCELLS, cell, species);
+    initialize_abundances (NCELLS, cell, species);
 
 # endif
 
@@ -135,9 +135,10 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species,
 
   // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                                   \
-  shared (cell, irad, jrad, A_coeff, B_coeff, pop, frequency, weight, column_H2, column_HD, column_C,   \
-          column_CO, cum_nlev, species, mean_intensity, AV, rad_surface, UV_field, thermal_ratio)       \
+# pragma omp parallel                                                                               \
+  shared (ncells, cell, irad, jrad, A_coeff, B_coeff, pop, frequency, weight, column_H2, column_HD, \
+          column_C, column_CO, cum_nlev, species, mean_intensity, AV, rad_surface, UV_field,        \
+          thermal_ratio)                                                                            \
   default (none)
   {
 
@@ -158,7 +159,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species,
 
     double heating_total = heating (NCELLS, cell, gridp, UV_field, heating_components);
 
-    double cooling_total = cooling (gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
+    double cooling_total = cooling (NCELLS, gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
                                     pop, mean_intensity);
 
 

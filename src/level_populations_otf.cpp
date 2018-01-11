@@ -109,7 +109,7 @@ int level_populations_otf (long ncells, CELL *cell, int *irad, int*jrad, double 
 
           if (niterations[lspec]%4 == 0)
           {
-            acceleration_Ng(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+            acceleration_Ng(NCELLS, lspec, prev3_pop, prev2_pop, prev1_pop, pop);
           }
 
 #       endif
@@ -117,14 +117,14 @@ int level_populations_otf (long ncells, CELL *cell, int *irad, int*jrad, double 
 
         /* Store the populations of the previous 3 iterations */
 
-        store_populations(lspec, prev3_pop, prev2_pop, prev1_pop, pop);
+        store_populations(NCELLS, lspec, prev3_pop, prev2_pop, prev1_pop, pop);
 
 
         /* Calculate the source and opacity for all transitions over the whole grid */
 
-        line_source( irad, jrad, A_coeff, B_coeff, pop, lspec, source );
+        line_source(NCELLS, irad, jrad, A_coeff, B_coeff, pop, lspec, source );
 
-        line_opacity( irad, jrad, frequency, B_coeff, pop, lspec, opacity );
+        line_opacity(NCELLS, irad, jrad, frequency, B_coeff, pop, lspec, opacity );
       }
     } /* end of lspec loop over line producing species */
 
@@ -263,7 +263,7 @@ int level_populations_otf (long ncells, CELL *cell, int *irad, int*jrad, double 
 
           /* Solve the radiative balance equation for the level populations */
 
-          level_population_solver_otf( cell, n, lspec, R, pop );
+          level_population_solver_otf(NCELLS, cell, n, lspec, R, pop);
 
 
           /* Check for convergence */

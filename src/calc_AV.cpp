@@ -28,8 +28,8 @@ int calc_AV (long ncells, double *column_tot, double *AV)
 
   // For all grid points n and rays r
 
-# pragma omp parallel       \
-  shared( column_tot, AV)   \
+# pragma omp parallel              \
+  shared(ncells, column_tot, AV)   \
   default( none )
   {
 

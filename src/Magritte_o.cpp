@@ -23,31 +23,6 @@
 int main ()
 {
 
-  // Define and initialize cells
-
-  std::cout << "Defining and initializing cells...\n";
-
-  CELL cell[NCELLS];
-
-  initialize_cells (cell, NCELLS);
-
-
-  // Read input grid
-
-  std::cout << "Reading input grid...\n";
-
-  read_txt_input (inputfile, NCELLS, cell);
-
-
-  // Append cell info to vtu input
-
-  std::cout << "  Writing .vtu grid...\n";
-
-  std::string append_file = "input/files/Aori/grid_reduced_0.1.vtu";
-
-  // append_vtu_output (NCELLS, cell, append_file);
-
-
   return (0);
 
 }

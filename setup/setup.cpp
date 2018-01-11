@@ -65,14 +65,17 @@ int main()
   inputfile = "../" + inputfile;
 
 
+# if (FIXED_NCELLS)
 
-# if (INPUT_FORMAT == '.vtu')
+#   if (INPUT_FORMAT == '.vtu')
 
-    long ncells = get_NCELLS_vtu(inputfile);
+      long ncells = get_NCELLS_vtu(inputfile);
 
-# elif (INPUT_FORMAT == '.txt')
+#   elif (INPUT_FORMAT == '.txt')
 
-    long ncells = get_NCELLS_txt(inputfile);
+      long ncells = get_NCELLS_txt(inputfile);
+
+#   endif
 
 # endif
 
@@ -135,7 +138,14 @@ int main()
     printf("(setup):   line file %d       : %s\n", l, line_datafile[l].c_str());
   }
 
-  printf("(setup):   ncells            : %ld\n", ncells);
+
+# if (FIXED_NCELLS)
+
+    printf("(setup):   ncells            : %ld\n", ncells);
+
+# endif
+
+
   printf("(setup):   nsides            : %d\n",  NSIDES);
   printf("(setup):   nspec             : %d\n",  nspec);
   printf("(setup):   nrays             : %ld\n", nrays);

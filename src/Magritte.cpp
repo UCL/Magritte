@@ -20,6 +20,8 @@
 
 #include "definitions.hpp"
 
+#include "../setup/setup_data_tools.hpp"
+
 #include "initializers.hpp"
 #include "species_tools.hpp"
 
@@ -80,7 +82,29 @@ int main ()
 
   // Define cells (using types defined in declarations.hpp
 
-  CELL cell[NCELLS];
+# if (FIXED_NCELLS)
+
+    long ncells = NCELLS;
+
+    CELL cell[NCELLS];
+
+# else
+
+#   if   (INPUT_FORMAT == '.vtu')
+
+      long ncells = get_NCELLS_vtu (inputfile);
+
+#   elif (INPUT_FORMAT == '.txt')
+
+      long ncells = get_NCELLS_txt (inputfile);
+
+#   endif
+
+    CELL *cell = new CELL[ncells];
+
+# endif
+
+  initialize_cells (cell, NCELLS);
 
 
   // Read input file
@@ -149,54 +173,52 @@ int main ()
 
   // Define line related variables
 
-  int irad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
+  int irad[TOT_NRAD];            // level index of radiative transition
 
-  initialize_int_array(irad, TOT_NRAD);
+  initialize_int_array (irad, TOT_NRAD);
 
-  int jrad[TOT_NRAD];           /* level index corresponding to radiative transition [0..nrad-1] */
+  int jrad[TOT_NRAD];            // level index of radiative transition
 
-  initialize_int_array(jrad, TOT_NRAD);
+  initialize_int_array (jrad, TOT_NRAD);
 
-  double energy[TOT_NLEV];                                                /* energy of the level */
+  double energy[TOT_NLEV];       // energy of level
 
-  initialize_double_array(energy, TOT_NLEV);
+  initialize_double_array (energy, TOT_NLEV);
 
-  double weight[TOT_NLEV];                                    /* statistical weight of the level */
+  double weight[TOT_NLEV];       // statistical weight of level
 
-  initialize_double_array(weight, TOT_NLEV);
+  initialize_double_array (weight, TOT_NLEV);
 
-  double frequency[TOT_NLEV2];             /* photon frequency corresponing to i -> j transition */
+  double frequency[TOT_NLEV2];   // frequency corresponing to i -> j transition
 
-  initialize_double_array(frequency, TOT_NLEV2);
+  initialize_double_array (frequency, TOT_NLEV2);
 
-  double A_coeff[TOT_NLEV2];                                        /* Einstein A_ij coefficient */
+  double A_coeff[TOT_NLEV2];     // Einstein A_ij coefficient
 
-  initialize_double_array(A_coeff, TOT_NLEV2);
+  initialize_double_array (A_coeff, TOT_NLEV2);
 
-  double B_coeff[TOT_NLEV2];                                        /* Einstein B_ij coefficient */
+  double B_coeff[TOT_NLEV2];     // Einstein B_ij coefficient
 
-  initialize_double_array(B_coeff, TOT_NLEV2);
-
-
+  initialize_double_array (B_coeff, TOT_NLEV2);
 
 
-  /* Define the collision related variables */
+  // Define collision related variables
 
-  double coltemp[TOT_CUM_TOT_NCOLTEMP];               /* Collision temperatures for each partner */
-                                                                   /*[NLSPEC][ncolpar][ncoltemp] */
-  initialize_double_array(coltemp, TOT_CUM_TOT_NCOLTEMP);
+  double coltemp[TOT_CUM_TOT_NCOLTEMP];      // Collision temperatures for each partner
 
-  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];           /* C_data for each partner, tran. and temp. */
-                                                        /* [NLSPEC][ncolpar][ncoltran][ncoltemp] */
-  initialize_double_array(C_data, TOT_CUM_TOT_NCOLTRANTEMP);
+  initialize_double_array (coltemp, TOT_CUM_TOT_NCOLTEMP);
 
-  int icol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                  /* [NLSPEC][ncolpar][ncoltran] */
-  initialize_int_array(icol, TOT_CUM_TOT_NCOLTRAN);
+  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];   // C_data for each partner, tran. and temp.
 
-  int jcol[TOT_CUM_TOT_NCOLTRAN];     /* level index corresp. to col. transition [0..ncoltran-1] */
-                                                                  /* [NLSPEC][ncolpar][ncoltran] */
-  initialize_int_array(jcol, TOT_CUM_TOT_NCOLTRAN);
+  initialize_double_array (C_data, TOT_CUM_TOT_NCOLTRANTEMP);
+
+  int icol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
+
+  initialize_int_array (icol, TOT_CUM_TOT_NCOLTRAN);
+
+  int jcol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
+
+  initialize_int_array (jcol, TOT_CUM_TOT_NCOLTRAN);
 
 
   // Define helper arrays specifying species of collisiopn partners
@@ -266,7 +288,16 @@ int main ()
   G_external[2] = G_EXTERNAL_Z;
 
 
-  double rad_surface[NCELLS*NRAYS];
+# if (FIXED_NCELLS)
+
+    double rad_surface[NCELLS*NRAYS];
+
+# else
+
+    double *rad_surface = new double[ncells*NRAYS];
+
+# endif
+
 
   initialize_double_array (rad_surface, NCELLS*NRAYS);
 
@@ -287,24 +318,30 @@ int main ()
   printf("(Magritte): making a guess for gas temperature and calculating dust temperature \n");
 
 
-  double column_tot[NCELLS*NRAYS];   // total column density
+# if (FIXED_NCELLS)
+
+    double column_tot[NCELLS*NRAYS];   // total column density
+    double AV[NCELLS*NRAYS];           // Visual extinction
+    double UV_field[NCELLS];           // External UV field
+
+# else
+
+    double *column_tot = new double[ncells*NRAYS];   // total column density
+    double *AV         = new double[ncells*NRAYS];   // Visual extinction
+    double *UV_field   = new double[ncells];         // External UV field
+
+# endif
+
 
   initialize_double_array (column_tot, NCELLS*NRAYS);
-
-  double AV[NCELLS*NRAYS];           // Visual extinction (only takes into account H)
-
   initialize_double_array (AV, NCELLS*NRAYS);
-
-  double UV_field[NCELLS];           // External UV field
-
   initialize_double_array (UV_field, NCELLS);
 
 
   // Calculate total column density
 
   calc_column_density (NCELLS, cell, column_tot, NSPEC-1);
-
-  write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
+  // write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
 
 
   // Calculate visual extinction
@@ -319,6 +356,7 @@ int main ()
 
 # if (!RESTART)
 
+
     // Make a guess for gas temperature based on UV field
 
     guess_temperature_gas (NCELLS, cell, UV_field);
@@ -327,6 +365,7 @@ int main ()
     // Calculate the dust temperature
 
     calc_temperature_dust (NCELLS, cell, UV_field, rad_surface);
+
 
 # endif
 
@@ -343,20 +382,26 @@ int main ()
   printf("(Magritte): starting preliminary chemistry iterations \n\n");
 
 
-  double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and grid point
+# if (FIXED_NCELLS)
+
+    double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
+    double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
+    double column_C[NCELLS*NRAYS];    // C column density for each ray and cell
+    double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
+
+# else
+
+    double *column_H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
+    double *column_HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
+    double *column_C  = new double[ncells*NRAYS];   // C column density for each ray and cell
+    double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
+
+# endif
+
 
   initialize_double_array (column_H2, NCELLS*NRAYS);
-
-  double column_HD[NCELLS*NRAYS];   // HD column density for each ray and grid point
-
   initialize_double_array (column_HD, NCELLS*NRAYS);
-
-  double column_C[NCELLS*NRAYS];    // C column density for each ray and grid point
-
-  initialize_double_array (column_C, NCELLS*NRAYS);
-
-  double column_CO[NCELLS*NRAYS];   // CO column density for each ray and grid point
-
+  initialize_double_array (column_C,  NCELLS*NRAYS);
   initialize_double_array (column_CO, NCELLS*NRAYS);
 
 
@@ -410,68 +455,75 @@ int main ()
   printf ("(Magritte): calculating the minimal and maximal thermal flux \n\n");
 
 
-  double mean_intensity[NCELLS*TOT_NRAD];                             /* mean intensity for a ray */
+# if (FIXED_NCELLS)
 
-  initialize_double_array(mean_intensity, NCELLS*TOT_NRAD);
+    double mean_intensity[NCELLS*TOT_NRAD];       // mean intensity for a ray
+    double mean_intensity_eff[NCELLS*TOT_NRAD];   // mean intensity for a ray
+    double Lambda_diagonal[NCELLS*TOT_NRAD];      // mean intensity for a ray
 
+    double scatter_u[NCELLS*TOT_NRAD*NFREQ];      // angle averaged u scattering term
+    double scatter_v[NCELLS*TOT_NRAD*NFREQ];      // angle averaged v scattering term
 
-  double mean_intensity_eff[NCELLS*TOT_NRAD];                         /* mean intensity for a ray */
+    double pop[NCELLS*TOT_NLEV];                  // level population n_i
 
-  initialize_double_array(mean_intensity_eff, NCELLS*TOT_NRAD);
+    double temperature_a[NCELLS];                 // variable for Brent's algorithm
+    double temperature_b[NCELLS];                 // variable for Brent's algorithm
+    double temperature_c[NCELLS];                 // variable for Brent's algorithm
+    double temperature_d[NCELLS];                 // variable for Brent's algorithm
+    double temperature_e[NCELLS];                 // variable for Brent's algorithm
 
-  double Lambda_diagonal[NCELLS*TOT_NRAD];                            /* mean intensity for a ray */
+    double thermal_ratio_a[NCELLS];               // variable for Brent's algorithm
+    double thermal_ratio_b[NCELLS];               // variable for Brent's algorithm
+    double thermal_ratio_c[NCELLS];               // variable for Brent's algorithm
 
-  initialize_double_array(Lambda_diagonal, NCELLS*TOT_NRAD);
+    double thermal_ratio[NCELLS];
 
-  double scatter_u[NCELLS*TOT_NRAD*NFREQ];                    /* angle averaged u scattering term */
+# else
 
-  initialize_double_array(scatter_u, NCELLS*TOT_NRAD*NFREQ);
+    double *mean_intensity     = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+    double *mean_intensity_eff = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+    double *Lambda_diagonal    = new double[ncells*TOT_NRAD];   // mean intensity for a ray
 
-  double scatter_v[NCELLS*TOT_NRAD*NFREQ];                    /* angle averaged v scattering term */
+    double *scatter_u = new double[ncells*TOT_NRAD*NFREQ];      // angle averaged u scattering term
+    double *scatter_v = new double[ncells*TOT_NRAD*NFREQ];      // angle averaged v scattering term
 
-  initialize_double_array(scatter_v, NCELLS*TOT_NRAD*NFREQ);
+    double *pop = new double[ncells*TOT_NLEV];                  // level population n_i
 
-  double pop[NCELLS*TOT_NLEV];                                            /* level population n_i */
+    double *temperature_a = new double[ncells];                 // variable for Brent's algorithm
+    double *temperature_b = new double[ncells];                 // variable for Brent's algorithm
+    double *temperature_c = new double[ncells];                 // variable for Brent's algorithm
+    double *temperature_d = new double[ncells];                 // variable for Brent's algorithm
+    double *temperature_e = new double[ncells];                 // variable for Brent's algorithm
 
-  initialize_double_array(pop, NCELLS*TOT_NLEV);
+    double *thermal_ratio_a = new double[ncells];               // variable for Brent's algorithm
+    double *thermal_ratio_b = new double[ncells];               // variable for Brent's algorithm
+    double *thermal_ratio_c = new double[ncells];               // variable for Brent's algorithm
 
-  double temperature_a[NCELLS];                                 /* variable for Brent's algorithm */
+    double *thermal_ratio = new double[ncells];
 
-  initialize_double_array(temperature_a, NCELLS);
-
-  double temperature_b[NCELLS];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_b, NCELLS);
-
-  double temperature_c[NCELLS];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_c, NCELLS);
-
-  double temperature_d[NCELLS];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_d, NCELLS);
-
-  double temperature_e[NCELLS];                                 /* variable for Brent's algorithm */
-
-  initialize_double_array(temperature_e, NCELLS);
-
-  double thermal_ratio_a[NCELLS];                               /* variable for Brent's algorithm */
-
-  initialize_double_array(thermal_ratio_a, NCELLS);
-
-  double thermal_ratio_b[NCELLS];                               /* variable for Brent's algorithm */
-
-  initialize_double_array(thermal_ratio_b, NCELLS);
-
-  double thermal_ratio_c[NCELLS];                               /* variable for Brent's algorithm */
-
-  initialize_double_array(thermal_ratio_c, NCELLS);
+# endif
 
 
-  double thermal_ratio[NCELLS];
+  initialize_double_array (mean_intensity, NCELLS*TOT_NRAD);
+  initialize_double_array (mean_intensity_eff, NCELLS*TOT_NRAD);
+  initialize_double_array (Lambda_diagonal, NCELLS*TOT_NRAD);
 
-  initialize_double_array(thermal_ratio, NCELLS);
+  initialize_double_array (scatter_u, NCELLS*TOT_NRAD*NFREQ);
+  initialize_double_array (scatter_v, NCELLS*TOT_NRAD*NFREQ);
 
+  initialize_double_array (pop, NCELLS*TOT_NLEV);
+
+  initialize_double_array (temperature_a, NCELLS);
+  initialize_double_array (temperature_b, NCELLS);
+  initialize_double_array (temperature_c, NCELLS);
+  initialize_double_array (temperature_d, NCELLS);
+  initialize_double_array (temperature_e, NCELLS);
+
+  initialize_double_array (thermal_ratio_a, NCELLS);
+  initialize_double_array (thermal_ratio_b, NCELLS);
+  initialize_double_array (thermal_ratio_c, NCELLS);
+
+  initialize_double_array (thermal_ratio, NCELLS);
 
 
   for (int tb_iteration = 0; tb_iteration < PRELIM_TB_ITER; tb_iteration++)
@@ -514,8 +566,8 @@ int main ()
   } // end of tb_iteration loop over preliminary tb iterations
 
 
-#   pragma omp parallel            \
-    shared (cell, temperature_b)   \
+#   pragma omp parallel                    \
+    shared (ncells, cell, temperature_b)   \
     default (none)
     {
 
@@ -582,7 +634,7 @@ int main ()
     // Calculate thermal balance for each cell
 
 #   pragma omp parallel                                                                        \
-    shared (cell, thermal_ratio, temperature_a, temperature_b, temperature_c,                  \
+    shared (ncells, cell, thermal_ratio, temperature_a, temperature_b, temperature_c,          \
             temperature_d, temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c,   \
             n_not_converged, no_thermal_balance)                                               \
     default (none)
@@ -682,6 +734,38 @@ int main ()
 
 
   printf("(Magritte): output written \n\n");
+
+
+
+
+# if (!FIXED_NCELLS)
+
+    delete [] cell;
+    delete [] rad_surface;
+    delete [] column_tot;
+    delete [] AV;
+    delete [] UV_field;
+    delete [] column_H2;
+    delete [] column_HD;
+    delete [] column_C;
+    delete [] column_CO;
+    delete [] mean_intensity;
+    delete [] mean_intensity_eff;
+    delete [] Lambda_diagonal;
+    delete [] scatter_u;
+    delete [] scatter_v;
+    delete [] pop;
+    delete [] temperature_a;
+    delete [] temperature_b;
+    delete [] temperature_c;
+    delete [] temperature_d;
+    delete [] temperature_e;
+    delete [] thermal_ratio_a;
+    delete [] thermal_ratio_b;
+    delete [] thermal_ratio_c;
+    delete [] thermal_ratio;
+
+# endif
 
 
 

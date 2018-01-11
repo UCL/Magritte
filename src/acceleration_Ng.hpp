@@ -1,40 +1,25 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Header for acceleration_Ng.cpp                                                                */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #ifndef __ACCELERATION_NG_HPP_INCLUDED__
 #define __ACCELERATION_NG_HPP_INCLUDED__
 
 
+// acceleration_Ng: perform a Ng accelerated iteration for level populations
+// -------------------------------------------------------------------------
 
-/* acceleration_Ng: perform a Ng accelerated iteration for the level populations                 */
-/*-----------------------------------------------------------------------------------------------*/
-
-int acceleration_Ng( int lspec, double *prev3_pop, double *prev2_pop, double *prev1_pop,
-                     double *pop );
-
-/*-----------------------------------------------------------------------------------------------*/
+int acceleration_Ng (long ncells, int lspec,
+                     double *prev3_pop, double *prev2_pop, double *prev1_pop, double *pop);
 
 
+// store_populations: update previous populations
+// ----------------------------------------------
 
-/* store_populations: update the previous populations                                            */
-/*-----------------------------------------------------------------------------------------------*/
-
-int store_populations( int lspec, double *prev3_pop, double *prev2_pop, double *prev1_pop,
-                       double *pop );
-
-/*-----------------------------------------------------------------------------------------------*/
+int store_populations (long ncells, int lspec,
+                       double *prev3_pop, double *prev2_pop, double *prev1_pop, double *pop );
 
 
-
-#endif /* __ACCELERATION_NG_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __ACCELERATION_NG_HPP_INCLUDED__

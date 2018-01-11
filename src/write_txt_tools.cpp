@@ -159,189 +159,6 @@ int write_healpixvectors (std::string tag)
 
 
 
-#if !(ON_THE_FLY)
-
-
-
-
-// write_eval: Write evaluation points (Z along ray and number of ray)
-// -------------------------------------------------------------------
-
-int write_eval (std::string tag, EVALPOINT *evalpoint)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "eval" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-  for (long n1 = 0; n1 < NCELLS; n1++)
-  {
-    for (long n2 = 0; n2 < NCELLS; n2++)
-    {
-      fprintf (file, "%lE\t%ld\t%d\n",
-               evalpoint[GINDEX(n1,n2)].Z,
-               evalpoint[GINDEX(n1,n2)].ray,
-               evalpoint[GINDEX(n1,n2)].onray);
-    }
-
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_key: write key to find which grid point corresponds to which evaluation point
-// -----------------------------------------------------------------------------------
-
-int write_key (std::string tag, long *key)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "key" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n1 = 0; n1 < NCELLS; n1++)
-  {
-    for (long n2 = 0; n2 < NCELLS; n2++)
-    {
-      fprintf (file, "%ld\t", key[GINDEX(n1,n2)]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_raytot: write total of evaluation points along each ray
-// -------------------------------------------------------------
-
-int write_raytot (std::string tag, long *raytot)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "raytot" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    for (long r = 0; r < NRAYS; r++)
-    {
-      fprintf (file, "%ld\t", raytot[RINDEX(n,r)] );
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_cum_raytot: write cumulative total of evaluation points along each ray
-// ----------------------------------------------------------------------------
-
-int write_cum_raytot (std::string tag, long *cum_raytot)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "cum_raytot" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    for (long r = 0; r < NRAYS; r++)
-    {
-      fprintf (file, "%ld\t", cum_raytot[RINDEX(n,r)]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-#endif
-
-
-
-
 // write_abundances: write abundances at each point
 // ------------------------------------------------
 
@@ -388,7 +205,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, SPECIES *species, double *pop)
+int write_level_populations (std::string tag, long ncells, SPECIES *species, double *pop)
 {
 
   if (!tag.empty())
@@ -440,7 +257,7 @@ int write_level_populations (std::string tag, SPECIES *species, double *pop)
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, SPECIES *species, double *mean_intensity)
+int write_line_intensities (std::string tag, long ncells, SPECIES *species, double *mean_intensity)
 {
 
   if(!tag.empty())
@@ -605,7 +422,7 @@ int write_temperature_gas_prev(std::string tag, long ncells, CELL *cell)
 // write_UV_field: write UV field at each cell
 // -------------------------------------------
 
-int write_UV_field (std::string tag, double *UV_field)
+int write_UV_field (std::string tag, long ncells, double *UV_field)
 {
 
 
@@ -644,7 +461,7 @@ int write_UV_field (std::string tag, double *UV_field)
 // write_UV_field: write visual extinction (AV) at each point
 // ----------------------------------------------------------
 
-int write_AV (std::string tag, double *AV)
+int write_AV (std::string tag, long ncells, double *AV)
 {
 
   if (!tag.empty())
@@ -687,7 +504,7 @@ int write_AV (std::string tag, double *AV)
 // write_rad_surface: write rad surface at each point
 // --------------------------------------------------
 
-int write_rad_surface (std::string tag, double *rad_surface)
+int write_rad_surface (std::string tag, long ncells, double *rad_surface)
 {
 
   if (!tag.empty())
@@ -1151,7 +968,7 @@ int write_Einstein_coeff (std::string tag, SPECIES *species,
 // write_R: write the transition matrix R
 // --------------------------------------
 
-int write_R (std::string tag, SPECIES *species, long gridp, double *R)
+int write_R (std::string tag, long ncells, SPECIES *species, long gridp, double *R)
 {
 
   if (!tag.empty())

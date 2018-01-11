@@ -32,8 +32,8 @@ int chemistry (long ncells, CELL *cell, double *rad_surface, double *AV,
 
   // For all cells
 
-# pragma omp parallel                                                          \
-  shared (cell, rad_surface, AV, column_H2, column_HD, column_C, column_CO )   \
+# pragma omp parallel                                                                  \
+  shared (ncells, cell, rad_surface, AV, column_H2, column_HD, column_C, column_CO )   \
   default (none)
   {
 

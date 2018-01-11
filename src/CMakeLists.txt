@@ -29,6 +29,7 @@ include_directories(sundials/include)
 
 # Create a library containing all source code in /src except the main (Magritte.cpp)
 add_library(_MAGRITTE
+../setup/setup_data_tools.cpp
 initializers.cpp
 chemistry.cpp
 species_tools.cpp
@@ -66,7 +67,7 @@ cooling.cpp
 update_temperature_gas.cpp
 write_output.cpp
 write_txt_tools.cpp
-write_vtu_tools.cpp )
+write_vtu_tools.cpp)
 
 # Link the libraries of the subdirectories to this library
 target_link_libraries(_MAGRITTE _HEALPix)
@@ -76,6 +77,7 @@ target_link_libraries(_MAGRITTE ${VTK_LIBRARIES})
 
 # Create a library
 add_library(_IO
+../setup/setup_data_tools.cpp
 ray_tracing.cpp
 heapsort.cpp
 read_input.cpp

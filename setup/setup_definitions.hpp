@@ -13,18 +13,22 @@
 #include "../parameters.hpp"
 
 
+#ifndef TOL
+# define TOL 1.0E-9   // tolerance for antipodal rays
+#endif
 
-#define TOL 1.0E-9                                               /* tolerance for antipodal rays */
+#ifndef PI
+# define PI  3.141592653589793238462643383279502884197   // pi
+#endif
 
-#define PI  3.141592653589793238462643383279502884197    /* pi (circle circumference / diameter) */
-
-#define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \
+#ifndef LSPECPAR
+# define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \
                    /* when first index is line producing species and second is collision partner */
+#endif
 
-#define VINDEX(r,c) ( (c) + (r)*3 )                 /* when the second index is a 3-vector index */
+#ifndef VINDEX
+# define VINDEX(r,c)   ( (c) + (r)*3 )   // when second index is a 3-vector index
+#endif
 
 
-
-#endif /* __SETUP_DEFINITIONS_HPP_INCLUDED__ */
-
-/*-----------------------------------------------------------------------------------------------*/
+#endif // __SETUP_DEFINITIONS_HPP_INCLUDED__

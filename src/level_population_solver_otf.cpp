@@ -20,7 +20,7 @@
 #define IMD(r,c) ((c)+(r)*m)
 
 
-int level_population_solver_otf (CELL *cell, long gridp, int lspec, double *R, double *pop)
+int level_population_solver_otf (long ncells, CELL *cell, long gridp, int lspec, double *R, double *pop)
 {
 
 

@@ -199,7 +199,7 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
   {
     if (!cell[n].removed)
     {
-      long nr = cell[n].id   // nr of cell n in reduced grid
+      long nr = cell[n].id;   // nr of cell n in reduced grid
 
       cell_red[nr].x = cell[n].x;
       cell_red[nr].y = cell[n].y;
@@ -216,6 +216,8 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
       cell_red[nr].temperature.gas_prev = cell[n].temperature.gas_prev;
     }
   }
+  } // end of OpenMP parallel region
+
 
   return (0);
 }

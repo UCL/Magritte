@@ -14,7 +14,7 @@
 // level_population_solver: sets up and solves matrix equation corresp. to equilibrium eq.
 // ---------------------------------------------------------------------------------------
 
-int level_population_solver_otf (CELL *cell, long gridp, int lspec, double *R, double *pop);
+int level_population_solver_otf (long ncells, CELL *cell, long gridp, int lspec, double *R, double *pop);
 
 
 // Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b

@@ -25,9 +25,9 @@ int calc_column_density (long ncells, CELL *cell, double *column, int spec)
 
   // For all cells n
 
-# pragma omp parallel            \
-  shared( cell, column, spec )   \
-  default( none )
+# pragma omp parallel                   \
+  shared (ncells, cell, column, spec)   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
@@ -66,8 +66,8 @@ int calc_column_density (long ncells, CELL *cell, double *column, int spec)
 #   endif
 
 
-  } /* end of n loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of n loop over grid points
+  } // end of OpenMP parallel region
 
 
   return(0);
@@ -87,9 +87,9 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
 
   // For all cells n and rays r
 
-# pragma omp parallel                                                                    \
-  shared( cell, column_H2, column_HD, column_C, column_CO, H2_nr, HD_nr, C_nr, CO_nr )   \
-  default( none )
+# pragma omp parallel                                                                            \
+  shared (ncells, cell, column_H2, column_HD, column_C, column_CO, H2_nr, HD_nr, C_nr, CO_nr )   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
@@ -140,8 +140,8 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
 #   endif
 
 
-  } /* end of n loop over grid points */
-  } /* end of OpenMP parallel region */
+  } // end of n loop over grid points
+  } // end of OpenMP parallel region
 
 
   return(0);

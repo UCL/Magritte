@@ -27,9 +27,9 @@ int calc_UV_field (long ncells, double *AV, double *rad_surface, double *UV_fiel
 
   // For all grid points
 
-# pragma omp parallel                           \
-  shared( AV, rad_surface, UV_field, antipod)   \
-  default( none )
+# pragma omp parallel                                   \
+  shared (ncells, AV, rad_surface, UV_field, antipod)   \
+  default (none)
   {
 
   int num_threads = omp_get_num_threads();
