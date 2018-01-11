@@ -21,7 +21,6 @@
 int initialize_int_array (int *array, long length)
 {
 
-
 # pragma omp parallel      \
   shared (array, length)   \
   default (none)
@@ -84,7 +83,6 @@ int initialize_long_array (long *array, long length)
 int initialize_double_array (double *array, long length)
 {
 
-
 # pragma omp parallel      \
   shared (array, length)   \
   default (none)
@@ -116,7 +114,6 @@ int initialize_double_array (double *array, long length)
 
 int initialize_double_array_with (double *array1, double *array2, long length)
 {
-
 
 # pragma omp parallel               \
   shared (array1, array2, length)   \
@@ -150,7 +147,6 @@ int initialize_double_array_with (double *array1, double *array2, long length)
 int initialize_double_array_with_value (double *array, double value, long length)
 {
 
-
 # pragma omp parallel             \
   shared (array, value, length)   \
   default (none)
@@ -183,7 +179,6 @@ int initialize_double_array_with_value (double *array, double value, long length
 int initialize_char_array (char *array, long length)
 {
 
-
 # pragma omp parallel      \
   shared (array, length)   \
   default (none)
@@ -215,7 +210,6 @@ int initialize_char_array (char *array, long length)
 
 int initialize_cells (CELL *cell, long ncells)
 {
-
 
 # pragma omp parallel     \
   shared (cell, ncells)   \
@@ -281,7 +275,6 @@ int initialize_cells (CELL *cell, long ncells)
 
 int initialize_cell_id (CELL *cell, long ncells)
 {
-
 
 # pragma omp parallel     \
   shared (cell, ncells)   \

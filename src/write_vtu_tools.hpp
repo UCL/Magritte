@@ -16,10 +16,4 @@
 int write_vtu_output (long ncells, CELL *cell, std::string inputfile);
 
 
-// append_vtu_output: append all physical variables to vtu append file
-// -------------------------------------------------------------------
-
-int append_vtu_output (long ncells, CELL *cell, std::string append_file);
-
-
 #endif // __WRITE_VTU_TOOLS_HPP_INCLUDED__

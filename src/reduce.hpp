@@ -36,6 +36,12 @@ int density_reduce (long ncells, CELL *cell, double threshold);
 long set_ids (long ncells, CELL *cell);
 
 
+// initialized_reduced_grid: initialize reduced grid
+// -------------------------------------------------
+
+int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL *cell);
+
+
 // interpolate: interpolate reduced grid back to original grid
 // -----------------------------------------------------------
 

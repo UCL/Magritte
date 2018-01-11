@@ -177,6 +177,52 @@ long set_ids (long ncells, CELL *cell)
 
 
 
+// initialized_reduced_grid: initialize reduced grid
+// -------------------------------------------------
+
+int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
+{
+
+# pragma omp parallel                           \
+  shared (ncells_red, cell_red, ncells, cell)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long n = start; n < stop; n++)
+  {
+    if (!cell[n].removed)
+    {
+      long nr = cell[n].id   // nr of cell n in reduced grid
+
+      cell_red[nr].x = cell[n].x;
+      cell_red[nr].y = cell[n].y;
+      cell_red[nr].z = cell[n].z;
+
+      cell_red[nr].vx = cell[n].vx;
+      cell_red[nr].vy = cell[n].vy;
+      cell_red[nr].vz = cell[n].vz;
+
+      cell_red[nr].density = cell[n].density;
+
+      cell_red[nr].temperature.gas      = cell[n].temperature.gas;
+      cell_red[nr].temperature.dust     = cell[n].temperature.dust;
+      cell_red[nr].temperature.gas_prev = cell[n].temperature.gas_prev;
+    }
+  }
+
+  return (0);
+}
+
+
+
+
 // interpolate: interpolate reduced grid back to original grid
 // -----------------------------------------------------------
 
