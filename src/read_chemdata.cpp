@@ -24,7 +24,7 @@
 // read_species: read species from data file
 // -----------------------------------------
 
-int read_species (std::string spec_datafile, long ncells, CELL *cell, double *initial_abn)
+int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *species)
 {
 
 
@@ -60,7 +60,7 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, double *in
 
   // Open species data file
 
-  FILE *specdata = fopen(spec_datafile.c_str(), "r");
+  FILE *specdata = fopen (spec_datafile.c_str(), "r");
 
 
   for (int l = 1; l < NSPEC-1; l++)
@@ -70,9 +70,9 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, double *in
     fgets(buffer, BUFFER_SIZE, specdata);
     sscanf( buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff );
 
-    species[l].sym  = sym_buff;
-    species[l].mass = mass_buff;
-    initial_abn[l]  = abn_buff;
+    species[l].sym                = sym_buff;
+    species[l].mass               = mass_buff;
+    species[l].initial_abundance  = abn_buff;
 
 
     for (long gridp = 0; gridp < NCELLS; gridp++)
@@ -86,20 +86,20 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, double *in
 
   printf("\n\nNote: The electron abundance will be overwritten to make the gas neutral \n\n");
 
-  int electron_nr = get_species_nr("e-");
+  int electron_nr = get_species_nr (species, "e-");
 
   for (long gridp = 0; gridp < NCELLS; gridp++)
   {
     cell[gridp].abundance[electron_nr] = 0.0;
-    cell[gridp].abundance[electron_nr] = get_electron_abundance(NCELLS, cell, gridp);
+    cell[gridp].abundance[electron_nr] = get_electron_abundance (NCELLS, cell, species, gridp);
   }
 
-  initial_abn[electron_nr] = cell[0].abundance[electron_nr];
+  species[electron_nr].initial_abundance = cell[0].abundance[electron_nr];
 
-  fclose(specdata);
+  fclose (specdata);
 
 
-  return(0);
+  return (0);
 
 }
 
@@ -132,7 +132,7 @@ int read_reactions (std::string reac_datafile)
 
   // Open reactions data file
 
-  FILE *reacdata = fopen(reac_datafile.c_str(), "r");
+  FILE *reacdata = fopen (reac_datafile.c_str(), "r");
 
 
   for (int l = 0; l < NREAC; l++)
@@ -237,7 +237,7 @@ int read_reactions (std::string reac_datafile)
 
   }
 
-  fclose(reacdata);
+  fclose (reacdata);
 
 
   // Free allocated memory
@@ -251,6 +251,6 @@ int read_reactions (std::string reac_datafile)
   // delete [] RT_max_buff;
 
 
-  return(0);
+  return (0);
 
 }

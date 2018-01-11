@@ -45,7 +45,7 @@ int main ()
 
   std::string append_file = "input/files/Aori/grid_reduced_0.1.vtu";
 
-  append_vtu_output (NCELLS, cell, append_file);
+  // append_vtu_output (NCELLS, cell, append_file);
 
 
   return (0);

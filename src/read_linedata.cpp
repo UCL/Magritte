@@ -23,10 +23,9 @@
 // read_linedata: read data files containing line information in LAMBDA/RADEX format
 // ---------------------------------------------------------------------------------
 
-int read_linedata (const std::string *line_datafile, int *irad, int *jrad,
-                   double *energy, double *weight, double *frequency,
-                   double *A_coeff, double *B_coeff, double *coltemp,
-                   double *C_data, int *icol, int *jcol )
+int read_linedata (const std::string *line_datafile, SPECIES *species, int *irad, int *jrad,
+                   double *energy, double *weight, double *frequency, double *A_coeff,
+                   double *B_coeff, double *coltemp, double *C_data, int *icol, int *jcol)
 {
 
   int n;                               // helper index
@@ -62,7 +61,7 @@ int read_linedata (const std::string *line_datafile, int *irad, int *jrad,
 
     std::string str(buffer_name);
     std::string lspec_name = buffer_name;
-    lspec_nr[lspec] = get_species_nr(lspec_name);
+    lspec_nr[lspec] = get_species_nr (species, lspec_name);
 
 
     // Skip first 5 lines
@@ -144,7 +143,7 @@ int read_linedata (const std::string *line_datafile, int *irad, int *jrad,
 
       // Use function defined below to extract collision partner species
 
-      extract_spec_par (buffer, lspec, par4);
+      extract_spec_par (species, buffer, lspec, par4);
 
 
       // Skip next 5 lines
@@ -281,7 +280,7 @@ int read_linedata (const std::string *line_datafile, int *irad, int *jrad,
 // extract_spec_par: extract species corresponding to collision partner
 // --------------------------------------------------------------------
 
-int extract_spec_par (char *buffer, int lspec, int par)
+int extract_spec_par (SPECIES *species, char *buffer, int lspec, int par)
 {
 
   int n;                                        // index
@@ -328,12 +327,12 @@ int extract_spec_par (char *buffer, int lspec, int par)
 
   // Use one of species_tools to find species nr corresponding to coll. partner
 
-  spec_par[LSPECPAR(lspec,par)] = get_species_nr(name);
+  spec_par[LSPECPAR(lspec,par)] = get_species_nr (species, name);
 
 
   // Check whether collision partner is ortho- or para- H2 (or something else)
 
-  ortho_para[LSPECPAR(lspec,par)] = check_ortho_para(name);
+  ortho_para[LSPECPAR(lspec,par)] = check_ortho_para (name);
 
 
   return (0);

@@ -53,7 +53,7 @@ std::string get_canonical_name (std::string name)
 //  get_species_nr: get number corresponding to given species symbol
 // -----------------------------------------------------------------
 
-int get_species_nr (std::string name)
+int get_species_nr (SPECIES *species, std::string name)
 {
 
   std::string canonical_name = get_canonical_name(name);    // name as it appears in species.dat
@@ -128,7 +128,7 @@ char check_ortho_para (std::string name)
 int get_charge (std::string name)
 {
 
-  // get number of + minus the number of - in the expression
+  // get number of + minus number of - in spacies name
 
   return count(name.begin(),name.end(),'+') - count(name.begin(),name.end(),'-');
 
@@ -140,7 +140,7 @@ int get_charge (std::string name)
 // get_electron_abundance: initialize electron abundance so that cell is neutral
 // -----------------------------------------------------------------------------
 
-double get_electron_abundance (long ncells, CELL *cell, long gridp)
+double get_electron_abundance (long ncells, CELL *cell, SPECIES *species, long gridp)
 {
 
   double charge_total = 0.0;
@@ -168,7 +168,7 @@ double get_electron_abundance (long ncells, CELL *cell, long gridp)
 // no_better_data: checks whether there data closer to actual temperature
 // ----------------------------------------------------------------------
 
-bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
+bool no_better_data (int reac, REACTION *reaction, double temperature_gas)
 {
 
 
@@ -178,7 +178,7 @@ bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
   int top_reac = reac;                        // last instance of this reaction
 
 
-  while( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) )
+  while ( (reaction[top_reac].dup < reaction[top_reac+1].dup) && (top_reac < NREAC-1) )
   {
     top_reac = top_reac + 1;
   }
@@ -186,7 +186,7 @@ bool no_better_data(int reac, REACTION *reaction, double temperature_gas)
 
   // If there are duplicates, look through duplicates for better data
 
-  if(bot_reac != top_reac)
+  if (bot_reac != top_reac)
   {
     for (int rc = bot_reac; rc <= top_reac; rc++)
     {

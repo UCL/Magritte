@@ -13,8 +13,8 @@
 // reduce: reduce number of cells
 // ------------------------------
 
-int reduce (long ncells, CELL *cell, double threshold,
-            double x_min, double x_max, double y_min, double y_max, double z_min, double z_max);
+long reduce (long ncells, CELL *cell, double threshold,
+             double x_min, double x_max, double y_min, double y_max, double z_min, double z_max);
 
 
 // crop: crop spatial range of data
@@ -28,6 +28,18 @@ int crop (long ncells, CELL *cell,
 //---------------------------------------------------------------------
 
 int density_reduce (long ncells, CELL *cell, double threshold);
+
+
+// set_ids: determine cell numbers in the reduced grid, return nr of reduced cells
+// -------------------------------------------------------------------------------
+
+long set_ids (long ncells, CELL *cell);
+
+
+// interpolate: interpolate reduced grid back to original grid
+// -----------------------------------------------------------
+
+int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell);
 
 
 #endif // __REDUCE_HPP_INCLUDED__

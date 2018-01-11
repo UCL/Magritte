@@ -21,26 +21,26 @@
 
 /* Input files */
 
-#define DIMENSIONS 1
+#define DIMENSIONS 2
 
-#define NRAYS 2
+#define NRAYS 8
 
 #define FIXED_NCELLS true
 
-#define INPUT_FORMAT '.txt'
+// #define INPUT_FORMAT '.txt'
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/3DPDR_input/1Dn30.dat_conv.txt"
+// #define INPUTFILE "input/files/3DPDR_input/1Dn30.dat_conv.txt"
 
 
 // #define PROJECT_FOLDER "input/files/Aori/"
 
-// #define INPUT_FORMAT   '.txt'
+#define INPUT_FORMAT   '.vtu'
 
-// #define INPUTFILE      "input/files/Aori/grid_reduced_0.1.txt"
+#define INPUTFILE      "input/files/Aori/Aori_0001.vtu"
 
 // #define APPEND_FILE    INPUTFILE
 

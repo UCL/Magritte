@@ -117,7 +117,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
 #   elif (DIMENSIONS == 2)
 
-      double theta = acos(rvec[0]/sqrt(ra2[n]));
+      double theta = acos( rvec[0] / sqrt(ra2[n]) );
 
       if (rvec[1] > 0)
       {
@@ -427,7 +427,7 @@ int find_neighbors (long ncells, CELL *cell)
 
 #     elif (DIMENSIONS == 2)
 
-        double theta = acos(rvec[0]/sqrt(ra2[n]));
+        double theta = acos( rvec[0] / sqrt(ra2[n]) );
 
         if (rvec[1] >= 0)
         {

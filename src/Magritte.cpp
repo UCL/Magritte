@@ -110,24 +110,24 @@ int main ()
 
   // Read chemical species data
 
-  double initial_abn[NSPEC];
+  SPECIES species[NSPEC];
 
-  read_species (spec_datafile, NCELLS, cell, initial_abn);
+  read_species (spec_datafile, NCELLS, cell, species);
 
 
   // Get and store the species numbers of some inportant species
 
-  e_nr    = get_species_nr ("e-");     // species nr corresponding to electrons
-  H2_nr   = get_species_nr ("H2");     // species nr corresponding to H2
-  HD_nr   = get_species_nr ("HD");     // species nr corresponding to HD
-  C_nr    = get_species_nr ("C");      // species nr corresponding to C
-  H_nr    = get_species_nr ("H");      // species nr corresponding to H
-  H2x_nr  = get_species_nr ("H2+");    // species nr corresponding to H2+
-  HCOx_nr = get_species_nr ("HCO+");   // species nr corresponding to HCO+
-  H3x_nr  = get_species_nr ("H3+");    // species nr corresponding to H3+
-  H3Ox_nr = get_species_nr ("H3O+");   // species nr corresponding to H3O+
-  Hex_nr  = get_species_nr ("He+");    // species nr corresponding to He+
-  CO_nr   = get_species_nr ("CO");     // species nr corresponding to CO
+  e_nr    = get_species_nr (species, "e-");     // species nr corresponding to electrons
+  H2_nr   = get_species_nr (species, "H2");     // species nr corresponding to H2
+  HD_nr   = get_species_nr (species, "HD");     // species nr corresponding to HD
+  C_nr    = get_species_nr (species, "C");      // species nr corresponding to C
+  H_nr    = get_species_nr (species, "H");      // species nr corresponding to H
+  H2x_nr  = get_species_nr (species, "H2+");    // species nr corresponding to H2+
+  HCOx_nr = get_species_nr (species, "HCO+");   // species nr corresponding to HCO+
+  H3x_nr  = get_species_nr (species, "H3+");    // species nr corresponding to H3+
+  H3Ox_nr = get_species_nr (species, "H3O+");   // species nr corresponding to H3O+
+  Hex_nr  = get_species_nr (species, "He+");    // species nr corresponding to He+
+  CO_nr   = get_species_nr (species, "CO");     // species nr corresponding to CO
 
 
   // Read chemical reaction data
@@ -220,7 +220,7 @@ int main ()
 
   // Read the line data files stored in the list(!) line_data
 
-  read_linedata (line_datafile, irad, jrad, energy, weight, frequency,
+  read_linedata (line_datafile, species, irad, jrad, energy, weight, frequency,
                  A_coeff, B_coeff, coltemp, C_data, icol, jcol);
 
 
@@ -479,10 +479,10 @@ int main ()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance (NCELLS, cell, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (NCELLS, cell, species, column_H2, column_HD, column_C, column_CO, UV_field,
                      rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
                      C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop);
+                     thermal_ratio, &time_chemistry, &time_level_pop);
 
 
     initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
@@ -569,10 +569,10 @@ int main ()
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance (NCELLS, cell, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (NCELLS, cell, species, column_H2, column_HD, column_C, column_CO, UV_field,
                      rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
                      C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                     thermal_ratio, initial_abn, &time_chemistry, &time_level_pop);
+                     thermal_ratio, &time_chemistry, &time_level_pop);
 
 
     initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
@@ -669,11 +669,11 @@ int main ()
 
 # if   (INPUT_FORMAT == '.vtu')
 
-  write_vtu_output (NCELLS, cell, append_file);
+  write_vtu_output (NCELLS, cell, inputfile);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  write_txt_output (NCELLS, cell, pop, mean_intensity);
+  write_txt_output (NCELLS, cell, species, pop, mean_intensity);
 
 # endif
 

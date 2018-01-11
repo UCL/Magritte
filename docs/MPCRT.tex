@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{mathrsfs}
+\usepackage{mathtools}
 \usepackage[english]{babel}
 \usepackage{multirow}
 \usepackage{graphicx}
@@ -118,6 +119,31 @@ At which point in the calculation do we want to communicate
 
 The physical parameters at each point in space strongly depend on the temperature.
 
+
+
+
+
+
+
+
+\section{Technical}
+
+\emph{Reduction:} When we say that the grid is reduced around a certain cell this means that we remove the neighbouring cells. We only do this when a certain criterion is satisfied that assures us that the cell that we keep is representative for its neighbours.
+
+\bigskip
+
+To keep track of the cells after reduction, each cell has an identifier \texttt{cell[n].id}. This identifier will help us map the data form the reduced grid back to the original one.
+\begin{equation*}
+  \texttt{CELL cell [NCELLS]}
+  \ \xrightarrow{\text{ REDUCE }} \ \left.
+  \begin{cases}
+    \ \ \texttt{CELL cell$\_$ori [NCELLS]} \\
+    \ \ \texttt{CELL cell$\_$red [MCELLS]}
+  \end{cases}
+  \right\} \ \xrightarrow{\text{ APPEND }} \
+  \texttt{CELL cell$\_$app [NCELLS]}
+\end{equation*}
+We initialize the identifier to be the cell number \texttt{cell[n].id = n}. After reduction there are two grids. In the original grid, \texttt{cell$\_$ori}, there are two possibilities for the identifier. If the cell is kept after reduction the identifier will still be equal to the cell number. If t Either the identifier is still equal to the number of the cell which means the the cell is kept after reduction, or the identifier is equal to the
 
 \bibliography{library}
 \bibliographystyle{ieeetr}

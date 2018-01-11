@@ -388,7 +388,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, double *pop)
+int write_level_populations (std::string tag, SPECIES *species, double *pop)
 {
 
   if (!tag.empty())
@@ -399,7 +399,7 @@ int write_level_populations (std::string tag, double *pop)
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+    std::string lspec_name = species[lspec_nr[lspec]].sym;
 
     std::string file_name = output_directory + "level_populations_" + lspec_name + tag + ".txt";
 
@@ -440,7 +440,7 @@ int write_level_populations (std::string tag, double *pop)
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, double *mean_intensity)
+int write_line_intensities (std::string tag, SPECIES *species, double *mean_intensity)
 {
 
   if(!tag.empty())
@@ -1071,7 +1071,8 @@ int write_double_2 (std::string name, std::string tag, long nrows, long ncols, d
 // write_Einstein_coeff: write Einstein A, B or C coefficients
 // -----------------------------------------------------------
 
-int write_Einstein_coeff (std::string tag, double *A_coeff, double *B_coeff, double *C_coeff)
+int write_Einstein_coeff (std::string tag, SPECIES *species,
+                          double *A_coeff, double *B_coeff, double *C_coeff)
 {
 
   if (!tag.empty())
@@ -1150,7 +1151,7 @@ int write_Einstein_coeff (std::string tag, double *A_coeff, double *B_coeff, dou
 // write_R: write the transition matrix R
 // --------------------------------------
 
-int write_R (std::string tag, long gridp, double *R)
+int write_R (std::string tag, SPECIES *species, long gridp, double *R)
 {
 
   if (!tag.empty())
@@ -1203,7 +1204,7 @@ int write_R (std::string tag, long gridp, double *R)
 // write_transition_levels: write levels corresponding to each transition
 // ----------------------------------------------------------------------
 
-int write_transition_levels (std::string tag, int *irad, int *jrad)
+int write_transition_levels (std::string tag, SPECIES *species, int *irad, int *jrad)
 {
 
   if (!tag.empty())
@@ -1234,7 +1235,7 @@ int write_transition_levels (std::string tag, int *irad, int *jrad)
       int i = irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
       int j = jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
-      fprintf (file, "%d \t %d\n", i, j);
+      fprintf (file, "%d\t%d\n", i, j);
 
     }
 

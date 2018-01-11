@@ -36,7 +36,9 @@ typedef struct
 
   TEMPERATURE temperature;   // temperatures
 
-  long id;                   // id (is cell number when no id is needed)
+  long id;                   // cell nr of associated cell in reduced grid
+
+  bool removed;              // true when cell is removed
 
 } CELL;
 
@@ -65,9 +67,11 @@ typedef struct
 
 typedef struct
 {
-  std::string sym;   // chemical symbol
+  std::string sym;            // chemical symbol
 
-  double mass;       // molecular mass
+  double mass;                // molecular mass
+
+  double initial_abundance;   // abundance before chemical evolution
 
 } SPECIES;
 
