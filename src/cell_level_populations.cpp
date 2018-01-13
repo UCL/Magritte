@@ -49,19 +49,19 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
   bool not_converged[NLSPEC];        // true when not converged
 
-  initialize_bool(true, not_converged, NLSPEC);
+  initialize_bool (NLSPEC, true, not_converged);
 
   bool prev_not_converged[NLSPEC];   // true when not converged last iteration
 
-  initialize_bool(true, prev_not_converged, NLSPEC);
+  initialize_bool (NLSPEC, true, prev_not_converged);
 
   int niterations[NLSPEC];           // number of iterations
 
-  initialize_int_array(niterations, NLSPEC);
+  initialize_int_array (NLSPEC, niterations);
 
   int n_not_converged[NLSPEC];       // number of not converged cells
 
-  initialize_int_array(n_not_converged, NLSPEC);
+  initialize_int_array (NLSPEC, n_not_converged);
 
 
   // Iterate until level populations converge

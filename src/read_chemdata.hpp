@@ -20,7 +20,7 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *s
 // read_reactions: read reactoins from (CSV) data file
 // ---------------------------------------------------
 
-int read_reactions (std::string reac_datafile);
+int read_reactions (std::string reac_datafile, REACTION *reaction);
 
 
 #endif // __READ_CHEMDATA_HPP_INCLUDED__

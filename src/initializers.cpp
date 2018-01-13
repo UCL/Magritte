@@ -18,7 +18,7 @@
 // initialize_int_array: set all entries of array of ints equal to zero
 // --------------------------------------------------------------------
 
-int initialize_int_array (int *array, long length)
+int initialize_int_array (long length, int *array)
 {
 
 # pragma omp parallel      \
@@ -48,7 +48,7 @@ int initialize_int_array (int *array, long length)
 // initialize_long_array: set all entries of array of longs equal to zero
 // ----------------------------------------------------------------------
 
-int initialize_long_array (long *array, long length)
+int initialize_long_array (long length, long *array)
 {
 
 # pragma omp parallel      \
@@ -80,7 +80,7 @@ int initialize_long_array (long *array, long length)
 // initialize_double_array: sets all entries of array of doubles equal to zero
 // ---------------------------------------------------------------------------
 
-int initialize_double_array (double *array, long length)
+int initialize_double_array (long length, double *array)
 {
 
 # pragma omp parallel      \
@@ -112,7 +112,7 @@ int initialize_double_array (double *array, long length)
 // initialize_double_array_with: sets entries of first array of doubles equal to second
 // ------------------------------------------------------------------------------------
 
-int initialize_double_array_with (double *array1, double *array2, long length)
+int initialize_double_array_with (long length, double *array1, double *array2)
 {
 
 # pragma omp parallel               \
@@ -144,7 +144,7 @@ int initialize_double_array_with (double *array1, double *array2, long length)
 // initialize_double_array_with_value: sets entries of array of doubles equal to value
 // -----------------------------------------------------------------------------------
 
-int initialize_double_array_with_value (double *array, double value, long length)
+int initialize_double_array_with_value (long length, double value, double *array)
 {
 
 # pragma omp parallel             \
@@ -176,7 +176,7 @@ int initialize_double_array_with_value (double *array, double value, long length
 // initialize_char_array: sets all entries of array of chars equal to 'i'
 // ------------------------------------------ ---------------------------
 
-int initialize_char_array (char *array, long length)
+int initialize_char_array (long length, char *array)
 {
 
 # pragma omp parallel      \
@@ -208,11 +208,11 @@ int initialize_char_array (char *array, long length)
 // initialize_cells: initialize the cell array
 // -------------------------------------------
 
-int initialize_cells (CELL *cell, long ncells)
+int initialize_cells (long ncells, CELL *cell)
 {
 
 # pragma omp parallel     \
-  shared (cell, ncells)   \
+  shared (ncells, cell)   \
   default (none)
   {
 
@@ -273,7 +273,7 @@ int initialize_cells (CELL *cell, long ncells)
 // initialize_cell_id: initialize the cell id's
 // --------------------------------------------
 
-int initialize_cell_id (CELL *cell, long ncells)
+int initialize_cell_id (long ncells, CELL *cell)
 {
 
 # pragma omp parallel     \
@@ -436,7 +436,7 @@ int initialize_abundances (long ncells, CELL *cell, SPECIES *species)
 // initialize_bool: initialize a boolean variable
 // ----------------------------------------------
 
-int initialize_bool (bool value, bool *variable, long length)
+int initialize_bool (long length, bool value, bool *variable)
 {
 
 # pragma omp parallel                \

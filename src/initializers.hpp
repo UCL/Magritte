@@ -13,49 +13,49 @@
 // initialize_int_array: sets all entries of array of ints equal to zero
 // ---------------------------------------------------------------------
 
-int initialize_int_array (int *array, long length);
+int initialize_int_array (long length, int *array);
 
 
 // initialize_long_array: sets all entries of array of longs equal to zero
 // ------------------------------------------ ----------------------------
 
-int initialize_long_array (long *array, long length);
+int initialize_long_array (long length, long *array);
 
 
 // initialize_double_array: sets all entries of array of doubles equal to zero
 // ---------------------------------------------------------------------------
 
-int initialize_double_array (double *array, long length);
+int initialize_double_array (long length, double *array);
 
 
 // initialize_double_array_with: sets entries of first array of doubles equal to second
 // ------------------------------------------------------------------------------------
 
-int initialize_double_array_with (double *array1, double *array2, long length);
+int initialize_double_array_with (long length, double *array1, double *array2);
 
 
 // initialize_double_array_with_value: sets entries of array of doubles equal to value
 // -----------------------------------------------------------------------------------
 
-int initialize_double_array_with_value (double *array, double value, long length);
+int initialize_double_array_with_value (long length, double value, double *array);
 
 
 // initialize_char_array: sets all entries of linearized array of doubles equal to 'i'
 // -----------------------------------------------------------------------------------
 
-int initialize_char_array (char *array, long length);
+int initialize_char_array (long length, char *array);
 
 
 // initialize_cells: initialize the cell array
 // -------------------------------------------
 
-int initialize_cells (CELL *cell, long ncells);
+int initialize_cells (long ncells, CELL *cell);
 
 
 // initialize_cell_id: initialize the cell id's
 // --------------------------------------------
 
-int initialize_cell_id (CELL *cell, long ncells);
+int initialize_cell_id (long ncells, CELL *cell);
 
 
 // initialize_temperature_gas: set gas temperature to a certain initial value
@@ -85,7 +85,7 @@ int initialize_abundances (long ncells, CELL *cell, SPECIES *species);
 // initialize_bool: initialize a boolean variable
 // ----------------------------------------------
 
-int initialize_bool (bool value, bool *variable, long length);
+int initialize_bool (long length, bool value, bool *variable);
 
 
 #endif // __INITIALIZERS_HPP_INCLUDED__

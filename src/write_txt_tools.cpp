@@ -1084,7 +1084,7 @@ int write_transition_levels (std::string tag, SPECIES *species, int *irad, int *
 //
 //   double LTE_pop[NCELLS*TOT_NLEV];                                        /* level population n_i */
 //
-//   initialize_double_array(LTE_pop, NCELLS*TOT_NLEV);
+//   initialize_double_array(NCELLS*TOT_NLEV, LTE_pop);
 //
 //   calc_LTE_populations(cell, energy, weight, temperature_gas, LTE_pop);
 //

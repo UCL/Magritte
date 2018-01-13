@@ -20,6 +20,8 @@
 #define AU    1.66053878E-24                              // atomic mass unit
 #define T_CMB 2.725                                       // CMB  temperature in K
 
+#define SECONDS_IN_YEAR 3.1556926E+7                      // number of seconds in one year
+
 
 // Roots of 4th (physicists') Hermite polynomial
 

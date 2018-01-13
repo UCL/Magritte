@@ -109,9 +109,8 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *s
 // read_reactions: read reactoins from (CSV) data file
 // ---------------------------------------------------
 
-int read_reactions (std::string reac_datafile)
+int read_reactions (std::string reac_datafile, REACTION *reaction)
 {
-
 
   char *buffer = new char[BUFFER_SIZE];       // buffer for a line of data
 

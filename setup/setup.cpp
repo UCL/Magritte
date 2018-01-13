@@ -176,31 +176,31 @@ int main()
 
   int nlev[NLSPEC];
 
-  initialize_int_array(nlev, NLSPEC);
+  initialize_int_array (NLSPEC, nlev);
 
   int nrad[NLSPEC];
 
-  initialize_int_array(nrad, NLSPEC);
+  initialize_int_array (NLSPEC, nrad);
 
   int cum_nlev[NLSPEC];
 
-  initialize_int_array(cum_nlev, NLSPEC);
+  initialize_int_array (NLSPEC, cum_nlev);
 
   int cum_nlev2[NLSPEC];
 
-  initialize_int_array(cum_nlev2, NLSPEC);
+  initialize_int_array (NLSPEC, cum_nlev2);
 
   int cum_nrad[NLSPEC];
 
-  initialize_int_array(cum_nrad, NLSPEC);
+  initialize_int_array (NLSPEC, cum_nrad);
 
   int ncolpar[NLSPEC];
 
-  initialize_int_array(ncolpar, NLSPEC);
+  initialize_int_array (NLSPEC, ncolpar);
 
   int cum_ncolpar[NLSPEC];
 
-  initialize_int_array(cum_ncolpar, NLSPEC);
+  initialize_int_array (NLSPEC, cum_ncolpar);
 
 
 
@@ -222,51 +222,51 @@ int main()
   int *ncoltemp;
   ncoltemp = (int*) malloc( tot_ncolpar*sizeof(int) );
 
-  initialize_int_array(ncoltemp, tot_ncolpar);
+  initialize_int_array (tot_ncolpar, ncoltemp);
 
   int *ncoltran;
   ncoltran = (int*) malloc( tot_ncolpar*sizeof(int) );
 
-  initialize_int_array(ncoltran, tot_ncolpar);
+  initialize_int_array (tot_ncolpar, ncoltran);
 
   int *cum_ncoltemp;
   cum_ncoltemp = (int*) malloc( tot_ncolpar*sizeof(int) );
 
-  initialize_int_array(cum_ncoltemp, tot_ncolpar);
+  initialize_int_array (tot_ncolpar, cum_ncoltemp);
 
   int *cum_ncoltran;
   cum_ncoltran = (int*) malloc( tot_ncolpar*sizeof(int) );
 
-  initialize_int_array(cum_ncoltran, tot_ncolpar);
+  initialize_int_array (tot_ncolpar, cum_ncoltran);
 
   int *cum_ncoltrantemp;
   cum_ncoltrantemp = (int*) malloc( tot_ncolpar*sizeof(int) );
 
-  initialize_int_array(cum_ncoltrantemp, tot_ncolpar);
+  initialize_int_array (tot_ncolpar, cum_ncoltrantemp);
 
   int tot_ncoltemp[NLSPEC];
 
-  initialize_int_array(tot_ncoltemp, NLSPEC);
+  initialize_int_array (NLSPEC, tot_ncoltemp);
 
   int tot_ncoltran[NLSPEC];
 
-  initialize_int_array(tot_ncoltran, NLSPEC);
+  initialize_int_array (NLSPEC, tot_ncoltran);
 
   int cum_tot_ncoltemp[NLSPEC];
 
-  initialize_int_array(cum_tot_ncoltemp, NLSPEC);
+  initialize_int_array (NLSPEC, cum_tot_ncoltemp);
 
   int cum_tot_ncoltran[NLSPEC];
 
-  initialize_int_array(cum_tot_ncoltran, NLSPEC);
+  initialize_int_array (NLSPEC, cum_tot_ncoltran);
 
   int tot_ncoltrantemp[NLSPEC];
 
-  initialize_int_array(tot_ncoltrantemp, NLSPEC);
+  initialize_int_array (NLSPEC, tot_ncoltrantemp);
 
   int cum_tot_ncoltrantemp[NLSPEC];
 
-  initialize_int_array(cum_tot_ncoltrantemp, NLSPEC);
+  initialize_int_array (NLSPEC, cum_tot_ncoltrantemp);
 
 
 

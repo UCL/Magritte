@@ -25,7 +25,7 @@
 
 #define NRAYS 8
 
-#define FIXED_NCELLS false
+#define FIXED_NCELLS true
 
 
 // #define INPUT_FORMAT '.txt'
@@ -98,7 +98,7 @@
 
 #define METALLICITY 1.0
 
-#define GAS_TO_DUST 100.0;
+#define GAS_TO_DUST 100.0
 
 #define TIME_END_IN_YEARS 1.0E+7
 
@@ -126,7 +126,6 @@
 #define ZETA   3.846153846153846
 
 #define OMEGA  0.42
-
 
 
 #endif /* __PARAMETERS_HPP_INCLUDED__ */

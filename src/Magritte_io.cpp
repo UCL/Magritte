@@ -32,18 +32,21 @@ int main ()
   std::cout << "Defining and initializing cells...\n";
 
 
-  long ncells = get_NCELLS_vtu (inputfile);
+  std::string grid_initial = "input/files/Aori/Aori_0001.vtu";
+
+
+  long ncells = get_NCELLS_vtu (grid_initial);
 
   CELL *cell = new CELL[ncells];
 
-  initialize_cells (cell, NCELLS);
+  initialize_cells (ncells, cell);
 
 
   // Read input grid
 
   std::cout << "Reading input grid...\n";
 
-  read_vtu_input (inputfile, NCELLS, cell);
+  read_vtu_input (inputfile, ncells, cell);
   // read_txt_input (inputfile, NCELLS, cell);
 
 
@@ -51,7 +54,7 @@ int main ()
 
   std::cout << "Finding neighbors...\n";
 
-  read_neighbors ("input/files/Aori/neighbors.txt", NCELLS, cell);
+  read_neighbors ("input/files/Aori/neighbors.txt", ncells, cell);
 
 
   // find_neighbors (NCELLS, cell);
@@ -75,7 +78,7 @@ int main ()
 
   double threshold = 1.0E9;   // keep cells if rel_density_change > threshold
 
-  long ncells_red = reduce (NCELLS, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
+  long ncells_red = reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
 
   std::cout << "Reduced grid has " << ncells_red << " cells\n";
 
@@ -84,7 +87,7 @@ int main ()
 
   CELL *cell_red = new CELL[ncells_red];
 
-  initialize_reduced_grid (ncells_red, cell_red, NCELLS, cell);
+  initialize_reduced_grid (ncells_red, cell_red, ncells, cell);
 
 
 
@@ -96,7 +99,7 @@ int main ()
 
   // Interpolate reduced grid back to original grid
 
-  interpolate (ncells_red, cell_red, NCELLS, cell);
+  interpolate (ncells_red, cell_red, ncells, cell);
 
   delete [] cell_red;
 
@@ -110,11 +113,11 @@ int main ()
   std::string thres = strs.str();
 
 
-  write_grid ("reduced_" + thres, NCELLS, cell);
+  // write_grid ("reduced_" + thres, ncells, cell);
 
 
 
-  write_vtu_output (NCELLS, cell, inputfile);
+  write_vtu_output (ncells, cell, grid_initial);
 
   delete [] cell;
 

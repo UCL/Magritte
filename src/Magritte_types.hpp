@@ -37,7 +37,6 @@ typedef struct
   TEMPERATURE temperature;   // temperatures
 
   long id;                   // cell nr of associated cell in reduced grid
-
   bool removed;              // true when cell is removed
 
 } CELL;

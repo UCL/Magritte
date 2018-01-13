@@ -82,29 +82,28 @@ int main ()
 
   // Define cells (using types defined in declarations.hpp
 
-# if (FIXED_NCELLS)
+# if   (FIXED_NCELLS)
 
     long ncells = NCELLS;
 
     CELL cell[NCELLS];
 
-# else
+# elif (!FIXED_NCELLS && (INPUT_FORMAT == '.txt'))
 
-#   if   (INPUT_FORMAT == '.vtu')
+    long ncells = get_NCELLS_txt (inputfile);
 
-      long ncells = get_NCELLS_vtu (inputfile);
+    CELL *cell = new CELL[ncells];
 
-#   elif (INPUT_FORMAT == '.txt')
+# elif (!FIXED_NCELLS && (INPUT_FORMAT == '.vtu'))
 
-      long ncells = get_NCELLS_txt (inputfile);
-
-#   endif
+    long ncells = get_NCELLS_vtu (inputfile);
 
     CELL *cell = new CELL[ncells];
 
 # endif
 
-  initialize_cells (cell, NCELLS);
+
+  initialize_cells (NCELLS, cell);
 
 
   // Read input file
@@ -156,7 +155,9 @@ int main ()
 
   // Read chemical reaction data
 
-  read_reactions (reac_datafile);
+  REACTION reaction[NREAC];
+
+  read_reactions (reac_datafile, reaction);
 
 
   printf ("(Magritte): chemistry data read \n\n");
@@ -175,57 +176,57 @@ int main ()
 
   int irad[TOT_NRAD];            // level index of radiative transition
 
-  initialize_int_array (irad, TOT_NRAD);
+  initialize_int_array (TOT_NRAD, irad);
 
   int jrad[TOT_NRAD];            // level index of radiative transition
 
-  initialize_int_array (jrad, TOT_NRAD);
+  initialize_int_array (TOT_NRAD, jrad);
 
   double energy[TOT_NLEV];       // energy of level
 
-  initialize_double_array (energy, TOT_NLEV);
+  initialize_double_array (TOT_NLEV, energy);
 
   double weight[TOT_NLEV];       // statistical weight of level
 
-  initialize_double_array (weight, TOT_NLEV);
+  initialize_double_array (TOT_NLEV, weight);
 
   double frequency[TOT_NLEV2];   // frequency corresponing to i -> j transition
 
-  initialize_double_array (frequency, TOT_NLEV2);
+  initialize_double_array (TOT_NLEV2, frequency);
 
   double A_coeff[TOT_NLEV2];     // Einstein A_ij coefficient
 
-  initialize_double_array (A_coeff, TOT_NLEV2);
+  initialize_double_array (TOT_NLEV2, A_coeff);
 
   double B_coeff[TOT_NLEV2];     // Einstein B_ij coefficient
 
-  initialize_double_array (B_coeff, TOT_NLEV2);
+  initialize_double_array (TOT_NLEV2, B_coeff);
 
 
   // Define collision related variables
 
   double coltemp[TOT_CUM_TOT_NCOLTEMP];      // Collision temperatures for each partner
 
-  initialize_double_array (coltemp, TOT_CUM_TOT_NCOLTEMP);
+  initialize_double_array (TOT_CUM_TOT_NCOLTEMP, coltemp);
 
   double C_data[TOT_CUM_TOT_NCOLTRANTEMP];   // C_data for each partner, tran. and temp.
 
-  initialize_double_array (C_data, TOT_CUM_TOT_NCOLTRANTEMP);
+  initialize_double_array (TOT_CUM_TOT_NCOLTRANTEMP, C_data);
 
   int icol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
 
-  initialize_int_array (icol, TOT_CUM_TOT_NCOLTRAN);
+  initialize_int_array (TOT_CUM_TOT_NCOLTRAN, icol);
 
   int jcol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
 
-  initialize_int_array (jcol, TOT_CUM_TOT_NCOLTRAN);
+  initialize_int_array (TOT_CUM_TOT_NCOLTRAN, jcol);
 
 
   // Define helper arrays specifying species of collisiopn partners
 
-  initialize_int_array (spec_par, TOT_NCOLPAR);
+  initialize_int_array (TOT_NCOLPAR, spec_par);
 
-  initialize_char_array (ortho_para, TOT_NCOLPAR);
+  initialize_char_array (TOT_NCOLPAR, ortho_para);
 
 
   printf("(Magritte): data structures are set up \n\n");
@@ -299,7 +300,7 @@ int main ()
 # endif
 
 
-  initialize_double_array (rad_surface, NCELLS*NRAYS);
+  initialize_double_array (NCELLS*NRAYS, rad_surface);
 
 
   // Calculate radiation surface
@@ -333,9 +334,9 @@ int main ()
 # endif
 
 
-  initialize_double_array (column_tot, NCELLS*NRAYS);
-  initialize_double_array (AV, NCELLS*NRAYS);
-  initialize_double_array (UV_field, NCELLS);
+  initialize_double_array (NCELLS*NRAYS, column_tot);
+  initialize_double_array (NCELLS*NRAYS, AV);
+  initialize_double_array (NCELLS, UV_field);
 
 
   // Calculate total column density
@@ -399,10 +400,10 @@ int main ()
 # endif
 
 
-  initialize_double_array (column_H2, NCELLS*NRAYS);
-  initialize_double_array (column_HD, NCELLS*NRAYS);
-  initialize_double_array (column_C,  NCELLS*NRAYS);
-  initialize_double_array (column_CO, NCELLS*NRAYS);
+  initialize_double_array (NCELLS*NRAYS, column_H2);
+  initialize_double_array (NCELLS*NRAYS, column_HD);
+  initialize_double_array (NCELLS*NRAYS, column_C);
+  initialize_double_array (NCELLS*NRAYS, column_CO);
 
 
   // Preliminary chemistry iterations
@@ -416,26 +417,22 @@ int main ()
 
     time_chemistry -= omp_get_wtime();
 
-    chemistry (NCELLS, cell, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
+    chemistry (NCELLS, cell, species, reaction, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
     time_chemistry += omp_get_wtime();
 
 
     // Write intermediate output for (potential) restart
 
-#   if (WRITE_INTERMEDIATE_OUTPUT)
-
-#     if   (INPUT_FORMAT == '.txt')
+#   if   (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.txt'))
 
         write_temperature_gas ("", NCELLS, cell);
         write_temperature_dust ("", NCELLS, cell);
         write_temperature_gas_prev ("", NCELLS, cell);
 
-#     elif (INPUT_FORMAT == '.vtu')
+#   elif (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.vtu'))
 
         write_vtu_output (NCELLS, cell, inputfile);
-
-#     endif
 
 #   endif
 
@@ -504,26 +501,26 @@ int main ()
 # endif
 
 
-  initialize_double_array (mean_intensity, NCELLS*TOT_NRAD);
-  initialize_double_array (mean_intensity_eff, NCELLS*TOT_NRAD);
-  initialize_double_array (Lambda_diagonal, NCELLS*TOT_NRAD);
+  initialize_double_array (NCELLS*TOT_NRAD, mean_intensity);
+  initialize_double_array (NCELLS*TOT_NRAD, mean_intensity_eff);
+  initialize_double_array (NCELLS*TOT_NRAD, Lambda_diagonal);
 
-  initialize_double_array (scatter_u, NCELLS*TOT_NRAD*NFREQ);
-  initialize_double_array (scatter_v, NCELLS*TOT_NRAD*NFREQ);
+  initialize_double_array (NCELLS*TOT_NRAD*NFREQ, scatter_u);
+  initialize_double_array (NCELLS*TOT_NRAD*NFREQ, scatter_v);
 
-  initialize_double_array (pop, NCELLS*TOT_NLEV);
+  initialize_double_array (NCELLS*TOT_NLEV, pop);
 
-  initialize_double_array (temperature_a, NCELLS);
-  initialize_double_array (temperature_b, NCELLS);
-  initialize_double_array (temperature_c, NCELLS);
-  initialize_double_array (temperature_d, NCELLS);
-  initialize_double_array (temperature_e, NCELLS);
+  initialize_double_array (NCELLS, temperature_a);
+  initialize_double_array (NCELLS, temperature_b);
+  initialize_double_array (NCELLS, temperature_c);
+  initialize_double_array (NCELLS, temperature_d);
+  initialize_double_array (NCELLS, temperature_e);
 
-  initialize_double_array (thermal_ratio_a, NCELLS);
-  initialize_double_array (thermal_ratio_b, NCELLS);
-  initialize_double_array (thermal_ratio_c, NCELLS);
+  initialize_double_array (NCELLS, thermal_ratio_a);
+  initialize_double_array (NCELLS, thermal_ratio_b);
+  initialize_double_array (NCELLS, thermal_ratio_c);
 
-  initialize_double_array (thermal_ratio, NCELLS);
+  initialize_double_array (NCELLS, thermal_ratio);
 
 
   for (int tb_iteration = 0; tb_iteration < PRELIM_TB_ITER; tb_iteration++)
@@ -531,13 +528,13 @@ int main ()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance (NCELLS, cell, species, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO, UV_field,
                      rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
                      C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
                      thermal_ratio, &time_chemistry, &time_level_pop);
 
 
-    initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
+    initialize_double_array_with (NCELLS, thermal_ratio_b, thermal_ratio);
 
 
     update_temperature_gas (NCELLS, cell, thermal_ratio,
@@ -546,24 +543,20 @@ int main ()
 
     // Write intermediate output for (potential) restart
 
-#   if (WRITE_INTERMEDIATE_OUTPUT)
+#   if   (WRITE_INTERMEDIATE_OUTPUT && (INPUT_FORMAT == '.txt'))
 
-#     if   (INPUT_FORMAT == '.txt')
+      write_temperature_gas ("", NCELLS, cell);
+      write_temperature_dust ("", NCELLS, cell);
+      write_temperature_gas_prev ("", NCELLS, cell);
 
-        write_temperature_gas ("", NCELLS, cell);
-        write_temperature_dust ("", NCELLS, cell);
-        write_temperature_gas_prev ("", NCELLS, cell);
+#   elif (WRITE_INTERMEDIATE_OUTPUT && (INPUT_FORMAT == '.vtu'))
 
-#     elif (INPUT_FORMAT == '.vtu')
+      write_vtu_output (NCELLS, cell, inputfile);
 
-        write_vtu_output (NCELLS, cell, inputfile);
-
-#     endif
-
-#   endif
+#  endif
 
 
-  } // end of tb_iteration loop over preliminary tb iterations
+  } // end of tb_iteration loop
 
 
 #   pragma omp parallel                    \
@@ -621,13 +614,13 @@ int main ()
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance (NCELLS, cell, species, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO, UV_field,
                      rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
                      C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
                      thermal_ratio, &time_chemistry, &time_level_pop);
 
 
-    initialize_double_array_with (thermal_ratio_b, thermal_ratio, NCELLS);
+    initialize_double_array_with (NCELLS, thermal_ratio_b, thermal_ratio);
 
 
 

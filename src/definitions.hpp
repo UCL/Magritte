@@ -101,7 +101,7 @@ const double H_7_roots[7]   = ROOTS_7;     // roots of 7th (physicists') Hermite
 
 SPECIES species[NSPEC];
 
-REACTION reaction[NREAC];
+// REACTION reaction[NREAC];
 
 
 int lspec_nr[NLSPEC];           // nr of line producing species

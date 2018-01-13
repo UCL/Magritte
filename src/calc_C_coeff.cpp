@@ -40,7 +40,7 @@ int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int 
 
   // Initialize C_coeff
 
-  initialize_double_array(C_coeff, TOT_NLEV2);
+  initialize_double_array (TOT_NLEV2, C_coeff);
 
   // printf("yrdfiojdfiojdfsijofvidojfvid\n");
 
@@ -87,12 +87,12 @@ int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int 
     double *C_T_low;
     C_T_low = (double*) malloc( nlev[lspec]*nlev[lspec]*sizeof(double) );
 
-    initialize_double_array(C_T_low, nlev[lspec]*nlev[lspec]);
+    initialize_double_array (nlev[lspec]*nlev[lspec], C_T_low);
 
     double *C_T_high;
     C_T_high = (double*) malloc( nlev[lspec]*nlev[lspec]*sizeof(double) );
 
-    initialize_double_array(C_T_high, nlev[lspec]*nlev[lspec]);
+    initialize_double_array (nlev[lspec]*nlev[lspec], C_T_high);
 
 
     for (int ckr = 0; ckr < ncoltran[LSPECPAR(lspec,par)]; ckr++)

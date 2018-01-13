@@ -30,9 +30,9 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
   // Initialize data structures that store evaluation points
 
-  initialize_long_array(key, NCELLS);
-  initialize_long_array(raytot, NRAYS);
-  initialize_long_array(cum_raytot, NRAYS);
+  initialize_long_array (NCELLS, key);
+  initialize_long_array (NRAYS, raytot);
+  initialize_long_array (NRAYS, cum_raytot);
 
 
   // Initialize onray (can still be true from previous call)
@@ -79,15 +79,15 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
   double Z[NRAYS];   // distance along ray
 
-  initialize_double_array(Z, NRAYS);
+  initialize_double_array (NRAYS, Z);
 
 
   // FIND EVALUATION POINTS FOR gridp
   // ++++++++++++++++++++++++++++++++
 
 
-  /* Devide the grid points over the rays through the origin */
-  /* Start from the second point in rb (first point is cell itself) */
+  // Devide grid points over rays through origin
+  // Start from second point in rb (first point is cell itself)
 
 
   for (long n = 1; n < NCELLS; n++)
@@ -196,7 +196,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
   long nr[NRAYS];                              /* current number of evaluation points on the ray */
 
-  initialize_long_array(nr, NRAYS);
+  initialize_long_array(NRAYS, nr);
 
 
   for (long n = 0; n < NCELLS; n++)
@@ -380,15 +380,15 @@ int find_neighbors (long ncells, CELL *cell)
 
     double Z[NRAYS];                 // distance along ray
 
-    initialize_double_array(Z, NRAYS);
+    initialize_double_array (NRAYS, Z);
 
     long possible_neighbor[NRAYS];   // cell numbers of neighbors
 
-    initialize_long_array(possible_neighbor, NRAYS);
+    initialize_long_array (NRAYS, possible_neighbor);
 
     bool too_far[NRAYS];             // true when next cell is too far to be a neighbor
 
-    initialize_bool(false, too_far, NRAYS);
+    initialize_bool (NRAYS, false, too_far);
 
 
 

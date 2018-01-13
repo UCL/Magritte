@@ -28,7 +28,7 @@
 // thermal_balance: perform a thermal balance iteration to calculate thermal flux
 // ------------------------------------------------------------------------------
 
-int thermal_balance (long ncells, CELL *cell, SPECIES *species,
+int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double *UV_field, double *rad_surface, double *AV, int *irad, int *jrad,
                      double *energy, double *weight, double *frequency, double *A_coeff, double *B_coeff,
@@ -64,7 +64,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species,
     *time_chemistry -= omp_get_wtime();
 
 
-    chemistry (NCELLS, cell, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
+    chemistry (NCELLS, cell, species, reaction, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
 
     *time_chemistry += omp_get_wtime();
@@ -135,10 +135,10 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species,
 
   // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                               \
-  shared (ncells, cell, irad, jrad, A_coeff, B_coeff, pop, frequency, weight, column_H2, column_HD, \
-          column_C, column_CO, cum_nlev, species, mean_intensity, AV, rad_surface, UV_field,        \
-          thermal_ratio)                                                                            \
+# pragma omp parallel                                                                                \
+  shared (ncells, cell, reaction, irad, jrad, A_coeff, B_coeff, pop, frequency, weight, column_H2,   \
+          column_HD, column_C, column_CO, cum_nlev, species, mean_intensity, AV, rad_surface,        \
+          UV_field, thermal_ratio)                                                                   \
   default (none)
   {
 
@@ -154,7 +154,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species,
     double heating_components[12];
 
 
-    reaction_rates (NCELLS, cell, gridp, rad_surface, AV, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (NCELLS, cell, reaction, gridp, rad_surface, AV, column_H2, column_HD, column_C, column_CO);
 
 
     double heating_total = heating (NCELLS, cell, gridp, UV_field, heating_components);
