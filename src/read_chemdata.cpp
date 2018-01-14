@@ -24,7 +24,7 @@
 // read_species: read species from data file
 // -----------------------------------------
 
-int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *species)
+int read_species (std::string spec_datafile, SPECIES *species)
 {
 
 
@@ -41,21 +41,14 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *s
 
   species[0].sym = "dummy0";
 
-  for (long gridp = 0; gridp < NCELLS; gridp++)
-  {
-    cell[gridp].abundance[0] = 0.0;
-  }
+  species[0].initial_abundance = 0.0;
 
 
   // Last species is a dummy with abundance 1.0 everywhere
 
   species[NSPEC-1].sym = "dummy1";
 
-  for (long gridp = 0; gridp < NCELLS; gridp++)
-  {
-    cell[gridp].abundance[NSPEC-1] = 1.0;
-  }
-
+  species[NSPEC-1].initial_abundance = 1.0;
 
 
   // Open species data file
@@ -67,34 +60,24 @@ int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *s
   {
     int n;
 
-    fgets(buffer, BUFFER_SIZE, specdata);
-    sscanf( buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff );
+    fgets (buffer, BUFFER_SIZE, specdata);
+    sscanf (buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff);
 
     species[l].sym                = sym_buff;
     species[l].mass               = mass_buff;
     species[l].initial_abundance  = abn_buff;
-
-
-    for (long gridp = 0; gridp < NCELLS; gridp++)
-    {
-      cell[gridp].abundance[l] = abn_buff;
-    }
   }
 
 
   // Overwrite electron abindance
 
-  printf("\n\nNote: The electron abundance will be overwritten to make the gas neutral \n\n");
+  printf("\n\nNote: The electron abundance will be overwritten to make each cell neutral\n\n");
 
   int electron_nr = get_species_nr (species, "e-");
 
-  for (long gridp = 0; gridp < NCELLS; gridp++)
-  {
-    cell[gridp].abundance[electron_nr] = 0.0;
-    cell[gridp].abundance[electron_nr] = get_electron_abundance (NCELLS, cell, species, gridp);
-  }
+  species[electron_nr].initial_abundance = 0.0;
+  species[electron_nr].initial_abundance = get_electron_abundance (species);
 
-  species[electron_nr].initial_abundance = cell[0].abundance[electron_nr];
 
   fclose (specdata);
 

@@ -36,7 +36,7 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
                             double *A_coeff, double *B_coeff, double *pop,
                             double *C_data, double *coltemp, int *icol, int *jcol,
                             double *weight, double *energy, double *mean_intensity,
-                            double *Lambda_diagonal, double *mean_intensity_eff )
+                            double *Lambda_diagonal, double *mean_intensity_eff)
 {
 
 

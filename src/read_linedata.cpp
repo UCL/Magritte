@@ -23,7 +23,8 @@
 // read_linedata: read data files containing line information in LAMBDA/RADEX format
 // ---------------------------------------------------------------------------------
 
-int read_linedata (const std::string *line_datafile, SPECIES *species, int *irad, int *jrad,
+int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
+                   SPECIES *species, int *irad, int *jrad,
                    double *energy, double *weight, double *frequency, double *A_coeff,
                    double *B_coeff, double *coltemp, double *C_data, int *icol, int *jcol)
 {
@@ -64,10 +65,20 @@ int read_linedata (const std::string *line_datafile, SPECIES *species, int *irad
     lspec_nr[lspec] = get_species_nr (species, lspec_name);
 
 
+
+/////////////
+
+    line_species[lspec].sym = buffer_name;
+    line_species[lspec].nr  = get_species_nr (species, lspec_name);
+
+/////////////
+
+
+
     // Skip first 5 lines
 
-    for (int l = 0; l < 5; l++){
-
+    for (int l = 0; l < 5; l++)
+    {
       fgets (buffer, BUFFER_SIZE, data);
     }
 

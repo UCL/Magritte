@@ -62,13 +62,13 @@ int main ()
   time_total -= omp_get_wtime();
 
 
-  printf ("                                                                          \n");
-  printf ("Magritte: Multidimensional Accelerated General-purpose Radiative Transfer \n");
-  printf ("                                                                          \n");
-  printf ("Developed by: Frederik De Ceuster - University College London & KU Leuven \n");
-  printf ("_________________________________________________________________________ \n");
-  printf ("                                                                          \n");
-  printf ("                                                                          \n");
+  printf ("                                                                         \n");
+  printf ("Magritte: Multidimensional Accelerated General-purpose Radiative Transfer\n");
+  printf ("                                                                         \n");
+  printf ("Developed by: Frederik De Ceuster - University College London & KU Leuven\n");
+  printf ("_________________________________________________________________________\n");
+  printf ("                                                                         \n");
+  printf ("                                                                         \n");
 
 
 
@@ -135,7 +135,12 @@ int main ()
 
   SPECIES species[NSPEC];
 
-  read_species (spec_datafile, NCELLS, cell, species);
+  read_species (spec_datafile, species);
+
+
+  // Initialize abundances in each cell
+
+  initialize_abundances (NCELLS, cell, species);
 
 
   // Get and store the species numbers of some inportant species
@@ -243,7 +248,9 @@ int main ()
 
   // Read the line data files stored in the list(!) line_data
 
-  read_linedata (line_datafile, species, irad, jrad, energy, weight, frequency,
+  LINE_SPECIES line_species[NLSPEC];
+
+  read_linedata (line_datafile,line_species, species, irad, jrad, energy, weight, frequency,
                  A_coeff, B_coeff, coltemp, C_data, icol, jcol);
 
 
@@ -253,7 +260,6 @@ int main ()
 
 
 # if (CELL_BASED)
-
 
     // FIND NEIGHBORING CELLS
     // ______________________
@@ -268,7 +274,6 @@ int main ()
 
 
     printf ("(Magritte): neighboring cells found \n\n");
-
 
 # endif
 
@@ -357,7 +362,6 @@ int main ()
 
 # if (!RESTART)
 
-
     // Make a guess for gas temperature based on UV field
 
     guess_temperature_gas (NCELLS, cell, UV_field);
@@ -366,7 +370,6 @@ int main ()
     // Calculate the dust temperature
 
     calc_temperature_dust (NCELLS, cell, UV_field, rad_surface);
-
 
 # endif
 

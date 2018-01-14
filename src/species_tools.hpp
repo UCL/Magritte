@@ -37,7 +37,7 @@ int get_charge (std::string name);
 // get_electron_abundance: initialize electron abundance so that gas is neutral
 // ----------------------------------------------------------------------------
 
-double get_electron_abundance (long ncells, CELL *cell, SPECIES *species, long gridp);
+double get_electron_abundance (SPECIES *species);
 
 
 // no_better_data: checks whether there data closer to actual temperature

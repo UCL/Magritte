@@ -40,11 +40,11 @@
 /* when first index is line producing species, second is grid point and third is rad. transition */
 
 
-#define LINDEX(i,j) ((j)+(i)*nlev[lspec])                        /* when second index are levels */
+#define LINDEX(i,j) ((j)+(i)*nlev[lspec])                  // when second index are levels
 
-#define L2INDEX(r,c) ((c)+(r)*nlev[lspec]*nlev[lspec])       /* when second index is LINDEX(i,j) */
+#define L2INDEX(r,c) ((c)+(r)*nlev[lspec]*nlev[lspec])     // when second index is LINDEX(i,j)
 
-#define GRIDLEVLEV(g,i,j) (L2INDEX((g),LINDEX((i),(j)))) /* for a grid point and 2 level indices */
+#define GRIDLEVLEV(g,i,j) (L2INDEX((g),LINDEX((i),(j))))   // for a grid point and 2 level indices
 
 
 /* Collision rate related indices */

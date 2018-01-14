@@ -10,6 +10,7 @@
 
 typedef struct
 {
+
   double dust;
   double gas;
   double gas_prev;
@@ -21,6 +22,34 @@ typedef struct
 
 typedef struct
 {
+
+  double H2;    // H2 column density
+  double HD;    // HD column density
+  double C;     // C  column density
+  double CO;    // CO column density
+
+  double tot;   // total column density
+
+} COLUMN_DENSITIES;
+
+
+
+
+typedef struct
+{
+
+  double intensity;
+
+  COLUMN_DENSITIES column;
+
+} RAY;
+
+
+
+
+typedef struct
+{
+
   double x, y, z;            // x, y and z coordinate of cell center
 
   long neighbor[NRAYS];      // cell numbers of neighors
@@ -46,6 +75,7 @@ typedef struct
 
 typedef struct
 {
+
   bool   onray;   // true when cell is on any ray thus an evaluation point
 
   long   ray;     // number of ray, evaluation point belongs to
@@ -66,6 +96,7 @@ typedef struct
 
 typedef struct
 {
+
   std::string sym;            // chemical symbol
 
   double mass;                // molecular mass
@@ -77,33 +108,41 @@ typedef struct
 
 
 
-// typedef struct
-// {
-//
-//   int spec;                    // nr of corresponding species
-//
-//   int irad[ntran];
-//   int jrad[ntran];
-//
-//   double A[nlev*nlev];
-//   double B[nlev*nlev];
-//
-//   double frequency[nlev*nlev];
-//
-//   double energy[nlev];
-//   double weight[nlev];
-//
-//   int icol[ncoltran];
-//   int jcol[ncoltran];
-//
-//
-//
-//
-// } LINE_SPECIES;
+typedef struct
+{
+
+  int nr;                      // nr of corresponding species
+
+  std::string sym;             // chemical symbol
+
+
+  int irad[MAX_NRAD];
+  int jrad[MAX_NRAD];
+
+  double A[MAX_NLEV][MAX_NLEV];
+  double B[MAX_NLEV][MAX_NLEV];
+  double C[MAX_NLEV][MAX_NLEV];
+
+  double frequency[MAX_NLEV][MAX_NLEV];
+
+  double energy[MAX_NLEV];
+  double weight[MAX_NLEV];
+
+  // int icol[MAX_NCOLTRAN];
+  // int jcol[MAX_NCOLTRAN];
+  //
+  // double coltemp[MAX_TOT_NCOLTEMP];
+  //
+  // double C_data[MAX_TOT_NCOLTRANTEMP];
+
+
+
+} LINE_SPECIES;
 
 
 // typedef struct
 // {
+//
 //
 //
 //
@@ -114,6 +153,7 @@ typedef struct
 
 typedef struct
 {
+
   std::string R1;   // reactant 1
   std::string R2;   // reactant 2
   std::string R3;   // reactant 3

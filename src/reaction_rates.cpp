@@ -24,8 +24,8 @@
 // reaction_rates: Check which kind of reaction and call appropriate rate calculator
 // ---------------------------------------------------------------------------------
 
-int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, double *rad_surface, double *AV,
-                    double *column_H2, double *column_HD, double *column_C, double *column_CO)
+int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, double *rad_surface,
+                    double *AV, double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
   // For all reactions

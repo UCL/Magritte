@@ -202,10 +202,12 @@ int main()
 
   initialize_int_array (NLSPEC, cum_ncolpar);
 
+  int max_nlev = 0;
+  int max_nrad = 0;
 
 
   setup_data_structures1( line_datafile, nlev, nrad, cum_nlev, cum_nrad,
-                          cum_nlev2, ncolpar, cum_ncolpar );
+                          cum_nlev2, ncolpar, cum_ncolpar, &max_nlev, &max_nrad);
 
 
 
@@ -349,6 +351,10 @@ int main()
   fprintf( config_file, "#define TOT_NLEV %d \n\n", tot_nlev );
 
   fprintf( config_file, "#define TOT_NRAD %d \n\n", tot_nrad );
+
+  fprintf( config_file, "#define MAX_NLEV %d \n\n", max_nlev );
+
+  fprintf( config_file, "#define MAX_NRAD %d \n\n", max_nrad );
 
   fprintf( config_file, "#define TOT_NLEV2 %d \n\n", tot_nlev2 );
 

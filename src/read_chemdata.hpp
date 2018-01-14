@@ -14,7 +14,7 @@
 // read_species: read species from data file
 // -----------------------------------------
 
-int read_species (std::string spec_datafile, long ncells, CELL *cell, SPECIES *species);
+int read_species (std::string spec_datafile, SPECIES *species);
 
 
 // read_reactions: read reactoins from (CSV) data file

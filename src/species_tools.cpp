@@ -137,10 +137,10 @@ int get_charge (std::string name)
 
 
 
-// get_electron_abundance: initialize electron abundance so that cell is neutral
-// -----------------------------------------------------------------------------
+// get_electron_abundance: get electron abundance that would make cell neutral
+// ---------------------------------------------------------------------------
 
-double get_electron_abundance (long ncells, CELL *cell, SPECIES *species, long gridp)
+double get_electron_abundance (SPECIES *species)
 {
 
   double charge_total = 0.0;
@@ -148,13 +148,15 @@ double get_electron_abundance (long ncells, CELL *cell, SPECIES *species, long g
 
   for (int spec = 0; spec < NSPEC; spec++)
   {
-    charge_total = charge_total + get_charge(species[spec].sym)*cell[gridp].abundance[spec];
+    charge_total = charge_total + get_charge(species[spec].sym)*species[spec].initial_abundance;
   }
 
 
   if (charge_total < 0.0)
   {
-    printf("WARNING: gas is negatively charge even without electrons \n");
+    printf ("WARNING: gas is negatively charged even without electrons \n");
+
+    charge_total = 0.0;
   }
 
 
