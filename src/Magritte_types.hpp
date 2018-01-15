@@ -8,6 +8,8 @@
 #define __MAGRITTE_TYPES_HPP_INCLUDED__
 
 
+#include "Eigen/Dense"
+
 typedef struct
 {
 
@@ -122,6 +124,12 @@ typedef struct
   double A[MAX_NLEV][MAX_NLEV];
   double B[MAX_NLEV][MAX_NLEV];
   double C[MAX_NLEV][MAX_NLEV];
+
+  // Eigen::MatrixXd EA(MAX_NLEV, MAX_NLEV);
+  // Eigen::MatrixXd EB(MAX_NLEV, MAX_NLEV);
+  // Eigen::MatrixXd EC(MAX_NLEV, MAX_NLEV);
+
+  // ERROR -> read up on constructors...
 
   double frequency[MAX_NLEV][MAX_NLEV];
 

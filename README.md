@@ -1,4 +1,4 @@
-<img src="/docs/Images/Magritte_logo.png" height="60">
+<img src="/docs/Images/Magritte_logo.png" height="130">
 
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 

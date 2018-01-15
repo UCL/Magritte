@@ -29,10 +29,6 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
                    double *B_coeff, double *coltemp, double *C_data, int *icol, int *jcol)
 {
 
-  int n;                               // helper index
-
-  int i, j;                            // level indices
-
   char buffer[BUFFER_SIZE];            // buffer for a line of data
 
   char buffer_name[BUFFER_SIZE];       // buffer for name of line producing species
@@ -87,11 +83,24 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
     for (int l = 0; l < nlev[lspec]; l++)
     {
+      int n;                               // helper index
+
       fgets (buffer, BUFFER_SIZE, data);
       sscanf (buffer, "%d %lf %lf %*[^\n]\n", &n, &buff1, &buff2);
 
       energy[LSPECLEV(lspec,l)] = HH*CC*buff1;   // energy converted from cm^-1 to erg
       weight[LSPECLEV(lspec,l)] = buff2;
+
+
+
+/////////////
+
+      line_species[lspec].energy[l] = HH*CC*buff1;   // energy converted from cm^-1 to erg
+      line_species[lspec].weight[l] = buff2;
+
+/////////////
+
+
 
       // printf("%s\n",buffer);
       // printf( "(read_linedata): level energy and weight are %lE \t %.1f \n",
@@ -112,6 +121,10 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
     for (int l = 0; l < nrad[lspec]; l++)
     {
+      int n;      // helper index
+
+      int i, j;   // level indices
+
       fgets (buffer, BUFFER_SIZE, data);
       sscanf (buffer, "%d %d %d %lE %lE %*[^\n] \n", &n, &i, &j, &buff1, &buff2);
 
@@ -121,6 +134,21 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
       A_coeff[LSPECLEVLEV(lspec,i-1,j-1)] = buff1;
 
       frequency[LSPECLEVLEV(lspec,i-1,j-1)] = buff2;
+
+
+
+/////////////
+
+      line_species[lspec].irad[l] = i-1;   // shift levels 1 down to have usual indexing
+      line_species[lspec].jrad[l] = j-1;   // shift levels 1 down to have usual indexing
+
+      line_species[lspec].A[i-1][j-1] = buff1;
+
+      line_species[lspec].frequency[i-1][j-1] = buff2;
+
+/////////////
+
+
 
       // printf( "(read_linedata): i, j, A_ij and frequency are %d \t %d \t %lE \t %lE \n",
       //         i-1, j-1, A_coeff[LSPECLEVLEV(lspec,irad[LSPECRAD(lspec,l)],jrad[LSPECRAD(lspec,l)])],
@@ -190,6 +218,9 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
       for (int l = 0; l < ncoltran[LSPECPAR(lspec,par4)]; l++)
       {
+        int n;      // helper index
+
+        int i, j;   // level indices
 
         // Read first 3 entries of line containing transition level indices
 
@@ -232,8 +263,8 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
     for (int l = 0; l < nrad[lspec]; l++)
     {
-      i = irad[LSPECRAD(lspec,l)];
-      j = jrad[LSPECRAD(lspec,l)];
+      int i = irad[LSPECRAD(lspec,l)];
+      int j = jrad[LSPECRAD(lspec,l)];
 
       int l_ij = LSPECLEVLEV(lspec,i,j);
       int l_ji = LSPECLEVLEV(lspec,j,i);
@@ -254,6 +285,35 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
       B_coeff[l_ij] = A_coeff[l_ij] * pow(CC, 2) / ( 2.0*HH*pow(frequency[l_ij] , 3) );
 
       B_coeff[l_ji] = weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)] * B_coeff[l_ij];
+
+
+
+/////////////
+
+      i = line_species[lspec].irad[l];
+      j = line_species[lspec].jrad[l];
+
+
+      // Frequency is in GHz, convert to Hz
+
+      line_species[lspec].frequency[i][j] = 1.0E9 * line_species[lspec].frequency[i][j];
+
+
+      // Energy/frequency of transition is symmetric */
+
+      line_species[lspec].frequency[j][i] = line_species[lspec].frequency[i][j];
+
+
+      // Calculate Einstein B coefficients
+
+      line_species[lspec].B[i][j] = line_species[lspec].A[i][j] * pow(CC, 2)
+                                    / (2.0*HH*pow(line_species[lspec].frequency[i][j], 3));
+
+      line_species[lspec].B[j][i] = line_species[lspec].weight[i] / line_species[lspec].weight[j]
+                                    * B_coeff[l_ij];
+
+/////////////
+
 
 
       // printf( "(read_linedata): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
