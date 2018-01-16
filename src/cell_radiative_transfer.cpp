@@ -158,8 +158,8 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
   // Walk along antipodal ray (ar) of r
 
   {
-    double Z    = 0.0;
-    double dZ   = 0.0;
+    double Z  = 0.0;
+    double dZ = 0.0;
 
     long current = origin;
     long next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
@@ -171,6 +171,8 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, ar, current);
+
+      // This can be done better!
 
       double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
       double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
@@ -194,8 +196,8 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
   // Walk along r itself
 
   {
-    double Z    = 0.0;
-    double dZ   = 0.0;
+    double Z  = 0.0;
+    double dZ = 0.0;
 
     long current = origin;
     long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
@@ -207,6 +209,8 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, r, current);
+
+      // This can be done better!
 
       double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
       double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
@@ -242,7 +246,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
 
   // Solve transfer equation with Feautrier solver (on subgrid)
-  // ____________________________ _____________________________
+  // __________________________________________________________
 
 
   cell_feautrier (ndep, origin, r, S, dtau, u, L_diag_approx);
@@ -256,20 +260,20 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
   if (o_label == 0)
   {
-    *u_local = u[o_label];
+    *u_local = u[0];
 
-    *v_local = 0.0;   // No meaning since it is a boundary condition
+    *v_local = 0.0;//cell[].ray[].intensity - u[0];
 
-    *L_local = L_diag_approx[o_label];
+    *L_local = L_diag_approx[0];
   }
 
   else if (o_label == ndep)
   {
-    *u_local = u[o_label-1];
+    *u_local = u[ndep-1];
 
-    *v_local = 0.0;   // No meaning since it is a boundary condition
+    *v_local = 0.0;//u[ndep-1] - Idm;
 
-    *L_local = L_diag_approx[o_label-1];
+    *L_local = L_diag_approx[ndep-1];
   }
 
   else

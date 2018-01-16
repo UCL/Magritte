@@ -379,33 +379,41 @@ Since all variables are positive and there are no subtractions this scheme is nu
 
 \subsubsection{Boundary conditions}
 
-So far, we systematically ignored boundary conditions. However in equation (\ref{mateq}) it is clear that the first and last row of the matrix do not contain the right discretized differential operator. This can be solved by imposing appropriate boundary conditions. For the moment we will assum in our simulations that all sources are contained within the grid, i.e. that there is no incomming radiation at the boundaries. This means $I_{0}^{+} = 0$ and $I_{D}^{-} = 0$. For the Feautrier variables $u$ and $v$, this implies that $u_{0} = -v_{0}$ and $u_{D} = v_{D}$. We can use this to formulate an expression for the first and last row in the matrix equation.
-One should note that the first and last row describe a relation between the first and the one to first element, and between the last and one to last element. Such a relation can be obtained by making a Taylor expansion from the boundary inward. For the the boundary with index 0 this yields
+So far, we systematically ignored boundary conditions. However in equation (\ref{mateq}) it is clear that the first and last row of the matrix do not contain the right discretized differential operator. This can be solved by imposing appropriate boundary conditions. These are given by the intensities injected in the ray, i.e. $I_{0}^{+}$ and $I_{D}^{-}$. Let us consider these to be known. The boundary conditions can be used to relate the Feautrier variables $u$ and $v$ as, $v_{0} = I_{0}^{+} - u_{0}$ and $v_{D} = u_{D} -I_{D}^{-}$. We can use this to formulate an expression for the first and last row in the matrix equation.
+One should note that the first and last row describe a relation between the first and the one to first elements of $u$, and between the last and one to last elements of $u$. Such a relation can be obtained by making a Taylor expansion from the boundary inward. For the the boundary with index 0 this yields
 \begin{equation}
 u_{1} \ = \ u_{0} + \Delta\tau_{0} \left.\frac{\D u}{\D \tau}\right|_{0} + \frac{1}{2} \Delta\tau_{0}^{2} \left.\frac{\D^{2} u}{\D \tau^{2}}\right|_{0} .
 \end{equation}
 Using equations (\ref{uv}) together with the boundary conditions on the Feautrier variables and assuming an isotropic source function at the boundary, we obtain
 \begin{equation}
-u_{1} \ = \ u_{0} + \Delta\tau_{0} u_{0} + \frac{1}{2} \Delta\tau_{0}^{2} \left( u_{0} - S_{0} \right) .
+u_{1} \ = \ u_{0} + \Delta\tau_{0} \left(u_{0}-I_{0}^{+}\right) + \frac{1}{2} \Delta\tau_{0}^{2} \left( u_{0} - S_{0} \right) .
 \end{equation}
 This can be rewritten as
 \begin{equation}
 \left( 1 + \frac{2}{\Delta\tau_{0}} + \frac{2}{\Delta\tau_{0}^{2}} \right)u_{0} - \frac{2}{\Delta\tau_{0}^{2}} \ u_{1}
-  \ = \  S_{0} ,
+  \ = \  S_{0} + \frac{2}{\Delta\tau_{0}} I_{0}^{+},
 \end{equation}
 from which we can read of the elements of the first row
 \begin{equation}
 \begin{split}
 B_{0} \ &= \ 1 + \frac{2}{\Delta\tau_{0}} + \frac{2}{\Delta\tau_{0}^{2}}, \\
-C_{0} \ &= \ \frac{2}{\Delta\tau_{0}^{2}}.
+C_{0} \ &= \ \frac{2}{\Delta\tau_{0}^{2}},
 \end{split}
+\end{equation}
+and we note that we have to add an extra term to the first element of the source term,
+\begin{equation}
+S'_{0}  \ = \  S_{0} + \frac{2}{\Delta\tau_{0}} I_{0}^{+}.
 \end{equation}
 Higher order relations can easily be obtained in a similar way. However, it turns out that second order suffices in most cases \cite{MihalasMihalas}. A similar calculation can be done for the other boundary yielding
 \begin{equation}
 \begin{split}
 A_{D-1} \ &= \ \frac{2}{\Delta\tau_{D-1}^{2}}, \\
-B_{D-1} \ &= \ 1 + \frac{2}{\Delta\tau_{D-1}} + \frac{2}{\Delta\tau_{D-1}^{2}}.
+B_{D-1} \ &= \ 1 + \frac{2}{\Delta\tau_{D-1}} + \frac{2}{\Delta\tau_{D-1}^{2}},
 \end{split}
+\end{equation}
+and an extra term in the last element of the source term
+\begin{equation}
+S'_{D}  \ = \  S_{D} + \frac{2}{\Delta\tau_{D}} I_{D}^{+}.
 \end{equation}
 
 

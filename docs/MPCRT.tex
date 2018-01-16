@@ -109,16 +109,31 @@ A truely general-purpose code should be able to tackle problems of any size i.e.
 
 \section{Parallellisation strategy}
 
-How are we going to devide the grid? Are there smart ways to cut over high opacities?
 
-\bigskip
+\subsection{Questions}
 
-At which point in the calculation do we want to communicate
+\begin{itemize}
+\item How are we going to devide the grid? Are there smart ways to cut over high opacities?
+\item At which point in the calculation do we want to communicate?
+\end{itemize}
+
+\subsection{Strategies}
+
+Work with ghost cells. Devide the total of cells up in subsets, one subset for each CPU. For each subset add the first neighbor not in the subset.
+
 
 \section{Self-consistent temperature determination}
 
 The physical parameters at each point in space strongly depend on the temperature.
+In dedetmining the temperature we assume that this must be such that at each point in space there is no net heating or cooling, i.e. that at each point the heating is equal to the cooling.
 
+\bigskip
+
+Strategy: determine guess temperature on coarser grid.
+
+\bigskip
+
+Question:
 
 
 

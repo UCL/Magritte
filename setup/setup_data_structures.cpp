@@ -166,8 +166,8 @@ int setup_data_structures2 (std::string *line_datafile, int* ncolpar, int *cum_n
                           + ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)];
 
     tot_ncoltrantemp[lspec] = cum_ncoltrantemp[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                              + ( ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
-                                  *ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)] );
+                              + (ncoltran[LSPECPAR(lspec,ncolpar[lspec]-1)]
+                                 *ncoltemp[LSPECPAR(lspec,ncolpar[lspec]-1)]);
 
     // printf("(Magritte): tot_ncoltran %d\n", tot_ncoltran[lspec]);
     // printf("(Magritte): tot_ncoltemp %d\n", tot_ncoltemp[lspec]);

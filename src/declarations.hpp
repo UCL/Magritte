@@ -117,8 +117,6 @@ extern const double H_7_roots[7];     // roots of 7th (physicists') Hermite poly
 
 extern SPECIES species[NSPEC];
 
-// extern REACTION reaction[NREAC];
-
 
 extern int lspec_nr[NLSPEC];           // names of line producing species
 

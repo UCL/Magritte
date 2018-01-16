@@ -39,21 +39,21 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
   double escape_probability = 0.0;             // escape probability from Sobolev approximation
 
 
-  // DO THE RADIATIVE TRANSFER
-  // _ _ _ _ _ _ _ _ _ _ _ _ _
+  // DO RADIATIVE TRANSFER
+  // _ _ _ _ _ _ _ _ _ _ _
 
 
-  // For half of the rays (only half is needed since we also consider the antipodals)
+  // For half of the rays (only half is needed since we also consider antipodals)
 
   for (long r = 0; r < NRAYS/2; r++)
   {
 
-    // Get the antipodal ray for r
+    // Get antipodal ray for r
 
     long ar = antipod[r];
 
 
-    // Fill the source function and the optical depth increment along ray r
+    // Fill source function and optical depth increment along ray r
 
     double tau_r  = 0.0;
     double tau_ar = 0.0;

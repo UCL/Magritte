@@ -67,7 +67,9 @@ typedef struct
 
   TEMPERATURE temperature;   // temperatures
 
-  long id;                   // cell nr of associated cell in reduced grid
+  RAY ray[NRAYS];            // discretized directions
+
+  long id;                   // cell nr of associated cell in other grid
   bool removed;              // true when cell is removed
 
 } CELL;
@@ -131,13 +133,18 @@ typedef struct
 
   // ERROR -> read up on constructors...
 
+
   double frequency[MAX_NLEV][MAX_NLEV];
 
   double energy[MAX_NLEV];
   double weight[MAX_NLEV];
 
-  // int icol[MAX_NCOLTRAN];
-  // int jcol[MAX_NCOLTRAN];
+  // int spec_par[MAX_NCOLPAR];
+
+  // char ortho_para[MAX_NCOLPAR];
+
+  // int icol[TOT_NCOLTRAN];
+  // int jcol[TOT_NCOLTRAN];
   //
   // double coltemp[MAX_TOT_NCOLTEMP];
   //

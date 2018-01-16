@@ -275,7 +275,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
       frequency[l_ij] = 1.0E9 * frequency[l_ij];
 
 
-      // Energy/frequency of transition is symmetric */
+      // Energy/frequency of transition is symmetric
 
       frequency[l_ji] = frequency[l_ij];
 
@@ -299,7 +299,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
       line_species[lspec].frequency[i][j] = 1.0E9 * line_species[lspec].frequency[i][j];
 
 
-      // Energy/frequency of transition is symmetric */
+      // Energy/frequency of transition is symmetric
 
       line_species[lspec].frequency[j][i] = line_species[lspec].frequency[i][j];
 

@@ -143,7 +143,11 @@ int main ()
   initialize_abundances (NCELLS, cell, species);
 
 
-  // Get and store the species numbers of some inportant species
+  // Get and store species numbers of some inportant species
+
+
+  // define as nr_e etc
+  
 
   e_nr    = get_species_nr (species, "e-");     // species nr corresponding to electrons
   H2_nr   = get_species_nr (species, "H2");     // species nr corresponding to H2
@@ -366,6 +370,10 @@ int main ()
 
     guess_temperature_gas (NCELLS, cell, UV_field);
 
+    // for (long n = 0; n < NCELLS; n++)
+    // {
+    //   std::cout << cell[n].temperature.gas << "\n";
+    // }
 
     // Calculate the dust temperature
 
@@ -513,8 +521,9 @@ int main ()
 
   initialize_double_array (NCELLS*TOT_NLEV, pop);
 
-  initialize_double_array (NCELLS, temperature_a);
-  initialize_double_array (NCELLS, temperature_b);
+  initialize_double_array_with_value (NCELLS, TEMPERATURE_MIN, temperature_a);
+  initialize_double_array_with_value (NCELLS, TEMPERATURE_MAX, temperature_b);
+
   initialize_double_array (NCELLS, temperature_c);
   initialize_double_array (NCELLS, temperature_d);
   initialize_double_array (NCELLS, temperature_e);
@@ -537,7 +546,26 @@ int main ()
                      thermal_ratio, &time_chemistry, &time_level_pop);
 
 
-    initialize_double_array_with (NCELLS, thermal_ratio_b, thermal_ratio);
+    // Average thermal ratio over neighbors
+
+    // double tr_new[NCELLS];
+    //
+    //
+    // for (long p = 0; p < NCELLS; p++)
+    // {
+    //
+    //   tr_new[p] = thermal_ratio[p];
+    //
+    //   for (long n = 0; n < cell[p].n_neighbors; n++)
+    //   {
+    //     long nr = cell[p].neighbor[n];
+    //
+    //     tr_new[p] = tr_new[p] + 0.5 * thermal_ratio[nr];
+    //   }
+    //
+    //   tr_new[p] = tr_new[p] / (cell[p].n_neighbors + 1);
+    //
+    // }
 
 
     update_temperature_gas (NCELLS, cell, thermal_ratio,
@@ -548,7 +576,7 @@ int main ()
 
 #   if   (WRITE_INTERMEDIATE_OUTPUT && (INPUT_FORMAT == '.txt'))
 
-      write_temperature_gas ("", NCELLS, cell);
+      write_temperature_gas ("", NCELLS, cell); // should be temperature b !!!!!!!!!!
       write_temperature_dust ("", NCELLS, cell);
       write_temperature_gas_prev ("", NCELLS, cell);
 
@@ -561,6 +589,11 @@ int main ()
 
   } // end of tb_iteration loop
 
+
+    for (long n = 0; n < NCELLS; n++)
+    {
+      std::cout << cell[n].temperature.gas << "\n";
+    }
 
 #   pragma omp parallel                    \
     shared (ncells, cell, temperature_b)   \
@@ -623,7 +656,27 @@ int main ()
                      thermal_ratio, &time_chemistry, &time_level_pop);
 
 
+  // Average thermal ratio over neighbors
+
+  // for (long p = 0; p < NCELLS; p++)
+  // {
+  //
+  //   thermal_ratio_b[p] = thermal_ratio[p];
+  //
+  //   for (long n = 0; n < cell[p].n_neighbors; n++)
+  //   {
+  //     long nr = cell[p].neighbor[n];
+  //
+  //     thermal_ratio_b[p] = thermal_ratio_b[p] + 0.5 * thermal_ratio[nr];
+  //   }
+  //
+  //   thermal_ratio_b[p] = thermal_ratio_b[p] / (cell[p].n_neighbors + 1);
+  // }
+
+
     initialize_double_array_with (NCELLS, thermal_ratio_b, thermal_ratio);
+
+
 
 
 
@@ -674,10 +727,32 @@ int main ()
     } /* end of OpenMP parallel region */
 
 
-    // if (no_thermal_balance)
+
+    // Average over neighbors
+
+    // double temperature_new[NCELLS];
+    //
+    //
+    // for (long p = 0; p < NCELLS; p++)
     // {
-    //   update_temperature_gas (NCELLS, cell, thermal_ratio,
-    //                           temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b);
+    //
+    //   temperature_new[p] = cell[p].temperature.gas;
+    //
+    //   for (long n = 0; n < cell[p].n_neighbors; n++)
+    //   {
+    //     long nr = cell[p].neighbor[n];
+    //
+    //     temperature_new[p] = temperature_new[p] + cell[nr].temperature.gas;
+    //   }
+    //
+    //   temperature_new[p] = temperature_new[p] / (cell[p].n_neighbors + 1);
+    //
+    // }
+    //
+    //
+    // for (long p = 0; p < NCELLS; p++)
+    // {
+    //   cell[p].temperature.gas = temperature_new[p];
     // }
 
 

@@ -128,10 +128,10 @@ INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
+OUTPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.pdf
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
 OUTPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
-OUTPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.pdf
 INPUT /usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
@@ -190,6 +190,7 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmitt10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmti7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmitt10.tfm
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.bbl
@@ -197,6 +198,7 @@ INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.bbl
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.aux
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
 INPUT /home/frederik/Dropbox/Astro/Magritte/docs/MPCRT.out
+INPUT /usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb
@@ -213,3 +215,4 @@ INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb
+INPUT /usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb

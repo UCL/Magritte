@@ -55,7 +55,12 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio,
 
       // if (cell[gridp].temperature.gas < temperature_a[gridp]){
 
-        temperature_a[gridp]   = 0.95*cell[gridp].temperature.gas;
+        temperature_a[gridp]   = 0.99*cell[gridp].temperature.gas;
+
+        if (temperature_a[gridp] < TEMPERATURE_MIN)
+        {
+          temperature_a[gridp] = TEMPERATURE_MIN;
+        }
 
         thermal_ratio_a[gridp] = thermal_ratio[gridp];
       // }
@@ -67,7 +72,7 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio,
       {
         cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
 
-        cell[gridp].temperature.gas      = 1.2 * cell[gridp].temperature.gas;
+        cell[gridp].temperature.gas      = 2 * cell[gridp].temperature.gas;
       }
 
 
@@ -96,10 +101,15 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio,
 
       // if (cell[gridp].temperature.gas > temperature_b[gridp]){
 
-        temperature_b[gridp]   = 1.05*cell[gridp].temperature.gas;
+        temperature_b[gridp]   = 1.01*cell[gridp].temperature.gas;
 
         thermal_ratio_b[gridp] = thermal_ratio[gridp];
       // }
+
+      if (temperature_b[gridp] < TEMPERATURE_MIN)
+      {
+        temperature_b[gridp] = TEMPERATURE_MIN;
+      }
 
 
       // When we also decrerased tempoerature previous iteration
@@ -108,7 +118,7 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio,
       {
         cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
 
-        cell[gridp].temperature.gas      = 0.8 * cell[gridp].temperature.gas;
+        cell[gridp].temperature.gas      = 0.9 * cell[gridp].temperature.gas;
       }
 
 
@@ -141,6 +151,35 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio,
 
   } // end of gridp loop over grid points
   } // end of OpenMP parallel region
+
+
+
+  // Average over neighbors
+
+  // double temperature_new[NCELLS];
+  //
+  //
+  // for (long p = 0; p < NCELLS; p++)
+  // {
+  //
+  //   temperature_new[p] = cell[p].temperature.gas;
+  //
+  //   for (long n = 0; n < cell[p].n_neighbors; n++)
+  //   {
+  //     long nr = cell[p].neighbor[n];
+  //
+  //     temperature_new[p] = temperature_new[p] + cell[nr].temperature.gas;
+  //   }
+  //
+  //   temperature_new[p] = temperature_new[p] / (cell[p].n_neighbors + 1);
+  //
+  // }
+  //
+  //
+  // for (long p = 0; p < NCELLS; p++)
+  // {
+  //   cell[p].temperature.gas = temperature_new[p];
+  // }
 
 
   return (0);
@@ -294,10 +333,9 @@ int update_temperature_gas_Brent (long gridp, double *temperature_a, double *tem
   }
 
 
-
   // Enforce minimun and maximum temperature
 
-  if(temperature_b[gridp] < TEMPERATURE_MIN)
+  if (temperature_b[gridp] < TEMPERATURE_MIN)
   {
     temperature_b[gridp] = TEMPERATURE_MIN;
   }

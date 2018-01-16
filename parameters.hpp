@@ -34,7 +34,7 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/3DPDR_input/1Dn30.dat_conv.txt"
+#define INPUTFILE "input/files/3DPDR_input/1Dn20.dat_conv.txt"
 
 
 // #define PROJECT_FOLDER "input/files/Aori/"
@@ -48,6 +48,7 @@
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
 #define REAC_DATAFILE  "data/rates_reduced.txt"
+
 
 #define NLSPEC 4
 
@@ -64,7 +65,7 @@
 
 #define THETA_CRIT 1.3
 
-#define CELL_BASED true
+#define CELL_BASED false
 
 
 /* Radiative transfer */
@@ -82,7 +83,7 @@
 
 #define PRELIM_CHEM_ITER 0
 
-#define PRELIM_TB_ITER 30
+#define PRELIM_TB_ITER 10
 
 #define CHEM_ITER 8
 

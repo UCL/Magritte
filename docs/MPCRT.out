@@ -8,5 +8,7 @@
 \BOOKMARK [3][-]{subsubsection.2.2.1}{AMR grid}{subsection.2.2}% 8
 \BOOKMARK [3][-]{subsubsection.2.2.2}{SPH data}{subsection.2.2}% 9
 \BOOKMARK [1][-]{section.3}{Parallellisation strategy}{}% 10
-\BOOKMARK [1][-]{section.4}{Self-consistent temperature determination}{}% 11
-\BOOKMARK [1][-]{section.5}{Technical}{}% 12
+\BOOKMARK [2][-]{subsection.3.1}{Questions}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.2}{Strategies}{section.3}% 12
+\BOOKMARK [1][-]{section.4}{Self-consistent temperature determination}{}% 13
+\BOOKMARK [1][-]{section.5}{Technical}{}% 14
