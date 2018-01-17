@@ -43,6 +43,18 @@
   long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
 
 
+  // find_endpoints: find endpoint cells for each cell
+  // -------------------------------------------------
+
+  int find_endpoints (long ncells, CELL *cell);
+
+
+  // previous_cell: find number of previous cell on ray and its distance along ray
+  // -----------------------------------------------------------------------------
+
+  long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
+
+
   // relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray
   // -----------------------------------------------------------------------------------------
 

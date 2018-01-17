@@ -29,7 +29,6 @@ int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, do
                              double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr)
 {
 
-
   long m_ij = LSPECGRIDRAD(lspec,gridp,kr);   // mean_intensity, S and opacity index
 
   int i = irad[LSPECRAD(lspec,kr)];           // i level index corresponding to transition kr
@@ -43,7 +42,7 @@ int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, do
   for (long ray = 0; ray < NRAYS/2; ray++)
   {
 
-    /* For all frequencies (Gauss-Hermite quadrature) */
+    // For all frequencies (Gauss-Hermite quadrature)
 
     for (int ny = 0; ny < NFREQ; ny++)
     {
@@ -129,6 +128,9 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
   long ar = antipod[r];                       // index of antipodal ray to r
 
+  long bdy_ar = cell[origin].endpoint[ar];
+  long bdy_r  = cell[origin].endpoint[r];
+
   long m_ij = LSPECGRIDRAD(lspec,origin,kr);   // mean_intensity, S and opacity index
 
   int i = irad[LSPECRAD(lspec,kr)];           // i level index corresponding to transition kr
@@ -155,35 +157,41 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
   double L_diag_approx[NCELLS];   // Diagonal elements of Lambda operator
 
 
-  // Walk along antipodal ray (ar) of r
+  // Walk back along antipodal ray (ar) of r
 
   {
-    double Z  = 0.0;
+    double Z  = cell[origin].Z[ar];
     double dZ = 0.0;
 
-    long current = origin;
-    long next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+    long current  = bdy_ar;
+    long previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+    long s_c = LSPECGRIDRAD(lspec,current,kr);
+
+    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, frequency[b_ij], current);
+
+    double dtau_c = dZ*PC*opacity[s_c]*phi_c;
 
 
-    while ( (next != NCELLS) && (tau_ar < TAU_MAX) )
+    while (current != origin)
     {
-      long s_n = LSPECGRIDRAD(lspec,next,kr);
-      long s_c = LSPECGRIDRAD(lspec,current,kr);
+      long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, origin, ar, current);
+      double velocity = relative_velocity (NCELLS, cell, origin, r, previous);
+      double phi_p    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], previous);
 
-      // This can be done better!
+      double dtau_p = dZ*PC*opacity[s_p]*phi_p;
 
-      double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
-      double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
+      S[ndep]    = (source[s_c] + source[s_p]) / 2.0;
+      dtau[ndep] = (dtau_c + dtau_p) / 2.0;
 
-      S[ndep]    = (source[s_n] + source[s_c]) / 2.0;
-      dtau[ndep] = dZ * PC * (opacity[s_n]*phi_n + opacity[s_c]*phi_c) / 2.0;
+      // tau_ar = tau_ar + dtau[ndep];
 
-      tau_ar = tau_ar + dtau[ndep];
+      current  = previous;
+      previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
-      current = next;
-      next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+      s_c    = s_p;
+      dtau_c = dtau_p;
 
       ndep++;
     }
@@ -202,26 +210,32 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
     long current = origin;
     long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
+    long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-    while ( (next != NCELLS) && (tau_r < TAU_MAX) )
+    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, frequency[b_ij], current);
+
+    double dtau_c = dZ*PC*opacity[s_c]*phi_c;
+
+
+    while (!cell[current].boundary)
     {
       long s_n = LSPECGRIDRAD(lspec,next,kr);
-      long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, origin, r, current);
+      double velocity = relative_velocity (NCELLS, cell, origin, r, next);
+      double phi_n    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
 
-      // This can be done better!
+      double dtau_n = dZ*PC*opacity[s_n]*phi_n;
 
-      double phi_n = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
-      double phi_c = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], current);
+      S[ndep]    = (source[s_c] + source[s_n]) / 2.0;
+      dtau[ndep] = (dtau_c + dtau_n) / 2.0;
 
-      S[ndep]    = (source[s_n] + source[s_c]) / 2.0;
-      dtau[ndep] = dZ * PC * (opacity[s_n]*phi_n + opacity[s_c]*phi_c) / 2.0;
-
-      tau_ar = tau_ar + dtau[ndep];
+      // tau_r = tau_r + dtau[ndep];
 
       current = next;
       next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+      s_c    = s_n;
+      dtau_c = dtau_n;
 
       ndep++;
     }
@@ -230,17 +244,26 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
 
 
+
+
   // Avoid too small optical depth increments
   // ________________________________________
 
-  for (long dep = 0; dep < ndep; dep++)
-  {
-    if (dtau[dep] < 1.0E-99)
-    {
-      dtau[dep] = 1.0E-99;
-    }
+  // for (long dep = 0; dep < ndep; dep++)
+  // {
+  //   if (dtau[dep] < 1.0E-99)
+  //   {
+  //     dtau[dep] = 1.0E-99;
+  //   }
+  // }
 
-  }
+
+
+  // Add boundary conitions
+  // ______________________
+
+  S[0]      = S[0]      + 2.0*cell[bdy_ar].ray[r].intensity/dtau[0];
+  S[ndep-1] = S[ndep-1] + 2.0*cell[bdy_r].ray[ar].intensity/dtau[ndep-1];
 
 
 
@@ -262,7 +285,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
   {
     *u_local = u[0];
 
-    *v_local = 0.0;//cell[].ray[].intensity - u[0];
+    *v_local = cell[bdy_ar].ray[r].intensity - u[0];
 
     *L_local = L_diag_approx[0];
   }
@@ -271,7 +294,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
   {
     *u_local = u[ndep-1];
 
-    *v_local = 0.0;//u[ndep-1] - Idm;
+    *v_local = u[ndep-1] - cell[bdy_r].ray[ar].intensity;
 
     *L_local = L_diag_approx[ndep-1];
   }

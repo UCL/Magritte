@@ -21,11 +21,11 @@
 
 // Input files
 
-#define DIMENSIONS 1
+#define DIMENSIONS 2
 
-#define NRAYS 2
+#define NRAYS 8
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 
 
 #define INPUT_FORMAT '.txt'
@@ -65,7 +65,7 @@
 
 #define THETA_CRIT 1.3
 
-#define CELL_BASED false
+#define CELL_BASED true
 
 
 /* Radiative transfer */

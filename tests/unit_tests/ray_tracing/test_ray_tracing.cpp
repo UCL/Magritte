@@ -185,78 +185,113 @@ TEST_CASE("Cell structure")
   cell[0].y =  1.0;
   cell[0].z =  0.0;
 
+  cell[0].boundary = true;
+
   cell[1].x = -1.0;
   cell[1].y = -1.0;
   cell[1].z =  0.0;
+
+  cell[1].boundary = true;
 
   cell[2].x =  0.0;
   cell[2].y =  1.0;
   cell[2].z =  0.0;
 
+  cell[2].boundary = true;
+
   cell[3].x =  0.0;
   cell[3].y = -1.0;
   cell[3].z =  0.0;
+
+  cell[3].boundary = true;
 
   cell[4].x =  1.0;
   cell[4].y =  0.0;
   cell[4].z =  0.0;
 
+  cell[4].boundary = true;
+
   cell[5].x = -1.0;
   cell[5].y =  0.0;
   cell[5].z =  0.0;
+
+  cell[5].boundary = true;
 
   cell[6].x = -1.0;
   cell[6].y =  1.0;
   cell[6].z =  0.0;
 
+  cell[6].boundary = true;
+
   cell[7].x =  1.0;
   cell[7].y = -1.0;
   cell[7].z =  0.0;
 
+  cell[7].boundary = true;
+
   cell[8].x =  0.0;
   cell[8].y =  0.0;
   cell[8].z =  0.0;
+
+  cell[8].boundary = false;
 
 
   // setup_healpixvectors(NRAYS, healpixvector, antipod);
   // write_healpixvectors("");
 
   find_neighbors (ncells, cell);
+  find_endpoints (ncells, cell);
 
-  write_neighbors ("", ncells, cell);
-
-
-  for (long c = 0; c < ncells; c++)
-  {
-    printf("%ld\n", cell[c].n_neighbors);
-
-    for (long n = 0; n < cell[c].n_neighbors; n++)
-    {
-      printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
-    }
-  }
-
-  write_healpixvectors("");
-
-  double dZ = 0.0;
-
-  long origin = 1;
-  long ray    = 1;
-
-  double Z = 0.0;
-
-  long current = origin;
-  long next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
+  // write_neighbors ("", ncells, cell);
 
 
+  // for (long c = 0; c < ncells; c++)
+  // {
+  //   printf("%ld\n", cell[c].n_neighbors);
+  //
+  //   for (long n = 0; n < cell[c].n_neighbors; n++)
+  //   {
+  //     printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
+  //   }
+  // }
+  //
+  // write_healpixvectors("");
+  //
+  // double dZ = 0.0;
+  //
+  // long origin = 1;
+  // long ray    = 1;
+  //
+  // double Z = 0.0;
+  //
+  // long current = origin;
+  // long next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
+  //
+  //
+  //
+  // while (next != ncells)
+  // {
+  //   printf("current %ld, next %ld, Z %lE\n", current, next, Z);
+  //
+  //   current = next;
+  //   next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
+  // }
 
-  while (next != ncells)
-  {
-    printf("current %ld, next %ld, Z %lE\n", current, next, Z);
+  //
+  // long origin = 0;
+  // long ray    = 5;
+  //
+  // for (long o = 0; o < ncells; o++){
+  //   std::cout << cell[o].Z[ray] << "\n";
+  //   std::cout << cell[o].endpoint[ray] << "\n";
+  // }
 
-    current = next;
-    next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
-  }
+  long o   = 1;
+  long ray = 1;
+
+    std::cout << cell[o].Z[ray] << "\n";
+    std::cout << cell[o].endpoint[ray] << "\n";
+
 
   // printf("next %ld,  dZ %lE\n", next, dZ);
 

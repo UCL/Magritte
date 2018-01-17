@@ -29,6 +29,7 @@
 // ------------------------------------------------------------------------------
 
 int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+                     LINE_SPECIES *line_species,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
                      double *UV_field, double *rad_surface, double *AV, int *irad, int *jrad,
                      double *energy, double *weight, double *frequency, double *A_coeff, double *B_coeff,
@@ -138,7 +139,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
 # pragma omp parallel                                                                                \
   shared (ncells, cell, reaction, irad, jrad, A_coeff, B_coeff, pop, frequency, weight, column_H2,   \
           column_HD, column_C, column_CO, cum_nlev, species, mean_intensity, AV, rad_surface,        \
-          UV_field, thermal_ratio)                                                                   \
+          UV_field, thermal_ratio, line_species)                                                     \
   default (none)
   {
 
@@ -159,7 +160,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
 
     double heating_total = heating (NCELLS, cell, gridp, UV_field, heating_components);
 
-    double cooling_total = cooling (NCELLS, gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
+    double cooling_total = cooling (NCELLS, line_species, gridp, irad, jrad, A_coeff, B_coeff, frequency, weight,
                                     pop, mean_intensity);
 
 

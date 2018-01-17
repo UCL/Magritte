@@ -21,12 +21,10 @@
 // cooling: calculate total cooling
 // --------------------------------
 
-double cooling (long ncells, long gridp, int *irad, int *jrad, double *A_coeff, double *B_coeff,
-                double *frequency, double *weight, double *pop, double *mean_intensity)
+double cooling (long ncells, LINE_SPECIES *line_species, long gridp, int *irad, int *jrad,
+                double *A_coeff, double *B_coeff, double *frequency, double *weight,
+                double *pop, double *mean_intensity)
 {
-
-
-  double cooling_total = 0.0;       // total cooling
 
   double cooling_radiative = 0.0;   // radiative cooling
 
@@ -42,6 +40,9 @@ double cooling (long ncells, long gridp, int *irad, int *jrad, double *A_coeff, 
     {
       int i     = irad[LSPECRAD(lspec,kr)];       // i level index corresponding to transition kr
       int j     = jrad[LSPECRAD(lspec,kr)];       // j level index corresponding to transition kr
+
+      // i = line_species[lspec].irad[kr];
+      // j = line_species[lspec].jrad[kr];
 
       long b_ij = LSPECLEVLEV(lspec,i,j);         // A_coeff, B_coeff and frequency index
       long b_ji = LSPECLEVLEV(lspec,j,i);         // A_coeff, B_coeff and frequency index
@@ -87,7 +88,7 @@ double cooling (long ncells, long gridp, int *irad, int *jrad, double *A_coeff, 
   } // end of lspec loop over line producing species
 
 
-  cooling_total = cooling_radiative;
+  double cooling_total = cooling_radiative;
 
 
   return cooling_total;

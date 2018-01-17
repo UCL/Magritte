@@ -54,6 +54,9 @@ typedef struct
 
   double x, y, z;            // x, y and z coordinate of cell center
 
+  long endpoint[NRAYS];      // cell numbers of ray endings
+  double Z[NRAYS];           // distance from cell to boundary
+
   long neighbor[NRAYS];      // cell numbers of neighors
   long n_neighbors;          // number of neighbors
 
@@ -71,6 +74,8 @@ typedef struct
 
   long id;                   // cell nr of associated cell in other grid
   bool removed;              // true when cell is removed
+
+  bool boundary;             // true if boundary cell
 
 } CELL;
 
@@ -112,6 +117,20 @@ typedef struct
 
 
 
+
+
+typedef struct
+{
+
+  int nr;            // nr of species of collision partner
+
+  char ortho_para;   // o when ortho, p when para and n when NA
+
+} COLPAR;
+
+
+
+
 typedef struct
 {
 
@@ -138,6 +157,8 @@ typedef struct
 
   double energy[MAX_NLEV];
   double weight[MAX_NLEV];
+
+  // COLPAR colpar[MAX_NCOLPAR];
 
   // int spec_par[MAX_NCOLPAR];
 

@@ -15,33 +15,40 @@
 
 #define RESTART false
 
+
 // #define INPUTFILE "output/files/_output/grid.vtu"
 
-// #define NCELLS ncells
 
-/* Input files */
+// Input files
 
 #define DIMENSIONS 2
 
 #define NRAYS 8
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 
-// #define INPUT_FORMAT '.txt'
+
+#define INPUT_FORMAT '.txt'
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
-// #define INPUTFILE "input/files/1Dn30.dat_conv.txt"
+// #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUT_FORMAT   '.vtu'
+#define INPUTFILE "input/files/3DPDR_input/1Dn20.dat_conv.txt"
 
-#define INPUTFILE      "input/files/Aori_0001.vtu"
 
-#define APPEND_FILE    INPUTFILE
+// #define PROJECT_FOLDER "input/files/Aori/"
+
+// #define INPUT_FORMAT   '.vtu'
+
+// #define INPUTFILE      "input/files/Aori/Aori_0001.vtu"
+
+// #define APPEND_FILE    INPUTFILE
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 
 #define REAC_DATAFILE  "data/rates_reduced.txt"
+
 
 #define NLSPEC 4
 
@@ -76,7 +83,7 @@
 
 #define PRELIM_CHEM_ITER 0
 
-#define PRELIM_TB_ITER 30
+#define PRELIM_TB_ITER 10
 
 #define CHEM_ITER 8
 
@@ -92,7 +99,7 @@
 
 #define METALLICITY 1.0
 
-#define GAS_TO_DUST 100.0;
+#define GAS_TO_DUST 100.0
 
 #define TIME_END_IN_YEARS 1.0E+7
 
@@ -120,7 +127,6 @@
 #define ZETA   3.846153846153846
 
 #define OMEGA  0.42
-
 
 
 #endif /* __PARAMETERS_HPP_INCLUDED__ */

@@ -24,7 +24,7 @@ add_custom_command(OUTPUT  /home/frederik/Dropbox/Astro/Magritte/src/Magritte_co
                    DEPENDS parameters.hpp)
 
 add_custom_target(MAKE_SETUP
-DEPENDS /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp)
+                  DEPENDS /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp)
 
 
 # Add test main and MAGRITTE source code (which is to be tested)

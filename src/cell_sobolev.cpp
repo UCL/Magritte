@@ -62,25 +62,29 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
     // Walk along antipodal ray (ar) of r
 
     {
-      double Z    = 0.0;
-      double dZ   = 0.0;
-      double dtau = 0.0;
+      double Z  = cell[origin].Z[ar];
+      double dZ = 0.0;
 
-      long current = origin;
-      long next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+      long current  = cell[origin].endpoint[ar];
+      long previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+      long s_c = LSPECGRIDRAD(lspec,current,kr);
+
+      double dtau_c = dZ*PC*opacity[s_c];
 
 
-      while ( (next != NCELLS) && (tau_ar < TAU_MAX) )
+      while (current != origin)
       {
-        long s_n = LSPECGRIDRAD(lspec,next,kr);
-        long s_c = LSPECGRIDRAD(lspec,current,kr);
+        long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
-        dtau = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
+        double dtau_p = dZ*PC*opacity[s_p];
 
-        tau_ar = tau_ar + dtau;
+        tau_ar = tau_ar + (dtau_c + dtau_p) / 2.0;
 
-        current = next;
-        next    = next_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+        current  = previous;
+        previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+        dtau_c = dtau_p;
       }
     }
 
@@ -109,25 +113,29 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
     // Walk along ray r itself
 
     {
-      double Z    = 0.0;
-      double dZ   = 0.0;
-      double dtau = 0.0;
+      double Z  = 0.0;
+      double dZ = 0.0;
 
       long current = origin;
       long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
+      long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-      while ( (next != NCELLS) && (tau_r < TAU_MAX) )
+      double dtau_c = dZ*PC*opacity[s_c];
+
+
+      while (!cell[current].boundary)
       {
         long s_n = LSPECGRIDRAD(lspec,next,kr);
-        long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-        dtau = dZ * PC * (opacity[s_n] + opacity[s_c]) / 2.0;
+        double dtau_n = dZ*PC*opacity[s_n];
 
-        tau_r = tau_r + dtau;
+        tau_r = tau_r + (dtau_c + dtau_n) / 2.0;
 
         current = next;
         next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+        dtau_c = dtau_n;
       }
     }
 

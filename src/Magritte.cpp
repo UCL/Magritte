@@ -147,7 +147,7 @@ int main ()
 
 
   // define as nr_e etc
-  
+  //
 
   e_nr    = get_species_nr (species, "e-");     // species nr corresponding to electrons
   H2_nr   = get_species_nr (species, "H2");     // species nr corresponding to H2
@@ -250,7 +250,7 @@ int main ()
   printf ("(Magritte): reading line data \n");
 
 
-  // Read the line data files stored in the list(!) line_data
+  // Read the line data files stored in list(!) line_data
 
   LINE_SPECIES line_species[NLSPEC];
 
@@ -540,7 +540,7 @@ int main ()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (NCELLS, cell, species, reaction, line_species, column_H2, column_HD, column_C, column_CO, UV_field,
                      rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
                      C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
                      thermal_ratio, &time_chemistry, &time_level_pop);
@@ -650,7 +650,8 @@ int main ()
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO, UV_field,
+    thermal_balance (NCELLS, cell, species, reaction, line_species,
+                     column_H2, column_HD, column_C, column_CO, UV_field,
                      rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
                      C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
                      thermal_ratio, &time_chemistry, &time_level_pop);

@@ -340,8 +340,8 @@ int find_neighbors (long ncells, CELL *cell)
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*ncells)/num_threads;
-  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
   for (long p = start; p < stop; p++)
@@ -360,7 +360,7 @@ int find_neighbors (long ncells, CELL *cell)
     long rb[NCELLS];      // identifiers of local position vectors
 
 
-    for (long n = 0; n < ncells; n++)
+    for (long n = 0; n < NCELLS; n++)
     {
       double rvec[3];   // position vector w.r.t. origin
 
@@ -375,7 +375,7 @@ int find_neighbors (long ncells, CELL *cell)
 
     // Sort cells w.r.t distance from origin
 
-    heapsort(ra2, rb, ncells);
+    heapsort(ra2, rb, NCELLS);
 
 
     double Z[NRAYS];                 // distance along ray
@@ -400,7 +400,7 @@ int find_neighbors (long ncells, CELL *cell)
     // Devide the cells over the rays through the origin
     // Start from the second point in rb (first point is cell itself)
 
-    for (long n = 1; n < ncells; n++)
+    for (long n = 1; n < NCELLS; n++)
     {
       double rvec[3];   // position vector w.r.t. origin
 
@@ -562,7 +562,7 @@ long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long 
       {
         D_min = D;
         next  = neighbor;
-        *dZ   = Z_new - *Z;
+        *dZ   = Z_new - *Z;   // such that dZ > 0.0
       }
     }
 
@@ -570,6 +570,110 @@ long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long 
 
 
   *Z = *Z + *dZ;
+
+
+  return next;
+
+}
+
+
+
+
+// find_endpoints: find endpoint cells for each cell
+// -------------------------------------------------
+
+int find_endpoints (long ncells, CELL *cell)
+{
+
+  // For all cells
+
+# pragma omp parallel                    \
+  shared (ncells, cell, healpixvector)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+
+    for (long r = 0; r < NRAYS; r++)
+    {
+      double Z  = 0.0;
+      double dZ = 0.0;
+
+      long current = p;
+
+      while (!cell[current].boundary)
+      {
+        current = next_cell (NCELLS, cell, p, r, &Z, current, &dZ);
+      }
+
+      cell[p].endpoint[r] = current;
+      cell[p].Z[r]        = Z;
+    }
+
+  } // end of p loop over cells (origins)
+  } // end of OpenMP parallel region
+
+
+  return(0);
+
+}
+
+
+
+
+// previous_cell: find number of previous cell on ray and its distance along ray
+// -----------------------------------------------------------------------------
+
+long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ)
+{
+
+  // Pick neighbor on "right side" closest to ray
+
+  double D_min = 1.0E99;
+
+  long next = ncells;   // return ncells when there is no next cell
+
+
+  for (long n = 0; n < cell[current].n_neighbors; n++)
+  {
+    long neighbor = cell[current].neighbor[n];
+
+    double rvec[3];
+
+    rvec[0] = cell[neighbor].x - cell[origin].x;
+    rvec[1] = cell[neighbor].y - cell[origin].y;
+    rvec[2] = cell[neighbor].z - cell[origin].z;
+
+    double Z_new =   rvec[0]*healpixvector[VINDEX(ray,0)]
+                   + rvec[1]*healpixvector[VINDEX(ray,1)]
+                   + rvec[2]*healpixvector[VINDEX(ray,2)];
+
+    if (*Z > Z_new)
+    {
+      double rvec2 = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
+
+      double D = rvec2 - Z_new*Z_new;
+
+      if (D < D_min)
+      {
+        D_min = D;
+        next  = neighbor;
+        *dZ   = *Z - Z_new;   // such that dZ > 0.0
+      }
+    }
+
+  } // end of n loop over neighbors
+
+
+  *Z = *Z - *dZ;
 
 
   return next;

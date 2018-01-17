@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{3DPDR}
+T.~G. Bisbas, T.~A. Bell, S.~Viti, J.~Yates, and M.~J. Barlow, ``{3d-pdr: A new
+  three-dimensional astrochemistry code for treating photodissociation
+  regions},'' {\em Mon. Not. R. Astron. Soc.}, vol.~427, no.~3, pp.~2100--2118,
+  2012.
+
+\bibitem{Mihalas_s}
+D.~Mihalas, {\em {Stellar Atmospheres}}.
+\newblock Astronomy and Astrophysics Series, W. H. Freeman, 1978.
+
+\bibitem{MihalasMihalas}
+D.~Mihalas and B.~Weibel-Mihalas, {\em {Foundations of Radiation
+  Hydrodynamics}}.
+\newblock Dover Books on Physics, Dover Publications, 1999.
+
+\bibitem{Rybicki1991}
+G.~B. Rybicki and D.~G. Hummer, ``{An accelerated lambda iteration method for
+  multilevel radiative transfer. I - Non-overlapping lines with background
+  continuum},'' {\em Astron. Astrophys.}, vol.~245, pp.~171--181, 1991.
+
+\end{thebibliography}
