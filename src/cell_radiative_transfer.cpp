@@ -164,7 +164,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
     double dZ = 0.0;
 
     long current  = bdy_ar;
-    long previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+    long previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
@@ -177,7 +177,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
     {
       long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, origin, r, previous);
+      double velocity = relative_velocity (NCELLS, cell, origin, ar, previous);
       double phi_p    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], previous);
 
       double dtau_p = dZ*PC*opacity[s_p]*phi_p;
@@ -188,7 +188,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
       // tau_ar = tau_ar + dtau[ndep];
 
       current  = previous;
-      previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+      previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
       s_c    = s_p;
       dtau_c = dtau_p;

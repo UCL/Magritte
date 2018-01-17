@@ -4,6 +4,8 @@
 // _________________________________________________________________________
 
 
+#include <iostream>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -58,6 +60,8 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
     double tau_r  = 0.0;
     double tau_ar = 0.0;
 
+    // printf("I'm HERE %ld\n", origin);
+
 
     // Walk along antipodal ray (ar) of r
 
@@ -66,7 +70,7 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
       double dZ = 0.0;
 
       long current  = cell[origin].endpoint[ar];
-      long previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+      long previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
@@ -82,7 +86,7 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
         tau_ar = tau_ar + (dtau_c + dtau_p) / 2.0;
 
         current  = previous;
-        previous = previous_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+        previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
         dtau_c = dtau_p;
       }

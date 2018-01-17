@@ -263,6 +263,9 @@ int initialize_cells (long ncells, CELL *cell)
   } // end of OpenMP parallel region
 
 
+  cell[0].boundary        = true;
+  cell[NCELLS-1].boundary = true;
+
   return(0);
 
 }

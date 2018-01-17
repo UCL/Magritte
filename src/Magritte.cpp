@@ -272,9 +272,14 @@ int main ()
     printf ("(Magritte): finding neighboring cells \n");
 
 
-    // Find for each cell the neighboring cells
+    // Find neighboring cells for each cell
 
     find_neighbors (NCELLS, cell);
+
+
+    // Find endpoint of each ray for each cell
+
+    find_endpoints (NCELLS, cell);
 
 
     printf ("(Magritte): neighboring cells found \n\n");

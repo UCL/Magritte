@@ -286,11 +286,17 @@ TEST_CASE("Cell structure")
   //   std::cout << cell[o].endpoint[ray] << "\n";
   // }
 
-  long o   = 1;
+  long o   = 8;
   long ray = 1;
 
     std::cout << cell[o].Z[ray] << "\n";
     std::cout << cell[o].endpoint[ray] << "\n";
+
+  double dZ = 0.0;
+  double Z  = 0.0;
+
+    std::cout << previous_cell (ncells, cell, o, ray, &Z, o, &dZ) << "\n";
+
 
 
   // printf("next %ld,  dZ %lE\n", next, dZ);

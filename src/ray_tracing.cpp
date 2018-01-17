@@ -4,6 +4,8 @@
 // _________________________________________________________________________
 
 
+#include <iostream>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -639,8 +641,9 @@ long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, l
 
   double D_min = 1.0E99;
 
-  long next = ncells;   // return ncells when there is no next cell
+  long previous = ncells;   // return ncells when there is no next cell
 
+  // printf("origin %ld   current %ld     Z %lE      dZ %lE\n", origin, current, *Z, *dZ);
 
   for (long n = 0; n < cell[current].n_neighbors; n++)
   {
@@ -664,9 +667,9 @@ long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, l
 
       if (D < D_min)
       {
-        D_min = D;
-        next  = neighbor;
-        *dZ   = *Z - Z_new;   // such that dZ > 0.0
+        D_min    = D;
+        previous = neighbor;
+        *dZ      = *Z - Z_new;   // such that dZ > 0.0
       }
     }
 
@@ -676,7 +679,7 @@ long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, l
   *Z = *Z - *dZ;
 
 
-  return next;
+  return previous;
 
 }
 

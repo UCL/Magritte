@@ -25,6 +25,7 @@
 
 #define NRAYS 8
 
+
 #define FIXED_NCELLS false
 
 
