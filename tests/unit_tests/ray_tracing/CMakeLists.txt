@@ -5,8 +5,10 @@
 # Specify minimum required CMake version
 cmake_minimum_required(VERSION 2.8)
 
+
 # Specify project name
 project(Magritte_tests)
+
 
 # Set build type to Release to get optimal performance
 set(CMAKE_BUILD_TYPE Debug)
