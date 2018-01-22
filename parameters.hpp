@@ -21,9 +21,9 @@
 
 // Input files
 
-#define DIMENSIONS 1
+#define DIMENSIONS 2
 
-#define NRAYS 2
+#define NRAYS 8
 
 
 #define FIXED_NCELLS true
@@ -82,7 +82,7 @@
 
 #define MAX_NITERATIONS 299
 
-#define PRELIM_CHEM_ITER 0
+#define PRELIM_CHEM_ITER 8
 
 #define PRELIM_TB_ITER 10
 

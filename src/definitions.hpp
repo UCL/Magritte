@@ -39,6 +39,10 @@ const double healpixvector[3*NRAYS] = HEALPIXVECTOR;
 
 const long antipod[NRAYS] = ANTIPOD;
 
+// const long aligned[NRAYS][NRAYS/2] = ALIGNED;   // NOT USED YET
+
+// const long n_aligned[NRAYS] = N_ALIGNED;        // NOT USED YET
+
 
 // Level populations
 
@@ -83,18 +87,6 @@ const int cum_tot_ncoltemp[NLSPEC] = CUM_TOT_NCOLTRAN;
 const int cum_tot_ncoltran[NLSPEC] = CUM_TOT_NCOLTRAN;
 
 const int cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
-
-
-// Roots and weights for Gauss-Hermite quadrature
-
-const double H_4_weights[4] = WEIGHTS_4;   // weights for 4th order Gauss-Hermite quadrature
-const double H_4_roots[4]   = ROOTS_4;     // roots of 4th (physicists') Hermite polynomial
-
-const double H_5_weights[5] = WEIGHTS_5;   // weights for 5th order Gauss-Hermite quadrature
-const double H_5_roots[5]   = ROOTS_5;     // roots of 5th (physicists') Hermite polynomial
-
-const double H_7_weights[7] = WEIGHTS_7;   // weights for 7th order Gauss-Hermite quadrature
-const double H_7_roots[7]   = ROOTS_7;     // roots of 7th (physicists') Hermite polynomial
 
 
 // Chemistry

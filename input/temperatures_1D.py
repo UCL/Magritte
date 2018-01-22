@@ -20,10 +20,10 @@ def temperature1(x,alpha):
     return np.power(x,alpha)
 
 
-temperature = 10
+temperature = 10 
 
 data = np.stack(temperature, axis=1)
-filename = "files/temperature_" + str(ncells) + ".txt"
+filename = "files/temperature_gas.txt"
 np.savetxt(filename, data, fmt='%lE')
 
 print("Grid (1D) created with", ncells, "grid points!")

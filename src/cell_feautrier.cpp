@@ -17,24 +17,19 @@
 #include "cell_feautrier.hpp"
 
 
-// cell_feautrier: fill Feautrier matrix and solve it
+// cell_feautrier: solve Feautrier recursion relation
 // --------------------------------------------------
 
 int cell_feautrier (long ndep, long gridp, long r, double *S, double *dtau,
                     double *u, double *L_diag_approx)
 {
 
-  double *A;                                    /* A coefficient in Feautrier recursion relation */
-  A = (double*) malloc( ndep*sizeof(double) );
+  // Method described in Rybicki & Hummer (1991)
 
-  double *C;                                    /* C coefficient in Feautrier recursion relation */
-  C = (double*) malloc( ndep*sizeof(double) );
-
-  double *F;                                                                  /* helper variable */
-  F = (double*) malloc( ndep*sizeof(double) );
-
-  double *G;                                                                  /* helper variable */
-  G = (double*) malloc( ndep*sizeof(double) );
+  double *A = new double[ndep];   // A coefficient in Feautrier recursion relation
+  double *C = new double[ndep];   // C coefficient in Feautrier recursion relation
+  double *F = new double[ndep];   // helper variable from Rybicki & Hummer (1991)
+  double *G = new double[ndep];   // helper variable from Rybicki & Hummer (1991)
 
 
 
@@ -61,7 +56,7 @@ int cell_feautrier (long ndep, long gridp, long r, double *S, double *dtau,
   A[ndep-1] = 2.0/dtau[ndep-1]/dtau[ndep-1];
   C[ndep-1] = 0.0;
 
-  double Bndepm1 = 1.0 + 2.0/dtau[ndep-1] + 2.0/dtau[ndep-1]/dtau[ndep-1];
+  double Bndepm1     = 1.0 + 2.0/dtau[ndep-1] + 2.0/dtau[ndep-1]/dtau[ndep-1];
 
   double Bnd_min_And = 1.0 + 2.0/dtau[ndep-1];   // B[ndep-1] - A[ndep-1]
 
@@ -91,7 +86,7 @@ int cell_feautrier (long ndep, long gridp, long r, double *S, double *dtau,
 
   for (long n = 1; n < ndep-1; n++)
   {
-    F[n] = ( 1.0 + A[n]*F[n-1]/(1.0 + F[n-1]) ) / C[n];
+    F[n] = (1.0 + A[n]*F[n-1]/(1.0 + F[n-1])) / C[n];
 
     u[n] = (u[n] + A[n]*u[n-1]) / (1.0 + F[n]) / C[n];
   }
@@ -111,7 +106,6 @@ int cell_feautrier (long ndep, long gridp, long r, double *S, double *dtau,
 
     G[n] = (1.0 + C[n]*G[n+1]/(1.0+G[n+1])) / A[n];
   }
-
 
   u[0] = u[0] + u[1]/(1.0+F[0]);
 
@@ -134,12 +128,14 @@ int cell_feautrier (long ndep, long gridp, long r, double *S, double *dtau,
   L_diag_approx[ndep-1] = (1.0 + F[ndep-2]) / (Bnd_min_And + Bndepm1*F[ndep-2]);
 
 
-  /* Free allocated memory for temporary variables */
 
-  free( A );
-  free( C );
-  free( F );
-  free( G );
+
+  // Free allocated memory for temporary variables
+
+  delete [] A;
+  delete [] C;
+  delete [] F;
+  delete [] G;
 
 
   return(0);

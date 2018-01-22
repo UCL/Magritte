@@ -15,11 +15,11 @@
 // setup_healpixvector: store HEALPix vectors and find antipodal pairs
 // -------------------------------------------------------------------
 
-int setup_healpixvectors (long nrays, double *healpixvector, long *antipod)
+int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long *n_aligned, long **aligned)
 {
 
 
-  /* Create the (unit) HEALPix vectors in 3D */
+  // Create the (unit) HEALPix vectors in 3D
 
 
 # if   (DIMENSIONS == 1)
@@ -29,7 +29,8 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod)
       printf ("\nERROR: In 1D there can only be rays in 2 rays !\n\n");
     }
 
-    /* Only 2 rays along the x-axis */
+
+    // Only 2 rays along the x-axis
 
     healpixvector[VINDEX(0,0)] = +1.0;
     healpixvector[VINDEX(0,1)] =  0.0;
@@ -90,6 +91,32 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod)
 
     }
   }
+
+
+  // Find aligned rays
+
+  for (long r1 = 0; r1 < nrays; r1++)
+  {
+
+    long n = 0;
+
+    for (long r2 = 0; r2 < nrays; r2++)
+    {
+
+      double cosine =   healpixvector[VINDEX(r1,0)]*healpixvector[VINDEX(r2,0)]
+                      + healpixvector[VINDEX(r1,1)]*healpixvector[VINDEX(r2,1)]
+                      + healpixvector[VINDEX(r1,2)]*healpixvector[VINDEX(r2,2)];
+
+      if (cosine > 1.0E-9)
+      {
+        aligned[r1][n] = r2;
+        n++;
+      }
+    }
+
+    n_aligned[r1] = n;
+  }
+
 
 
   return(0);

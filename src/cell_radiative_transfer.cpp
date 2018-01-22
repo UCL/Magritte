@@ -169,8 +169,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
     double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, frequency[b_ij], current);
-
-    double dtau_c = dZ*PC*opacity[s_c]*phi_c;
+    double chi_c = opacity[s_c] * phi_c;
 
 
     while (current != origin)
@@ -179,19 +178,16 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
       double velocity = relative_velocity (NCELLS, cell, origin, ar, previous);
       double phi_p    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], previous);
-
-      double dtau_p = dZ*PC*opacity[s_p]*phi_p;
+      double chi_p    = opacity[s_p] * phi_p;
 
       S[ndep]    = (source[s_c] + source[s_p]) / 2.0;
-      dtau[ndep] = (dtau_c + dtau_p) / 2.0;
-
-      // tau_ar = tau_ar + dtau[ndep];
+      dtau[ndep] = dZ * PC * (chi_c + chi_p) / 2.0;
 
       current  = previous;
       previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
-      s_c    = s_p;
-      dtau_c = dtau_p;
+      s_c   = s_p;
+      chi_c = chi_p;
 
       ndep++;
     }
@@ -213,29 +209,25 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
     double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, frequency[b_ij], current);
+    double chi_c = opacity[s_c] * phi_c;
 
-    double dtau_c = dZ*PC*opacity[s_c]*phi_c;
 
-
-    while (!cell[current].boundary)
+    while ( (next != NCELLS) )//&& !(cell[current].boundary && cell[next].boundary) )
     {
       long s_n = LSPECGRIDRAD(lspec,next,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, r, next);
       double phi_n    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
-
-      double dtau_n = dZ*PC*opacity[s_n]*phi_n;
+      double chi_n    = opacity[s_n] * phi_n;
 
       S[ndep]    = (source[s_c] + source[s_n]) / 2.0;
-      dtau[ndep] = (dtau_c + dtau_n) / 2.0;
-
-      // tau_r = tau_r + dtau[ndep];
+      dtau[ndep] = dZ * PC * (chi_c + chi_n) / 2.0;
 
       current = next;
       next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
-      s_c    = s_n;
-      dtau_c = dtau_n;
+      s_c   = s_n;
+      chi_c = chi_n;
 
       ndep++;
     }
@@ -270,7 +262,6 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
   // Solve transfer equation with Feautrier solver (on subgrid)
   // __________________________________________________________
-
 
   cell_feautrier (ndep, origin, r, S, dtau, u, L_diag_approx);
 

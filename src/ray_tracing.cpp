@@ -610,10 +610,13 @@ int find_endpoints (long ncells, CELL *cell)
       double dZ = 0.0;
 
       long current = p;
+      long next    = next_cell (NCELLS, cell, p, r, &Z, current, &dZ);
 
-      while (!cell[current].boundary)
+
+      while ( (next != NCELLS) && !(cell[current].boundary && cell[next].boundary))
       {
-        current = next_cell (NCELLS, cell, p, r, &Z, current, &dZ);
+        current = next;
+        next    = next_cell (NCELLS, cell, p, r, &Z, current, &dZ);
       }
 
       cell[p].endpoint[r] = current;

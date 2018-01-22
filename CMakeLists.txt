@@ -64,6 +64,14 @@ add_dependencies(Magritte.exe MAKE_SETUP)
 target_link_libraries(Magritte.exe _MAGRITTE)
 
 
+# Create executable for Magritte_chemistry
+add_executable(Magritte_chemistry.exe src/Magritte_chemistry.cpp)
+# Ensure that Magritte_io depends on setup command defined above
+add_dependencies(Magritte_chemistry.exe MAKE_SETUP)
+# Link the library of the /src directory to Magritte main code
+target_link_libraries(Magritte_chemistry.exe _CHEMISTRY)
+
+
 # Create executable for Magritte_io
 add_executable(Magritte_io.exe src/Magritte_io.cpp)
 # Ensure that Magritte_io depends on setup command defined above

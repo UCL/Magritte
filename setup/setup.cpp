@@ -301,17 +301,33 @@ int main()
 
   // Create (unit) HEALPix vectors and find antipodal pairs
 
-  double *healpixvector;   // array of HEALPix vectors for each ipix pixel
-  healpixvector = (double*) malloc( 3*nrays*sizeof(double) );
+  double *healpixvector = new double[3*nrays];   // array of HEALPix vectors for each ipix pixel
 
-  long *antipod;           // gives antipodal ray for each ray
-  antipod = (long*) malloc( nrays*sizeof(long) );
+  long *antipod = new long[nrays];               // gives antipodal ray for each ray
+
+  long **aligned = new long*[nrays];             // numbers of rays on same side
+
+  for (long i = 0; i < nrays; i++)
+  {
+    aligned[i] = new long[nrays/2];
+  }
 
 
-  setup_healpixvectors(nrays, healpixvector, antipod);
+  for (long i = 0; i < nrays; i++)
+  {
+    for (long j = 0; j < nrays/2; j++)
+    {
+      aligned[i][j] = 0;
+    }
+  }
+
+  long *n_aligned = new long[nrays];             // number of rays on a particular side
 
 
-  printf("(setup): HEALPix vectors created \n\n");
+  setup_healpixvectors (nrays, healpixvector, antipod, n_aligned, aligned);
+
+
+  printf ("(setup): HEALPix vectors created \n\n");
 
 
 
@@ -320,7 +336,7 @@ int main()
   // _________________
 
 
-  printf("(setup): setting up Magritte_config.hpp \n");
+  printf ("(setup): setting up Magritte_config.hpp \n");
 
 
   FILE *config_file = fopen("../src/Magritte_config.hpp", "w");
@@ -344,86 +360,91 @@ int main()
 # endif
 
 
-  fprintf( config_file, "#define NSPEC %d \n\n", nspec );
+  fprintf (config_file, "#define NSPEC %d \n\n", nspec);
 
-  fprintf( config_file, "#define NREAC %d \n\n", nreac );
+  fprintf (config_file, "#define NREAC %d \n\n", nreac);
 
-  fprintf( config_file, "#define TOT_NLEV %d \n\n", tot_nlev );
+  fprintf (config_file, "#define TOT_NLEV %d \n\n", tot_nlev);
 
-  fprintf( config_file, "#define TOT_NRAD %d \n\n", tot_nrad );
+  fprintf (config_file, "#define TOT_NRAD %d \n\n", tot_nrad);
 
-  fprintf( config_file, "#define MAX_NLEV %d \n\n", max_nlev );
+  fprintf (config_file, "#define MAX_NLEV %d \n\n", max_nlev);
 
-  fprintf( config_file, "#define MAX_NRAD %d \n\n", max_nrad );
+  fprintf (config_file, "#define MAX_NRAD %d \n\n", max_nrad);
 
-  fprintf( config_file, "#define TOT_NLEV2 %d \n\n", tot_nlev2 );
+  fprintf (config_file, "#define TOT_NLEV2 %d \n\n", tot_nlev2);
 
-  fprintf( config_file, "#define TOT_NCOLPAR %d \n\n", tot_ncolpar );
+  fprintf (config_file, "#define TOT_NCOLPAR %d \n\n", tot_ncolpar);
 
-  fprintf( config_file, "#define TOT_CUM_TOT_NCOLTRAN %d \n\n", tot_cum_tot_ncoltran );
+  fprintf (config_file, "#define TOT_CUM_TOT_NCOLTRAN %d \n\n", tot_cum_tot_ncoltran);
 
-  fprintf( config_file, "#define TOT_CUM_TOT_NCOLTEMP %d \n\n", tot_cum_tot_ncoltemp );
+  fprintf (config_file, "#define TOT_CUM_TOT_NCOLTEMP %d \n\n", tot_cum_tot_ncoltemp);
 
-  fprintf( config_file, "#define TOT_CUM_TOT_NCOLTRANTEMP %d \n\n", tot_cum_tot_ncoltrantemp );
-
-
-  write_int_array(config_file, "NLEV", nlev, NLSPEC);
-
-  write_int_array(config_file, "NRAD", nrad, NLSPEC);
+  fprintf (config_file, "#define TOT_CUM_TOT_NCOLTRANTEMP %d \n\n", tot_cum_tot_ncoltrantemp);
 
 
-  write_int_array(config_file, "CUM_NLEV", cum_nlev, NLSPEC);
+  write_int_array (config_file, "NLEV", nlev, NLSPEC);
 
-  write_int_array(config_file, "CUM_NLEV2", cum_nlev2, NLSPEC);
-
-  write_int_array(config_file, "CUM_NRAD", cum_nrad, NLSPEC);
+  write_int_array (config_file, "NRAD", nrad, NLSPEC);
 
 
-  write_int_array(config_file, "NCOLPAR", ncolpar, NLSPEC);
+  write_int_array (config_file, "CUM_NLEV", cum_nlev, NLSPEC);
 
-  write_int_array(config_file, "CUM_NCOLPAR", cum_ncolpar, NLSPEC);
+  write_int_array (config_file, "CUM_NLEV2", cum_nlev2, NLSPEC);
 
-
-  write_int_array(config_file, "NCOLTEMP", ncoltemp, tot_ncolpar);
-
-  write_int_array(config_file, "NCOLTRAN", ncoltran, tot_ncolpar);
+  write_int_array (config_file, "CUM_NRAD", cum_nrad, NLSPEC);
 
 
-  write_int_array(config_file, "CUM_NCOLTEMP", cum_ncoltemp, tot_ncolpar);
+  write_int_array (config_file, "NCOLPAR", ncolpar, NLSPEC);
 
-  write_int_array(config_file, "CUM_NCOLTRAN", cum_ncoltran, tot_ncolpar);
-
-  write_int_array(config_file, "CUM_NCOLTRANTEMP", cum_ncoltrantemp, tot_ncolpar);
+  write_int_array (config_file, "CUM_NCOLPAR", cum_ncolpar, NLSPEC);
 
 
-  write_int_array(config_file, "TOT_NCOLTEMP", tot_ncoltemp, NLSPEC);
+  write_int_array (config_file, "NCOLTEMP", ncoltemp, tot_ncolpar);
 
-  write_int_array(config_file, "TOT_NCOLTRAN", tot_ncoltran, NLSPEC);
-
-  write_int_array(config_file, "TOT_NCOLTRANTEMP", tot_ncoltrantemp, NLSPEC);
+  write_int_array (config_file, "NCOLTRAN", ncoltran, tot_ncolpar);
 
 
-  write_int_array(config_file, "CUM_TOT_NCOLTEMP", cum_tot_ncoltemp, NLSPEC);
+  write_int_array (config_file, "CUM_NCOLTEMP", cum_ncoltemp, tot_ncolpar);
 
-  write_int_array(config_file, "CUM_TOT_NCOLTRAN", cum_tot_ncoltran, NLSPEC);
+  write_int_array (config_file, "CUM_NCOLTRAN", cum_ncoltran, tot_ncolpar);
 
-  write_int_array(config_file, "CUM_TOT_NCOLTRANTEMP", cum_tot_ncoltrantemp, NLSPEC);
-
-
-  write_double_array(config_file, "HEALPIXVECTOR", healpixvector, 3*nrays);
-
-  write_long_array(config_file, "ANTIPOD", antipod, nrays);
+  write_int_array (config_file, "CUM_NCOLTRANTEMP", cum_ncoltrantemp, tot_ncolpar);
 
 
-  fclose(config_file);
+  write_int_array (config_file, "TOT_NCOLTEMP", tot_ncoltemp, NLSPEC);
+
+  write_int_array (config_file, "TOT_NCOLTRAN", tot_ncoltran, NLSPEC);
+
+  write_int_array (config_file, "TOT_NCOLTRANTEMP", tot_ncoltrantemp, NLSPEC);
 
 
-  printf("(setup): Magritte_config.hpp is set up \n\n");
+  write_int_array (config_file, "CUM_TOT_NCOLTEMP", cum_tot_ncoltemp, NLSPEC);
+
+  write_int_array (config_file, "CUM_TOT_NCOLTRAN", cum_tot_ncoltran, NLSPEC);
+
+  write_int_array (config_file, "CUM_TOT_NCOLTRANTEMP", cum_tot_ncoltrantemp, NLSPEC);
 
 
-  printf("(setup): done, Magritte can now be compiled \n\n");
+  write_double_array (config_file, "HEALPIXVECTOR", healpixvector, 3*nrays);
 
-  return(0);
+  write_long_array (config_file, "ANTIPOD", antipod, nrays);
+
+  write_long_array (config_file, "N_ALIGNED", n_aligned, nrays);
+
+  write_long_matrix (config_file, "ALIGNED", aligned, nrays, nrays/2);
+
+
+  fclose (config_file);
+
+
+  printf ("(setup): Magritte_config.hpp is set up \n\n");
+
+
+  printf ("(setup): done, Magritte can now be compiled \n\n");
+
+
+  return (0);
 
 }
 
@@ -433,7 +454,7 @@ int main()
 // write_int_array: write an array of int to config file
 // -----------------------------------------------------
 
-int write_int_array(FILE *file, std::string NAME, int *array, long length)
+int write_int_array (FILE *file, std::string NAME, int *array, long length)
 {
 
   fprintf( file, "#define %s { %d", NAME.c_str(), array[0]);
@@ -446,7 +467,7 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return(0);
+  return (0);
 
 }
 
@@ -456,7 +477,7 @@ int write_int_array(FILE *file, std::string NAME, int *array, long length)
 // write_long_array: write an array of long to config file
 // -------------------------------------------------------
 
-int write_long_array(FILE *file, std::string NAME, long *array, long length)
+int write_long_array (FILE *file, std::string NAME, long *array, long length)
 {
 
   fprintf( file, "#define %s { %ld", NAME.c_str(), array[0]);
@@ -469,7 +490,36 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return(0);
+  return (0);
+
+}
+
+
+
+
+// write_long_matrix: write a matrix of longs to config file
+// -------------------------------------------------------
+
+int write_long_matrix (FILE *file, std::string NAME, long **array, long nrows, long ncols)
+{
+
+  fprintf( file, "#define %s {   \\\n", NAME.c_str());
+
+  for (long i = 0; i< nrows; i++)
+  {
+    fprintf( file, "{ %ld", array[i][0]);
+
+    for (long j = 1; j < ncols; j++)
+    {
+      fprintf (file, ", %ld", array[i][j]);
+    }
+
+    fprintf (file, " },   \\\n");
+  }
+
+  fprintf (file, " } \n");
+
+  return (0);
 
 }
 
@@ -479,7 +529,7 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length)
 // write_double_array: write an array of int to config file
 // --------------------------------------------------------
 
-int write_double_array(FILE *file, std::string NAME, double *array, long length)
+int write_double_array (FILE *file, std::string NAME, double *array, long length)
 {
 
   fprintf( file, "#define %s { %lE", NAME.c_str(), array[0]);
@@ -492,6 +542,6 @@ int write_double_array(FILE *file, std::string NAME, double *array, long length)
   fprintf( file, " } \n\n");
 
 
-  return(0);
+  return (0);
 
 }

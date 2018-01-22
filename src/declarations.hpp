@@ -56,6 +56,10 @@ extern const double healpixvector[3*NRAYS];
 
 extern const long antipod[NRAYS];
 
+// extern const long aligned[NRAYS][NRAYS/2];   // NOT USED YET
+
+// extern const long n_aligned[NRAYS];          // NOT USED YET
+
 
 
 /* Level populations */
@@ -98,6 +102,20 @@ extern const int tot_ncoltrantemp[NLSPEC];           /* total of ntran*ntemp ove
 
 extern const int cum_tot_ncoltrantemp[NLSPEC];   /* cum. of tot. of ntran*ntemp o specs & prtnrs */
 
+
+// Magritte constants
+
+extern const double PI;      // pi
+extern const double CC;      // speed of light in cgs units
+extern const double HH;      // Planck's constant in cgs units
+extern const double KB;      // Boltzmann's constant in cgs units
+extern const double EV;      // one electron Volt in erg
+extern const double MP;      // proton mass in cgs units
+extern const double PC;      // one parsec in cm
+extern const double AU;      // atomic mass unit
+extern const double T_CMB;   // CMB  temperature in K
+
+extern const double SECONDS_IN_YEAR;   // number of seconds in one year
 
 
 // Roots and weights for Gauss-Hermite quadrature

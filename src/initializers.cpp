@@ -234,6 +234,10 @@ int initialize_cells (long ncells, CELL *cell)
     for (long ray = 0; ray < NRAYS; ray++)
     {
       cell[n].neighbor[ray] = 0;
+      cell[n].endpoint[ray] = 0;
+
+      cell[n].Z[ray] = 0.0;
+      cell[n].ray[ray].intensity = 0.0;
     }
 
     cell[n].vx = 0.0;
@@ -258,7 +262,8 @@ int initialize_cells (long ncells, CELL *cell)
 
     cell[n].id = n;
 
-    cell[n].removed = false;
+    cell[n].removed  = false;
+    cell[n].boundary = false;
   }
   } // end of OpenMP parallel region
 
@@ -311,8 +316,8 @@ int initialize_cell_id (long ncells, CELL *cell)
 int initialize_temperature_gas (long ncells, CELL *cell)
 {
 
-# pragma omp parallel   \
-  shared (ncells, cell)         \
+# pragma omp parallel     \
+  shared (ncells, cell)   \
   default (none)
   {
 

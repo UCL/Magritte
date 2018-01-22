@@ -208,8 +208,6 @@ int cell_level_populations (long ncells, CELL *cell, int *irad, int*jrad, double
 
 #           if (SOBOLEV)
 
-              // printf("n = %ld\n", n);
-
               cell_sobolev (NCELLS, cell, mean_intensity, Lambda_diagonal, mean_intensity_eff, source,
                             opacity, frequency, irad, jrad, n, lspec, kr);
 

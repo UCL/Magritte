@@ -34,6 +34,11 @@ int write_long_array(FILE *file, std::string NAME, long *array, long length);
 /*-----------------------------------------------------------------------------------------------*/
 
 
+// write_long_matrix: write a matrix of longs to config file
+// -------------------------------------------------------
+
+int write_long_matrix (FILE *file, std::string NAME, long **array, long nrows, long ncols);
+
 
 /* write_double_array: write an array of int to the config file                                  */
 /*-----------------------------------------------------------------------------------------------*/

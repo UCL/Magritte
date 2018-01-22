@@ -10,19 +10,18 @@
 
 #include "Eigen/Dense"
 
-typedef struct
+
+struct TEMPERATURE
 {
 
   double dust;
   double gas;
   double gas_prev;
 
-} TEMPERATURE;
+};
 
 
-
-
-typedef struct
+struct COLUMN_DENSITIES
 {
 
   double H2;    // H2 column density
@@ -32,27 +31,25 @@ typedef struct
 
   double tot;   // total column density
 
-} COLUMN_DENSITIES;
+};
 
 
-
-
-typedef struct
+struct RAY
 {
 
   double intensity;
 
   COLUMN_DENSITIES column;
 
-} RAY;
+};
 
 
-
-
-typedef struct
+struct CELL
 {
 
   double x, y, z;            // x, y and z coordinate of cell center
+
+  double vx, vy, vz;         // x, y and z component of velocity field
 
   long endpoint[NRAYS];      // cell numbers of ray endings
   double Z[NRAYS];           // distance from cell to boundary
@@ -60,7 +57,6 @@ typedef struct
   long neighbor[NRAYS];      // cell numbers of neighors
   long n_neighbors;          // number of neighbors
 
-  double vx, vy, vz;         // x, y and z component of velocity field
 
   double density;            // density
 
@@ -77,12 +73,44 @@ typedef struct
 
   bool boundary;             // true if boundary cell
 
-} CELL;
+};
+
+
+
+// struct CELL
+// {
+//
+//   double x, y, z;            // x, y and z coordinate of cell center
+//
+//   long endpoint[NRAYS];      // cell numbers of ray endings
+//   double Z[NRAYS];           // distance from cell to boundary
+//
+//   long neighbor[NRAYS];      // cell numbers of neighors
+//   long n_neighbors;          // number of neighbors
+//
+//   double vx, vy, vz;         // x, y and z component of velocity field
+//
+//   double density;            // density
+//
+//   double abundance[NSPEC];   // abundance for each species
+//
+//   double rate[NREAC];        // reaction rate for each reaciton
+//
+//   TEMPERATURE temperature;   // temperatures
+//
+//   RAY ray[NRAYS];            // discretized directions
+//
+//   long id;                   // cell nr of associated cell in other grid
+//   bool removed;              // true when cell is removed
+//
+//   bool boundary;             // true if boundary cell
+//
+// };
 
 
 
 
-typedef struct
+struct EVALPOINT
 {
 
   bool   onray;   // true when cell is on any ray thus an evaluation point
@@ -98,12 +126,10 @@ typedef struct
 
   long next_in_velo;   // next point in velocity space
 
-} EVALPOINT;
+};
 
 
-
-
-typedef struct
+struct SPECIES
 {
 
   std::string sym;            // chemical symbol
@@ -112,26 +138,20 @@ typedef struct
 
   double initial_abundance;   // abundance before chemical evolution
 
-} SPECIES;
+};
 
 
-
-
-
-
-typedef struct
+struct COLPAR
 {
 
   int nr;            // nr of species of collision partner
 
   char ortho_para;   // o when ortho, p when para and n when NA
 
-} COLPAR;
+};
 
 
-
-
-typedef struct
+struct LINE_SPECIES
 {
 
   int nr;                      // nr of corresponding species
@@ -147,8 +167,8 @@ typedef struct
   double C[MAX_NLEV][MAX_NLEV];
 
   // Eigen::MatrixXd EA(MAX_NLEV, MAX_NLEV);
-  // Eigen::MatrixXd EB(MAX_NLEV, MAX_NLEV);
   // Eigen::MatrixXd EC(MAX_NLEV, MAX_NLEV);
+  // Eigen::MatrixXd EB(MAX_NLEV, MAX_NLEV);
 
   // ERROR -> read up on constructors...
 
@@ -171,9 +191,7 @@ typedef struct
   //
   // double C_data[MAX_TOT_NCOLTRANTEMP];
 
-
-
-} LINE_SPECIES;
+};
 
 
 // typedef struct
@@ -187,7 +205,7 @@ typedef struct
 
 
 
-typedef struct
+struct REACTION
 {
 
   std::string R1;   // reactant 1
@@ -209,7 +227,7 @@ typedef struct
 
   int    dup;       // Number of duplicates of this reaction
 
-} REACTION;
+};
 
 
 #endif //__MAGRITTE_TYPES_HPP_INCLUDED__

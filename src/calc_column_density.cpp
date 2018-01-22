@@ -217,6 +217,7 @@ double cell_column_density (long ncells, CELL *cell, long origin, int spec, long
 
 
   // Walk along ray
+
   {
     double Z   = 0.0;
     double dZ  = 0.0;

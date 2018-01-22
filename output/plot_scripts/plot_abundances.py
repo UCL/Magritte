@@ -1,5 +1,5 @@
-# Script to plot the chemical abundances
-# --------------------------------------
+# Script to plot chemical abundances
+# ----------------------------------
 
 
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ print "Plot chemical abundances"
 print "------------------------"
 
 
-# Check whether the date stamp of the datafile is given
+# Check whether date stamp of the datafile is given
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
@@ -20,14 +20,14 @@ else:
     print "Please try again and give the date stamp of the output file you want to plot\n"
 
 
-# Check the tag of the data that is to be plotted
+# Check the tag of data that is to be plotted
 if (len(sys.argv)>2):
     tag = "_" + str(sys.argv[2])
 else:
     tag = ""
 
 
-# Get the input files from parameters.hpp
+# Get input files from parameters.hpp
 with open("../../parameters.hpp") as parameters_file:
     for line in parameters_file:
         line = line.split()
@@ -38,19 +38,19 @@ with open("../../parameters.hpp") as parameters_file:
                 inputfile = "../../" + line[2].split("\"")[1]
 
 
-# Read the grid input file
-xg,yg,zg, vx,vy,vz, density = np.loadtxt(inputfile, unpack=True)
-ncells                      = np.shape(xg)[0]
+# Read grid input file
+ID, xg,yg,zg, vx,vy,vz, density = np.loadtxt(inputfile, unpack=True)
+ncells = np.shape(xg)[0]
 
 
-# Read the abundances output file
+# Read abundances output file
 file_name = "../files/" + date_stamp + "_output/abundances" + tag + ".txt"
 
 abundances_data = np.loadtxt(file_name)
 nspec           = np.shape(abundances_data)[1]
 
 
-# Read the species names for the legend
+# Read species names for legend
 species_name = ["dummy"]
 
 with open(spec_datafile) as spec_file:

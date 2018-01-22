@@ -74,21 +74,21 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
 
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-      double dtau_c = dZ*PC*opacity[s_c];
+      double chi_c = opacity[s_c];
 
 
       while (current != origin)
       {
         long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
-        double dtau_p = dZ*PC*opacity[s_p];
+        double chi_p = opacity[s_p];
 
-        tau_ar = tau_ar + (dtau_c + dtau_p) / 2.0;
+        tau_ar = tau_ar + dZ*PC*(chi_c + chi_p)/2.0;
 
         current  = previous;
         previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
 
-        dtau_c = dtau_p;
+        chi_c = chi_p;
       }
     }
 
@@ -125,21 +125,21 @@ int cell_sobolev (long ncells, CELL *cell, double *mean_intensity, double *Lambd
 
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-      double dtau_c = dZ*PC*opacity[s_c];
+      double chi_c = opacity[s_c];
 
 
-      while (!cell[current].boundary)
+      while (next != NCELLS)
       {
         long s_n = LSPECGRIDRAD(lspec,next,kr);
 
-        double dtau_n = dZ*PC*opacity[s_n];
+        double chi_n = opacity[s_n];
 
-        tau_r = tau_r + (dtau_c + dtau_n) / 2.0;
+        tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
 
         current = next;
         next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
 
-        dtau_c = dtau_n;
+        chi_c = chi_n;
       }
     }
 
