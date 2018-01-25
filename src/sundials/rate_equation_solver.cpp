@@ -54,7 +54,7 @@ int rate_equation_solver (CELL *cell, long gridp)
 
   user_data->gp          = gridp;
   user_data->cellpointer = cell;
-  user_data->electron_abundance = cell[gridp].abundance[e_nr];
+  user_data->electron_abundance = cell[gridp].abundance[nr_e];
 
 
   SUNMatrix       A  = NULL;
@@ -248,7 +248,7 @@ int rate_equation_solver (CELL *cell, long gridp)
   }
 
 
-  cell[gridp].abundance[e_nr] = user_data->electron_abundance;
+  cell[gridp].abundance[nr_e] = user_data->electron_abundance;
 
 
 

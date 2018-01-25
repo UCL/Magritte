@@ -26,7 +26,7 @@
 #define NRAYS 2
 
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 
 
 #define INPUT_FORMAT '.txt'

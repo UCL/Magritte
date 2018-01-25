@@ -1,15 +1,7 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* test_feautrier: tests the Feautrier solver                                                    */
-/*                                                                                               */
-/* (NEW)                                                                                         */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
@@ -25,11 +17,10 @@
 #include "../../../src/Magritte_config.hpp"
 #include "../../../src/declarations.hpp"
 
+#include "../../../setup/setup_data_tools.hpp"
 #include "../../../src/definitions.hpp"
-
 #include "../../../src/initializers.hpp"
 #include "../../../src/read_input.hpp"
-#include "../../../src/create_healpixvectors.hpp"
 #include "../../../src/ray_tracing.hpp"
 #include "../../../src/feautrier.hpp"
 #include "../../../src/write_output.hpp"

@@ -82,6 +82,21 @@ int read_species (std::string spec_datafile, SPECIES *species)
   fclose (specdata);
 
 
+  // Get and store species numbers of some inportant species
+
+  nr_e    = get_species_nr (species, "e-");     // species nr corresponding to electrons
+  nr_H2   = get_species_nr (species, "H2");     // species nr corresponding to H2
+  nr_HD   = get_species_nr (species, "HD");     // species nr corresponding to HD
+  nr_C    = get_species_nr (species, "C");      // species nr corresponding to C
+  nr_H    = get_species_nr (species, "H");      // species nr corresponding to H
+  nr_H2x  = get_species_nr (species, "H2+");    // species nr corresponding to H2+
+  nr_HCOx = get_species_nr (species, "HCO+");   // species nr corresponding to HCO+
+  nr_H3x  = get_species_nr (species, "H3+");    // species nr corresponding to H3+
+  nr_H3Ox = get_species_nr (species, "H3O+");   // species nr corresponding to H3O+
+  nr_Hex  = get_species_nr (species, "He+");    // species nr corresponding to He+
+  nr_CO   = get_species_nr (species, "CO");     // species nr corresponding to CO
+
+
   return (0);
 
 }

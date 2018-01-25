@@ -88,7 +88,7 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
   // For all cells n and rays r
 
 # pragma omp parallel                                                                            \
-  shared (ncells, cell, column_H2, column_HD, column_C, column_CO, H2_nr, HD_nr, C_nr, CO_nr )   \
+  shared (ncells, cell, column_H2, column_HD, column_C, column_CO, nr_H2, nr_HD, nr_C, nr_CO )   \
   default (none)
   {
 
@@ -118,23 +118,23 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
       for (long r = 0; r < NRAYS; r++)
       {
         column_H2[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, H2_nr, r);
+                                                 cum_raytot, n, nr_H2, r);
         column_HD[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, HD_nr, r);
+                                                 cum_raytot, n, nr_HD, r);
         column_C[RINDEX(n,r)]  = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, C_nr,  r);
+                                                 cum_raytot, n, nr_C,  r);
         column_CO[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, CO_nr, r);
+                                                 cum_raytot, n, nr_CO, r);
       }
 
 #   else
 
     for (long r = 0; r < NRAYS; r++)
     {
-      column_H2[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, H2_nr, r);
-      column_HD[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, HD_nr, r);
-      column_C[RINDEX(n,r)]  = cell_column_density (NCELLS, cell, n, C_nr,  r);
-      column_CO[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, CO_nr, r);
+      column_H2[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, nr_H2, r);
+      column_HD[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, nr_HD, r);
+      column_C[RINDEX(n,r)]  = cell_column_density (NCELLS, cell, n, nr_C,  r);
+      column_CO[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, nr_CO, r);
     }
 
 #   endif

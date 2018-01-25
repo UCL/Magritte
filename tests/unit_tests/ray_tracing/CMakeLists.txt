@@ -32,6 +32,7 @@ add_custom_target(MAKE_SETUP
 # Add test main and MAGRITTE source code (which is to be tested)
 add_library(_ray_tracing
 test_main.cpp
+../../../setup/setup_data_tools.cpp
 ../../../src/initializers.cpp
 ../../../src/read_input.cpp
 ../../../src/ray_tracing.cpp

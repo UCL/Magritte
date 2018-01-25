@@ -29,7 +29,7 @@ int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int 
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
 
-  if (cell[gridp].abundance[H2_nr] > 0.0)
+  if (cell[gridp].abundance[nr_H2] > 0.0)
   {
     frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/cell[gridp].temperature.gas));
     frac_H2_ortho = 1.0 - frac_H2_para;

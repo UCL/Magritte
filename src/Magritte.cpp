@@ -143,25 +143,6 @@ int main ()
   initialize_abundances (NCELLS, cell, species);
 
 
-  // Get and store species numbers of some inportant species
-
-
-  // define as nr_e etc
-  //
-
-  e_nr    = get_species_nr (species, "e-");     // species nr corresponding to electrons
-  H2_nr   = get_species_nr (species, "H2");     // species nr corresponding to H2
-  HD_nr   = get_species_nr (species, "HD");     // species nr corresponding to HD
-  C_nr    = get_species_nr (species, "C");      // species nr corresponding to C
-  H_nr    = get_species_nr (species, "H");      // species nr corresponding to H
-  H2x_nr  = get_species_nr (species, "H2+");    // species nr corresponding to H2+
-  HCOx_nr = get_species_nr (species, "HCO+");   // species nr corresponding to HCO+
-  H3x_nr  = get_species_nr (species, "H3+");    // species nr corresponding to H3+
-  H3Ox_nr = get_species_nr (species, "H3O+");   // species nr corresponding to H3O+
-  Hex_nr  = get_species_nr (species, "He+");    // species nr corresponding to He+
-  CO_nr   = get_species_nr (species, "CO");     // species nr corresponding to CO
-
-
   // Read chemical reaction data
 
   REACTION reaction[NREAC];

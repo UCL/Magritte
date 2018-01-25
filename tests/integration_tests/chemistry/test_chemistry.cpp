@@ -84,27 +84,27 @@ TEST_CASE("Test chemistry"){
 
   /* Get and store the species numbers of some inportant species */
 
-  e_nr    = get_species_nr("e-");                       /* species nr corresponding to electrons */
+  nr_e    = get_species_nr("e-");                       /* species nr corresponding to electrons */
 
-  H2_nr   = get_species_nr("H2");                              /* species nr corresponding to H2 */
+  nr_H2   = get_species_nr("H2");                              /* species nr corresponding to H2 */
 
-  HD_nr   = get_species_nr("HD");                              /* species nr corresponding to HD */
+  nr_HD   = get_species_nr("HD");                              /* species nr corresponding to HD */
 
-  C_nr    = get_species_nr("C");                                /* species nr corresponding to C */
+  nr_C    = get_species_nr("C");                                /* species nr corresponding to C */
 
-  H_nr    = get_species_nr("H");                                /* species nr corresponding to H */
+  nr_H    = get_species_nr("H");                                /* species nr corresponding to H */
 
-  H2x_nr  = get_species_nr("H2+");                            /* species nr corresponding to H2+ */
+  nr_H2x  = get_species_nr("H2+");                            /* species nr corresponding to H2+ */
 
-  HCOx_nr = get_species_nr("HCO+");                          /* species nr corresponding to HCO+ */
+  nr_HCOx = get_species_nr("HCO+");                          /* species nr corresponding to HCO+ */
 
-  H3x_nr  = get_species_nr("H3+");                            /* species nr corresponding to H3+ */
+  nr_H3x  = get_species_nr("H3+");                            /* species nr corresponding to H3+ */
 
-  H3Ox_nr = get_species_nr("H3O+");                          /* species nr corresponding to H3O+ */
+  nr_H3Ox = get_species_nr("H3O+");                          /* species nr corresponding to H3O+ */
 
-  Hex_nr  = get_species_nr("He+");                            /* species nr corresponding to He+ */
+  nr_Hex  = get_species_nr("He+");                            /* species nr corresponding to He+ */
 
-  CO_nr   = get_species_nr("CO");                              /* species nr corresponding to CO */
+  nr_CO   = get_species_nr("CO");                              /* species nr corresponding to CO */
 
 
   /* Read the reactions */
@@ -197,11 +197,11 @@ TEST_CASE("Test chemistry"){
   /* Calculate column densities */
 
   calc_column_density(cell, evalpoint, column_tot, NSPEC-1);
-  calc_column_density(cell, evalpoint, column_H, H_nr);
-  calc_column_density(cell, evalpoint, column_H2, H2_nr);
-  calc_column_density(cell, evalpoint, column_HD, HD_nr);
-  calc_column_density(cell, evalpoint, column_C, C_nr);
-  calc_column_density(cell, evalpoint, column_CO, CO_nr);
+  calc_column_density(cell, evalpoint, column_H, nr_H);
+  calc_column_density(cell, evalpoint, column_H2, nr_H2);
+  calc_column_density(cell, evalpoint, column_HD, nr_HD);
+  calc_column_density(cell, evalpoint, column_C, nr_C);
+  calc_column_density(cell, evalpoint, column_CO, nr_CO);
 
 
   write_double_2("column_tot", "0", NCELLS, NRAYS, column_tot);
@@ -282,16 +282,16 @@ TEST_CASE("Test chemistry"){
     }
 
 
-    // species[H2_nr].abn[0] = 0.0;
+    // species[nr_H2].abn[0] = 0.0;
 
     /* Calculate column densities */
 
     calc_column_density(cell, evalpoint, column_tot, NSPEC-1);
-    calc_column_density(cell, evalpoint, column_H, H_nr);
-    calc_column_density(cell, evalpoint, column_H2, H2_nr);
-    calc_column_density(cell, evalpoint, column_HD, HD_nr);
-    calc_column_density(cell, evalpoint, column_C, C_nr);
-    calc_column_density(cell, evalpoint, column_CO, CO_nr);
+    calc_column_density(cell, evalpoint, column_H, nr_H);
+    calc_column_density(cell, evalpoint, column_H2, nr_H2);
+    calc_column_density(cell, evalpoint, column_HD, nr_HD);
+    calc_column_density(cell, evalpoint, column_C, nr_C);
+    calc_column_density(cell, evalpoint, column_CO, nr_CO);
 
 
     write_double_2("column_tot", tag, NCELLS, NRAYS, column_tot);

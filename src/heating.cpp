@@ -25,7 +25,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
 
   double Habing_field = 1.68 * UV_field[gridp];            // UV radiation field in Habing
 
-  double electron_density = cell[gridp].abundance[e_nr] * cell[gridp].density;   // e density
+  double electron_density = cell[gridp].abundance[nr_e] * cell[gridp].density;   // e density
 
 
 
@@ -178,7 +178,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
 
 
   double heating_C_ionization = (1.0*EV) * cell[gridp].rate[C_ionization_nr]
-                                * cell[gridp].abundance[C_nr] * cell[gridp].density;
+                                * cell[gridp].abundance[nr_C] * cell[gridp].density;
 
   heating_components[3] = heating_C_ionization;
 
@@ -196,7 +196,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
 
 
   double heating_H2_formation = (1.5*EV) * cell[gridp].rate[H2_formation_nr]
-                                * cell[gridp].density * cell[gridp].abundance[H_nr]
+                                * cell[gridp].density * cell[gridp].abundance[nr_H]
                                 * cell[gridp].density;
 
   heating_components[4] = heating_H2_formation;
@@ -213,7 +213,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
 
 
   double heating_H2_photodissociation = (0.4*EV) * cell[gridp].rate[H2_photodissociation_nr]
-                                        * cell[gridp].abundance[H2_nr] * cell[gridp].density;
+                                        * cell[gridp].abundance[nr_H2] * cell[gridp].density;
 
   heating_components[5] = heating_H2_photodissociation;
 
@@ -233,11 +233,11 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
 
   double critical_density
           = 1.0E6 / sqrt(cell[gridp].temperature.gas)
-            /( 1.6 * cell[gridp].abundance[H_nr] * exp(-pow(400.0/cell[gridp].temperature.gas, 2))
-               + 1.4 * cell[gridp].abundance[H2_nr] * exp(-18100.0/(1200.0+cell[gridp].temperature.gas)) );
+            /( 1.6 * cell[gridp].abundance[nr_H] * exp(-pow(400.0/cell[gridp].temperature.gas, 2))
+               + 1.4 * cell[gridp].abundance[nr_H2] * exp(-18100.0/(1200.0+cell[gridp].temperature.gas)) );
 
   double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[gridp].rate[H2_photodissociation_nr]
-                                  * cell[gridp].abundance[H2_nr] * cell[gridp].density
+                                  * cell[gridp].abundance[nr_H2] * cell[gridp].density
                                   / (1.0 + critical_density/cell[gridp].density);
 
   heating_components[6] = heating_H2_FUV_pumping;
@@ -259,7 +259,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
 
 
   double heating_cosmic_rays = (9.4*EV) * (1.3E-17*ZETA)
-                               * cell[gridp].abundance[H2_nr] * cell[gridp].density;
+                               * cell[gridp].abundance[nr_H2] * cell[gridp].density;
 
   heating_components[7] = heating_cosmic_rays;
 
@@ -303,33 +303,33 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
   // For so-called REDUCED NETWORK of 3D-PDR
 
   double heating_chemical
-                   = cell[gridp].abundance[H2x_nr] * cell[gridp].density      // H2+  +  e-
+                   = cell[gridp].abundance[nr_H2x] * cell[gridp].density      // H2+  +  e-
                      * electron_density
                      * cell[gridp].rate[215] * (10.9*EV)
 
-                     + cell[gridp].abundance[H2x_nr] * cell[gridp].density    // H2+  +  H
-                       * cell[gridp].abundance[H_nr] * cell[gridp].density
+                     + cell[gridp].abundance[nr_H2x] * cell[gridp].density    // H2+  +  H
+                       * cell[gridp].abundance[nr_H] * cell[gridp].density
                        * cell[gridp].rate[154] * (0.94*EV)
 
-                     + cell[gridp].abundance[HCOx_nr] * cell[gridp].density   // HCO+  +  e-
+                     + cell[gridp].abundance[nr_HCOx] * cell[gridp].density   // HCO+  +  e-
                        * electron_density
                        * cell[gridp].rate[239] * (7.51*EV)
 
-                     + cell[gridp].abundance[H3x_nr] * cell[gridp].density    // H3+  +  e-
+                     + cell[gridp].abundance[nr_H3x] * cell[gridp].density    // H3+  +  e-
                        * electron_density
                        * ( cell[gridp].rate[216] * (4.76*EV) + cell[gridp].rate[217] * (9.23*EV) )
 
-                     + cell[gridp].abundance[H3Ox_nr]*cell[gridp].density     // H3O+  + e-
+                     + cell[gridp].abundance[nr_H3Ox]*cell[gridp].density     // H3O+  + e-
                        * electron_density
                        * ( cell[gridp].rate[235] * (1.16*EV) + cell[gridp].rate[236] * (5.63*EV)
                            + cell[gridp].rate[237] * (6.27*EV) )
 
-                     + cell[gridp].abundance[Hex_nr] * cell[gridp].density    // He+  + H2
-                       * cell[gridp].abundance[H2_nr] * cell[gridp].density
+                     + cell[gridp].abundance[nr_Hex] * cell[gridp].density    // He+  + H2
+                       * cell[gridp].abundance[nr_H2] * cell[gridp].density
                        * ( cell[gridp].rate[49] * (6.51*EV) + cell[gridp].rate[169] * (6.51*EV) )
 
-                     + cell[gridp].abundance[Hex_nr] * cell[gridp].density    // He+  + CO
-                       * cell[gridp].abundance[CO_nr] * cell[gridp].density
+                     + cell[gridp].abundance[nr_Hex] * cell[gridp].density    // He+  + CO
+                       * cell[gridp].abundance[nr_CO] * cell[gridp].density
                        * ( cell[gridp].rate[88] * (2.22*EV) + cell[gridp].rate[89] * (2.22*EV)
                            + cell[gridp].rate[90] * (2.22*EV) );
 

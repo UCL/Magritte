@@ -105,27 +105,27 @@ char ortho_para[TOT_NCOLPAR];   // stores whether it is ortho or para H2
 
 // Species numbers
 
-int e_nr;      // species nr corresponding to electrons
+int nr_e;      // species nr corresponding to electrons
 
-int H2_nr;     // species nr corresponding to H2
+int nr_H2;     // species nr corresponding to H2
 
-int HD_nr;     // species nr corresponding to HD
+int nr_HD;     // species nr corresponding to HD
 
-int C_nr;      // species nr corresponding to C
+int nr_C;      // species nr corresponding to C
 
-int H_nr;      // species nr corresponding to H
+int nr_H;      // species nr corresponding to H
 
-int H2x_nr;    // species nr corresponding to H2+
+int nr_H2x;    // species nr corresponding to H2+
 
-int HCOx_nr;   // species nr corresponding to HCO+
+int nr_HCOx;   // species nr corresponding to HCO+
 
-int H3x_nr;    // species nr corresponding to H3+
+int nr_H3x;    // species nr corresponding to H3+
 
-int H3Ox_nr;   // species nr corresponding to H3O+
+int nr_H3Ox;   // species nr corresponding to H3O+
 
-int Hex_nr;    // species nr corresponding to He+
+int nr_Hex;    // species nr corresponding to He+
 
-int CO_nr;     // species nr corresponding to CO
+int nr_CO;     // species nr corresponding to CO
 
 
 // Reaction numbers

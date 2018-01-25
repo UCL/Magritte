@@ -17,6 +17,7 @@
 #include "../../../src/declarations.hpp"
 #include "../../../src/definitions.hpp"
 
+#include "../../../setup/setup_data_tools.hpp"
 #include "../../../src/initializers.hpp"
 #include "../../../src/read_input.hpp"
 #include "../../../src/ray_tracing.hpp"
@@ -28,45 +29,46 @@
 #define EPS 1.0E-7
 
 
-TEST_CASE("calc_column_density")
+TEST_CASE ("calc_column_density")
 {
 
   // SET UP TEST
   // ___________
 
 
-  // Since executables are in directory /tests, we have to change paths
+  // Define grid input file
 
-  std::string test_inputfile     = "../../../" + inputfile;
-  std::string test_spec_datafile = "../../../" + spec_datafile;
+  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
 
 
   // Read input file
 
-  CELL cell[NCELLS];
+  long ncells = get_NCELLS_txt (test_inputfile);
 
-  read_txt_input (test_inputfile, NCELLS, cell);
+  CELL *cell = new CELL[ncells];
+
+  read_txt_input (test_inputfile, ncells, cell);
+
+  initialize_cells (ncells, cell);
 
 
-  // Find neighbors
+  // Find neighbors and endpoints
 
-  initialize_cells (NCELLS, cell);
-
-  find_neighbors (NCELLS, cell);
+  find_neighbors (ncells, cell);
+  find_endpoints (ncells, cell);
 
 
   // Read species file
 
   SPECIES species[NSPEC];
 
-  read_species (test_spec_datafile, species);
 
 
   // Define and initialize
 
-  double column_tot[NCELLS*NRAYS];   // total column density
+  double column_tot[ncells*NRAYS];   // total column density
 
-  initialize_double_array (NCELLS*NRAYS, column_tot);
+  initialize_double_array (ncells*NRAYS, column_tot);
 
 
 
@@ -74,9 +76,12 @@ TEST_CASE("calc_column_density")
   // TESTS
   // _____
 
-  calc_column_density (NCELLS, cell, column_tot, NSPEC-1);
+  // cell_column_density (ncells, cell, column_tot, NSPEC-1);
 
 
-  CHECK( 1==1 );
+  CHECK (1==1);
+
+
+  delete [] cell;
 
 }
