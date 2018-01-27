@@ -12,6 +12,8 @@
 #include <omp.h>
 
 
+
+
 struct TEMPERATURE
 {
 
@@ -21,28 +23,51 @@ struct TEMPERATURE
 
 };
 
+struct RAY
+{
+  double intensity;
+};
+
+
+
 
 struct COLUMN_DENSITIES
 {
 
-  double H2;    // H2 column density
-  double HD;    // HD column density
-  double C;     // C  column density
-  double CO;    // CO column density
+# if (FIXED_NCELLS)
 
-  double tot;   // total column density
+    double H2[NCELLS*NRAYS];    // H2 column density
+    double HD[NCELLS*NRAYS];    // HD column density
+    double C[NCELLS*NRAYS];     // C  column density
+    double CO[NCELLS*NRAYS];    // CO column density
+
+    double tot[NCELLS*NRAYS];   // total column density
+
+# else
+
+    double *H2;    // H2 column density
+    double *HD;    // HD column density
+    double *C;     // C  column density
+    double *CO;    // CO column density
+
+    double *tot;   // total column density
+
+
+    void new_column (long ncells)
+    {
+
+      double *H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
+      double *HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
+      double *C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
+      double *CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
+
+    }
+
+# endif
 
 };
 
 
-struct RAY
-{
-
-  double intensity;
-
-  COLUMN_DENSITIES column;
-
-};
 
 
 struct CELL
@@ -67,7 +92,7 @@ struct CELL
 
   TEMPERATURE temperature;   // temperatures
 
-  RAY ray[NRAYS];            // discretized directions
+  RAY ray[NRAYS];
 
   long id;                   // cell nr of associated cell in other grid
   bool removed;              // true when cell is removed

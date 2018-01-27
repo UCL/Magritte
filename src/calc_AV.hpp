@@ -17,5 +17,6 @@
 
 int calc_AV (long ncells, double *column_tot, double *AV);
 
+// int calc_AV (long ncells, COLUMN_DENSITIES column, double *AV);
 
 #endif // __calc_AV_HPP_INCLUDED__

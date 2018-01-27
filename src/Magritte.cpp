@@ -325,6 +325,8 @@ int main ()
   printf("(Magritte): starting preliminary chemistry iterations \n\n");
 
 
+    COLUMN_DENSITIES column;
+
 # if (FIXED_NCELLS)
 
     double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
@@ -334,18 +336,22 @@ int main ()
 
 # else
 
+    column.new_column(ncells);
+
     double *column_H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
     double *column_HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
     double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
     double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
 
+
+
 # endif
 
 
-  initialize_double_array (NCELLS*NRAYS, column_H2);
-  initialize_double_array (NCELLS*NRAYS, column_HD);
-  initialize_double_array (NCELLS*NRAYS, column_C);
-  initialize_double_array (NCELLS*NRAYS, column_CO);
+  initialize_double_array (NCELLS*NRAYS, column.H2);
+  initialize_double_array (NCELLS*NRAYS, column.HD);
+  initialize_double_array (NCELLS*NRAYS, column.C);
+  initialize_double_array (NCELLS*NRAYS, column.CO);
 
 
   // Preliminary chemistry iterations
