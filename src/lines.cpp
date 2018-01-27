@@ -18,22 +18,21 @@
 // line_source: calculate line source function
 // -------------------------------------------
 
-int line_source (long ncells, int *irad, int *jrad, double *A_coeff, double *B_coeff,
-                 double *pop, int lspec, double *source)
+int line_source (long ncells, LINE_SPECIES line_species, double *pop, int lspec, double *source)
 {
 
 
   for (int kr = 0; kr < nrad[lspec]; kr++)
   {
-    int i = irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
-    int j = jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
+    int i = line_species.irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
+    int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
 
     long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
     long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
 
-    double A_ij = A_coeff[b_ij];
-    double B_ij = B_coeff[b_ij];
-    double B_ji = B_coeff[b_ji];
+    double A_ij = line_species.A_coeff[b_ij];
+    double B_ij = line_species.B_coeff[b_ij];
+    double B_ji = line_species.B_coeff[b_ji];
 
 
 #   pragma omp parallel                                                                               \
@@ -83,25 +82,25 @@ int line_source (long ncells, int *irad, int *jrad, double *A_coeff, double *B_c
 // line_opacity: calculate line opacity
 // ------------------------------------
 
-int line_opacity (long ncells, int *irad, int *jrad, double *frequency, double *B_coeff,
-                  double *pop, int lspec, double *opacity)
+int line_opacity (long ncells, LINE_SPECIES line_species, double *pop, int lspec, double *opacity)
 {
 
-  for (int kr=0; kr<nrad[lspec]; kr++){
+  for (int kr = 0; kr < nrad[lspec]; kr++)
+  {
 
-    int i = irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
-    int j = jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
+    int i = line_species.irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
+    int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
 
     long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
     long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
 
-    double B_ij = B_coeff[b_ij];
-    double B_ji = B_coeff[b_ji];
+    double B_ij = line_species.B_coeff[b_ij];
+    double B_ji = line_species.B_coeff[b_ji];
 
 
-#   pragma omp parallel                                                  \
-    shared (ncells, frequency, b_ij, B_ij, B_ji, pop, lspec, kr, i, j,   \
-            nrad, cum_nrad, nlev, cum_nlev, opacity)                     \
+#   pragma omp parallel                                                     \
+    shared (ncells, line_species, b_ij, B_ij, B_ji, pop, lspec, kr, i, j,   \
+            nrad, cum_nrad, nlev, cum_nlev, opacity)                        \
     default (none)
     {
 
@@ -119,7 +118,7 @@ int line_opacity (long ncells, int *irad, int *jrad, double *frequency, double *
       long p_i  = LSPECGRIDLEV(lspec,gridp,i);    // pop index i
       long p_j  = LSPECGRIDLEV(lspec,gridp,j);    // pop index j
 
-      double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
+      double hv_4pi = HH * line_species.frequency[b_ij] / 4.0 / PI;
 
 
       opacity[s_ij] =  hv_4pi * (pop[p_j]*B_ji - pop[p_i]*B_ij);

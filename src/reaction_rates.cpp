@@ -57,7 +57,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
          &&   P1 == "H2"
          && ( P2 == "" || P2 == "#" ) )
     {
-      H2_formation_nr = reac;
+      nr_H2_formation = reac;
 
       cell[gridp].rate[reac] = rate_H2_formation (reaction, reac, cell[gridp].temperature.gas,
                                                   cell[gridp].temperature.dust);
@@ -191,7 +191,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
 
     else if ( (R1 == "H2")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      H2_photodissociation_nr = reac;
+      nr_H2_photodissociation = reac;
 
       cell[gridp].rate[reac] = rate_H2_photodissociation (reaction, reac, rad_surface, AV,
                                                           column_H2, gridp);
@@ -223,7 +223,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
     else if ( (R1 == "C")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               &&  ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) )
     {
-      C_ionization_nr = reac;
+      nr_C_ionization = reac;
 
       cell[gridp].rate[reac] = rate_C_photoionization (reaction, reac, cell[gridp].temperature.gas,
                                                        rad_surface, AV, column_C, column_H2, gridp);

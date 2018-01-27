@@ -17,17 +17,17 @@
 // cell_radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, double *Lambda_diagonal,
-                             double *mean_intensity_eff, double *Source, double *opacity,
-                             double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr);
+int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species, double *mean_intensity,
+                             double *Lambda_diagonal, double *mean_intensity_eff, double *Source,
+                             double *opacity, long gridp, int lspec, int kr);
 
 
 // intensity: calculate intensity along a certain ray through a certain point
 // --------------------------------------------------------------------------
 
-int intensities (long ncells, CELL *cell, double *source, double *opacity, double *frequency,
-                 double freq, int *irad, int*jrad, long gridp, long r, int lspec, int kr,
-                 double *u_local, double *v_local, double *L_local);
+int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *source, double *opacity,
+                 double freq, long gridp, long r, int lspec, int kr, double *u_local, double *v_local,
+                 double *L_local);
 
 
 #endif

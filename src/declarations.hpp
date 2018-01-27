@@ -133,15 +133,6 @@ extern const double H_7_roots[7];     // roots of 7th (physicists') Hermite poly
 
 // Chemistry
 
-extern SPECIES species[NSPEC];
-
-
-extern int lspec_nr[NLSPEC];           // names of line producing species
-
-extern int spec_par[TOT_NCOLPAR];      // number of species corresponding to a collision partner
-
-extern char ortho_para[TOT_NCOLPAR];   // stores whether it is ortho or para H2
-
 
 // Species numbers
 
@@ -160,9 +151,9 @@ extern int nr_CO;     // species nr corresponding to CO
 
 // Reaction numbers
 
-extern int C_ionization_nr;
-extern int H2_formation_nr;
-extern int H2_photodissociation_nr;
+extern int nr_C_ionization;
+extern int nr_H2_formation;
+extern int nr_H2_photodissociation;
 
 
 #endif // __DECLARATIONS_HPP_INCLUDED__

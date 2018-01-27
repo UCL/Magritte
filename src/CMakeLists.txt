@@ -56,7 +56,7 @@ radiative_transfer_otf.cpp
 cell_radiative_transfer.cpp
 feautrier.cpp
 cell_feautrier.cpp
-level_population_solver_otf.cpp
+level_population_solver.cpp
 calc_rad_surface.cpp
 calc_column_density.cpp
 calc_AV.cpp

@@ -20,7 +20,6 @@
 #include "species_tools.hpp"
 
 
-
 // read_species: read species from data file
 // -----------------------------------------
 
@@ -71,7 +70,7 @@ int read_species (std::string spec_datafile, SPECIES *species)
 
   // Overwrite electron abindance
 
-  printf("\n\nNote: The electron abundance will be overwritten to make each cell neutral\n\n");
+  printf ("\n\nNote: The electron abundance will be overwritten to make each cell neutral\n\n");
 
   int electron_nr = get_species_nr (species, "e-");
 
@@ -134,82 +133,82 @@ int read_reactions (std::string reac_datafile, REACTION *reaction)
 
   for (int l = 0; l < NREAC; l++)
   {
-    fgets(buffer, BUFFER_SIZE, reacdata);
+    fgets (buffer, BUFFER_SIZE, reacdata);
 
-    buffer_cpy = strdup(buffer);
+    buffer_cpy = strdup (buffer);
 
 
     // Ignore first column
 
-    strsep(&buffer_cpy, ",");
+    strsep (&buffer_cpy, ",");
 
 
     // Read first reactant
 
-    reaction[l].R1 = strsep(&buffer_cpy, ",");
+    reaction[l].R1 = strsep (&buffer_cpy, ",");
 
 
     // Read second reactant
 
-    reaction[l].R2 = strsep(&buffer_cpy, ",");
+    reaction[l].R2 = strsep (&buffer_cpy, ",");
 
 
     // Read third reactant
 
-    reaction[l].R3 = strsep(&buffer_cpy, ",");
+    reaction[l].R3 = strsep (&buffer_cpy, ",");
 
 
     // Read first reaction product
 
-    reaction[l].P1 = strsep(&buffer_cpy, ",");
+    reaction[l].P1 = strsep (&buffer_cpy, ",");
 
 
     // Read second reaction product
 
-    reaction[l].P2 = strsep(&buffer_cpy, ",");
+    reaction[l].P2 = strsep (&buffer_cpy, ",");
 
 
     // Read third reaction product
 
-    reaction[l].P3 = strsep(&buffer_cpy, ",");
+    reaction[l].P3 = strsep (&buffer_cpy, ",");
 
 
     // Read fourth reaction product
 
-    reaction[l].P4 = strsep(&buffer_cpy, ",");
+    reaction[l].P4 = strsep (&buffer_cpy, ",");
 
 
     // Read alpha
 
-    alpha_buff = strsep(&buffer_cpy, ",");
-    sscanf(alpha_buff, "%lE", &reaction[l].alpha);
+    alpha_buff = strsep (&buffer_cpy, ",");
+    sscanf (alpha_buff, "%lE", &reaction[l].alpha);
 
 
     // Read beta
 
-    beta_buff = strsep(&buffer_cpy, ",");
-    sscanf(beta_buff, "%lf", &reaction[l].beta);
+    beta_buff = strsep (&buffer_cpy, ",");
+    sscanf (beta_buff, "%lf", &reaction[l].beta);
 
 
     // Read gamma
 
-    gamma_buff = strsep(&buffer_cpy, ",");
-    sscanf(gamma_buff, "%lf", &reaction[l].gamma);
+    gamma_buff = strsep (&buffer_cpy, ",");
+    sscanf (gamma_buff, "%lf", &reaction[l].gamma);
 
 
     // Ignore next column
 
-    strsep(&buffer_cpy, ",");
+    strsep (&buffer_cpy, ",");
 
 
-    RT_min_buff = strsep(&buffer_cpy, ",");
-    sscanf(RT_min_buff, "%lf", &reaction[l].RT_min);
+    RT_min_buff = strsep (&buffer_cpy, ",");
+    sscanf (RT_min_buff, "%lf", &reaction[l].RT_min);
 
 
     // Read RT_max
 
-    RT_max_buff = strsep(&buffer_cpy, ",");
-    sscanf(RT_max_buff, "%lf", &reaction[l].RT_max);
+    RT_max_buff = strsep (&buffer_cpy, ",");
+    sscanf (RT_max_buff, "%lf", &reaction[l].RT_max);
 
 
     // Check for duplicates
@@ -220,7 +219,7 @@ int read_reactions (std::string reac_datafile, REACTION *reaction)
 
     for (int reac = 0; reac < l; reac++)
     {
-      if ( reaction[l].R1 == reaction[reac].R1
+      if (     reaction[l].R1 == reaction[reac].R1
            &&  reaction[l].R2 == reaction[reac].R2
            &&  reaction[l].R3 == reaction[reac].R3
            &&  reaction[l].P1 == reaction[reac].P1

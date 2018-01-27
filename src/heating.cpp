@@ -177,7 +177,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
       Use the C photoionization rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
-  double heating_C_ionization = (1.0*EV) * cell[gridp].rate[C_ionization_nr]
+  double heating_C_ionization = (1.0*EV) * cell[gridp].rate[nr_C_ionization]
                                 * cell[gridp].abundance[nr_C] * cell[gridp].density;
 
   heating_components[3] = heating_C_ionization;
@@ -195,7 +195,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
       Use the H2 formation rate determined in calc_reac_rates.cpp [units: cm^3.s^-1]  */
 
 
-  double heating_H2_formation = (1.5*EV) * cell[gridp].rate[H2_formation_nr]
+  double heating_H2_formation = (1.5*EV) * cell[gridp].rate[nr_H2_formation]
                                 * cell[gridp].density * cell[gridp].abundance[nr_H]
                                 * cell[gridp].density;
 
@@ -212,7 +212,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
       Use H2 photodissociation rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
-  double heating_H2_photodissociation = (0.4*EV) * cell[gridp].rate[H2_photodissociation_nr]
+  double heating_H2_photodissociation = (0.4*EV) * cell[gridp].rate[nr_H2_photodissociation]
                                         * cell[gridp].abundance[nr_H2] * cell[gridp].density;
 
   heating_components[5] = heating_H2_photodissociation;
@@ -236,7 +236,7 @@ double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* h
             /( 1.6 * cell[gridp].abundance[nr_H] * exp(-pow(400.0/cell[gridp].temperature.gas, 2))
                + 1.4 * cell[gridp].abundance[nr_H2] * exp(-18100.0/(1200.0+cell[gridp].temperature.gas)) );
 
-  double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[gridp].rate[H2_photodissociation_nr]
+  double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[gridp].rate[nr_H2_photodissociation]
                                   * cell[gridp].abundance[nr_H2] * cell[gridp].density
                                   / (1.0 + critical_density/cell[gridp].density);
 

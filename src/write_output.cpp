@@ -23,7 +23,7 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (long ncells, CELL *cell, SPECIES *species,
+int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
                       double *pop, double *mean_intensity)
 {
 
@@ -31,9 +31,9 @@ int write_txt_output (long ncells, CELL *cell, SPECIES *species,
 
   write_abundances (tag, NCELLS, cell);
 
-  write_level_populations (tag, NCELLS, species, pop);
+  write_level_populations (tag, NCELLS, line_species, pop);
 
-  write_line_intensities (tag, NCELLS, species, mean_intensity);
+  write_line_intensities (tag, NCELLS, line_species, mean_intensity);
 
   write_temperature_gas (tag, NCELLS, cell);
 
@@ -50,8 +50,7 @@ int write_txt_output (long ncells, CELL *cell, SPECIES *species,
 // write_performance_log: write performance results
 // ------------------------------------------------
 
-int write_performance_log (double time_total, double time_level_pop, double time_chemistry,
-                           double time_ray_tracing, int n_tb_iterations)
+int write_performance_log (TIMERS timers, int n_tb_iterations)
 {
 
 
@@ -70,10 +69,9 @@ int write_performance_log (double time_total, double time_level_pop, double time
     exit (1);
   }
 
-  fprintf (file, "time_total       %lE\n", time_total);
-  fprintf (file, "time_ray_tracing %lE\n", time_ray_tracing);
-  fprintf (file, "time_level_pop   %lE\n", time_level_pop);
-  fprintf (file, "time_chemistry   %lE\n", time_chemistry);
+  fprintf (file, "time_total       %lE\n", timers.total.duration);
+  fprintf (file, "time_level_pop   %lE\n", timers.level_pop.duration);
+  fprintf (file, "time_chemistry   %lE\n", timers.chemistry.duration);
   fprintf (file, "n_tb_iterations   %d\n", n_tb_iterations);
 
 

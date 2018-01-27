@@ -227,13 +227,6 @@ int main ()
   initialize_int_array (TOT_CUM_TOT_NCOLTRAN, jcol);
 
 
-  // Define helper arrays specifying species of collisiopn partners
-
-  initialize_int_array (TOT_NCOLPAR, spec_par);
-
-  initialize_char_array (TOT_NCOLPAR, ortho_para);
-
-
   printf("(Magritte): data structures are set up \n\n");
 
 

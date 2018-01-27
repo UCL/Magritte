@@ -24,17 +24,17 @@
 // cell_radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, double *Lambda_diagonal,
-                             double *mean_intensity_eff, double *source, double *opacity,
-                             double *frequency, int *irad, int*jrad, long gridp, int lspec, int kr)
+int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species, double *mean_intensity,
+                             double *Lambda_diagonal, double *mean_intensity_eff, double *source,
+                             double *opacity, long gridp, int lspec, int kr)
 {
 
-  long m_ij = LSPECGRIDRAD(lspec,gridp,kr);   // mean_intensity, S and opacity index
+  long m_ij = LSPECGRIDRAD(lspec,gridp,kr);        // mean_intensity, S and opacity index
 
-  int i = irad[LSPECRAD(lspec,kr)];           // i level index corresponding to transition kr
-  int j = jrad[LSPECRAD(lspec,kr)];           // j level index corresponding to transition kr
+  int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+  int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
-  long b_ij = LSPECLEVLEV(lspec,i,j);         // frequency index
+  long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
 
 
   // For half of rays (only half is needed since we also consider antipodals)
@@ -50,14 +50,14 @@ int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, do
       double v_local;
       double L_local;
 
-      double line_frequency  = frequency[b_ij];
+      double line_frequency  = line_species.frequency[b_ij];
 
       double width = line_frequency / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
 
       double freq = H_4_roots[ny]*width;
 
 
-      intensities (NCELLS, cell, source, opacity, frequency, freq, irad, jrad,
+      intensities (NCELLS, cell, line_species, source, opacity, freq,
                    gridp, ray, lspec, kr, &u_local, &v_local, &L_local);
 
 
@@ -75,17 +75,17 @@ int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, do
 
   /* Add the continuum radiation (due to dust and CMB) */
 
-  double factor          = 2.0*HH*pow(frequency[b_ij],3)/pow(CC,2);
+  double factor          = 2.0*HH*pow(line_species.frequency[b_ij],3)/pow(CC,2);
 
   double rho_grain       = 2.0;
 
   double ngrain          = 2.0E-12*cell[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
 
-  double emissivity_dust = rho_grain*ngrain*0.01*1.3*frequency[b_ij]/3.0E11;
+  double emissivity_dust = rho_grain*ngrain*0.01*1.3*line_species.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*frequency[b_ij]/KB/cell[gridp].temperature.dust) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/cell[gridp].temperature.dust) - 1.0);
 
-  double Planck_CMB      = 1.0 / (exp(HH*frequency[b_ij]/KB/T_CMB) - 1.0);
+  double Planck_CMB      = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/T_CMB) - 1.0);
 
 
   /* NOTE: Continuum radiation is assumed to be local */
@@ -119,24 +119,24 @@ int cell_radiative_transfer (long ncells, CELL *cell, double *mean_intensity, do
 // intensity: calculate intensity along a certain ray through a certain point
 // --------------------------------------------------------------------------
 
-int intensities (long ncells, CELL *cell, double *source, double *opacity, double *frequency,
-                 double freq, int *irad, int*jrad, long origin, long r, int lspec, int kr,
-                 double *u_local, double *v_local, double *L_local)
+int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *source, double *opacity,
+                 double freq, long origin, long r, int lspec, int kr, double *u_local, double *v_local,
+                 double *L_local)
 {
 
   // Get the antipodal ray for r
 
-  long ar = antipod[r];                       // index of antipodal ray to r
+  long ar = antipod[r];                            // index of antipodal ray to r
 
   long bdy_ar = cell[origin].endpoint[ar];
   long bdy_r  = cell[origin].endpoint[r];
 
-  long m_ij = LSPECGRIDRAD(lspec,origin,kr);   // mean_intensity, S and opacity index
+  long m_ij = LSPECGRIDRAD(lspec,origin,kr);       // mean_intensity, S and opacity index
 
-  int i = irad[LSPECRAD(lspec,kr)];           // i level index corresponding to transition kr
-  int j = jrad[LSPECRAD(lspec,kr)];           // j level index corresponding to transition kr
+  int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+  int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
-  long b_ij = LSPECLEVLEV(lspec,i,j);         // frequency index
+  long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
 
 
 
@@ -168,7 +168,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, frequency[b_ij], current);
+    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, line_species.frequency[b_ij], current);
     double chi_c = opacity[s_c] * phi_c;
 
 
@@ -177,7 +177,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
       long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, ar, previous);
-      double phi_p    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], previous);
+      double phi_p    = cell_line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], previous);
       double chi_p    = opacity[s_p] * phi_p;
 
       S[ndep]    = (source[s_c] + source[s_p]) / 2.0;
@@ -208,7 +208,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, frequency[b_ij], current);
+    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, line_species.frequency[b_ij], current);
     double chi_c = opacity[s_c] * phi_c;
 
 
@@ -217,7 +217,7 @@ int intensities (long ncells, CELL *cell, double *source, double *opacity, doubl
       long s_n = LSPECGRIDRAD(lspec,next,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, r, next);
-      double phi_n    = cell_line_profile (NCELLS, cell, velocity, freq, frequency[b_ij], next);
+      double phi_n    = cell_line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], next);
       double chi_n    = opacity[s_n] * phi_n;
 
       S[ndep]    = (source[s_c] + source[s_n]) / 2.0;

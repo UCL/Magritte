@@ -15,14 +15,11 @@
 // ------------------------------------------------------------------------------
 
 int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                     LINE_SPECIES *line_species,
+                     LINE_SPECIES line_species,
                      double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double *UV_field, double *rad_surface, double *AV, int *irad, int *jrad,
-                     double *energy, double *weight, double *frequency, double *A_coeff, double *B_coeff,
-                     double *C_data, double *coltemp, int *icol, int *jcol, double *pop,
+                     double *UV_field, double *rad_surface, double *AV, double *pop,
                      double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
-                     double *thermal_ratio,
-                     double *time_chemistry, double *time_level_pop);
+                     double *thermal_ratio, TIMERS *timers);
 
 
 #endif // __THERMAL_BALANCE_HPP_INCLUDED__

@@ -40,13 +40,13 @@ int write_abundances (std::string tag, long ncells, CELL *cell);
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, SPECIES *species, double *pop);
+int write_level_populations (std::string tag, long ncells, LINE_SPECIES line_species, double *pop);
 
 
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, long ncells, SPECIES *species, double *mean_intensity);
+int write_line_intensities (std::string tag, long ncells, LINE_SPECIES line_species, double *mean_intensity);
 
 
 // write_temperature_gas: write gas temperatures at each point
@@ -120,20 +120,19 @@ int write_double_2 (std::string name, std::string tag, long nrows, long ncols, d
 // write_Einstein_coeff: write  Einstein A, B or C coefficients
 // ------------------------------------------------------------
 
-int write_Einstein_coeff (std::string tag, SPECIES *species,
-                          double *A_coeff, double *B_coeff, double *C_coeff);
+int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species, double *C_coeff);
 
 
 // write_R: write transition matrix R
 // ----------------------------------
 
-int write_R (std::string tag, long ncells, SPECIES *species, long gridp, double *R);
+int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long gridp, double *R);
 
 
 // write_transition_levels: write levels corresponding to each transition
 // ----------------------------------------------------------------------
 
-int write_transition_levels (std::string tag, SPECIES *species, int *irad, int *jrad);
+int write_transition_levels (std::string tag, LINE_SPECIES line_species);
 
 
 // write_LTE_deviation: write relative deviation of level populations from LTE value

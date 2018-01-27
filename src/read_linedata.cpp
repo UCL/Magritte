@@ -23,10 +23,7 @@
 // read_linedata: read data files containing line information in LAMBDA/RADEX format
 // ---------------------------------------------------------------------------------
 
-int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
-                   SPECIES *species, int *irad, int *jrad,
-                   double *energy, double *weight, double *frequency, double *A_coeff,
-                   double *B_coeff, double *coltemp, double *C_data, int *icol, int *jcol)
+int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species, SPECIES *species)
 {
 
   char buffer[BUFFER_SIZE];            // buffer for a line of data
@@ -57,15 +54,15 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
     sscanf (buffer, "%s %*[^\n]\n", buffer_name);
 
     std::string str(buffer_name);
-    std::string lspec_name = buffer_name;
-    lspec_nr[lspec] = get_species_nr (species, lspec_name);
+    // std::string lspec_name = buffer_name;
+    // lspec_nr[lspec] = get_species_nr (species, lspec_name);
 
 
 
 /////////////
 
-    line_species[lspec].sym = buffer_name;
-    line_species[lspec].nr  = get_species_nr (species, lspec_name);
+    line_species->sym[lspec] = buffer_name;
+    line_species->nr[lspec]  = get_species_nr (species, buffer_name);
 
 /////////////
 
@@ -88,19 +85,8 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
       fgets (buffer, BUFFER_SIZE, data);
       sscanf (buffer, "%d %lf %lf %*[^\n]\n", &n, &buff1, &buff2);
 
-      energy[LSPECLEV(lspec,l)] = HH*CC*buff1;   // energy converted from cm^-1 to erg
-      weight[LSPECLEV(lspec,l)] = buff2;
-
-
-
-/////////////
-
-      line_species[lspec].energy[l] = HH*CC*buff1;   // energy converted from cm^-1 to erg
-      line_species[lspec].weight[l] = buff2;
-
-/////////////
-
-
+      line_species->energy[LSPECLEV(lspec,l)] = HH*CC*buff1;   // energy converted from cm^-1 to erg
+      line_species->weight[LSPECLEV(lspec,l)] = buff2;
 
       // printf("%s\n",buffer);
       // printf( "(read_linedata): level energy and weight are %lE \t %.1f \n",
@@ -128,27 +114,12 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
       fgets (buffer, BUFFER_SIZE, data);
       sscanf (buffer, "%d %d %d %lE %lE %*[^\n] \n", &n, &i, &j, &buff1, &buff2);
 
-      irad[LSPECRAD(lspec,l)] = i-1;   // shift levels 1 down to have usual indexing
-      jrad[LSPECRAD(lspec,l)] = j-1;   // shift levels 1 down to have usual indexing
+      line_species->irad[LSPECRAD(lspec,l)] = i-1;   // shift levels 1 down to have usual indexing
+      line_species->jrad[LSPECRAD(lspec,l)] = j-1;   // shift levels 1 down to have usual indexing
 
-      A_coeff[LSPECLEVLEV(lspec,i-1,j-1)] = buff1;
+      line_species->A_coeff[LSPECLEVLEV(lspec,i-1,j-1)] = buff1;
 
-      frequency[LSPECLEVLEV(lspec,i-1,j-1)] = buff2;
-
-
-
-/////////////
-
-      line_species[lspec].irad[l] = i-1;   // shift levels 1 down to have usual indexing
-      line_species[lspec].jrad[l] = j-1;   // shift levels 1 down to have usual indexing
-
-      line_species[lspec].A[i-1][j-1] = buff1;
-
-      line_species[lspec].frequency[i-1][j-1] = buff2;
-
-/////////////
-
-
+      line_species->frequency[LSPECLEVLEV(lspec,i-1,j-1)] = buff2;
 
       // printf( "(read_linedata): i, j, A_ij and frequency are %d \t %d \t %lE \t %lE \n",
       //         i-1, j-1, A_coeff[LSPECLEVLEV(lspec,irad[LSPECRAD(lspec,l)],jrad[LSPECRAD(lspec,l)])],
@@ -182,7 +153,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
       // Use function defined below to extract collision partner species
 
-      extract_spec_par (species, buffer, lspec, par4);
+      extract_collision_partner (species, line_species, buffer, lspec, par4);
 
 
       // Skip next 5 lines
@@ -199,7 +170,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
         fscanf (data, "\t %lf \t", &buff3);
 
-        coltemp[LSPECPARTEMP(lspec,par4,tindex1)] = buff3;
+        line_species->coltemp[LSPECPARTEMP(lspec,par4,tindex1)] = buff3;
 
         // printf( "(read_linedata): collisional temperature %*.2lf K\n", MAX_WIDTH,
         //         coltemp[LSPECPARTEMP(lspec,par4,tindex1)] );
@@ -226,19 +197,21 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
         fscanf (data, "%d \t %d \t %d \t", &n, &i, &j);
 
-        icol[LSPECPARTRAN(lspec,par4,l)] = i-1;   // shift levels 1 down to have usual indexing
-        jcol[LSPECPARTRAN(lspec,par4,l)] = j-1;   // shift levels 1 down to have usual indexing
+        line_species->icol[LSPECPARTRAN(lspec,par4,l)] = i-1;   // shift levels 1 down to have usual indexing
+        line_species->jcol[LSPECPARTRAN(lspec,par4,l)] = j-1;   // shift levels 1 down to have usual indexing
+
 
         // printf( "\t i = %d   j = %d \n",
         //         icol[LSPECPARTRAN(lspec,par4,l)], jcol[LSPECPARTRAN(lspec,par4,l)] );
 
 
-        // Read rest of the line containing C_data
+        // Read rest of line containing C_data
 
         for (int tindex2 = 0; tindex2 < ncoltemp[LSPECPAR(lspec,par4)]; tindex2++)
         {
           fscanf (data, "%lf", &buff4);
-          C_data[LSPECPARTRANTEMP(lspec,par4,l,tindex2)] = buff4;
+
+          line_species->C_data[LSPECPARTRANTEMP(lspec,par4,l,tindex2)] = buff4;
 
           // printf("  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par4,l,tindex2)]);
         }
@@ -263,8 +236,9 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
     for (int l = 0; l < nrad[lspec]; l++)
     {
-      int i = irad[LSPECRAD(lspec,l)];
-      int j = jrad[LSPECRAD(lspec,l)];
+
+      int i = line_species->irad[LSPECRAD(lspec,l)];
+      int j = line_species->jrad[LSPECRAD(lspec,l)];
 
       int l_ij = LSPECLEVLEV(lspec,i,j);
       int l_ji = LSPECLEVLEV(lspec,j,i);
@@ -272,53 +246,53 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
       // Frequency is in GHz, convert to Hz
 
-      frequency[l_ij] = 1.0E9 * frequency[l_ij];
+      line_species->frequency[l_ij] = 1.0E9 * line_species->frequency[l_ij];
 
 
       // Energy/frequency of transition is symmetric
 
-      frequency[l_ji] = frequency[l_ij];
+      line_species->frequency[l_ji] = line_species->frequency[l_ij];
 
 
       // Calculate Einstein B coefficients
 
-      B_coeff[l_ij] = A_coeff[l_ij] * pow(CC, 2) / ( 2.0*HH*pow(frequency[l_ij] , 3) );
+      line_species->B_coeff[l_ij] = line_species->A_coeff[l_ij] * pow(CC, 2)
+                                   / ( 2.0*HH*pow(line_species->frequency[l_ij] , 3) );
 
-      B_coeff[l_ji] = weight[LSPECLEV(lspec,i)] / weight[LSPECLEV(lspec,j)] * B_coeff[l_ij];
-
-
+      line_species->B_coeff[l_ji] = line_species->weight[LSPECLEV(lspec,i)]
+                                   / line_species->weight[LSPECLEV(lspec,j)] * line_species->B_coeff[l_ij];
 
 /////////////
 
-      i = line_species[lspec].irad[l];
-      j = line_species[lspec].jrad[l];
-
-
-      // Frequency is in GHz, convert to Hz
-
-      line_species[lspec].frequency[i][j] = 1.0E9 * line_species[lspec].frequency[i][j];
-
-
-      // Energy/frequency of transition is symmetric
-
-      line_species[lspec].frequency[j][i] = line_species[lspec].frequency[i][j];
-
-
-      // Calculate Einstein B coefficients
-
-      line_species[lspec].B[i][j] = line_species[lspec].A[i][j] * pow(CC, 2)
-                                    / (2.0*HH*pow(line_species[lspec].frequency[i][j], 3));
-
-      line_species[lspec].B[j][i] = line_species[lspec].weight[i] / line_species[lspec].weight[j]
-                                    * B_coeff[l_ij];
+      // i = line_species[lspec].irad[l];
+      // j = line_species[lspec].jrad[l];
+      //
+      //
+      // // Frequency is in GHz, convert to Hz
+      //
+      // line_species[lspec].frequency[i][j] = 1.0E9 * line_species[lspec].frequency[i][j];
+      //
+      //
+      // // Energy/frequency of transition is symmetric
+      //
+      // line_species[lspec].frequency[j][i] = line_species[lspec].frequency[i][j];
+      //
+      //
+      // // Calculate Einstein B coefficients
+      //
+      // line_species[lspec].B[i][j] = line_species[lspec].A[i][j] * pow(CC, 2)
+      //                               / (2.0*HH*pow(line_species[lspec].frequency[i][j], 3));
+      //
+      // line_species[lspec].B[j][i] = line_species[lspec].weight[i] / line_species[lspec].weight[j]
+      //                               * B_coeff[l_ij];
 
 /////////////
 
 
 
       // printf( "(read_linedata): A_ij, B_ij and B_ji are  %lE \t %lE \t %lE \n",
-      //         A_coeff[LSPECLEVLEV(lspec,i,j)], B_coeff[LSPECLEVLEV(lspec,i,j)],
-      //         B_coeff[LSPECLEVLEV(lspec,j,i)] );
+      //         line_species.A_coeff[LSPECLEVLEV(lspec,i,j)], line_species.B_coeff[LSPECLEVLEV(lspec,i,j)],
+      //         line_species.B_coeff[LSPECLEVLEV(lspec,j,i)] );
     }
 
 
@@ -330,7 +304,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
     //
     //     for (int ctemp=0; ctemp<ncoltemp[LSPECPAR(lspec,par)]; ctemp++){
     //
-    //       printf( "  %.2lE", C_data[LSPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
+    //       printf( "  %.2lE", line_species.C_data[LSPECPARTRANTEMP(lspec,par, ctran, ctemp)] );
     //     }
     //
     //     printf("\n");
@@ -348,10 +322,10 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
 
 
-// extract_spec_par: extract species corresponding to collision partner
-// --------------------------------------------------------------------
+// extract_collision_partner: extract species corresponding to collision partner
+// -----------------------------------------------------------------------------
 
-int extract_spec_par (SPECIES *species, char *buffer, int lspec, int par)
+int extract_collision_partner (SPECIES *species, LINE_SPECIES *line_species, char *buffer, int lspec, int par)
 {
 
   int n;                                        // index
@@ -398,12 +372,12 @@ int extract_spec_par (SPECIES *species, char *buffer, int lspec, int par)
 
   // Use one of species_tools to find species nr corresponding to coll. partner
 
-  spec_par[LSPECPAR(lspec,par)] = get_species_nr (species, name);
+  line_species->partner[LSPECPAR(lspec,par)] = get_species_nr (species, name);
 
 
   // Check whether collision partner is ortho- or para- H2 (or something else)
 
-  ortho_para[LSPECPAR(lspec,par)] = check_ortho_para (name);
+  line_species->ortho_para[LSPECPAR(lspec,par)] = check_ortho_para (name);
 
 
   return (0);

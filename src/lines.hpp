@@ -14,15 +14,13 @@
 // line_source: calculate line source function
 //--------------------------------------------
 
-int line_source (long ncells, int *irad, int *jrad, double *A_coeff, double *B_coeff,
-                 double *pop, int lspec, double *source);
+int line_source (long ncells, LINE_SPECIES line_species, double *pop, int lspec, double *source);
 
 
 // line_opacity: calculate line opacity
 // ------------------------------------
 
-int line_opacity (long ncells, int *irad, int *jrad, double *frequency, double *B_coeff,
-                  double *pop, int lspec, double *opacity);
+int line_opacity (long ncells, LINE_SPECIES line_species, double *pop, int lspec, double *opacity);
 
 
 #if (!CELL_BASED)

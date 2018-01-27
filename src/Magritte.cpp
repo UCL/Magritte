@@ -45,7 +45,6 @@
 #include "write_vtu_tools.hpp"
 
 
-
 // main for Magritte
 // -----------------
 
@@ -54,12 +53,14 @@ int main ()
 
   // Initialize all timers
 
-  double time_total       = 0.0;   // total time in Magritte
-  double time_ray_tracing = 0.0;   // total time in ray_tracing
-  double time_chemistry   = 0.0;   // total time in abundances
-  double time_level_pop   = 0.0;   // total time in level_populations
+  TIMERS timers;
 
-  time_total -= omp_get_wtime();
+  timers.initialize();
+
+
+  timers.total.start();
+
+
 
 
   printf ("                                                                         \n");
@@ -138,7 +139,7 @@ int main ()
   read_species (spec_datafile, species);
 
 
-  // Initialize abundances in each cell
+  // Initialize abundances in each cell with initial abundances read above
 
   initialize_abundances (NCELLS, cell, species);
 
@@ -155,75 +156,6 @@ int main ()
 
 
 
-  // DECLARE AND INITIALIZE LINE VARIABLES
-  // _____________________________________
-
-
-  printf ("(Magritte): declaring and initializing line variables \n");
-
-
-  // Define line related variables
-
-  int irad[TOT_NRAD];            // level index of radiative transition
-
-  initialize_int_array (TOT_NRAD, irad);
-
-  int jrad[TOT_NRAD];            // level index of radiative transition
-
-  initialize_int_array (TOT_NRAD, jrad);
-
-  double energy[TOT_NLEV];       // energy of level
-
-  initialize_double_array (TOT_NLEV, energy);
-
-  double weight[TOT_NLEV];       // statistical weight of level
-
-  initialize_double_array (TOT_NLEV, weight);
-
-  double frequency[TOT_NLEV2];   // frequency corresponing to i -> j transition
-
-  initialize_double_array (TOT_NLEV2, frequency);
-
-  double A_coeff[TOT_NLEV2];     // Einstein A_ij coefficient
-
-  initialize_double_array (TOT_NLEV2, A_coeff);
-
-  double B_coeff[TOT_NLEV2];     // Einstein B_ij coefficient
-
-  initialize_double_array (TOT_NLEV2, B_coeff);
-
-
-  // Define collision related variables
-
-  double coltemp[TOT_CUM_TOT_NCOLTEMP];      // Collision temperatures for each partner
-
-  initialize_double_array (TOT_CUM_TOT_NCOLTEMP, coltemp);
-
-  double C_data[TOT_CUM_TOT_NCOLTRANTEMP];   // C_data for each partner, tran. and temp.
-
-  initialize_double_array (TOT_CUM_TOT_NCOLTRANTEMP, C_data);
-
-  int icol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
-
-  initialize_int_array (TOT_CUM_TOT_NCOLTRAN, icol);
-
-  int jcol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
-
-  initialize_int_array (TOT_CUM_TOT_NCOLTRAN, jcol);
-
-
-  // Define helper arrays specifying species of collisiopn partners
-
-  initialize_int_array (TOT_NCOLPAR, spec_par);
-
-  initialize_char_array (TOT_NCOLPAR, ortho_para);
-
-
-  printf("(Magritte): data structures are set up \n\n");
-
-
-
-
   // READ LINE DATA FOR EACH LINE PRODUCING SPECIES
   // ______________________________________________
 
@@ -231,12 +163,11 @@ int main ()
   printf ("(Magritte): reading line data \n");
 
 
-  // Read the line data files stored in list(!) line_data
+  // Read line data files stored in list(!) line_data
 
-  LINE_SPECIES line_species[NLSPEC];
+  LINE_SPECIES line_species;
 
-  read_linedata (line_datafile,line_species, species, irad, jrad, energy, weight, frequency,
-                 A_coeff, B_coeff, coltemp, C_data, icol, jcol);
+  read_linedata (line_datafile, &line_species, species);
 
 
   printf ("(Magritte): line data read \n\n");
@@ -398,14 +329,14 @@ int main ()
 
     double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
     double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
-    double column_C[NCELLS*NRAYS];    // C column density for each ray and cell
+    double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
     double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
 
 # else
 
     double *column_H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
     double *column_HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
-    double *column_C  = new double[ncells*NRAYS];   // C column density for each ray and cell
+    double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
     double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
 
 # endif
@@ -426,11 +357,11 @@ int main ()
 
     // Calculate chemical abundances given current temperatures and radiation field
 
-    time_chemistry -= omp_get_wtime();
+    timers.chemistry.start();
 
     chemistry (NCELLS, cell, species, reaction, rad_surface, AV, column_H2, column_HD, column_C, column_CO );
 
-    time_chemistry += omp_get_wtime();
+    timers.chemistry.stop();
 
 
     // Write intermediate output for (potential) restart
@@ -540,10 +471,10 @@ int main ()
     printf("(Magritte):   thermal balance iteration %d of %d \n", tb_iteration+1, PRELIM_TB_ITER);
 
 
-    thermal_balance (NCELLS, cell, species, reaction, line_species, column_H2, column_HD, column_C, column_CO, UV_field,
-                     rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
-                     C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                     thermal_ratio, &time_chemistry, &time_level_pop);
+    thermal_balance (NCELLS, cell, species, reaction, line_species,
+                     column_H2, column_HD, column_C, column_CO, UV_field,
+                     rad_surface, AV, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                     thermal_ratio, &timers);
 
 
     // Average thermal ratio over neighbors
@@ -652,9 +583,8 @@ int main ()
 
     thermal_balance (NCELLS, cell, species, reaction, line_species,
                      column_H2, column_HD, column_C, column_CO, UV_field,
-                     rad_surface, AV, irad, jrad, energy, weight, frequency, A_coeff, B_coeff,
-                     C_data, coltemp, icol, jcol, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
-                     thermal_ratio, &time_chemistry, &time_level_pop);
+                     rad_surface, AV, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff,
+                     thermal_ratio, &timers);
 
 
   // Average thermal ratio over neighbors
@@ -779,7 +709,7 @@ int main ()
 
 
 
-  time_total += omp_get_wtime();
+  timers.total.stop();
 
 
 
@@ -797,12 +727,12 @@ int main ()
 
 # elif (INPUT_FORMAT == '.txt')
 
-  write_txt_output (NCELLS, cell, species, pop, mean_intensity);
+  write_txt_output (NCELLS, cell, line_species, pop, mean_intensity);
 
 # endif
 
 
-  write_performance_log (time_total, time_level_pop, time_chemistry, time_ray_tracing, niterations);
+  write_performance_log (timers, niterations);
 
 
   printf("(Magritte): output written \n\n");

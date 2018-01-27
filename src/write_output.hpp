@@ -17,15 +17,14 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (long ncells, CELL *cell, SPECIES *species,
+int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
                       double *pop, double *mean_intensity);
 
 
 // write_performance_log: write performance results
 // ------------------------------------------------
 
-int write_performance_log (double time_total, double time_level_pop, double time_chemistry,
-                           double time_ray_tracing, int niterations);
+int write_performance_log (TIMERS timers, int niterations);
 
 
 #endif // __WRITE_OUTPUT_HPP_INCLUDED__

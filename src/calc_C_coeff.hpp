@@ -13,8 +13,8 @@
 // calc_C_coeff: calculate collisional coefficients (C_ij) from line data
 // ----------------------------------------------------------------------
 
-int calc_C_coeff (long ncells, CELL *cell, double *C_data, double *coltemp, int *icol, int *jcol,
-                  double *weight, double *energy, double *C_coeff, long gridp, int lspec );
+int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
+                  double *C_coeff, long gridp, int lspec );
 
 
 #endif // __CALC_C_COEFF_HPP_INCLUDED__

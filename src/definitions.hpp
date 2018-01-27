@@ -91,17 +91,6 @@ const int cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
 
 // Chemistry
 
-SPECIES species[NSPEC];
-
-// REACTION reaction[NREAC];
-
-
-int lspec_nr[NLSPEC];           // nr of line producing species
-
-int spec_par[TOT_NCOLPAR];      // number of species corresponding to a collision partner
-
-char ortho_para[TOT_NCOLPAR];   // stores whether it is ortho or para H2
-
 
 // Species numbers
 
@@ -130,11 +119,11 @@ int nr_CO;     // species nr corresponding to CO
 
 // Reaction numbers
 
-int C_ionization_nr;
+int nr_C_ionization;
 
-int H2_formation_nr;
+int nr_H2_formation;
 
-int H2_photodissociation_nr;
+int nr_H2_photodissociation;
 
 
 #endif // __DEFINITIONS_HPP_INCLUDED__

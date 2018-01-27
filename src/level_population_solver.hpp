@@ -4,8 +4,8 @@
 // _________________________________________________________________________
 
 
-#ifndef __LEVEL_POPULATION_SOLVER_OTF_HPP_INCLUDED__
-#define __LEVEL_POPULATION_SOLVER_OTF_HPP_INCLUDED__
+#ifndef __LEVEL_POPULATION_SOLVER_HPP_INCLUDED__
+#define __LEVEL_POPULATION_SOLVER_HPP_INCLUDED__
 
 
 #include "declarations.hpp"
@@ -14,7 +14,8 @@
 // level_population_solver: sets up and solves matrix equation corresp. to equilibrium eq.
 // ---------------------------------------------------------------------------------------
 
-int level_population_solver_otf (long ncells, CELL *cell, long gridp, int lspec, double *R, double *pop);
+int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
+                             long gridp, int lspec, double *R, double *pop);
 
 
 // Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b
@@ -23,4 +24,4 @@ int level_population_solver_otf (long ncells, CELL *cell, long gridp, int lspec,
 int GaussJordan (int n, int m, double *a, double *b);
 
 
-#endif // __LEVEL_POPULATION_SOLVER_OTF_HPP_INCLUDED__
+#endif // __LEVEL_POPULATION_SOLVER_HPP_INCLUDED__

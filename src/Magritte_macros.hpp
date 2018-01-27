@@ -27,10 +27,10 @@
 
 #define LSPECGRIDLEVLEV(lspec,gridp,i,j)   ( (j) + (i)*nlev[(lspec)]                              \
                                              + (gridp)*nlev[(lspec)]*nlev[(lspec)]                \
-                                             + NCELLS*cum_nlev2[(lspec)] )                         \
+                                             + NCELLS*cum_nlev2[(lspec)] )                        \
 /* when first index is line producing species, second is grid point, third and fourth are levels */
 
-#define LSPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + NCELLS*cum_nlev[lspec] )     \
+#define LSPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + NCELLS*cum_nlev[lspec] )    \
           /* when first index is line producing species, second is grid point and third is level */
 
 #define LSPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                         \

@@ -12,7 +12,7 @@
 #include "Magritte_config.hpp"
 #include "declarations.hpp"
 
-#include "level_population_solver_otf.hpp"
+#include "level_population_solver.hpp"
 
 
 #define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
@@ -20,31 +20,29 @@
 #define IMD(r,c) ((c)+(r)*m)
 
 
-int level_population_solver_otf (long ncells, CELL *cell, long gridp, int lspec, double *R, double *pop)
+int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
+                             long gridp, int lspec, double *R, double *pop)
 {
 
+  const int n = nlev[lspec];   // number of rows and columns of matrix
+  const int m = 1;             // number of solution vectors b
 
-  const int n = nlev[lspec];                /* number of rows and columns of the matrix to solve */
-  const int m = 1;                                             /* number of solution vectors 'b' */
-
-  double *a;
-  a = (double*) malloc( n*n*sizeof(double) );
-  double *b;
-  b = (double*) malloc( n*m*sizeof(double)  );
+  double *a = new double[n*n];
+  double *b = new double[n*m];
 
 
 
 
-  /*   Fill matrix a and vector b                                                                */
-  /*_____________________________________________________________________________________________*/
+  // Fill matrix a and vector b
+  // __________________________
 
 
-  for (int i=0; i<n; i++){
-
+  for (int i = 0; i < n; i++)
+  {
     double out = 0.0;
 
-    for (int j=0; j<n; j++){
-
+    for (int j = 0; j < n; j++)
+    {
       out = out + R[LSPECLEVLEV(lspec,i,j)];
 
       a[LINDEX(i,j)] = R[LSPECLEVLEV(lspec,j,i)];
@@ -54,88 +52,84 @@ int level_population_solver_otf (long ncells, CELL *cell, long gridp, int lspec,
   }
 
 
-
-  for (int i=0; i<n; i++){
-
+  for (int i = 0; i < n; i++)
+  {
     b[i] = 0.0;
 
     a[LINDEX(n-1, i)] = 1.0;
   }
 
 
-  b[nlev[lspec]-1] = cell[gridp].density * cell[gridp].abundance[lspec_nr[lspec]];
-
-
-  /*_____________________________________________________________________________________________*/
+  b[nlev[lspec]-1] = cell[gridp].density * cell[gridp].abundance[line_species.nr[lspec]];
 
 
 
 
+  // Solve system of equations using Gauss-Jordan solver
+  // ___________________________________________________
 
-  /* Solve the system of equations using the Gauss-Jordan solver */
 
   GaussJordan(n, m, a, b);
 
 
 
 
+  // UPDATE POPULATIONS AND CHANGE IN POPULATIONS
+  // ____________________________________________
 
-  /* UPDATE THE POPULATIONS AND THE CHANGE IN POPULATIONS                                        */
-  /*_____________________________________________________________________________________________*/
 
-
-  for (int i=0; i<nlev[lspec]; i++){
-
+  for (int i = 0; i < nlev[lspec]; i++)
+  {
     long p_i = LSPECGRIDLEV(lspec,gridp,i);
 
 
-    /* avoid too small or too large populations */
+    // avoid too small or too large populations
 
-    if (b[i] > POP_LOWER_LIMIT){
+    if (b[i] > POP_LOWER_LIMIT)
+    {
+      if (b[i] < POP_UPPER_LIMIT)
+      {
+        pop[p_i] =  b[i];
+      }
 
-      if ( b[i] < POP_UPPER_LIMIT ) { pop[p_i] =  b[i]; }
-
-      else                          { pop[p_i] = POP_UPPER_LIMIT; }
+      else
+      {
+        pop[p_i] = POP_UPPER_LIMIT;
+      }
     }
 
-    else {
-
+    else
+    {
       pop[p_i] = 0.0;
     }
 
   }
 
 
-  free(a);
-  free(b);
+  delete [] a;
+  delete [] b;
 
 
   return(0);
 
 }
 
-/*-----------------------------------------------------------------------------------------------*/
 
 
 
-
-
-/* Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b              */
-/*-----------------------------------------------------------------------------------------------*/
+// Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b
+// --------------------------------------------------------------------------------
 
 int GaussJordan (int n, int m, double *a, double *b)
 {
 
   // based on the Gauss-Jordan solver in Numerical Recipes, Press et al.
 
-  int *indexc;                                /* note that our vectors are indexed from 0 to n-1 */
-  indexc = (int*) malloc( n*sizeof(int) );
+  int *indexc = new int[n];   // note that our vectors are indexed from 0 to n-1
+  int *indexr = new int[n];   // note that our vectors are indexed from 0 to n-1
 
-  int *indexr;                                /* note that our vectors are indexed from 0 to n-1 */
-  indexr = (int*) malloc( n*sizeof(int) );
+  int *ipiv = new int[n];
 
-  int *ipiv;
-  ipiv = (int*) malloc( n*sizeof(int) );
 
   int icol, irow;
 
@@ -245,9 +239,9 @@ int GaussJordan (int n, int m, double *a, double *b)
   }
 
 
-  free(indexc);
-  free(indexr);
-  free(ipiv);
+  delete [] indexc;
+  delete [] indexr;
+  delete [] ipiv;
 
 
   return(0);

@@ -205,7 +205,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, SPECIES *species, double *pop)
+int write_level_populations (std::string tag, long ncells, LINE_SPECIES line_species, double *pop)
 {
 
   if (!tag.empty())
@@ -216,7 +216,7 @@ int write_level_populations (std::string tag, long ncells, SPECIES *species, dou
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = species[lspec_nr[lspec]].sym;
+    std::string lspec_name = line_species.sym[lspec];
 
     std::string file_name = output_directory + "level_populations_" + lspec_name + tag + ".txt";
 
@@ -257,7 +257,7 @@ int write_level_populations (std::string tag, long ncells, SPECIES *species, dou
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, long ncells, SPECIES *species, double *mean_intensity)
+int write_line_intensities (std::string tag, long ncells, LINE_SPECIES line_species, double *mean_intensity)
 {
 
   if(!tag.empty())
@@ -268,7 +268,7 @@ int write_line_intensities (std::string tag, long ncells, SPECIES *species, doub
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+    std::string lspec_name = line_species.sym[lspec];
 
     std::string file_name = output_directory + "line_intensities_" + lspec_name + tag + ".txt";
 
@@ -888,7 +888,7 @@ int write_double_2 (std::string name, std::string tag, long nrows, long ncols, d
 // write_Einstein_coeff: write Einstein A, B or C coefficients
 // -----------------------------------------------------------
 
-int write_Einstein_coeff (std::string tag, SPECIES *species,
+int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
                           double *A_coeff, double *B_coeff, double *C_coeff)
 {
 
@@ -900,7 +900,7 @@ int write_Einstein_coeff (std::string tag, SPECIES *species,
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+    std::string lspec_name = line_species.sym[lspec];
 
 
     std::string file_name_A = output_directory + "Einstein_A_" + lspec_name + tag + ".txt";
@@ -938,8 +938,8 @@ int write_Einstein_coeff (std::string tag, SPECIES *species,
     {
       for (long col = 0; col < nlev[lspec]; col++)
       {
-        fprintf (file_A, "%lE\t", A_coeff[LSPECLEVLEV(lspec,row,col)]);
-        fprintf (file_B, "%lE\t", B_coeff[LSPECLEVLEV(lspec,row,col)]);
+        fprintf (file_A, "%lE\t", line_species.A_coeff[LSPECLEVLEV(lspec,row,col)]);
+        fprintf (file_B, "%lE\t", line_species.B_coeff[LSPECLEVLEV(lspec,row,col)]);
         fprintf (file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
 
       }
@@ -968,7 +968,7 @@ int write_Einstein_coeff (std::string tag, SPECIES *species,
 // write_R: write the transition matrix R
 // --------------------------------------
 
-int write_R (std::string tag, long ncells, SPECIES *species, long gridp, double *R)
+int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long gridp, double *R)
 {
 
   if (!tag.empty())
@@ -979,7 +979,7 @@ int write_R (std::string tag, long ncells, SPECIES *species, long gridp, double 
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+    std::string lspec_name = line_species.sym[lspec];
 
     std::string file_name = output_directory + "R_" + lspec_name + tag + ".txt";
 
@@ -1021,7 +1021,7 @@ int write_R (std::string tag, long ncells, SPECIES *species, long gridp, double 
 // write_transition_levels: write levels corresponding to each transition
 // ----------------------------------------------------------------------
 
-int write_transition_levels (std::string tag, SPECIES *species, int *irad, int *jrad)
+int write_transition_levels (std::string tag, LINE_SPECIES line_species)
 {
 
   if (!tag.empty())
@@ -1032,7 +1032,7 @@ int write_transition_levels (std::string tag, SPECIES *species, int *irad, int *
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+    std::string lspec_name = line_species.sym[lspec];
 
     std::string file_name = output_directory + "transition_levels_" + lspec_name + tag + ".txt";
 
@@ -1049,8 +1049,8 @@ int write_transition_levels (std::string tag, SPECIES *species, int *irad, int *
 
     for (int kr = 0; kr < nrad[lspec]; kr++)
     {
-      int i = irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-      int j = jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+      int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+      int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
       fprintf (file, "%d\t%d\n", i, j);
 
