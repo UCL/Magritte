@@ -135,7 +135,8 @@ initializers.cpp
 write_output.cpp
 write_txt_tools.cpp
 write_vtu_tools.cpp
-reduce.cpp)
+reduce.cpp
+bound.cpp)
 
 # Link the libraries of the subdirectories to this library
 target_link_libraries(_IO _HEALPix)

@@ -59,11 +59,11 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long
 
 # elif (DIMENSIONS == 3)
 
+    long nsides = (long) sqrt(nrays/12);
+
     for (long ipix = 0; ipix < nrays; ipix++)
     {
       double vector[3];   // unit vector in direction of HEALPix ray
-
-      long nsides = (long) sqrt(nrays/12);
 
       pix2vec_nest (nsides, ipix, vector);
 
@@ -75,7 +75,7 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long
 # endif
 
 
-  // Find the antipodal pairs
+  // Find antipodal pairs
   // HEALPix vectors are not perfectly antipodal, TOL is given tolerance
 
   for (long r1 = 0; r1 < nrays; r1++)

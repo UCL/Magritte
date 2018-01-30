@@ -40,10 +40,10 @@ int calc_AV (long ncells, double *column_tot, double *AV)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++){
-
-    for (long r = 0; r < NRAYS; r++){
-
+  for (long n = start; n < stop; n++)
+  {
+    for (long r = 0; r < NRAYS; r++)
+    {
       AV[RINDEX(n,r)] = A_V0 * column_tot[RINDEX(n,r)];
     }
 

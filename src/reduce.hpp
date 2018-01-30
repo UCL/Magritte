@@ -4,8 +4,8 @@
 // _________________________________________________________________________
 
 
-#ifndef __REDUCE_HPP_INCLUDED__
-#define __REDUCE_HPP_INCLUDED__
+#ifndef __BOUND_HPP_INCLUDED__
+#define __BOUND_HPP_INCLUDED__
 
 #include "declarations.hpp"
 
@@ -25,7 +25,7 @@ int crop (long ncells, CELL *cell,
 
 
 // density_reduce: reduce number of cell in regions of constant density
-//---------------------------------------------------------------------
+// --------------------------------------------------------------------
 
 int density_reduce (long ncells, CELL *cell, double threshold);
 
@@ -48,4 +48,4 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
 int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell);
 
 
-#endif // __REDUCE_HPP_INCLUDED__
+#endif // __BOUND_HPP_INCLUDED__

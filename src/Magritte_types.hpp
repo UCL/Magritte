@@ -55,12 +55,10 @@ struct COLUMN_DENSITIES
 
     void new_column (long ncells)
     {
-
       double *H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
       double *HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
       double *C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
       double *CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
-
     }
 
 # endif

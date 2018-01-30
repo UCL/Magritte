@@ -17,7 +17,6 @@
 
 #include "reduce.hpp"
 #include "initializers.hpp"
-#include "write_txt_tools.hpp"
 
 
 // reduce: reduce number of cells, return resulting number of cells
