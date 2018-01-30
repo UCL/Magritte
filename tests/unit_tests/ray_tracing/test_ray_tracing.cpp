@@ -50,16 +50,6 @@ TEST_CASE ("Cell structure")
 
   initialize_cells (ncells, cell);
 
-  // printf("Print grid\n");
-  //
-  // for (long x = 0; x < 5; x++)
-  // {
-  //   for (long y = 0; y < 5; y++)
-  //   {
-  //     printf("%ld\n", cell[x+5*y].id);
-  //   }
-  // }
-
 
   // Find neighbors and endpoints
 
@@ -67,15 +57,15 @@ TEST_CASE ("Cell structure")
   find_endpoints (ncells, cell);
 
 
-  // for (long c = 0; c < ncells; c++)
-  // {
-  //   printf("%ld\n", cell[c].n_neighbors);
-  //
-  //   for (long n = 0; n < cell[c].n_neighbors; n++)
-  //   {
-  //     printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
-  //   }
-  // }
+  for (long c = 0; c < ncells; c++)
+  {
+    printf("%ld\n", cell[c].n_neighbors);
+
+    for (long n = 0; n < cell[c].n_neighbors; n++)
+    {
+      printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
+    }
+  }
   //
   // write_healpixvectors("");
   //
@@ -108,17 +98,17 @@ TEST_CASE ("Cell structure")
   //   std::cout << cell[o].endpoint[ray] << "\n";
   // }
 
-  long o   = 8;
-  long ray = 1;
-
-    std::cout << cell[o].Z[ray] << "\n";
-    std::cout << cell[o].endpoint[ray] << "\n";
-
-  double dZ = 0.0;
-  double Z  = 0.0;
-
-    std::cout << previous_cell (ncells, cell, o, ray, &Z, o, &dZ) << "\n";
-
+  // long o   = 8;
+  // long ray = 1;
+  //
+  //   std::cout << cell[o].Z[ray] << "\n";
+  //   std::cout << cell[o].endpoint[ray] << "\n";
+  //
+  // double dZ = 0.0;
+  // double Z  = 0.0;
+  //
+  //   std::cout << previous_cell (ncells, cell, o, ray, &Z, o, &dZ) << "\n";
+  //
 
 
 

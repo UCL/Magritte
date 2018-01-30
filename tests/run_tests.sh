@@ -11,6 +11,6 @@ echo "  - Test ray-tracing"
 
 cd unit_tests/ray_tracing
 
-make
+cmake . && make
 
 ./test_ray_tracing.exe
