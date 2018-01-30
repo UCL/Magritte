@@ -45,4 +45,4 @@ CMakeCache.txt
 # Text files containting old large files
 # --------------------------------------
 
-*.txt
+#*.txt

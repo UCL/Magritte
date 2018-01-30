@@ -1,0 +1,6 @@
+NGRID            122
+time_total       2.846893E+01
+time_ray_tracing 0.000000E+00
+time_level_pop   2.627682E+00
+time_chemistry   2.484684E+01
+n_tb_iterations  5
