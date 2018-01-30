@@ -50,6 +50,16 @@ TEST_CASE ("Cell structure")
 
   initialize_cells (ncells, cell);
 
+  // printf("Print grid\n");
+  //
+  // for (long x = 0; x < 5; x++)
+  // {
+  //   for (long y = 0; y < 5; y++)
+  //   {
+  //     printf("%ld\n", cell[x+5*y].id);
+  //   }
+  // }
+
 
   // Find neighbors and endpoints
 
