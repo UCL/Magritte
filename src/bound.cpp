@@ -231,7 +231,7 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
 # elif (DIMENSIONS == 2)
 
-    for (long ray = 0; ray < nrays; ray++)
+    for (long ray = 0; ray < nboundary_cells; ray++)
     {
       double theta = (2.0*PI*ray) / nboundary_cells;
 
@@ -242,9 +242,9 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
 # elif (DIMENSIONS == 3)
 
-    long nsides = (long) sqrt(nrays/12);
+    long nsides = (long) sqrt(nboundary_cells/12);
 
-    for (long ipix = 0; ipix < nrays; ipix++)
+    for (long ipix = 0; ipix < nboundary_cells; ipix++)
     {
       double vector[3];   // unit vector in direction of HEALPix ray
 
