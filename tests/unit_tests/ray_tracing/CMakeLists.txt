@@ -20,7 +20,7 @@ include(${VTK_USE_FILE})
 
 
 # Make setup executable and execute setup
-add_custom_command(OUTPUT  /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp
+add_custom_command(OUTPUT ALL /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp
                    COMMAND bash run_test_setup.sh unit_tests/ray_tracing
                    WORKING_DIRECTORY ../../../setup
                    DEPENDS parameters.hpp)

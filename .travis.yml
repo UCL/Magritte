@@ -17,3 +17,5 @@ addons:
 script:
   - ./configure.sh
   - make
+  - cd tests
+  - bash run_tests.sh
