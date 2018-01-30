@@ -21,14 +21,12 @@
 
 // Input files
 
-#define DIMENSIONS 2
+#define DIMENSIONS 1
 
-#define NRAYS 8
+#define NRAYS 2
 
 
 #define FIXED_NCELLS false
-
-
 
 
 #define INPUT_FORMAT '.txt'

@@ -22,11 +22,10 @@ include(${VTK_USE_FILE})
 # Make setup executable and execute setup
 add_custom_command(OUTPUT ALL /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp
                    COMMAND bash run_test_setup.sh unit_tests/ray_tracing
-                   WORKING_DIRECTORY ../../../setup
-                   DEPENDS parameters.hpp)
+                   WORKING_DIRECTORY ../../../setup)
 
 add_custom_target(MAKE_SETUP
-                  DEPENDS /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp)
+                  DEPENDS  /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp)
 
 
 # Add test main and MAGRITTE source code (which is to be tested)

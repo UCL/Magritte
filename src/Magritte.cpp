@@ -80,7 +80,7 @@ int main ()
   // _______________
 
 
-  printf ("(Magritte): reading grid input \n");
+  printf ("(Magritte): reading grid input \n")
 
 
   // Define cells (using types defined in declarations.hpp

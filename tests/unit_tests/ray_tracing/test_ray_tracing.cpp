@@ -27,7 +27,7 @@
 #define EPS 1.0E-5
 
 
-TEST_CASE ("Cell structure")
+TEST_CASE ("Cell structure for 5x5, 2D grid")
 {
 
 
@@ -40,15 +40,26 @@ TEST_CASE ("Cell structure")
   std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
 
 
+  /* Layout of the test grid:
+
+     00 01 02 03 04
+     05 06 07 08 09
+     10 11 12 13 14
+     15 16 17 18 19
+     20 21 22 23 24
+
+  */
+
+
   // Read input file
 
   long ncells = get_NCELLS_txt (test_inputfile);
 
   CELL *cell = new CELL[ncells];
 
-  read_txt_input (test_inputfile, ncells, cell);
-
   initialize_cells (ncells, cell);
+
+  read_txt_input (test_inputfile, ncells, cell);
 
 
   // Find neighbors and endpoints
@@ -57,17 +68,57 @@ TEST_CASE ("Cell structure")
   find_endpoints (ncells, cell);
 
 
-  for (long c = 0; c < ncells; c++)
-  {
-    printf("%ld\n", cell[c].n_neighbors);
+  // Check number of neighbors
 
-    for (long n = 0; n < cell[c].n_neighbors; n++)
-    {
-      printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
-    }
-  }
+  CHECK (cell[0].n_neighbors  == 3);
+  CHECK (cell[4].n_neighbors  == 3);
+  CHECK (cell[20].n_neighbors == 3);
+  CHECK (cell[24].n_neighbors == 3);
+
+  CHECK (cell[1].n_neighbors  == 5);
+  CHECK (cell[2].n_neighbors  == 5);
+  CHECK (cell[3].n_neighbors  == 5);
+  CHECK (cell[5].n_neighbors  == 5);
+  CHECK (cell[9].n_neighbors  == 5);
+  CHECK (cell[10].n_neighbors == 5);
+  CHECK (cell[14].n_neighbors == 5);
+  CHECK (cell[15].n_neighbors == 5);
+  CHECK (cell[19].n_neighbors == 5);
+  CHECK (cell[21].n_neighbors == 5);
+  CHECK (cell[22].n_neighbors == 5);
+  CHECK (cell[23].n_neighbors == 5);
+
+  CHECK (cell[11].n_neighbors == 8);
+
+  CHECK (cell[11].neighbor[0] == 16);
+  CHECK (cell[11].neighbor[1] == 17);
+  CHECK (cell[11].neighbor[2] == 12);
+  CHECK (cell[11].neighbor[3] ==  7);
+  CHECK (cell[11].neighbor[4] ==  6);
+  CHECK (cell[11].neighbor[5] ==  5);
+  CHECK (cell[11].neighbor[6] == 10);
+  CHECK (cell[11].neighbor[7] == 15);
+  CHECK (cell[11].neighbor[8] ==  8);
+
+
+  double Z  = 0.0;
+  double dZ = 0.0;
+
+  CHECK ( next_cell (ncells, cell, 11, 1, &Z, 11, &dZ) ==  17);
+
+
+
+  // for (long c = 0; c < ncells; c++)
+  // {
+  //   printf("%ld\n", cell[c].n_neighbors);
+  //   printf("%lE  %lE  %lE\n", cell[c].x, cell[c].y, cell[c].z);
   //
-  // write_healpixvectors("");
+  //   for (long n = 0; n < cell[c].n_neighbors; n++)
+  //   {
+  //     printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
+  //   }
+  // }
+
   //
   // double dZ = 0.0;
   //
