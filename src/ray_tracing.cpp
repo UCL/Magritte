@@ -377,7 +377,7 @@ int find_neighbors (long ncells, CELL *cell)
 
     // Sort cells w.r.t distance from origin
 
-    heapsort(ra2, rb, NCELLS);
+    heapsort (ra2, rb, NCELLS);
 
 
     double Z[NRAYS];                 // distance along ray
@@ -444,9 +444,9 @@ int find_neighbors (long ncells, CELL *cell)
 
         double theta, phi;   // angles of HEALPix ray
 
-        vec2ang(rvec, &theta, &phi);
+        vec2ang (rvec, &theta, &phi);
 
-        ang2pix_nest(NSIDES, theta, phi, &ipix);
+        ang2pix_nest (NSIDES, theta, phi, &ipix);
 
 #     endif
 
@@ -465,7 +465,7 @@ int find_neighbors (long ncells, CELL *cell)
     } // end of n loop over cells (around an origin)
 
 
-    // Assuming cell boundaries orthogonal to the HEALPix ray
+    // Assuming cell boundaries orthogonal to HEALPix ray
     // Check for each possible neighbor if it is too far to be a neighbor
 
     long index = 0;

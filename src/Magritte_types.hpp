@@ -68,6 +68,21 @@ struct COLUMN_DENSITIES
 
 
 
+struct HEALPIX_VECTOR
+{
+  double x;
+  double y;
+  double z;
+
+  long antipod;
+
+  long n_aligned;
+  long aligned[NRAYS/2];
+};
+
+
+
+
 struct CELL
 {
 

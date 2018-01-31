@@ -54,7 +54,7 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
 
       double width = line_frequency / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
 
-      double freq = H_4_roots[ny]*width;
+      double freq = line_frequency + H_4_roots[ny]*width;
 
 
       intensities (NCELLS, cell, line_species, source, opacity, freq,

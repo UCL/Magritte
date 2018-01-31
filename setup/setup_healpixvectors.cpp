@@ -94,6 +94,35 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long
 
 
   // Find aligned rays
+  // Aligned rays for a ray "r" are all rays with a positive projection on "r"
+
+  for (long r1 = 0; r1 < nrays; r1++)
+  {
+
+    long n = 0;
+
+    for (long r2 = 0; r2 < nrays; r2++)
+    {
+
+      double cosine =   healpixvector[VINDEX(r1,0)]*healpixvector[VINDEX(r2,0)]
+                      + healpixvector[VINDEX(r1,1)]*healpixvector[VINDEX(r2,1)]
+                      + healpixvector[VINDEX(r1,2)]*healpixvector[VINDEX(r2,2)];
+
+      if (cosine > 1.0E-9)
+      {
+        aligned[r1][n] = r2;
+        n++;
+      }
+    }
+
+    n_aligned[r1] = n;
+  }
+
+
+  // Find mirror rays
+  // Mirror rays for a ray "r" are the
+
+  // Note: the ordering can already be stored in aligned...
 
   for (long r1 = 0; r1 < nrays; r1++)
   {
