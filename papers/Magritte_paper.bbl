@@ -1,0 +1,30 @@
+\begin{thebibliography}{}
+\makeatletter
+\relax
+\def\mn@urlcharsother{\let\do\@makeother \do\$\do\&\do\#\do\^\do\_\do\%\do\~}
+\def\mn@doi{\begingroup\mn@urlcharsother \@ifnextchar [ {\mn@doi@}
+  {\mn@doi@[]}}
+\def\mn@doi@[#1]#2{\def\@tempa{#1}\ifx\@tempa\@empty \href
+  {http://dx.doi.org/#2} {doi:#2}\else \href {http://dx.doi.org/#2} {#1}\fi
+  \endgroup}
+\def\mn@eprint#1#2{\mn@eprint@#1:#2::\@nil}
+\def\mn@eprint@arXiv#1{\href {http://arxiv.org/abs/#1} {{\tt arXiv:#1}}}
+\def\mn@eprint@dblp#1{\href {http://dblp.uni-trier.de/rec/bibtex/#1.xml}
+  {dblp:#1}}
+\def\mn@eprint@#1:#2:#3:#4\@nil{\def\@tempa {#1}\def\@tempb {#2}\def\@tempc
+  {#3}\ifx \@tempc \@empty \let \@tempc \@tempb \let \@tempb \@tempa \fi \ifx
+  \@tempb \@empty \def\@tempb {arXiv}\fi \@ifundefined
+  {mn@eprint@\@tempb}{\@tempb:\@tempc}{\expandafter \expandafter \csname
+  mn@eprint@\@tempb\endcsname \expandafter{\@tempc}}}
+
+\bibitem[\protect\citeauthoryear{Bisbas, Bell, Viti, Yates  \& Barlow}{Bisbas
+  et~al.}{2012}]{Bisbas2012}
+Bisbas T.~G.,  Bell T.~A.,  Viti S.,  Yates J.,   Barlow M.~J.,  2012, \mn@doi
+  [Mon. Not. R. Astron. Soc.] {10.1111/j.1365-2966.2012.22077.x}, 427, 2100
+
+\bibitem[\protect\citeauthoryear{Rybicki \& Hummer}{Rybicki \&
+  Hummer}{1991}]{Rybicki1991}
+Rybicki G.~B.,  Hummer D.~G.,  1991, Astron. Astrophys., 245, 171
+
+\makeatother
+\end{thebibliography}
