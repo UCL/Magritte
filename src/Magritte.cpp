@@ -338,7 +338,7 @@ int main ()
 
 # else
 
-    column.new_column(ncells);
+    // column.new_column(ncells);
 
     double *column_H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
     double *column_HD = new double[ncells*NRAYS];   // HD column density for each ray and cell

@@ -24,7 +24,6 @@ setup_data_tools.cpp )
 
 
 # Add the HEALPix directory
-
 add_subdirectory(HEALPix)
 
 

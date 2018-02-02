@@ -18,7 +18,7 @@
 #include "ray_tracing.hpp"
 #include "heapsort.hpp"
 #include "initializers.hpp"
-#include "HEALPix/chealpix.hpp"
+#include "HEALPix/chealpix.h"
 
 
 # if (!CELL_BASED)

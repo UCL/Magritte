@@ -9,7 +9,7 @@
 
 #include "setup_definitions.hpp"
 #include "setup_healpixvectors.hpp"
-#include "HEALPix/chealpix.hpp"
+#include "HEALPix/chealpix.h"
 
 
 // setup_healpixvector: store HEALPix vectors and find antipodal pairs

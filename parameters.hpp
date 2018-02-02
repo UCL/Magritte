@@ -21,12 +21,12 @@
 
 // Input files
 
-#define DIMENSIONS 2
+#define DIMENSIONS 3
 
-#define NRAYS 8
+#define NRAYS 12
 
 
-#define FIXED_NCELLS false
+#define FIXED_NCELLS true
 
 
 
@@ -37,7 +37,7 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/3DPDR_input/1Dn20.dat_conv.txt"
+#define INPUTFILE "input/files/3DPDR_input/1Dn30.dat_conv.txt"
 
 
 // #define PROJECT_FOLDER "input/files/Aori/"

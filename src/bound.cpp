@@ -17,6 +17,7 @@
 
 #include "reduce.hpp"
 #include "initializers.hpp"
+#include "HEALPix/chealpix.h"
 
 
 // bound_cube: put cube boundary around  grid
