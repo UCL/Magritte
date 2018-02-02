@@ -13,13 +13,14 @@
 // bound_cube: put cube boundary around  grid
 // ------------------------------------------
 
-long bound_cube (long ncells, CELL *cell_init, CELL *cell_full, long size);
+long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
+                 long size_x, long size_y, long size_z);
 
 
 // bound_sphere: put sphere boundary around  grid
 // -----------------------------------------------
 
-long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary_cells)
+long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary_cells);
 
 
 #endif // __BOUND_HPP_INCLUDED__

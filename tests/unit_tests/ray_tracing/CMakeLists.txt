@@ -34,6 +34,7 @@ test_main.cpp
 ../../../setup/setup_data_tools.cpp
 ../../../src/initializers.cpp
 ../../../src/read_input.cpp
+../../../src/bound.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
 ../../../src/write_output.cpp

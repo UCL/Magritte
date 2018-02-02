@@ -21,13 +21,141 @@
 #include "../../../setup/setup_data_tools.hpp"
 #include "../../../src/initializers.hpp"
 #include "../../../src/read_input.hpp"
+#include "../../../src/bound.hpp"
 #include "../../../src/ray_tracing.hpp"
 #include "../../../src/write_txt_tools.hpp"
 
 #define EPS 1.0E-5
 
 
-TEST_CASE ("Cell structure for 5x5, 2D grid")
+TEST_CASE ("Visually inspect grid: boundary cube")
+{
+
+  // SET UP TEST
+  // ___________
+
+
+  // Define grid input file
+
+  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+
+
+  /* Layout of the test grid:
+
+     00 01 02 03 04
+     05 06 07 08 09
+     10 11 12 13 14
+     15 16 17 18 19
+     20 21 22 23 24
+
+  */
+
+
+  // Read input file
+
+  long ncells_init = get_NCELLS_txt (test_inputfile);
+
+  CELL *cell_init = new CELL[ncells_init];
+
+  initialize_cells (ncells_init, cell_init);
+
+  read_txt_input (test_inputfile, ncells_init, cell_init);
+
+
+  // Define full grid
+
+  long size_x = 9;
+  long size_y = 7;
+  long size_z = 0;
+
+
+  long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+  long ncells_full = ncells_init+n_extra;
+
+  CELL *cell_full = new CELL[ncells_full];
+
+  initialize_cells (ncells_full, cell_full);
+
+
+  // Add boundary
+
+  bound_cube (ncells_init, cell_init, cell_full, size_x, size_y, size_z);
+
+
+  // Write grid
+
+  write_grid ("", ncells_init, cell_init);
+
+  write_grid ("full", ncells_full, cell_full);
+
+}
+
+
+
+
+TEST_CASE ("Visually inspect grid: boundary circle")
+{
+
+  // SET UP TEST
+  // ___________
+
+
+  // Define grid input file
+
+  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+
+
+  /* Layout of the test grid:
+
+     00 01 02 03 04
+     05 06 07 08 09
+     10 11 12 13 14
+     15 16 17 18 19
+     20 21 22 23 24
+
+  */
+
+
+  // Read input file
+
+  long ncells_init = get_NCELLS_txt (test_inputfile);
+
+  CELL *cell_init = new CELL[ncells_init];
+
+  initialize_cells (ncells_init, cell_init);
+
+  read_txt_input (test_inputfile, ncells_init, cell_init);
+
+
+  // Define full grid
+
+  long n_extra = 12*2*2*2*2;   // number of boundary cells
+
+  long ncells_full = ncells_init+n_extra;
+
+  CELL *cell_full = new CELL[ncells_full];
+
+  initialize_cells (ncells_full, cell_full);
+
+
+  // Add boundary
+
+  bound_sphere (ncells_init, cell_init, cell_full, n_extra);
+
+
+  // Write grid
+
+  write_grid ("", ncells_init, cell_init);
+
+  write_grid ("full", ncells_full, cell_full);
+
+}
+
+
+
+
+TEST_CASE ("Neighbor structure for 5x5, 2D grid")
 {
 
 
@@ -105,65 +233,6 @@ TEST_CASE ("Cell structure for 5x5, 2D grid")
   double dZ = 0.0;
 
   CHECK ( next_cell (ncells, cell, 11, 1, &Z, 11, &dZ) ==  17);
-
-
-
-  // for (long c = 0; c < ncells; c++)
-  // {
-  //   printf("%ld\n", cell[c].n_neighbors);
-  //   printf("%lE  %lE  %lE\n", cell[c].x, cell[c].y, cell[c].z);
-  //
-  //   for (long n = 0; n < cell[c].n_neighbors; n++)
-  //   {
-  //     printf("cell %ld has neighbors %ld\n", c, cell[c].neighbor[n]);
-  //   }
-  // }
-
-  //
-  // double dZ = 0.0;
-  //
-  // long origin = 1;
-  // long ray    = 1;
-  //
-  // double Z = 0.0;
-  //
-  // long current = origin;
-  // long next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
-  //
-  //
-  //
-  // while (next != ncells)
-  // {
-  //   printf("current %ld, next %ld, Z %lE\n", current, next, Z);
-  //
-  //   current = next;
-  //   next    = next_cell (ncells, cell, origin, ray, &Z, current, &dZ);
-  // }
-
-  //
-  // long origin = 0;
-  // long ray    = 5;
-  //
-  // for (long o = 0; o < ncells; o++){
-  //   std::cout << cell[o].Z[ray] << "\n";
-  //   std::cout << cell[o].endpoint[ray] << "\n";
-  // }
-
-  // long o   = 8;
-  // long ray = 1;
-  //
-  //   std::cout << cell[o].Z[ray] << "\n";
-  //   std::cout << cell[o].endpoint[ray] << "\n";
-  //
-  // double dZ = 0.0;
-  // double Z  = 0.0;
-  //
-  //   std::cout << previous_cell (ncells, cell, o, ray, &Z, o, &dZ) << "\n";
-  //
-
-
-
-  CHECK (true);
 
 
   delete [] cell;

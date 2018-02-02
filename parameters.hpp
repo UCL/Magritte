@@ -21,12 +21,12 @@
 
 // Input files
 
-#define DIMENSIONS 3
+#define DIMENSIONS 2
 
-#define NRAYS 12
+#define NRAYS 48
 
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 
 
 
@@ -37,7 +37,7 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/3DPDR_input/1Dn30.dat_conv.txt"
+#define INPUTFILE "input/files/3DPDR_input/1Dn20.dat_conv.txt"
 
 
 // #define PROJECT_FOLDER "input/files/Aori/"
@@ -64,7 +64,7 @@
 
 /* Ray tracing parameters */
 
-#define NSIDES 1
+#define NSIDES 6
 
 #define THETA_CRIT 1.3
 

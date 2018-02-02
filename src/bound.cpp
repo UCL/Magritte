@@ -23,8 +23,31 @@
 // bound_cube: put cube boundary around  grid
 // ------------------------------------------
 
-long bound_cube (long ncells, CELL *cell_init, CELL *cell_full, long size)
+long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
+                 long size_x, long size_y, long size_z)
 {
+
+  // Add initial cells
+
+# pragma omp parallel                     \
+  shared (ncells, cell_init, cell_full)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+    cell_full[p].x = cell_init[p].x;
+    cell_full[p].y = cell_init[p].y;
+    cell_full[p].z = cell_init[p].z;
+  }
+  } // end of OpenMP parallel region
 
 
   // Find minimum and maximum coordinate values;
@@ -80,6 +103,7 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full, long size)
     {
       z_min = cell_init[p].z;
     }
+
   }
   } // end of OpenMP parallel region
 
@@ -89,55 +113,68 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full, long size)
   double length_z = z_max - z_min;
 
 
+  double margin_x = 0.1*length_x;
+  double margin_y = 0.1*length_y;
+  double margin_z = 0.1*length_z;
+
+
 # if   (DIMENSIONS == 1)
 
-    long n_extra = 2;                                       // number of boundary cells
+    long n_extra = 2;   // number of boundary cells
 
-    cell_full[NCELLS].x   = x_min - 1.0E-3 * length_x;
+    cell_full[NCELLS].x   = x_min - margin_x;
     cell_full[NCELLS].y   = 0.0;
     cell_full[NCELLS].z   = 0.0;
 
-    cell_full[NCELLS+1].x = x_max + 1.0E-3 * length_x;
+    cell_full[NCELLS+1].x = x_max + margin_x;
     cell_full[NCELLS+1].y = 0.0;
     cell_full[NCELLS+1].z = 0.0;
 
 # elif (DIMENSIONS == 2)
 
-    long n_extra = 4*(size - 1);                            // number of boundary cells
+    long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+    long index = NCELLS;
 
 
-    for (int e = 0; e < size-1; e++)
+    for (int e = 0; e < size_y; e++)
     {
-      cell_full[NCELLS+e].x = x_min - 1.0E-3 * length_x;
-      cell_full[NCELLS+e].y = 1.001*(y_max - y_min)*e + y_min;
-      cell_full[NCELLS+e].z = 0.0;
+      cell_full[index].x = x_min - margin_x;
+      cell_full[index].y = (length_y+2.0*margin_x)/size_y*e + y_min-margin_x;
+      cell_full[index].z = 0.0;
+      index++;
     }
 
-    for (int e = 0; e < size-1; e++)
+    for (int e = 0; e < size_y; e++)
     {
-      cell_full[NCELLS+e].x = x_min - 1.0E-3 * length_x;
-      cell_full[NCELLS+e].y = 1.001*(y_max - y_min)/size*(e+1) + y_max;
-      cell_full[NCELLS+e].z = 0.0;
+      cell_full[index].x = x_max + margin_x;
+      cell_full[index].y = -(length_y+2.0*margin_x)/size_y*(e) + y_max+margin_x;
+      cell_full[index].z = 0.0;
+      index++;
     }
 
-    for (int e = 0; e < size-1; e++)
+    for (int e = 0; e < size_x; e++)
     {
-      cell_full[NCELLS+e].x = 1.001*(x_max - x_min)/size*e + x_max;
-      cell_full[NCELLS+e].y = y_max + 1.0E-3 * length_y;
-      cell_full[NCELLS+e].z = 0.0;
+      cell_full[index].x = (length_x+2.0*margin_y)/size_x*e + x_min-margin_y;
+      cell_full[index].y = y_max + margin_y;
+      cell_full[index].z = 0.0;
+      index++;
     }
 
-    for (int e = 0; e < size-1; e++)
+    for (int e = 0; e < size_x; e++)
     {
-      cell_full[NCELLS+e].x = 1.001*(x_max - x_min)/size*(e+1) + x_max;
-      cell_full[NCELLS+e].y = y_min - 1.0E-3 * length_y;
-      cell_full[NCELLS+e].z = 0.0;
+      cell_full[index].x = -(length_x+2.0*margin_y)/size_x*(e) + x_max+margin_y;
+      cell_full[index].y = y_min - margin_y;
+      cell_full[index].z = 0.0;
+      index++;
     }
 
 
 # elif (DIMENSIONS == 3)
 
-    long n_extra = 2*size*size + 4*(size - 1)*(size - 2);   // number of boundary cells
+    // long n_extra = 2*size*size + 4*(size - 1)*(size - 2);   // number of boundary cells
+
+    // TO BE DONE !!!
 
 # endif
 
@@ -153,6 +190,28 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full, long size)
 long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary_cells)
 {
 
+  // Add initial cells
+
+# pragma omp parallel                     \
+  shared (ncells, cell_init, cell_full)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+    cell_full[p].x = cell_init[p].x;
+    cell_full[p].y = cell_init[p].y;
+    cell_full[p].z = cell_init[p].z;
+  }
+  } // end of OpenMP parallel region
+
 
   // Find center
 
@@ -166,14 +225,8 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
   default (none)
   {
 
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
-
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
-
-
-  for (long p = start; p < stop; p++)
+# pragma omp for reduction(+ : x_av, y_av, z_av)
+  for (long p = 0; p < NCELLS; p++)
   {
 
     x_av = x_av + cell_init[p].x;
@@ -184,9 +237,9 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
   } // end of OpenMP parallel region
 
 
-  x_av = x_av / NCELLS;
-  y_av = y_av / NCELLS;
-  z_av = z_av / NCELLS;
+  x_av = (double) x_av / NCELLS;
+  y_av = (double) y_av / NCELLS;
+  z_av = (double) z_av / NCELLS;
 
 
   // Find radius
@@ -194,39 +247,43 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
   double radius = 0.0;
 
 
-  # pragma omp parallel                  \
-    shared (ncells, cell_init, radius)   \
-    default (none)
+# pragma omp parallel                                    \
+  shared (ncells, cell_init, radius, x_av, y_av, z_av)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*NCELLS)/num_threads;
+  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+    double radius_new =   (cell_init[p].x-x_av)*(cell_init[p].x-x_av)
+                        + (cell_init[p].y-y_av)*(cell_init[p].y-y_av)
+                        + (cell_init[p].z-z_av)*(cell_init[p].z-z_av);
+
+    if (radius < radius_new)
     {
-
-    int num_threads = omp_get_num_threads();
-    int thread_num  = omp_get_thread_num();
-
-    long start = (thread_num*NCELLS)/num_threads;
-    long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
-
-
-    for (long p = start; p < stop; p++)
-    {
-
-      double radius_new = cell_init[p].x*cell_init[p].x + cell_init[p].y*cell_init[p].y + cell_init[p].z*cell_init[p].z;
-
-      if (radius < radius_new)
-      {
-        radius = radius_new;
-      }
-
+      radius = radius_new;
     }
-    } // end of OpenMP parallel region
+
+  }
+  } // end of OpenMP parallel region
+
+
+  radius = sqrt(radius);
 
 
 # if   (DIMENSIONS == 1)
 
-    cell_full[NCELLS].x   = x_av + 1.001*radius;
+    cell_full[NCELLS].x   = x_av + 1.1*radius;
     cell_full[NCELLS].y   = 0.0;
     cell_full[NCELLS].z   = 0.0;
 
-    cell_full[NCELLS+1].x = x_av - 1.001*radius;
+    cell_full[NCELLS+1].x = x_av - 1.1*radius;
     cell_full[NCELLS+1].y = 0.0;
     cell_full[NCELLS+1].z = 0.0;
 
@@ -236,8 +293,8 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
     {
       double theta = (2.0*PI*ray) / nboundary_cells;
 
-      cell_full[NCELLS+ray].x = 1.001*radius*cos(theta);
-      cell_full[NCELLS+ray].y = 1.001*radius*sin(theta);
+      cell_full[NCELLS+ray].x = x_av + 1.1*radius*cos(theta);
+      cell_full[NCELLS+ray].y = y_av + 1.1*radius*sin(theta);
       cell_full[NCELLS+ray].z = 0.0;
     }
 
@@ -251,9 +308,9 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
       pix2vec_nest (nsides, ipix, vector);
 
-      cell_full[NCELLS+ipix].x = 1.001*radius*vector[0];
-      cell_full[NCELLS+ipix].y = 1.001*radius*vector[1];
-      cell_full[NCELLS+ipix].z = 1.001*radius*vector[2];
+      cell_full[NCELLS+ipix].x = x_av + 1.1*radius*vector[0];
+      cell_full[NCELLS+ipix].y = y_av + 1.1*radius*vector[1];
+      cell_full[NCELLS+ipix].z = z_av + 1.1*radius*vector[2];
     }
 
 # endif

@@ -23,7 +23,7 @@
 
 #define DIMENSIONS 2
 
-#define NRAYS 8
+#define NRAYS 48
 
 
 #define FIXED_NCELLS false
@@ -64,7 +64,7 @@
 
 /* Ray tracing parameters */
 
-#define NSIDES 1
+#define NSIDES 6
 
 #define THETA_CRIT 1.3
 
