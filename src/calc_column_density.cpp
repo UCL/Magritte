@@ -58,8 +58,8 @@ int calc_column_density (long ncells, CELL *cell, double *column, int spec)
 
 #   else
 
-      for (long r = 0; r < NRAYS; r++){
-
+      for (long r = 0; r < NRAYS; r++)
+      {
         column[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, spec, r);
       }
 
@@ -235,6 +235,8 @@ double cell_column_density (long ncells, CELL *cell, long origin, int spec, long
       current = next;
       next    = next_cell (NCELLS, cell, origin, ray, &Z, current, &dZ);
     }
+
+    column_density_res = column_density_res + cell[current].ray[ray].column;
   }
 
 

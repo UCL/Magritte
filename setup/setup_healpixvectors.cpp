@@ -15,7 +15,7 @@
 // setup_healpixvector: store HEALPix vectors and find antipodal pairs
 // -------------------------------------------------------------------
 
-int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long *n_aligned, long **aligned)
+int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long *n_aligned, long **aligned, long *mirror_xz)
 {
 
 
@@ -88,7 +88,6 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long
       {
         antipod[r1] = r2;
       }
-
     }
   }
 
@@ -96,54 +95,42 @@ int setup_healpixvectors (long nrays, double *healpixvector, long *antipod, long
   // Find aligned rays
   // Aligned rays for a ray "r" are all rays with a positive projection on "r"
 
-  for (long r1 = 0; r1 < nrays; r1++)
-  {
+  // for (long r1 = 0; r1 < nrays; r1++)
+  // {
+  //
+  //   long n = 0;
+  //
+  //   for (long r2 = 0; r2 < nrays; r2++)
+  //   {
+  //
+  //     double cosine =   healpixvector[VINDEX(r1,0)]*healpixvector[VINDEX(r2,0)]
+  //                     + healpixvector[VINDEX(r1,1)]*healpixvector[VINDEX(r2,1)]
+  //                     + healpixvector[VINDEX(r1,2)]*healpixvector[VINDEX(r2,2)];
+  //
+  //     if (cosine > 1.0E-9)
+  //     {
+  //       aligned[r1][n] = r2;
+  //       n++;
+  //     }
+  //   }
+  //
+  //   n_aligned[r1] = n;
+  // }
 
-    long n = 0;
 
-    for (long r2 = 0; r2 < nrays; r2++)
-    {
-
-      double cosine =   healpixvector[VINDEX(r1,0)]*healpixvector[VINDEX(r2,0)]
-                      + healpixvector[VINDEX(r1,1)]*healpixvector[VINDEX(r2,1)]
-                      + healpixvector[VINDEX(r1,2)]*healpixvector[VINDEX(r2,2)];
-
-      if (cosine > 1.0E-9)
-      {
-        aligned[r1][n] = r2;
-        n++;
-      }
-    }
-
-    n_aligned[r1] = n;
-  }
-
-
-  // Find mirror rays
-  // Mirror rays for a ray "r" are the
-
-  // Note: the ordering can already be stored in aligned...
+  // Find mirror rays about xz-plane
 
   for (long r1 = 0; r1 < nrays; r1++)
   {
-
-    long n = 0;
-
     for (long r2 = 0; r2 < nrays; r2++)
     {
-
-      double cosine =   healpixvector[VINDEX(r1,0)]*healpixvector[VINDEX(r2,0)]
-                      + healpixvector[VINDEX(r1,1)]*healpixvector[VINDEX(r2,1)]
-                      + healpixvector[VINDEX(r1,2)]*healpixvector[VINDEX(r2,2)];
-
-      if (cosine > 1.0E-9)
+      if (    (fabs(healpixvector[VINDEX(r1,0)] - healpixvector[VINDEX(r2,0)]) < TOL)
+           && (fabs(healpixvector[VINDEX(r1,1)] + healpixvector[VINDEX(r2,1)]) < TOL)
+           && (fabs(healpixvector[VINDEX(r1,2)] - healpixvector[VINDEX(r2,2)]) < TOL) )
       {
-        aligned[r1][n] = r2;
-        n++;
+        mirror_xz[r1] = r2;
       }
     }
-
-    n_aligned[r1] = n;
   }
 
 

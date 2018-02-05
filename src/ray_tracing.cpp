@@ -502,9 +502,14 @@ int find_neighbors (long ncells, CELL *cell)
         }
 
 
+        // Enforce that two boundary cells cannot be neighbors
+
+        bool both_boundary = cell[possible_neighbor[pn]].boundary && cell[p].boundary;
+
+
         // If there is a possible neighbor that is not too far
 
-        if ( (Z[pn] != 0.0) && (!too_far[pn]) )
+        if ( (Z[pn] != 0.0) && (!too_far[pn]) && !both_boundary )
         {
           cell[p].neighbor[index] = possible_neighbor[pn];
           index++;
@@ -537,7 +542,7 @@ long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long 
 
   double D_min = 1.0E99;
 
-  long next = ncells;   // return ncells when there is no next cell
+  long next = NCELLS;   // return ncells when there is no next cell
 
 
   for (long n = 0; n < cell[current].n_neighbors; n++)
@@ -613,7 +618,7 @@ int find_endpoints (long ncells, CELL *cell)
       long next    = next_cell (NCELLS, cell, p, r, &Z, current, &dZ);
 
 
-      while ( (next != NCELLS) && !(cell[current].boundary && cell[next].boundary))
+      while (next != NCELLS)
       {
         current = next;
         next    = next_cell (NCELLS, cell, p, r, &Z, current, &dZ);
@@ -644,9 +649,8 @@ long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, l
 
   double D_min = 1.0E99;
 
-  long previous = ncells;   // return ncells when there is no next cell
+  long previous = ncells;   // return ncells when there is no previous cell
 
-  // printf("origin %ld   current %ld     Z %lE      dZ %lE\n", origin, current, *Z, *dZ);
 
   for (long n = 0; n < cell[current].n_neighbors; n++)
   {

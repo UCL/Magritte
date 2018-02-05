@@ -26,6 +26,7 @@ struct TEMPERATURE
 struct RAY
 {
   double intensity;
+  double column;
 };
 
 
@@ -78,6 +79,7 @@ struct HEALPIX_VECTOR
 
   long n_aligned;
   long aligned[NRAYS/2];
+
 };
 
 
@@ -111,7 +113,8 @@ struct CELL
   bool removed;              // true when cell is removed
 
   bool boundary;             // true if boundary cell
-
+  bool mirror;               // true if reflective boundary
+  
 };
 
 

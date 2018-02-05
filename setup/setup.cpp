@@ -323,8 +323,10 @@ int main()
 
   long *n_aligned = new long[nrays];             // number of rays on a particular side
 
+  long *mirror_xz = new long[nrays];   // number of rays on a particular side
 
-  setup_healpixvectors (nrays, healpixvector, antipod, n_aligned, aligned);
+
+  setup_healpixvectors (nrays, healpixvector, antipod, n_aligned, aligned, mirror_xz);
 
 
   printf ("(setup): HEALPix vectors created \n\n");
@@ -430,9 +432,11 @@ int main()
 
   write_long_array (config_file, "ANTIPOD", antipod, nrays);
 
-  write_long_array (config_file, "N_ALIGNED", n_aligned, nrays);
+  // write_long_array (config_file, "N_ALIGNED", n_aligned, nrays);
 
-  write_long_matrix (config_file, "ALIGNED", aligned, nrays, nrays/2);
+  // write_long_matrix (config_file, "ALIGNED", aligned, nrays, nrays/2);
+
+  write_long_array (config_file, "MIRROR", mirror_xz, nrays);
 
 
   fclose (config_file);

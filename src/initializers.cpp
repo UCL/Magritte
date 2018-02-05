@@ -238,6 +238,7 @@ int initialize_cells (long ncells, CELL *cell)
 
       cell[n].Z[ray] = 0.0;
       cell[n].ray[ray].intensity = 0.0;
+      cell[n].ray[ray].column = 0.0;
     }
 
     cell[n].vx = 0.0;
@@ -264,12 +265,10 @@ int initialize_cells (long ncells, CELL *cell)
 
     cell[n].removed  = false;
     cell[n].boundary = false;
+    cell[n].mirror   = false;
   }
   } // end of OpenMP parallel region
 
-
-  cell[0].boundary        = true;
-  cell[NCELLS-1].boundary = true;
 
   return(0);
 

@@ -60,6 +60,7 @@ extern const long antipod[NRAYS];
 
 // extern const long n_aligned[NRAYS];          // NOT USED YET
 
+extern const long mirror_xz[NRAYS];
 
 
 /* Level populations */

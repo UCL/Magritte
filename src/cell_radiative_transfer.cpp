@@ -212,7 +212,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     double chi_c = opacity[s_c] * phi_c;
 
 
-    while ( (next != NCELLS) )//&& !(cell[current].boundary && cell[next].boundary) )
+    while (next != NCELLS)
     {
       long s_n = LSPECGRIDRAD(lspec,next,kr);
 

@@ -10,13 +10,13 @@ import sys
 
 
 # ncells = int(sys.argv[1])
-ncells = 25
+ncells = 6
 
 
 ID = [ i for i in range(ncells)]
 
-x  = [ i/5 for i in range(ncells)]
-y  = [ i%5 for i in range(ncells)]
+x  = [0, 1, 2, 0, 1, 2]#[ i/3 for i in range(ncells)]
+y  = [0, 0, 0, 1, 1, 1]#[ i%2 for i in range(ncells)]
 z  = np.zeros(ncells)
 
 vx = np.zeros(ncells)
@@ -27,7 +27,7 @@ density = np.ones(ncells)
 
 
 data = np.stack((ID, x, y, z, vx, vy, vz, density), axis=1)
-np.savetxt('files/tests/grid_2D_test_25.txt', data, fmt='%ld\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
+np.savetxt('files/tests/grid_2D_test_6.txt', data, fmt='%ld\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 
 print("Grid (2D) created with", ncells, "grid points!")
 

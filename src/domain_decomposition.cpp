@@ -47,8 +47,6 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     cell_full[p].y = cell_init[p].y;
     cell_full[p].z = cell_init[p].z;
 
-    cell_full[p].density = cell_init[p].density;
-
     cell_full[p].boundary = false;
   }
   } // end of OpenMP parallel region
@@ -117,9 +115,9 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
   double length_z = z_max - z_min;
 
 
-  double margin_x = 1.0;
-  double margin_y = 1.0;
-  double margin_z = 1.0; //0.25*length_z;
+  double margin_x = 0.25*length_x;
+  double margin_y = 0.25*length_y;
+  double margin_z = 0.25*length_z;
 
 
 # if   (DIMENSIONS == 1)
@@ -159,7 +157,7 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     for (int e = 0; e < size_y; e++)
     {
       cell_full[index].x = x_max + margin_x;
-      cell_full[index].y = -(length_y+2.0*margin_x)/size_y*e + y_max+margin_x;
+      cell_full[index].y = -(length_y+2.0*margin_x)/size_y*(e) + y_max+margin_x;
       cell_full[index].z = 0.0;
 
       cell_full[index].boundary = true;
@@ -173,13 +171,12 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
       cell_full[index].z = 0.0;
 
       cell_full[index].boundary = true;
-      cell_full[index].mirror   = true;   // Reflective boundary conditions at upper xz-plane
       index++;
     }
 
     for (int e = 0; e < size_x; e++)
     {
-      cell_full[index].x = -(length_x+2.0*margin_y)/size_x*e + x_max+margin_y;
+      cell_full[index].x = -(length_x+2.0*margin_y)/size_x*(e) + x_max+margin_y;
       cell_full[index].y = y_min - margin_y;
       cell_full[index].z = 0.0;
 
@@ -190,98 +187,9 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
 
 # elif (DIMENSIONS == 3)
 
-    long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
+    // long n_extra = 2*size*size + 4*(size - 1)*(size - 2);   // number of boundary cells
 
-    long index = NCELLS;
-
-
-    for (int e1 = 0; e1 < size_y; e1++)
-    {
-      for (int e2 = 0; e2 < size_z; e2++)
-      {
-        cell_full[index].x = x_min - margin_x;
-        cell_full[index].y =  (length_y+2.0*margin_x)/size_y*e1 + y_min-margin_x;
-        cell_full[index].z =  (length_z+2.0*margin_x)/size_z*e2 + z_min-margin_x;
-
-        cell_full[index].boundary = true;
-        index++;
-      }
-    }
-
-    for (int e1 = 0; e1 < size_y; e1++)
-    {
-      for (int e2 = 0; e2 < size_z; e2++)
-      {
-        cell_full[index].x = x_max + margin_x;
-        cell_full[index].y = -(length_y+2.0*margin_x)/size_y*e1 + y_max+margin_x;
-        cell_full[index].z = -(length_z+2.0*margin_x)/size_z*e2 + z_max+margin_x;;
-
-        cell_full[index].boundary = true;
-        index++;
-      }
-    }
-
-    for (int e1 = 0; e1 < size_x; e1++)
-    {
-      for (int e2 = 0; e2 < size_z; e2++)
-      {
-        cell_full[index].x =  (length_x+2.0*margin_y)/size_x*e1 + x_min-margin_y;
-        cell_full[index].y = y_max + margin_y;
-        cell_full[index].z = -(length_z+2.0*margin_y)/size_z*e2 + z_max+margin_y;
-
-        cell_full[index].boundary = true;
-        cell_full[index].mirror   = true;   // Reflective boundary conditions at upper xz-plane
-        index++;
-      }
-    }
-
-    for (int e1 = 0; e1 < size_x; e1++)
-    {
-      for (int e2 = 0; e2 < size_z; e2++)
-      {
-        cell_full[index].x = -(length_x+2.0*margin_y)/size_x*e1 + x_max+margin_y;
-        cell_full[index].y = y_min - margin_y;
-        cell_full[index].z =  (length_z+2.0*margin_y)/size_z*e2 + z_min-margin_y;
-
-        cell_full[index].boundary = true;
-        index++;
-      }
-    }
-
-    for (int e1 = 0; e1 < size_x; e1++)
-    {
-      for (int e2 = 0; e2 < size_y; e2++)
-      {
-        cell_full[index].x = (length_x+2.0*margin_z)/size_x*e1 + x_min-margin_z;
-        cell_full[index].y = (length_y+2.0*margin_z)/size_y*e2 + y_min-margin_z;
-        cell_full[index].z = z_max + margin_z;
-
-        cell_full[index].boundary = true;
-        index++;
-      }
-    }
-
-    for (int e1 = 0; e1 < size_x; e1++)
-    {
-      for (int e2 = 0; e2 < size_y; e2++)
-      {
-        cell_full[index].x = -(length_x+2.0*margin_z)/size_x*e1 + x_max+margin_z;
-        cell_full[index].y = -(length_y+2.0*margin_z)/size_y*e2 + y_max+margin_z;
-        cell_full[index].z = z_min - margin_z;
-
-        cell_full[index].boundary = true;
-        index++;
-      }
-    }
-
-    cell_full[index].x = x_max + margin_x;
-    cell_full[index].y = y_min - margin_y;
-    cell_full[index].z = z_max + margin_z;
-    index++;
-
-    cell_full[index].x = x_min - margin_x;
-    cell_full[index].y = y_max + margin_y;
-    cell_full[index].z = z_min - margin_z;
+    // TO BE DONE !!!
 
 # endif
 

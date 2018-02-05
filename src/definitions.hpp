@@ -43,7 +43,7 @@ const long antipod[NRAYS] = ANTIPOD;
 
 // const long n_aligned[NRAYS] = N_ALIGNED;        // NOT USED YET
 
-// const long mirror[NRAYS][NRAYS/2] = MIRROR;     // NOT USED YET
+const long mirror_xz[NRAYS] = MIRROR;
 
 
 // Level populations

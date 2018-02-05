@@ -21,9 +21,9 @@
 
 // Input files
 
-#define DIMENSIONS 2
+#define DIMENSIONS 3
 
-#define NRAYS 48
+// #define NRAYS 8
 
 
 #define FIXED_NCELLS false
