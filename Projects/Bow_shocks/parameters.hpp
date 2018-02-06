@@ -29,7 +29,6 @@
 #define FIXED_NCELLS false
 
 
-
 #define INPUT_FORMAT '.txt'
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"

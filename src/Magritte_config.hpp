@@ -1,4 +1,4 @@
-#define NCELLS 122 
+#define NCELLS ncells 
 
 #define NSPEC 35 
 
