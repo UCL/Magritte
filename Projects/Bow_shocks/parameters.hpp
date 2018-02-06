@@ -11,7 +11,7 @@
 
 #define RUN_NUMBER "0"
 
-#define WRITE_INTERMEDIATE_OUTPUT false
+#define WRITE_INTERMEDIATE_OUTPUT true
 
 #define RESTART false
 
@@ -21,21 +21,20 @@
 
 // Input files
 
-#define DIMENSIONS 1
+#define DIMENSIONS 2
 
-#define NRAYS 2
-
-
-#define FIXED_NCELLS false
+#define NRAYS 12
 
 
-#define INPUT_FORMAT '.txt'
+#define FIXED_NCELLS true
+
+
+#define INPUT_FORMAT '.vtu'
 
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/3DPDR_input/1Dn20.dat_conv.txt"
 
 
 // #define PROJECT_FOLDER "input/files/Aori/"
