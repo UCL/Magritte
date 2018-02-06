@@ -16,6 +16,6 @@ addons:
 
 script:
   - ./configure.sh
-  - make
+  - make PROJECT_FOLDER="$(pwd)/"
   - cd tests
   - bash run_tests.sh
