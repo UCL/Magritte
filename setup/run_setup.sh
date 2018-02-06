@@ -18,7 +18,7 @@ cp $1parameters.hpp ../parameters.hpp
 
 date_stamp=`date +%y-%m-%d_%H:%M`;
 
-output_directory="$1/output/files/${date_stamp}_output/";
+output_directory="$1output/files/${date_stamp}_output/";
 
 echo "#define OUTPUT_DIRECTORY \"$output_directory\"" > directories.hpp
 echo "#define PROJECT_FOLDER \"$1\"" >> directories.hpp
