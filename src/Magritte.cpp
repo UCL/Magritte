@@ -80,7 +80,7 @@ int main ()
 
   printf ("(Magritte): reading grid input file\n\n");
 
-  printf ("            input file: %s\n", inputfile);
+  printf ("            input file: %s\n", inputfile.c_str());
 
 
   // Define cells (using types defined in declarations.hpp
@@ -133,8 +133,8 @@ int main ()
 
   printf ("(Magritte): reading chemistry data files\n\n");
 
-  printf ("            species file:   %s\n", spec_datafile);
-  printf ("            reactions file: %s\n", reac_datafile);
+  printf ("            species file:   %s\n", spec_datafile.c_str());
+  printf ("            reactions file: %s\n", reac_datafile.c_str());
 
 
   // Read chemical species data

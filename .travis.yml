@@ -15,7 +15,7 @@ addons:
       - cmake
 
 script:
-  - ./configure.sh
+  - bash configure.sh
   - make PROJECT_FOLDER="$(pwd)/"
   - cd tests
   - bash run_tests.sh
