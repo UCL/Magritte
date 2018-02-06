@@ -10,27 +10,30 @@
 #include <string>
 
 #include "declarations.hpp"
-#include "../setup/output_directory.hpp"
+#include "../setup/directories.hpp"
 
 
-// Output directory
+// Output directory (absolute path)
 
 const std::string output_directory = OUTPUT_DIRECTORY;
 
 
-// Input and data file paths (relative to Magritte folder)
+// Absolute path to project folder
 
-// const std::string project_folder        = PROJECT_FOLDER;   // path to project folder
+const std::string project_folder = PROJECT_FOLDER;
 
-const std::string inputfile             = INPUTFILE;        // path to input file
 
-// const std::string append_file           = APPEND_FILE;      // path to append file
+// Input file paths
 
-const std::string spec_datafile         = SPEC_DATAFILE;    // path to data file with species
+const std::string inputfile_rel = INPUTFILE;                        // relative
+const std::string inputfile     = project_folder + inputfile_rel;   // absolute
 
-const std::string reac_datafile         = REAC_DATAFILE;    // path to data file with reactions
 
-const std::string line_datafile[NLSPEC] = LINE_DATAFILES;   // list of line data file paths
+// Data file paths
+
+const std::string spec_datafile         = SPEC_DATAFILE;    // data file with species
+const std::string reac_datafile         = REAC_DATAFILE;    // data file with reactions
+const std::string line_datafile[NLSPEC] = LINE_DATAFILES;   // list of line data files
 
 
 // HEALPix vectors

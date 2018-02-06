@@ -58,8 +58,6 @@ int main ()
   timers.initialize();
 
 
-
-
   timers.total.start();
 
 

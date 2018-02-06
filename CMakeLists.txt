@@ -26,9 +26,9 @@ set(MAGRITTE_VERSION_MINOR 1)
 
 # Run setup script (if parameters.hpp changed)
 add_custom_command(OUTPUT  src/Magritte_config.hpp
-                   COMMAND bash run_setup.sh
+                   COMMAND bash run_setup.sh $(PROJECT_FOLDER)
                    WORKING_DIRECTORY setup
-                   DEPENDS parameters.hpp)
+                   DEPENDS $(PROJECT_FOLDER)parameters.hpp)
 
 add_custom_target(MAKE_SETUP
                   DEPENDS src/Magritte_config.hpp)

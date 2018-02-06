@@ -21,6 +21,7 @@
 #include "../../../setup/setup_data_tools.hpp"
 #include "../../../src/initializers.hpp"
 #include "../../../src/read_input.hpp"
+#include "../../../src/reduce.hpp"
 #include "../../../src/bound.hpp"
 #include "../../../src/ray_tracing.hpp"
 #include "../../../src/write_txt_tools.hpp"
@@ -69,7 +70,16 @@ TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
   long size_z = 2;
 
 
-  long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y);   // number of boundary cells
+# if   (DIMENSIONS == 2)
+
+  long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+# elif (DIMENSIONS == 3)
+
+  long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
+
+# endif
+
 
   long ncells_full = ncells_init+n_extra;
 
@@ -138,7 +148,15 @@ TEST_CASE ("Visually inspect 5x4 2D grid: boundary cube")
   long size_z = 2;
 
 
+# if  (DIMENSIONS == 2)
+
+  long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+# elif (DIMENSIONS == 3)
+
   long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
+
+# endif
 
   long ncells_full = ncells_init+n_extra;
 
@@ -154,9 +172,9 @@ TEST_CASE ("Visually inspect 5x4 2D grid: boundary cube")
 
   // Write grid
 
-  write_grid ("", ncells_init, cell_init);
+  // write_grid ("", ncells_init, cell_init);
 
-  write_grid ("full", ncells_full, cell_full);
+  // write_grid ("full", ncells_full, cell_full);
 
 
   delete [] cell_init;
@@ -378,7 +396,16 @@ TEST_CASE ("Neighbor structure + boundary for 5x5, 2D grid")
   long size_z = 0;
 
 
+# if   (DIMENSIONS == 2)
+
   long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+# elif (DIMENSIONS == 3)
+
+  long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
+
+# endif
+
 
   long ncells_full = ncells+n_extra;
 
@@ -524,5 +551,112 @@ TEST_CASE ("Neighbor structure + boundary for 5x5, 2D grid")
   delete [] cell;
   delete [] cell_full;
 
+}
+
+
+
+
+TEST_CASE ("Visually inspect 5x5 2D reduced grid: boundary cube")
+{
+
+  // SET UP TEST
+  // ___________
+
+
+  // Define grid input file
+
+  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+
+
+  /* Layout of the test grid:
+
+     00 01 02 03 04
+     05 06 07 08 09
+     10 11 12 13 14
+     15 16 17 18 19
+     20 21 22 23 24
+
+  */
+
+
+  // Read input file
+
+  long ncells_init = get_NCELLS_txt (test_inputfile);
+
+  CELL *cell_init = new CELL[ncells_init];
+
+  initialize_cells (ncells_init, cell_init);
+
+  read_txt_input (test_inputfile, ncells_init, cell_init);
+
+
+  // Find neighbors (needed in reduction)
+
+  find_neighbors (ncells_init, cell_init);
+
+
+  // Reduce grid
+
+  double x_min =  0.0E+00;
+  double x_max =  5.0E+00;
+  double y_min =  0.0E+00;
+  double y_max =  5.0E+00;
+  double z_min = -1.0E+00;
+  double z_max =  1.0E+00;
+
+  double min_density_change = 0.0;
+
+  long ncells_red = reduce (ncells_init, cell_init, min_density_change, x_min, x_max, y_min, y_max, z_min, z_max);
+
+
+  // Define the reduced grid
+
+  CELL *cell_red = new CELL[ncells_red];
+
+  initialize_cells (ncells_red, cell_red);
+
+  initialize_reduced_grid (ncells_red, cell_red, ncells_init, cell_init);
+
+
+  // Define full grid
+
+  long size_x = 9;
+  long size_y = 9;
+  long size_z = 0;
+
+
+# if   (DIMENSIONS == 2)
+
+  long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+# elif (DIMENSIONS == 3)
+
+  long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
+
+# endif
+
+
+  long ncells_full = ncells_red+n_extra;
+
+  CELL *cell_full = new CELL[ncells_full];
+
+  initialize_cells (ncells_full, cell_full);
+
+
+  // Add boundary
+
+  bound_cube (ncells_red, cell_red, cell_full, size_x, size_y, size_z);
+
+
+  // Write grid
+
+  write_grid ("", ncells_red, cell_red);
+
+  write_grid ("full", ncells_full, cell_full);
+
+
+  delete [] cell_init;
+  delete [] cell_red;
+  delete [] cell_full;
 
 }

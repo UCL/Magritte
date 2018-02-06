@@ -22,7 +22,7 @@
 // reduce: reduce number of cells, return resulting number of cells
 // ----------------------------------------------------------------
 
-long reduce (long ncells, CELL *cell, double threshold,
+long reduce (long ncells, CELL *cell, double min_density_change,
              double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
 {
 
@@ -38,14 +38,14 @@ long reduce (long ncells, CELL *cell, double threshold,
 
   std::cout << "  Reducing input grid...\n";
 
-  density_reduce (NCELLS, cell, threshold);
+  density_reduce (NCELLS, cell, min_density_change);
 
 
   // Set id's to relate grid and reduced grid, get ncells_red
 
   std::cout << "  Setting id's for reduced grid...\n";
 
-  long ncells_red = set_ids(NCELLS, cell);
+  long ncells_red = set_ids (NCELLS, cell);
 
 
   return ncells_red;
@@ -97,7 +97,7 @@ int crop (long ncells, CELL *cell,
 // density_reduce: reduce number of cell in regions of constant density
 // --------------------------------------------------------------------
 
-int density_reduce (long ncells, CELL *cell, double threshold)
+int density_reduce (long ncells, CELL *cell, double min_density_change)
 {
 
   // Note that this loop cannot be paralellized !
@@ -125,7 +125,7 @@ int density_reduce (long ncells, CELL *cell, double threshold)
         // Do not remove if density changes too much or neighbor was removed
         // The latter to avoid large gaps being formed
 
-        if (rel_density_change > threshold || cell[nr].removed)
+        if ( (rel_density_change > min_density_change) || cell[nr].removed)
         {
           cell[p].removed = false;
         }
@@ -148,9 +148,10 @@ int density_reduce (long ncells, CELL *cell, double threshold)
 long set_ids (long ncells, CELL *cell)
 {
 
-  long cell_id = 0;
+  long cell_id_reduced = 0;
 
 
+  // Store nr of cell in reduced grid in id's of full grid
   // Note that this loop cannot be paralellized !
 
   for (long p = 0; p < NCELLS; p++)
@@ -162,14 +163,16 @@ long set_ids (long ncells, CELL *cell)
 
     else
     {
-      cell[p].id = cell_id;
+      cell[p].id = cell_id_reduced;
 
-      cell_id++;
+      cell_id_reduced++;
     }
   }
 
 
-  return cell_id;
+  // cell_id_reduced now equals total number of cells in reduced grid
+
+  return cell_id_reduced;
 
 }
 

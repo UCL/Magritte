@@ -12,7 +12,7 @@
 #include <iostream>
 
 #include "setup.hpp"
-#include "output_directory.hpp"
+#include "directories.hpp"
 #include "setup_definitions.hpp"
 #include "setup_data_structures.hpp"
 #include "setup_data_tools.hpp"

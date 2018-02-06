@@ -87,6 +87,8 @@ int main ()
 
   CELL *cell_red = new CELL[ncells_red];
 
+  initialize_cells (ncells_red, cell_red);
+
   initialize_reduced_grid (ncells_red, cell_red, ncells, cell);
 
 

@@ -21,7 +21,7 @@ include(${VTK_USE_FILE})
 
 # Make setup executable and execute setup
 add_custom_command(OUTPUT ALL /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp
-                   COMMAND bash run_test_setup.sh unit_tests/calc_column_density
+                   COMMAND bash run_setup.sh /home/frederik/Dropbox/Astro/Magritte/tests/unit_tests/calc_column_density/
                    WORKING_DIRECTORY ../../../setup)
 
 add_custom_target(MAKE_SETUP

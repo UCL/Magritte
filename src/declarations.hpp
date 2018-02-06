@@ -43,11 +43,9 @@
 #define THERMAL_PREC 1.0E-3   // precision used in convergence criterion
 
 
-// Output directory
+// Output directory (absolute path)
 
 extern const std::string output_directory;
-
-// extern const std::string project_folder;
 
 
 // HEALPix vectors

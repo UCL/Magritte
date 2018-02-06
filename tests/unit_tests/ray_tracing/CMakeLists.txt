@@ -21,7 +21,7 @@ include(${VTK_USE_FILE})
 
 # Make setup executable and execute setup
 add_custom_command(OUTPUT ALL /home/frederik/Dropbox/Astro/Magritte/src/Magritte_config.hpp
-                   COMMAND bash run_test_setup.sh unit_tests/ray_tracing
+                   COMMAND bash run_setup.sh /home/frederik/Dropbox/Astro/Magritte/tests/unit_tests/ray_tracing/
                    WORKING_DIRECTORY ../../../setup)
 
 add_custom_target(MAKE_SETUP
@@ -34,6 +34,7 @@ test_main.cpp
 ../../../setup/setup_data_tools.cpp
 ../../../src/initializers.cpp
 ../../../src/read_input.cpp
+../../../src/reduce.cpp
 ../../../src/bound.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
