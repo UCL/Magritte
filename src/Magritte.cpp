@@ -80,7 +80,7 @@ int main ()
 
   printf ("(Magritte): reading grid input file\n\n");
 
-  printf ("            input file: %s\n", inputfile.c_str());
+  // printf ("            input file: %s\n", inputfile.c_str());
 
 
   // Define cells (using types defined in declarations.hpp
@@ -133,8 +133,8 @@ int main ()
 
   printf ("(Magritte): reading chemistry data files\n\n");
 
-  printf ("            species file:   %s\n", spec_datafile.c_str());
-  printf ("            reactions file: %s\n", reac_datafile.c_str());
+  // printf ("            species file:   %s\n", spec_datafile.c_str());
+  // printf ("            reactions file: %s\n", reac_datafile.c_str());
 
 
   // Read chemical species data
@@ -173,6 +173,72 @@ int main ()
   LINE_SPECIES line_species;
 
   read_linedata (line_datafile, &line_species, species);
+  //
+  // for (int lspec = 0; lspec < NLSPEC; lspec++)
+  // {
+  //   for (long row = 0; row < nlev[lspec]; row++)
+  //   {
+  //     for (long col = 0; col < nlev[lspec]; col++)
+  //     {
+  //       printf ("%lE\t", line_species.frequency[LSPECLEVLEV(lspec,row,col)]);
+  //     }
+  //
+  //     printf("\n");
+  //   }
+  //
+  //   printf("\n");
+  //   printf("\n");
+  // }
+
+
+
+
+//   for (int lspec = 0; lspec < NLSPEC; lspec++)
+//   {
+//
+//     for (int par = 0; par < ncolpar[lspec]; par++)
+//     {
+//       // for (int l = 0; l < ncoltran[LSPECPAR(lspec,par)]; l++)
+//       {
+//         for (int tindex2 = 0; tindex2 < ncoltemp[LSPECPAR(lspec,par)]; tindex2++)
+//         {
+//           printf ("%1.2lE ", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex2)]);
+//         }
+//         printf("\n");
+//       }
+//       printf("\n");
+//     }
+//     printf("\n");
+//     printf("\n");
+//   }
+//
+//
+
+//     printf("\n");
+//
+//
+//     int lspec =0;
+//     int par =2;
+//
+//     printf("%d %d\n", lspec, par);
+//     for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
+//     {
+//       printf("%1.1lE ", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
+//     }
+//     printf("\n");
+//
+
+//   for (int lspec=0; lspec< NLSPEC; lspec++)
+//   {
+//
+//     for (int par=0; par<ncolpar[lspec]; par++)
+//     {
+//       printf("specpar %d\n",line_species.partner[LSPECPAR(lspec,par)]);
+//     }
+//     printf("\n");
+//   }
+//
+// return(0);
 
 
   printf ("(Magritte): line data read \n\n");
@@ -201,21 +267,7 @@ int main ()
 
     printf ("(Magritte): neighboring cells found \n\n");
 
-
-    // for (long p = 0; p < NCELLS; p++)
-    // {
-    //   printf("neighbors %ld   %ld\n", cell[p].neighbor[0], cell[p].neighbor[1]);
-    //   if (cell[p].boundary) printf("boundary at %ld\n", p);
-    // }
-    //
-    // for (long p = 0; p < NCELLS; p++)
-    // {
-    //   printf("end %ld   %ld\n", cell[p].endpoint[0], cell[p].endpoint[1]);
-    // }
-
 # endif
-
-// return(0);
 
 
 
@@ -722,6 +774,8 @@ int main ()
 
   timers.total.stop();
 
+
+  printf("(Magritte): Total calculation time is %lE\n\n", timers.total.duration);
 
 
 

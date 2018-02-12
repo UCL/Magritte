@@ -55,14 +55,16 @@ int main()
 # endif
 
 
+  // Absolute path to project folder
+
+  const std::string project_folder = PROJECT_FOLDER;
+
+
   // Get number of grid points from input file
 
-  std::string inputfile      = INPUTFILE;
-  // std::string project_folder = PROJECT_FOLDER;
+  const std::string inputfile_rel = INPUTFILE;                        // relative
+  const std::string inputfile     = project_folder + inputfile_rel;   // absolute
 
-  // inputfile = "../" + project_folder + inputfile;
-
-  inputfile = "../" + inputfile;
 
 
 # if (FIXED_NCELLS)

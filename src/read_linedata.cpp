@@ -54,18 +54,8 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
     sscanf (buffer, "%s %*[^\n]\n", buffer_name);
 
     std::string str(buffer_name);
-    // std::string lspec_name = buffer_name;
-    // lspec_nr[lspec] = get_species_nr (species, lspec_name);
-
-
-
-/////////////
-
     line_species->sym[lspec] = buffer_name;
     line_species->nr[lspec]  = get_species_nr (species, buffer_name);
-
-/////////////
-
 
 
     // Skip first 5 lines
@@ -171,6 +161,9 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
         fscanf (data, "\t %lf \t", &buff3);
 
         line_species->coltemp[LSPECPARTEMP(lspec,par4,tindex1)] = buff3;
+
+
+        // if ( (lspec == 0) && (par4 ==2 )) printf("AIAIAI %1.1lE\n", line_species->coltemp[LSPECPARTEMP(lspec,par4,tindex1)]);
 
         // printf( "(read_linedata): collisional temperature %*.2lf K\n", MAX_WIDTH,
         //         coltemp[LSPECPARTEMP(lspec,par4,tindex1)] );

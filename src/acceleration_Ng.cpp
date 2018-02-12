@@ -63,7 +63,7 @@ int acceleration_Ng (long ncells, int lspec,
     for (int i = 0; i < nlev[lspec]; i++)
     {
       long p_i = LSPECGRIDLEV(lspec,gridp,i);
-      long w_i = LINDEX(gridp,i);
+      long w_i = LINDEX(lspec,gridp,i);
 
       Q1[w_i] = pop[p_i] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
       Q2[w_i] = pop[p_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
@@ -149,7 +149,7 @@ int acceleration_Ng (long ncells, int lspec,
       for (int i = 0; i < nlev[lspec]; i++)
       {
         long p_i = LSPECGRIDLEV(lspec,gridp,i);
-        long w_i = LINDEX(gridp,i);
+        long w_i = LINDEX(lspec,gridp,i);
 
         double pop_tmp = pop[p_i];
 

@@ -23,6 +23,9 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
                   double *C_coeff, long gridp, int lspec)
 {
 
+  // cell[0].temperature.gas = 100.0;
+  // printf("TEMPTEMPTEMP %1.2lE\n", cell[0].temperature.gas);
+
   // Calculate H2 ortho/para fraction at equilibrium for given temperature
 
   double frac_H2_para  = 0.0;   // fraction of para-H2
@@ -35,53 +38,66 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
     frac_H2_ortho = 1.0 - frac_H2_para;
   }
 
-  // printf("fsdsl;kjsjkid\n");
-
 
   // Initialize C_coeff
 
   initialize_double_array (TOT_NLEV2, C_coeff);
 
-  // printf("yrdfiojdfiojdfsijofvidojfvid\n");
 
   // For all collision partners
 
   for (int par = 0; par < ncolpar[lspec]; par++)
   {
 
-    // Get the number of the species corresponding to the collision partner
+    // Get number of species corresponding to collision partner
 
-    int spec = line_species.partner[lspec,par];
+    int spec = line_species.partner[LSPECPAR(lspec,par)];
 
 
-    // Find the available temperatures closest to the actual tamperature
+    // Find available temperatures closest to actual tamperature
 
     int tindex_low  = -1;   // index of temperature below actual temperature
     int tindex_high = -1;   // index of temperature above actual temperature
 
 
     // Find data corresponding to temperatures above and below actual temperature
+    // printf("\n");
+    // printf("%d %d\n", lspec, par);
+    // for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
+    // {
+    //   printf("%1.1lE ", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
+    // }
+    // printf("\n");
 
-    for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
-    {
-      if (cell[gridp].temperature.gas < line_species.coltemp[LSPECPARTEMP(lspec,par,tindex)])
-      {
-        tindex_low  = tindex-1;
-        tindex_high = tindex;
-
-        break;
-      }
-    }
-
-    if (tindex_high == -1)
+    if (line_species.coltemp[LSPECPARTEMP(lspec,par,ncoltemp[LSPECPAR(lspec,par)]-1)] <= cell[gridp].temperature.gas)
     {
       tindex_high = tindex_low = ncoltemp[LSPECPAR(lspec,par)]-1;
     }
 
-    if (tindex_high == 0)
+    else if (line_species.coltemp[LSPECPARTEMP(lspec,par,0)] >= cell[gridp].temperature.gas)
     {
       tindex_high = tindex_low = 0;
     }
+
+    else
+    {
+
+      for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
+      {
+        // printf("coltemp %1.2lE\n", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
+
+        if (cell[gridp].temperature.gas < line_species.coltemp[LSPECPARTEMP(lspec,par,tindex)])
+        {
+          tindex_low  = tindex-1;
+          tindex_high = tindex;
+
+          break;
+        }
+      }
+
+    }
+
+    // printf("%d %d     tot %d\n", tindex_low, tindex_high, ncoltemp[LSPECPAR(lspec,par)]);
 
 
     double *C_T_low = new double[nlev[lspec]*nlev[lspec]];
@@ -98,8 +114,8 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
       int i = line_species.icol[LSPECPARTRAN(lspec,par,ckr)];
       int j = line_species.jcol[LSPECPARTRAN(lspec,par,ckr)];
 
-      C_T_low[LINDEX(i,j)]  = line_species.C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_low)];
-      C_T_high[LINDEX(i,j)] = line_species.C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_high)];
+      C_T_low[LINDEX(lspec,i,j)]  = line_species.C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_low)];
+      C_T_high[LINDEX(lspec,i,j)] = line_species.C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_high)];
     }
 
 
@@ -114,23 +130,23 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
       int l_i = LSPECLEV(lspec,i);
       int l_j = LSPECLEV(lspec,j);
 
-      if ( (C_T_low[LINDEX(j,i)] == 0.0) && (C_T_low[LINDEX(i,j)] != 0.0) )
+      if ( (C_T_low[LINDEX(lspec,j,i)] == 0.0) && (C_T_low[LINDEX(lspec,i,j)] != 0.0) )
       {
-        C_T_low[LINDEX(j,i)] = C_T_low[LINDEX(i,j)] * line_species.weight[l_i]/line_species.weight[l_j]
+        C_T_low[LINDEX(lspec,j,i)] = C_T_low[LINDEX(lspec,i,j)] * line_species.weight[l_i]/line_species.weight[l_j]
                                * exp( -(line_species.energy[l_i] - line_species.energy[l_j])
                                        /(KB*line_species.coltemp[LSPECPARTEMP(lspec,par,tindex_low)]) );
       }
 
-      if ( (C_T_high[LINDEX(j,i)] == 0.0) && (C_T_high[LINDEX(i,j)] != 0.0) )
+      if ( (C_T_high[LINDEX(lspec,j,i)] == 0.0) && (C_T_high[LINDEX(lspec,i,j)] != 0.0) )
       {
-        C_T_high[LINDEX(j,i)] = C_T_high[LINDEX(i,j)] * line_species.weight[l_i]/line_species.weight[l_j]
+        C_T_high[LINDEX(lspec,j,i)] = C_T_high[LINDEX(lspec,i,j)] * line_species.weight[l_i]/line_species.weight[l_j]
                                 * exp( -(line_species.energy[l_i] - line_species.energy[l_j])
                                         /(KB*line_species.coltemp[LSPECPARTEMP(lspec,par,tindex_high)]) );
       }
     }
 
 
-    // Calculate the (linear) interpolation step
+    // Calculate (linear) interpolation step
 
     double step = 0.0;
 
@@ -140,6 +156,31 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
               / ( line_species.coltemp[LSPECPARTEMP(lspec,par,tindex_high)]
                   - line_species.coltemp[LSPECPARTEMP(lspec,par,tindex_low)] );
     }
+
+        // printf ("T %1.2lE %1.2lE   %1.2lE\n", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex_low)],
+                                              // line_species.coltemp[LSPECPARTEMP(lspec,par,tindex_high)], step );
+
+
+
+
+    // Weigh contributions to C by abundance
+
+    double abundance = cell[gridp].density * cell[gridp].abundance[spec];
+
+
+    if      (line_species.ortho_para[LSPECPAR(lspec,par)] == 'o')
+    {
+      // printf("O\n");
+      abundance = abundance * frac_H2_ortho;
+    }
+
+    else if (line_species.ortho_para[LSPECPAR(lspec,par)] == 'p')
+    {
+      // printf("P\n");
+      abundance = abundance * frac_H2_para;
+    }
+
+    // printf("abn %1.2lE  spec %d \n", abundance, spec);
 
 
     // For all C matrix elements
@@ -151,26 +192,9 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
 
         // Make a linear interpolation for C in temperature
 
-        double C_tmp = C_T_low[LINDEX(i,j)]
-                       + (C_T_high[LINDEX(i,j)] - C_T_low[LINDEX(i,j)]) * step;
-
-
-        // Weigh contributions to C by abundance
-
-        double abundance = cell[gridp].density * cell[gridp].abundance[spec];
-
-        if      (line_species.ortho_para[LSPECPAR(lspec,par)] == 'o')
-        {
-          abundance = abundance * frac_H2_ortho;
-        }
-
-        else if (line_species.ortho_para[LSPECPAR(lspec,par)] == 'p')
-        {
-          abundance = abundance * frac_H2_para;
-        }
+        double C_tmp = C_T_low[LINDEX(lspec,i,j)] + (C_T_high[LINDEX(lspec,i,j)] - C_T_low[LINDEX(lspec,i,j)]) * step;
 
         C_coeff[LSPECLEVLEV(lspec,i,j)] = C_coeff[LSPECLEVLEV(lspec,i,j)] + C_tmp*abundance;
-
       }
     }
 

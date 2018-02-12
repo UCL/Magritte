@@ -27,7 +27,7 @@ my_data = np.loadtxt(file_name)
 ncells  = np.shape(my_data)[0]
 
 
-file_name = "output_3D-PDR/1Dn30/" + name + "_final" + tag + "_3D-PDR.txt"
+file_name = "output_3D-PDR/1Dn30/" + name + tag + "_3D-PDR.txt"
 
 their_data = np.loadtxt(file_name)
 
@@ -68,7 +68,7 @@ ax1.set_title(name + tag + " error")
 ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name + " error")
 ax1.grid()
-ax1.set_yscale("log")
+# ax1.set_yscale("log")
 
 fig1.tight_layout()
 
@@ -78,7 +78,7 @@ ax2.set_title("both " + name + tag)
 ax2.set_xlabel("n (grid point nr)")
 ax2.set_ylabel(name + " error")
 ax2.grid()
-ax2.set_yscale("log")
+# ax2.set_yscale("log")
 
 fig2.tight_layout()
 

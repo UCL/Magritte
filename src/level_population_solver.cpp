@@ -45,10 +45,10 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
     {
       out = out + R[LSPECLEVLEV(lspec,i,j)];
 
-      a[LINDEX(i,j)] = R[LSPECLEVLEV(lspec,j,i)];
+      a[LINDEX(lspec,i,j)] = R[LSPECLEVLEV(lspec,j,i)];
     }
 
-    a[LINDEX(i,i)] = -out;
+    a[LINDEX(lspec,i,i)] = -out;
   }
 
 
@@ -56,7 +56,7 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
   {
     b[i] = 0.0;
 
-    a[LINDEX(n-1, i)] = 1.0;
+    a[LINDEX(lspec,n-1, i)] = 1.0;
   }
 
 

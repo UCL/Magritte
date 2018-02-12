@@ -114,7 +114,7 @@ struct CELL
 
   bool boundary;             // true if boundary cell
   bool mirror;               // true if reflective boundary
-  
+
 };
 
 
@@ -172,7 +172,7 @@ struct LINE_SPECIES
 
   // Collision related variables
 
-  int partner[TOT_NCOLPAR];                  // number of species corresponding to a collision partner
+  int partner[TOT_NCOLPAR];                  // species number corresponding to a collision partner
 
   char ortho_para[TOT_NCOLPAR];              // stores whether it is ortho or para H2
 

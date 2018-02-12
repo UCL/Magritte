@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import os
 
 
 # Check whether the date stamp of the datafile is given
@@ -34,7 +35,7 @@ nspec  = np.shape(my_abn)[1]
 
 
 
-file_name = "output_3D-PDR/1Dn30/abundances_final" + tag + "_3D-PDR.txt"
+file_name = "output_3D-PDR/1Dn30/abundances" + tag + "_3D-PDR.txt"
 
 their_abn = np.loadtxt(file_name)
 

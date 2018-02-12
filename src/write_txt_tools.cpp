@@ -941,13 +941,11 @@ int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
         fprintf (file_A, "%lE\t", line_species.A_coeff[LSPECLEVLEV(lspec,row,col)]);
         fprintf (file_B, "%lE\t", line_species.B_coeff[LSPECLEVLEV(lspec,row,col)]);
         fprintf (file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
-
       }
 
       fprintf (file_A, "\n");
       fprintf (file_B, "\n");
       fprintf (file_C, "\n");
-
     }
 
 

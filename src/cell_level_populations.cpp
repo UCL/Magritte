@@ -178,6 +178,20 @@ int cell_level_populations (long ncells, CELL *cell, LINE_SPECIES line_species, 
           }
 
 
+          // for (long row = 0; row < nlev[lspec]; row++)
+          // {
+          //   for (long col = 0; col < nlev[lspec]; col++)
+          //   {
+          //     printf ("%1.2lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
+          //   }
+          //
+          //   printf("\n");
+          // }
+          //
+          // printf("\n");
+          // printf("\n");
+
+
           // Calculate and add  B_ij<J_ij> term
           // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
