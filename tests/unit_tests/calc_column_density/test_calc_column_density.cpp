@@ -40,7 +40,7 @@ TEST_CASE ("calc_column_density")
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_25.txt";
 
 
   /* Layout of the test grid:

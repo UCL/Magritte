@@ -12,21 +12,18 @@
 
 #define WRITE_INTERMEDIATE_OUTPUT false
 
-#define RESTART false
+
 
 
 // Input files
 
-#define DIMENSIONS 1
-
-#define NRAYS 2
-
-
 #define FIXED_NCELLS true
-
-
 #define INPUT_FORMAT '.txt'
 
+
+// Restart options
+
+#define RESTART false
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
@@ -41,7 +38,10 @@
 
 // #define LINE_DATAFILES {"data/12C+.txt", "data/16O.txt"}
 
-#define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
+#define LINE_DATAFILES { "data/12CO.txt", \
+                         "data/12C.txt",  \
+                         "data/12C+.txt", \
+                         "data/16O.txt" }
 
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
@@ -49,7 +49,9 @@
 
 // Ray tracing parameters
 
-#define NSIDES 6
+#define DIMENSIONS 1
+#define NRAYS      2
+#define NSIDES     6
 
 #define THETA_CRIT 1.3
 
@@ -67,7 +69,7 @@
 
 #define MAX_NITERATIONS  299
 #define PRELIM_CHEM_ITER 5
-#define PRELIM_TB_ITER   15
+#define PRELIM_TB_ITER   20
 #define CHEM_ITER        3
 
 
@@ -79,10 +81,8 @@
 
 // Chemistry
 
-#define METALLICITY 1.0
-
-#define GAS_TO_DUST 100.0
-
+#define METALLICITY       1.0E+0
+#define GAS_TO_DUST       1.0E+2
 #define TIME_END_IN_YEARS 1.0E+7
 
 #define ALWAYS_INITIALIZE_CHEMISTRY false

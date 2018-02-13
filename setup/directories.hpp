@@ -1,2 +1,2 @@
-#define OUTPUT_DIRECTORY "/home/frederik/Dropbox/Astro/Magritte/Projects/3DPDR/output/files/18-02-12_18:10_output/"
-#define PROJECT_FOLDER "/home/frederik/Dropbox/Astro/Magritte/Projects/3DPDR/"
+#define OUTPUT_DIRECTORY "/home/frederik/Dropbox/Astro/Magritte/tests/unit_tests/calc_column_density/output/files/18-02-13_13:55_output/"
+#define PROJECT_FOLDER "/home/frederik/Dropbox/Astro/Magritte/tests/unit_tests/calc_column_density/"

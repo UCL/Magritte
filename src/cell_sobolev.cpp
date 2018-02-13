@@ -114,62 +114,62 @@ int cell_sobolev (long ncells, CELL *cell, LINE_SPECIES line_species, double *me
     }
 
 
-    // Walk along ray r itself
-
-    {
-      double Z  = 0.0;
-      double dZ = 0.0;
-
-      long current = origin;
-      long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
-
-      long s_c = LSPECGRIDRAD(lspec,current,kr);
-
-      double chi_c = opacity[s_c];
-
-
-      while (next != NCELLS)
-      {
-        long s_n = LSPECGRIDRAD(lspec,next,kr);
-
-        double chi_n = opacity[s_n];
-
-        tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
-
-        current = next;
-        next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
-
-        chi_c = chi_n;
-      }
-    }
-
-
-    // Calculate r's contribution to escape probability
-
-    tau_r = CC / line_species.frequency[b_ij] / speed_width * tau_r;
-
-
-    if (tau_r < -5.0)
-    {
-      escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
-    }
-
-    else if (fabs(tau_r) < 1.0E-8)
-    {
-      escape_probability = escape_probability + 1.0;
-    }
-
-    else
-    {
-      escape_probability = escape_probability + (1.0 - exp(-tau_r)) / tau_r;
-    }
+    // // Walk along ray r itself
+    //
+    // {
+    //   double Z  = 0.0;
+    //   double dZ = 0.0;
+    //
+    //   long current = origin;
+    //   long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+    //
+    //   long s_c = LSPECGRIDRAD(lspec,current,kr);
+    //
+    //   double chi_c = opacity[s_c];
+    //
+    //
+    //   while (next != NCELLS)
+    //   {
+    //     long s_n = LSPECGRIDRAD(lspec,next,kr);
+    //
+    //     double chi_n = opacity[s_n];
+    //
+    //     tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
+    //
+    //     current = next;
+    //     next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+    //
+    //     chi_c = chi_n;
+    //   }
+    // }
+    //
+    //
+    // // Calculate r's contribution to escape probability
+    //
+    // tau_r = CC / line_species.frequency[b_ij] / speed_width * tau_r;
+    //
+    //
+    // if (tau_r < -5.0)
+    // {
+    //   escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
+    // }
+    //
+    // else if (fabs(tau_r) < 1.0E-8)
+    // {
+    //   escape_probability = escape_probability + 1.0;
+    // }
+    //
+    // else
+    // {
+    //   escape_probability = escape_probability + (1.0 - exp(-tau_r)) / tau_r;
+    // }
 
   } // end of r loop over half of the rays
 
 
-  escape_probability = escape_probability / NRAYS;
+  escape_probability = escape_probability;// / NRAYS;
 
-  // printf("esc prob %lE\n", escape_probability);
+
 
 
   // ADD CONTINUUM RADIATION (due to dust and CMB)
@@ -181,15 +181,11 @@ int cell_sobolev (long ncells, CELL *cell, LINE_SPECIES line_species, double *me
   double factor          = 2.0*HH*pow(line_species.frequency[b_ij],3)/pow(CC,2);
 
   double rho_grain       = 2.0;
-
   double ngrain          = 2.0E-12*cell[origin].density*METALLICITY*100.0/GAS_TO_DUST;
-
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*line_species.frequency[b_ij]/3.0E11;
 
   double Planck_dust     = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/cell[origin].temperature.dust) - 1.0);
-
   double Planck_CMB      = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/T_CMB) - 1.0);
-
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 

@@ -32,13 +32,14 @@
 TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
 {
 
+
   // SET UP TEST
   // ___________
 
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_25.txt";
 
 
   /* Layout of the test grid:
@@ -117,7 +118,7 @@ TEST_CASE ("Visually inspect 5x4 2D grid: boundary cube")
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_6.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_6.txt";
 
 
   /* Layout of the test grid:
@@ -194,7 +195,7 @@ TEST_CASE ("Visually inspect grid: boundary circle")
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_25.txt";
 
 
   /* Layout of the test grid:
@@ -260,7 +261,7 @@ TEST_CASE ("Neighbor structure for 5x5, 2D grid")
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_25.txt";
 
 
   /* Layout of the test grid:
@@ -362,7 +363,7 @@ TEST_CASE ("Neighbor structure + boundary for 5x5, 2D grid")
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_25.txt";
 
 
   /* Layout of the test grid:
@@ -565,7 +566,7 @@ TEST_CASE ("Visually inspect 5x5 2D reduced grid: boundary cube")
 
   // Define grid input file
 
-  std::string test_inputfile = "../../../input/files/tests/grid_2D_test_25.txt";
+  std::string test_inputfile = "input/files/grid_2D_test_25.txt";
 
 
   /* Layout of the test grid:

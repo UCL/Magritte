@@ -36,7 +36,7 @@ ncells  = np.shape(my_data)[0]
 nindex = np.shape(my_data)[1]
 
 
-file_name = "../files/transition_levels_" + name + ".txt"
+file_name = "../files/" + date_stamp + "_output/transition_levels_" + name + ".txt"
 
 ilev, jlev = np.loadtxt(file_name, unpack=True)
 
@@ -121,8 +121,8 @@ ax2.set_yscale("log")
 fig2.tight_layout()
 
 
-plot_name1 = "error_line_intensities_" + name + tag + ".png"
-plot_name2 = "both_line_intensities_" + name + tag + ".png"
+plot_name1 = "../files/" + date_stamp + "_output/error_line_intensities_" + name + tag + ".png"
+plot_name2 = "../files/" + date_stamp + "_output/both_line_intensities_" + name + tag + ".png"
 
 
 # Save the plot

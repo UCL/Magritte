@@ -3,17 +3,19 @@ import matplotlib.pyplot as plt
 import sys
 
 
-
 # Check whether the date stamp of the datafile is given
-
 if (len(sys.argv)>1):
     date_stamp = str(sys.argv[1])
 else:
     print("ERROR : No date stamp given !\n")
     print("Please try again and give the date stamp of the output file you want to plot\n")
 
+if(len(sys.argv) > 2):
+    name = str(sys.argv[2])
+else:
+    print("ERROR : No name given !\n")
+    print("Please try again and give the name of the output file you want to plot\n")
 
-name = str(sys.argv[2])
 
 if(len(sys.argv) > 3):
     tag  = "_" + str(sys.argv[3])

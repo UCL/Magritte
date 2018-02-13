@@ -61,45 +61,32 @@ extern const long antipod[NRAYS];
 extern const long mirror_xz[NRAYS];
 
 
-/* Level populations */
+// Level populations
 
-extern const int nlev[NLSPEC];                              /* number of levels for this species */
+extern const int nlev[NLSPEC];                    // number of levels for this species
+extern const int nrad[NLSPEC];                    // number of radiative transitions for this species
 
-extern const int nrad[NLSPEC];               /* number of radiative transitions for this species */
+extern const int cum_nlev[NLSPEC];                // cumulative number of levels over species
+extern const int cum_nlev2[NLSPEC];               // cumulative of squares of levels over species
+extern const int cum_nrad[NLSPEC];                // cum. nr. of number of radiative transitions over species
 
-extern const int cum_nlev[NLSPEC];                   /* cumulative number of levels over species */
+extern const int ncolpar[NLSPEC];                 // number of collision partners for this species
+extern const int cum_ncolpar[NLSPEC];             // cumulative number of collision partners over species
 
-extern const int cum_nlev2[NLSPEC];              /* cumulative of squares of levels over species */
+extern const int ncoltemp[TOT_NCOLPAR];           // number of col. temperatures for each specs & prtnr
+extern const int ncoltran[TOT_NCOLPAR];           // number of col. transitions for each specs & prtnr
 
-extern const int cum_nrad[NLSPEC]; /* cumulative of number of radiative transitions over species */
+extern const int cum_ncoltemp[TOT_NCOLPAR];       // cum. nr. of col. temperatures over specs & prtnrs
+extern const int cum_ncoltran[TOT_NCOLPAR];       // cum. nr. of col. transitions over specs & prtnrs
+extern const int cum_ncoltrantemp[TOT_NCOLPAR];   // cumulative of ntran*ntemp over specs & prtnrs
 
+extern const int tot_ncoltemp[NLSPEC];            // total nr. of col. temperatures over specs & prtnrs
+extern const int tot_ncoltran[NLSPEC];            // total nr. of col. transitions over specs & prtnrs
+extern const int tot_ncoltrantemp[NLSPEC];        // total of ntran*ntemp over specs & prtnrs
 
-
-extern const int ncolpar[NLSPEC];               /* number of collision partners for this species */
-
-extern const int cum_ncolpar[NLSPEC];    /* cumulative number of collision partners over species */
-
-extern const int ncoltemp[TOT_NCOLPAR];    /* number of col. temperatures for each specs & prtnr */
-
-extern const int ncoltran[TOT_NCOLPAR];     /* number of col. transitions for each specs & prtnr */
-
-extern const int cum_ncoltemp[TOT_NCOLPAR]; /* cum. nr. of col. temperatures over specs & prtnrs */
-
-extern const int cum_ncoltran[TOT_NCOLPAR];  /* cum. nr. of col. transitions over specs & prtnrs */
-
-extern const int tot_ncoltemp[NLSPEC];     /* total nr. of col. temperatures over specs & prtnrs */
-
-extern const int tot_ncoltran[NLSPEC];      /* total nr. of col. transitions over specs & prtnrs */
-
-extern const int cum_tot_ncoltemp[NLSPEC];     /* cum. of tot. of col. temp. over specs & prtnrs */
-
-extern const int cum_tot_ncoltran[NLSPEC]; /* cumulative tot. of col. trans. over specs & prtnrs */
-
-extern const int cum_ncoltrantemp[TOT_NCOLPAR]; /* cumulative of ntran*ntemp over specs & prtnrs */
-
-extern const int tot_ncoltrantemp[NLSPEC];           /* total of ntran*ntemp over specs & prtnrs */
-
-extern const int cum_tot_ncoltrantemp[NLSPEC];   /* cum. of tot. of ntran*ntemp o specs & prtnrs */
+extern const int cum_tot_ncoltemp[NLSPEC];        // cum. of tot. of col. temp. over specs & prtnrs
+extern const int cum_tot_ncoltran[NLSPEC];        // cumulative tot. of col. trans. over specs & prtnrs
+extern const int cum_tot_ncoltrantemp[NLSPEC];    // cum. of tot. of ntran*ntemp o specs & prtnrs
 
 
 // Magritte constants

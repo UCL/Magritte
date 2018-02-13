@@ -8,6 +8,7 @@
 #define __PARAMETERS_HPP_INCLUDED__
 
 
+
 #define RUN_NUMBER "0"
 
 #define WRITE_INTERMEDIATE_OUTPUT false
@@ -15,14 +16,17 @@
 #define RESTART false
 
 
+// #define INPUTFILE "output/files/_output/grid.vtu"
+
+
 // Input files
 
-#define DIMENSIONS 1
+#define DIMENSIONS 2
 
-#define NRAYS 2
+#define NRAYS 8
 
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 
 
 #define INPUT_FORMAT '.txt'
@@ -31,53 +35,68 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/1Dn30.dat_conv.txt"
+#define INPUTFILE "input/files/3DPDR_input/1Dn20.dat_conv.txt"
+
+
+// #define PROJECT_FOLDER "input/files/Aori/"
+
+// #define INPUT_FORMAT   '.vtu'
+
+// #define INPUTFILE      "input/files/Aori/Aori_0001.vtu"
+
+// #define APPEND_FILE    INPUTFILE
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
+
 #define REAC_DATAFILE  "data/rates_reduced.txt"
 
 
 #define NLSPEC 4
 
-// #define LINE_DATAFILES {"data/12C+.txt", "data/16O.txt"}
+#define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/12CO.txt"}
 
-#define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
 
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
 
 
-// Ray tracing parameters
+/* Ray tracing parameters */
 
-#define NSIDES 6
+#define NSIDES 1
 
 #define THETA_CRIT 1.3
 
 #define CELL_BASED true
 
 
-// Radiative transfer
+/* Radiative transfer */
 
-#define SOBOLEV                    true
-#define ACCELERATION_POP_NG        true
+#define SOBOLEV true
+
+#define ACCELERATION_POP_NG true
+
 #define ACCELERATION_APPROX_LAMBDA true
 
 
-// Number of various iterations
+/* Number of various iterations */
 
-#define MAX_NITERATIONS  299
-#define PRELIM_CHEM_ITER 5
-#define PRELIM_TB_ITER   15
-#define CHEM_ITER        3
+#define MAX_NITERATIONS 299
+
+#define PRELIM_CHEM_ITER 0
+
+#define PRELIM_TB_ITER 10
+
+#define CHEM_ITER 8
 
 
-// Temperature range
+/* Temperature range */
 
 #define TEMPERATURE_MIN T_CMB
+
 #define TEMPERATURE_MAX 30000.0
 
 
-// Chemistry
+/* Chemistry */
 
 #define METALLICITY 1.0
 
@@ -85,27 +104,30 @@
 
 #define TIME_END_IN_YEARS 1.0E+7
 
-#define ALWAYS_INITIALIZE_CHEMISTRY false
+#define ALWAYS_INITIALIZE_CHEMISTRY true
 
 
-// External UV field
+/* External UV field */
 
 #define FIELD_FORM "UNI"
 
-#define G_EXTERNAL_X 1.0E+1
-#define G_EXTERNAL_Y 0.0E+0
-#define G_EXTERNAL_Z 0.0E+0
+#define G_EXTERNAL_X 5.270460E+0
+
+#define G_EXTERNAL_Y 5.270460E+0
+
+#define G_EXTERNAL_Z 5.666670E+0
 
 
-// Turbulent velocity
+/* Turbulent velocity */
 
 #define V_TURB 1.0E5
 
 
-// Cosmic ray variables
+/* Cosmic ray variables */
 
 #define ZETA   3.846153846153846
+
 #define OMEGA  0.42
 
 
-#endif // __PARAMETERS_HPP_INCLUDED__
+#endif /* __PARAMETERS_HPP_INCLUDED__ */
