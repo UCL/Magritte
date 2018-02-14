@@ -7,10 +7,7 @@
 #include <stdio.h>
 #include <omp.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "chemistry.hpp"
 #include "calc_column_density.hpp"
 #include "reaction_rates.hpp"

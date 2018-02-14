@@ -7,7 +7,6 @@
 #ifndef __THERMAL_BALANCE_HPP_INCLUDED__
 #define __THERMAL_BALANCE_HPP_INCLUDED__
 
-
 #include "declarations.hpp"
 
 

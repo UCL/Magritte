@@ -7,13 +7,10 @@
 #ifndef __DECLARATIONS_HPP_INCLUDED__
 #define __DECLARATIONS_HPP_INCLUDED__
 
-
 #include <string>
 
-#include "../parameters.hpp"
+#include "parameters.hpp"
 #include "Magritte_config.hpp"
-#include "declarations.hpp"
-
 #include "Magritte_constants.hpp"
 #include "Magritte_macros.hpp"
 #include "Magritte_types.hpp"

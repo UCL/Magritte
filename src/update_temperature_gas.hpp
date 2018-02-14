@@ -8,7 +8,6 @@
 #define __UPDATE_TEMPERATURE_GAS_HPP_INCLUDED__
 
 
-
 // update_temperature_gas: update gas temperature after a thermal balance iteration
 // --------------------------------------------------------------------------------
 

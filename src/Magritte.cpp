@@ -14,10 +14,7 @@
 #include <string>
 #include <iostream>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "definitions.hpp"
 
 #include "../setup/setup_data_tools.hpp"
@@ -173,72 +170,6 @@ int main ()
   LINE_SPECIES line_species;
 
   read_linedata (line_datafile, &line_species, species);
-  //
-  // for (int lspec = 0; lspec < NLSPEC; lspec++)
-  // {
-  //   for (long row = 0; row < nlev[lspec]; row++)
-  //   {
-  //     for (long col = 0; col < nlev[lspec]; col++)
-  //     {
-  //       printf ("%lE\t", line_species.frequency[LSPECLEVLEV(lspec,row,col)]);
-  //     }
-  //
-  //     printf("\n");
-  //   }
-  //
-  //   printf("\n");
-  //   printf("\n");
-  // }
-
-
-
-
-//   for (int lspec = 0; lspec < NLSPEC; lspec++)
-//   {
-//
-//     for (int par = 0; par < ncolpar[lspec]; par++)
-//     {
-//       // for (int l = 0; l < ncoltran[LSPECPAR(lspec,par)]; l++)
-//       {
-//         for (int tindex2 = 0; tindex2 < ncoltemp[LSPECPAR(lspec,par)]; tindex2++)
-//         {
-//           printf ("%1.2lE ", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex2)]);
-//         }
-//         printf("\n");
-//       }
-//       printf("\n");
-//     }
-//     printf("\n");
-//     printf("\n");
-//   }
-//
-//
-
-//     printf("\n");
-//
-//
-//     int lspec =0;
-//     int par =2;
-//
-//     printf("%d %d\n", lspec, par);
-//     for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
-//     {
-//       printf("%1.1lE ", line_species.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
-//     }
-//     printf("\n");
-//
-
-//   for (int lspec=0; lspec< NLSPEC; lspec++)
-//   {
-//
-//     for (int par=0; par<ncolpar[lspec]; par++)
-//     {
-//       printf("specpar %d\n",line_species.partner[LSPECPAR(lspec,par)]);
-//     }
-//     printf("\n");
-//   }
-//
-// return(0);
 
 
   printf ("(Magritte): line data read \n\n");
@@ -358,10 +289,6 @@ int main ()
 
     guess_temperature_gas (NCELLS, cell, UV_field);
 
-    // for (long n = 0; n < NCELLS; n++)
-    // {
-    //   std::cout << cell[n].temperature.gas << "\n";
-    // }
 
     // Calculate the dust temperature
 
@@ -382,7 +309,7 @@ int main ()
   printf("(Magritte): starting preliminary chemistry iterations \n\n");
 
 
-    COLUMN_DENSITIES column;
+    // COLUMN_DENSITIES column;
 
 # if (FIXED_NCELLS)
 
@@ -405,10 +332,10 @@ int main ()
 # endif
 
 
-  initialize_double_array (NCELLS*NRAYS, column.H2);
-  initialize_double_array (NCELLS*NRAYS, column.HD);
-  initialize_double_array (NCELLS*NRAYS, column.C);
-  initialize_double_array (NCELLS*NRAYS, column.CO);
+  initialize_double_array (NCELLS*NRAYS, column_H2);
+  initialize_double_array (NCELLS*NRAYS, column_HD);
+  initialize_double_array (NCELLS*NRAYS, column_C);
+  initialize_double_array (NCELLS*NRAYS, column_CO);
 
 
   // Preliminary chemistry iterations
@@ -583,11 +510,6 @@ int main ()
 
   } // end of tb_iteration loop
 
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      std::cout << cell[n].temperature.gas << "\n";
-    }
 
 #   pragma omp parallel                    \
     shared (ncells, cell, temperature_b)   \
@@ -775,7 +697,7 @@ int main ()
   timers.total.stop();
 
 
-  printf("(Magritte): Total calculation time is %lE\n\n", timers.total.duration);
+  printf ("(Magritte): Total calculation time is %lE\n\n", timers.total.duration);
 
 
 
@@ -783,16 +705,16 @@ int main ()
   // ____________
 
 
-  printf("(Magritte): writing output \n");
+  printf ("(Magritte): writing output \n");
 
 
 # if   (INPUT_FORMAT == '.vtu')
 
-  write_vtu_output (NCELLS, cell, inputfile);
+    write_vtu_output (NCELLS, cell, inputfile);
 
 # elif (INPUT_FORMAT == '.txt')
 
-  write_txt_output (NCELLS, cell, line_species, pop, mean_intensity);
+    write_txt_output (NCELLS, cell, line_species, pop, mean_intensity);
 
 # endif
 
@@ -800,7 +722,7 @@ int main ()
   write_performance_log (timers, niterations);
 
 
-  printf("(Magritte): output written \n\n");
+  printf ("(Magritte): output written \n\n");
 
 
 

@@ -10,9 +10,7 @@
 
 #include <string>
 
-#include "../parameters.hpp"
 #include "declarations.hpp"
-
 
 
 // read_txt_input: read input file

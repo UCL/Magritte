@@ -626,18 +626,22 @@ TEST_CASE ("Visually inspect 5x5 2D reduced grid: boundary cube")
   long size_z = 0;
 
 
-# if   (DIMENSIONS == 2)
+# if   (DIMENSIONS == 1)
 
-  long n_extra = 2*(size_x + size_y);   // number of boundary cells
+    long n_extra = 2;
+
+# elif (DIMENSIONS == 2)
+
+    long n_extra = 2*(size_x + size_y);
 
 # elif (DIMENSIONS == 3)
 
-  long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
+    long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);
 
 # endif
 
 
-  long ncells_full = ncells_red+n_extra;
+  long ncells_full = ncells_red + n_extra;
 
   CELL *cell_full = new CELL[ncells_full];
 

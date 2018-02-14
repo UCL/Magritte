@@ -11,10 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "reaction_rates.hpp"
 #include "calc_reac_rates.hpp"
 #include "calc_reac_rates_rad.hpp"

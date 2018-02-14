@@ -15,10 +15,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "radfield_tools.hpp"
 #include "spline.hpp"
 
@@ -300,10 +297,10 @@ double dust_scattering( double AV_ray, double lambda )
 
 
 
-/* X_lambda: Retuns ratio of optical depths at given lambda w.r.t. the visual wavelenght         */
-/*-----------------------------------------------------------------------------------------------*/
+// X_lambda: Retuns ratio of optical depths at given lambda w.r.t. visual wavelenght
+// ---------------------------------------------------------------------------------
 
-double X_lambda(double lambda)
+double X_lambda (double lambda)
 {
 
   /* Determine the ratio of the optical depth at a given wavelength to
@@ -327,54 +324,51 @@ double X_lambda(double lambda)
                        1.58E0, 1.42E0, 1.32E0, 1.00E0, 0.75E0, \
                        0.48E0, 0.28E0, 0.12E0, 0.05E0, 1.0E-99 };
 
-  double yp0 = 1.0E31;                                               /* lower boundary condition */
-  double ypn = 1.0E31;                                               /* upper boundary condition */
+  double yp0 = 1.0E31;   // lower boundary condition
+  double ypn = 1.0E31;   // upper boundary condition
 
-  double d2logX[n];                                   /* second order derivative of the function */
+  double d2logX[n];      // second order derivative of the function
 
-  double logX_result;                                      /* Resulting interpolated value for X */
+  double logX_result;    // Resulting interpolated value for X
 
 
-  /* Scale the grids to get a better spline interpolation */
-  /* The transformation was empirically determined */
+  // Scale grids to get better spline interpolation
 
   double loglambda = log(lambda);
 
   double loglambda_grid[n];
   double logX_grid[n];
 
-  for (int i=0; i<n; i++){
-
+  for (int i = 0; i < n; i++)
+  {
     loglambda_grid[i] = log(lambda_grid[i]);
     logX_grid[i]      = log(X_grid[i]);
   }
 
 
-  /* Calculate the cubic splines (spline.cpp) */
+  // Calculate cubic splines (spline.cpp)
 
-  spline(loglambda_grid, logX_grid, n, yp0, ypn, d2logX);
+  spline (loglambda_grid, logX_grid, n, yp0, ypn, d2logX);
 
 
-  /* Enforce the variables to be in the range of the interpolating function */
+  // Enforce variables to be in range of interpolating function
 
-  if (loglambda < loglambda_grid[0]){
-
+  if (loglambda < loglambda_grid[0])
+  {
     loglambda = loglambda_grid[0];
   }
 
-  if (loglambda > loglambda_grid[n-1]){
-
+  if (loglambda > loglambda_grid[n-1])
+  {
     loglambda = loglambda_grid[n-1];
   }
 
 
-  /* Evaluate the spline function to get the interpolation (spline.cpp) */
+  // Evaluate spline function to get interpolation (spline.cpp)
 
-  splint( loglambda_grid, logX_grid, d2logX, n, loglambda, &logX_result );
+  splint (loglambda_grid, logX_grid, d2logX, n, loglambda, &logX_result);
 
 
   return exp(logX_result);
 
 }
-
-/*-----------------------------------------------------------------------------------------------*/

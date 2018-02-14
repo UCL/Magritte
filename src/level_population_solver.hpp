@@ -7,7 +7,6 @@
 #ifndef __LEVEL_POPULATION_SOLVER_HPP_INCLUDED__
 #define __LEVEL_POPULATION_SOLVER_HPP_INCLUDED__
 
-
 #include "declarations.hpp"
 
 

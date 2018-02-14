@@ -11,8 +11,6 @@
 #include <string>
 #include <sstream>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 #include "write_output.hpp"
@@ -33,12 +31,12 @@ int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
 
   write_transition_levels (tag, line_species);
 
-  write_level_populations (tag, NCELLS, line_species, pop);
+  write_level_populations (tag, NCELLS, cell, line_species, pop);
 
   write_line_intensities (tag, NCELLS, line_species, mean_intensity);
 
   write_temperature_gas (tag, NCELLS, cell);
-  
+
   write_temperature_dust (tag, NCELLS, cell);
 
 

@@ -11,10 +11,7 @@
 #include <math.h>
 #include <omp.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "reduce.hpp"
 #include "initializers.hpp"
 
@@ -253,7 +250,9 @@ int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
 
       // Take average of neighbors
 
-      cell[p].density = 0.0;
+      cell[p].density              = 0.0;
+      cell[p].temperature.gas      = 0.0;
+      cell[p].temperature.gas_prev = 0.0;
 
 
       for (int n = 0; n < cell[p].n_neighbors; n++)
@@ -264,11 +263,18 @@ int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
         {
           long nr_red = cell[nr].id;     // nr of meighbor in reduced grid
 
-          cell[p].density = cell[p].density + cell_red[nr_red].density;
+          cell[p].density              = cell[p].density
+                                         + cell_red[nr_red].density;
+          cell[p].temperature.gas      = cell[p].temperature.gas
+                                         + cell_red[nr_red].temperature.gas;
+          cell[p].temperature.gas_prev = cell[p].temperature.gas_prev
+                                         + cell_red[nr_red].temperature.gas_prev;
         }
       }
 
-      cell[p].density = cell[p].density / cell[p].n_neighbors;
+      cell[p].density              = cell[p].density / cell[p].n_neighbors;
+      cell[p].temperature.gas      = cell[p].temperature.gas / cell[p].n_neighbors;
+      cell[p].temperature.gas_prev = cell[p].temperature.gas_prev / cell[p].n_neighbors;
 
     }
 
@@ -276,7 +282,9 @@ int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
     {
       long nr_red = cell[p].id;   // nr of cell in reduced grid
 
-      cell[p].density = cell_red[nr_red].density;
+      cell[p].density              = cell_red[nr_red].density;
+      cell[p].temperature.gas      = cell_red[nr_red].temperature.gas;
+      cell[p].temperature.gas_prev = cell_red[nr_red].temperature.gas_prev;
     }
 
   }

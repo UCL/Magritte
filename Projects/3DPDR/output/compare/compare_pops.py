@@ -28,22 +28,25 @@ file_name = "../files/" + date_stamp + "_output/level_populations_"+ name + tag 
 my_data = np.loadtxt(file_name)
 
 ncells  = np.shape(my_data)[0]
-nindex = np.shape(my_data)[1]
+nindex  = np.shape(my_data)[1]
 
 
 file_name = "output_3D-PDR/1Dn30/level_populations_" + name + tag + "_3D-PDR.txt"
 
 their_data = np.loadtxt(file_name)
 
+print np.shape(my_data)
+print np.shape(their_data)
+
 
 # Reverse the last two grid points
 
-arow           = their_data[-2]
-their_data[-2] = their_data[-1]
-their_data[-1] = arow
-
-nrows = np.shape(their_data)[0]
-ncols = np.shape(their_data)[1]
+# arow           = their_data[-2]
+# their_data[-2] = their_data[-1]
+# their_data[-1] = arow
+#
+# nrows = np.shape(their_data)[0]
+# ncols = np.shape(their_data)[1]
 
 
 # Calculate the error
@@ -80,7 +83,7 @@ for index in range(nindex):
         data_line2 = their_data[:,index]
         ax2.plot(data_line2, label=index)
 
-# ax1.legend()
+ax1.legend()
 ax1.set_title(name + tag + " error")
 ax1.set_xlabel("n (grid point nr)")
 ax1.set_ylabel(name + " error")
@@ -99,16 +102,13 @@ ax2.set_yscale("log")
 
 fig2.tight_layout()
 
-
 plot_name1 = "../files/" + date_stamp + "_output/plots/error_" + name + tag + ".png"
 plot_name2 = "../files/" + date_stamp + "_output/plots/both_" + name + tag + ".png"
 
 
 # Save the plot
-
 fig1.savefig(plot_name1, bbox_inches='tight')
 fig2.savefig(plot_name2, bbox_inches='tight')
-
 
 print("Plots saved as ")
 print("   " + plot_name1)

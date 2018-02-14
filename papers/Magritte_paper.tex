@@ -77,7 +77,7 @@
 
 % The list of authors, and the short list which is used in the headers.
 % If you need two or more lines of authors, add an extra line using \newauthor
-\author[F. De Ceuster]{ F. De Ceuster$^{1,2}$\thanks{Contact e-mail: \href{frederik.deceuster@kuleuven.be}{frederik.deceuster@kuleuven.be}}, J. Yates$^{1}$, J. Hetherington$^{3}$, P.A. Boyle$^{4}$, L. Decin$^{2}$, S. Viti$^{1}$ and T.G. Bisbas$^{5,6}$
+\author[F. De Ceuster et al.]{ F. De Ceuster$^{1,2}$\thanks{Contact e-mail: \href{frederik.deceuster@kuleuven.be}{frederik.deceuster@kuleuven.be}}, J. Yates$^{1}$, J. Hetherington$^{3}$, P.A. Boyle$^{4}$, L. Decin$^{2}$, S. Viti$^{1}$ and T.G. Bisbas$^{5,6}$
 \\ \\
 % List of institutions
 $^{1}$Department of Physics and Astronomy, University College London, Gower Place, London, WC1E 6BT, UK \\
@@ -140,8 +140,9 @@ Although Magritte is based on 3D-PDR, the whole code has been rewritten from scr
 
 
 \begin{figure}
-	\includegraphics[width=\columnwidth]{figures/scheme.pdf}
-  \caption{Scheme of the Magritte workflow, different boxes represent the different modules.}
+	\centering
+	\includegraphics[width=.9\columnwidth]{figures/scheme.pdf}
+  \caption{Iteration schemes of the Magritte workflow, different boxes represent the different modules.}
   \label{scheme}
 \end{figure}
 
@@ -178,6 +179,10 @@ Lines plus continuum.
 The line data were taken from the Leiden Atomic and Molecular Database \citep[LAMDA,][]{Schoier2005}.
 
 Acceleration methods Ng-acceleration \citet{Ng1974} and Rybicki-Hummer acceleration scheme \citet{Rybicki1991}. The combination of both acceleration schemes yield a significant speed up in the convergence of the level populations.
+The approximated lambda operator for the Sobolev case is simply given by
+\begin{equation}
+	\Lambda^{\ast} = 1 - \beta
+\end{equation}
 
 Later versions will be able to treat multiple dust scattering
 

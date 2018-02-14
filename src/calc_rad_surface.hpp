@@ -8,7 +8,6 @@
 #define __calc_rad_surface_HPP_INCLUDED__
 
 
-
 // calc_rad_surface: calculates UV radiation surface for each ray at each grid point
 // ---------------------------------------------------------------------------------
 

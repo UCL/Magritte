@@ -11,7 +11,7 @@ echo " "
 
 # Copy the parameters.hpp file to the main directory
 
-cp $1parameters.hpp ../parameters.hpp
+cp $1parameters.hpp ../src/parameters.hpp
 
 
 # Get the current date and time to label the output files

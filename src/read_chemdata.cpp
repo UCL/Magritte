@@ -12,10 +12,7 @@
 #include <string>
 #include <iostream>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "read_chemdata.hpp"
 #include "species_tools.hpp"
 

@@ -8,7 +8,6 @@
 #define __CELL_RADIATIVE_TRANSFER_HPP_INCLUDED__
 
 
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 #if (CELL_BASED)

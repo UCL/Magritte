@@ -7,8 +7,6 @@
 #ifndef __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
 #define __LEVEL_POPULATIONS_OTF_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 #if (!CELL_BASED)

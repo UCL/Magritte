@@ -7,8 +7,6 @@
 #ifndef __CELL_LEVEL_POPULATIONS_HPP_INCLUDED__
 #define __CELL_LEVEL_POPULATIONS_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 

@@ -10,8 +10,6 @@
 #include <math.h>
 #include <omp.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 #if (!CELL_BASED)

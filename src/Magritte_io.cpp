@@ -8,16 +8,15 @@
 #include <sstream>
 #include <string>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
-#include "declarations.hpp"
 
+#include "declarations.hpp"
 #include "definitions.hpp"
 
 #include "initializers.hpp"
 #include "read_input.hpp"
 #include "ray_tracing.hpp"
 #include "reduce.hpp"
+#include "bound.cpp"
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
 
@@ -29,13 +28,19 @@ int main ()
 
   // Define and initialize cells
 
-  std::cout << "Defining and initializing cells...\n";
+  std::string grid_init = GRID_INIT;
 
 
-  std::string grid_initial = "input/files/Aori/Aori_0001.vtu";
+# if   (INPUT_FORMAT == '.txt')
 
+    long ncells = get_NCELLS_txt (grid_init);
 
-  long ncells = get_NCELLS_vtu (grid_initial);
+# elif (INPUT_FORMAT == '.vtu')
+
+    long ncells = get_NCELLS_vtu (grid_init);
+
+# endif
+
 
   CELL *cell = new CELL[ncells];
 
@@ -44,43 +49,41 @@ int main ()
 
   // Read input grid
 
-  std::cout << "Reading input grid...\n";
+# if   (INPUT_FORMAT == '.txt')
 
-  read_vtu_input (inputfile, ncells, cell);
-  // read_txt_input (inputfile, NCELLS, cell);
+    read_txt_input (grid_init, ncells, cell);
+
+# elif (INPUT_FORMAT == '.vtu')
+
+    read_vtu_input (grid_init, ncells, cell);
+
+# endif
 
 
   // Find neighboring cells for each cell
 
-  std::cout << "Finding neighbors...\n";
-
-  read_neighbors ("input/files/Aori/neighbors.txt", ncells, cell);
+  find_neighbors (ncells, cell);
 
 
-  // find_neighbors (NCELLS, cell);
-
+  // read_neighbors ("input/files/Aori/neighbors.txt", ncells, cell);
   // write_neighbors ("", NCELLS, cell);
 
 
   // Specify grid boundaries
 
-  double x_min =  0.0E+00;
-  double x_max =  8.0E+16;
-  double y_min = -1.6E+17;
-  double y_max =  6.0E+16;
-  double z_min =  0.0E+00;
-  double z_max =  0.0E+00;
+  double x_min = X_MIN;
+  double x_max = X_MAX;
+  double y_min = Y_MIN;
+  double y_max = Y_MAX;
+  double z_min = Z_MIN;
+  double z_max = Z_MAX;
+
+  double threshold = THRESHOLD;   // keep cells if rel_density_change > threshold
 
 
   // Reduce grid
 
-  std::cout << "Reducing grid...\n";
-
-  double threshold = 1.0E9;   // keep cells if rel_density_change > threshold
-
   long ncells_red = reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
-
-  std::cout << "Reduced grid has " << ncells_red << " cells\n";
 
 
   // Define the reduced grid
@@ -92,34 +95,64 @@ int main ()
   initialize_reduced_grid (ncells_red, cell_red, ncells, cell);
 
 
+  // Define full grid
+
+  long size_x = 2;
+  long size_y = 0;
+  long size_z = 0;
+
+
+# if   (DIMENSIONS == 1)
+
+    long n_extra = 2;
+
+# elif (DIMENSIONS == 2)
+
+    long n_extra = 2*(size_x + size_y);
+
+# elif (DIMENSIONS == 3)
+
+    long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);
+
+# endif
+
+
+  long ncells_full = ncells_red + n_extra;
+
+  CELL *cell_full = new CELL[ncells_full];
+
+  initialize_cells (ncells_full, cell_full);
+
+
+  // Add boundary
+
+  bound_cube (ncells_red, cell_red, cell_full, size_x, size_y, size_z);
+
+
 
 
   // APPLY MAGRITTE ...
 
 
 
+  // 
+  // // Interpolate reduced grid back to original grid
+  //
+  // interpolate (ncells_red, cell_red, ncells, cell);
+  //
+  // delete [] cell_red;
 
-  // Interpolate reduced grid back to original grid
-
-  interpolate (ncells_red, cell_red, ncells, cell);
-
-  delete [] cell_red;
-
-
-  // write reduced grid as .txt file and .vtu file
-
-  std::cout << "  Writing .txt grid...\n";
-
-  std::ostringstream strs;
-  strs << threshold;
-  std::string thres = strs.str();
-
-
-  // write_grid ("reduced_" + thres, ncells, cell);
+  //
+  // // write reduced grid as .txt file and .vtu file
+  //
+  // std::cout << "  Writing .txt grid...\n";
+  //
+  // std::ostringstream strs;
+  // strs << threshold;
+  // std::string thres = strs.str();
+  //
 
 
-
-  write_vtu_output (ncells, cell, grid_initial);
 
   delete [] cell;
 

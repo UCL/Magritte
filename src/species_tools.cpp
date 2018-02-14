@@ -13,10 +13,7 @@
 #include <string>
 #include <algorithm>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "species_tools.hpp"
 
 

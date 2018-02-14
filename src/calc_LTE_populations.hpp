@@ -7,8 +7,6 @@
 #ifndef __CALC_LTE_POPULATIONS_HPP_INCLUDED__
 #define __CALC_LTE_POPULATIONS_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 

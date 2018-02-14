@@ -7,7 +7,6 @@
 #ifndef __READ_CHEMDATA_HPP_INCLUDED__
 #define __READ_CHEMDATA_HPP_INCLUDED__
 
-
 #include <string>
 
 

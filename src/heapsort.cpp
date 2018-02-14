@@ -1,30 +1,18 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* Heapsort algorithm for a list and its indices                                                 */
-/*                                                                                               */
-/* (based on a heapsort code from www.rosattacode.org)                                           */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*     a = array of doubles to sort   (IN/OUT)                                                   */
-/*     b = array of identifiers       (IN/OUT)                                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
 
 
 #include <stdio.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "heapsort.hpp"
 
 
 
-long max(double *a, long n, long i, long j, long k)
+
+long max (double *a, long n, long i, long j, long k)
 {
 
   long m = i;
@@ -47,13 +35,14 @@ long max(double *a, long n, long i, long j, long k)
 
 
 
-int downheap(double *a, long *b, long n, long i)
+
+int downheap (double *a, long *b, long n, long i)
 {
 
 
   while (1)
   {
-    long j = max(a, n, i, 2*i+1, 2*i+2);
+    long j = max (a, n, i, 2*i+1, 2*i+2);
 
     if (j == i)
     {
@@ -81,17 +70,16 @@ int downheap(double *a, long *b, long n, long i)
 
 
 
-
-int heapsort(double *a, long *b, long n)
+int heapsort (double *a, long *b, long n)
 {
 
 
-  for (long i=(n-2)/2; i>=0; i--)
+  for (long i = (n-2)/2; i >=0 ; i--)
   {
-    downheap(a, b, n, i);
+    downheap (a, b, n, i);
   }
 
-  for (long i=0; i<n; i++)
+  for (long i = 0; i < n; i++)
   {
     double temp1 = a[n-i-1];
     long   temp2 = b[n-i-1];
@@ -102,62 +90,10 @@ int heapsort(double *a, long *b, long n)
     b[n-i-1] = b[0];
     b[0]     = temp2;
 
-    downheap(a, b, n-i-1, 0);
+    downheap (a, b, n-i-1, 0);
   }
 
 
   return(0);
 
 }
-
-
-
-/* This main is for testing the heapsort algorithm above                                         */
-/*---------------------------------------------------------------------------------------------- */
-/*
-int main()
-{
-  double a[] = {3.14, 7, 5, 1.3, -2.1};
-  long    b[] = {3, 1, 2, 5, 4};
-  long n = sizeof a / sizeof a[0];
-  long i;
-
-  for (i=0; i < n; i++){
-
-    printf("%3.1f ", a[i]);
-  }
-
-  printf("\n");
-
-  for (i=0; i < n; i++){
-
-    printf("%ld ", b[i]);
-  }
-
-
-  printf("\n");
-  printf("\n");
-
-
-  heapsort(a, b, n);
-
-
-  for (i = 0; i < n; i++){
-
-    printf("%3.1f ", a[i]);
-  }
-
-  printf("\n");
-
-  for (i=0; i < n; i++){
-
-    printf("%ld ", b[i]);
-  }
-
-  printf("\n");
-
-
-    return 0;
-}
-*/
-/*-----------------------------------------------------------------------------------------------*/

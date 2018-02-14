@@ -9,10 +9,7 @@
 #include <math.h>
 #include <omp.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "thermal_balance.hpp"
 #include "initializers.hpp"
 #include "calc_column_density.hpp"
@@ -40,7 +37,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
   // +++++++++++++++++++++++++++++
 
 
-  printf("(thermal_balance): calculating chemical abundances \n\n");
+  printf ("(thermal_balance): calculating chemical abundances \n\n");
 
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
@@ -54,8 +51,8 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
 
   for (int chem_iteration = 0; chem_iteration < CHEM_ITER; chem_iteration++)
   {
-    printf( "(thermal_balance):   chemistry iteration %d of %d \n",
-            chem_iteration+1, CHEM_ITER );
+    printf ( "(thermal_balance):   chemistry iteration %d of %d \n",
+             chem_iteration+1, CHEM_ITER );
 
 
     // Calculate chemical abundances given current temperatures and radiation field
@@ -72,9 +69,9 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
   } // End of chemistry iteration
 
 
-  printf("\n(thermal_balance): time in chemistry: %lf sec\n", timers->chemistry.duration);
+  printf ("\n(thermal_balance): time in chemistry: %lf sec\n", timers->chemistry.duration);
 
-  printf("(thermal_balance): chemical abundances calculated \n\n");
+  printf ("(thermal_balance): chemical abundances calculated \n\n");
 
 
 

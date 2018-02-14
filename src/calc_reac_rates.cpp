@@ -9,10 +9,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "calc_reac_rates.hpp"
 #include "species_tools.hpp"
 

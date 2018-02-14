@@ -11,10 +11,8 @@
 #include <math.h>
 #include <omp.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
-#include "declarations.hpp"
 
+#include "declarations.hpp"
 #include "reduce.hpp"
 #include "initializers.hpp"
 #include "HEALPix/chealpix.h"

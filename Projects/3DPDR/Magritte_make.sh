@@ -11,5 +11,5 @@ cd $Magritte_folder
 # Make Magritte
 make PROJECT_FOLDER=$project_folder
 
-# Execute Magritte
-./Magritte.exe
+# Go back to project folder
+cd $project_folder

@@ -18,10 +18,7 @@
 #include <vtkCellData.h>
 #include <vtkVersion.h>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "read_input.hpp"
 #include "initializers.hpp"
 

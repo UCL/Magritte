@@ -12,10 +12,7 @@
 #include <string>
 #include <sstream>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
-
 #include "write_output.hpp"
 #include "species_tools.hpp"
 #include "radfield_tools.hpp"
@@ -205,7 +202,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, LINE_SPECIES line_species, double *pop)
+int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species, double *pop)
 {
 
   if (!tag.empty())
@@ -235,7 +232,9 @@ int write_level_populations (std::string tag, long ncells, LINE_SPECIES line_spe
     {
       for (int i = 0; i < nlev[lspec]; i++)
       {
-        fprintf (file, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]);
+        double abundance = 1.0;//cell[n].density/cell[n].abundance[line_species.nr[lspec]];
+
+        fprintf (file, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]/abundance);
       }
 
       fprintf (file, "\n");

@@ -7,7 +7,6 @@
 #ifndef __READ_LINEDATA_HPP_INCLUDED__
 #define __READ_LINEDATA_HPP_INCLUDED__
 
-
 #include <string>
 
 

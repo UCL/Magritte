@@ -13,7 +13,6 @@
 #include "declarations.hpp"
 
 
-
 // write_txt_output: write output in txt format
 // --------------------------------------------
 

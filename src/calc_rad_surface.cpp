@@ -11,10 +11,8 @@
 
 #include <string>
 
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
-#include "declarations.hpp"
 
+#include "declarations.hpp"
 #include "calc_rad_surface.hpp"
 
 

@@ -7,7 +7,6 @@
 #ifndef __LINE_PROFILE_HPP_INCLUDED__
 #define __LINE_PROFILE_HPP_INCLUDED__
 
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 

@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "../parameters.hpp"
+#include "../src/parameters.hpp"
 
 
 #ifndef TOL

@@ -7,8 +7,6 @@
 #ifndef __SOBOLEV_HPP_INCLUDED__
 #define __SOBOLEV_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 #if (!CELL_BASED)

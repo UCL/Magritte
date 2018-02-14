@@ -7,8 +7,6 @@
 #ifndef __feautrier_HPP_INCLUDED__
 #define __feautrier_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 

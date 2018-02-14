@@ -7,7 +7,6 @@
 #ifndef __CHEMISTRY_HPP_INCLUDED__
 #define __CHEMISTRY_HPP_INCLUDED__
 
-
 #include "declarations.hpp"
 
 

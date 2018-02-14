@@ -7,8 +7,6 @@
 #ifndef __CALC_COLUMN_DENSITY_HPP_INCLUDED__
 #define __CALC_COLUMN_DENSITY_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
 #include "declarations.hpp"
 
 

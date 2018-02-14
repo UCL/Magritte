@@ -7,9 +7,6 @@
 #ifndef __RAY_TRACING_HPP_INCLUDED__
 #define __RAY_TRACING_HPP_INCLUDED__
 
-
-#include "../parameters.hpp"
-#include "Magritte_config.hpp"
 #include "declarations.hpp"
 
 
