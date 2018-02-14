@@ -135,12 +135,11 @@ int main ()
 
 
 
-  // 
-  // // Interpolate reduced grid back to original grid
-  //
-  // interpolate (ncells_red, cell_red, ncells, cell);
-  //
-  // delete [] cell_red;
+  // Interpolate reduced grid back to original grid
+
+  interpolate (ncells_red, cell_red, ncells, cell);
+
+  delete [] cell_red;
 
   //
   // // write reduced grid as .txt file and .vtu file

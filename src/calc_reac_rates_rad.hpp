@@ -15,42 +15,39 @@
 // rate_PHOTD: returns rate coefficient for photodesorption
 // --------------------------------------------------------
 
-double rate_PHOTD (REACTION *reaction, int reac, double temperature_gas, double *rad_surface, double *AV, long gridp );
+double rate_PHOTD (CELL *cell, REACTION *reaction, int reac, long o);
 
 
 // rate_H2_photodissociation: returns rate coefficient for H2 dissociation
 // -----------------------------------------------------------------------
 
-double rate_H2_photodissociation (REACTION *reaction, int reac, double *rad_surface, double *AV,
-                                  double *column_H2, long gridp);
+double rate_H2_photodissociation (CELL *cell, REACTION *reaction, int reac, double *column_H2, long o);
 
 
 // rate_CO_photodissociation: returns rate coefficient for CO dissociation
 // -----------------------------------------------------------------------
 
-double rate_CO_photodissociation (REACTION *reaction, int reac, double *rad_surface,
-                                  double *AV, double *column_CO, double *column_H2, long gridp);
+double rate_CO_photodissociation (CELL *cell, REACTION *reaction, int reac,
+                                  double *column_CO, double *column_H2, long o);
 
 
 // rate_C_photoionization: returns rate coefficient for C photoionization
 // ----------------------------------------------------------------------
 
-double rate_C_photoionization (REACTION *reaction, int reac, double temperature_gas,
-                               double *rad_surface, double *AV,
+double rate_C_photoionization (CELL *cell, REACTION *reaction, int reac,
                                double *column_C, double *column_H2, long gridp );
 
 
 // rate_SI_photoionization: returns rate coefficient for SI photoionization
 // ------------------------------------------------------------------------
 
-double rate_SI_photoionization (REACTION *reaction, int reac, double *rad_surface, double *AV, long gridp);
+double rate_SI_photoionization (CELL *cell, REACTION *reaction, int reac, long o);
 
 
 // rate_canonical_photoreaction: returns rate coefficient for a canonical photoreaction
 // ------------------------------------------------------------------------------------
 
-double rate_canonical_photoreaction (REACTION *reaction, int reac, double temperature_gas,
-                                     double *rad_surface, double *AV, long gridp );
+double rate_canonical_photoreaction (CELL *cell, REACTION *reaction, int reac, long o);
 
 
 #endif // __calc_reac_rates_rad_HPP_INCLUDED__

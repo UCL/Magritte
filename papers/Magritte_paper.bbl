@@ -1,0 +1,54 @@
+\begin{thebibliography}{}
+\makeatletter
+\relax
+\def\mn@urlcharsother{\let\do\@makeother \do\$\do\&\do\#\do\^\do\_\do\%\do\~}
+\def\mn@doi{\begingroup\mn@urlcharsother \@ifnextchar [ {\mn@doi@}
+  {\mn@doi@[]}}
+\def\mn@doi@[#1]#2{\def\@tempa{#1}\ifx\@tempa\@empty \href
+  {http://dx.doi.org/#2} {doi:#2}\else \href {http://dx.doi.org/#2} {#1}\fi
+  \endgroup}
+\def\mn@eprint#1#2{\mn@eprint@#1:#2::\@nil}
+\def\mn@eprint@arXiv#1{\href {http://arxiv.org/abs/#1} {{\tt arXiv:#1}}}
+\def\mn@eprint@dblp#1{\href {http://dblp.uni-trier.de/rec/bibtex/#1.xml}
+  {dblp:#1}}
+\def\mn@eprint@#1:#2:#3:#4\@nil{\def\@tempa {#1}\def\@tempb {#2}\def\@tempc
+  {#3}\ifx \@tempc \@empty \let \@tempc \@tempb \let \@tempb \@tempa \fi \ifx
+  \@tempb \@empty \def\@tempb {arXiv}\fi \@ifundefined
+  {mn@eprint@\@tempb}{\@tempb:\@tempc}{\expandafter \expandafter \csname
+  mn@eprint@\@tempb\endcsname \expandafter{\@tempc}}}
+
+\bibitem[\protect\citeauthoryear{Bisbas, Bell, Viti, Yates  \& Barlow}{Bisbas
+  et~al.}{2012}]{Bisbas2012}
+Bisbas T.~G.,  Bell T.~A.,  Viti S.,  Yates J.,   Barlow M.~J.,  2012, \mn@doi
+  [Mon. Not. R. Astron. Soc.] {10.1111/j.1365-2966.2012.22077.x}, 427, 2100
+
+\bibitem[\protect\citeauthoryear{{G{\'o}rski}, {Hivon}, {Banday}, {Wandelt},
+  {Hansen}, {Reinecke}  \& {Bartelmann}}{{G{\'o}rski}
+  et~al.}{2005}]{Gorski2005}
+{G{\'o}rski} K.~M.,  {Hivon} E.,  {Banday} A.~J.,  {Wandelt} B.~D.,  {Hansen}
+  F.~K.,  {Reinecke} M.,   {Bartelmann} M.,  2005, \mn@doi [\apj]
+  {10.1086/427976}, \href {http://adsabs.harvard.edu/abs/2005ApJ...622..759G}
+  {622, 759}
+
+\bibitem[\protect\citeauthoryear{{Ng}}{{Ng}}{1974}]{Ng1974}
+{Ng} K.-C.,  1974, \mn@doi [\jcp] {10.1063/1.1682399}, \href
+  {http://adsabs.harvard.edu/abs/1974JChPh..61.2680N} {61, 2680}
+
+\bibitem[\protect\citeauthoryear{Rybicki \& Hummer}{Rybicki \&
+  Hummer}{1991}]{Rybicki1991}
+Rybicki G.~B.,  Hummer D.~G.,  1991, Astron. Astrophys., 245, 171
+
+\bibitem[\protect\citeauthoryear{{Sch{\"o}ier}, {van der Tak}, {van Dishoeck}
+  \& {Black}}{{Sch{\"o}ier} et~al.}{2005}]{Schoier2005}
+{Sch{\"o}ier} F.~L.,  {van der Tak} F.~F.~S.,  {van Dishoeck} E.~F.,   {Black}
+  J.~H.,  2005, \mn@doi [\aap] {10.1051/0004-6361:20041729}, \href
+  {http://esoads.eso.org/abs/2005A%26A...432..369S} {432, 369}
+
+\bibitem[\protect\citeauthoryear{{Woodall}, {Ag{\'u}ndez}, {Markwick-Kemper}
+  \& {Millar}}{{Woodall} et~al.}{2007}]{Woodall2007}
+{Woodall} J.,  {Ag{\'u}ndez} M.,  {Markwick-Kemper} A.~J.,   {Millar} T.~J.,
+  2007, \mn@doi [\aap] {10.1051/0004-6361:20064981}, \href
+  {http://adsabs.harvard.edu/abs/2007A%26A...466.1197W} {466, 1197}
+
+\makeatother
+\end{thebibliography}

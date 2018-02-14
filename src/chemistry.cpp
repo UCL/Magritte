@@ -18,8 +18,8 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, double *rad_surface,
-               double *AV, double *column_H2, double *column_HD, double *column_C, double *column_CO)
+int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+               double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
   // Calculate column densities
@@ -29,8 +29,8 @@ int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, do
 
   // For all cells
 
-# pragma omp parallel                                                                           \
-  shared (ncells, cell, reaction, rad_surface, AV, column_H2, column_HD, column_C, column_CO)   \
+# pragma omp parallel                                                          \
+  shared (ncells, cell, reaction, column_H2, column_HD, column_C, column_CO)   \
   default (none)
   {
 
@@ -46,8 +46,7 @@ int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, do
 
     // Calculate reaction rates
 
-    reaction_rates (NCELLS, cell, reaction, gridp, rad_surface, AV,
-                    column_H2, column_HD, column_C, column_CO);
+    reaction_rates (NCELLS, cell, reaction, gridp, column_H2, column_HD, column_C, column_CO);
 
 
     // Solve rate equations

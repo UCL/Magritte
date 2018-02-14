@@ -11,7 +11,7 @@
 // calc_UV_field: calculates UV radiation field at each cell
 // ---------------------------------------------------------
 
-int calc_UV_field (long ncells, double *AV, double *rad_surface, double *UV_field);
+int calc_UV_field (long ncells, CELL *cell);
 
 
 #endif // __calc_UV_field_HPP_INCLUDED__

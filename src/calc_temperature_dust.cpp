@@ -15,7 +15,7 @@
 // calc_temperature_dust: calculate dust temparatures
 // --------------------------------------------------
 
-int calc_temperature_dust (long ncells, CELL *cell, double *UV_field, double *rad_surface)
+int calc_temperature_dust (long ncells, CELL *cell)
 {
 
 /* Calculate the dust temperature for each particle using the treatment of Hollenbach, Takahashi
@@ -53,8 +53,8 @@ int calc_temperature_dust (long ncells, CELL *cell, double *UV_field, double *ra
 
   /* For all grid points */
 
-# pragma omp parallel                            \
-  shared (ncells, cell, UV_field, rad_surface)   \
+# pragma omp parallel     \
+  shared (ncells, cell)   \
   default (none)
   {
 
@@ -70,7 +70,7 @@ int calc_temperature_dust (long ncells, CELL *cell, double *UV_field, double *ra
 
     // Contribution to dust temperature from local FUV flux and CMB background
 
-    cell[n].temperature.dust = 8.9E-11*nu_0*(1.71*UV_field[n]) + pow(T_CMB, 5);
+    cell[n].temperature.dust = 8.9E-11*nu_0*(1.71*cell[n].UV) + pow(T_CMB, 5);
 
 
     for (long r = 0; r < NRAYS; r++)
@@ -78,7 +78,7 @@ int calc_temperature_dust (long ncells, CELL *cell, double *UV_field, double *ra
       /* Minimum dust temperature is related to incident FUV flux along each ray
          Convert incident FUV flux from Draine to Habing units by multiplying by 1.71 */
 
-      double temperature_min = 12.2*pow(1.71*rad_surface[RINDEX(n,r)], 0.2);
+      double temperature_min = 12.2*pow(1.71*cell[n].ray[r].rad_surface, 0.2);
 
 
       // Add contribution to dust temperature from FUV flux incident along this ray

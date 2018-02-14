@@ -19,6 +19,7 @@
 #define INPUT_FORMAT '.txt'
 
 
+
 // VARIABLE GRID
 
 #define GRID_INIT "input/files/1Dn30.dat_conv.txt"
@@ -30,7 +31,7 @@
 #define Z_MIN -1.0E+00
 #define Z_MAX +1.0E+00
 
-#define THRESHOLD 1.0E+9;
+#define THRESHOLD 1.0E+99;
 
 #define SIZE_X 2
 #define SIZE_Y 0

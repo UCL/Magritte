@@ -10,15 +10,11 @@
 #include "declarations.hpp"
 
 
-// thermal_balance: perform a thermal balance iteration to calculate thermal flux
-// ------------------------------------------------------------------------------
+// thermal_balance: perform thermal balance iterations to determine temperature
+// ----------------------------------------------------------------------------
 
-int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                     LINE_SPECIES line_species,
-                     double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double *UV_field, double *rad_surface, double *AV, double *pop,
-                     double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
-                     double *thermal_ratio, TIMERS *timers);
+int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, LINE_SPECIES line_species,
+                     double *pop, double *mean_intensity, TIMERS *timers);
 
 
 #endif // __THERMAL_BALANCE_HPP_INCLUDED__

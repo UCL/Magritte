@@ -21,8 +21,8 @@
 // reaction_rates: Check which kind of reaction and call appropriate rate calculator
 // ---------------------------------------------------------------------------------
 
-int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, double *rad_surface,
-                    double *AV, double *column_H2, double *column_HD, double *column_C, double *column_CO)
+int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
+                    double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
   // For all reactions
@@ -178,8 +178,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
 
     else if (R2 == "PHOTD")
     {
-      cell[gridp].rate[reac] = rate_PHOTD (reaction, reac, cell[gridp].temperature.gas,
-                                           rad_surface, AV, gridp);
+      cell[gridp].rate[reac] = rate_PHOTD (cell, reaction, reac, gridp);
     }
 
 
@@ -190,8 +189,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
     {
       nr_H2_photodissociation = reac;
 
-      cell[gridp].rate[reac] = rate_H2_photodissociation (reaction, reac, rad_surface, AV,
-                                                          column_H2, gridp);
+      cell[gridp].rate[reac] = rate_H2_photodissociation (cell, reaction, reac, column_H2, gridp);
     }
 
 
@@ -199,8 +197,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
 
     else if ( (R1 == "HD")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      cell[gridp].rate[reac] = rate_H2_photodissociation (reaction, reac, rad_surface, AV,
-                                                          column_HD, gridp);
+      cell[gridp].rate[reac] = rate_H2_photodissociation (cell, reaction, reac, column_HD, gridp);
     }
 
 
@@ -210,8 +207,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
               && ( P1 == "C"  ||  P2 == "C"  ||  P3 == "C"  ||  P4 == "C")
               && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O") )
     {
-      cell[gridp].rate[reac] = rate_CO_photodissociation (reaction, reac, rad_surface, AV,
-                                                          column_CO, column_H2, gridp);
+      cell[gridp].rate[reac] = rate_CO_photodissociation (cell, reaction, reac, column_CO, column_H2, gridp);
     }
 
 
@@ -222,8 +218,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
     {
       nr_C_ionization = reac;
 
-      cell[gridp].rate[reac] = rate_C_photoionization (reaction, reac, cell[gridp].temperature.gas,
-                                                       rad_surface, AV, column_C, column_H2, gridp);
+      cell[gridp].rate[reac] = rate_C_photoionization (cell, reaction, reac, column_C, column_H2, gridp);
     }
 
 
@@ -232,7 +227,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
     else if ( (R1 == "S")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               &&  ( (P1 == "S+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "S+") ))
     {
-      cell[gridp].rate[reac] = rate_SI_photoionization (reaction, reac, rad_surface, AV, gridp);
+      cell[gridp].rate[reac] = rate_SI_photoionization (cell, reaction, reac, gridp);
     }
 
 
@@ -240,8 +235,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp, dou
 
     else if (R2 == "PHOTON")
     {
-      cell[gridp].rate[reac] = rate_canonical_photoreaction (reaction, reac, cell[gridp].temperature.gas,
-                                                             rad_surface, AV, gridp);
+      cell[gridp].rate[reac] = rate_canonical_photoreaction (cell, reaction, reac, gridp);
     }
 
 

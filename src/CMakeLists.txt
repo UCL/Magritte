@@ -44,6 +44,7 @@ calc_reac_rates_rad.cpp
 radfield_tools.cpp
 spline.cpp
 thermal_balance.cpp
+thermal_balance_iteration.cpp
 calc_LTE_populations.cpp
 level_populations_otf.cpp
 cell_level_populations.cpp

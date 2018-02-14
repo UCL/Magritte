@@ -50,7 +50,7 @@ int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
 // write_performance_log: write performance results
 // ------------------------------------------------
 
-int write_performance_log (TIMERS timers, int n_tb_iterations)
+int write_performance_log (TIMERS timers)
 {
 
 
@@ -69,10 +69,10 @@ int write_performance_log (TIMERS timers, int n_tb_iterations)
     exit (1);
   }
 
+
   fprintf (file, "time_total       %lE\n", timers.total.duration);
   fprintf (file, "time_level_pop   %lE\n", timers.level_pop.duration);
   fprintf (file, "time_chemistry   %lE\n", timers.chemistry.duration);
-  fprintf (file, "n_tb_iterations   %d\n", n_tb_iterations);
 
 
   fclose (file);

@@ -73,7 +73,7 @@ int initialize_previous_temperature_gas (long ncells, CELL *cell);
 // gueess_temperature_gas: make a guess for gas temperature based on UV field
 // --------------------------------------------------------------------------
 
-int guess_temperature_gas (long ncells, CELL *cell, double *UV_field);
+int guess_temperature_gas (long ncells, CELL *cell);
 
 
 // initialize_abundances: set abundanceces to initial values

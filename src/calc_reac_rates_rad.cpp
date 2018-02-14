@@ -23,7 +23,7 @@
 // rate_PHOTD: returns rate coefficient for photodesorption
 // --------------------------------------------------------
 
-double rate_PHOTD (REACTION *reaction, int reac, double temperature_gas, double *rad_surface, double *AV, long gridp)
+double rate_PHOTD (CELL *cell, REACTION *reaction, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -45,17 +45,17 @@ double rate_PHOTD (REACTION *reaction, int reac, double temperature_gas, double 
                                   // = average grain surface area per H atom (devided by PI)
 
 
-  if      (temperature_gas < 50.0)
+  if      (cell[o].temperature.gas < 50.0)
   {
     yield = 3.5E-3;
   }
 
-  else if (temperature_gas < 85.0)
+  else if (cell[o].temperature.gas < 85.0)
   {
     yield = 4.0E-3;
   }
 
-  else if (temperature_gas < 100.0)
+  else if (cell[o].temperature.gas < 100.0)
   {
     yield = 5.5E-3;
   }
@@ -69,10 +69,9 @@ double rate_PHOTD (REACTION *reaction, int reac, double temperature_gas, double 
   double rate = 0.0;   // reactio rate coefficient
 
 
-  for (long ray = 0; ray < NRAYS; ray++)
+  for (long r = 0; r < NRAYS; r++)
   {
-    rate = rate + flux * rad_surface[RINDEX(gridp,ray)]
-                       * exp(-1.8*AV[RINDEX(gridp,ray)]) * grain_param * yield;
+    rate = rate + flux * cell[o].ray[r].rad_surface * exp(-1.8*cell[o].ray[r].AV) * grain_param * yield;
   }
 
 
@@ -86,8 +85,7 @@ double rate_PHOTD (REACTION *reaction, int reac, double temperature_gas, double 
 // rate_H2_photodissociation: returns rate coefficient for H2 dissociation
 // -----------------------------------------------------------------------
 
-double rate_H2_photodissociation (REACTION *reaction, int reac, double *rad_surface, double *AV,
-                                  double *column_H2, long gridp )
+double rate_H2_photodissociation (CELL *cell, REACTION *reaction, int reac, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -111,11 +109,11 @@ double rate_H2_photodissociation (REACTION *reaction, int reac, double *rad_surf
   double rate = 0.0;   // reaction rate coefficient
 
 
-  for (long ray = 0; ray < NRAYS; ray++)
+  for (long r = 0; r < NRAYS; r++)
   {
-    rate = rate + alpha * rad_surface[RINDEX(gridp,ray)]
-                        * self_shielding_H2 (column_H2[RINDEX(gridp,ray)], doppler_width, radiation_width)
-                        * dust_scattering (AV[RINDEX(gridp,ray)], lambda) / 2.0;
+    rate = rate + alpha * cell[o].ray[r].rad_surface
+                        * self_shielding_H2 (column_H2[RINDEX(o,r)], doppler_width, radiation_width)
+                        * dust_scattering (cell[o].ray[r].AV, lambda) / 2.0;
   }
 
 
@@ -129,8 +127,8 @@ double rate_H2_photodissociation (REACTION *reaction, int reac, double *rad_surf
 // rate_CO_photodissociation: returns rate coefficient for CO dissociation
 // -----------------------------------------------------------------------
 
-double rate_CO_photodissociation (REACTION *reaction, int reac, double *rad_surface, double *AV,
-                                  double *column_CO, double *column_H2, long gridp)
+double rate_CO_photodissociation (CELL *cell, REACTION *reaction, int reac,
+                                  double *column_CO, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -146,15 +144,15 @@ double rate_CO_photodissociation (REACTION *reaction, int reac, double *rad_surf
   double rate = 0.0;   // reaction rate coefficient
 
 
-  for (long ray = 0; ray < NRAYS; ray++)
+  for (long r = 0; r < NRAYS; r++)
   {
 
     /* Calculate the mean wavelength (in Å) of the 33 dissociating bands,
        weighted by their fractional contribution to the total shielding
        van Dishoeck & Black (1988, ApJ, 334, 771, Equation 4) */
 
-    double u = log10(1.0 + column_CO[RINDEX(gridp,ray)]);
-    double w = log10(1.0 + column_H2[RINDEX(gridp,ray)]);
+    double u = log10(1.0 + column_CO[RINDEX(o,r)]);
+    double w = log10(1.0 + column_H2[RINDEX(o,r)]);
 
 
     /* mean wavelength (in Å) of 33 dissociating bands weighted
@@ -166,20 +164,20 @@ double rate_CO_photodissociation (REACTION *reaction, int reac, double *rad_surf
     /* lambda cannot be larger than the wavelength of band 33 (1076.1Å)
        and cannot be smaller than the wavelength of band 1 (913.6Å) */
 
-    if (lambda > 1076.1)
+    if      (lambda > 1076.1)
     {
       lambda = 1076.1;
     }
 
-    if (lambda < 913.6)
+    else if (lambda < 913.6)
     {
       lambda = 913.6;
     }
 
 
-    rate = rate + alpha * rad_surface[RINDEX(gridp,ray)]
-                        * self_shielding_CO (column_CO[RINDEX(gridp,ray)], column_H2[RINDEX(gridp,ray)])
-                        * dust_scattering (AV[RINDEX(gridp,ray)], lambda) / 2.0;
+    rate = rate + alpha * cell[o].ray[r].rad_surface
+                        * self_shielding_CO (column_CO[RINDEX(o,r)], column_H2[RINDEX(o,r)])
+                        * dust_scattering (cell[o].ray[r].AV, lambda) / 2.0;
   }
 
 
@@ -193,9 +191,8 @@ double rate_CO_photodissociation (REACTION *reaction, int reac, double *rad_surf
 // rate_C_photoionization: returns rate coefficient for C photoionization
 // ----------------------------------------------------------------------
 
-double rate_C_photoionization (REACTION *reaction, int reac, double temperature_gas,
-                               double *rad_surface, double *AV,
-                               double *column_C, double *column_H2, long gridp )
+double rate_C_photoionization (CELL *cell, REACTION *reaction, int reac,
+                               double *column_C, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -211,20 +208,20 @@ double rate_C_photoionization (REACTION *reaction, int reac, double temperature_
   double rate = 0.0;   // reaction rate coefficient
 
 
-  for (long ray = 0; ray < NRAYS; ray++)
+  for (long r = 0; r < NRAYS; r++)
   {
 
     /* Calculate the optical depth in the C absorption band, accounting
        for grain extinction and shielding by C and overlapping H2 lines */
 
-    double tau_C = gamma*AV[RINDEX(gridp,ray)] + 1.1E-17*column_C[RINDEX(gridp,ray)]
-                   + ( 0.9*pow(temperature_gas,0.27)
-                          * pow(column_H2[RINDEX(gridp,ray)]/1.59E21, 0.45) );
+    double tau_C = gamma*cell[o].ray[r].AV + 1.1E-17*column_C[RINDEX(o,r)]
+                   + ( 0.9*pow(cell[o].temperature.gas,0.27)
+                          * pow(column_H2[RINDEX(o,r)]/1.59E21, 0.45) );
 
 
     // Calculate the C photoionization rate
 
-    rate = rate + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau_C) / 2.0;
+    rate = rate + alpha * cell[o].ray[r].rad_surface * exp(-tau_C) / 2.0;
   }
 
 
@@ -238,7 +235,7 @@ double rate_C_photoionization (REACTION *reaction, int reac, double temperature_
 // rate_SI_photoionization: returns rate coefficient for SI photoionization
 // ------------------------------------------------------------------------
 
-double rate_SI_photoionization (REACTION *reaction, int reac, double *rad_surface, double *AV, long gridp)
+double rate_SI_photoionization (CELL *cell, REACTION *reaction, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -254,18 +251,18 @@ double rate_SI_photoionization (REACTION *reaction, int reac, double *rad_surfac
   double rate = 0.0;   // reaction rate coefficient
 
 
-  for (long ray = 0; ray < NRAYS; ray++)
+  for (long r = 0; r < NRAYS; r++)
   {
 
     /* Calculate the optical depth in the SI absorption band, accounting
        for grain extinction and shielding by ??? */
 
-    double tau_S = gamma*AV[RINDEX(gridp,ray)];
+    double tau_S = gamma*cell[o].ray[r].AV;
 
 
     // Calculate SI photoionization rate
 
-    rate = rate + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau_S) / 2.0;
+    rate = rate + alpha * cell[o].ray[r].rad_surface * exp(-tau_S) / 2.0;
   }
 
 
@@ -279,8 +276,7 @@ double rate_SI_photoionization (REACTION *reaction, int reac, double *rad_surfac
 // rate_canonical_photoreaction: returns rate coefficient for a canonical photoreaction
 // ------------------------------------------------------------------------------------
 
-double rate_canonical_photoreaction (REACTION *reaction, int reac, double temperature_gas,
-                                     double *rad_surface, double *AV, long gridp)
+double rate_canonical_photoreaction (CELL *cell, REACTION *reaction, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -299,20 +295,20 @@ double rate_canonical_photoreaction (REACTION *reaction, int reac, double temper
   /* Check for large negative gamma values that might cause discrepant
      rates at low temperatures. Set these rates to zero when T < RTMIN. */
 
-  if ( (gamma < -200.0) && (temperature_gas < RT_min) )
+  if ( (gamma < -200.0) && (cell[o].temperature.gas < RT_min) )
   {
     return rate = 0.0;
   }
 
-  else if ( ( (temperature_gas <= RT_max) || (RT_max == 0.0) )
-            && no_better_data(reac, reaction, temperature_gas) )
+  else if ( ( (cell[o].temperature.gas <= RT_max) || (RT_max == 0.0) )
+            && no_better_data(reac, reaction, cell[o].temperature.gas) )
   {
 
-    for (long ray = 0; ray < NRAYS; ray++)
+    for (long r = 0; r < NRAYS; r++)
     {
-      double tau = gamma*AV[RINDEX(gridp,ray)];
+      double tau = gamma*cell[o].ray[r].AV;
 
-      rate = rate + alpha * rad_surface[RINDEX(gridp,ray)] * exp(-tau) / 2.0;
+      rate = rate + alpha * cell[o].ray[r].rad_surface * exp(-tau) / 2.0;
     }
   }
 

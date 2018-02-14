@@ -787,7 +787,7 @@ print " "
 
 # Get the input files from parameters.txt
 
-with open("../parameters.hpp") as parameters_file:
+with open("../src/parameters.hpp") as parameters_file:
     for line in parameters_file:
         line = line.split()
         if len(line) is 3:

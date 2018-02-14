@@ -233,9 +233,11 @@ int initialize_cells (long ncells, CELL *cell)
       cell[n].neighbor[ray] = 0;
       cell[n].endpoint[ray] = 0;
 
-      cell[n].Z[ray] = 0.0;
-      cell[n].ray[ray].intensity = 0.0;
-      cell[n].ray[ray].column = 0.0;
+      cell[n].Z[ray]               = 0.0;
+      cell[n].ray[ray].intensity   = 0.0;
+      cell[n].ray[ray].column      = 0.0;
+      cell[n].ray[ray].rad_surface = 0.0;
+      cell[n].ray[ray].AV          = 0.0;
     }
 
     cell[n].vx = 0.0;
@@ -243,6 +245,8 @@ int initialize_cells (long ncells, CELL *cell)
     cell[n].vz = 0.0;
 
     cell[n].density = 0.0;
+
+    cell[n].UV = 0.0;
 
     for (int spec = 0; spec < NSPEC; spec++)
     {
@@ -373,11 +377,11 @@ int initialize_previous_temperature_gas (long ncells, CELL *cell)
 // guess_temperature_gas: make a guess for gas temperature based on UV field
 // -------------------------------------------------------------------------
 
-int guess_temperature_gas (long ncells, CELL *cell, double *UV_field)
+int guess_temperature_gas (long ncells, CELL *cell)
 {
 
-# pragma omp parallel               \
-  shared (ncells, cell, UV_field)   \
+# pragma omp parallel     \
+  shared (ncells, cell)   \
   default (none)
   {
 
@@ -390,7 +394,7 @@ int guess_temperature_gas (long ncells, CELL *cell, double *UV_field)
 
   for (long n = start; n < stop; n++)
   {
-    cell[n].temperature.gas = 10.0*(1.0 + pow(2.0*UV_field[n], 1.0/3.0));
+    cell[n].temperature.gas = 10.0*(1.0 + pow(2.0*cell[n].UV, 1.0/3.0));
   }
   } // end of OpenMP parallel region
 

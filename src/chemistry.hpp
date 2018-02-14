@@ -13,8 +13,8 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, double *rad_surface,
-               double *AV, double *column_H2, double *column_HD, double *column_C, double *column_CO);
+int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+               double *column_H2, double *column_HD, double *column_C, double *column_CO);
 
 
 #endif // __CHEMISTRY_HPP_INCLUDED__

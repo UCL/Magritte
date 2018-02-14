@@ -363,11 +363,11 @@ TEST_CASE("Test level populations"){
   write_level_populations("0", pop);
 
 
-  bool somewhere_no_thermal_balance = true;
+  bool somewhere_no_thermal_balance_iteration = true;
 
-  bool no_thermal_balance[NCELLS];
+  bool no_thermal_balance_iteration[NCELLS];
 
-  initialize_bool(true, no_thermal_balance, NCELLS);
+  initialize_bool(true, no_thermal_balance_iteration, NCELLS);
 
   int niterations = 0;
 
@@ -375,9 +375,9 @@ TEST_CASE("Test level populations"){
 
   /* Thermal balance iterations */
 
-  while (somewhere_no_thermal_balance){
+  while (somewhere_no_thermal_balance_iteration){
 
-    somewhere_no_thermal_balance = false;
+    somewhere_no_thermal_balance_iteration = false;
 
     niterations++;
 
@@ -490,9 +490,9 @@ TEST_CASE("Test level populations"){
 
     for (long gridp=0; gridp<NCELLS; gridp++){
 
-      if (no_thermal_balance[gridp]){
+      if (no_thermal_balance_iteration[gridp]){
 
-        no_thermal_balance[gridp] = false;
+        no_thermal_balance_iteration[gridp] = false;
 
         double heating_components[12];
 
@@ -543,9 +543,9 @@ TEST_CASE("Test level populations"){
 
         if (thermal_ratio > THERMAL_PREC){
 
-          no_thermal_balance[gridp]    = true;
+          no_thermal_balance_iteration[gridp]    = true;
 
-          somewhere_no_thermal_balance = true;
+          somewhere_no_thermal_balance_iteration = true;
 
           update_temperature_gas(thermal_flux, gridp, temperature_gas, previous_temperature_gas );
 
@@ -588,7 +588,7 @@ TEST_CASE("Test level populations"){
 
     if (niterations >= MAX_NITERATIONS){
 
-      somewhere_no_thermal_balance = false;
+      somewhere_no_thermal_balance_iteration = false;
     }
 
 

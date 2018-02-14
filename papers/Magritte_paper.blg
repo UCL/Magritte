@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Magritte_paper.aux
+The style file: mnras.bst
+Database file #1: library.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 6 entries,
+            2881 wiz_defined-function locations,
+            777 strings with 7478 characters,
+and the built_in function-call counts, 3155 in all, are:
+= -- 252
+> -- 253
+< -- 16
++ -- 103
+- -- 46
+* -- 385
+:= -- 516
+add.period$ -- 0
+call.type$ -- 6
+change.case$ -- 12
+chr.to.int$ -- 6
+cite$ -- 6
+duplicate$ -- 136
+empty$ -- 133
+format.name$ -- 62
+if$ -- 537
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 6
+newline$ -- 31
+num.names$ -- 46
+pop$ -- 27
+preamble$ -- 1
+purify$ -- 24
+quote$ -- 0
+skip$ -- 82
+stack$ -- 0
+substring$ -- 186
+swap$ -- 84
+text.length$ -- 24
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 54
+warning$ -- 0
+while$ -- 48
+width$ -- 0
+write$ -- 72

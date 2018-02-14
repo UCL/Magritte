@@ -17,10 +17,10 @@
 // heating: calculate total heating
 // --------------------------------
 
-double heating (long ncells, CELL *cell, long gridp, double *UV_field, double* heating_components)
+double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 {
 
-  double Habing_field = 1.68 * UV_field[gridp];            // UV radiation field in Habing
+  double Habing_field = 1.68 * cell[gridp].UV;   // UV radiation field in Habing
 
   double electron_density = cell[gridp].abundance[nr_e] * cell[gridp].density;   // e density
 

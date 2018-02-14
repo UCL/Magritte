@@ -27,6 +27,9 @@ struct RAY
 {
   double intensity;
   double column;
+
+  double rad_surface;
+  double AV;
 };
 
 
@@ -85,7 +88,7 @@ struct HEALPIX_VECTOR
 
 
 
-struct CELL
+struct CELL   // (array of structures)
 {
 
   double x, y, z;            // x, y and z coordinate of cell center
@@ -108,6 +111,8 @@ struct CELL
   TEMPERATURE temperature;   // temperatures
 
   RAY ray[NRAYS];
+
+  double UV;                 // average UV intensity
 
   long id;                   // cell nr of associated cell in other grid
   bool removed;              // true when cell is removed
@@ -150,11 +155,11 @@ struct SPECIES
 
 
 
-struct LINE_SPECIES
+
+struct LINE_SPECIES   // (structure of arrays)
 {
 
   int nr[NLSPEC];                // symbol of line producing species
-
   std::string sym[NLSPEC];       // symbol of line producing species
 
 
@@ -311,6 +316,22 @@ struct TIMERS
     total.initialize();
     chemistry.initialize();
     level_pop.initialize();
+  }
+
+};
+
+
+
+struct NITERATIONS
+{
+
+  int tb;
+  int rt;
+
+  void initialize()
+  {
+    tb = 0;
+    rt = 0;
   }
 
 };
