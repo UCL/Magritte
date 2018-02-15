@@ -50,8 +50,6 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
     double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
     double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
 
-
-
 # endif
 
 

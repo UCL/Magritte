@@ -19,7 +19,6 @@
 #define INPUT_FORMAT '.txt'
 
 
-
 // VARIABLE GRID
 
 #define GRID_INIT "input/files/1Dn30.dat_conv.txt"
