@@ -24,7 +24,7 @@ add_subdirectory(HEALPix)
 
 
 # Create executable for setup
-add_executable( setup.exe   setup.cpp )
+add_executable(setup.exe setup.cpp)
 
 
 # Link the setup library to the executable

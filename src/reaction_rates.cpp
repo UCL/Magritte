@@ -56,8 +56,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
     {
       nr_H2_formation = reac;
 
-      cell[gridp].rate[reac] = rate_H2_formation (reaction, reac, cell[gridp].temperature.gas,
-                                                  cell[gridp].temperature.dust);
+      cell[gridp].rate[reac] = rate_H2_formation (cell, reaction, reac, gridp);
     }
 
 
@@ -69,7 +68,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
               ||  R1 == "PAH0"  ||  R2 == "PAH0"  ||  R3 == "PAH0"
               ||  R1 == "PAH"   ||  R2 == "PAH"   ||  R3 == "PAH" )
     {
-      cell[gridp].rate[reac] = rate_PAH (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_PAH (cell, reaction, reac, gridp);
     }
 
 
@@ -77,7 +76,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else if (R2 == "CRP")
     {
-      cell[gridp].rate[reac] = rate_CRP (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_CRP (cell, reaction, reac, gridp);
     }
 
 
@@ -121,7 +120,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else if (R2 == "CRPHOT")
     {
-      cell[gridp].rate[reac] = rate_CRPHOT (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_CRPHOT (cell, reaction, reac, gridp);
     }
 
 
@@ -129,7 +128,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else if (R2 == "FREEZE")
     {
-      cell[gridp].rate[reac] = rate_FREEZE (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_FREEZE (cell, reaction, reac, gridp);
     }
 
 
@@ -137,7 +136,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else if (R2 == "ELFRZE")
     {
-      cell[gridp].rate[reac] = rate_ELFRZE (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_ELFRZE (cell, reaction, reac, gridp);
     }
 
 
@@ -146,7 +145,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else if (R2 == "CRH")
     {
-      cell[gridp].rate[reac] = rate_CRH (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_CRH (reaction, reac);
     }
 
 
@@ -155,8 +154,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else if (R2 == "THERM")
     {
-      cell[gridp].rate[reac] = rate_THERM (reaction, reac, cell[gridp].temperature.gas,
-                                           cell[gridp].temperature.dust );
+      cell[gridp].rate[reac] = rate_THERM (cell, reaction, reac, gridp);
     }
 
 
@@ -247,7 +245,7 @@ int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long gridp,
 
     else
     {
-      cell[gridp].rate[reac] = rate_canonical (reaction, reac, cell[gridp].temperature.gas);
+      cell[gridp].rate[reac] = rate_canonical (cell, reaction, reac, gridp);
     }
 
 

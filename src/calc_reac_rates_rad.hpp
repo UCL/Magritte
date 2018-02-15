@@ -35,7 +35,7 @@ double rate_CO_photodissociation (CELL *cell, REACTION *reaction, int reac,
 // ----------------------------------------------------------------------
 
 double rate_C_photoionization (CELL *cell, REACTION *reaction, int reac,
-                               double *column_C, double *column_H2, long gridp );
+                               double *column_C, double *column_H2, long o);
 
 
 // rate_SI_photoionization: returns rate coefficient for SI photoionization

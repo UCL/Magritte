@@ -22,45 +22,45 @@
 
 #define TOT_CUM_TOT_NCOLTRANTEMP 44340 
 
-#define NLEV { 41, 5, 5, 5 } 
+#define NLEV { 5, 5, 5, 41 } 
 
-#define NRAD { 40, 7, 9, 7 } 
+#define NRAD { 7, 9, 7, 40 } 
 
-#define CUM_NLEV { 0, 41, 46, 51 } 
+#define CUM_NLEV { 0, 5, 10, 15 } 
 
-#define CUM_NLEV2 { 0, 1681, 1706, 1731 } 
+#define CUM_NLEV2 { 0, 25, 50, 75 } 
 
-#define CUM_NRAD { 0, 40, 47, 56 } 
+#define CUM_NRAD { 0, 7, 16, 23 } 
 
-#define NCOLPAR { 2, 6, 4, 6 } 
+#define NCOLPAR { 6, 4, 6, 2 } 
 
-#define CUM_NCOLPAR { 0, 2, 8, 12 } 
+#define CUM_NCOLPAR { 0, 6, 10, 16 } 
 
-#define NCOLTEMP { 25, 25, 28, 28, 27, 29, 17, 12, 17, 17, 9, 18, 26, 26, 18, 27, 19, 16 } 
+#define NCOLTEMP { 28, 28, 27, 29, 17, 12, 17, 17, 9, 18, 26, 26, 18, 27, 19, 16, 25, 25 } 
 
-#define NCOLTRAN { 820, 820, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 } 
+#define NCOLTRAN { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 820, 820 } 
 
-#define CUM_NCOLTEMP { 0, 25, 0, 28, 56, 83, 112, 129, 0, 17, 34, 43, 0, 26, 52, 70, 97, 116 } 
+#define CUM_NCOLTEMP { 0, 28, 56, 83, 112, 129, 0, 17, 34, 43, 0, 26, 52, 70, 97, 116, 0, 25 } 
 
-#define CUM_NCOLTRAN { 0, 820, 0, 10, 20, 30, 40, 50, 0, 10, 20, 30, 0, 10, 20, 30, 40, 50 } 
+#define CUM_NCOLTRAN { 0, 10, 20, 30, 40, 50, 0, 10, 20, 30, 0, 10, 20, 30, 40, 50, 0, 820 } 
 
-#define CUM_NCOLTRANTEMP { 0, 20500, 0, 280, 560, 830, 1120, 1290, 0, 170, 340, 430, 0, 260, 520, 700, 970, 1160 } 
+#define CUM_NCOLTRANTEMP { 0, 280, 560, 830, 1120, 1290, 0, 170, 340, 430, 0, 260, 520, 700, 970, 1160, 0, 20500 } 
 
-#define TOT_NCOLTEMP { 50, 141, 61, 132 } 
+#define TOT_NCOLTEMP { 141, 61, 132, 50 } 
 
-#define TOT_NCOLTRAN { 1640, 60, 40, 60 } 
+#define TOT_NCOLTRAN { 60, 40, 60, 1640 } 
 
-#define TOT_NCOLTRANTEMP { 41000, 1410, 610, 1320 } 
+#define TOT_NCOLTRANTEMP { 1410, 610, 1320, 41000 } 
 
-#define CUM_TOT_NCOLTEMP { 0, 50, 191, 252 } 
+#define CUM_TOT_NCOLTEMP { 0, 141, 202, 334 } 
 
-#define CUM_TOT_NCOLTRAN { 0, 1640, 1700, 1740 } 
+#define CUM_TOT_NCOLTRAN { 0, 60, 100, 160 } 
 
-#define CUM_TOT_NCOLTRANTEMP { 0, 41000, 42410, 43020 } 
+#define CUM_TOT_NCOLTRANTEMP { 0, 1410, 2020, 3340 } 
 
-#define HEALPIXVECTOR { 1.000000E+00, 0.000000E+00, 0.000000E+00, -1.000000E+00, 0.000000E+00, 0.000000E+00 } 
+#define HEALPIXVECTOR { 1.000000E+00, 0.000000E+00, 0.000000E+00, 7.071068E-01, 7.071068E-01, 0.000000E+00, 6.123234E-17, 1.000000E+00, 0.000000E+00, -7.071068E-01, 7.071068E-01, 0.000000E+00, -1.000000E+00, 1.224647E-16, 0.000000E+00, -7.071068E-01, -7.071068E-01, 0.000000E+00, -1.836970E-16, -1.000000E+00, 0.000000E+00, 7.071068E-01, -7.071068E-01, 0.000000E+00 } 
 
-#define ANTIPOD { 1, 0 } 
+#define ANTIPOD { 4, 5, 6, 7, 0, 1, 2, 3 } 
 
-#define MIRROR { 0, 1 } 
+#define MIRROR { 0, 7, 6, 5, 4, 3, 2, 1 } 
 
