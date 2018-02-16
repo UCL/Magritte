@@ -83,7 +83,7 @@ int main ()
 
   // Reduce grid
 
-  long ncells_red = reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
+  long ncells_red ;//= reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
 
 
   // Define the reduced grid

@@ -19,6 +19,10 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 
+# Add HEALPix dependency
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix [${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix])
+
+
 # Make setup executable and execute setup
 add_custom_target(MAKE_SETUP ALL
                   COMMAND bash run_setup.sh ${CMAKE_CURRENT_BINARY_DIR}/

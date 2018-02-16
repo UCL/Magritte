@@ -27,14 +27,16 @@
 #include "read_linedata.hpp"
 
 #include "ray_tracing.hpp"
+#include "reduce.hpp"
+#include "bound.hpp"
 
 #include "calc_rad_surface.hpp"
 #include "calc_column_density.hpp"
 #include "calc_AV.hpp"
 #include "calc_UV_field.hpp"
 #include "calc_temperature_dust.hpp"
-#include "thermal_balance.hpp"
 
+#include "thermal_balance.hpp"
 #include "write_output.hpp"
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
@@ -281,69 +283,79 @@ int main ()
 
 
 
-  //
-  // // Specify grid boundaries
-  //
-  // double x_min = X_MIN;
-  // double x_max = X_MAX;
-  // double y_min = Y_MIN;
-  // double y_max = Y_MAX;
-  // double z_min = Z_MIN;
-  // double z_max = Z_MAX;
-  //
-  // double threshold = THRESHOLD;   // keep cells if rel_density_change > threshold
-  //
-  //
-  // // Reduce grid
-  //
-  // long ncells_red = reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
-  //
-  //
-  // // Define the reduced grid
-  //
-  // CELL *cell_red = new CELL[ncells_red];
-  //
-  // double *mean_intensity_red = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-  // double *pop_red            = new double[ncells*TOT_NLEV];   // level population n_i
-  //
-  // double *AV         = new double[ncells*NRAYS];   // Visual extinction
-  // double *UV_field   = new double[ncells];         // External UV field
+
+  // Specify grid boundaries
+
+  double x_min = X_MIN;
+  double x_max = X_MAX;
+  double y_min = Y_MIN;
+  double y_max = Y_MAX;
+  double z_min = Z_MIN;
+  double z_max = Z_MAX;
+
+  double threshold = THRESHOLD;   // keep cells if rel_density_change > threshold
 
 
-  // initialize_cells (ncells_red, cell_red);
-  //
-  // initialize_reduced_grid (ncells_red, cell_red, ncells, cell);
-  //
-  //
-  // // Find neighboring cells for each cell
-  //
-  // find_neighbors (ncells_red, cell_red);
-  //
-  //
-  // // Find endpoint of each ray for each cell
-  //
-  // find_endpoints (ncells_red, cell_red);
+  // Reduce grid
 
+  long ncells_red1 = reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
+
+  CELL *cell_red1 = new CELL[ncells_red1];
+
+  initialize_reduced_grid (ncells_red1, cell_red1, ncells, cell);
+
+
+  long ncells_red2 = reduce (ncells_red1, cell_red1, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
+
+  CELL *cell_red2 = new CELL[ncells_red2];
+
+  initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
+
+
+  long ncells_red3 = reduce (ncells_red2, cell_red2, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
+
+  CELL *cell_red3 = new CELL[ncells_red3];
+
+  initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
+
+
+
+  double *mean_intensity_red3 = new double[ncells_red3*TOT_NRAD];   // mean intensity for a ray
+  double *pop_red3            = new double[ncells_red3*TOT_NLEV];   // level population n_i
 
 
 
   // CALCULATE TEMPERATURE
   // _____________________
 
-  // thermal_balance (ncells_red, cell_red, species, reaction, line_species, UV_field, rad_surface, AV, pop, mean_intensity, &timers);
+  thermal_balance (ncells_red3, cell_red3, species, reaction, line_species, pop_red3, mean_intensity_red3, &timers);
+
+  // thermal_balance (ncells, cell, species, reaction, line_species, pop, mean_intensity, &timers);
+
+
+  // Interpolate reduced grid back to original grid
+
+  interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
+  interpolate (ncells_red1, cell_red1, ncells, cell);
+
+
+
+
+  double *mean_intensity_red = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+  double *pop_red            = new double[ncells*TOT_NLEV];   // level population n_i
+
+
+  // CALCULATE TEMPERATURE
+  // _____________________
 
   thermal_balance (ncells, cell, species, reaction, line_species, pop, mean_intensity, &timers);
 
 
 
 
-  // Interpolate reduced grid back to original grid
-
-  // interpolate (ncells_red, cell_red, ncells, cell);
-
-  // delete [] cell_red;
-
-
+  delete [] cell_red2;
+  delete [] cell_red1;
 
 
   timers.total.stop();

@@ -228,16 +228,16 @@ int initialize_cells (long ncells, CELL *cell)
 
     cell[n].n_neighbors = 0;
 
-    for (long ray = 0; ray < NRAYS; ray++)
+    for (long r = 0; r < NRAYS; r++)
     {
-      cell[n].neighbor[ray] = 0;
-      cell[n].endpoint[ray] = 0;
+      cell[n].neighbor[r] = 0;
+      cell[n].endpoint[r] = 0;
 
-      cell[n].Z[ray]               = 0.0;
-      cell[n].ray[ray].intensity   = 0.0;
-      cell[n].ray[ray].column      = 0.0;
-      cell[n].ray[ray].rad_surface = 0.0;
-      cell[n].ray[ray].AV          = 0.0;
+      cell[n].Z[r]               = 0.0;
+      cell[n].ray[r].intensity   = 0.0;
+      cell[n].ray[r].column      = 0.0;
+      cell[n].ray[r].rad_surface = 0.0;
+      cell[n].ray[r].AV          = 0.0;
     }
 
     cell[n].vx = 0.0;

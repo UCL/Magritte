@@ -43,6 +43,8 @@
 #define RESTART false
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
+
+
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
 #define INPUTFILE "input/files/1Dn30.dat_conv.txt"
@@ -84,9 +86,9 @@
 
 // Number of various iterations
 
-#define MAX_NITERATIONS  299
+#define MAX_NITERATIONS  100
 #define PRELIM_CHEM_ITER 5
-#define PRELIM_TB_ITER   20
+#define PRELIM_TB_ITER   5
 #define CHEM_ITER        3
 
 

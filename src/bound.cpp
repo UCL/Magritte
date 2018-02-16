@@ -114,9 +114,9 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
   double length_z = z_max - z_min;
 
 
-  double margin_x = 1.0;
-  double margin_y = 1.0;
-  double margin_z = 1.0; //0.25*length_z;
+  double margin_x = 1.0E-3 * length_x;
+  double margin_y = 1.0E-3 * length_y;
+  double margin_z = 1.0E-3 * length_z; //0.25*length_z;
 
 
 # if   (DIMENSIONS == 1)

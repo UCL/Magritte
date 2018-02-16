@@ -38,6 +38,8 @@ read_chemdata.cpp
 read_linedata.cpp
 ray_tracing.cpp
 heapsort.cpp
+reduce.cpp
+bound.cpp
 reaction_rates.cpp
 calc_reac_rates.cpp
 calc_reac_rates_rad.cpp

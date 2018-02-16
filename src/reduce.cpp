@@ -14,33 +14,29 @@
 #include "declarations.hpp"
 #include "reduce.hpp"
 #include "initializers.hpp"
+#include "ray_tracing.hpp"
 
 
 // reduce: reduce number of cells, return resulting number of cells
 // ----------------------------------------------------------------
 
-long reduce (long ncells, CELL *cell, double min_density_change,
+long reduce (long ncells, CELL *cell,
+             double min_density_change,
              double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
 {
 
 
   // Crop grid
 
-  std::cout << "  Cropping input grid...\n";
-
   crop (NCELLS, cell, x_min, x_max, y_min, y_max, z_min, z_max);
 
 
   // Reduce grid
 
-  std::cout << "  Reducing input grid...\n";
-
   density_reduce (NCELLS, cell, min_density_change);
 
 
   // Set id's to relate grid and reduced grid, get ncells_red
-
-  std::cout << "  Setting id's for reduced grid...\n";
 
   long ncells_red = set_ids (NCELLS, cell);
 
@@ -58,6 +54,8 @@ long reduce (long ncells, CELL *cell, double min_density_change,
 int crop (long ncells, CELL *cell,
           double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
 {
+
+  printf("ncells %ld\n", NCELLS);
 
 # pragma omp parallel                                               \
   shared (ncells, cell, x_min, x_max, y_min, y_max, z_min, z_max)   \
@@ -122,7 +120,7 @@ int density_reduce (long ncells, CELL *cell, double min_density_change)
         // Do not remove if density changes too much or neighbor was removed
         // The latter to avoid large gaps being formed
 
-        if ( (rel_density_change > min_density_change) || cell[nr].removed)
+        if ( (rel_density_change > min_density_change) || cell[nr].removed || cell[nr].boundary )
         {
           cell[p].removed = false;
         }
@@ -182,6 +180,9 @@ long set_ids (long ncells, CELL *cell)
 int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
 {
 
+  initialize_cells (ncells_red, cell_red);
+
+
 # pragma omp parallel                           \
   shared (ncells_red, cell_red, ncells, cell)   \
   default (none)
@@ -213,9 +214,41 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
       cell_red[nr].temperature.gas      = cell[n].temperature.gas;
       cell_red[nr].temperature.dust     = cell[n].temperature.dust;
       cell_red[nr].temperature.gas_prev = cell[n].temperature.gas_prev;
+
+      cell_red[nr].UV = cell[n].UV;
+
+
+      for (int spec = 0; spec < NSPEC; spec++)
+      {
+        cell_red[nr].abundance[spec] = cell[n].abundance[spec];
+      }
+
+      for (int reac = 0; reac < NREAC; reac++)
+      {
+        cell_red[nr].rate[reac] = cell[n].rate[reac];
+      }
+
+      for (long r = 0; r < NRAYS; r++)
+      {
+        cell_red[nr].ray[r].intensity   = cell[n].ray[r].intensity;
+        cell_red[nr].ray[r].column      = cell[n].ray[r].column;
+        cell_red[nr].ray[r].rad_surface = cell[n].ray[r].rad_surface;
+        cell_red[nr].ray[r].AV          = cell[n].ray[r].AV;
+      }
+
     }
   }
   } // end of OpenMP parallel region
+
+
+  // Find neighboring cells for each cell
+
+  find_neighbors (ncells_red, cell_red);
+
+
+  // Find endpoint of each ray for each cell
+
+  find_endpoints (ncells_red, cell_red);
 
 
   return (0);

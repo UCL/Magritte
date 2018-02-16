@@ -18,6 +18,8 @@ set(CMAKE_BUILD_TYPE Debug)
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix [${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix])
+
 
 # Make setup executable and execute setup
 add_custom_target(MAKE_SETUP ALL
