@@ -1,7 +1,6 @@
 #! /bin/bash
 
 
-
 echo " "
 echo "------------"
 echo "run_setup.sh"

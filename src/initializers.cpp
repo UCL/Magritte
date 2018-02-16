@@ -138,6 +138,38 @@ int initialize_double_array_with (long length, double *array1, double *array2)
 
 
 
+// initialize_double_array_with_scale: sets first array of doubles equal to second with scale
+// ------------------------------------------------------------------------------------------
+
+int initialize_double_array_with_scale (long length, double *array1, double *array2, double scale)
+{
+
+# pragma omp parallel                      \
+  shared (array1, array2, length, scale)   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*length)/num_threads;
+  long stop  = ((thread_num+1)*length)/num_threads;   // Note brackets
+
+
+  for (long i = start; i < stop; i++)
+  {
+    array1[i] = scale*array2[i];
+  }
+  } // end of OpenMP parallel region
+
+
+  return (0);
+
+}
+
+
+
+
 // initialize_double_array_with_value: sets entries of array of doubles equal to value
 // -----------------------------------------------------------------------------------
 
@@ -256,6 +288,16 @@ int initialize_cells (long ncells, CELL *cell)
     for (int reac = 0; reac < NREAC; reac++)
     {
       cell[n].rate[reac] = 0.0;
+    }
+
+    for (int l = 0; l < TOT_NLEV; l++)
+    {
+      cell[n].pop[l] = 0.0;
+    }
+
+    for (int k = 0; k < TOT_NRAD; k++)
+    {
+      cell[n].mean_intensity[k] = 0.0;
     }
 
     cell[n].temperature.gas      = 0.0;

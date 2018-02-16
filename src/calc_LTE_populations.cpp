@@ -15,7 +15,7 @@
 // calc_LTE_populations: Calculates LTE level populations
 // ------------------------------------------------------
 
-int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species, double *pop)
+int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 {
 
 
@@ -24,8 +24,8 @@ int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species, do
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
 
-#   pragma omp parallel                                               \
-    shared (ncells, cell, line_species, pop, nlev, cum_nlev, lspec)   \
+#   pragma omp parallel                                          \
+    shared (ncells, cell, line_species, nlev, cum_nlev, lspec)   \
     default (none)
     {
 
@@ -58,21 +58,13 @@ int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species, do
 
       for (int i = 0; i < nlev[lspec]; i++)
       {
-        long p_i = LSPECGRIDLEV(lspec,n,i);
-        int  l_i = LSPECLEV(lspec,i);
+        int l_i = LSPECLEV(lspec,i);
 
-        pop[p_i] = cell[n].density * cell[n].abundance[line_species.nr[lspec]] * line_species.weight[l_i]
-                   * exp( -line_species.energy[l_i]/(KB*cell[n].temperature.gas) ) / partition_function;
+        cell[n].pop[l_i] = cell[n].density * cell[n].abundance[line_species.nr[lspec]] * line_species.weight[l_i]
+                           * exp( -line_species.energy[l_i]/(KB*cell[n].temperature.gas) ) / partition_function;
 
-        total_population = total_population + pop[p_i];
+        total_population = total_population + cell[n].pop[l_i];
 
-
-        // Avoid too small numbers
-
-        // if (pop[p_i] < POP_LOWER_LIMIT){
-        //
-        //   pop[p_i] = 0.0;
-        // }
 
       } // end of i loop over levels
 

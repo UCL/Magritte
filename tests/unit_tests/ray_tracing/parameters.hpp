@@ -16,6 +16,24 @@
 #define RESTART false
 
 
+// VARIABLE GRID
+
+#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
+
+#define X_MIN  0.0E+00
+#define X_MAX +5.0E+00
+#define Y_MIN  0.0E+00
+#define Y_MAX +5.0E+00
+#define Z_MIN -1.0E+00
+#define Z_MAX +1.0E+00
+
+#define THRESHOLD 1.0E+99;
+
+#define SIZE_X 9
+#define SIZE_Y 9
+#define SIZE_Z 0
+
+
 // #define INPUTFILE "output/files/_output/grid.vtu"
 
 
@@ -130,6 +148,29 @@
 #define ZETA   3.846153846153846
 
 #define OMEGA  0.42
+
+
+
+#define NFREQ 4
+
+
+// Helper constants
+
+#define MAX_WIDTH 13      // for printing
+#define BUFFER_SIZE 3500  // max number of characters in a line
+
+
+// Parameters for level population iteration
+
+#define POP_PREC        1.0E-2    // precision used in convergence criterion
+#define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
+#define POP_UPPER_LIMIT 1.0E+15   // highest population
+#define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray
+
+
+// Parameters for thermal balance iteration
+
+#define THERMAL_PREC 1.0E-3   // precision used in convergence criterion
 
 
 #endif /* __PARAMETERS_HPP_INCLUDED__ */

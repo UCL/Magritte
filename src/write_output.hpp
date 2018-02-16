@@ -16,8 +16,7 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
-                      double *pop, double *mean_intensity);
+int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species);
 
 
 // write_performance_log: write performance results

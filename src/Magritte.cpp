@@ -85,8 +85,8 @@ int main ()
     long ncells = NCELLS;
 
     CELL cell[NCELLS];
-    double mean_intensity[NCELLS*TOT_NRAD];   // mean intensity for a ray
-    double pop[NCELLS*TOT_NLEV];              // level population n_i
+    // double mean_intensity[NCELLS*TOT_NRAD];   // mean intensity for a ray
+    // double pop[NCELLS*TOT_NLEV];              // level population n_i
 
 
 # elif (!FIXED_NCELLS && (INPUT_FORMAT == '.txt'))
@@ -94,16 +94,16 @@ int main ()
     long ncells = get_NCELLS_txt (inputfile);
 
     CELL *cell = new CELL[ncells];
-    double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-    double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
+    // double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+    // double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
 
 # elif (!FIXED_NCELLS && (INPUT_FORMAT == '.vtu'))
 
     long ncells = get_NCELLS_vtu (inputfile);
 
     CELL *cell = new CELL[ncells];
-    double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-    double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
+    // double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+    // double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
 
 # endif
 
@@ -282,80 +282,58 @@ int main ()
   printf ("(Magritte): gas temperature guessed and dust temperature calculated \n\n");
 
 
-
-
-  // Specify grid boundaries
-
-  double x_min = X_MIN;
-  double x_max = X_MAX;
-  double y_min = Y_MIN;
-  double y_max = Y_MAX;
-  double z_min = Z_MIN;
-  double z_max = Z_MAX;
-
-  double threshold = THRESHOLD;   // keep cells if rel_density_change > threshold
-
-
   // Reduce grid
 
-  long ncells_red1 = reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
-
+  long ncells_red1 = reduce (ncells, cell);
   CELL *cell_red1 = new CELL[ncells_red1];
-
   initialize_reduced_grid (ncells_red1, cell_red1, ncells, cell);
 
 
-  long ncells_red2 = reduce (ncells_red1, cell_red1, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
-
+  long ncells_red2 = reduce (ncells_red1, cell_red1);
   CELL *cell_red2 = new CELL[ncells_red2];
-
   initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
 
 
-  long ncells_red3 = reduce (ncells_red2, cell_red2, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
-
-  CELL *cell_red3 = new CELL[ncells_red3];
-
-  initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  // long ncells_red3 = reduce (ncells_red2, cell_red2);
+  // CELL *cell_red3 = new CELL[ncells_red3];
+  // initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
 
-
-  double *mean_intensity_red3 = new double[ncells_red3*TOT_NRAD];   // mean intensity for a ray
-  double *pop_red3            = new double[ncells_red3*TOT_NLEV];   // level population n_i
 
 
 
   // CALCULATE TEMPERATURE
   // _____________________
 
-  thermal_balance (ncells_red3, cell_red3, species, reaction, line_species, pop_red3, mean_intensity_red3, &timers);
+  thermal_balance_std (ncells_red2, cell_red2, species, reaction, line_species, &timers);
 
-  // thermal_balance (ncells, cell, species, reaction, line_species, pop, mean_intensity, &timers);
+  // thermal_balance_std (ncells_red3, cell_red3, species, reaction, line_species, pop_red3, mean_intensity_red3, &timers);
+
 
 
   // Interpolate reduced grid back to original grid
 
-  interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  // interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
   interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
   interpolate (ncells_red1, cell_red1, ncells, cell);
 
 
 
 
-  double *mean_intensity_red = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-  double *pop_red            = new double[ncells*TOT_NLEV];   // level population n_i
+  // double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+  // double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
 
 
   // CALCULATE TEMPERATURE
   // _____________________
 
-  thermal_balance (ncells, cell, species, reaction, line_species, pop, mean_intensity, &timers);
+  thermal_balance_Brent (ncells, cell, species, reaction, line_species, &timers);
 
 
 
 
-  delete [] cell_red2;
-  delete [] cell_red1;
+  // delete [] cell_red2;
+  // delete [] cell_red1;
 
 
   timers.total.stop();
@@ -379,7 +357,7 @@ int main ()
 
 # elif (INPUT_FORMAT == '.txt')
 
-    write_txt_output (NCELLS, cell, line_species, pop, mean_intensity);
+    write_txt_output (NCELLS, cell, line_species);
 
 # endif
 
@@ -396,8 +374,6 @@ int main ()
 
     delete [] cell;
     delete [] column_tot;
-    delete [] mean_intensity;
-    delete [] pop;
 
 # endif
 

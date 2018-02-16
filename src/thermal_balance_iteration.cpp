@@ -23,14 +23,11 @@
 
 
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
-// ------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                     LINE_SPECIES line_species,
-                     double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                     double *pop,
-                     double *mean_intensity, double *Lambda_diagonal, double *mean_intensity_eff,
-                     double *thermal_ratio, TIMERS *timers)
+int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, LINE_SPECIES line_species,
+                               double *column_H2, double *column_HD, double *column_C, double *column_CO,
+                               double *thermal_ratio, TIMERS *timers)
 {
 
   // CALCULATE CHEMICAL ABUNDANCES
@@ -60,7 +57,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
     timers->chemistry.start();
 
 
-    chemistry (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO );
+    chemistry (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO);
 
 
     timers->chemistry.stop();
@@ -85,7 +82,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
   // Initialize level populations with LTE values
 
-  calc_LTE_populations (NCELLS, cell, line_species, pop);
+  calc_LTE_populations (NCELLS, cell, line_species);
 
 
   // Calculate level populations for each line producing species
@@ -95,7 +92,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
 # if (CELL_BASED)
 
-  cell_level_populations (NCELLS, cell, line_species, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff);
+  cell_level_populations (NCELLS, cell, line_species);
 
 # else
 
@@ -129,9 +126,9 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
   // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                         \
-  shared (ncells, cell, reaction, pop, column_H2, column_HD, column_C, column_CO, cum_nlev,   \
-          mean_intensity, thermal_ratio, line_species)                                        \
+# pragma omp parallel                                                                    \
+  shared (ncells, cell, reaction, column_H2, column_HD, column_C, column_CO, cum_nlev,   \
+          thermal_ratio, line_species)                                                   \
   default (none)
   {
 
@@ -151,7 +148,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
 
     double heating_total = heating (NCELLS, cell, gridp, heating_components);
-    double cooling_total = cooling (NCELLS, line_species, gridp, pop, mean_intensity);
+    double cooling_total = cooling (NCELLS, cell, line_species, gridp);
 
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;

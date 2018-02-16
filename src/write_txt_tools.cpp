@@ -202,7 +202,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species, double *pop)
+int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species)
 {
 
   if (!tag.empty())
@@ -232,9 +232,7 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPEC
     {
       for (int i = 0; i < nlev[lspec]; i++)
       {
-        double abundance = 1.0;//cell[n].density/cell[n].abundance[line_species.nr[lspec]];
-
-        fprintf (file, "%lE\t", pop[LSPECGRIDLEV(lspec,n, i)]/abundance);
+        fprintf (file, "%lE\t", cell[n].pop[LSPECLEV(lspec, i)]);
       }
 
       fprintf (file, "\n");
@@ -256,7 +254,7 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPEC
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, long ncells, LINE_SPECIES line_species, double *mean_intensity)
+int write_line_intensities (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species)
 {
 
   if(!tag.empty())
@@ -286,7 +284,7 @@ int write_line_intensities (std::string tag, long ncells, LINE_SPECIES line_spec
     {
       for (int kr = 0; kr < nrad[lspec]; kr++)
       {
-        fprintf (file, "%lE\t", mean_intensity[LSPECGRIDRAD(lspec,n,kr)]);
+        fprintf (file, "%lE\t", cell[n].mean_intensity[LSPECRAD(lspec,kr)]);
       }
 
       fprintf (file, "\n");

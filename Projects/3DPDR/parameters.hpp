@@ -37,7 +37,6 @@
 #define SIZE_Z 0
 
 
-
 // Restart options
 
 #define RESTART false
@@ -65,7 +64,6 @@
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
 
-
 // Ray tracing parameters
 
 #define DIMENSIONS 1
@@ -86,7 +84,7 @@
 
 // Number of various iterations
 
-#define MAX_NITERATIONS  100
+#define MAX_NITERATIONS  150
 #define PRELIM_CHEM_ITER 5
 #define PRELIM_TB_ITER   5
 #define CHEM_ITER        3
@@ -104,7 +102,7 @@
 #define GAS_TO_DUST       1.0E+2
 #define TIME_END_IN_YEARS 1.0E+7
 
-#define ALWAYS_INITIALIZE_CHEMISTRY false
+#define ALWAYS_INITIALIZE_CHEMISTRY true
 
 
 // External UV field
@@ -125,6 +123,28 @@
 
 #define ZETA   3.846153846153846
 #define OMEGA  0.42
+
+
+#define NFREQ 4
+
+
+// Helper constants
+
+#define MAX_WIDTH 13      // for printing
+#define BUFFER_SIZE 3500  // max number of characters in a line
+
+
+// Parameters for level population iteration
+
+#define POP_PREC        1.0E-2    // precision used in convergence criterion
+#define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
+#define POP_UPPER_LIMIT 1.0E+15   // highest population
+#define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray
+
+
+// Parameters for thermal balance iteration
+
+#define THERMAL_PREC 1.0E-3   // precision used in convergence criterion
 
 
 #endif // __PARAMETERS_HPP_INCLUDED__

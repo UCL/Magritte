@@ -16,30 +16,6 @@
 #include "Magritte_types.hpp"
 
 
-
-
-#define NFREQ 4
-
-
-// Helper constants
-
-#define MAX_WIDTH 13      // for printing
-#define BUFFER_SIZE 3500  // max number of characters in a line
-
-
-// Parameters for level population iteration
-
-#define POP_PREC        1.0E-2    // precision used in convergence criterion
-#define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
-#define POP_UPPER_LIMIT 1.0E+15   // highest population
-#define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray
-
-
-// Parameters for thermal balance iteration
-
-#define THERMAL_PREC 1.0E-3   // precision used in convergence criterion
-
-
 // Output directory (absolute path)
 
 extern const std::string output_directory;

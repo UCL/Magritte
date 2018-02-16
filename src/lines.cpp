@@ -15,7 +15,7 @@
 // line_source: calculate line source function
 // -------------------------------------------
 
-int line_source (long ncells, LINE_SPECIES line_species, double *pop, int lspec, double *source)
+int line_source (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec, double *source)
 {
 
 
@@ -32,8 +32,8 @@ int line_source (long ncells, LINE_SPECIES line_species, double *pop, int lspec,
     double B_ji = line_species.B_coeff[b_ji];
 
 
-#   pragma omp parallel                                                                               \
-    shared (ncells, A_ij, B_ij, B_ji, pop, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source)   \
+#   pragma omp parallel                                                                                \
+    shared (ncells, cell, A_ij, B_ij, B_ji, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source)   \
     default (none)
     {
 
@@ -48,13 +48,13 @@ int line_source (long ncells, LINE_SPECIES line_species, double *pop, int lspec,
     {
       long s_ij = LSPECGRIDRAD(lspec,gridp,kr);   // source and opacity index
 
-      long p_i  = LSPECGRIDLEV(lspec,gridp,i);    // pop index i
-      long p_j  = LSPECGRIDLEV(lspec,gridp,j);    // pop index j
+      long p_i  = LSPECLEV(lspec,i);    // pop index i
+      long p_j  = LSPECLEV(lspec,j);    // pop index j
 
 
-      if ( (pop[p_j] > POP_LOWER_LIMIT) || (pop[p_i] > POP_LOWER_LIMIT) )
+      if ( (cell[gridp].pop[p_j] > POP_LOWER_LIMIT) || (cell[gridp].pop[p_i] > POP_LOWER_LIMIT) )
       {
-        source[s_ij]  = A_ij * pop[p_i]  / (pop[p_j]*B_ji - pop[p_i]*B_ij);
+        source[s_ij]  = A_ij * cell[gridp].pop[p_i]  / (cell[gridp].pop[p_j]*B_ji - cell[gridp].pop[p_i]*B_ij);
       }
 
       else
@@ -79,7 +79,7 @@ int line_source (long ncells, LINE_SPECIES line_species, double *pop, int lspec,
 // line_opacity: calculate line opacity
 // ------------------------------------
 
-int line_opacity (long ncells, LINE_SPECIES line_species, double *pop, int lspec, double *opacity)
+int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec, double *opacity)
 {
 
   for (int kr = 0; kr < nrad[lspec]; kr++)
@@ -95,9 +95,9 @@ int line_opacity (long ncells, LINE_SPECIES line_species, double *pop, int lspec
     double B_ji = line_species.B_coeff[b_ji];
 
 
-#   pragma omp parallel                                                     \
-    shared (ncells, line_species, b_ij, B_ij, B_ji, pop, lspec, kr, i, j,   \
-            nrad, cum_nrad, nlev, cum_nlev, opacity)                        \
+#   pragma omp parallel                                                      \
+    shared (ncells, cell, line_species, b_ij, B_ij, B_ji, lspec, kr, i, j,   \
+            nrad, cum_nrad, nlev, cum_nlev, opacity)                         \
     default (none)
     {
 
@@ -112,13 +112,13 @@ int line_opacity (long ncells, LINE_SPECIES line_species, double *pop, int lspec
     {
       long s_ij = LSPECGRIDRAD(lspec,gridp,kr);   // source and opacity index
 
-      long p_i  = LSPECGRIDLEV(lspec,gridp,i);    // pop index i
-      long p_j  = LSPECGRIDLEV(lspec,gridp,j);    // pop index j
+      long p_i  = LSPECLEV(lspec,i);    // pop index i
+      long p_j  = LSPECLEV(lspec,j);    // pop index j
 
       double hv_4pi = HH * line_species.frequency[b_ij] / 4.0 / PI;
 
 
-      opacity[s_ij] =  hv_4pi * (pop[p_j]*B_ji - pop[p_i]*B_ij);
+      opacity[s_ij] =  hv_4pi * (cell[gridp].pop[p_j]*B_ji - cell[gridp].pop[p_i]*B_ij);
 
 
       if (opacity[s_ij] < 1.0E-99)

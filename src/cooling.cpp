@@ -18,7 +18,7 @@
 // cooling: calculate total cooling
 // --------------------------------
 
-double cooling (long ncells, LINE_SPECIES line_species, long gridp, double *pop, double *mean_intensity)
+double cooling (long ncells, CELL *cell, LINE_SPECIES line_species, long gridp)
 {
 
   double cooling_radiative = 0.0;   // radiative cooling
@@ -34,16 +34,16 @@ double cooling (long ncells, LINE_SPECIES line_species, long gridp, double *pop,
     for (int kr = 0; kr < nrad[lspec]; kr++)
     {
 
-      int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-      int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+      long m_ij = LSPECRAD(lspec,kr);   // mean intensity index
+
+      int i = line_species.irad[m_ij];   // i level index corresponding to transition kr
+      int j = line_species.jrad[m_ij];   // j level index corresponding to transition kr
 
       long b_ij = LSPECLEVLEV(lspec,i,j);         // A_coeff, B_coeff and frequency index
       long b_ji = LSPECLEVLEV(lspec,j,i);         // A_coeff, B_coeff and frequency index
 
-      long p_i  = LSPECGRIDLEV(lspec,gridp,i);    // population at level i
-      long p_j  = LSPECGRIDLEV(lspec,gridp,j);    // population at level j
-
-      long m_ij = LSPECGRIDRAD(lspec,gridp,kr);   // mean intensity index
+      long p_i  = LSPECLEV(lspec,i);   // population at level i
+      long p_j  = LSPECLEV(lspec,j);   // population at level j
 
 
       // Calculate source function
@@ -52,16 +52,16 @@ double cooling (long ncells, LINE_SPECIES line_species, long gridp, double *pop,
 
       double factor = 2.0 * HH * pow(line_species.frequency[b_ij], 3) / pow(CC, 2);
 
-      double tpop   =   pop[p_j] * line_species.weight[LSPECLEV(lspec,i)]
-                      / pop[p_i] / line_species.weight[LSPECLEV(lspec,j)] - 1.0;
+      double tpop   =   cell[gridp].pop[p_j] * line_species.weight[LSPECLEV(lspec,i)]
+                      / cell[gridp].pop[p_i] / line_species.weight[LSPECLEV(lspec,j)] - 1.0;
 
 
       if (fabs(tpop) < 1.0E-50)
       {
-        Source = HH * line_species.frequency[b_ij] * pop[p_i] * line_species.A_coeff[b_ij] / 4.0 / PI;
+        Source = HH * line_species.frequency[b_ij] * cell[gridp].pop[p_i] * line_species.A_coeff[b_ij] / 4.0 / PI;
       }
 
-      else if (pop[p_i] > 0.0)
+      else if (cell[gridp].pop[p_i] > 0.0)
       {
         Source = factor / tpop;
       }
@@ -72,8 +72,8 @@ double cooling (long ncells, LINE_SPECIES line_species, long gridp, double *pop,
       if (Source != 0.0)
       {
         cooling_radiative = cooling_radiative
-                            + HH*line_species.frequency[b_ij] * line_species.A_coeff[b_ij] * pop[p_i]
-                              * (1.0 - mean_intensity[m_ij]/Source);
+                            + HH*line_species.frequency[b_ij] * line_species.A_coeff[b_ij] * cell[gridp].pop[p_i]
+                              * (1.0 - cell[gridp].mean_intensity[m_ij]/Source);
       }
 
 

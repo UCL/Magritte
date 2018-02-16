@@ -13,9 +13,7 @@
 // reduce: reduce number of cells
 // ------------------------------
 
-long reduce (long ncells, CELL *cell,
-             double min_density_change,
-             double x_min, double x_max, double y_min, double y_max, double z_min, double z_max);
+long reduce (long ncells, CELL *cell);
 
 
 // crop: crop spatial range of data

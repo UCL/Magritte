@@ -21,8 +21,7 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
-                      double *pop, double *mean_intensity)
+int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species)
 {
 
   std::string tag = "";
@@ -31,9 +30,9 @@ int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species,
 
   write_transition_levels (tag, line_species);
 
-  write_level_populations (tag, NCELLS, cell, line_species, pop);
+  write_level_populations (tag, NCELLS, cell, line_species);
 
-  write_line_intensities (tag, NCELLS, line_species, mean_intensity);
+  write_line_intensities (tag, NCELLS, cell, line_species);
 
   write_temperature_gas (tag, NCELLS, cell);
 

@@ -22,15 +22,16 @@
 // cell_radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species, double *mean_intensity,
-                             double *Lambda_diagonal, double *mean_intensity_eff, double *source,
-                             double *opacity, long gridp, int lspec, int kr)
+int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
+                             double *Lambda_diagonal, double *mean_intensity_eff,
+                             double *source, double *opacity, long gridp, int lspec, int kr)
 {
 
-  long m_ij = LSPECGRIDRAD(lspec,gridp,kr);        // mean_intensity, S and opacity index
+  long m_ij  = LSPECGRIDRAD(lspec,gridp,kr);   // mean_intensity, S and opacity index
+  long mm_ij = LSPECRAD(lspec,kr);             // mean_intensity, S and opacity index
 
-  int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-  int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+  int i = line_species.irad[mm_ij];   // i level index corresponding to transition kr
+  int j = line_species.jrad[mm_ij];   // j level index corresponding to transition kr
 
   long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
 
@@ -59,16 +60,16 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
                    gridp, ray, lspec, kr, &u_local, &v_local, &L_local);
 
 
-      mean_intensity[m_ij]  = mean_intensity[m_ij]  + H_4_weights[ny]/width*u_local;
+      cell[gridp].mean_intensity[mm_ij]  = cell[gridp].mean_intensity[mm_ij]  + H_4_weights[ny]/width*u_local;
 
-      Lambda_diagonal[m_ij] = Lambda_diagonal[m_ij] + H_4_weights[ny]/width*L_local;
+      Lambda_diagonal[m_ij]              = Lambda_diagonal[m_ij] + H_4_weights[ny]/width*L_local;
 
     } // end of ny loop over frequencies
 
   } // end of r loop over half of the rays
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij] / NRAYS;
+  cell[gridp].mean_intensity[mm_ij] = cell[gridp].mean_intensity[mm_ij] / NRAYS;
 
 
   /* Add the continuum radiation (due to dust and CMB) */
@@ -91,19 +92,19 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  mean_intensity[m_ij] = mean_intensity[m_ij] + continuum_mean_intensity;
+  cell[gridp].mean_intensity[mm_ij] = cell[gridp].mean_intensity[mm_ij] + continuum_mean_intensity;
 
 
   if (ACCELERATION_APPROX_LAMBDA)
   {
-    mean_intensity_eff[m_ij] = mean_intensity[m_ij] - Lambda_diagonal[m_ij]*source[m_ij];
+    mean_intensity_eff[m_ij] = cell[gridp].mean_intensity[mm_ij] - Lambda_diagonal[m_ij]*source[m_ij];
   }
 
   else
   {
     Lambda_diagonal[m_ij] = 0.0;
 
-    mean_intensity_eff[m_ij] = mean_intensity[m_ij];
+    mean_intensity_eff[m_ij] = cell[gridp].mean_intensity[mm_ij];
   }
 
 

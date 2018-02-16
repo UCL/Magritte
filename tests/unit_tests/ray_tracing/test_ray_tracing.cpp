@@ -604,7 +604,7 @@ TEST_CASE ("Visually inspect 5x5 2D reduced grid: boundary cube")
 
   double min_density_change = 0.0;
 
-  long ncells_red = reduce (ncells_init, cell_init, min_density_change, x_min, x_max, y_min, y_max, z_min, z_max);
+  long ncells_red = reduce (ncells_init, cell_init);
 
 
   // Define the reduced grid

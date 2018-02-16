@@ -18,7 +18,7 @@
 
 
 int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
-                             long gridp, int lspec, double *R, double *pop)
+                             long gridp, int lspec, double *R)
 {
 
   const int n = nlev[lspec];   // number of rows and columns of matrix
@@ -77,7 +77,7 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
 
   for (int i = 0; i < nlev[lspec]; i++)
   {
-    long p_i = LSPECGRIDLEV(lspec,gridp,i);
+    long p_i = LSPECLEV(lspec,i);
 
 
     // avoid too small or too large populations
@@ -86,18 +86,18 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
     {
       if (b[i] < POP_UPPER_LIMIT)
       {
-        pop[p_i] =  b[i];
+        cell[gridp].pop[p_i] =  b[i];
       }
 
       else
       {
-        pop[p_i] = POP_UPPER_LIMIT;
+        cell[gridp].pop[p_i] = POP_UPPER_LIMIT;
       }
     }
 
     else
     {
-      pop[p_i] = 0.0;
+      cell[gridp].pop[p_i] = 0.0;
     }
 
   }

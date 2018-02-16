@@ -21,12 +21,14 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int cell_sobolev (long ncells, CELL *cell, LINE_SPECIES line_species, double *mean_intensity,
-                  double *Lambda_diagonal, double *mean_intensity_eff, double *source,
-                  double *opacity, long origin, int lspec, int kr)
+int cell_sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
+                  double *Lambda_diagonal, double *mean_intensity_eff,
+                  double *source, double *opacity, long origin, int lspec, int kr)
 {
 
-  long m_ij = LSPECGRIDRAD(lspec,origin,kr);       // mean_intensity, S and opacity index
+  long m_ij  = LSPECGRIDRAD(lspec,origin,kr);   // mean_intensity, S and opacity index
+  long mm_ij = LSPECRAD(lspec, kr);             // mean_intensity, S and opacity index
+
 
   int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
   int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
@@ -188,8 +190,8 @@ int cell_sobolev (long ncells, CELL *cell, LINE_SPECIES line_species, double *me
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  mean_intensity[m_ij] = (1.0 - escape_probability) * source[m_ij]
-                         + escape_probability * continuum_mean_intensity;
+  cell[origin].mean_intensity[mm_ij] = (1.0 - escape_probability) * source[m_ij]
+                                      + escape_probability * continuum_mean_intensity;
 
 
   if (ACCELERATION_APPROX_LAMBDA)
@@ -203,7 +205,7 @@ int cell_sobolev (long ncells, CELL *cell, LINE_SPECIES line_species, double *me
   {
     Lambda_diagonal[m_ij]    = 0.0;
 
-    mean_intensity_eff[m_ij] = mean_intensity[m_ij];
+    mean_intensity_eff[m_ij] = cell[origin].mean_intensity[mm_ij];
   }
 
 

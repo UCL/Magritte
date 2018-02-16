@@ -34,6 +34,12 @@ int initialize_double_array (long length, double *array);
 int initialize_double_array_with (long length, double *array1, double *array2);
 
 
+// initialize_double_array_with_scale: sets first array of doubles equal to second with scale
+// ------------------------------------------------------------------------------------------
+
+int initialize_double_array_with_scale (long length, double *array1, double *array2, double scale);
+
+
 // initialize_double_array_with_value: sets entries of array of doubles equal to value
 // -----------------------------------------------------------------------------------
 

@@ -17,8 +17,8 @@
 // acceleration_Ng: perform a Ng accelerated iteration for level populations
 // -------------------------------------------------------------------------
 
-int acceleration_Ng (long ncells, int lspec,
-                     double *prev3_pop, double *prev2_pop, double *prev1_pop, double *pop)
+int acceleration_Ng (long ncells, CELL *cell, int lspec,
+                     double *prev3_pop, double *prev2_pop, double *prev1_pop)
 {
 
   // All variable names are based on lecture notes by C.P. Dullemond
@@ -43,8 +43,8 @@ int acceleration_Ng (long ncells, int lspec,
 # endif
 
 
-# pragma omp parallel                                                                            \
-  shared (ncells, Q1, Q2, Q3, Wt, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop)   \
+# pragma omp parallel                                                                             \
+  shared (ncells, cell, Q1, Q2, Q3, Wt, nlev, cum_nlev, lspec, prev1_pop, prev2_pop, prev3_pop)   \
   default (none)
   {
 
@@ -59,16 +59,17 @@ int acceleration_Ng (long ncells, int lspec,
   {
     for (int i = 0; i < nlev[lspec]; i++)
     {
-      long p_i = LSPECGRIDLEV(lspec,gridp,i);
-      long w_i = LINDEX(lspec,gridp,i);
+      long p_i  = LSPECGRIDLEV(lspec,gridp,i);
+      long pp_i = LSPECLEV(lspec,i);
+      long w_i  = LINDEX(lspec,gridp,i);
 
-      Q1[w_i] = pop[p_i] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
-      Q2[w_i] = pop[p_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
-      Q3[w_i] = pop[p_i] - prev1_pop[p_i];
+      Q1[w_i] = cell[gridp].pop[pp_i] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
+      Q2[w_i] = cell[gridp].pop[pp_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
+      Q3[w_i] = cell[gridp].pop[pp_i] - prev1_pop[p_i];
 
-      if (pop[p_i] > 0.0)
+      if (cell[gridp].pop[pp_i] > 0.0)
       {
-        Wt[w_i] = 1.0 / fabs(pop[p_i]);
+        Wt[w_i] = 1.0 / fabs(cell[gridp].pop[pp_i]);
       }
 
       else
@@ -129,8 +130,8 @@ int acceleration_Ng (long ncells, int lspec,
     double b = (C2*A1 - C1*A2) / denominator;
 
 
-#   pragma omp parallel                                                                  \
-    shared (ncells, a, b, nlev, cum_nlev, lspec, pop, prev1_pop, prev2_pop, prev3_pop)   \
+#   pragma omp parallel                                                                   \
+    shared (ncells, cell, a, b, nlev, cum_nlev, lspec, prev1_pop, prev2_pop, prev3_pop)   \
     default (none)
     {
 
@@ -145,12 +146,13 @@ int acceleration_Ng (long ncells, int lspec,
     {
       for (int i = 0; i < nlev[lspec]; i++)
       {
-        long p_i = LSPECGRIDLEV(lspec,gridp,i);
-        long w_i = LINDEX(lspec,gridp,i);
+        long p_i  = LSPECGRIDLEV(lspec,gridp,i);
+        long pp_i = LSPECLEV(lspec,i);
+        long w_i  = LINDEX(lspec,gridp,i);
 
-        double pop_tmp = pop[p_i];
+        double pop_tmp = cell[gridp].pop[pp_i];
 
-        pop[p_i] = (1.0 - a - b)*pop[p_i] + a*prev1_pop[p_i] + b*prev2_pop[p_i];
+        cell[gridp].pop[pp_i] = (1.0 - a - b)*cell[gridp].pop[pp_i] + a*prev1_pop[p_i] + b*prev2_pop[p_i];
 
         prev3_pop[p_i] = prev2_pop[p_i];
         prev2_pop[p_i] = prev1_pop[p_i];
@@ -174,12 +176,12 @@ int acceleration_Ng (long ncells, int lspec,
 // store_populations: update previous populations
 // ----------------------------------------------
 
-int store_populations (long ncells, int lspec,
-                       double *prev3_pop, double *prev2_pop, double *prev1_pop, double *pop)
+int store_populations (long ncells, CELL *cell, int lspec,
+                       double *prev3_pop, double *prev2_pop, double *prev1_pop)
 {
 
-# pragma omp parallel                                                            \
-  shared (ncells, lspec, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop, pop)   \
+# pragma omp parallel                                                             \
+  shared (ncells, cell, lspec, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop)   \
   default (none)
   {
 
@@ -194,11 +196,12 @@ int store_populations (long ncells, int lspec,
   {
     for (int i = 0; i < nlev[lspec]; i++)
     {
-      long p_i = LSPECGRIDLEV(lspec,gridp,i);
+      long p_i  = LSPECGRIDLEV(lspec,gridp,i);
+      long pp_i = LSPECLEV(lspec,i);
 
       prev3_pop[p_i] = prev2_pop[p_i];
       prev2_pop[p_i] = prev1_pop[p_i];
-      prev1_pop[p_i] = pop[p_i];
+      prev1_pop[p_i] = cell[gridp].pop[pp_i];
 
     }
 

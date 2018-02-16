@@ -57,13 +57,26 @@ struct COLUMN_DENSITIES
     double *tot;   // total column density
 
 
-    void new_column (long ncells)
+    void new_columns (long ncells)
     {
-      double *H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
-      double *HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
-      double *C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
-      double *CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
+      H2  = new double[ncells*NRAYS];   // H2 column density for each ray and cell
+      HD  = new double[ncells*NRAYS];   // HD column density for each ray and cell
+      C   = new double[ncells*NRAYS];   // C  column density for each ray and cell
+      CO  = new double[ncells*NRAYS];   // CO column density for each ray and cell
+
+      tot = new double[ncells*NRAYS];   // CO column density for each ray and cell
     }
+
+    void delete_columns ()
+    {
+      delete [] H2;
+      delete [] HD;
+      delete [] C ;
+      delete [] CO;
+
+      delete [] tot;
+    }
+
 
 # endif
 
@@ -107,6 +120,9 @@ struct CELL   // (array of structures)
   double abundance[NSPEC];   // abundance for each species
 
   double rate[NREAC];        // reaction rate for each reaciton
+
+  double pop[TOT_NLEV];              // level population
+  double mean_intensity[TOT_NRAD];   // mean intensity
 
   TEMPERATURE temperature;   // temperatures
 

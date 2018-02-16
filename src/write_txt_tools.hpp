@@ -40,13 +40,13 @@ int write_abundances (std::string tag, long ncells, CELL *cell);
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species, double *pop);
+int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species);
 
 
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, long ncells, LINE_SPECIES line_species, double *mean_intensity);
+int write_line_intensities (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species);
 
 
 // write_temperature_gas: write gas temperatures at each point

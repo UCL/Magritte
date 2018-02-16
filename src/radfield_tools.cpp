@@ -1,14 +1,8 @@
-/* Frederik De Ceuster - University College London & KU Leuven                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/* radfield_tools: set of helper functions for calc_reac_rates_rad.cpp                           */
-/*                                                                                               */
-/* (based on shield in 3D-PDR)                                                                   */
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
-/*                                                                                               */
-/*-----------------------------------------------------------------------------------------------*/
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
 
 #include <stdio.h>
 #include <string.h>
@@ -25,91 +19,81 @@
 
 
 
-/* self_shielding_H2: Returns H2 self-shielding function                                         */
-/*-----------------------------------------------------------------------------------------------*/
+// self_shielding_H2: Returns H2 self-shielding function
+// -----------------------------------------------------
 
-double self_shielding_H2( double column_H2, double doppler_width, double radiation_width )
+double self_shielding_H2 (double column_H2, double doppler_width, double radiation_width)
 {
 
+  // Following Federman, Glassgold & Kwan (1979, ApJ, 227, 466)
 
-  /* Following Federman, Glassgold & Kwan (1979, ApJ, 227, 466) */
-
-  double J_D;                                          /* Doppler contribution to self-shielding */
-  double J_R;                                        /* Radiative contribution to self-shielding */
-
-  double self_shielding;                                        /* total self-shielding function */
+  double J_D;              // Doppler contribution to self-shielding
+  double J_R;              // Radiative contribution to self-shielding
+  double self_shielding;   // total self-shielding function
 
 
+  // Calculate optical depth at line centre
+  // = N(H2)*f_para*(πe^2/mc)*f/(√πß) ≈ N(H2)*f_para*(1.5E-2)*f/ß
 
-  /* Calculate the optical depth at line centre */
-  /* = N(H2)*f_para*(πe^2/mc)*f/(√πß) ≈ N(H2)*f_para*(1.5E-2)*f/ß */
-
-
-  double frac_H2_para = 0.5;                            /* (assume H2_ortho / H2_para ratio = 1) */
-
-  double f_osc = 1.0E-2;                          /* Oscillator strength of a typical transition */
-
-  double tau_D;                                                  /* Optical depth at line centre */
-
-  double PIe2_mc = 1.497358985E-2;         /* PI e^2 / mc, with electron charge (e) and mass (m) */
-
-  /* parameter tau_D (eq. A7) in Federman's paper */
-
-  tau_D = column_H2 * frac_H2_para * PIe2_mc * f_osc / doppler_width;
+  double frac_H2_para = 0.5;              // (assume H2_ortho / H2_para ratio = 1)
+  double f_osc        = 1.0E-2;           // Oscillator strength of a typical transition
+  double PIe2_mc      = 1.497358985E-2;   // PI e^2 / mc, with electron charge (e) and mass (m)
 
 
-  /* Calculate the Doppler core contribution to the self-shielding (JD) */
-  /* Parameter JD (eq. A8) in Federman's paper */
+ // Optical depth at line centre
+ // (parameter tau_D (eq. A7) in Federman's paper)
 
-  if ( tau_D == 0.0 ){
+  double tau_D = column_H2 * frac_H2_para * PIe2_mc * f_osc / doppler_width;
 
+
+  // Calculate Doppler core contribution to self-shielding (JD)
+  // (parameter JD (eq. A8) in Federman's paper)
+
+  if      (tau_D == 0.0)
+  {
     J_D = 1.0;
   }
-  else if ( tau_D < 2.0 ){
-
+  else if (tau_D < 2.0)
+  {
     J_D = exp(-0.666666667*tau_D);
   }
-  else if ( tau_D < 10.0 ){
-
+  else if (tau_D < 10.0)
+  {
     J_D = 0.638 * pow(tau_D, -1.25);
   }
-  else if ( tau_D < 100.0 ){
-
+  else if (tau_D < 100.0)
+  {
     J_D = 0.505 * pow(tau_D, -1.15);
   }
-  else {
-
+  else
+  {
     J_D = 0.344 * pow(tau_D, -1.0667);
   }
 
 
-  /* Calculate the radiative wing contribution to self-shielding (JR) */
-  /* Parameter JR (eq. A9) in Federman's paper */
+  // Calculate radiative wing contribution to self-shielding (JR)
+  // (parameter JR (eq. A9) in Federman's paper)
 
-  if (radiation_width == 0.0){
-
+  if (radiation_width == 0.0)
+  {
     J_R = 0.0;
   }
-  else {
-
-    double sqrt_PI = 1.772453851;                                           /* square root of PI */
-    double r  = radiation_width / (sqrt_PI*doppler_width);  /* (equation A2 in Federman's paper) */
-    double t1 = 3.02 * pow(r*1.0E3,-0.064);                 /* (equation A6 in Federman's paper) */
-    double u1 = sqrt(tau_D*r) / t1;                         /* (equation A6 in Federman's paper) */
+  else
+  {
+    double sqrt_PI = 1.772453851;                           // square root of PI
+    double r  = radiation_width / (sqrt_PI*doppler_width);  // (equation A2 in Federman's paper)
+    double t1 = 3.02 * pow(r*1.0E3,-0.064);                 // (equation A6 in Federman's paper)
+    double u1 = sqrt(tau_D*r) / t1;                         // (equation A6 in Federman's paper)
 
     J_R = r / ( t1 * sqrt(PI/4.0 + u1*u1) );
   }
 
 
-  /* Calculate the total self-shielding function */
+  // Calculate total self-shielding function
 
   return self_shielding = J_D + J_R;
 
-
 }
-
-/*-----------------------------------------------------------------------------------------------*/
-
 
 
 

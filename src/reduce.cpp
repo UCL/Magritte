@@ -20,10 +20,19 @@
 // reduce: reduce number of cells, return resulting number of cells
 // ----------------------------------------------------------------
 
-long reduce (long ncells, CELL *cell,
-             double min_density_change,
-             double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
+long reduce (long ncells, CELL *cell)
 {
+
+  // Specify grid boundaries
+
+  double x_min = X_MIN;
+  double x_max = X_MAX;
+  double y_min = Y_MIN;
+  double y_max = Y_MAX;
+  double z_min = Z_MIN;
+  double z_max = Z_MAX;
+
+  double threshold = THRESHOLD;   // keep cells if rel_density_change > threshold
 
 
   // Crop grid
@@ -33,7 +42,7 @@ long reduce (long ncells, CELL *cell,
 
   // Reduce grid
 
-  density_reduce (NCELLS, cell, min_density_change);
+  density_reduce (NCELLS, cell, threshold);
 
 
   // Set id's to relate grid and reduced grid, get ncells_red
@@ -234,6 +243,16 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
         cell_red[nr].ray[r].column      = cell[n].ray[r].column;
         cell_red[nr].ray[r].rad_surface = cell[n].ray[r].rad_surface;
         cell_red[nr].ray[r].AV          = cell[n].ray[r].AV;
+      }
+
+      for (int l = 0; l < TOT_NLEV; l++)
+      {
+        cell_red[nr].pop[l] = cell[n].pop[l];
+      }
+
+      for (int k = 0; k < TOT_NRAD; k++)
+      {
+        cell_red[nr].mean_intensity[k] = cell[n].mean_intensity[k];
       }
 
     }

@@ -5,9 +5,7 @@
 
 
 #define GINDEX(r,c)   ( (c) + (r)*NCELLS )   // when second index is grid point
-
 #define RINDEX(r,c)   ( (c) + (r)*NRAYS )    // when second index is ray
-
 #define VINDEX(r,c)   ( (c) + (r)*3 )        // when second index is a 3-vector index
 
 

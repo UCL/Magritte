@@ -20,164 +20,111 @@
 // update_temperature_gas: update gas temperature after a thermal balance iteration
 // --------------------------------------------------------------------------------
 
-int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio,
-                            double *temperature_a, double *temperature_b,
-                            double *thermal_ratio_a, double *thermal_ratio_b)
+int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio, long gridp)
 {
 
+  // When there is net heating, temperature was too low -> increase temperature
 
-  // For all grid points
-
-# pragma omp parallel                                                  \
-  shared (ncells, cell, thermal_ratio, temperature_a, temperature_b,   \
-          thermal_ratio_a, thermal_ratio_b)                            \
-  default (none)
+  if (thermal_ratio[gridp] > 0.0)
   {
 
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
+    // Get a lower bound on temperature for Brent's algorithm
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+    // // if (cell[gridp].temperature.gas < temperature_a[gridp]){
+    //
+    //   temperature_a[gridp]   = 0.99*cell[gridp].temperature.gas;
+    //
+    //   if (temperature_a[gridp] < TEMPERATURE_MIN)
+    //   {
+    //     temperature_a[gridp] = TEMPERATURE_MIN;
+    //   }
+    //
+    //   thermal_ratio_a[gridp] = thermal_ratio[gridp];
+    // // }
 
 
-  for (long gridp = start; gridp < stop; gridp++)
+    // When we also increrased tempoerature previous iteration => up scaling
+
+    if (cell[gridp].temperature.gas_prev < cell[gridp].temperature.gas)
+    {
+      cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
+
+      cell[gridp].temperature.gas      = 1.05 * cell[gridp].temperature.gas;
+    }
+
+
+    // When we decreased temperature previous iteration => binary chop
+
+    else
+    {
+      double temp = cell[gridp].temperature.gas;
+
+      cell[gridp].temperature.gas      = ( temp + cell[gridp].temperature.gas_prev ) / 2.0;
+
+      cell[gridp].temperature.gas_prev = temp;
+    }
+
+
+  } // end of net heating
+
+
+
+  // When there is net cooling, temperature was too high -> decrease temperature
+
+  if (thermal_ratio[gridp] < 0.0)
   {
 
-    // When there is net heating, the temperature was too low -> increase temperature
+    // Get an upper bound on temperature for Brent's algorithm
+    //
+    // // if (cell[gridp].temperature.gas > temperature_b[gridp]){
+    //
+    //   temperature_b[gridp]   = 1.01*cell[gridp].temperature.gas;
+    //
+    //   thermal_ratio_b[gridp] = thermal_ratio[gridp];
+    // // }
+    //
+    // if (temperature_b[gridp] < TEMPERATURE_MIN)
+    // {
+    //   temperature_b[gridp] = TEMPERATURE_MIN;
+    // }
 
-    if (thermal_ratio[gridp] > 0.0)
+
+    // When we also decrerased tempoerature previous iteration => down scaling
+
+    if (cell[gridp].temperature.gas_prev > cell[gridp].temperature.gas)
     {
+      cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
 
-      // Get a lower bound on temperature for Brent's algorithm
-
-      // if (cell[gridp].temperature.gas < temperature_a[gridp]){
-
-        temperature_a[gridp]   = 0.99*cell[gridp].temperature.gas;
-
-        if (temperature_a[gridp] < TEMPERATURE_MIN)
-        {
-          temperature_a[gridp] = TEMPERATURE_MIN;
-        }
-
-        thermal_ratio_a[gridp] = thermal_ratio[gridp];
-      // }
-
-
-      // When we also increrased tempoerature previous iteration
-
-      if (cell[gridp].temperature.gas_prev < cell[gridp].temperature.gas)
-      {
-        cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-
-        cell[gridp].temperature.gas      = 2 * cell[gridp].temperature.gas;
-      }
-
-
-      // When we decreased the temperature previous iteration
-
-      else
-      {
-        double temp = cell[gridp].temperature.gas;
-
-        cell[gridp].temperature.gas      = ( temp + cell[gridp].temperature.gas_prev ) / 2.0;
-
-        cell[gridp].temperature.gas_prev = temp;
-      }
-
-
-    } // end of net heating
-
-
-
-    // When there is net cooling, temperature was too high -> decrease temperature
-
-    if (thermal_ratio[gridp] < 0.0)
-    {
-
-      // Get an upper bound on temperature for Brent's algorithm
-
-      // if (cell[gridp].temperature.gas > temperature_b[gridp]){
-
-        temperature_b[gridp]   = 1.01*cell[gridp].temperature.gas;
-
-        thermal_ratio_b[gridp] = thermal_ratio[gridp];
-      // }
-
-      if (temperature_b[gridp] < TEMPERATURE_MIN)
-      {
-        temperature_b[gridp] = TEMPERATURE_MIN;
-      }
-
-
-      // When we also decrerased tempoerature previous iteration
-
-      if (cell[gridp].temperature.gas_prev > cell[gridp].temperature.gas)
-      {
-        cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-
-        cell[gridp].temperature.gas      = 0.9 * cell[gridp].temperature.gas;
-      }
-
-
-      // When we increased temperature previous iteration
-
-      else
-      {
-        double temp = cell[gridp].temperature.gas;
-
-        cell[gridp].temperature.gas      = (temp + cell[gridp].temperature.gas_prev) / 2.0;
-
-        cell[gridp].temperature.gas_prev = temp;
-      }
-
-    } // end of net cooling
-
-
-
-    // Enforce the minimun and maximum temperature
-
-    if (cell[gridp].temperature.gas < TEMPERATURE_MIN)
-    {
-      cell[gridp].temperature.gas = TEMPERATURE_MIN;
+      cell[gridp].temperature.gas      = 0.95 * cell[gridp].temperature.gas;
     }
 
-    else if (cell[gridp].temperature.gas > TEMPERATURE_MAX)
+
+    // When we increased temperature previous iteration => binary chop
+
+    else
     {
-      cell[gridp].temperature.gas = TEMPERATURE_MAX;
+      double temp = cell[gridp].temperature.gas;
+
+      cell[gridp].temperature.gas      = (temp + cell[gridp].temperature.gas_prev) / 2.0;
+
+      cell[gridp].temperature.gas_prev = temp;
     }
 
-  } // end of gridp loop over grid points
-  } // end of OpenMP parallel region
+  } // end of net cooling
 
 
 
-  // Average over neighbors
+  // Enforce the minimun and maximum temperature
 
-  // double temperature_new[NCELLS];
-  //
-  //
-  // for (long p = 0; p < NCELLS; p++)
-  // {
-  //
-  //   temperature_new[p] = cell[p].temperature.gas;
-  //
-  //   for (long n = 0; n < cell[p].n_neighbors; n++)
-  //   {
-  //     long nr = cell[p].neighbor[n];
-  //
-  //     temperature_new[p] = temperature_new[p] + cell[nr].temperature.gas;
-  //   }
-  //
-  //   temperature_new[p] = temperature_new[p] / (cell[p].n_neighbors + 1);
-  //
-  // }
-  //
-  //
-  // for (long p = 0; p < NCELLS; p++)
-  // {
-  //   cell[p].temperature.gas = temperature_new[p];
-  // }
+  if (cell[gridp].temperature.gas < TEMPERATURE_MIN)
+  {
+    cell[gridp].temperature.gas = TEMPERATURE_MIN;
+  }
+
+  else if (cell[gridp].temperature.gas > TEMPERATURE_MAX)
+  {
+    cell[gridp].temperature.gas = TEMPERATURE_MAX;
+  }
 
 
   return (0);
