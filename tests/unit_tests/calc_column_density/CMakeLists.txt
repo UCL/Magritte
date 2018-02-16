@@ -20,7 +20,7 @@ include(${VTK_USE_FILE})
 
 
 # Add HEALPix dependency
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix [${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix])
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix ${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix)
 
 
 # Make setup executable and execute setup
@@ -59,12 +59,6 @@ if(OPENMP_FOUND)
 endif()
 
 
-# HEALPix library
-find_library( HEALPix
-              lib_HEALPix.a ../../../src/HEALPix
-              DOC "HEALPix library" )
-
-
 # Create executable to test ray_tracing
 add_executable(test_calc_column_density.exe test_calc_column_density.cpp)
 
@@ -75,5 +69,5 @@ add_dependencies(test_calc_column_density.exe MAKE_SETUP)
 
 # Link necessary libraries
 target_link_libraries(test_calc_column_density.exe _calc_column_density)
-target_link_libraries(test_calc_column_density.exe ${HEALPix})
+target_link_libraries(test_calc_column_density.exe _HEALPix)
 target_link_libraries(test_calc_column_density.exe ${VTK_LIBRARIES})

@@ -1,2 +1,2 @@
-#define OUTPUT_DIRECTORY "/home/frederik/Dropbox/Astro/Magritte/Projects/3DPDR/output/files/18-02-15_19:51_output/"
-#define PROJECT_FOLDER "/home/frederik/Dropbox/Astro/Magritte/Projects/3DPDR/"
+#define OUTPUT_DIRECTORY "/home/frederik/Dropbox/Astro/Magritte/tests/unit_tests/ray_tracing/output/files/18-02-16_08:59_output/"
+#define PROJECT_FOLDER "/home/frederik/Dropbox/Astro/Magritte/tests/unit_tests/ray_tracing/"

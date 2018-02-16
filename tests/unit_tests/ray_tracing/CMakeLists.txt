@@ -1,5 +1,5 @@
-# CMakeLists.txt for tests/unit_tests/ray_tracing
-# -----------------------------------------------
+# CMakeLists.txt for tests/unit_tests
+# -----------------------------------
 
 
 # Specify minimum required CMake version
@@ -18,7 +18,9 @@ set(CMAKE_BUILD_TYPE Debug)
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
-add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix [${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix])
+
+# Add HEALPix dependency
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix ${CMAKE_CURRENT_BINARY_DIR}/../../../src/HEALPix)
 
 
 # Make setup executable and execute setup
@@ -54,12 +56,6 @@ if(OPENMP_FOUND)
 endif()
 
 
-# Add HEALPix library
-find_library(HEALPix
-             lib_HEALPix.a ../../../src/HEALPix
-             DOC "HEALPix library")
-
-
 # Create executable to test ray_tracing
 add_executable(test_ray_tracing.exe test_ray_tracing.cpp)
 
@@ -70,5 +66,5 @@ add_dependencies(test_ray_tracing.exe MAKE_SETUP)
 
 # Link necessary libraries
 target_link_libraries(test_ray_tracing.exe _ray_tracing)
-target_link_libraries(test_ray_tracing.exe ${HEALPix})
+target_link_libraries(test_ray_tracing.exe _HEALPix)
 target_link_libraries(test_ray_tracing.exe ${VTK_LIBRARIES})
