@@ -18,101 +18,11 @@
 #include "update_temperature_gas.hpp"
 
 
-// preliminary_chemistry: prform preliminary chemistry  iterations
-// ---------------------------------------------------------------
-
-int preliminary_chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, TIMERS *timers)
-{
-
-  printf ("(thermal_balance): starting preliminary chemistry iterations \n\n");
-
-
-    // COLUMN_DENSITIES column;
-
-# if (FIXED_NCELLS)
-
-    double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
-    double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
-    double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
-    double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
-
-# else
-
-    // column.new_column(ncells);
-
-    double *column_H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
-    double *column_HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
-    double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
-    double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
-
-# endif
-
-
-  initialize_double_array (NCELLS*NRAYS, column_H2);
-  initialize_double_array (NCELLS*NRAYS, column_HD);
-  initialize_double_array (NCELLS*NRAYS, column_C);
-  initialize_double_array (NCELLS*NRAYS, column_CO);
-
-
-  // Preliminary chemistry iterations
-
-  for (int chem_iteration = 0; chem_iteration < PRELIM_CHEM_ITER; chem_iteration++)
-  {
-    printf ("(thermal_balance):   chemistry iteration %d of %d \n", chem_iteration+1, PRELIM_CHEM_ITER);
-
-
-    // Calculate chemical abundances given current temperatures and radiation field
-
-    timers->chemistry.start();
-
-    chemistry (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO);
-
-    timers->chemistry.stop();
-
-
-    // Write intermediate output for (potential) restart
-
-#   if   (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.txt'))
-
-        write_temperature_gas ("", NCELLS, cell);
-        write_temperature_dust ("", NCELLS, cell);
-        write_temperature_gas_prev ("", NCELLS, cell);
-
-#   elif (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.vtu'))
-
-        write_vtu_output (NCELLS, cell, inputfile);
-
-#   endif
-
-
-  } // End of chemistry iteration
-
-
-  printf ("\n(thermal_balance): preliminary chemistry iterations done \n\n");
-
-
-# if (!FIXED_NCELLS)
-
-    delete [] column_H2;
-    delete [] column_HD;
-    delete [] column_C;
-    delete [] column_CO;
-
-# endif
-
-
-  return(0);
-
-}
-
-
-
-
 // thermal_balance: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------
 
-int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                         LINE_SPECIES line_species, TIMERS *timers, const double precision)
+int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+                     LINE_SPECIES line_species, TIMERS *timers)
 {
 
 
@@ -152,8 +62,47 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
 
 
 
-  // STANDARD THERMAL BALANCE ITERATIONS
-  // ___________________________________
+
+  // PRELIMINARY CHEMISTRY ITERATION
+  // _______________________________
+
+
+  for (int chem_iteration = 0; chem_iteration < PRELIM_CHEM_ITER; chem_iteration++)
+  {
+    printf ("(thermal_balance):   chemistry iteration %d of %d \n", chem_iteration+1, PRELIM_CHEM_ITER);
+
+
+    // Calculate chemical abundances given current temperatures and radiation field
+
+    timers->chemistry.start();
+
+    chemistry (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO);
+
+    timers->chemistry.stop();
+
+
+    // Write intermediate output for (potential) restart
+
+#   if   (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.txt'))
+
+        write_temperature_gas ("", NCELLS, cell);
+        write_temperature_dust ("", NCELLS, cell);
+        write_temperature_gas_prev ("", NCELLS, cell);
+
+#   elif (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.vtu'))
+
+        write_vtu_output (NCELLS, cell, inputfile);
+
+#   endif
+
+
+  } // End of chemistry iteration
+
+
+
+
+  // THERMAL BALANCE ITERATIONS
+  // __________________________
 
 
   printf ("(thermal_balance): starting thermal balance iterations \n\n");
@@ -202,10 +151,8 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
 
       // Check for thermal balance
 
-      if (fabs(cell[gridp].thermal_ratio) > precision)
+      if (fabs(cell[gridp].thermal_ratio) > THERMAL_PREC)
       {
-        cell[gridp].thermal_ratio_prev = cell[gridp].thermal_ratio;
-
         update_temperature_gas (NCELLS, cell, gridp);
 
         if (cell[gridp].temperature.gas != T_CMB)
@@ -274,7 +221,7 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
 // ----------------------------------------------------------------------------------
 
 int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                           LINE_SPECIES line_species, TIMERS *timers, const double precision)
+                           LINE_SPECIES line_species, TIMERS *timers)
 {
 
     // COLUMN_DENSITIES column;
@@ -454,7 +401,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
     // Update temperature for each cell
 
 #   pragma omp parallel                                                                        \
-    shared (ncells, cell, temperature_a, temperature_b, temperature_c,          \
+    shared (ncells, cell, temperature_a, temperature_b, temperature_c,                         \
             temperature_d, temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c,   \
             n_not_converged, no_thermal_balance)                                               \
     default (none)
@@ -475,7 +422,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
 
       // Check for thermal balance (convergence)
 
-      if (fabs(cell[gridp].thermal_ratio) > precision)
+      if (fabs(cell[gridp].thermal_ratio) > THERMAL_PREC)
       {
         update_temperature_gas_Brent (gridp, temperature_a, temperature_b, temperature_c,
                                       temperature_d, temperature_e, thermal_ratio_a,

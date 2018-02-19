@@ -324,12 +324,18 @@ int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
                                          + cell_red[nr_red].temperature.gas;
           cell[p].temperature.gas_prev = cell[p].temperature.gas_prev
                                          + cell_red[nr_red].temperature.gas_prev;
+          cell[p].thermal_ratio        = cell[p].thermal_ratio
+                                         + cell_red[nr_red].thermal_ratio;
+          cell[p].thermal_ratio_prev   = cell[p].thermal_ratio_prev
+                                         + cell_red[nr_red].thermal_ratio_prev;
         }
       }
 
-      cell[p].density              = cell[p].density / cell[p].n_neighbors;
-      cell[p].temperature.gas      = cell[p].temperature.gas / cell[p].n_neighbors;
+      cell[p].density              = cell[p].density              / cell[p].n_neighbors;
+      cell[p].temperature.gas      = cell[p].temperature.gas      / cell[p].n_neighbors;
       cell[p].temperature.gas_prev = cell[p].temperature.gas_prev / cell[p].n_neighbors;
+      cell[p].thermal_ratio        = cell[p].thermal_ratio        / cell[p].n_neighbors;
+      cell[p].thermal_ratio_prev   = cell[p].thermal_ratio_prev   / cell[p].n_neighbors;
 
     }
 
@@ -340,6 +346,8 @@ int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
       cell[p].density              = cell_red[nr_red].density;
       cell[p].temperature.gas      = cell_red[nr_red].temperature.gas;
       cell[p].temperature.gas_prev = cell_red[nr_red].temperature.gas_prev;
+      cell[p].thermal_ratio        = cell_red[nr_red].thermal_ratio;
+      cell[p].thermal_ratio_prev   = cell_red[nr_red].thermal_ratio_prev;
     }
 
   }

@@ -81,11 +81,9 @@
 
 #define MAX_NITERATIONS 299
 
-#define PRELIM_CHEM_ITER 0
+#define PRELIM_CHEM_ITER 5
 
-#define PRELIM_TB_ITER 10
-
-#define CHEM_ITER 8
+#define CHEM_ITER 3
 
 
 /* Temperature range */
@@ -103,7 +101,7 @@
 
 #define TIME_END_IN_YEARS 1.0E+7
 
-#define ALWAYS_INITIALIZE_CHEMISTRY true
+#define ALWAYS_INITIALIZE_CHEMISTRY false
 
 
 /* External UV field */

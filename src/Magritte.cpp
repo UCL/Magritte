@@ -298,38 +298,25 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
-  double precision = 0.01;
-  thermal_balance_std (ncells_red3, cell_red3, species, reaction, line_species, &timers, precision);
 
-  // thermal_balance_Brent (ncells_red3, cell_red3, species, reaction, line_species, &timers);
+  thermal_balance (ncells_red3, cell_red3, species, reaction, line_species, &timers);
 
   interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
-  precision = 0.01;
-  thermal_balance_std (ncells_red2, cell_red2, species, reaction, line_species, &timers, precision);
-
-  // thermal_balance_Brent (ncells_red2, cell_red2, species, reaction, line_species, &timers);
+  thermal_balance (ncells_red2, cell_red2, species, reaction, line_species, &timers);
 
   interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
 
-  precision = 0.01;
-  thermal_balance_std (ncells_red1, cell_red1, species, reaction, line_species, &timers, precision);
-
-  // thermal_balance_Brent (ncells_red1, cell_red1, species, reaction, line_species, &timers);
+  thermal_balance (ncells_red1, cell_red1, species, reaction, line_species, &timers);
 
   interpolate (ncells_red1, cell_red1, ncells, cell);
 
-  precision = 0.01;
-  thermal_balance_std (ncells, cell, species, reaction, line_species, &timers, precision);
-
-  precision = 0.005;
-  // thermal_balance_Brent (ncells, cell, species, reaction, line_species, &timers, precision);
+  thermal_balance (ncells, cell, species, reaction, line_species, &timers);
 
 
-
-
-  // delete [] cell_red2;
-  // delete [] cell_red1;
+  delete [] cell_red3;
+  delete [] cell_red2;
+  delete [] cell_red1;
 
 
   timers.total.stop();

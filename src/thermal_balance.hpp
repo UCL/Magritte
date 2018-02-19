@@ -10,24 +10,18 @@
 #include "declarations.hpp"
 
 
-// preliminary_chemistry: prform preliminary chemistry  iterations
-// ---------------------------------------------------------------
-
-int preliminary_chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, TIMERS *timers);
-
-
 // thermal_balance: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------
 
-int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                         LINE_SPECIES line_species, TIMERS *timers, const double precision);
+int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+                     LINE_SPECIES line_species, TIMERS *timers);
 
 
 // thermal_balance_Brent: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------------
 
 int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                           LINE_SPECIES line_species, TIMERS *timers, const double precision);
+                           LINE_SPECIES line_species, TIMERS *timers);
 
 
 #endif // __THERMAL_BALANCE_HPP_INCLUDED__

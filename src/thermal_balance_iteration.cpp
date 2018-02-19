@@ -149,7 +149,10 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;
 
-    cell[gridp].thermal_ratio = 0.0;
+
+    cell[gridp].thermal_ratio_prev = cell[gridp].thermal_ratio;
+    cell[gridp].thermal_ratio      = 0.0;
+
 
     if (thermal_sum != 0.0)
     {

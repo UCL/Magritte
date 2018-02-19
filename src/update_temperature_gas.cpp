@@ -23,60 +23,78 @@
 int update_temperature_gas (long ncells, CELL *cell, long gridp)
 {
 
-  // When there is net heating, temperature was too low -> increase temperature
+  // // When there is net heating, temperature was too low -> increase temperature
+  //
+  // if (cell[gridp].thermal_ratio > 0.0)
+  // {
+  //
+  //   // When we also increrased tempoerature previous iteration => up scaling
+  //
+  //   if (cell[gridp].temperature.gas_prev < cell[gridp].temperature.gas)
+  //   {
+  //     cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
+  //     cell[gridp].temperature.gas      = 1.1 * cell[gridp].temperature.gas;
+  //   }
+  //
+  //
+  //   // When we decreased temperature previous iteration => binary chop
+  //
+  //   else
+  //   {
+  //     double temp = cell[gridp].temperature.gas;
+  //
+  //     cell[gridp].temperature.gas      = ( temp + cell[gridp].temperature.gas_prev ) / 2.0;
+  //     cell[gridp].temperature.gas_prev = temp;
+  //   }
+  //
+  //
+  // } // end of net heating
+  //
+  //
+  //
+  // // When there is net cooling, temperature was too high -> decrease temperature
+  //
+  // if (cell[gridp].thermal_ratio < 0.0)
+  // {
+  //
+  //   // When we also decrerased tempoerature previous iteration => down scaling
+  //
+  //   if (cell[gridp].temperature.gas_prev > cell[gridp].temperature.gas)
+  //   {
+  //     cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
+  //     cell[gridp].temperature.gas      = 0.9 * cell[gridp].temperature.gas;
+  //   }
+  //
+  //
+  //   // When we increased temperature previous iteration => binary chop
+  //
+  //   else
+  //   {
+  //     double temp = cell[gridp].temperature.gas;
+  //
+  //     cell[gridp].temperature.gas      = (temp + cell[gridp].temperature.gas_prev) / 2.0;
+  //     cell[gridp].temperature.gas_prev = temp;
+  //   }
+  //
+  // } // end of net cooling
 
-  if (cell[gridp].thermal_ratio > 0.0)
-  {
 
-    // When we also increrased tempoerature previous iteration => up scaling
+  // Secant method
 
-    if (cell[gridp].temperature.gas_prev < cell[gridp].temperature.gas)
-    {
-      cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-      cell[gridp].temperature.gas      = 1.1 * cell[gridp].temperature.gas;
-    }
+  double T   = cell[gridp].temperature.gas;
+  double T_p = cell[gridp].temperature.gas_prev;
+
+  double f   = cell[gridp].thermal_ratio;
+  double f_p = cell[gridp].thermal_ratio_prev;
 
 
-    // When we decreased temperature previous iteration => binary chop
+  cell[gridp].temperature.gas = (T*f_p - T_p*f) / (f_p - f);
 
-    else
-    {
-      double temp = cell[gridp].temperature.gas;
-
-      cell[gridp].temperature.gas      = ( temp + cell[gridp].temperature.gas_prev ) / 2.0;
-      cell[gridp].temperature.gas_prev = temp;
-    }
+  cell[gridp].temperature.gas_prev = T;
 
 
-  } // end of net heating
+  // Inverse quadratic interpolation
 
-
-
-  // When there is net cooling, temperature was too high -> decrease temperature
-
-  if (cell[gridp].thermal_ratio < 0.0)
-  {
-
-    // When we also decrerased tempoerature previous iteration => down scaling
-
-    if (cell[gridp].temperature.gas_prev > cell[gridp].temperature.gas)
-    {
-      cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-      cell[gridp].temperature.gas      = 0.9 * cell[gridp].temperature.gas;
-    }
-
-
-    // When we increased temperature previous iteration => binary chop
-
-    else
-    {
-      double temp = cell[gridp].temperature.gas;
-
-      cell[gridp].temperature.gas      = (temp + cell[gridp].temperature.gas_prev) / 2.0;
-      cell[gridp].temperature.gas_prev = temp;
-    }
-
-  } // end of net cooling
 
 
 
