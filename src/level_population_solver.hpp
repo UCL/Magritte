@@ -14,7 +14,7 @@
 // ---------------------------------------------------------------------------------------
 
 int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
-                             long gridp, int lspec, double *R);
+                             long o, int lspec, double *R);
 
 
 // Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b

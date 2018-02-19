@@ -18,7 +18,7 @@
 
 
 int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
-                             long gridp, int lspec, double *R)
+                             long o, int lspec, double *R)
 {
 
   const int n = nlev[lspec];   // number of rows and columns of matrix
@@ -57,7 +57,7 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
   }
 
 
-  b[nlev[lspec]-1] = cell[gridp].density * cell[gridp].abundance[line_species.nr[lspec]];
+  b[nlev[lspec]-1] = cell[o].density * cell[o].abundance[line_species.nr[lspec]];
 
 
 
@@ -86,18 +86,18 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
     {
       if (b[i] < POP_UPPER_LIMIT)
       {
-        cell[gridp].pop[p_i] =  b[i];
+        cell[o].pop[p_i] =  b[i];
       }
 
       else
       {
-        cell[gridp].pop[p_i] = POP_UPPER_LIMIT;
+        cell[o].pop[p_i] = POP_UPPER_LIMIT;
       }
     }
 
     else
     {
-      cell[gridp].pop[p_i] = 0.0;
+      cell[o].pop[p_i] = 0.0;
     }
 
   }

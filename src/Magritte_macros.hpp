@@ -23,18 +23,18 @@
 #define LSPECLEVLEV(lspec,i,j)   ( (j) + (i)*nlev[(lspec)] + cum_nlev2[(lspec)] )                 \
                    /* when first index is line producing species and second and third are levels */
 
-#define LSPECGRIDLEVLEV(lspec,gridp,i,j)   ( (j) + (i)*nlev[(lspec)]                              \
-                                             + (gridp)*nlev[(lspec)]*nlev[(lspec)]                \
+#define LSPECGRIDLEVLEV(lspec,o,i,j)   ( (j) + (i)*nlev[(lspec)]                              \
+                                             + (o)*nlev[(lspec)]*nlev[(lspec)]                \
                                              + NCELLS*cum_nlev2[(lspec)] )                        \
 /* when first index is line producing species, second is grid point, third and fourth are levels */
 
-#define LSPECGRIDLEV(lspec,gridp,i)   ( (i) + (gridp)*nlev[(lspec)] + NCELLS*cum_nlev[lspec] )    \
+#define LSPECGRIDLEV(lspec,o,i)   ( (i) + (o)*nlev[(lspec)] + NCELLS*cum_nlev[lspec] )    \
           /* when first index is line producing species, second is grid point and third is level */
 
 #define LSPECRAD(lspec,kr)   ( (kr) + cum_nrad[(lspec)] )                                         \
                 /* when first index is line producing species and second is radiative transition */
 
-#define LSPECGRIDRAD(lspec,gridp,kr)   ( (kr) + (gridp)*nrad[(lspec)] + NCELLS*cum_nrad[(lspec)] )
+#define LSPECGRIDRAD(lspec,o,kr)   ( (kr) + (o)*nrad[(lspec)] + NCELLS*cum_nrad[(lspec)] )
 /* when first index is line producing species, second is grid point and third is rad. transition */
 
 

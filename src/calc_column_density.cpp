@@ -157,7 +157,7 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
 // ---------------------------------------------------------------------------------------
 
 double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
-                       long *cum_raytot, long gridp, int spec, long ray)
+                       long *cum_raytot, long o, int spec, long ray)
 {
 
   double column_density_res = 0.0;   // resulting column density
@@ -168,10 +168,10 @@ double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key,
   if (etot > 0)
   {
     long evnr       = LOCAL_GP_NR_OF_EVALP(ray,0);
-    long gridp_evnr = evnr;
+    long o_evnr = evnr;
 
-    column_density_res = evalpoint[gridp_evnr].dZ * PC
-                         *(cell[gridp].density*cell[gridp].abundance[spec]
+    column_density_res = evalpoint[o_evnr].dZ * PC
+                         *(cell[o].density*cell[o].abundance[spec]
                            + cell[evnr].density*cell[evnr].abundance[spec]) / 2.0;
 
 
@@ -181,10 +181,10 @@ double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key,
     {
       long evnr       = LOCAL_GP_NR_OF_EVALP(ray,e);
       long evnrp      = LOCAL_GP_NR_OF_EVALP(ray,e-1);
-      long gridp_evnr = evnr;
+      long o_evnr = evnr;
 
       column_density_res = column_density_res
-                           + evalpoint[gridp_evnr].dZ * PC
+                           + evalpoint[o_evnr].dZ * PC
                              * (cell[evnrp].density*cell[evnrp].abundance[spec]
                                 + cell[evnr].density*cell[evnr].abundance[spec]) / 2.0;
     }

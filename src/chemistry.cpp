@@ -41,20 +41,20 @@ int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long gridp = start; gridp < stop; gridp++)
+  for (long o = start; o < stop; o++)
   {
 
     // Calculate reaction rates
 
-    reaction_rates (NCELLS, cell, reaction, gridp, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (NCELLS, cell, reaction, o, column_H2, column_HD, column_C, column_CO);
 
 
     // Solve rate equations
 
-    rate_equation_solver (cell, gridp);
+    rate_equation_solver (cell, o);
 
 
-  } // end of gridp loop over grid points
+  } // end of o loop over grid points
   } // end of OpenMP parallel region
 
 

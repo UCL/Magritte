@@ -17,12 +17,12 @@
 // heating: calculate total heating
 // --------------------------------
 
-double heating (long ncells, CELL *cell, long gridp, double* heating_components)
+double heating (long ncells, CELL *cell, long o, double* heating_components)
 {
 
-  double Habing_field = 1.68 * cell[gridp].UV;   // UV radiation field in Habing
+  double Habing_field = 1.68 * cell[o].UV;   // UV radiation field in Habing
 
-  double electron_density = cell[gridp].abundance[nr_e] * cell[gridp].density;   // e density
+  double electron_density = cell[o].abundance[nr_e] * cell[o].density;   // e density
 
 
 
@@ -56,10 +56,10 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 
   // Derived parameters
 
-  double x_k = KB*cell[gridp].temperature.gas/(hnu_H*EV);
+  double x_k = KB*cell[o].temperature.gas/(hnu_H*EV);
   double x_d = hnu_d/hnu_H;
 
-  double gamma = 2.9E-4 * Y * sqrt(cell[gridp].temperature.gas) * Habing_field / electron_density;
+  double gamma = 2.9E-4 * Y * sqrt(cell[o].temperature.gas) * Habing_field / electron_density;
 
   double Delta = x_k - x_d + gamma;
 
@@ -86,7 +86,7 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
   }
 
 
-  double heating_dust = 2.7E-25 * Delta_UV * Delta_d * cell[gridp].density * Y * Habing_field
+  double heating_dust = 2.7E-25 * Delta_UV * Delta_d * cell[o].density * Y * Habing_field
                         * ( pow(1.0-x, 2)/x + x_k*(pow(x, 2) - 1.0)/pow(x, 2)  ) * METALLICITY;
 
   heating_components[0] = heating_dust;
@@ -113,18 +113,18 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 
   double alpha = 0.944;
 
-  double beta = 0.735 / pow(cell[gridp].temperature.gas, 0.068);
+  double beta = 0.735 / pow(cell[o].temperature.gas, 0.068);
 
-  double delta = Habing_field * sqrt(cell[gridp].temperature.gas) / (electron_density * phi_PAH);
+  double delta = Habing_field * sqrt(cell[o].temperature.gas) / (electron_density * phi_PAH);
 
   double epsilon = 4.87E-2/(1.0 + 4.0E-3*pow(delta, 0.73))
-                   + 3.65E-2*pow(cell[gridp].temperature.gas/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
+                   + 3.65E-2*pow(cell[o].temperature.gas/1.0E4, 0.7)/(1.0 + 2.0E-4*delta);
 
 
-  double PAH_heating = 1.3E-24 * epsilon * Habing_field * cell[gridp].density;
+  double PAH_heating = 1.3E-24 * epsilon * Habing_field * cell[o].density;
 
-  double PAH_cooling = 4.65E-30 * pow(cell[gridp].temperature.gas, alpha) * pow(delta, beta)
-                       * electron_density * phi_PAH * cell[gridp].density;
+  double PAH_cooling = 4.65E-30 * pow(cell[o].temperature.gas, alpha) * pow(delta, beta)
+                       * electron_density * phi_PAH * cell[o].density;
 
 
   // Assume PE heating rate scales linearly with METALLICITY
@@ -156,10 +156,10 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 
 
   double heating_Weingartner
-        = 1.0E-26 * METALLICITY * (Habing_field * cell[gridp].density)
-          * ( C0 + C1*pow(cell[gridp].temperature.gas, C4) )
-          / ( 1.0 + C2*pow(Habing_field * sqrt(cell[gridp].temperature.gas) / electron_density, C5)
-          * ( 1.0 + C3*pow(Habing_field * sqrt(cell[gridp].temperature.gas) / electron_density, C6) ) );
+        = 1.0E-26 * METALLICITY * (Habing_field * cell[o].density)
+          * ( C0 + C1*pow(cell[o].temperature.gas, C4) )
+          / ( 1.0 + C2*pow(Habing_field * sqrt(cell[o].temperature.gas) / electron_density, C5)
+          * ( 1.0 + C3*pow(Habing_field * sqrt(cell[o].temperature.gas) / electron_density, C6) ) );
 
   heating_components[2] = heating_Weingartner;
 
@@ -174,8 +174,8 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
       Use the C photoionization rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
-  double heating_C_ionization = (1.0*EV) * cell[gridp].rate[nr_C_ionization]
-                                * cell[gridp].abundance[nr_C] * cell[gridp].density;
+  double heating_C_ionization = (1.0*EV) * cell[o].rate[nr_C_ionization]
+                                * cell[o].abundance[nr_C] * cell[o].density;
 
   heating_components[3] = heating_C_ionization;
 
@@ -192,9 +192,9 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
       Use the H2 formation rate determined in calc_reac_rates.cpp [units: cm^3.s^-1]  */
 
 
-  double heating_H2_formation = (1.5*EV) * cell[gridp].rate[nr_H2_formation]
-                                * cell[gridp].density * cell[gridp].abundance[nr_H]
-                                * cell[gridp].density;
+  double heating_H2_formation = (1.5*EV) * cell[o].rate[nr_H2_formation]
+                                * cell[o].density * cell[o].abundance[nr_H]
+                                * cell[o].density;
 
   heating_components[4] = heating_H2_formation;
 
@@ -209,8 +209,8 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
       Use H2 photodissociation rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
-  double heating_H2_photodissociation = (0.4*EV) * cell[gridp].rate[nr_H2_photodissociation]
-                                        * cell[gridp].abundance[nr_H2] * cell[gridp].density;
+  double heating_H2_photodissociation = (0.4*EV) * cell[o].rate[nr_H2_photodissociation]
+                                        * cell[o].abundance[nr_H2] * cell[o].density;
 
   heating_components[5] = heating_H2_photodissociation;
 
@@ -229,13 +229,13 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 
 
   double critical_density
-          = 1.0E6 / sqrt(cell[gridp].temperature.gas)
-            /( 1.6 * cell[gridp].abundance[nr_H] * exp(-pow(400.0/cell[gridp].temperature.gas, 2))
-               + 1.4 * cell[gridp].abundance[nr_H2] * exp(-18100.0/(1200.0+cell[gridp].temperature.gas)) );
+          = 1.0E6 / sqrt(cell[o].temperature.gas)
+            /( 1.6 * cell[o].abundance[nr_H] * exp(-pow(400.0/cell[o].temperature.gas, 2))
+               + 1.4 * cell[o].abundance[nr_H2] * exp(-18100.0/(1200.0+cell[o].temperature.gas)) );
 
-  double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[gridp].rate[nr_H2_photodissociation]
-                                  * cell[gridp].abundance[nr_H2] * cell[gridp].density
-                                  / (1.0 + critical_density/cell[gridp].density);
+  double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[o].rate[nr_H2_photodissociation]
+                                  * cell[o].abundance[nr_H2] * cell[o].density
+                                  / (1.0 + critical_density/cell[o].density);
 
   heating_components[6] = heating_H2_FUV_pumping;
 
@@ -256,7 +256,7 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 
 
   double heating_cosmic_rays = (9.4*EV) * (1.3E-17*ZETA)
-                               * cell[gridp].abundance[nr_H2] * cell[gridp].density;
+                               * cell[o].abundance[nr_H2] * cell[o].density;
 
   heating_components[7] = heating_cosmic_rays;
 
@@ -276,7 +276,7 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
   double l_turb = 5.0;   // turbulent length scale (typical value) in parsec
 
 
-  double heating_turbulent = 3.5E-28*pow(V_TURB/1.0E5, 3)*(1.0/l_turb)*cell[gridp].density;
+  double heating_turbulent = 3.5E-28*pow(V_TURB/1.0E5, 3)*(1.0/l_turb)*cell[o].density;
 
   heating_components[8] = heating_turbulent;
 
@@ -300,35 +300,35 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
   // For so-called REDUCED NETWORK of 3D-PDR
 
   double heating_chemical
-                   = cell[gridp].abundance[nr_H2x] * cell[gridp].density      // H2+  +  e-
+                   = cell[o].abundance[nr_H2x] * cell[o].density      // H2+  +  e-
                      * electron_density
-                     * cell[gridp].rate[215] * (10.9*EV)
+                     * cell[o].rate[215] * (10.9*EV)
 
-                     + cell[gridp].abundance[nr_H2x] * cell[gridp].density    // H2+  +  H
-                       * cell[gridp].abundance[nr_H] * cell[gridp].density
-                       * cell[gridp].rate[154] * (0.94*EV)
+                     + cell[o].abundance[nr_H2x] * cell[o].density    // H2+  +  H
+                       * cell[o].abundance[nr_H] * cell[o].density
+                       * cell[o].rate[154] * (0.94*EV)
 
-                     + cell[gridp].abundance[nr_HCOx] * cell[gridp].density   // HCO+  +  e-
+                     + cell[o].abundance[nr_HCOx] * cell[o].density   // HCO+  +  e-
                        * electron_density
-                       * cell[gridp].rate[239] * (7.51*EV)
+                       * cell[o].rate[239] * (7.51*EV)
 
-                     + cell[gridp].abundance[nr_H3x] * cell[gridp].density    // H3+  +  e-
+                     + cell[o].abundance[nr_H3x] * cell[o].density    // H3+  +  e-
                        * electron_density
-                       * ( cell[gridp].rate[216] * (4.76*EV) + cell[gridp].rate[217] * (9.23*EV) )
+                       * ( cell[o].rate[216] * (4.76*EV) + cell[o].rate[217] * (9.23*EV) )
 
-                     + cell[gridp].abundance[nr_H3Ox]*cell[gridp].density     // H3O+  + e-
+                     + cell[o].abundance[nr_H3Ox]*cell[o].density     // H3O+  + e-
                        * electron_density
-                       * ( cell[gridp].rate[235] * (1.16*EV) + cell[gridp].rate[236] * (5.63*EV)
-                           + cell[gridp].rate[237] * (6.27*EV) )
+                       * ( cell[o].rate[235] * (1.16*EV) + cell[o].rate[236] * (5.63*EV)
+                           + cell[o].rate[237] * (6.27*EV) )
 
-                     + cell[gridp].abundance[nr_Hex] * cell[gridp].density    // He+  + H2
-                       * cell[gridp].abundance[nr_H2] * cell[gridp].density
-                       * ( cell[gridp].rate[49] * (6.51*EV) + cell[gridp].rate[169] * (6.51*EV) )
+                     + cell[o].abundance[nr_Hex] * cell[o].density    // He+  + H2
+                       * cell[o].abundance[nr_H2] * cell[o].density
+                       * ( cell[o].rate[49] * (6.51*EV) + cell[o].rate[169] * (6.51*EV) )
 
-                     + cell[gridp].abundance[nr_Hex] * cell[gridp].density    // He+  + CO
-                       * cell[gridp].abundance[nr_CO] * cell[gridp].density
-                       * ( cell[gridp].rate[88] * (2.22*EV) + cell[gridp].rate[89] * (2.22*EV)
-                           + cell[gridp].rate[90] * (2.22*EV) );
+                     + cell[o].abundance[nr_Hex] * cell[o].density    // He+  + CO
+                       * cell[o].abundance[nr_CO] * cell[o].density
+                       * ( cell[o].rate[88] * (2.22*EV) + cell[o].rate[89] * (2.22*EV)
+                           + cell[o].rate[90] * (2.22*EV) );
 
   heating_components[9] = heating_chemical;
 
@@ -364,15 +364,15 @@ double heating (long ncells, CELL *cell, long gridp, double* heating_components)
 
 
   double accommodation = 0.1
-                         + 0.35*exp(-sqrt((cell[gridp].temperature.gas+cell[gridp].temperature.dust)/5.0E2));
+                         + 0.35*exp(-sqrt((cell[o].temperature.gas+cell[o].temperature.dust)/5.0E2));
 
-  double density_grain = 1.998E-12 * cell[gridp].density * METALLICITY * 100.0 / GAS_TO_DUST;
+  double density_grain = 1.998E-12 * cell[o].density * METALLICITY * 100.0 / GAS_TO_DUST;
 
   double cross_section_grain = PI * pow(radius_grain, 2);
 
-  double heating_gas_grain = 4.003E-12 * cell[gridp].density * density_grain
-                             * cross_section_grain * accommodation * sqrt(cell[gridp].temperature.gas)
-                             * (cell[gridp].temperature.dust - cell[gridp].temperature.gas);
+  double heating_gas_grain = 4.003E-12 * cell[o].density * density_grain
+                             * cross_section_grain * accommodation * sqrt(cell[o].temperature.gas)
+                             * (cell[o].temperature.dust - cell[o].temperature.gas);
 
   heating_components[10] = heating_gas_grain;
 

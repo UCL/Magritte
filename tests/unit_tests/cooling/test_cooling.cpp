@@ -254,15 +254,15 @@ TEST_CASE("Test chemistry"){
   }
 
 
-  for (long gridp=0; gridp<NCELLS; gridp++){
+  for (long o=0; o<NCELLS; o++){
 
-    double cooling_total = cooling( gridp, irad, jrad, A_coeff, B_coeff, frequency,
+    double cooling_total = cooling( o, irad, jrad, A_coeff, B_coeff, frequency,
                                     pop, mean_intensity );
 
     cout << "Coolimg " << cooling_total << "\n";
 
 
-  } /* end of gridp loop over grid points */
+  } /* end of o loop over grid points */
 
 
 

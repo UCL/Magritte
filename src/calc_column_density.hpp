@@ -30,7 +30,7 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
   // ----------------------------------------------------------------------
 
   double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
-                         long *cum_raytot, long gridp, int spec, long ray);
+                         long *cum_raytot, long o, int spec, long ray);
 
 
 #else
@@ -38,7 +38,7 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
   // cell_column_density: calculates column density for a species along a ray at a point
   // --------------------------------------------------------------------------------------------
 
-  double cell_column_density (long ncells, CELL *cell, long gridp, int spec, long ray);
+  double cell_column_density (long ncells, CELL *cell, long o, int spec, long ray);
 
 
 #endif

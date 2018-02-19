@@ -14,14 +14,14 @@
 
 #if (CELL_BASED)
 
-#include "cell_level_populations.hpp"
+#include "level_populations.hpp"
 #include "acceleration_Ng.hpp"
 #include "lines.hpp"
 #include "calc_C_coeff.hpp"
 #include "initializers.hpp"
 #include "sobolev.hpp"
-#include "cell_sobolev.hpp"
-#include "cell_radiative_transfer.hpp"
+#include "sobolev.hpp"
+#include "radiative_transfer.hpp"
 #include "level_population_solver.hpp"
 #include "ray_tracing.hpp"
 #include "write_output.hpp"
@@ -30,15 +30,15 @@
 // level_populations: iteratively calculates the level populations
 // ---------------------------------------------------------------
 
-int cell_level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
+int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 {
 
 
 # if (FIXED_NCELLS)
 
-    double prev1_pop[NCELLS*TOT_NLEV];            // level population n_i 1 iteration ago
-    double prev2_pop[NCELLS*TOT_NLEV];            // level population n_i 2 iterations ago
-    double prev3_pop[NCELLS*TOT_NLEV];            // level population n_i 3 iterations ago
+    double prev1_pop[NCELLS*TOT_NLEV];   // level population n_i 1 iteration ago
+    double prev2_pop[NCELLS*TOT_NLEV];   // level population n_i 2 iterations ago
+    double prev3_pop[NCELLS*TOT_NLEV];   // level population n_i 3 iterations ago
 
     double mean_intensity_eff[NCELLS*TOT_NRAD];   // mean intensity for a ray
     double Lambda_diagonal[NCELLS*TOT_NRAD];      // mean intensity for a ray
@@ -46,9 +46,9 @@ int cell_level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
 # else
 
-    double *prev1_pop = new double[ncells*TOT_NLEV];            // level population n_i 1 iteration ago
-    double *prev2_pop = new double[ncells*TOT_NLEV];            // level population n_i 2 iterations ago
-    double *prev3_pop = new double[ncells*TOT_NLEV];            // level population n_i 3 iterations ago
+    double *prev1_pop = new double[ncells*TOT_NLEV];   // level population n_i 1 iteration ago
+    double *prev2_pop = new double[ncells*TOT_NLEV];   // level population n_i 2 iterations ago
+    double *prev3_pop = new double[ncells*TOT_NLEV];   // level population n_i 3 iterations ago
 
     double *mean_intensity_eff = new double[ncells*TOT_NRAD];   // mean intensity for a ray
     double *Lambda_diagonal    = new double[ncells*TOT_NRAD];   // mean intensity for a ray
@@ -224,12 +224,12 @@ int cell_level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
 #           if (SOBOLEV)
 
-              cell_sobolev (NCELLS, cell, line_species, Lambda_diagonal,
+              sobolev (NCELLS, cell, line_species, Lambda_diagonal,
                             mean_intensity_eff, source, opacity, n, lspec, kr);
 
 #           else
 
-              cell_radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal,
+              radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal,
                                        mean_intensity_eff, source, opacity, n, lspec, kr);
 
 #           endif
@@ -337,7 +337,6 @@ int cell_level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
     delete [] prev3_pop;
 
     delete [] mean_intensity_eff;
-
     delete [] Lambda_diagonal;
 
 # endif

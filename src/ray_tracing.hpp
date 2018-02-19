@@ -16,13 +16,13 @@
   // find_evalpoints: create evaluation points for each ray from this cell
   // ---------------------------------------------------------------------
 
-  int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long gridp);
+  int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long o);
 
 
   // get_velocities: get velocity of evaluation point w. r. t. originating cell
   // --------------------------------------------------------------------------
 
-  int get_velocities (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long gridp, long *first_velo);
+  int get_velocities (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long o, long *first_velo);
 
 
 #else

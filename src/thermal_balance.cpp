@@ -146,16 +146,16 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp = start; gridp < stop; gridp++)
+    for (long o = start; o < stop; o++)
     {
 
       // Check for thermal balance
 
-      if (fabs(cell[gridp].thermal_ratio) > THERMAL_PREC)
+      if (fabs(cell[o].thermal_ratio) > THERMAL_PREC)
       {
-        update_temperature_gas (NCELLS, cell, gridp);
+        update_temperature_gas (NCELLS, cell, o);
 
-        if (cell[gridp].temperature.gas != T_CMB)
+        if (cell[o].temperature.gas != T_CMB)
         {
           no_thermal_balance = true;
           n_not_converged++;
@@ -414,30 +414,30 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp = start; gridp < stop; gridp++)
+    for (long o = start; o < stop; o++)
     {
-      shuffle_Brent (gridp, temperature_a, temperature_b, temperature_c, temperature_d,
+      shuffle_Brent (o, temperature_a, temperature_b, temperature_c, temperature_d,
                      temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c);
 
 
       // Check for thermal balance (convergence)
 
-      if (fabs(cell[gridp].thermal_ratio) > THERMAL_PREC)
+      if (fabs(cell[o].thermal_ratio) > THERMAL_PREC)
       {
-        update_temperature_gas_Brent (gridp, temperature_a, temperature_b, temperature_c,
+        update_temperature_gas_Brent (o, temperature_a, temperature_b, temperature_c,
                                       temperature_d, temperature_e, thermal_ratio_a,
                                       thermal_ratio_b, thermal_ratio_c);
 
-        cell[gridp].temperature.gas = temperature_b[gridp];
+        cell[o].temperature.gas = temperature_b[o];
 
-        if (cell[gridp].temperature.gas != T_CMB)
+        if (cell[o].temperature.gas != T_CMB)
         {
           no_thermal_balance = true;
           n_not_converged++;
         }
       }
 
-    } // end of gridp loop over grid points
+    } // end of o loop over grid points
     } // end of OpenMP parallel region
 
 

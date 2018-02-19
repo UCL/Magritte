@@ -963,7 +963,7 @@ int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
 // write_R: write the transition matrix R
 // --------------------------------------
 
-int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long gridp, double *R)
+int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long o, double *R)
 {
 
   if (!tag.empty())
@@ -993,7 +993,7 @@ int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long gridp
     {
       for (long col = 0; col < nlev[lspec]; col++)
       {
-        fprintf (file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,gridp,row,col)]);
+        fprintf (file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,o,row,col)]);
 
       }
 

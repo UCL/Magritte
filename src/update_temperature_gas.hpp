@@ -11,13 +11,13 @@
 // update_temperature_gas: update gas temperature after a thermal balance iteration
 // --------------------------------------------------------------------------------
 
-int update_temperature_gas (long ncells, CELL *cell, long gridp);
+int update_temperature_gas (long ncells, CELL *cell, long o);
 
 
 // shuffle_temperatures: rename variables for Brent's method
 // ---------------------------------------------------------
 
-int shuffle_Brent (long gridp, double *temperature_a, double *temperature_b, double *temperature_c,
+int shuffle_Brent (long o, double *temperature_a, double *temperature_b, double *temperature_c,
                    double *temperature_d, double *temperature_e, double *thermal_ratio_a,
                    double *thermal_ratio_b, double *thermal_ratio_c);
 
@@ -25,7 +25,7 @@ int shuffle_Brent (long gridp, double *temperature_a, double *temperature_b, dou
 // update_temperature_gas: update gas temperature using Brent's method
 // ------------------------------ ------------------------------------
 
-int update_temperature_gas_Brent (long gridp, double *temperature_a, double *temperature_b,
+int update_temperature_gas_Brent (long o, double *temperature_a, double *temperature_b,
                                   double *temperature_c, double *temperature_d,
                                   double *temperature_e, double *thermal_ratio_a,
                                   double *thermal_ratio_b, double *thermal_ratio_c);

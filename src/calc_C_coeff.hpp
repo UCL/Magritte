@@ -14,7 +14,7 @@
 // ----------------------------------------------------------------------
 
 int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
-                  double *C_coeff, long gridp, int lspec );
+                  double *C_coeff, long o, int lspec );
 
 
 #endif // __CALC_C_COEFF_HPP_INCLUDED__

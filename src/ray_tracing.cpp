@@ -24,7 +24,7 @@
 // find_evalpoints: create evaluation points for each ray from this cell
 // ---------------------------------------------------------------------
 
-int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long gridp)
+int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long o)
 {
 
   // Initialize data structures that store evaluation points
@@ -46,9 +46,9 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 
   double origin[3];
 
-  origin[0] = cell[gridp].x;
-  origin[1] = cell[gridp].y;
-  origin[2] = cell[gridp].z;
+  origin[0] = cell[o].x;
+  origin[1] = cell[o].y;
+  origin[2] = cell[o].z;
 
 
   // Locate all cells w.r.t. origin
@@ -81,7 +81,7 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
   initialize_double_array (NRAYS, Z);
 
 
-  // FIND EVALUATION POINTS FOR gridp
+  // FIND EVALUATION POINTS FOR o
   // ++++++++++++++++++++++++++++++++
 
 
@@ -228,13 +228,13 @@ int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, 
 /*-----------------------------------------------------------------------------------------------*/
 
 int get_velocities (CELL *cell, EVALPOINT *evalpoint,
-                    long *key, long *raytot, long *cum_raytot, long gridp, long *first_velo)
+                    long *key, long *raytot, long *cum_raytot, long o, long *first_velo)
 {
 
 
   /* Since we are in the comoving frame the point itself is at rest */
 
-  evalpoint[gridp].vol = 0.0;
+  evalpoint[o].vol = 0.0;
 
 
   /* Get the increments in velocity space along each ray/antipodal ray pair */
@@ -262,9 +262,9 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
       long evnr = LOCAL_GP_NR_OF_EVALP(ar,e1);
 
       evalpoint[evnr].vol
-                =   (cell[evnr].vx - cell[gridp].vx) * healpixvector[VINDEX(ar,0)]
-                  + (cell[evnr].vy - cell[gridp].vy) * healpixvector[VINDEX(ar,1)]
-                  + (cell[evnr].vz - cell[gridp].vz) * healpixvector[VINDEX(ar,2)];
+                =   (cell[evnr].vx - cell[o].vx) * healpixvector[VINDEX(ar,0)]
+                  + (cell[evnr].vy - cell[o].vy) * healpixvector[VINDEX(ar,1)]
+                  + (cell[evnr].vz - cell[o].vz) * healpixvector[VINDEX(ar,2)];
 
       // velocities[e1] = evalpoint[evnr].vol;
 
@@ -281,9 +281,9 @@ int get_velocities (CELL *cell, EVALPOINT *evalpoint,
       long evnr = LOCAL_GP_NR_OF_EVALP(r,e2);
 
       evalpoint[evnr].vol
-                =   (cell[evnr].vx - cell[gridp].vx) * healpixvector[VINDEX(r,0)]
-                  + (cell[evnr].vy - cell[gridp].vy) * healpixvector[VINDEX(r,1)]
-                  + (cell[evnr].vz - cell[gridp].vz) * healpixvector[VINDEX(r,2)];
+                =   (cell[evnr].vx - cell[o].vx) * healpixvector[VINDEX(r,0)]
+                  + (cell[evnr].vy - cell[o].vy) * healpixvector[VINDEX(r,1)]
+                  + (cell[evnr].vz - cell[o].vz) * healpixvector[VINDEX(r,2)];
 
       // velocities[etot1+e2] = evalpoint[evnr].vol;
 

@@ -20,94 +20,32 @@
 // update_temperature_gas: update gas temperature after a thermal balance iteration
 // --------------------------------------------------------------------------------
 
-int update_temperature_gas (long ncells, CELL *cell, long gridp)
+int update_temperature_gas (long ncells, CELL *cell, long o)
 {
-
-  // // When there is net heating, temperature was too low -> increase temperature
-  //
-  // if (cell[gridp].thermal_ratio > 0.0)
-  // {
-  //
-  //   // When we also increrased tempoerature previous iteration => up scaling
-  //
-  //   if (cell[gridp].temperature.gas_prev < cell[gridp].temperature.gas)
-  //   {
-  //     cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-  //     cell[gridp].temperature.gas      = 1.1 * cell[gridp].temperature.gas;
-  //   }
-  //
-  //
-  //   // When we decreased temperature previous iteration => binary chop
-  //
-  //   else
-  //   {
-  //     double temp = cell[gridp].temperature.gas;
-  //
-  //     cell[gridp].temperature.gas      = ( temp + cell[gridp].temperature.gas_prev ) / 2.0;
-  //     cell[gridp].temperature.gas_prev = temp;
-  //   }
-  //
-  //
-  // } // end of net heating
-  //
-  //
-  //
-  // // When there is net cooling, temperature was too high -> decrease temperature
-  //
-  // if (cell[gridp].thermal_ratio < 0.0)
-  // {
-  //
-  //   // When we also decrerased tempoerature previous iteration => down scaling
-  //
-  //   if (cell[gridp].temperature.gas_prev > cell[gridp].temperature.gas)
-  //   {
-  //     cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-  //     cell[gridp].temperature.gas      = 0.9 * cell[gridp].temperature.gas;
-  //   }
-  //
-  //
-  //   // When we increased temperature previous iteration => binary chop
-  //
-  //   else
-  //   {
-  //     double temp = cell[gridp].temperature.gas;
-  //
-  //     cell[gridp].temperature.gas      = (temp + cell[gridp].temperature.gas_prev) / 2.0;
-  //     cell[gridp].temperature.gas_prev = temp;
-  //   }
-  //
-  // } // end of net cooling
-
 
   // Secant method
 
-  double T   = cell[gridp].temperature.gas;
-  double T_p = cell[gridp].temperature.gas_prev;
+  double T   = cell[o].temperature.gas;
+  double T_p = cell[o].temperature.gas_prev;
 
-  double f   = cell[gridp].thermal_ratio;
-  double f_p = cell[gridp].thermal_ratio_prev;
-
-
-  cell[gridp].temperature.gas = (T*f_p - T_p*f) / (f_p - f);
-
-  cell[gridp].temperature.gas_prev = T;
+  double f   = cell[o].thermal_ratio;
+  double f_p = cell[o].thermal_ratio_prev;
 
 
-  // Inverse quadratic interpolation
-
-
+  cell[o].temperature.gas      = (T*f_p - T_p*f) / (f_p - f);
+  cell[o].temperature.gas_prev = T;
 
 
   // Enforce the minimun and maximum temperature
 
-  if      (cell[gridp].temperature.gas < TEMPERATURE_MIN)
+  if      (cell[o].temperature.gas < TEMPERATURE_MIN)
   {
-    cell[gridp].temperature.gas = TEMPERATURE_MIN;
+    cell[o].temperature.gas = TEMPERATURE_MIN;
   }
 
-  else if (cell[gridp].temperature.gas > TEMPERATURE_MAX)
+  else if (cell[o].temperature.gas > TEMPERATURE_MAX)
   {
-    cell[gridp].temperature.gas = TEMPERATURE_MAX;
+    cell[o].temperature.gas = TEMPERATURE_MAX;
   }
 
 
@@ -121,7 +59,7 @@ int update_temperature_gas (long ncells, CELL *cell, long gridp)
 // shuffle_temperatures: rename variables for Brent's method
 // ---------------------------------------------------------
 
-int shuffle_Brent (long gridp, double *temperature_a, double *temperature_b, double *temperature_c,
+int shuffle_Brent (long o, double *temperature_a, double *temperature_b, double *temperature_c,
                    double *temperature_d, double *temperature_e, double *thermal_ratio_a,
                    double *thermal_ratio_b, double *thermal_ratio_c)
 {
@@ -130,25 +68,25 @@ int shuffle_Brent (long gridp, double *temperature_a, double *temperature_b, dou
   // (see Numerical Recipes 9.4 for the original algorithm)
 
 
-  if (    (thermal_ratio_b[gridp] > 0.0 && thermal_ratio_c[gridp] > 0.0)
-       || (thermal_ratio_b[gridp] < 0.0 && thermal_ratio_c[gridp] < 0.0) )
+  if (    (thermal_ratio_b[o] > 0.0 && thermal_ratio_c[o] > 0.0)
+       || (thermal_ratio_b[o] < 0.0 && thermal_ratio_c[o] < 0.0) )
   {
-    temperature_c[gridp]   = temperature_a[gridp];
-    thermal_ratio_c[gridp] = thermal_ratio_a[gridp];
-    temperature_d[gridp]   = temperature_b[gridp] - temperature_a[gridp];
-    temperature_e[gridp]   = temperature_d[gridp];
+    temperature_c[o]   = temperature_a[o];
+    thermal_ratio_c[o] = thermal_ratio_a[o];
+    temperature_d[o]   = temperature_b[o] - temperature_a[o];
+    temperature_e[o]   = temperature_d[o];
   }
 
 
-  if (fabs(thermal_ratio_c[gridp]) < fabs(thermal_ratio_b[gridp]))
+  if (fabs(thermal_ratio_c[o]) < fabs(thermal_ratio_b[o]))
   {
-    temperature_a[gridp]   = temperature_b[gridp];
-    temperature_b[gridp]   = temperature_c[gridp];
-    temperature_c[gridp]   = temperature_a[gridp];
+    temperature_a[o]   = temperature_b[o];
+    temperature_b[o]   = temperature_c[o];
+    temperature_c[o]   = temperature_a[o];
 
-    thermal_ratio_a[gridp] = thermal_ratio_b[gridp];
-    thermal_ratio_b[gridp] = thermal_ratio_c[gridp];
-    thermal_ratio_c[gridp] = thermal_ratio_a[gridp];
+    thermal_ratio_a[o] = thermal_ratio_b[o];
+    thermal_ratio_b[o] = thermal_ratio_c[o];
+    thermal_ratio_c[o] = thermal_ratio_a[o];
   }
 
 
@@ -162,7 +100,7 @@ int shuffle_Brent (long gridp, double *temperature_a, double *temperature_b, dou
 // update_temperature_gas: update gas temperature using Brent's method
 // -------------------------------------------------------------------
 
-int update_temperature_gas_Brent (long gridp, double *temperature_a, double *temperature_b,
+int update_temperature_gas_Brent (long o, double *temperature_a, double *temperature_b,
                                   double *temperature_c, double *temperature_d,
                                   double *temperature_e, double *thermal_ratio_a,
                                   double *thermal_ratio_b, double *thermal_ratio_c)
@@ -172,22 +110,22 @@ int update_temperature_gas_Brent (long gridp, double *temperature_a, double *tem
   // (see Numerical Recipes 9.4 for the original algorithm)
 
 
-  double tolerance = 2.0*EPSILON*fabs(temperature_b[gridp]) + 0.5*PREC;
+  double tolerance = 2.0*EPSILON*fabs(temperature_b[o]) + 0.5*PREC;
 
-  double xm = (temperature_c[gridp] - temperature_b[gridp]) / 2.0;
+  double xm = (temperature_c[o] - temperature_b[o]) / 2.0;
 
 
-  if ( (fabs(temperature_e[gridp]) >= tolerance)
-       && (fabs(thermal_ratio_a[gridp]) > fabs(thermal_ratio_b[gridp])) )
+  if (    (fabs(temperature_e[o]) >= tolerance)
+       && (fabs(thermal_ratio_a[o]) > fabs(thermal_ratio_b[o])) )
   {
 
     // Attempt inverse quadratic interpolation
 
-    double s = thermal_ratio_b[gridp] / thermal_ratio_a[gridp];
+    double s = thermal_ratio_b[o] / thermal_ratio_a[o];
 
     double p, q, r;
 
-    if (temperature_a[gridp] == temperature_c[gridp])
+    if (temperature_a[o] == temperature_c[o])
     {
       p = 2.0 * xm * s;
       q = 1.0 - s;
@@ -195,9 +133,9 @@ int update_temperature_gas_Brent (long gridp, double *temperature_a, double *tem
 
     else
     {
-      q = thermal_ratio_a[gridp] / thermal_ratio_c[gridp];
-      r = thermal_ratio_b[gridp] / thermal_ratio_c[gridp];
-      p = s*( 2.0*xm*q*(q-r) - (temperature_b[gridp]-temperature_a[gridp])*(r-1.0) );
+      q = thermal_ratio_a[o] / thermal_ratio_c[o];
+      r = thermal_ratio_b[o] / thermal_ratio_c[o];
+      p = s*( 2.0*xm*q*(q-r) - (temperature_b[o]-temperature_a[o])*(r-1.0) );
       q = (q-1.0)*(r-1.0)*(s-1.0);
     }
 
@@ -207,68 +145,68 @@ int update_temperature_gas_Brent (long gridp, double *temperature_a, double *tem
 
 
     double min1 = 3.0*xm*q - fabs(tolerance*q);
-    double min2 = fabs(temperature_e[gridp]*q);
+    double min2 = fabs(temperature_e[o]*q);
 
 
     if (2.0*p < (min1 < min2 ? min1 :  min2))   // Accept interpolation
     {
-      temperature_e[gridp] = temperature_d[gridp];
-      temperature_d[gridp] = p / q;
+      temperature_e[o] = temperature_d[o];
+      temperature_d[o] = p / q;
     }
 
     else   // Interpolation failed, use bisection
     {
-      temperature_d[gridp] = xm;
-      temperature_e[gridp] = temperature_d[gridp];
+      temperature_d[o] = xm;
+      temperature_e[o] = temperature_d[o];
     }
 
   }
 
   else   // Bounds decreasing too slowly, use bisection
   {
-    temperature_d[gridp] = xm;
-    temperature_e[gridp] = temperature_d[gridp];
+    temperature_d[o] = xm;
+    temperature_e[o] = temperature_d[o];
   }
 
 
   // Move last best guess to temperature_a
 
-  temperature_a[gridp]   = temperature_b[gridp];
+  temperature_a[o]   = temperature_b[o];
 
-  thermal_ratio_a[gridp] = thermal_ratio_b[gridp];
+  thermal_ratio_a[o] = thermal_ratio_b[o];
 
 
   // Evaluate new trial root
 
-  if (fabs(temperature_d[gridp]) > tolerance)
+  if (fabs(temperature_d[o]) > tolerance)
   {
-    temperature_b[gridp] = temperature_b[gridp] + temperature_d[gridp];
+    temperature_b[o] = temperature_b[o] + temperature_d[o];
   }
 
   else
   {
     if (xm > 0.0)
     {
-      temperature_b[gridp] = temperature_b[gridp] + fabs(tolerance);
+      temperature_b[o] = temperature_b[o] + fabs(tolerance);
     }
 
     else
     {
-      temperature_b[gridp] = temperature_b[gridp] - fabs(tolerance);
+      temperature_b[o] = temperature_b[o] - fabs(tolerance);
     }
   }
 
 
   // Enforce minimun and maximum temperature
 
-  if      (temperature_b[gridp] < TEMPERATURE_MIN)
+  if      (temperature_b[o] < TEMPERATURE_MIN)
   {
-    temperature_b[gridp] = TEMPERATURE_MIN;
+    temperature_b[o] = TEMPERATURE_MIN;
   }
 
-  else if (temperature_b[gridp] > TEMPERATURE_MAX)
+  else if (temperature_b[o] > TEMPERATURE_MAX)
   {
-    temperature_b[gridp] = TEMPERATURE_MAX;
+    temperature_b[o] = TEMPERATURE_MAX;
   }
 
 

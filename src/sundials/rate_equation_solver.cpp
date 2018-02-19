@@ -41,7 +41,7 @@
 // rate_equation_solver: solves rate equations given in rate_equations.cpp
 // -----------------------------------------------------------------------
 
-int rate_equation_solver (CELL *cell, long gridp)
+int rate_equation_solver (CELL *cell, long o)
 {
 
 
@@ -52,9 +52,9 @@ int rate_equation_solver (CELL *cell, long gridp)
   user_data = NULL;
   user_data = (USER_DATA) malloc( sizeof(*user_data) );
 
-  user_data->gp          = gridp;
+  user_data->gp          = o;
   user_data->cellpointer = cell;
-  user_data->electron_abundance = cell[gridp].abundance[nr_e];
+  user_data->electron_abundance = cell[o].abundance[nr_e];
 
 
   SUNMatrix       A  = NULL;
@@ -98,9 +98,9 @@ int rate_equation_solver (CELL *cell, long gridp)
 
   for (int i = 0; i < NEQ; i++)
   {
-    if (cell[gridp].abundance[i+1] > 0.0)
+    if (cell[o].abundance[i+1] > 0.0)
     {
-      Ith(y,i) = (realtype) cell[gridp].abundance[i+1];
+      Ith(y,i) = (realtype) cell[o].abundance[i+1];
     }
 
     else
@@ -238,17 +238,17 @@ int rate_equation_solver (CELL *cell, long gridp)
   {
     if (Ith(y,i) > 1.0E-30)
     {
-      cell[gridp].abundance[i+1] = Ith(y,i);
+      cell[o].abundance[i+1] = Ith(y,i);
     }
 
     else
     {
-      cell[gridp].abundance[i+1] = 0.0;
+      cell[o].abundance[i+1] = 0.0;
     }
   }
 
 
-  cell[gridp].abundance[nr_e] = user_data->electron_abundance;
+  cell[o].abundance[nr_e] = user_data->electron_abundance;
 
 
 

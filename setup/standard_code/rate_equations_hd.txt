@@ -18,11 +18,11 @@ static int f (realtype t, N_Vector y, N_Vector ydot, void *user_data)
 
   USER_DATA data = (USER_DATA) user_data;
 
-  long gridp = data->gp;
+  long o = data->gp;
 
   CELL *cell = data->cellpointer;
 
-  realtype n_H = (realtype) cell[gridp].density;
+  realtype n_H = (realtype) cell[o].density;
   realtype x_e = 0.0;
 
   realtype loss, form;

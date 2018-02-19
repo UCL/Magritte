@@ -41,11 +41,11 @@ box_size = 43
 box_density = np.zeros( (box_size, box_size) )
 box_npoints = np.zeros( (box_size, box_size) )
 
-for gridp in range(NCELLS):
-    n_x = int( (x[gridp] - x_min) / (x_max-x_min) * (box_size-1) )
-    n_y = int( (y[gridp] - y_min) / (y_max-y_min) * (box_size-1) )
+for o in range(NCELLS):
+    n_x = int( (x[o] - x_min) / (x_max-x_min) * (box_size-1) )
+    n_y = int( (y[o] - y_min) / (y_max-y_min) * (box_size-1) )
 
-    box_density[n_x, n_y] = box_density[n_x, n_y]*box_npoints[n_x, n_y] + density[gridp]
+    box_density[n_x, n_y] = box_density[n_x, n_y]*box_npoints[n_x, n_y] + density[o]
     box_npoints[n_x, n_y] = box_npoints[n_x, n_y] + 1
     box_density[n_x, n_y] = box_density[n_x, n_y] / box_npoints[n_x, n_y]
 
@@ -135,7 +135,7 @@ fig2.savefig(fig_name2, bbox_inches='tight')
 #     n_x = int( (x[i] - x_min) / (x_max-x_min) * (NSTEPS_x-1) )
 #     n_y = int( (y[i] - y_min) / (y_max-y_min) * (NSTEPS_y-1) )
 #
-#     box_density[n_x, n_y] = box_density[n_x, n_y]*box_npoints[n_x, n_y] + density[gridp]
+#     box_density[n_x, n_y] = box_density[n_x, n_y]*box_npoints[n_x, n_y] + density[o]
 #     box_npoints[n_x, n_y] = box_npoints[n_x, n_y] + 1
 #     box_density[n_x, n_y] = box_density[n_x, n_y] / box_npoints[n_x, n_y]
 #

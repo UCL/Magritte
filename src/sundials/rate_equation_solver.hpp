@@ -33,7 +33,7 @@ typedef struct
 /* rate_equation_solver: solves the rate equations given in rate_equations.s                     */
 /*-----------------------------------------------------------------------------------------------*/
 
-int rate_equation_solver (CELL *cell, long gridp);
+int rate_equation_solver (CELL *cell, long o);
 
 /*-----------------------------------------------------------------------------------------------*/
 

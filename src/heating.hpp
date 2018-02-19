@@ -13,7 +13,7 @@
 // heating: calculate total heating
 // --------------------------------
 
-double heating (long ncells, CELL *cell, long gridp, double* heating_components);
+double heating (long ncells, CELL *cell, long o, double* heating_components);
 
 
 // F: mathematical function used in photoelectric dust heating

@@ -15,8 +15,7 @@
 #include "calc_column_density.hpp"
 #include "chemistry.hpp"
 #include "calc_LTE_populations.hpp"
-#include "level_populations_otf.hpp"
-#include "cell_level_populations.hpp"
+#include "level_populations.hpp"
 #include "reaction_rates.hpp"
 #include "heating.hpp"
 #include "cooling.hpp"
@@ -86,17 +85,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
   timers->level_pop.start();
 
-
-# if (CELL_BASED)
-
-  cell_level_populations (NCELLS, cell, line_species);
-
-# else
-
-  level_populations_otf (NCELLS, cell, line_species, pop, mean_intensity, Lambda_diagonal, mean_intensity_eff);
-
-# endif
-
+  level_populations (NCELLS, cell, line_species);
 
   timers->level_pop.stop();
 
@@ -135,31 +124,31 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long gridp = start; gridp < stop; gridp++)
+  for (long o = start; o < stop; o++)
   {
     double heating_components[12];
 
 
-    reaction_rates (NCELLS, cell, reaction, gridp, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (NCELLS, cell, reaction, o, column_H2, column_HD, column_C, column_CO);
 
 
-    double heating_total = heating (NCELLS, cell, gridp, heating_components);
-    double cooling_total = cooling (NCELLS, cell, line_species, gridp);
+    double heating_total = heating (NCELLS, cell, o, heating_components);
+    double cooling_total = cooling (NCELLS, cell, line_species, o);
 
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;
 
 
-    cell[gridp].thermal_ratio_prev = cell[gridp].thermal_ratio;
-    cell[gridp].thermal_ratio      = 0.0;
+    cell[o].thermal_ratio_prev = cell[o].thermal_ratio;
+    cell[o].thermal_ratio      = 0.0;
 
 
     if (thermal_sum != 0.0)
     {
-      cell[gridp].thermal_ratio = 2.0 * thermal_flux / thermal_sum;
+      cell[o].thermal_ratio = 2.0 * thermal_flux / thermal_sum;
     }
 
-  } // end of gridp loop over cells
+  } // end of o loop over cells
   } // end of OpenMP parallel region
 
 

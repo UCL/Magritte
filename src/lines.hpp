@@ -28,7 +28,7 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
   // ---------------------------------------------
 
   double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
-                       double freq, double line_freq, long gridp);
+                       double freq, double line_freq, long o);
 
 #else
 
@@ -36,7 +36,7 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
   // ---------------------------------------------
 
   double cell_line_profile (long ncells, CELL *cell, double velocity,
-                            double freq, double line_freq, long gridp);
+                            double freq, double line_freq, long o);
 
 #endif // if not CELL_BASED
 

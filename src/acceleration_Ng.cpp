@@ -55,21 +55,21 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
   long stop  = ((thread_num+1)*NCELLS)/num_threads;  // Note brackets
 
 
-  for (long gridp = start; gridp < stop; gridp++)
+  for (long o = start; o < stop; o++)
   {
     for (int i = 0; i < nlev[lspec]; i++)
     {
-      long p_i  = LSPECGRIDLEV(lspec,gridp,i);
+      long p_i  = LSPECGRIDLEV(lspec,o,i);
       long pp_i = LSPECLEV(lspec,i);
-      long w_i  = LINDEX(lspec,gridp,i);
+      long w_i  = LINDEX(lspec,o,i);
 
-      Q1[w_i] = cell[gridp].pop[pp_i] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
-      Q2[w_i] = cell[gridp].pop[pp_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
-      Q3[w_i] = cell[gridp].pop[pp_i] - prev1_pop[p_i];
+      Q1[w_i] = cell[o].pop[pp_i] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
+      Q2[w_i] = cell[o].pop[pp_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
+      Q3[w_i] = cell[o].pop[pp_i] - prev1_pop[p_i];
 
-      if (cell[gridp].pop[pp_i] > 0.0)
+      if (cell[o].pop[pp_i] > 0.0)
       {
-        Wt[w_i] = 1.0 / fabs(cell[gridp].pop[pp_i]);
+        Wt[w_i] = 1.0 / fabs(cell[o].pop[pp_i]);
       }
 
       else
@@ -79,7 +79,7 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
 
     } // end of i loop over levels
 
-  } // end of gridp loop over grid points
+  } // end of o loop over grid points
   } // end of OpenMP parallel region
 
 
@@ -142,17 +142,17 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp = start; gridp < stop; gridp++)
+    for (long o = start; o < stop; o++)
     {
       for (int i = 0; i < nlev[lspec]; i++)
       {
-        long p_i  = LSPECGRIDLEV(lspec,gridp,i);
+        long p_i  = LSPECGRIDLEV(lspec,o,i);
         long pp_i = LSPECLEV(lspec,i);
-        long w_i  = LINDEX(lspec,gridp,i);
+        long w_i  = LINDEX(lspec,o,i);
 
-        double pop_tmp = cell[gridp].pop[pp_i];
+        double pop_tmp = cell[o].pop[pp_i];
 
-        cell[gridp].pop[pp_i] = (1.0 - a - b)*cell[gridp].pop[pp_i] + a*prev1_pop[p_i] + b*prev2_pop[p_i];
+        cell[o].pop[pp_i] = (1.0 - a - b)*cell[o].pop[pp_i] + a*prev1_pop[p_i] + b*prev2_pop[p_i];
 
         prev3_pop[p_i] = prev2_pop[p_i];
         prev2_pop[p_i] = prev1_pop[p_i];
@@ -160,7 +160,7 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
 
       } // end of i loop over levels
 
-    } // end of gridp loop over grid points
+    } // end of o loop over grid points
     } // end of OpenMP parallel region
 
   }
@@ -192,20 +192,20 @@ int store_populations (long ncells, CELL *cell, int lspec,
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long gridp = start; gridp < stop; gridp++)
+  for (long o = start; o < stop; o++)
   {
     for (int i = 0; i < nlev[lspec]; i++)
     {
-      long p_i  = LSPECGRIDLEV(lspec,gridp,i);
+      long p_i  = LSPECGRIDLEV(lspec,o,i);
       long pp_i = LSPECLEV(lspec,i);
 
       prev3_pop[p_i] = prev2_pop[p_i];
       prev2_pop[p_i] = prev1_pop[p_i];
-      prev1_pop[p_i] = cell[gridp].pop[pp_i];
+      prev1_pop[p_i] = cell[o].pop[pp_i];
 
     }
 
-  } // end of gridp loop over grid points
+  } // end of o loop over grid points
   } // end of OpenMP parallel region
 
 

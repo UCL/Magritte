@@ -88,28 +88,28 @@ double find_root()
 
 
 
-int update_x( long gridp, double *temperature_a, double *temperature_b, double *temperature_c,
+int update_x( long o, double *temperature_a, double *temperature_b, double *temperature_c,
               double *temperature_d, double *temperature_e,
               double *thermal_ratio_a, double *thermal_ratio_b, double *thermal_ratio_c )
 {
 
 
-  double tolerance = 2.0*EPSILON*fabs(temperature_b[gridp])+0.5*tol1;
+  double tolerance = 2.0*EPSILON*fabs(temperature_b[o])+0.5*tol1;
 
-  double xm = (temperature_c[gridp] - temperature_b[gridp]) / 2.0;
+  double xm = (temperature_c[o] - temperature_b[o]) / 2.0;
 
 
-  if ( (fabs(temperature_e[gridp]) >= tolerance)
-       && (fabs(thermal_ratio_a[gridp]) > fabs(thermal_ratio_b[gridp])) ){
+  if ( (fabs(temperature_e[o]) >= tolerance)
+       && (fabs(thermal_ratio_a[o]) > fabs(thermal_ratio_b[o])) ){
 
 
     /* Attempt inverse quadratic interpolation */
 
-    double s = thermal_ratio_b[gridp] / thermal_ratio_a[gridp];
+    double s = thermal_ratio_b[o] / thermal_ratio_a[o];
 
     double p, q, r;
 
-    if (temperature_a[gridp] == temperature_c[gridp]){
+    if (temperature_a[o] == temperature_c[o]){
 
       p = 2.0 * xm * s;
       q = 1.0 - s;
@@ -117,9 +117,9 @@ int update_x( long gridp, double *temperature_a, double *temperature_b, double *
 
     else {
 
-      q = thermal_ratio_a[gridp] / thermal_ratio_c[gridp];
-      r = thermal_ratio_b[gridp] / thermal_ratio_c[gridp];
-      p = s*( 2.0*xm*q*(q-r) - (temperature_b[gridp]-temperature_a[gridp])*(r-1.0) );
+      q = thermal_ratio_a[o] / thermal_ratio_c[o];
+      r = thermal_ratio_b[o] / thermal_ratio_c[o];
+      p = s*( 2.0*xm*q*(q-r) - (temperature_b[o]-temperature_a[o])*(r-1.0) );
       q = (q-1.0)*(r-1.0)*(s-1.0);
     }
 
@@ -129,49 +129,49 @@ int update_x( long gridp, double *temperature_a, double *temperature_b, double *
 
 
     double min1 = 3.0*xm*q - fabs(tolerance*q);
-    double min2 = fabs(temperature_e[gridp]*q);
+    double min2 = fabs(temperature_e[o]*q);
 
 
     if (2.0*p < (min1 < min2 ? min1 :  min2)){  /* Accept interpolation */
 
-      temperature_e[gridp] = temperature_d[gridp];
-      temperature_d[gridp] = p / q;
+      temperature_e[o] = temperature_d[o];
+      temperature_d[o] = p / q;
     }
 
     else {  /* Interpolation failed, use bisection */
 
-      temperature_d[gridp] = xm;
-      temperature_e[gridp] = temperature_d[gridp];
+      temperature_d[o] = xm;
+      temperature_e[o] = temperature_d[o];
     }
 
   }
 
   else {  /* Bounds decreasing too slowly, use bisection */
 
-    temperature_d[gridp] = xm;
-    temperature_e[gridp] = temperature_d[gridp];
+    temperature_d[o] = xm;
+    temperature_e[o] = temperature_d[o];
   }
 
 
   /* Move last best guess to temperature_a */
 
-  temperature_a[gridp]   = temperature_b[gridp];
+  temperature_a[o]   = temperature_b[o];
 
-  thermal_ratio_a[gridp] = thermal_ratio_b[gridp];
+  thermal_ratio_a[o] = thermal_ratio_b[o];
 
 
   /* Evaluate new trial root */
 
-  if ( fabs(temperature_d[gridp]) > tolerance ){
+  if ( fabs(temperature_d[o]) > tolerance ){
 
-    temperature_b[gridp] = temperature_b[gridp] + temperature_d[gridp];
+    temperature_b[o] = temperature_b[o] + temperature_d[o];
   }
 
   else {
 
-    if (xm > 0.0){ temperature_b[gridp] = temperature_b[gridp] + fabs(tolerance); }
+    if (xm > 0.0){ temperature_b[o] = temperature_b[o] + fabs(tolerance); }
 
-    else { temperature_b[gridp] = temperature_b[gridp] - fabs(tolerance); }
+    else { temperature_b[o] = temperature_b[o] - fabs(tolerance); }
   }
 
 
@@ -179,35 +179,35 @@ int update_x( long gridp, double *temperature_a, double *temperature_b, double *
 
 }
 
-int shuffle_x( long gridp, double *temperature_a, double *temperature_b, double *temperature_c,
+int shuffle_x( long o, double *temperature_a, double *temperature_b, double *temperature_c,
                double *temperature_d, double *temperature_e,
                double *thermal_ratio_a, double *thermal_ratio_b, double *thermal_ratio_c )
 {
 
 
-  if ( (thermal_ratio_b[gridp] > 0.0 && thermal_ratio_c[gridp] > 0.0)
-       || (thermal_ratio_b[gridp] < 0.0 && thermal_ratio_c[gridp] < 0.0) ){
+  if ( (thermal_ratio_b[o] > 0.0 && thermal_ratio_c[o] > 0.0)
+       || (thermal_ratio_b[o] < 0.0 && thermal_ratio_c[o] < 0.0) ){
 
-    temperature_c[gridp]   = temperature_a[gridp];
+    temperature_c[o]   = temperature_a[o];
 
-    thermal_ratio_c[gridp] = thermal_ratio_a[gridp];
+    thermal_ratio_c[o] = thermal_ratio_a[o];
 
-    temperature_d[gridp]   = temperature_b[gridp] - temperature_a[gridp];
+    temperature_d[o]   = temperature_b[o] - temperature_a[o];
 
-    temperature_e[gridp]   = temperature_d[gridp];
+    temperature_e[o]   = temperature_d[o];
 
   }
 
 
-  if ( fabs(thermal_ratio_c[gridp]) < fabs(thermal_ratio_b[gridp]) ){
+  if ( fabs(thermal_ratio_c[o]) < fabs(thermal_ratio_b[o]) ){
 
-    temperature_a[gridp]   = temperature_b[gridp];
-    temperature_b[gridp]   = temperature_c[gridp];
-    temperature_c[gridp]   = temperature_a[gridp];
+    temperature_a[o]   = temperature_b[o];
+    temperature_b[o]   = temperature_c[o];
+    temperature_c[o]   = temperature_a[o];
 
-    thermal_ratio_a[gridp] = thermal_ratio_b[gridp];
-    thermal_ratio_b[gridp] = thermal_ratio_c[gridp];
-    thermal_ratio_c[gridp] = thermal_ratio_a[gridp];
+    thermal_ratio_a[o] = thermal_ratio_b[o];
+    thermal_ratio_b[o] = thermal_ratio_c[o];
+    thermal_ratio_c[o] = thermal_ratio_a[o];
 
   }
 
@@ -221,7 +221,7 @@ int main()
 {
 
 
-  int gridp = 0;
+  int o = 0;
 
   double temperature_a[NCELLS]  = {     0.0 };
   double temperature_b[NCELLS]  = { 1000.0 };
@@ -244,15 +244,15 @@ int main()
     niter++;
 
 
-    shuffle_x( gridp, temperature_a, temperature_b, temperature_c, temperature_d,
+    shuffle_x( o, temperature_a, temperature_b, temperature_c, temperature_d,
                temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c );
 
 
-    double tolerance = 2.0*EPSILON*fabs(temperature_b[gridp])+0.5*tol1;
+    double tolerance = 2.0*EPSILON*fabs(temperature_b[o])+0.5*tol1;
 
-    double xm = (temperature_c[gridp] - temperature_b[gridp]) / 2.0;
+    double xm = (temperature_c[o] - temperature_b[o]) / 2.0;
 
-    if ( (fabs(xm) <= tolerance) || (thermal_ratio_b[gridp] == 0.0) ){
+    if ( (fabs(xm) <= tolerance) || (thermal_ratio_b[o] == 0.0) ){
 
 
       /* Converged !!! */
@@ -264,18 +264,18 @@ int main()
     else {
 
 
-      update_x( gridp, temperature_a, temperature_b, temperature_c, temperature_d,
+      update_x( o, temperature_a, temperature_b, temperature_c, temperature_d,
                 temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c );
 
-      printf("iteration %d   temp a %lf   temp b %lf \n", niter, temperature_a[gridp], temperature_b[gridp]);
+      printf("iteration %d   temp a %lf   temp b %lf \n", niter, temperature_a[o], temperature_b[o]);
 
-      thermal_ratio_b[gridp] = f(temperature_b[gridp]);
+      thermal_ratio_b[o] = f(temperature_b[o]);
 
     }
 
   }
 
-  double root = temperature_b[gridp];
+  double root = temperature_b[o];
 
   printf("The root is %lf \n", root );
 

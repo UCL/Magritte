@@ -128,14 +128,14 @@ TEST_CASE("Test reaction_rates"){
   column_CO[0] = 0.0;
 
 
-  long gridp = 0;
+  long o = 0;
 
 
   chemistry( cell, temperature_gas, temperature_dust, rad_surface, AV,
              column_H2, column_HD, column_C, column_CO );
 
 
-  double heating_total = heating( cell, gridp, temperature_gas, temperature_dust,
+  double heating_total = heating( cell, o, temperature_gas, temperature_dust,
                                   UV_field );
 
   cout << "Heating total " << heating_total << "\n";

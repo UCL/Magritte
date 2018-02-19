@@ -126,7 +126,7 @@ int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species, double *C_
 // write_R: write transition matrix R
 // ----------------------------------
 
-int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long gridp, double *R);
+int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long o, double *R);
 
 
 // write_transition_levels: write levels corresponding to each transition

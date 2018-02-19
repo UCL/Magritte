@@ -44,17 +44,17 @@ int line_source (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec, 
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp = start; gridp < stop; gridp++)
+    for (long o = start; o < stop; o++)
     {
-      long s_ij = LSPECGRIDRAD(lspec,gridp,kr);   // source and opacity index
+      long s_ij = LSPECGRIDRAD(lspec,o,kr);   // source and opacity index
 
       long p_i  = LSPECLEV(lspec,i);    // pop index i
       long p_j  = LSPECLEV(lspec,j);    // pop index j
 
 
-      if ( (cell[gridp].pop[p_j] > POP_LOWER_LIMIT) || (cell[gridp].pop[p_i] > POP_LOWER_LIMIT) )
+      if ( (cell[o].pop[p_j] > POP_LOWER_LIMIT) || (cell[o].pop[p_i] > POP_LOWER_LIMIT) )
       {
-        source[s_ij]  = A_ij * cell[gridp].pop[p_i]  / (cell[gridp].pop[p_j]*B_ji - cell[gridp].pop[p_i]*B_ij);
+        source[s_ij]  = A_ij * cell[o].pop[p_i]  / (cell[o].pop[p_j]*B_ji - cell[o].pop[p_i]*B_ij);
       }
 
       else
@@ -63,7 +63,7 @@ int line_source (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec, 
       }
 
 
-    } // end of gridp loop over grid points
+    } // end of o loop over grid points
     } // end of OpenMP parallel region
 
   } // end of kr loop over transitions
@@ -108,9 +108,9 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long gridp = start; gridp < stop; gridp++)
+    for (long o = start; o < stop; o++)
     {
-      long s_ij = LSPECGRIDRAD(lspec,gridp,kr);   // source and opacity index
+      long s_ij = LSPECGRIDRAD(lspec,o,kr);   // source and opacity index
 
       long p_i  = LSPECLEV(lspec,i);    // pop index i
       long p_j  = LSPECLEV(lspec,j);    // pop index j
@@ -118,7 +118,7 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
       double hv_4pi = HH * line_species.frequency[b_ij] / 4.0 / PI;
 
 
-      opacity[s_ij] =  hv_4pi * (cell[gridp].pop[p_j]*B_ji - cell[gridp].pop[p_i]*B_ij);
+      opacity[s_ij] =  hv_4pi * (cell[o].pop[p_j]*B_ji - cell[o].pop[p_i]*B_ij);
 
 
       if (opacity[s_ij] < 1.0E-99)
@@ -127,7 +127,7 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
       }
 
 
-    } // end of gridp loop over grid points
+    } // end of o loop over grid points
     } // end of OpenMP parallel region
 
   } // end of kr loop over transitions
@@ -149,12 +149,12 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
 // ---------------------------------------------
 
 double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
-                     double freq, double line_freq, long gridp)
+                     double freq, double line_freq, long o)
 {
 
-  double shift = line_freq * evalpoint[gridp].vol / CC;
+  double shift = line_freq * evalpoint[o].vol / CC;
 
-  double width = line_freq / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
+  double width = line_freq / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
 
 
   return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;
@@ -173,12 +173,12 @@ double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
 // --------------------------------------------------
 
 double cell_line_profile (long ncells, CELL *cell, double velocity,
-                          double freq, double line_freq, long gridp)
+                          double freq, double line_freq, long o)
 {
 
   double shift = line_freq * velocity / CC;
 
-  double width = line_freq / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
+  double width = line_freq / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
 
 
   return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;

@@ -13,21 +13,21 @@
 
 #if (CELL_BASED)
 
-#include "cell_radiative_transfer.hpp"
+#include "radiative_transfer.hpp"
 #include "ray_tracing.hpp"
 #include "lines.hpp"
-#include "cell_feautrier.hpp"
+#include "feautrier.hpp"
 
 
-// cell_radiative_transfer: calculate mean intensity at a cell
+// radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
+int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
                              double *Lambda_diagonal, double *mean_intensity_eff,
-                             double *source, double *opacity, long gridp, int lspec, int kr)
+                             double *source, double *opacity, long o, int lspec, int kr)
 {
 
-  long m_ij  = LSPECGRIDRAD(lspec,gridp,kr);   // mean_intensity, S and opacity index
+  long m_ij  = LSPECGRIDRAD(lspec,o,kr);   // mean_intensity, S and opacity index
   long mm_ij = LSPECRAD(lspec,kr);             // mean_intensity, S and opacity index
 
   int i = line_species.irad[mm_ij];   // i level index corresponding to transition kr
@@ -51,16 +51,16 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
 
       double line_frequency  = line_species.frequency[b_ij];
 
-      double width = line_frequency / CC * sqrt(2.0*KB*cell[gridp].temperature.gas/MP + V_TURB*V_TURB);
+      double width = line_frequency / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
 
       double freq = line_frequency + H_4_roots[ny]*width;
 
 
       intensities (NCELLS, cell, line_species, source, opacity, freq,
-                   gridp, ray, lspec, kr, &u_local, &v_local, &L_local);
+                   o, ray, lspec, kr, &u_local, &v_local, &L_local);
 
 
-      cell[gridp].mean_intensity[mm_ij]  = cell[gridp].mean_intensity[mm_ij]  + H_4_weights[ny]/width*u_local;
+      cell[o].mean_intensity[mm_ij]  = cell[o].mean_intensity[mm_ij]  + H_4_weights[ny]/width*u_local;
 
       Lambda_diagonal[m_ij]              = Lambda_diagonal[m_ij] + H_4_weights[ny]/width*L_local;
 
@@ -69,7 +69,7 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
   } // end of r loop over half of the rays
 
 
-  cell[gridp].mean_intensity[mm_ij] = cell[gridp].mean_intensity[mm_ij] / NRAYS;
+  cell[o].mean_intensity[mm_ij] = cell[o].mean_intensity[mm_ij] / NRAYS;
 
 
   /* Add the continuum radiation (due to dust and CMB) */
@@ -78,11 +78,11 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*cell[gridp].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cell[o].density*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*line_species.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/cell[gridp].temperature.dust) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/cell[o].temperature.dust) - 1.0);
 
   double Planck_CMB      = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/T_CMB) - 1.0);
 
@@ -92,19 +92,19 @@ int cell_radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  cell[gridp].mean_intensity[mm_ij] = cell[gridp].mean_intensity[mm_ij] + continuum_mean_intensity;
+  cell[o].mean_intensity[mm_ij] = cell[o].mean_intensity[mm_ij] + continuum_mean_intensity;
 
 
   if (ACCELERATION_APPROX_LAMBDA)
   {
-    mean_intensity_eff[m_ij] = cell[gridp].mean_intensity[mm_ij] - Lambda_diagonal[m_ij]*source[m_ij];
+    mean_intensity_eff[m_ij] = cell[o].mean_intensity[mm_ij] - Lambda_diagonal[m_ij]*source[m_ij];
   }
 
   else
   {
     Lambda_diagonal[m_ij] = 0.0;
 
-    mean_intensity_eff[m_ij] = cell[gridp].mean_intensity[mm_ij];
+    mean_intensity_eff[m_ij] = cell[o].mean_intensity[mm_ij];
   }
 
 
@@ -262,7 +262,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
   // Solve transfer equation with Feautrier solver (on subgrid)
   // __________________________________________________________
 
-  cell_feautrier (ndep, origin, r, S, dtau, u, L_diag_approx);
+  feautrier (ndep, origin, r, S, dtau, u, L_diag_approx);
 
 
 

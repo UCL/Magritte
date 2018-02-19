@@ -16,7 +16,7 @@
 // level_populations: iteratively calculates level populations
 // -----------------------------------------------------------
 
-int cell_level_populations (long ncells, CELL *cell, LINE_SPECIES line_species);
+int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species);
 
 
 #endif // if CELL_BASED
