@@ -85,25 +85,18 @@ int main ()
     long ncells = NCELLS;
 
     CELL cell[NCELLS];
-    // double mean_intensity[NCELLS*TOT_NRAD];   // mean intensity for a ray
-    // double pop[NCELLS*TOT_NLEV];              // level population n_i
-
 
 # elif (!FIXED_NCELLS && (INPUT_FORMAT == '.txt'))
 
     long ncells = get_NCELLS_txt (inputfile);
 
     CELL *cell = new CELL[ncells];
-    // double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-    // double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
 
 # elif (!FIXED_NCELLS && (INPUT_FORMAT == '.vtu'))
 
     long ncells = get_NCELLS_vtu (inputfile);
 
     CELL *cell = new CELL[ncells];
-    // double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-    // double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
 
 # endif
 
@@ -294,9 +287,9 @@ int main ()
   initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
 
 
-  // long ncells_red3 = reduce (ncells_red2, cell_red2);
-  // CELL *cell_red3 = new CELL[ncells_red3];
-  // initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  long ncells_red3 = reduce (ncells_red2, cell_red2);
+  CELL *cell_red3 = new CELL[ncells_red3];
+  initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
 
 
@@ -305,29 +298,32 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
-  thermal_balance_std (ncells_red2, cell_red2, species, reaction, line_species, &timers);
+  double precision = 0.01;
+  thermal_balance_std (ncells_red3, cell_red3, species, reaction, line_species, &timers, precision);
 
-  // thermal_balance_std (ncells_red3, cell_red3, species, reaction, line_species, pop_red3, mean_intensity_red3, &timers);
+  // thermal_balance_Brent (ncells_red3, cell_red3, species, reaction, line_species, &timers);
 
+  interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
+  precision = 0.01;
+  thermal_balance_std (ncells_red2, cell_red2, species, reaction, line_species, &timers, precision);
 
-  // Interpolate reduced grid back to original grid
+  // thermal_balance_Brent (ncells_red2, cell_red2, species, reaction, line_species, &timers);
 
-  // interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
   interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
+
+  precision = 0.01;
+  thermal_balance_std (ncells_red1, cell_red1, species, reaction, line_species, &timers, precision);
+
+  // thermal_balance_Brent (ncells_red1, cell_red1, species, reaction, line_species, &timers);
+
   interpolate (ncells_red1, cell_red1, ncells, cell);
 
+  precision = 0.01;
+  thermal_balance_std (ncells, cell, species, reaction, line_species, &timers, precision);
 
-
-
-  // double *mean_intensity = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-  // double *pop            = new double[ncells*TOT_NLEV];   // level population n_i
-
-
-  // CALCULATE TEMPERATURE
-  // _____________________
-
-  thermal_balance_Brent (ncells, cell, species, reaction, line_species, &timers);
+  precision = 0.005;
+  // thermal_balance_Brent (ncells, cell, species, reaction, line_species, &timers, precision);
 
 
 

@@ -20,14 +20,14 @@ int preliminary_chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *
 // ----------------------------------------------------------------------------
 
 int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                         LINE_SPECIES line_species, TIMERS *timers);
+                         LINE_SPECIES line_species, TIMERS *timers, const double precision);
 
 
 // thermal_balance_Brent: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------------
 
 int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                           LINE_SPECIES line_species, TIMERS *timers);
+                           LINE_SPECIES line_species, TIMERS *timers, const double precision);
 
 
 #endif // __THERMAL_BALANCE_HPP_INCLUDED__

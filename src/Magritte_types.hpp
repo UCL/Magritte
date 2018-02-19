@@ -136,6 +136,9 @@ struct CELL   // (array of structures)
   bool boundary;             // true if boundary cell
   bool mirror;               // true if reflective boundary
 
+  double thermal_ratio;
+  double thermal_ratio_prev;
+
 };
 
 

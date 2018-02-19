@@ -26,8 +26,7 @@
 // ----------------------------------------------------------------------------------------
 
 int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, LINE_SPECIES line_species,
-                               double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                               double *thermal_ratio, TIMERS *timers)
+                               double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers)
 {
 
   // CALCULATE CHEMICAL ABUNDANCES
@@ -56,9 +55,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
     timers->chemistry.start();
 
-
     chemistry (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO);
-
 
     timers->chemistry.stop();
 
@@ -126,9 +123,8 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
 
   // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                    \
-  shared (ncells, cell, reaction, column_H2, column_HD, column_C, column_CO, cum_nlev,   \
-          thermal_ratio, line_species)                                                   \
+# pragma omp parallel                                                                                  \
+  shared (ncells, cell, reaction, column_H2, column_HD, column_C, column_CO, cum_nlev, line_species)   \
   default (none)
   {
 
@@ -153,11 +149,11 @@ int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTI
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;
 
-    thermal_ratio[gridp] = 0.0;
+    cell[gridp].thermal_ratio = 0.0;
 
     if (thermal_sum != 0.0)
     {
-      thermal_ratio[gridp] = 2.0 * thermal_flux / thermal_sum;
+      cell[gridp].thermal_ratio = 2.0 * thermal_flux / thermal_sum;
     }
 
   } // end of gridp loop over cells

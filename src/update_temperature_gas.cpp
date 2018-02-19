@@ -20,36 +20,20 @@
 // update_temperature_gas: update gas temperature after a thermal balance iteration
 // --------------------------------------------------------------------------------
 
-int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio, long gridp)
+int update_temperature_gas (long ncells, CELL *cell, long gridp)
 {
 
   // When there is net heating, temperature was too low -> increase temperature
 
-  if (thermal_ratio[gridp] > 0.0)
+  if (cell[gridp].thermal_ratio > 0.0)
   {
-
-    // Get a lower bound on temperature for Brent's algorithm
-
-    // // if (cell[gridp].temperature.gas < temperature_a[gridp]){
-    //
-    //   temperature_a[gridp]   = 0.99*cell[gridp].temperature.gas;
-    //
-    //   if (temperature_a[gridp] < TEMPERATURE_MIN)
-    //   {
-    //     temperature_a[gridp] = TEMPERATURE_MIN;
-    //   }
-    //
-    //   thermal_ratio_a[gridp] = thermal_ratio[gridp];
-    // // }
-
 
     // When we also increrased tempoerature previous iteration => up scaling
 
     if (cell[gridp].temperature.gas_prev < cell[gridp].temperature.gas)
     {
       cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-
-      cell[gridp].temperature.gas      = 1.05 * cell[gridp].temperature.gas;
+      cell[gridp].temperature.gas      = 1.1 * cell[gridp].temperature.gas;
     }
 
 
@@ -60,7 +44,6 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio, long
       double temp = cell[gridp].temperature.gas;
 
       cell[gridp].temperature.gas      = ( temp + cell[gridp].temperature.gas_prev ) / 2.0;
-
       cell[gridp].temperature.gas_prev = temp;
     }
 
@@ -71,31 +54,15 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio, long
 
   // When there is net cooling, temperature was too high -> decrease temperature
 
-  if (thermal_ratio[gridp] < 0.0)
+  if (cell[gridp].thermal_ratio < 0.0)
   {
-
-    // Get an upper bound on temperature for Brent's algorithm
-    //
-    // // if (cell[gridp].temperature.gas > temperature_b[gridp]){
-    //
-    //   temperature_b[gridp]   = 1.01*cell[gridp].temperature.gas;
-    //
-    //   thermal_ratio_b[gridp] = thermal_ratio[gridp];
-    // // }
-    //
-    // if (temperature_b[gridp] < TEMPERATURE_MIN)
-    // {
-    //   temperature_b[gridp] = TEMPERATURE_MIN;
-    // }
-
 
     // When we also decrerased tempoerature previous iteration => down scaling
 
     if (cell[gridp].temperature.gas_prev > cell[gridp].temperature.gas)
     {
       cell[gridp].temperature.gas_prev = cell[gridp].temperature.gas;
-
-      cell[gridp].temperature.gas      = 0.95 * cell[gridp].temperature.gas;
+      cell[gridp].temperature.gas      = 0.9 * cell[gridp].temperature.gas;
     }
 
 
@@ -106,7 +73,6 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio, long
       double temp = cell[gridp].temperature.gas;
 
       cell[gridp].temperature.gas      = (temp + cell[gridp].temperature.gas_prev) / 2.0;
-
       cell[gridp].temperature.gas_prev = temp;
     }
 
@@ -116,7 +82,7 @@ int update_temperature_gas (long ncells, CELL *cell, double *thermal_ratio, long
 
   // Enforce the minimun and maximum temperature
 
-  if (cell[gridp].temperature.gas < TEMPERATURE_MIN)
+  if      (cell[gridp].temperature.gas < TEMPERATURE_MIN)
   {
     cell[gridp].temperature.gas = TEMPERATURE_MIN;
   }
@@ -150,16 +116,13 @@ int shuffle_Brent (long gridp, double *temperature_a, double *temperature_b, dou
        || (thermal_ratio_b[gridp] < 0.0 && thermal_ratio_c[gridp] < 0.0) )
   {
     temperature_c[gridp]   = temperature_a[gridp];
-
     thermal_ratio_c[gridp] = thermal_ratio_a[gridp];
-
     temperature_d[gridp]   = temperature_b[gridp] - temperature_a[gridp];
-
     temperature_e[gridp]   = temperature_d[gridp];
   }
 
 
-  if ( fabs(thermal_ratio_c[gridp]) < fabs(thermal_ratio_b[gridp]) )
+  if (fabs(thermal_ratio_c[gridp]) < fabs(thermal_ratio_b[gridp]))
   {
     temperature_a[gridp]   = temperature_b[gridp];
     temperature_b[gridp]   = temperature_c[gridp];
@@ -280,7 +243,7 @@ int update_temperature_gas_Brent (long gridp, double *temperature_a, double *tem
 
   // Enforce minimun and maximum temperature
 
-  if (temperature_b[gridp] < TEMPERATURE_MIN)
+  if      (temperature_b[gridp] < TEMPERATURE_MIN)
   {
     temperature_b[gridp] = TEMPERATURE_MIN;
   }

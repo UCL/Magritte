@@ -304,6 +304,9 @@ int initialize_cells (long ncells, CELL *cell)
     cell[n].temperature.dust     = 0.0;
     cell[n].temperature.gas_prev = 0.0;
 
+    cell[n].thermal_ratio      = 0.0;
+    cell[n].thermal_ratio_prev = 0.0;
+
     cell[n].id = n;
 
     cell[n].removed  = false;

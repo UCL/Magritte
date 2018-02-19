@@ -224,6 +224,9 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
       cell_red[nr].temperature.dust     = cell[n].temperature.dust;
       cell_red[nr].temperature.gas_prev = cell[n].temperature.gas_prev;
 
+      cell_red[nr].thermal_ratio      = cell[n].thermal_ratio;
+      cell_red[nr].thermal_ratio_prev = cell[n].thermal_ratio_prev;
+
       cell_red[nr].UV = cell[n].UV;
 
 

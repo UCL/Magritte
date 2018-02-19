@@ -77,6 +77,7 @@
 
 // Radiative transfer
 
+
 #define SOBOLEV                    true
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
@@ -84,10 +85,10 @@
 
 // Number of various iterations
 
-#define MAX_NITERATIONS  150
+#define MAX_NITERATIONS  100
 #define PRELIM_CHEM_ITER 5
 #define PRELIM_TB_ITER   5
-#define CHEM_ITER        3
+#define CHEM_ITER        8
 
 
 // Temperature range

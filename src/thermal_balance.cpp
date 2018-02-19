@@ -112,7 +112,7 @@ int preliminary_chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *
 // ----------------------------------------------------------------------------
 
 int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                         LINE_SPECIES line_species, TIMERS *timers)
+                         LINE_SPECIES line_species, TIMERS *timers, const double precision)
 {
 
 
@@ -123,7 +123,8 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
     double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
     double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
 
-    double thermal_ratio[NCELLS];
+    // double thermal_ratio[NCELLS];
+    // double thermal_ratio_prev[NCELLS];
 
 # else
 
@@ -134,7 +135,8 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
     double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
     double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
 
-    double *thermal_ratio = new double[ncells];
+    // double *thermal_ratio      = new double[ncells];
+    // double *thermal_ratio_prev = new double[ncells];
 
 
 # endif
@@ -145,7 +147,8 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
   initialize_double_array (NCELLS*NRAYS, column_C);
   initialize_double_array (NCELLS*NRAYS, column_CO);
 
-  initialize_double_array (NCELLS, thermal_ratio);
+  // initialize_double_array (NCELLS, thermal_ratio);
+  // initialize_double_array (NCELLS, thermal_ratio_prev);
 
 
 
@@ -177,14 +180,13 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
 
 
     thermal_balance_iteration (NCELLS, cell, species, reaction, line_species,
-                               column_H2, column_HD, column_C, column_CO,
-                               thermal_ratio, timers);
+                               column_H2, column_HD, column_C, column_CO, timers);
 
 
-    // Check for thermal balance (convergence)
+    // Update temperature for each cell
 
-#   pragma omp parallel                                                         \
-    shared (ncells, cell, thermal_ratio, n_not_converged, no_thermal_balance)   \
+#   pragma omp parallel                                          \
+    shared (ncells, cell, n_not_converged, no_thermal_balance)   \
     default (none)
     {
 
@@ -198,22 +200,22 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
     for (long gridp = start; gridp < stop; gridp++)
     {
 
-      if (fabs(thermal_ratio[gridp]) > THERMAL_PREC)
+      // Check for thermal balance
+
+      if (fabs(cell[gridp].thermal_ratio) > precision)
       {
+        cell[gridp].thermal_ratio_prev = cell[gridp].thermal_ratio;
 
-        update_temperature_gas (NCELLS, cell, thermal_ratio, gridp);
-
+        update_temperature_gas (NCELLS, cell, gridp);
 
         if (cell[gridp].temperature.gas != T_CMB)
         {
           no_thermal_balance = true;
-
           n_not_converged++;
         }
-
       }
 
-    } // end of gridp loop over grid points
+    }
     } // end of OpenMP parallel region
 
 
@@ -256,7 +258,7 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
     delete [] column_C;
     delete [] column_CO;
 
-    delete [] thermal_ratio;
+    // delete [] thermal_ratio;
 
 # endif
 
@@ -272,7 +274,7 @@ int thermal_balance_std (long ncells, CELL *cell, SPECIES *species, REACTION *re
 // ----------------------------------------------------------------------------------
 
 int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
-                           LINE_SPECIES line_species, TIMERS *timers)
+                           LINE_SPECIES line_species, TIMERS *timers, const double precision)
 {
 
     // COLUMN_DENSITIES column;
@@ -284,7 +286,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
     double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
     double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
 
-    double thermal_ratio[NCELLS];
+    // double thermal_ratio[NCELLS];
 
 # else
 
@@ -295,7 +297,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
     double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
     double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
 
-    double *thermal_ratio = new double[ncells];
+    // double *thermal_ratio = new double[ncells];
 
 
 # endif
@@ -306,7 +308,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
   initialize_double_array (NCELLS*NRAYS, column_C);
   initialize_double_array (NCELLS*NRAYS, column_CO);
 
-  initialize_double_array (NCELLS, thermal_ratio);
+  // initialize_double_array (NCELLS, thermal_ratio);
 
 
 
@@ -345,8 +347,10 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
 # endif
 
 
-# pragma omp parallel                                   \
-  shared (ncells, cell, temperature_a, temperature_b)   \
+// Initialize temperature_a and temperature_b
+
+# pragma omp parallel                                                                     \
+  shared (ncells, cell, temperature_a, temperature_b, thermal_ratio_a, thermal_ratio_b)   \
   default (none)
   {
 
@@ -359,8 +363,15 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
 
   for (long n = start; n < stop; n++)
   {
-    temperature_a[n] = 0.8*cell[n].temperature.gas;
-    temperature_b[n] = 1.2*cell[n].temperature.gas;
+
+    // if (cell[n].thermal_ratio_prev > 0.0)
+    // {
+      temperature_a[n] = cell[n].temperature.gas_prev;
+      temperature_b[n] = cell[n].temperature.gas;
+
+    thermal_ratio_b[n] = cell[n].thermal_ratio;
+
+
   }
   } // end of OpenMP parallel region
 
@@ -369,28 +380,28 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
   initialize_double_array (NCELLS, temperature_d);
   initialize_double_array (NCELLS, temperature_e);
 
-  initialize_double_array (NCELLS, thermal_ratio_a);
-  initialize_double_array (NCELLS, thermal_ratio_b);
+  // initialize_double_array (NCELLS, thermal_ratio_a);
+  // initialize_double_array (NCELLS, thermal_ratio_b);
   initialize_double_array (NCELLS, thermal_ratio_c);
 
 
-# pragma omp parallel                    \
-  shared (ncells, cell, temperature_b)   \
-  default (none)
-  {
-
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
-
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;     // Note brackets
-
-
-  for (long n = start; n < stop; n++)
-  {
-    cell[n].temperature.gas = temperature_b[n];
-  }
-  } // end of OpenMP parallel region
+// # pragma omp parallel                    \
+//   shared (ncells, cell, temperature_b)   \
+//   default (none)
+//   {
+//
+//   int num_threads = omp_get_num_threads();
+//   int thread_num  = omp_get_thread_num();
+//
+//   long start = (thread_num*NCELLS)/num_threads;
+//   long stop  = ((thread_num+1)*NCELLS)/num_threads;     // Note brackets
+//
+//
+//   for (long n = start; n < stop; n++)
+//   {
+//     cell[n].temperature.gas = temperature_b[n];
+//   }
+//   } // end of OpenMP parallel region
 
 
   bool no_thermal_balance = true;
@@ -414,19 +425,36 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
 
 
     thermal_balance_iteration (NCELLS, cell, species, reaction, line_species,
-                               column_H2, column_HD, column_C, column_CO,
-                               thermal_ratio, timers);
+                               column_H2, column_HD, column_C, column_CO, timers);
 
 
-    initialize_double_array_with (NCELLS, thermal_ratio_b, thermal_ratio);
+    // initialize_double_array_with (NCELLS, thermal_ratio_b, thermal_ratio);
 
+
+#   pragma omp parallel                      \
+    shared (ncells, cell, thermal_ratio_b)   \
+    default (none)
+    {
+
+      int num_threads = omp_get_num_threads();
+      int thread_num  = omp_get_thread_num();
+
+      long start = (thread_num*NCELLS)/num_threads;
+      long stop  = ((thread_num+1)*NCELLS)/num_threads;     // Note brackets
+
+
+      for (long n = start; n < stop; n++)
+      {
+        thermal_ratio_b[n] = cell[n].thermal_ratio;
+      }
+    } // end of OpenMP parallel region
 
 
 
     // Update temperature for each cell
 
 #   pragma omp parallel                                                                        \
-    shared (ncells, cell, thermal_ratio, temperature_a, temperature_b, temperature_c,          \
+    shared (ncells, cell, temperature_a, temperature_b, temperature_c,          \
             temperature_d, temperature_e, thermal_ratio_a, thermal_ratio_b, thermal_ratio_c,   \
             n_not_converged, no_thermal_balance)                                               \
     default (none)
@@ -447,7 +475,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
 
       // Check for thermal balance (convergence)
 
-      if (fabs(thermal_ratio[gridp]) > THERMAL_PREC)
+      if (fabs(cell[gridp].thermal_ratio) > precision)
       {
         update_temperature_gas_Brent (gridp, temperature_a, temperature_b, temperature_c,
                                       temperature_d, temperature_e, thermal_ratio_a,
@@ -455,16 +483,12 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
 
         cell[gridp].temperature.gas = temperature_b[gridp];
 
-
         if (cell[gridp].temperature.gas != T_CMB)
         {
           no_thermal_balance = true;
-
           n_not_converged++;
         }
-
       }
-
 
     } // end of gridp loop over grid points
     } // end of OpenMP parallel region
@@ -506,8 +530,6 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
     delete [] thermal_ratio_a;
     delete [] thermal_ratio_b;
     delete [] thermal_ratio_c;
-
-    delete [] thermal_ratio;
 
 # endif
 

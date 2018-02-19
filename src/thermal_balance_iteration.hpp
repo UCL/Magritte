@@ -14,8 +14,7 @@
 // ----------------------------------------------------------------------------------------
 
 int thermal_balance_iteration (long ncells, CELL *cell, SPECIES *species, REACTION *reaction, LINE_SPECIES line_species,
-                               double *column_H2, double *column_HD, double *column_C, double *column_CO,
-                               double *thermal_ratio, TIMERS *timers);
+                               double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers);
 
 
 #endif // __THERMAL_BALANCE_ITERATION_HPP_INCLUDED__
