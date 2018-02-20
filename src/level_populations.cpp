@@ -11,9 +11,6 @@
 #include <omp.h>
 
 #include "declarations.hpp"
-
-#if (CELL_BASED)
-
 #include "level_populations.hpp"
 #include "acceleration_Ng.hpp"
 #include "lines.hpp"
@@ -23,8 +20,6 @@
 #include "sobolev.hpp"
 #include "radiative_transfer.hpp"
 #include "level_population_solver.hpp"
-#include "ray_tracing.hpp"
-#include "write_output.hpp"
 
 
 // level_populations: iteratively calculates the level populations
@@ -224,13 +219,13 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
 #           if (SOBOLEV)
 
-              sobolev (NCELLS, cell, line_species, Lambda_diagonal,
-                            mean_intensity_eff, source, opacity, n, lspec, kr);
+              sobolev (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
+                       source, opacity, n, lspec, kr);
 
 #           else
 
-              radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal,
-                                       mean_intensity_eff, source, opacity, n, lspec, kr);
+              radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
+                                  source, opacity, n, lspec, kr);
 
 #           endif
 
@@ -344,6 +339,3 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
   return(0);
 }
-
-
-#endif

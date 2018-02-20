@@ -10,16 +10,10 @@
 #include "declarations.hpp"
 
 
-#if (CELL_BASED)
-
-
 // level_populations: iteratively calculates level populations
 // -----------------------------------------------------------
 
 int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species);
-
-
-#endif // if CELL_BASED
 
 
 #endif // __CELL_LEVEL_POPULATIONS_HPP_INCLUDED__

@@ -172,28 +172,24 @@ int main ()
 
 
 
-# if (CELL_BASED)
-
-    // FIND NEIGHBORING CELLS
-    // ______________________
+  // FIND NEIGHBORING CELLS
+  // ______________________
 
 
-    printf ("(Magritte): finding neighboring cells \n");
+  printf ("(Magritte): finding neighboring cells \n");
 
 
-    // Find neighboring cells for each cell
+  // Find neighboring cells for each cell
 
-    find_neighbors (NCELLS, cell);
-
-
-    // Find endpoint of each ray for each cell
-
-    find_endpoints (NCELLS, cell);
+  find_neighbors (NCELLS, cell);
 
 
-    printf ("(Magritte): neighboring cells found \n\n");
+  // Find endpoint of each ray for each cell
 
-# endif
+  find_endpoints (NCELLS, cell);
+
+
+  printf ("(Magritte): neighboring cells found \n\n");
 
 
 
@@ -323,6 +319,8 @@ int main ()
 
 
   printf ("(Magritte): Total calculation time is %lE\n\n", timers.total.duration);
+  printf ("(Magritte): - time in chemistry %lE\n\n", timers.chemistry.duration);
+  printf ("(Magritte): - time in level_pop %lE\n\n", timers.level_pop.duration);
 
 
 

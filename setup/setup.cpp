@@ -151,7 +151,6 @@ int main()
   printf("(setup):   nsides            : %d\n",  NSIDES);
   printf("(setup):   nspec             : %d\n",  nspec);
   printf("(setup):   nrays             : %ld\n", nrays);
-  printf("(setup):   theta_crit        : %le\n", THETA_CRIT);
   printf("(setup):   sobolev           : %s\n",  sobolev.c_str());
   printf("(setup):   field_form        : %s\n",  field_form.c_str());
   printf("(setup):   time_end_in_years : %le\n", TIME_END_IN_YEARS);

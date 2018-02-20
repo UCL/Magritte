@@ -10,55 +10,34 @@
 #include "declarations.hpp"
 
 
-#if (!CELL_BASED)
+// find_neighbors: find neighboring cells for each cell
+// ----------------------------------------------------
+
+int find_neighbors (long ncells, CELL *cell);
 
 
-  // find_evalpoints: create evaluation points for each ray from this cell
-  // ---------------------------------------------------------------------
+// next_cell: find number of next cell on ray and its distance along ray
+// ---------------------------------------------------------------------
 
-  int find_evalpoints (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long o);
-
-
-  // get_velocities: get velocity of evaluation point w. r. t. originating cell
-  // --------------------------------------------------------------------------
-
-  int get_velocities (CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot, long *cum_raytot, long o, long *first_velo);
+long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
 
 
-#else
+// find_endpoints: find endpoint cells for each cell
+// -------------------------------------------------
+
+int find_endpoints (long ncells, CELL *cell);
 
 
-  // find_neighbors: find neighboring cells for each cell
-  // ----------------------------------------------------
+// previous_cell: find number of previous cell on ray and its distance along ray
+// -----------------------------------------------------------------------------
 
-  int find_neighbors (long ncells, CELL *cell);
-
-
-  // next_cell: find number of next cell on ray and its distance along ray
-  // ---------------------------------------------------------------------
-
-  long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
+long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
 
 
-  // find_endpoints: find endpoint cells for each cell
-  // -------------------------------------------------
+// relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray
+// -----------------------------------------------------------------------------------------
 
-  int find_endpoints (long ncells, CELL *cell);
-
-
-  // previous_cell: find number of previous cell on ray and its distance along ray
-  // -----------------------------------------------------------------------------
-
-  long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
-
-
-  // relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray
-  // -----------------------------------------------------------------------------------------
-
-  double relative_velocity (long ncells, CELL *cell, long origin, long ray, long current);
-
-
-#endif
+double relative_velocity (long ncells, CELL *cell, long origin, long ray, long current);
 
 
 #endif // __RAY_TRACING_HPP_INCLUDED__

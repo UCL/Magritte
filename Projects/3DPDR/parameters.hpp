@@ -54,8 +54,6 @@
 
 #define NLSPEC 4
 
-// #define LINE_DATAFILES {"data/12C+.txt", "data/16O.txt"}
-
 #define LINE_DATAFILES { "data/12CO.txt", \
                          "data/12C.txt",  \
                          "data/12C+.txt", \
@@ -70,15 +68,9 @@
 #define NRAYS      2
 #define NSIDES     6
 
-#define THETA_CRIT 1.3
-
-#define CELL_BASED true
-
-
 // Radiative transfer
 
-
-#define SOBOLEV                    true
+#define SOBOLEV                    false
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 

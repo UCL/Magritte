@@ -23,25 +23,10 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
                            double *column_C, double *column_CO);
 
 
-#if (!CELL_BASED)
+// column_density: calculates column density for a species along a ray at a point
+// ------------------------------------------------------------------------------
 
-
-  // column_density: calculate column density for one species along one ray
-  // ----------------------------------------------------------------------
-
-  double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
-                         long *cum_raytot, long o, int spec, long ray);
-
-
-#else
-
-  // cell_column_density: calculates column density for a species along a ray at a point
-  // --------------------------------------------------------------------------------------------
-
-  double cell_column_density (long ncells, CELL *cell, long o, int spec, long ray);
-
-
-#endif
+double column_density (long ncells, CELL *cell, long o, int spec, long ray);
 
 
 #endif // __CALC_COLUMN_DENSITY_HPP_INCLUDED__

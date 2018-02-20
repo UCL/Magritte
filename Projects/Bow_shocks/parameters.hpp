@@ -63,10 +63,6 @@
 
 #define NSIDES 6
 
-#define THETA_CRIT 1.3
-
-#define CELL_BASED true
-
 
 /* Radiative transfer */
 

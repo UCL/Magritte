@@ -36,32 +36,10 @@ int calc_column_density (long ncells, CELL *cell, double *column, int spec)
   for (long n = start; n < stop; n++)
   {
 
-
-#   if (!CELL_BASED)
-
-      long key[NCELLS];         // stores nrs. of cells on rays in order
-      long raytot[NRAYS];       // cumulative nr. of evaluation points along each ray
-      long cum_raytot[NRAYS];   // cumulative nr. of evaluation points along each ray
-
-      EVALPOINT evalpoint[NCELLS];
-
-      find_evalpoints (cell, evalpoint, key, raytot, cum_raytot, n);
-
-      for (long r = 0; r < NRAYS; r++)
-      {
-        column[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key,
-                                              raytot, cum_raytot, n, spec, r);
-      }
-
-#   else
-
-      for (long r = 0; r < NRAYS; r++)
-      {
-        column[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, spec, r);
-      }
-
-#   endif
-
+    for (long r = 0; r < NRAYS; r++)
+    {
+      column[RINDEX(n,r)] = column_density (NCELLS, cell, n, spec, r);
+    }
 
   } // end of n loop over grid points
   } // end of OpenMP parallel region
@@ -99,43 +77,13 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
   for (long n = start; n < stop; n++)
   {
 
-
-#   if (!CELL_BASED)
-
-      long key[NCELLS];         // stores nrs. of cells on rays in order
-      long raytot[NRAYS];       // cumulative nr. of evaluation points along each ray
-      long cum_raytot[NRAYS];   // cumulative nr. of evaluation points along each ray
-
-      EVALPOINT evalpoint[NCELLS];
-
-
-      find_evalpoints(cell, evalpoint, key, raytot, cum_raytot, n);
-
-
-      for (long r = 0; r < NRAYS; r++)
-      {
-        column_H2[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, nr_H2, r);
-        column_HD[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, nr_HD, r);
-        column_C[RINDEX(n,r)]  = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, nr_C,  r);
-        column_CO[RINDEX(n,r)] = column_density (NCELLS, cell, evalpoint, key, raytot,
-                                                 cum_raytot, n, nr_CO, r);
-      }
-
-#   else
-
     for (long r = 0; r < NRAYS; r++)
     {
-      column_H2[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, nr_H2, r);
-      column_HD[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, nr_HD, r);
-      column_C[RINDEX(n,r)]  = cell_column_density (NCELLS, cell, n, nr_C,  r);
-      column_CO[RINDEX(n,r)] = cell_column_density (NCELLS, cell, n, nr_CO, r);
+      column_H2[RINDEX(n,r)] = column_density (NCELLS, cell, n, nr_H2, r);
+      column_HD[RINDEX(n,r)] = column_density (NCELLS, cell, n, nr_HD, r);
+      column_C[RINDEX(n,r)]  = column_density (NCELLS, cell, n, nr_C,  r);
+      column_CO[RINDEX(n,r)] = column_density (NCELLS, cell, n, nr_CO, r);
     }
-
-#   endif
-
 
   } // end of n loop over grid points
   } // end of OpenMP parallel region
@@ -148,66 +96,10 @@ int calc_column_densities (long ncells, CELL *cell, double *column_H2, double *c
 
 
 
-# if (!CELL_BASED)
-
-
-
-
 // column_density: calculates column density for a species along a ray at a point
-// ---------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
-double column_density (long ncells, CELL *cell, EVALPOINT *evalpoint, long *key, long *raytot,
-                       long *cum_raytot, long o, int spec, long ray)
-{
-
-  double column_density_res = 0.0;   // resulting column density
-
-  long etot = raytot[ray];
-
-
-  if (etot > 0)
-  {
-    long evnr       = LOCAL_GP_NR_OF_EVALP(ray,0);
-    long o_evnr = evnr;
-
-    column_density_res = evalpoint[o_evnr].dZ * PC
-                         *(cell[o].density*cell[o].abundance[spec]
-                           + cell[evnr].density*cell[evnr].abundance[spec]) / 2.0;
-
-
-    // Numerical integration along ray (line of sight)
-
-    for (long e = 1; e < etot; e++)
-    {
-      long evnr       = LOCAL_GP_NR_OF_EVALP(ray,e);
-      long evnrp      = LOCAL_GP_NR_OF_EVALP(ray,e-1);
-      long o_evnr = evnr;
-
-      column_density_res = column_density_res
-                           + evalpoint[o_evnr].dZ * PC
-                             * (cell[evnrp].density*cell[evnrp].abundance[spec]
-                                + cell[evnr].density*cell[evnr].abundance[spec]) / 2.0;
-    }
-
-  }
-
-
-  return column_density_res;
-
-}
-
-
-
-
-# else
-
-
-
-
-// cell_column_density: calculates column density for a species along a ray at a point
-// -----------------------------------------------------------------------------------
-
-double cell_column_density (long ncells, CELL *cell, long origin, int spec, long ray)
+double column_density (long ncells, CELL *cell, long origin, int spec, long ray)
 {
 
   double column_density_res = 0.0;   // resulting column density
@@ -240,6 +132,3 @@ double cell_column_density (long ncells, CELL *cell, long origin, int spec, long
   return column_density_res;
 
 }
-
-
-#endif

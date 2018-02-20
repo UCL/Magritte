@@ -140,50 +140,16 @@ int line_opacity (long ncells, CELL *cell, LINE_SPECIES line_species, int lspec,
 
 
 
-#if (!CELL_BASED)
-
-
-
-
-// line_profile: calculate line profile function
-// ---------------------------------------------
-
-double line_profile (long ncells, CELL *cell, EVALPOINT *evalpoint,
-                     double freq, double line_freq, long o)
-{
-
-  double shift = line_freq * evalpoint[o].vol / CC;
-
-  double width = line_freq / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
-
-
-  return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;
-
-}
-
-
-
-
-#else
-
-
-
-
 // cell_line_profile: calculate line profile function
 // --------------------------------------------------
 
-double cell_line_profile (long ncells, CELL *cell, double velocity,
-                          double freq, double line_freq, long o)
+double line_profile (long ncells, CELL *cell, double velocity, double freq, double line_freq, long o)
 {
 
   double shift = line_freq * velocity / CC;
-
   double width = line_freq / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
 
 
   return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;
 
 }
-
-
-#endif

@@ -9,17 +9,13 @@
 #include <math.h>
 
 #include "declarations.hpp"
-
-#if (CELL_BASED)
-
 #include "feautrier.hpp"
 
 
 // feautrier: solve Feautrier recursion relation
 // --------------------------------------------------
 
-int feautrier (long ndep, long o, long r, double *S, double *dtau,
-                    double *u, double *L_diag_approx)
+int feautrier (long ndep, long o, long r, double *S, double *dtau, double *u, double *L_diag_approx)
 {
 
   // Method described in Rybicki & Hummer (1991)
@@ -139,6 +135,3 @@ int feautrier (long ndep, long o, long r, double *S, double *dtau,
   return(0);
 
 }
-
-
-#endif // if CELL_BASED

@@ -10,9 +10,6 @@
 #include <iostream>
 
 #include "declarations.hpp"
-
-#if (CELL_BASED)
-
 #include "radiative_transfer.hpp"
 #include "ray_tracing.hpp"
 #include "lines.hpp"
@@ -23,12 +20,12 @@
 // -----------------------------------------------------------
 
 int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
-                             double *Lambda_diagonal, double *mean_intensity_eff,
-                             double *source, double *opacity, long o, int lspec, int kr)
+                        double *Lambda_diagonal, double *mean_intensity_eff,
+                        double *source, double *opacity, long o, int lspec, int kr)
 {
 
   long m_ij  = LSPECGRIDRAD(lspec,o,kr);   // mean_intensity, S and opacity index
-  long mm_ij = LSPECRAD(lspec,kr);             // mean_intensity, S and opacity index
+  long mm_ij = LSPECRAD(lspec,kr);         // mean_intensity, S and opacity index
 
   int i = line_species.irad[mm_ij];   // i level index corresponding to transition kr
   int j = line_species.jrad[mm_ij];   // j level index corresponding to transition kr
@@ -119,8 +116,8 @@ int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
 // --------------------------------------------------------------------------
 
 int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *source, double *opacity,
-                 double freq, long origin, long r, int lspec, int kr, double *u_local, double *v_local,
-                 double *L_local)
+                 double freq, long origin, long r, int lspec, int kr,
+                 double *u_local, double *v_local, double *L_local)
 {
 
   // Get the antipodal ray for r
@@ -167,7 +164,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, line_species.frequency[b_ij], current);
+    double phi_c = line_profile (NCELLS, cell, 0.0, freq, line_species.frequency[b_ij], current);
     double chi_c = opacity[s_c] * phi_c;
 
 
@@ -176,7 +173,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
       long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, ar, previous);
-      double phi_p    = cell_line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], previous);
+      double phi_p    = line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], previous);
       double chi_p    = opacity[s_p] * phi_p;
 
       S[ndep]    = (source[s_c] + source[s_p]) / 2.0;
@@ -207,7 +204,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
-    double phi_c = cell_line_profile (NCELLS, cell, 0.0, freq, line_species.frequency[b_ij], current);
+    double phi_c = line_profile (NCELLS, cell, 0.0, freq, line_species.frequency[b_ij], current);
     double chi_c = opacity[s_c] * phi_c;
 
 
@@ -216,7 +213,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
       long s_n = LSPECGRIDRAD(lspec,next,kr);
 
       double velocity = relative_velocity (NCELLS, cell, origin, r, next);
-      double phi_n    = cell_line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], next);
+      double phi_n    = line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], next);
       double chi_n    = opacity[s_n] * phi_n;
 
       S[ndep]    = (source[s_c] + source[s_n]) / 2.0;
@@ -232,21 +229,6 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     }
   }
 
-
-
-
-
-
-  // Avoid too small optical depth increments
-  // ________________________________________
-
-  // for (long dep = 0; dep < ndep; dep++)
-  // {
-  //   if (dtau[dep] < 1.0E-99)
-  //   {
-  //     dtau[dep] = 1.0E-99;
-  //   }
-  // }
 
 
 
@@ -302,6 +284,3 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
   return (0);
 
 }
-
-
-#endif

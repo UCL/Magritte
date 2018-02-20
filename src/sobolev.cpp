@@ -11,9 +11,6 @@
 #include <math.h>
 
 #include "declarations.hpp"
-
-#if (CELL_BASED)
-
 #include "sobolev.hpp"
 #include "ray_tracing.hpp"
 
@@ -212,6 +209,3 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
   return(0);
 
 }
-
-
-#endif // if CELL_BASED
