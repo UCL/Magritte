@@ -80,7 +80,7 @@
 
 // Radiative transfer
 
-#define SOBOLEV                    true
+#define SOBOLEV                    false
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 

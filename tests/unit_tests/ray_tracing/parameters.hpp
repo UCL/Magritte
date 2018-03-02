@@ -15,6 +15,15 @@
 
 #define RESTART false
 
+#define NAME_DENSITY              "H2_density"
+#define NAME_VELOCITY             "velocity"
+#define NAME_VX                   "v1"
+#define NAME_VY                   "v2"
+#define NAME_VZ                   "v3"
+#define NAME_TEMPERATURE_GAS      "Gas_temperature"
+#define NAME_TEMPERATURE_DUST     "Gas_temperature"
+#define NAME_TEMPERATURE_GAS_PREV "Gas_temperature"
+#define NAME_CHEM_ABUNDANCES      "Mol_density"
 
 // VARIABLE GRID
 

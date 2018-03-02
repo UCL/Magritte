@@ -437,6 +437,8 @@ int main ()
 
 # endif
 
+  write_level_populations("", NCELLS, cell, line_species);
+
 
   write_performance_log (timers);
 
