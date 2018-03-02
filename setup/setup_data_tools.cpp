@@ -69,48 +69,58 @@ long get_NCELLS_vtu (std::string inputfile)
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
 
 
-  // Extract cell centers
 
-  vtkSmartPointer<vtkCellCenters> cellCentersFilter
-    = vtkSmartPointer<vtkCellCenters>::New();
+# if (CELL_BASED)
 
+    // Extract cell centers
 
-# if (VTK_MAJOR_VERSION <= 5)
-
-    cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
-
-# else
-
-    cellCentersFilter->SetInputData(ugrid);
-
-# endif
+    vtkSmartPointer<vtkCellCenters> cellCentersFilter
+      = vtkSmartPointer<vtkCellCenters>::New();
 
 
-  cellCentersFilter->VertexCellsOn();
-  cellCentersFilter->Update();
+#   if (VTK_MAJOR_VERSION <= 5)
+
+      cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
+
+#   else
+
+      cellCentersFilter->SetInputData(ugrid);
+
+#   endif
 
 
-  long ncells = cellCentersFilter->GetOutput()->GetNumberOfPoints();
+    cellCentersFilter->VertexCellsOn();
+    cellCentersFilter->Update();
 
 
-  // Check whether there is cell data for every cell
-
-  vtkCellData *cellData  = ugrid->GetCellData();
-
-  int nr_of_arrays = cellData->GetNumberOfArrays();
+    long ncells = cellCentersFilter->GetOutput()->GetNumberOfPoints();
 
 
-  for (int a = 0; a < nr_of_arrays; a++)
-  {
-    vtkDataArray* data = cellData->GetArray(a);
+    // Check whether there is cell data for every cell
 
-    std::string name = data->GetName();
+    vtkCellData *cellData  = ugrid->GetCellData();
 
-    if (ncells != data->GetNumberOfTuples())
+    int nr_of_arrays = cellData->GetNumberOfArrays();
+
+
+    for (int a = 0; a < nr_of_arrays; a++)
     {
-      printf("ERROR: wrong number of %s values\n", name.c_str());
+      vtkDataArray* data = cellData->GetArray(a);
+
+      std::string name = data->GetName();
+
+      if (ncells != data->GetNumberOfTuples())
+      {
+        printf("ERROR: wrong number of %s values\n", name.c_str());
+      }
     }
-  }
+
+
+# else // Assume point based
+
+    long ncells = ugrid->GetNumberOfPoints();
+
+# endif // CELL_BASED
 
 
   return ncells;

@@ -11,12 +11,24 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 
+# Add compiler flags
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+  set(CMAKE_C_FLAGS
+  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -mcmodel=medium")
+  set(CMAKE_CXX_FLAGS
+  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -mcmodel=medium")
+  set(CMAKE_EXE_LINKER_FLAGS
+  "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -mcmodel=medium")
+endif()
+
+
 # Create setup library
 add_library( _setup
 setup_data_structures.cpp
 setup_healpixvectors.cpp
 setup_initializers.cpp
-setup_data_tools.cpp )
+setup_data_tools.cpp)
 
 
 # Add the HEALPix directory

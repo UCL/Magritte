@@ -19,8 +19,8 @@
 // ----------------------------------------------------------------------------------
 
 int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
-                  double *Lambda_diagonal, double *mean_intensity_eff,
-                  double *source, double *opacity, long origin, int lspec, int kr)
+             double *Lambda_diagonal, double *mean_intensity_eff,
+             double *source, double *opacity, long origin, int lspec, int kr)
 {
 
   long m_ij  = LSPECGRIDRAD(lspec,origin,kr);   // mean_intensity, S and opacity index
@@ -74,7 +74,7 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
       double chi_c = opacity[s_c];
 
 
-      while (current != origin)
+      while ( (current != origin) && (previous != NCELLS) )
       {
         long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
@@ -111,60 +111,60 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
     }
 
 
-    // // Walk along ray r itself
-    //
-    // {
-    //   double Z  = 0.0;
-    //   double dZ = 0.0;
-    //
-    //   long current = origin;
-    //   long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
-    //
-    //   long s_c = LSPECGRIDRAD(lspec,current,kr);
-    //
-    //   double chi_c = opacity[s_c];
-    //
-    //
-    //   while (next != NCELLS)
-    //   {
-    //     long s_n = LSPECGRIDRAD(lspec,next,kr);
-    //
-    //     double chi_n = opacity[s_n];
-    //
-    //     tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
-    //
-    //     current = next;
-    //     next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
-    //
-    //     chi_c = chi_n;
-    //   }
-    // }
-    //
-    //
-    // // Calculate r's contribution to escape probability
-    //
-    // tau_r = CC / line_species.frequency[b_ij] / speed_width * tau_r;
-    //
-    //
-    // if (tau_r < -5.0)
-    // {
-    //   escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
-    // }
-    //
-    // else if (fabs(tau_r) < 1.0E-8)
-    // {
-    //   escape_probability = escape_probability + 1.0;
-    // }
-    //
-    // else
-    // {
-    //   escape_probability = escape_probability + (1.0 - exp(-tau_r)) / tau_r;
-    // }
+    // Walk along ray r itself
+
+    {
+      double Z  = 0.0;
+      double dZ = 0.0;
+
+      long current = origin;
+      long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+      long s_c = LSPECGRIDRAD(lspec,current,kr);
+
+      double chi_c = opacity[s_c];
+
+
+      while (next != NCELLS)
+      {
+        long s_n = LSPECGRIDRAD(lspec,next,kr);
+
+        double chi_n = opacity[s_n];
+
+        tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
+
+        current = next;
+        next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+
+        chi_c = chi_n;
+      }
+    }
+
+
+    // Calculate r's contribution to escape probability
+
+    tau_r = CC / line_species.frequency[b_ij] / speed_width * tau_r;
+
+
+    if (tau_r < -5.0)
+    {
+      escape_probability = escape_probability + (1 - exp(5.0)) / (-5.0);
+    }
+
+    else if (fabs(tau_r) < 1.0E-8)
+    {
+      escape_probability = escape_probability + 1.0;
+    }
+
+    else
+    {
+      escape_probability = escape_probability + (1.0 - exp(-tau_r)) / tau_r;
+    }
 
   } // end of r loop over half of the rays
 
 
-  escape_probability = escape_probability;// / NRAYS;
+  escape_probability = escape_probability / NRAYS;
 
 
 

@@ -439,7 +439,7 @@ int guess_temperature_gas (long ncells, CELL *cell)
 
   for (long n = start; n < stop; n++)
   {
-    cell[n].temperature.gas = 10.0*(1.0 + pow(2.0*cell[n].UV, 1.0/3.0));
+    cell[n].temperature.gas = 100.0*(1.0 + pow(2.0*cell[n].UV, 1.0/3.0));
   }
   } // end of OpenMP parallel region
 

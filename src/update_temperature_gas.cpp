@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 
+#include <stdio.h>
 #include <math.h>
 #include <omp.h>
 
@@ -30,6 +31,9 @@ int update_temperature_gas (long ncells, CELL *cell, long o)
 
   double f   = cell[o].thermal_ratio;
   double f_p = cell[o].thermal_ratio_prev;
+
+  // // printf("f   = %lE\n", f);
+  // printf("f_p = %lE\n", f_p);
 
 
   cell[o].temperature.gas      = (T*f_p - T_p*f) / (f_p - f);

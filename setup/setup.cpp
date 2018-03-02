@@ -69,7 +69,7 @@ int main()
 
 # if (FIXED_NCELLS)
 
-#   if (INPUT_FORMAT == '.vtu')
+#   if   (INPUT_FORMAT == '.vtu')
 
       long ncells = get_NCELLS_vtu(inputfile);
 
@@ -80,6 +80,7 @@ int main()
 #   endif
 
 # endif
+
 
 
   // Get number of species from the species data file
@@ -272,12 +273,10 @@ int main()
   initialize_int_array (NLSPEC, cum_tot_ncoltrantemp);
 
 
-
   setup_data_structures2( line_datafile, ncolpar, cum_ncolpar,
                           ncoltran, ncoltemp, cum_ncoltran, cum_ncoltemp, cum_ncoltrantemp,
                           tot_ncoltran, tot_ncoltemp, tot_ncoltrantemp,
                           cum_tot_ncoltran, cum_tot_ncoltemp, cum_tot_ncoltrantemp );
-
 
 
   int tot_cum_tot_ncoltran = cum_tot_ncoltran[NLSPEC-1] + tot_ncoltran[NLSPEC-1];

@@ -30,7 +30,7 @@ int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
   int i = line_species.irad[mm_ij];   // i level index corresponding to transition kr
   int j = line_species.jrad[mm_ij];   // j level index corresponding to transition kr
 
-  long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
+  long b_ij = LSPECLEVLEV(lspec,i,j);   // frequency index
 
 
   // For half of rays (only half is needed since we also consider antipodals)
@@ -57,9 +57,9 @@ int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
                    o, ray, lspec, kr, &u_local, &v_local, &L_local);
 
 
-      cell[o].mean_intensity[mm_ij]  = cell[o].mean_intensity[mm_ij]  + H_4_weights[ny]/width*u_local;
+      cell[o].mean_intensity[mm_ij] = cell[o].mean_intensity[mm_ij]  + H_4_weights[ny]/width*u_local;
 
-      Lambda_diagonal[m_ij]              = Lambda_diagonal[m_ij] + H_4_weights[ny]/width*L_local;
+      Lambda_diagonal[m_ij]         = Lambda_diagonal[m_ij] + H_4_weights[ny]/width*L_local;
 
     } // end of ny loop over frequencies
 
@@ -168,7 +168,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     double chi_c = opacity[s_c] * phi_c;
 
 
-    while (current != origin)
+    while ( (current != origin) && (previous != NCELLS) )
     {
       long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
@@ -244,8 +244,16 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
   // Solve transfer equation with Feautrier solver (on subgrid)
   // __________________________________________________________
 
-  feautrier (ndep, origin, r, S, dtau, u, L_diag_approx);
+  if (ndep > 0)
+  {
+    feautrier (ndep, origin, r, S, dtau, u, L_diag_approx);
+  }
 
+  else
+  {
+    u[0] = 0.0;
+    L_diag_approx[0] = 0.0;
+  }
 
 
 

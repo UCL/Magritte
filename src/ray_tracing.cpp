@@ -63,7 +63,7 @@ int find_neighbors (long ncells, CELL *cell)
       rvec[2] = cell[n].z - origin[2];
 
       ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
-      rb[n] = n;
+      rb[n]  = n;
     }
 
 
@@ -152,6 +152,12 @@ int find_neighbors (long ncells, CELL *cell)
         Z[ipix] =   rvec[0]*healpixvector[VINDEX(ipix,0)]
                   + rvec[1]*healpixvector[VINDEX(ipix,1)]
                   + rvec[2]*healpixvector[VINDEX(ipix,2)];
+
+        if (p == 763)
+        {
+          printf("NEIGHBOUR!\n");
+        }
+
       }
 
     } // end of n loop over cells (around an origin)
@@ -337,16 +343,30 @@ int find_endpoints (long ncells, CELL *cell)
 long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ)
 {
 
+  // printf("origin %ld current %ld ray %ld\n", origin, current, ray);
+  // printf("Z %lE      dZ %lE\n", *Z, *dZ);
+
   // Pick neighbor on "right side" closest to ray
 
   double D_min = 1.0E99;
 
   long previous = ncells;   // return ncells when there is no previous cell
 
+  double rvec_old[3];
+
+  rvec_old[0] = cell[current].x - cell[origin].x;
+  rvec_old[1] = cell[current].y - cell[origin].y;
+  rvec_old[2] = cell[current].z - cell[origin].z;
+
+  double rvec_old2 = rvec_old[0]*rvec_old[0] + rvec_old[1]*rvec_old[1] + rvec_old[2]*rvec_old[2];
 
   for (long n = 0; n < cell[current].n_neighbors; n++)
   {
+    // printf("YESSSS\n");
+
     long neighbor = cell[current].neighbor[n];
+
+    // printf("current %ld, nr %ld, n_neighours %ld, neighbour %ld\n", current, n, cell[current].n_neighbors, neighbor);
 
     double rvec[3];
 
@@ -354,14 +374,16 @@ long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, l
     rvec[1] = cell[neighbor].y - cell[origin].y;
     rvec[2] = cell[neighbor].z - cell[origin].z;
 
+    // printf("NOOOOOO\n");
+
     double Z_new =   rvec[0]*healpixvector[VINDEX(ray,0)]
                    + rvec[1]*healpixvector[VINDEX(ray,1)]
                    + rvec[2]*healpixvector[VINDEX(ray,2)];
 
-    if (*Z > Z_new)
-    {
-      double rvec2 = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
+    double rvec2 = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
 
+    if ( (*Z > Z_new) && (rvec_old2 > rvec2) )
+    {
       double D = rvec2 - Z_new*Z_new;
 
       if (D < D_min)

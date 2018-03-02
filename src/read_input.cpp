@@ -70,9 +70,9 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
   std::string tdust_file_name     = input_directory + "temperature_dust.txt";
   std::string prev_tgas_file_name = input_directory + "temperature_gas_prev.txt";
 
-  FILE *tgas      = fopen(tgas_file_name.c_str(), "r");
-  FILE *tdust     = fopen(tdust_file_name.c_str(), "r");
-  FILE *tgas_prev = fopen(prev_tgas_file_name.c_str(), "r");
+  FILE *tgas      = fopen (tgas_file_name.c_str(), "r");
+  FILE *tdust     = fopen (tdust_file_name.c_str(), "r");
+  FILE *tgas_prev = fopen (prev_tgas_file_name.c_str(), "r");
 
 
   // For all lines in input file
@@ -106,7 +106,7 @@ int read_txt_input (std::string inputfile, long ncells, CELL *cell)
 // read_neighbors: read neighbors
 // ------------------------------
 
-int read_neighbors (std::string file_name, long ncells, CELL *cell)
+int read_txt_neighbors (std::string file_name, long ncells, CELL *cell)
 {
 
   char buffer[BUFFER_SIZE];   // buffer for a line of data
@@ -114,7 +114,7 @@ int read_neighbors (std::string file_name, long ncells, CELL *cell)
 
   // Read input file
 
-  FILE *file = fopen(file_name.c_str(), "r");
+  FILE *file = fopen (file_name.c_str(), "r");
 
 
   if (file == NULL)
@@ -167,32 +167,34 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
   vtkUnstructuredGrid* ugrid = reader->GetOutput();
 
 
-  // Extract cell centers
+# if (CELL_BASED)
 
-  vtkSmartPointer<vtkCellCenters> cellCentersFilter
-    = vtkSmartPointer<vtkCellCenters>::New();
+    // Extract cell centers
 
+    vtkSmartPointer<vtkCellCenters> cellCentersFilter
+      = vtkSmartPointer<vtkCellCenters>::New();
 
-# if (VTK_MAJOR_VERSION <= 5)
+#   if (VTK_MAJOR_VERSION <= 5)
+      cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
+#   else
+      cellCentersFilter->SetInputData(ugrid);
+#   endif
 
-    cellCentersFilter->SetInputConnection(ugrid->GetProducerPort());
-
-# else
-
-    cellCentersFilter->SetInputData(ugrid);
+    cellCentersFilter->VertexCellsOn();
+    cellCentersFilter->Update();
 
 # endif
-
-
-  cellCentersFilter->VertexCellsOn();
-  cellCentersFilter->Update();
 
 
   for (long n = 0; n < NCELLS; n++)
   {
     double point[3];
 
-    cellCentersFilter->GetOutput()->GetPoint(n, point);
+#   if (CELL_BASED)
+      cellCentersFilter->GetOutput()->GetPoint(n, point);
+#   else
+      ugrid->GetPoint(n, point);
+#   endif
 
     cell[n].x = point[0];
     cell[n].y = point[1];
@@ -200,29 +202,78 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
   }
 
 
-  // Extract cell data
 
-  vtkCellData *cellData = ugrid->GetCellData();
+  // Extract data
 
-  int nr_of_arrays = cellData->GetNumberOfArrays();
+# if (CELL_BASED)
+
+    vtkCellData *cellData = ugrid->GetCellData();
+
+    int nr_of_arrays = cellData->GetNumberOfArrays();
+
+# else
+
+    vtkPointData *pointData = ugrid->GetPointData();
+
+    int nr_of_arrays = pointData->GetNumberOfArrays();
+
+    printf("nr of arrays %d\n",nr_of_arrays);
+
+# endif
+
 
 
   for (int a = 0; a < nr_of_arrays; a++)
   {
-    vtkDataArray* data = cellData->GetArray(a);
 
-    std::string name = data->GetName();
+#   if (CELL_BASED)
 
+      vtkDataArray* data = cellData->GetArray(a);
 
-    if (name == "rho")
+      std::string name = data->GetName();
+
+      printf("name %s\n",name.c_str());
+
+#   else
+
+      vtkDataArray* data = pointData->GetArray(a);
+
+      std::string name = data->GetName();
+
+      printf("name %s\n",name.c_str());
+
+#   endif
+
+    if (name == NAME_DENSITY)
     {
-      for (long n=0; n<NCELLS; n++)
+
+      for (long n = 0; n < NCELLS; n++)
       {
         cell[n].density = data->GetTuple1(n);
       }
     }
 
-    if (name == "v1")
+
+    // In case velocity is stored as vector
+
+    if (name == NAME_VELOCITY)
+    {
+      for (long n = 0; n < NCELLS; n++)
+      {
+        double *velocity = new double[3];
+
+        data->GetTuple(n,velocity);
+
+        cell[n].vx = velocity[0];
+        cell[n].vy = velocity[1];
+        cell[n].vz = velocity[2];
+      }
+    }
+
+
+    // In case velocity components are stored individually
+
+    if (name == NAME_VX)
     {
       for (long n=0; n<NCELLS; n++)
       {
@@ -230,7 +281,7 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
       }
     }
 
-    if (name == "v2")
+    if (name == NAME_VY)
     {
       for (long n=0; n<NCELLS; n++)
       {
@@ -238,7 +289,7 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
       }
     }
 
-    if (name == "v3")
+    if (name == NAME_VZ)
     {
       for (long n=0; n<NCELLS; n++)
       {
@@ -247,27 +298,47 @@ int read_vtu_input (std::string inputfile, long ncells, CELL *cell)
     }
 
 
+    // Extract chemical abundances
+
+    if (name == NAME_CHEM_ABUNDANCES)
+    {
+      for (long n = 0; n < NCELLS; n++)
+      {
+        double *abundances = new double[NSPEC-2];
+
+        data->GetTuple(n,abundances);
+
+        for (int spec = 0; spec < NSPEC-2; spec++)
+        {
+          cell[n].abundance[spec+1] = abundances[spec];
+        }
+      }
+    }
+
+
+    // In case temperature informations is available
+
 #   if (RESTART)
 
-    if (name == "temperature_gas")
+    if (name == NAME_TEMPERATURE_GAS)
     {
-      for (long n=0; n<NCELLS; n++)
+      for (long n = 0; n < NCELLS; n++)
       {
         cell[n].temperature.gas = data->GetTuple1(n);
       }
     }
 
-    if (name == "temperature_dust")
+    if (name == NAME_TEMPERATURE_DUST)
     {
-      for (long n=0; n<NCELLS; n++)
+      for (long n = 0; n < NCELLS; n++)
       {
         cell[n].temperature.dust = data->GetTuple1(n);
       }
     }
 
-    if (name == "temperature_gas_prev")
+    if (name == NAME_TEMPERATURE_GAS_PREV)
     {
-      for (long n=0; n<NCELLS; n++)
+      for (long n = 0; n < NCELLS; n++)
       {
         cell[n].temperature.gas_prev = data->GetTuple1(n);
       }

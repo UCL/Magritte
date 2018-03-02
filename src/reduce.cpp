@@ -37,17 +37,17 @@ long reduce (long ncells, CELL *cell)
 
   // Crop grid
 
-  crop (NCELLS, cell, x_min, x_max, y_min, y_max, z_min, z_max);
+  crop (ncells, cell, x_min, x_max, y_min, y_max, z_min, z_max);
 
 
   // Reduce grid
 
-  density_reduce (NCELLS, cell, threshold);
+  density_reduce (ncells, cell, threshold);
 
 
   // Set id's to relate grid and reduced grid, get ncells_red
 
-  long ncells_red = set_ids (NCELLS, cell);
+  long ncells_red = set_ids (ncells, cell);
 
 
   return ncells_red;
@@ -64,8 +64,6 @@ int crop (long ncells, CELL *cell,
           double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
 {
 
-  printf("ncells %ld\n", NCELLS);
-
 # pragma omp parallel                                               \
   shared (ncells, cell, x_min, x_max, y_min, y_max, z_min, z_max)   \
   default (none)
@@ -74,8 +72,8 @@ int crop (long ncells, CELL *cell,
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
 
   for (long p = start; p < stop; p++)
@@ -106,7 +104,7 @@ int density_reduce (long ncells, CELL *cell, double min_density_change)
 
   // Note that this loop cannot be paralellized !
 
-  for (long p = 0; p < NCELLS; p++)
+  for (long p = 0; p < ncells; p++)
   {
     if (!cell[p].removed)
     {
@@ -158,7 +156,7 @@ long set_ids (long ncells, CELL *cell)
   // Store nr of cell in reduced grid in id's of full grid
   // Note that this loop cannot be paralellized !
 
-  for (long p = 0; p < NCELLS; p++)
+  for (long p = 0; p < ncells; p++)
   {
     if (cell[p].removed)
     {
@@ -200,8 +198,8 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
 
   for (long n = start; n < stop; n++)

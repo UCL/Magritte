@@ -1,0 +1,17 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Computational Scheme}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Ray-tracing}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Chemistry}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Level populations}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Thermal balance}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{Data structures and memory layout}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.6}{Modules}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.7}{Parallelization strategy}{section.2}% 9
+\BOOKMARK [1][-]{section.3}{Benchmarks}{}% 10
+\BOOKMARK [2][-]{subsection.3.1}{Ray-tracing}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.2}{Magritte vs. 3d-pdr}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.3}{Magritte vs. Lime}{section.3}% 13
+\BOOKMARK [1][-]{section.4}{Applications}{}% 14
+\BOOKMARK [1][-]{section.5}{Conclusions}{}% 15
+\BOOKMARK [1][-]{section.A1}{ALI in the escape probability formalism}{}% 16
+\BOOKMARK [1][-]{section.A2}{Scattering in the Feautrier formalism}{}% 17

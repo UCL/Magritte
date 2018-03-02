@@ -28,36 +28,36 @@ int main ()
 
   // Define and initialize cells
 
-  std::string grid_init = GRID_INIT;
-
-
 # if   (INPUT_FORMAT == '.txt')
 
-    long ncells = get_NCELLS_txt (grid_init);
+    long ncells = get_NCELLS_txt (inputfile);
+
+    CELL *cell = new CELL[ncells];
+
+    initialize_cells (ncells, cell);
+
+    read_txt_input (inputfile, ncells, cell);
 
 # elif (INPUT_FORMAT == '.vtu')
 
-    long ncells = get_NCELLS_vtu (grid_init);
+    long ncells = get_NCELLS_vtu (inputfile);
+
+    CELL *cell = new CELL[ncells];
+
+    initialize_cells (ncells, cell);
+
+    read_vtu_input (inputfile, ncells, cell);
 
 # endif
 
 
-  CELL *cell = new CELL[ncells];
+  // Place boundary
 
-  initialize_cells (ncells, cell);
+  long nboundary_cells = 500;
 
+  CELL *cell_bound = new CELL[ncells+nboundary_cells];
 
-  // Read input grid
-
-# if   (INPUT_FORMAT == '.txt')
-
-    read_txt_input (grid_init, ncells, cell);
-
-# elif (INPUT_FORMAT == '.vtu')
-
-    read_vtu_input (grid_init, ncells, cell);
-
-# endif
+  bound_sphere (ncells, cell, cell_bound, nboundary_cells);
 
 
   // Find neighboring cells for each cell
@@ -65,69 +65,79 @@ int main ()
   find_neighbors (ncells, cell);
 
 
-  // read_neighbors ("input/files/Aori/neighbors.txt", ncells, cell);
-  // write_neighbors ("", NCELLS, cell);
-
-
-  // Specify grid boundaries
-
-  double x_min = X_MIN;
-  double x_max = X_MAX;
-  double y_min = Y_MIN;
-  double y_max = Y_MAX;
-  double z_min = Z_MIN;
-  double z_max = Z_MAX;
-
-  double threshold = THRESHOLD;   // keep cells if rel_density_change > threshold
-
-
   // Reduce grid
 
-  long ncells_red ;//= reduce (ncells, cell, threshold, x_min, x_max, y_min, y_max, z_min, z_max);
+  long ncells_red1 = reduce (ncells, cell);
+  CELL *cell_red1 = new CELL[ncells_red1];
+  initialize_reduced_grid (ncells_red1, cell_red1, ncells, cell);
 
 
-  // Define the reduced grid
+  long ncells_red2 = reduce (ncells_red1, cell_red1);
+  CELL *cell_red2 = new CELL[ncells_red2];
+  initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
 
-  CELL *cell_red = new CELL[ncells_red];
 
-  initialize_cells (ncells_red, cell_red);
+  long ncells_red3 = reduce (ncells_red2, cell_red2);
+  CELL *cell_red3 = new CELL[ncells_red3];
+  initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
-  initialize_reduced_grid (ncells_red, cell_red, ncells, cell);
+
+  long ncells_red4 = reduce (ncells_red3, cell_red3);
+  CELL *cell_red4 = new CELL[ncells_red4];
+  initialize_reduced_grid (ncells_red4, cell_red4, ncells_red3, cell_red3);
+
+
+  long ncells_red5 = reduce (ncells_red4, cell_red4);
+  CELL *cell_red5 = new CELL[ncells_red5];
+  initialize_reduced_grid (ncells_red5, cell_red5, ncells_red4, cell_red4);
+
+
+
+
+  FILE *file = fopen("src/grid_sizes.hpp", "w");
+
+  fprintf (file, "#define NCELLS_RED1 %d\n", ncells_red1);
+  fprintf (file, "#define NCELLS_RED2 %d\n", ncells_red2);
+  fprintf (file, "#define NCELLS_RED3 %d\n", ncells_red3);
+  fprintf (file, "#define NCELLS_RED4 %d\n", ncells_red4);
+  fprintf (file, "#define NCELLS_RED5 %d\n", ncells_red5);
+
+  fclose (file);
 
 
   // Define full grid
-
-  long size_x = 2;
-  long size_y = 0;
-  long size_z = 0;
-
-
-# if   (DIMENSIONS == 1)
-
-    long n_extra = 2;
-
-# elif (DIMENSIONS == 2)
-
-    long n_extra = 2*(size_x + size_y);
-
-# elif (DIMENSIONS == 3)
-
-    long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);
-
-# endif
-
-
-  long ncells_full = ncells_red + n_extra;
-
-  CELL *cell_full = new CELL[ncells_full];
-
-  initialize_cells (ncells_full, cell_full);
-
-
-  // Add boundary
-
-  bound_cube (ncells_red, cell_red, cell_full, size_x, size_y, size_z);
-
+//
+//   long size_x = 2;
+//   long size_y = 0;
+//   long size_z = 0;
+//
+//
+// # if   (DIMENSIONS == 1)
+//
+//     long n_extra = 2;
+//
+// # elif (DIMENSIONS == 2)
+//
+//     long n_extra = 2*(size_x + size_y);
+//
+// # elif (DIMENSIONS == 3)
+//
+//     long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);
+//
+// # endif
+//
+//
+//   long ncells_full = ncells_red + n_extra;
+//
+//   CELL *cell_full = new CELL[ncells_full];
+//
+//   initialize_cells (ncells_full, cell_full);
+//
+//
+//   // Add boundary
+//
+//   bound_cube (ncells_red, cell_red, cell_full, size_x, size_y, size_z);
+//
 
 
 
@@ -137,9 +147,9 @@ int main ()
 
   // Interpolate reduced grid back to original grid
 
-  interpolate (ncells_red, cell_red, ncells, cell);
-
-  delete [] cell_red;
+  // interpolate (ncells_red, cell_red, ncells, cell)
+  //
+  // delete [] cell_red;
 
   //
   // // write reduced grid as .txt file and .vtu file

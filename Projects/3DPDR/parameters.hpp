@@ -21,7 +21,7 @@
 
 // VARIABLE GRID
 
-#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
+#define GRID_INIT "input/files/1Dn20.dat_conv.txt"
 
 #define X_MIN -1.0E+00
 #define X_MAX +9.9E+99
@@ -46,7 +46,7 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/1Dn30.dat_conv.txt"
+#define INPUTFILE "input/files/1Dn55.dat_conv.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 #define REAC_DATAFILE  "data/rates_reduced.txt"
@@ -70,16 +70,16 @@
 
 // Radiative transfer
 
-#define SOBOLEV                    false
+#define SOBOLEV                    true
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 
 
 // Number of various iterations
 
-#define MAX_NITERATIONS  100
-#define PRELIM_CHEM_ITER 0
-#define CHEM_ITER        8
+#define MAX_NITERATIONS  300
+#define PRELIM_CHEM_ITER 5
+#define CHEM_ITER        3
 
 
 // Temperature range
@@ -94,7 +94,7 @@
 #define GAS_TO_DUST       1.0E+2
 #define TIME_END_IN_YEARS 1.0E+7
 
-#define ALWAYS_INITIALIZE_CHEMISTRY true
+#define ALWAYS_INITIALIZE_CHEMISTRY false
 
 
 // External UV field

@@ -18,6 +18,8 @@
 int feautrier (long ndep, long o, long r, double *S, double *dtau, double *u, double *L_diag_approx)
 {
 
+  printf("ndep = %ld, origin = %ld ray = %ld\n", ndep, o, r);
+
   // Method described in Rybicki & Hummer (1991)
 
   double *A = new double[ndep];   // A coefficient in Feautrier recursion relation

@@ -158,134 +158,167 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
     for (long n = start; n < stop; n++)
     {
-      double R[TOT_NLEV2];         // Transition matrix R_ij
-
-      double C_coeff[TOT_NLEV2];   // Einstein C_ij coefficient
-
-
-      // For each line producing species
-
-      for (int lspec = 0; lspec < NLSPEC; lspec++)
+      if (!cell[n].boundary)
       {
-        if (prev_not_converged[lspec])
+        double R[TOT_NLEV2];         // Transition matrix R_ij
+
+        double C_coeff[TOT_NLEV2];   // Einstein C_ij coefficient
+
+        if (thread_num == 0)
         {
-
-          // Calculate collisional terms and fill first part of transition matrix
-          //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-
-          calc_C_coeff (NCELLS, cell, line_species, C_coeff, n, lspec);
+          // printf("thread 0 on point %ld of %ld\n", n , stop);
+        }
 
 
-          // Fill first part of transition matrix R
+        // For each line producing species
 
-          for (int i = 0; i < nlev[lspec]; i++)
+        for (int lspec = 0; lspec < NLSPEC; lspec++)
+        {
+          if (prev_not_converged[lspec])
           {
-            for (int j = 0; j < nlev[lspec]; j++)
+
+            // Calculate collisional terms and fill first part of transition matrix
+            //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+
+            calc_C_coeff (NCELLS, cell, line_species, C_coeff, n, lspec);
+
+
+            // Fill first part of transition matrix R
+
+            for (int i = 0; i < nlev[lspec]; i++)
             {
-              long b_ij = LSPECLEVLEV(lspec,i,j);   // R, A_coeff and C_coeff index
-
-              R[b_ij] = line_species.A_coeff[b_ij] + C_coeff[b_ij];
-            }
-          }
-
-
-          // Calculate and add  B_ij<J_ij> term
-          // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-
-          // For all transitions
-
-          for (int kr = 0; kr < nrad[lspec]; kr++)
-          {
-            long mm_ij = LSPECRAD(lspec,kr);
-
-            int i = line_species.irad[mm_ij];   // i index corresponding to transition kr
-            int j = line_species.jrad[mm_ij];   // j index corresponding to transition kr
-
-            long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
-            long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
-
-            double A_ij = line_species.A_coeff[b_ij];
-            double B_ij = line_species.B_coeff[b_ij];
-            double B_ji = line_species.B_coeff[b_ji];
-
-            long m_ij = LSPECGRIDRAD(lspec,n,kr);
-
-            cell[n].mean_intensity[mm_ij] = 0.0;
-
-
-            // Calculate mean intensity
-
-#           if (SOBOLEV)
-
-              sobolev (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
-                       source, opacity, n, lspec, kr);
-
-#           else
-
-              radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
-                                  source, opacity, n, lspec, kr);
-
-#           endif
-
-
-            // Fill i > j part
-
-            R[b_ij] = R[b_ij] - A_ij*Lambda_diagonal[m_ij] + B_ij*mean_intensity_eff[m_ij];
-
-
-            // Add j > i part
-
-            R[b_ji] = R[b_ji] + B_ji*mean_intensity_eff[m_ij];
-
-          } // end of kr loop over transitions
-
-
-          // Solve equilibrium equation at each point
-          // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
-
-          // Solve radiative balance equation for level populations
-
-          level_population_solver (NCELLS, cell, line_species, n, lspec, R);
-
-
-          // Check for convergence
-
-          for (int i = 0; i < nlev[lspec]; i++)
-          {
-            long p_i  = LSPECGRIDLEV(lspec,n,i);   // dpop index
-            long pp_i = LSPECLEV(lspec,i);         // pop index
-
-            double dpop = cell[n].pop[pp_i] - prev1_pop[p_i];
-            double spop = cell[n].pop[pp_i] + prev1_pop[p_i];
-
-            double min_pop = 1.0E-10 * cell[n].abundance[line_species.nr[lspec]];
-
-
-            if ( (cell[n].pop[pp_i] > min_pop) && (spop != 0.0) )
-            {
-              double dpop_rel = 2.0 * fabs(dpop) / spop;
-
-
-              // If population of any level is not converged
-
-              if (dpop_rel > POP_PREC)
+              for (int j = 0; j < nlev[lspec]; j++)
               {
-                not_converged[lspec] = true;
-                some_not_converged   = true;
+                long b_ij = LSPECLEVLEV(lspec,i,j);   // R, A_coeff and C_coeff index
 
-                n_not_converged[lspec]++;
+                R[b_ij] = line_species.A_coeff[b_ij] + C_coeff[b_ij];
               }
             }
 
-          } // end of i loop over levels
 
 
-        }
-      } // end of lspec loop over line producing species
 
+            // Calculate and add  B_ij<J_ij> term
+            // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+
+            // For all transitions
+
+            for (int kr = 0; kr < nrad[lspec]; kr++)
+            {
+              long mm_ij = LSPECRAD(lspec,kr);
+
+              int i = line_species.irad[mm_ij];   // i index corresponding to transition kr
+              int j = line_species.jrad[mm_ij];   // j index corresponding to transition kr
+
+              long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
+              long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
+
+              double A_ij = line_species.A_coeff[b_ij];
+              double B_ij = line_species.B_coeff[b_ij];
+              double B_ji = line_species.B_coeff[b_ji];
+
+              long m_ij = LSPECGRIDRAD(lspec,n,kr);
+
+              cell[n].mean_intensity[mm_ij] = 0.0;
+
+
+              // Calculate mean intensity
+
+#             if (SOBOLEV)
+
+            if (thread_num == 0)
+            {
+              // printf("YESfdg");
+            }
+
+                sobolev (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
+                         source, opacity, n, lspec, kr);
+
+
+            if (thread_num == 0)
+            {
+              // printf("NOsgsf");
+            }
+
+
+#             else
+
+                radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
+                                    source, opacity, n, lspec, kr);
+
+#             endif
+
+
+              // Fill i > j part
+
+              R[b_ij] = R[b_ij] - A_ij*Lambda_diagonal[m_ij] + B_ij*mean_intensity_eff[m_ij];
+
+
+              // Add j > i part
+
+              R[b_ji] = R[b_ji] + B_ji*mean_intensity_eff[m_ij];
+
+            } // end of kr loop over transitions
+
+
+
+
+            // Solve equilibrium equation at each point
+            // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+            if (thread_num == 0)
+            {
+              // printf("YES");
+            }
+
+            // Solve radiative balance equation for level populations
+
+            level_population_solver (NCELLS, cell, line_species, n, lspec, R);
+
+
+            if (thread_num == 0)
+            {
+              // printf("NO");
+            }
+
+            // Check for convergence
+
+            for (int i = 0; i < nlev[lspec]; i++)
+            {
+              long p_i  = LSPECGRIDLEV(lspec,n,i);   // dpop index
+              long pp_i = LSPECLEV(lspec,i);         // pop index
+
+              double dpop = cell[n].pop[pp_i] - prev1_pop[p_i];
+              double spop = cell[n].pop[pp_i] + prev1_pop[p_i];
+
+              double min_pop = 1.0E-10 * cell[n].abundance[line_species.nr[lspec]];
+
+
+              if ( (cell[n].pop[pp_i] > min_pop) && (spop != 0.0) )
+              {
+                double dpop_rel = 2.0 * fabs(dpop) / spop;
+
+
+                // If population of any level is not converged
+
+                if (dpop_rel > POP_PREC)
+                {
+                  not_converged[lspec] = true;
+                  some_not_converged   = true;
+
+                  n_not_converged[lspec]++;
+                }
+              }
+
+            } // end of i loop over levels
+
+
+          }
+        } // end of lspec loop over line producing species
+
+      } // end if not boundary point
 
     } // end of n loop over cells
     } // end of OpenMP parallel region
@@ -298,14 +331,15 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
     {
       if (prev_not_converged[lspec])
       {
-        if ( (niterations[lspec] > MAX_NITERATIONS) || (n_not_converged[lspec] < NCELLS/10) )
+        if (    (niterations[lspec] > MAX_NITERATIONS)
+             || (n_not_converged[lspec] < 0.02*NCELLS*nlev[lspec]) )
         {
           not_converged[lspec] = false;
           some_not_converged   = false;
         }
 
-        printf( "(level_populations): Not yet converged for %ld of %d\n",
-                n_not_converged[lspec], NCELLS*nlev[lspec] );
+        printf ("(level_populations): Not yet converged for %ld of %d (NCELLS = %ld)\n",
+                n_not_converged[lspec], NCELLS*nlev[lspec], NCELLS);
 
       }
     }

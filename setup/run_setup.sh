@@ -48,7 +48,7 @@ mkdir "$output_directory/plots/"
 
 # Copy the input parameters to the output file
 
-cp ../parameters.hpp $output_directory/parameters.hpp
+cp ../src/parameters.hpp $output_directory/parameters.hpp
 
 
 echo " "

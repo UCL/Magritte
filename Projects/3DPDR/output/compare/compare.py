@@ -15,7 +15,13 @@ name = str(sys.argv[2])
 
 
 if(len(sys.argv) > 3):
-    tag  = "_" + str(sys.argv[3])
+    run  = str(sys.argv[3])
+else:
+    run = ""
+
+
+if(len(sys.argv) > 4):
+    tag  = "_" + str(sys.argv[4])
 else:
     tag = ""
 
@@ -27,7 +33,7 @@ my_data = np.loadtxt(file_name)
 ncells  = np.shape(my_data)[0]
 
 
-file_name = "output_3D-PDR/1Dn30/" + name + tag + "_3D-PDR.txt"
+file_name = "output_3D-PDR/1Dn" + run + "/" + name + tag + "_3D-PDR.txt"
 
 their_data = np.loadtxt(file_name)
 

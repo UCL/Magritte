@@ -117,6 +117,40 @@ int main ()
 # endif
 
 
+  // HACK FOR WARD's LIME SPHERES
+
+  // Find boundary radius
+
+  double boundary_radius2 = 0.0;
+
+  for (long n = 0; n < NCELLS; n++)
+  {
+    double r2 = cell[n].x*cell[n].x + cell[n].y*cell[n].y + cell[n].z*cell[n].z;
+
+    if (r2 > boundary_radius2)
+    {
+      boundary_radius2 = r2;
+    }
+  }
+
+  long nboundary_cells = 0;
+
+  for (long n = 0; n < NCELLS; n++)
+  {
+    double r2 = cell[n].x*cell[n].x + cell[n].y*cell[n].y + cell[n].z*cell[n].z;
+
+    if (r2 >= 0.99*boundary_radius2)
+    {
+      cell[n].boundary = true;
+
+      nboundary_cells++;
+    }
+  }
+
+  printf("nboundary_cells = %ld\n", nboundary_cells);
+
+
+
   printf ("(Magritte): grid input read \n\n");
 
 
@@ -136,9 +170,12 @@ int main ()
   read_species (spec_datafile, species);
 
 
+# if (!RESTART)
   // Initialize abundances in each cell with initial abundances read above
 
   initialize_abundances (NCELLS, cell, species);
+
+# endif
 
 
   // Read chemical reaction data
@@ -192,6 +229,32 @@ int main ()
   printf ("(Magritte): neighboring cells found \n\n");
 
 
+  printf("thing    %lE\n", cell[123].Z[0]);
+  printf("thing    %lE\n", cell[123].Z[1]);
+  printf("thing    %lE\n", cell[123].Z[2]);
+
+  printf("temp gas %lE\n", cell[123].temperature.gas);
+
+  printf("x        %lE\n", cell[123].x);
+
+  printf("denisty  %lE\n", cell[123].density);
+
+    printf("763 n_neighbors %ld\n", cell[763].n_neighbors);
+
+    printf("763 pos %lE\n", cell[763].x);
+    printf("763 pos %lE\n", cell[763].y);
+    printf("763 pos %lE\n", cell[763].z);
+
+    if(!cell[763].boundary)
+    {
+      printf(" not On boundary!\n");
+    }
+
+
+  // write_grid("", NCELLS, cell);
+
+
+  // return(0);
 
 
   // CALCULATE EXTERNAL RADIATION FIELD
@@ -260,6 +323,8 @@ int main ()
 
     guess_temperature_gas (NCELLS, cell);
 
+    initialize_previous_temperature_gas(NCELLS, cell);
+
 
     // Calculate the dust temperature
 
@@ -267,25 +332,44 @@ int main ()
 
 # endif
 
+// for (long n=0; n<NCELLS; n++)
+// {
+  // if (cell[n].n_neighbors <= 1)
+  // printf("%ld\n", n);
+// }
+
+
+// return(0);
 
   printf ("(Magritte): gas temperature guessed and dust temperature calculated \n\n");
 
 
+
   // Reduce grid
 
-  long ncells_red1 = reduce (ncells, cell);
-  CELL *cell_red1 = new CELL[ncells_red1];
-  initialize_reduced_grid (ncells_red1, cell_red1, ncells, cell);
-
-
-  long ncells_red2 = reduce (ncells_red1, cell_red1);
-  CELL *cell_red2 = new CELL[ncells_red2];
-  initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
-
-
-  long ncells_red3 = reduce (ncells_red2, cell_red2);
-  CELL *cell_red3 = new CELL[ncells_red3];
-  initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  // long ncells_red1 = reduce (ncells, cell);
+  // CELL *cell_red1 = new CELL[ncells_red1];
+  // initialize_reduced_grid (ncells_red1, cell_red1, ncells, cell);
+  //
+  //
+  // long ncells_red2 = reduce (ncells_red1, cell_red1);
+  // CELL *cell_red2 = new CELL[ncells_red2];
+  // initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
+  //
+  //
+  // long ncells_red3 = reduce (ncells_red2, cell_red2);
+  // CELL *cell_red3 = new CELL[ncells_red3];
+  // initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  //
+  //
+  // long ncells_red4 = reduce (ncells_red3, cell_red3);
+  // CELL *cell_red4 = new CELL[ncells_red4];
+  // initialize_reduced_grid (ncells_red4, cell_red4, ncells_red3, cell_red3);
+  //
+  //
+  // long ncells_red5 = reduce (ncells_red4, cell_red4);
+  // CELL *cell_red5 = new CELL[ncells_red5];
+  // initialize_reduced_grid (ncells_red5, cell_red5, ncells_red4, cell_red4);
 
 
 
@@ -294,33 +378,44 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
+  // thermal_balance (ncells_red5, cell_red5, species, reaction, line_species, &timers);
 
-  thermal_balance (ncells_red3, cell_red3, species, reaction, line_species, &timers);
+  // interpolate (ncells_red5, cell_red5, ncells_red4, cell_red4);
 
-  interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
-  thermal_balance (ncells_red2, cell_red2, species, reaction, line_species, &timers);
+  // thermal_balance (ncells_red4, cell_red4, species, reaction, line_species, &timers);
 
-  interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
+  // interpolate (ncells_red4, cell_red4, ncells_red3, cell_red3);
 
-  thermal_balance (ncells_red1, cell_red1, species, reaction, line_species, &timers);
 
-  interpolate (ncells_red1, cell_red1, ncells, cell);
+  // thermal_balance (ncells_red3, cell_red3, species, reaction, line_species, &timers);
+
+  // interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
+
+  // thermal_balance (ncells_red2, cell_red2, species, reaction, line_species, &timers);
+
+  // interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
+
+  // thermal_balance (ncells_red1, cell_red1, species, reaction, line_species, &timers);
+
+  // interpolate (ncells_red1, cell_red1, ncells, cell);
 
   thermal_balance (ncells, cell, species, reaction, line_species, &timers);
 
 
-  delete [] cell_red3;
-  delete [] cell_red2;
-  delete [] cell_red1;
+  // delete [] cell_red5;
+  // delete [] cell_red4;
+  // delete [] cell_red3;
+  // delete [] cell_red2;
+  // delete [] cell_red1;
 
 
   timers.total.stop();
 
 
-  printf ("(Magritte): Total calculation time is %lE\n\n", timers.total.duration);
-  printf ("(Magritte): - time in chemistry %lE\n\n", timers.chemistry.duration);
-  printf ("(Magritte): - time in level_pop %lE\n\n", timers.level_pop.duration);
+  printf ("(Magritte): Total calculation time = %lE\n\n", timers.total.duration);
+  printf ("(Magritte): - time in chemistry = %lE\n\n", timers.chemistry.duration);
+  printf ("(Magritte): - time in level_pop = %lE\n\n", timers.level_pop.duration);
 
 
 
