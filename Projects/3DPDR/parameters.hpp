@@ -61,7 +61,8 @@
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 #define REAC_DATAFILE  "data/rates_reduced.txt"
 
-
+// Line data
+#define DATA_FORMAT "LAMDA"
 #define NLSPEC 4
 
 #define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}

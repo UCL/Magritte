@@ -4,8 +4,8 @@
 // _________________________________________________________________________
 
 
-#ifndef __CELL_LEVEL_POPULATIONS_HPP_INCLUDED__
-#define __CELL_LEVEL_POPULATIONS_HPP_INCLUDED__
+#ifndef __LEVEL_POPULATIONS_HPP_INCLUDED__
+#define __LEVEL_POPULATIONS_HPP_INCLUDED__
 
 #include "declarations.hpp"
 
@@ -16,4 +16,4 @@
 int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species);
 
 
-#endif // __CELL_LEVEL_POPULATIONS_HPP_INCLUDED__
+#endif // __LEVEL_POPULATIONS_HPP_INCLUDED__

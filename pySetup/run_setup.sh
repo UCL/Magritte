@@ -25,7 +25,7 @@ echo "#define PROJECT_FOLDER \"$1\"" >> directories.hpp
 
 # Make the rate_equation file for the chemistry, based on parameters.hpp
 
-python make_rates.py
+python makeRates.py
 
 
 # Create and execute the Makefile for the setup
@@ -36,7 +36,7 @@ make
 
 # Execute setup
 
-./setup.exe
+python setup.py
 
 
 # Make a directory for the output and the plots

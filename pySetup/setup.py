@@ -101,7 +101,7 @@ def setupMagritte():
     tot_cum_tot_ncoltemp     = cum_tot_ncoltemp[-1]+tot_ncoltemp[-1]
     tot_cum_tot_ncoltrantemp = cum_tot_ncoltrantemp[-1]+tot_ncoltrantemp[-1]
     # Write Magritte_config.hpp file
-    fileName = 'test.hpp'
+    fileName = '../src/Magritte_config.hpp'
     writeHeader(fileName)
     writeDefinition(fileName, ncells,                   'NCELLS')
     writeDefinition(fileName, nspec,                    'NSPEC')
@@ -144,7 +144,7 @@ def setupMagritte():
     jcol      = vectorize([ld.jcol      for ld in lineData])
     C_data    = vectorize([ld.C_data    for ld in lineData])
     # Write definitions.hpp
-    fileName = 'test2.hpp'
+    fileName = '../src/defs.hpp'
     writeHeader(fileName)
     writeVariable(fileName, energy,    'const double TESTenergy')
     writeVariable(fileName, weight,    'const double TESTweight')

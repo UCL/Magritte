@@ -41,7 +41,7 @@
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
 
-// #include "../pySetup/test2.hpp"
+#include "defs.hpp"
 
 
 // main for Magritte
@@ -278,7 +278,7 @@ int main ()
 
   printf ("(Magritte): neighboring cells found \n\n");
 
-  // 
+  //
   // printf("thing    %lE\n", cell[123].Z[0]);
   // printf("thing    %lE\n", cell[123].Z[1]);
   // printf("thing    %lE\n", cell[123].Z[2]);

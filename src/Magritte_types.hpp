@@ -125,23 +125,6 @@ struct CELL   // (array of structures)
 };
 
 
-struct EVALPOINT
-{
-
-  bool   onray;   // true when cell is on any ray thus an evaluation point
-
-  long   ray;     // number of ray, evaluation point belongs to
-  long   nr;      // number of evaluation point along ray
-
-  double dZ;      // distance increment along ray
-  double Z;       // distance between evaluation point and origin
-
-  double vol;     // velocity along ray between grid point and evaluation point
-  double dvc;     // velocity increment to next point in velocity space
-
-  long next_in_velo;   // next point in velocity space
-
-};
 
 
 struct SPECIES
