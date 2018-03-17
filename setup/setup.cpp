@@ -301,7 +301,7 @@ int main()
 
   // Create (unit) HEALPix vectors and find antipodal pairs
 
-  double *healpixvector = new double[3*nrays];   // array of HEALPix vectors for each ipix pixel
+  double *healpixvector = new double[3*nrays];   // array of HEALPix vectors
 
   long *antipod = new long[nrays];               // gives antipodal ray for each ray
 

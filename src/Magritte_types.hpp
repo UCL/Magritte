@@ -11,15 +11,16 @@
 // #include "Eigen/Dense"
 #include <omp.h>
 
+// Include RAYS class
+#include "healpixvectors.hpp"
 
 
 
 struct TEMPERATURE
 {
-
-  double dust;
-  double gas;
-  double gas_prev;
+  double dust;       // dust temperature
+  double gas;        // gas temperature
+  double gas_prev;   // gas temperature in previous iteration
 
 };
 
@@ -77,27 +78,9 @@ struct COLUMN_DENSITIES
       delete [] tot;
     }
 
-
 # endif
 
 };
-
-
-
-
-struct HEALPIX_VECTOR
-{
-  double x;
-  double y;
-  double z;
-
-  long antipod;
-
-  long n_aligned;
-  long aligned[NRAYS/2];
-
-};
-
 
 
 

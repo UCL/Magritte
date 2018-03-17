@@ -15,13 +15,23 @@
 
 // Input files
 
-#define FIXED_NCELLS false
+#define FIXED_NCELLS true
 #define INPUT_FORMAT '.txt'
+#define CELL_BASED  false
 
+#define NAME_DENSITY              "H2_density"
+#define NAME_VELOCITY             "velocity"
+#define NAME_VX                   "v1"
+#define NAME_VY                   "v2"
+#define NAME_VZ                   "v3"
+#define NAME_TEMPERATURE_GAS      "Gas_temperature"
+#define NAME_TEMPERATURE_DUST     "Gas_temperature"
+#define NAME_TEMPERATURE_GAS_PREV "Gas_temperature"
+#define NAME_CHEM_ABUNDANCES      "Mol_density"
 
 // VARIABLE GRID
 
-#define GRID_INIT "input/files/1Dn20.dat_conv.txt"
+#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
 
 #define X_MIN -1.0E+00
 #define X_MAX +9.9E+99
@@ -46,7 +56,7 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE "input/files/1Dn55.dat_conv.txt"
+#define INPUTFILE      "input/files/1Dn30.dat_conv.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 #define REAC_DATAFILE  "data/rates_reduced.txt"
@@ -54,12 +64,10 @@
 
 #define NLSPEC 4
 
-#define LINE_DATAFILES { "data/12CO.txt", \
-                         "data/12C.txt",  \
-                         "data/12C+.txt", \
-                         "data/16O.txt" }
+#define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
 
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
+
 
 
 // Ray tracing parameters

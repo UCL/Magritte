@@ -25,7 +25,7 @@
 // level_populations: iteratively calculates the level populations
 // ---------------------------------------------------------------
 
-int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
+int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species)
 {
 
 
@@ -142,7 +142,7 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
     // For every grid point
 
 #   pragma omp parallel                                                             \
-    shared (line_species, ncells, cell,                                             \
+    shared (line_species, ncells, cell, healpixvectors,                             \
             opacity, source, Lambda_diagonal, mean_intensity_eff,                   \
             prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2,   \
             nrad, cum_nrad, prev_not_converged, some_not_converged)                 \
@@ -233,7 +233,7 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
               // printf("YESfdg");
             }
 
-                sobolev (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
+                sobolev (NCELLS, cell, healpixvectors, line_species, Lambda_diagonal, mean_intensity_eff,
                          source, opacity, n, lspec, kr);
 
 
@@ -245,7 +245,7 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
 #             else
 
-                radiative_transfer (NCELLS, cell, line_species, Lambda_diagonal, mean_intensity_eff,
+                radiative_transfer (NCELLS, cell, healpixvectors, line_species, Lambda_diagonal, mean_intensity_eff,
                                     source, opacity, n, lspec, kr);
 
 #             endif
@@ -253,12 +253,12 @@ int level_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
               // Fill i > j part
 
-              R[b_ij] = R[b_ij] - A_ij*Lambda_diagonal[m_ij] + B_ij*mean_intensity_eff[m_ij];
+              R[b_ij] = R[b_ij] - A_ij*Lambda_diagonal[m_ij] + NRAYS*B_ij*mean_intensity_eff[m_ij];
 
 
               // Add j > i part
 
-              R[b_ji] = R[b_ji] + B_ji*mean_intensity_eff[m_ij];
+              R[b_ji] = R[b_ji] + NRAYS*B_ji*mean_intensity_eff[m_ij];
 
             } // end of kr loop over transitions
 

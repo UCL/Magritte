@@ -28,7 +28,7 @@ int write_neighbors (std::string tag, long ncells, CELL *cell);
 // write_healpixvectors: write unit HEALPix vectors
 // ------------------------------------------------
 
-int write_healpixvectors (std::string tag);
+int write_healpixvectors (std::string tag, HEALPIXVECTORS healpixvectors);
 
 
 // write_abundances: write abundances at each point

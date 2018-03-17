@@ -24,8 +24,8 @@ int calc_UV_field (long ncells, CELL *cell)
 
   // For all grid points
 
-# pragma omp parallel              \
-  shared (ncells, cell, antipod)   \
+# pragma omp parallel     \
+  shared (ncells, cell)   \
   default (none)
   {
 

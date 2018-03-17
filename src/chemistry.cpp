@@ -18,13 +18,13 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+int chemistry (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES *species, REACTION *reaction,
                double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
   // Calculate column densities
 
-  calc_column_densities (NCELLS, cell, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cell, healpixvectors, column_H2, column_HD, column_C, column_CO);
 
 
   // For all cells

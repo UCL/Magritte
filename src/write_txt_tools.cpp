@@ -119,7 +119,7 @@ int write_neighbors (std::string tag, long ncells, CELL *cell)
 // write_healpixvectors: write HEALPix vectors
 // -------------------------------------------
 
-int write_healpixvectors (std::string tag)
+int write_healpixvectors (std::string tag, HEALPIXVECTORS healpixvectors)
 {
 
   if (!tag.empty())
@@ -141,9 +141,9 @@ int write_healpixvectors (std::string tag)
 
   for (long r = 0; r < NRAYS; r++)
   {
-    fprintf (file, "%.15f\t%.15f\t%.15f\n", healpixvector[VINDEX(r,0)],
-                                            healpixvector[VINDEX(r,1)],
-                                            healpixvector[VINDEX(r,2)]);
+    fprintf (file, "%.15f\t%.15f\t%.15f\n", healpixvectors.x[r],
+                                            healpixvectors.y[r],
+                                            healpixvectors.z[r]);
   }
 
   fclose (file);
@@ -214,8 +214,7 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPEC
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
     std::string lspec_name = line_species.sym[lspec];
-
-    std::string file_name = output_directory + "level_populations_" + lspec_name + tag + ".txt";
+    std::string file_name  = output_directory + "level_populations_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen (file_name.c_str(), "w");
 
@@ -232,7 +231,7 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPEC
     {
       for (int i = 0; i < nlev[lspec]; i++)
       {
-        fprintf (file, "%lE\t", cell[n].pop[LSPECLEV(lspec, i)]);
+        fprintf (file, "%lE\t", cell[n].pop[LSPECLEV(lspec, i)]/cell[n].density/cell[n].abundance[1]);
       }
 
       fprintf (file, "\n");

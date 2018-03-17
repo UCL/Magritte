@@ -21,7 +21,7 @@
 // thermal_balance: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------
 
-int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES *species, REACTION *reaction,
                      LINE_SPECIES line_species, TIMERS *timers)
 {
 
@@ -76,7 +76,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cell, species, reaction, column_H2, column_HD, column_C, column_CO);
+    chemistry (NCELLS, cell, healpixvectors, species, reaction, column_H2, column_HD, column_C, column_CO);
 
     timers->chemistry.stop();
 
@@ -128,7 +128,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance_iteration (NCELLS, cell, species, reaction, line_species,
+    thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reaction, line_species,
                                column_H2, column_HD, column_C, column_CO, timers);
 
 
@@ -220,7 +220,7 @@ int thermal_balance (long ncells, CELL *cell, SPECIES *species, REACTION *reacti
 // thermal_balance_Brent: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------------
 
-int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *reaction,
+int thermal_balance_Brent (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES *species, REACTION *reaction,
                            LINE_SPECIES line_species, TIMERS *timers)
 {
 
@@ -371,7 +371,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, SPECIES *species, REACTION *
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance_iteration (NCELLS, cell, species, reaction, line_species,
+    thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reaction, line_species,
                                column_H2, column_HD, column_C, column_CO, timers);
 
 

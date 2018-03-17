@@ -1,0 +1,7 @@
+PWD /home/frederik/Dropbox/Astro/Magritte/papers/Progress_report_2018
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /home/frederik/Dropbox/Astro/Magritte/papers/Progress_report_2018/Introduction.tex
+OUTPUT /home/frederik/Dropbox/Astro/Magritte/papers/Progress_report_2018/Introduction.log

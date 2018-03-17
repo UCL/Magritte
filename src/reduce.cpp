@@ -261,14 +261,14 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
   } // end of OpenMP parallel region
 
 
-  // Find neighboring cells for each cell
-
-  find_neighbors (ncells_red, cell_red);
-
-
-  // Find endpoint of each ray for each cell
-
-  find_endpoints (ncells_red, cell_red);
+  // // Find neighboring cells for each cell
+  //
+  // find_neighbors (ncells_red, cell_red, healpixvectors);
+  //
+  //
+  // // Find endpoint of each ray for each cell
+  //
+  // find_endpoints (ncells_red, cell_red, healpixvectors);
 
 
   return (0);

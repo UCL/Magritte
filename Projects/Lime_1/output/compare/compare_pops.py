@@ -23,45 +23,32 @@ else:
     tag = ""
 
 
-file_name = "../files/" + date_stamp + "_output/level_populations_"+ name + ".txt"
-
-my_data = np.loadtxt(file_name)
+file_name = "../files/{}_output/level_populations_{}.txt".format(date_stamp, name)
+my_data   = np.loadtxt(file_name)
+my_data   = my_data[0:1000,:]
 
 ncells  = np.shape(my_data)[0]
 nindex  = np.shape(my_data)[1]
 
 
-file_name = "output_Lime/populations" + tag + ".pop"
-
+file_name  = "output_Lime/populations{}.pop".format(tag)
 their_data = np.loadtxt(file_name, skiprows=1)
-
 their_data = their_data[:,7:]
+
+file_name ="../../input/files"
 
 print np.shape(my_data)
 print np.shape(their_data)
 
 
-# Reverse the last two grid points
-
-# arow           = their_data[-2]
-# their_data[-2] = their_data[-1]
-# their_data[-1] = arow
-#
-# nrows = np.shape(their_data)[0]
-# ncols = np.shape(their_data)[1]
-
-
 # Calculate the error
-
 error          = my_data - their_data
 relative_error = 2.0*abs(error)/abs(my_data+their_data)
 
 
 # Make the plots
-
 print(" ")
 print("Plotting " + file_name)
-
 
 fig1 = plt.figure()
 fig2 = plt.figure()
@@ -104,8 +91,8 @@ ax2.set_yscale("log")
 
 fig2.tight_layout()
 
-plot_name1 = "../files/" + date_stamp + "_output/plots/error_" + name + tag + ".png"
-plot_name2 = "../files/" + date_stamp + "_output/plots/both_" + name + tag + ".png"
+plot_name1 = "../files/{}_output/plots/error_{}{}.png".format(date_stamp, name, tag)
+plot_name2 = "../files/{}_output/plots/both_{}{}.png".format(date_stamp, name, tag)
 
 
 # Save the plot
@@ -115,4 +102,3 @@ fig2.savefig(plot_name2, bbox_inches='tight')
 print("Plots saved as ")
 print("   " + plot_name1)
 print("   " + plot_name2)
-print(" ")

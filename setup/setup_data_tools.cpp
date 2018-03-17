@@ -96,24 +96,24 @@ long get_NCELLS_vtu (std::string inputfile)
     long ncells = cellCentersFilter->GetOutput()->GetNumberOfPoints();
 
 
-    // Check whether there is cell data for every cell
-
-    vtkCellData *cellData  = ugrid->GetCellData();
-
-    int nr_of_arrays = cellData->GetNumberOfArrays();
-
-
-    for (int a = 0; a < nr_of_arrays; a++)
-    {
-      vtkDataArray* data = cellData->GetArray(a);
-
-      std::string name = data->GetName();
-
-      if (ncells != data->GetNumberOfTuples())
-      {
-        printf("ERROR: wrong number of %s values\n", name.c_str());
-      }
-    }
+    // // Check whether there is cell data for every cell
+    //
+    // vtkCellData *cellData  = ugrid->GetCellData();
+    //
+    // int nr_of_arrays = cellData->GetNumberOfArrays();
+    //
+    //
+    // for (int a = 0; a < nr_of_arrays; a++)
+    // {
+    //   vtkDataArray* data = cellData->GetArray(a);
+    //
+    //   std::string name = data->GetName();
+    //
+    //   if (ncells != data->GetNumberOfTuples())
+    //   {
+    //     printf("ERROR: wrong number of %s values\n", name.c_str());
+    //   }
+    // }
 
 
 # else // Assume point based

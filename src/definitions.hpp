@@ -46,15 +46,17 @@ const std::string line_datafile[NLSPEC] = LINE_DATAFILES;   // list of line data
 
 // HEALPix vectors
 
-const double healpixvector[3*NRAYS] = HEALPIXVECTOR;
+// HEALPIXVECTORS healpixvectors;
 
-const long antipod[NRAYS] = ANTIPOD;
+// const double healpixvector[3*NRAYS] = HEALPIXVECTOR;
+
+// const long antipod[NRAYS] = ANTIPOD;
 
 // const long aligned[NRAYS][NRAYS/2] = ALIGNED;   // NOT USED YET
 
 // const long n_aligned[NRAYS] = N_ALIGNED;        // NOT USED YET
 
-const long mirror_xz[NRAYS] = MIRROR;
+// const long mirror_xz[NRAYS] = MIRROR;
 
 
 // Level populations

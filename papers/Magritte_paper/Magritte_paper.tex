@@ -218,9 +218,11 @@ The local mean intensity $J_{ij}(\x)$ in the spectral range of a transition $i \
 \begin{equation}
 	J_{ij}(\x) \ = \ \oint \frac{\D\Omega}{4\pi} \int_{0}^{\infty} \D\nu \ \phi_{\nu}^{ij}(\x) \ I_{\nu}(\x, \n).
 \end{equation}
-To obtain the average over the directions, \textsc{Magritte} computes the intensity along different rays and then averages over the rays. To obtain the weighted integral over the spectrum \textsc{Magritte} computes the intensity for certain frequencies given by a quadrature scheme. In the simulations presented in this paper we always assumed Gaussian profile functions such that the integrals over the spectrum can be done using Gauss-Hermitte quadratures\footnote{\textsc{Magritte} can cope with any user defined profile function as long as the appropriate roots and weights for the quadrature are also provided by the user.}.
+To obtain the average over all directions, \textsc{Magritte} computes the intensity along all rays and averages over the rays. To obtain the weighted integral over the spectrum \textsc{Magritte} computes the intensity for certain frequencies given by a quadrature scheme.
+
+In the simulations presented in this paper we always assumed Gaussian profile functions\footnote{\textsc{Magritte} can cope with any user defined profile function as long as the appropriate roots and weights for the quadrature are also provided by the user.} such that the integrals over the spectrum can be done using a Gauss-Hermitte quadrature. A Gaussian profile function in the comoving frame reads,
 \begin{equation}
-	\phi_{\nu}^{ij}(\x) \ = \ \frac{1}{\sqrt{\pi}\delta\nu_{ij}} \ \exp \left(-\left(\frac{\nu-\nu_{ij}} {\delta\nu_{ij}}\right)^{2}\right)
+	\phi_{\nu}^{ij}(\x) \ = \ \frac{1}{\sqrt{\pi}\delta\nu_{ij}} \ \exp \left(-\left(\frac{\nu-\nu_{ij}} {\delta\nu_{ij}}\right)^{2}\right),
 \end{equation}
 where the width $\delta\nu$ of the profile is due to the Doppler shifts caused by motions of the atoms and molecules in a cell,
 \begin{equation}
@@ -228,30 +230,31 @@ where the width $\delta\nu$ of the profile is due to the Doppler shifts caused b
 \end{equation}
 The first term is due to thermal motions (along the line of sight) and the second is due to the turbulent motion.
 
+To find in each direction ($\n$) the monochromatic specific intensity, \textsc{Magritte} solves the radiative transfer equation in the comoving frame along each ray.
+\begin{equation}
+	\n \cdot \nabla I_{\nu}(\x,\n) \ = \ \eta_{\nu}(\x,\n) \ - \ \chi_{\nu}(\x) \ I_{\nu}(\x,\n).
+\label{transfer}
+\end{equation}
+The emissivity $\eta_{\nu}(\x,\n)$ and opacity $\chi_{\nu}(\x)$ can be split into a line, a continuum and a scattering term,
 \begin{equation}
 \begin{split}
-		\eta^{\,\text{eff.}}_{\nu}(\x,\n) \ &= \ \eta^{ij}_{\nu}(\x) \ + \ \eta^{\text{con.}}_{\nu}(\x) \ + \ \eta^{\,\text{sca.}}_{\nu}(\x,\n) \\
-		\chi^{\,\text{eff.}}_{\nu}(\x)   \ &= \ \chi_{\nu}(\x) \ + \ \chi^{\text{con.}}_{\nu}(\x) \ + \ \chi^{\,\text{sca.}}_{\nu}(\x),
+		\eta_{\nu}(\x,\n) \ &= \ \eta^{ij}_{\nu}(\x) \ + \ \eta^{\text{con.}}_{\nu}(\x) \ + \ \eta^{\,\text{sca.}}_{\nu}(\x,\n) \\
+		\chi_{\nu}(\x)   \ &= \ \chi^{ij}_{\nu}(\x) \ + \ \chi^{\text{con.}}_{\nu}(\x) \ + \ \chi^{\,\text{sca.}}_{\nu}(\x).
 \end{split}
 \label{scattering}
 \end{equation}
-
-The line emissivity and opacity are defined in terms of the Einstein coefficients and level populations,
+The line emissivity and opacity are caused by the transitions between the level populations and can be expressed in terms of the Einstein coefficients,
 \begin{equation}
 \begin{split}
 \eta^{ij}_{\nu}(\x) \ &= \ \frac{h\nu}{4\pi} \ A_{ij} \ n_{i}(\x) \ \phi^{ij}_{\nu}(\x), \\
 \chi^{ij}_{\nu}(\x) \ &= \ \frac{h\nu}{4\pi} \ \Big( B_{ji} \ n_{j}(\x) \ - \ B_{ij} \ n_{i}(\x) \Big) \ \phi^{ij}_{\nu}(\x).
 \end{split}
 \end{equation}
-Note that we make
+The continuum terms are due to dust. \textsc{Magritte} contains one dust species with a certain dust temperature $T_{\text{dust}}(\x)$. The cosmic microwave background (CMB) is treated as a boundary condition.
 
 
-In \textsc{3d-pdr} the radiative transfer is solved in the escape probability formalism and applying the large velocity gradient (LVG) or Sobolev approximation \citep{Sobolev1960, Castor1970, deJong1975, Poelman2005}. This is still an option in Magritte. The mean intensity is given by
 
-
-Additionally there is the option in Magritte to solve the full radiative transfer equation in the comoving frame.
-
-\textsc{Magritte} solves the monochromatic transfer equation along a ray in Feautrier form \citep{Feautrier1964} using the improved numerical scheme suggested by \citet{Rybicki1991}. In this method the transfer equation is rewritten as a second-order differential equation
+\textsc{Magritte} solves the monochromatic transfer equation in Feautrier form \citep{Feautrier1964} using the improved numerical scheme suggested by \citet{Rybicki1991}. In this method the transfer equation is rewritten as a second-order differential equation
 \begin{equation}
 	u_{\nu}(\x, \n) \ = \ \frac{1}{2}\Big( I_{\nu}(\x, \n) \ + \ I_{\nu}(\x, -\n) \Big)
 \end{equation}
@@ -260,12 +263,14 @@ Additionally there is the option in Magritte to solve the full radiative transfe
 	\frac{\D^{2}u_{\nu}(\x, \n)}{\D\tau_{\nu}^{2}} \ = \ u_{\nu}(\x, \n) \ - \ S_{\nu}^{\,\text{eff.}}(\x, \n)
 \end{equation}
 
-Lines plus continuum.
 
 
-The transfer equation is solved along each ray us Feautrier
+In \textsc{3d-pdr} the radiative transfer is solved in the escape probability formalism and applying the large velocity gradient (LVG) or Sobolev approximation \citep{Sobolev1960, Castor1970, deJong1975, Poelman2005}. This is still an option in Magritte. The mean intensity is given by
 
-Later versions will be able to treat multiple dust scattering
+
+
+
+
 
 
 
@@ -278,7 +283,13 @@ The approximated lambda operator scheme of \citeauthor{Rybicki1991} reoders the 
 	R_{ij}(\x) \ = \ A_{ij} \left(1-\Lambda^{\ast}_{ij}(\x)\right) \ + \ B_{ij}  J^{\,\text{eff.}}_{ij}(\x) \ + \ C_{ij}(\x),
 \label{RybickiHummer}
 \end{equation}
-
+where the approximated lambda operator $\Lambda^{\ast}_{ij}(\x)$ and the resulting effective mean intensity $J^{\,\text{eff.}}_{ij}(\x)$ are given by
+\begin{equation}
+\begin{split}
+	\Lambda^{\ast}_{ij}(\x)    \ &= \ \\
+	J^{\,\text{eff.}}_{ij}(\x) \ &= \ \\
+\end{split}
+\end{equation}
 
 In the Ng-acceleration method \citep{Ng1974} a new educated guess for the level populaions is made based on the level populations in previous iterations.
 
@@ -297,25 +308,6 @@ The modular design of the code and the relatively simple structure of our cells 
 
 
 
-\subsection{Data structures and memory layout}
-
-Magritte assumes an unstructured grid of cells
-
-Data-oriented design
-
-
-Much better memory scaling and impoved overall performance.
-
-Plot of memory use as function of the number of grid cells, Magritte vs. 3D-PDR.
-
-\subsection{Modules}
-
-To facilitate the incorporation of Magritte in other codes, the code is structerd into separate dedicated modules each handling a specific part of the calculaltion.
-
-\subsection{Parallelization strategy}
-
-
-
 
 \section{Benchmarks}
 \label{Benchmarks}
@@ -324,11 +316,19 @@ To facilitate the incorporation of Magritte in other codes, the code is structer
 
 Angular resolution tests
 
+\subsection{Line radiative transfer}
+
+In order to test \textsc{Magritte}'s new radiative transfer module, it was compared against the results of the \citet{VanZadelhoff2002} benchmark.
+
+
+\subsection{Dust scattering}
+
+
 \subsection{{\sc Magritte} vs. {\sc 3d-pdr}}
 
 
 \subsection{{\sc Magritte} vs. {\sc Lime}}
-
+In order to test \textsc{Magritte}'s new radiative transfer module, it was benchmarked against \textsc{Lime} \citep{Brinch2010}.
 
 
 
@@ -378,11 +378,11 @@ J_{ij}(\x) \ = \ \left(1-\beta_{ij}(\x)\right) S^{\,\text{line}}_{ij}(\x) \ + \ 
 \end{equation}
 where the escape probability $\beta_{ij}(\x)$ is cumputed as,
 \begin{equation}
-	\beta_{ij}(\x) \ = \ \oint \frac{\D \Omega}{4\pi} \ \frac{1-e^{-\tau(\x,\n)}}{\tau(\x,\n)}
+	\beta_{ij}(\x) \ = \ \oint \frac{\D \Omega}{4\pi} \ \frac{1-e^{-\tau_{ij}(\x,\n)}}{\tau_{ij}(\x,\n)}
 \end{equation}
 in terms of the line optical depth
 \begin{equation}
-	\tau(\x,\n) \ = \ \int_{0}^{\infty} \D s \ \chi(\x+s\n)
+	\tau_{ij}(\x,\n) \ = \ \int_{0}^{\infty} \D s \ \chi_{ij}(\x+s\n)
 \end{equation}
 The approximated lambda operator and associated effective mean intensity, as defiined by \citet{Rybicki1991} is in this case simply given by
 \begin{equation}
@@ -398,6 +398,8 @@ Substituted in equation (\ref{RybickiHummer}) this yiels
 This simple reorderig of terms in the transition rates yields a significant improvment in the convergence of the level populations. The number of iterations is reduced to $\mathcal{N}_{\text{pop}} \approx 3$, which is an improvment by a factor 10 (?). Since this simple change leads to such a major performance improvment it will also be included in \textsc{3d-pdr}.
 
 
+
+
 \section{Scattering in the Feautrier formalism}
 \label{Scattering}
 
@@ -410,7 +412,7 @@ It is usually fair to assume that both the emissivity $\eta_{\nu}(\x)$ and the o
 \begin{equation}
 \begin{split}
 		\eta^{\,\text{eff.}}_{\nu}(\x,\n) \ &= \ \eta_{\nu}(\x) \ + \ \eta^{\,\text{sca.}}_{\nu}(\x,\n) \\
-		\chi^{\,\text{eff.}}_{\nu}(\x)   \ &= \ \chi_{\nu}(\x) \ + \ \chi^{\,\text{sca.}}_{\nu}(\x),
+		\chi^{\,\text{eff.}}_{\nu}(\x,\n)   \ &= \ \chi_{\nu}(\x) \ + \ \chi^{\,\text{sca.}}_{\nu}(\x,\n),
 \end{split}
 \label{scattering}
 \end{equation}

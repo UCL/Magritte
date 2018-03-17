@@ -75,32 +75,32 @@ target_link_libraries(_MAGRITTE _sundials)
 target_link_libraries(_MAGRITTE ${VTK_LIBRARIES})
 
 
-# Create a library
-add_library(_IO
-../setup/setup_data_tools.cpp
-ray_tracing.cpp
-heapsort.cpp
-read_input.cpp
-initializers.cpp
-write_output.cpp
-write_txt_tools.cpp
-write_vtu_tools.cpp
-reduce.cpp
-bound.cpp)
-
-# Link the libraries of the subdirectories to this library
-target_link_libraries(_IO _HEALPix)
-target_link_libraries(_IO ${VTK_LIBRARIES})
-
-
-# Create a library
-add_library(_O
-read_input.cpp
-initializers.cpp
-write_output.cpp
-write_txt_tools.cpp
-write_vtu_tools.cpp)
-
-# Link the libraries of the subdirectories to this library
-target_link_libraries(_O _HEALPix)
-target_link_libraries(_O ${VTK_LIBRARIES})
+# # Create a library
+# add_library(_IO
+# ../setup/setup_data_tools.cpp
+# ray_tracing.cpp
+# heapsort.cpp
+# read_input.cpp
+# initializers.cpp
+# write_output.cpp
+# write_txt_tools.cpp
+# write_vtu_tools.cpp
+# reduce.cpp
+# bound.cpp)
+#
+# # Link the libraries of the subdirectories to this library
+# target_link_libraries(_IO _HEALPix)
+# target_link_libraries(_IO ${VTK_LIBRARIES})
+#
+#
+# # Create a library
+# add_library(_O
+# read_input.cpp
+# initializers.cpp
+# write_output.cpp
+# write_txt_tools.cpp
+# write_vtu_tools.cpp)
+#
+# # Link the libraries of the subdirectories to this library
+# target_link_libraries(_O _HEALPix)
+# target_link_libraries(_O ${VTK_LIBRARIES})

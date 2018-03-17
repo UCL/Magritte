@@ -11,6 +11,7 @@
 
 #include "parameters.hpp"
 #include "Magritte_config.hpp"
+// #include "../pySetup/test.hpp"
 #include "Magritte_constants.hpp"
 #include "Magritte_macros.hpp"
 #include "Magritte_types.hpp"
@@ -23,15 +24,7 @@ extern const std::string output_directory;
 
 // HEALPix vectors
 
-extern const double healpixvector[3*NRAYS];
-
-extern const long antipod[NRAYS];
-
-// extern const long aligned[NRAYS][NRAYS/2];   // NOT USED YET
-
-// extern const long n_aligned[NRAYS];          // NOT USED YET
-
-extern const long mirror_xz[NRAYS];
+extern const HEALPIXVECTORS healpixvectors;
 
 
 // Level populations

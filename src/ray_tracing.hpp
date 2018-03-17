@@ -13,31 +13,34 @@
 // find_neighbors: find neighboring cells for each cell
 // ----------------------------------------------------
 
-int find_neighbors (long ncells, CELL *cell);
+int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors);
 
 
 // next_cell: find number of next cell on ray and its distance along ray
 // ---------------------------------------------------------------------
 
-long next_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
+long next_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+                long origin, long ray, double *Z, long current, double *dZ);
 
 
 // find_endpoints: find endpoint cells for each cell
 // -------------------------------------------------
 
-int find_endpoints (long ncells, CELL *cell);
+int find_endpoints (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors);
 
 
 // previous_cell: find number of previous cell on ray and its distance along ray
 // -----------------------------------------------------------------------------
 
-long previous_cell (long ncells, CELL *cell, long origin, long ray, double *Z, long current, double *dZ);
+long previous_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+                    long origin, long ray, double *Z, long current, double *dZ);
 
 
 // relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray
 // -----------------------------------------------------------------------------------------
 
-double relative_velocity (long ncells, CELL *cell, long origin, long ray, long current);
+double relative_velocity (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+                          long origin, long ray, long current);
 
 
 #endif // __RAY_TRACING_HPP_INCLUDED__

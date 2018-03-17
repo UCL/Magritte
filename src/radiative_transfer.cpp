@@ -19,7 +19,7 @@
 // radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
+int radiative_transfer (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species,
                         double *Lambda_diagonal, double *mean_intensity_eff,
                         double *source, double *opacity, long o, int lspec, int kr)
 {
@@ -53,7 +53,7 @@ int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
       double freq = line_frequency + H_4_roots[ny]*width;
 
 
-      intensities (NCELLS, cell, line_species, source, opacity, freq,
+      intensities (NCELLS, cell, healpixvectors, line_species, source, opacity, freq,
                    o, ray, lspec, kr, &u_local, &v_local, &L_local);
 
 
@@ -115,14 +115,14 @@ int radiative_transfer (long ncells, CELL *cell, LINE_SPECIES line_species,
 // intensity: calculate intensity along a certain ray through a certain point
 // --------------------------------------------------------------------------
 
-int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *source, double *opacity,
+int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species, double *source, double *opacity,
                  double freq, long origin, long r, int lspec, int kr,
                  double *u_local, double *v_local, double *L_local)
 {
 
   // Get the antipodal ray for r
 
-  long ar = antipod[r];                            // index of antipodal ray to r
+  long ar = healpixvectors.antipod[r];             // index of antipodal ray to r
 
   long bdy_ar = cell[origin].endpoint[ar];
   long bdy_r  = cell[origin].endpoint[r];
@@ -160,7 +160,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     double dZ = 0.0;
 
     long current  = bdy_ar;
-    long previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+    long previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
@@ -172,7 +172,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     {
       long s_p = LSPECGRIDRAD(lspec,previous,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, origin, ar, previous);
+      double velocity = relative_velocity (NCELLS, cell, healpixvectors, origin, ar, previous);
       double phi_p    = line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], previous);
       double chi_p    = opacity[s_p] * phi_p;
 
@@ -180,7 +180,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
       dtau[ndep] = dZ * PC * (chi_c + chi_p) / 2.0;
 
       current  = previous;
-      previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+      previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
 
       s_c   = s_p;
       chi_c = chi_p;
@@ -200,7 +200,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     double dZ = 0.0;
 
     long current = origin;
-    long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+    long next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
 
     long s_c = LSPECGRIDRAD(lspec,current,kr);
 
@@ -212,7 +212,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
     {
       long s_n = LSPECGRIDRAD(lspec,next,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, origin, r, next);
+      double velocity = relative_velocity (NCELLS, cell, healpixvectors, origin, r, next);
       double phi_n    = line_profile (NCELLS, cell, velocity, freq, line_species.frequency[b_ij], next);
       double chi_n    = opacity[s_n] * phi_n;
 
@@ -220,7 +220,7 @@ int intensities (long ncells, CELL *cell, LINE_SPECIES line_species, double *sou
       dtau[ndep] = dZ * PC * (chi_c + chi_n) / 2.0;
 
       current = next;
-      next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+      next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
 
       s_c   = s_n;
       chi_c = chi_n;

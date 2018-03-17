@@ -9,13 +9,14 @@
 
 
 #define RUN_NUMBER "0"
+
 #define WRITE_INTERMEDIATE_OUTPUT false
 
 
 // Input files
 
 #define FIXED_NCELLS true
-#define INPUT_FORMAT '.vtu'
+#define INPUT_FORMAT '.txt'
 #define CELL_BASED  false
 
 #define NAME_DENSITY              "H2_density"
@@ -28,69 +29,65 @@
 #define NAME_TEMPERATURE_GAS_PREV "Gas_temperature"
 #define NAME_CHEM_ABUNDANCES      "Mol_density"
 
-
 // VARIABLE GRID
 
-#define GRID_INIT "input/files/grid_log3.vtk"
+#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
 
-#define X_MIN -7.5E+14
-#define X_MAX +7.5E+14
-#define Y_MIN -7.5E+14
-#define Y_MAX +7.5E+14
-#define Z_MIN -7.5E+14
-#define Z_MAX +7.5E+14
+#define X_MIN -1.0E+00
+#define X_MAX +9.9E+99
+#define Y_MIN -1.0E+00
+#define Y_MAX +1.0E+00
+#define Z_MIN -1.0E+00
+#define Z_MAX +1.0E+00
 
 #define THRESHOLD 1.0E+99;
 
-#define SIZE_X 25
-#define SIZE_Y 25
-#define SIZE_Z 25
+#define SIZE_X 2
+#define SIZE_Y 0
+#define SIZE_Z 0
 
 
 // Restart options
 
-#define RESTART true
-#define RESTART_DIRECTORY "input/"
+#define RESTART false
+// #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 
 
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE      "input/files/grid_log3.vtu"
+#define INPUTFILE      "input/files/1Dn30.dat_conv.txt"
 
-#define SPEC_DATAFILE  "data/test_species.txt"
-#define REAC_DATAFILE  "data/test_rates.txt"
+#define SPEC_DATAFILE  "data/species_reduced.txt"
+#define REAC_DATAFILE  "data/rates_reduced.txt"
 
 
-#define NLSPEC 1
+#define NLSPEC 4
 
-#define LINE_DATAFILES { "data/12CO.txt" }
+#define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
 
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
 
+
 // Ray tracing parameters
 
-#define DIMENSIONS 3
-// #define NRAYS      2
-
-// NRAYS = 12 * NSIDES * NSIDES
-#define NSIDES     1
-
+#define DIMENSIONS 1
+#define NRAYS      2
+#define NSIDES     6
 
 // Radiative transfer
 
-#define SOBOLEV                    false
+#define SOBOLEV                    true
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 
 
 // Number of various iterations
 
-#define MAX_NITERATIONS  150
-#define PRELIM_CHEM_ITER 0
-#define PRELIM_TB_ITER   0
-#define CHEM_ITER        0
+#define MAX_NITERATIONS  300
+#define PRELIM_CHEM_ITER 5
+#define CHEM_ITER        3
 
 
 // Temperature range
@@ -110,9 +107,9 @@
 
 // External UV field
 
-#define FIELD_FORM "ISO"
+#define FIELD_FORM "UNI"
 
-#define G_EXTERNAL_X 0.0E+0
+#define G_EXTERNAL_X 1.0E+1
 #define G_EXTERNAL_Y 0.0E+0
 #define G_EXTERNAL_Z 0.0E+0
 
@@ -127,12 +124,13 @@
 #define ZETA   3.846153846153846
 #define OMEGA  0.42
 
+
 #define NFREQ 4
 
 
 // Helper constants
 
-#define MAX_WIDTH     13  // for printing
+#define MAX_WIDTH 13      // for printing
 #define BUFFER_SIZE 3500  // max number of characters in a line
 
 

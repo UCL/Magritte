@@ -41,6 +41,8 @@
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
 
+// #include "../pySetup/test2.hpp"
+
 
 // main for Magritte
 // -----------------
@@ -53,12 +55,7 @@ int main ()
   TIMERS timers;
 
   timers.initialize();
-
-
   timers.total.start();
-
-
-
 
   printf ("                                                                         \n");
   printf ("Magritte: Multidimensional Accelerated General-purpose Radiative Transfer\n");
@@ -117,41 +114,55 @@ int main ()
 # endif
 
 
-  // HACK FOR WARD's LIME SPHERES
+  // // HACK FOR WARD's LIME SPHERES
+  //
+  // // Find boundary radius
+  //
+  // double boundary_radius2 = 0.0;
+  //
+  // for (long n = 0; n < NCELLS; n++)
+  // {
+  //   double r2 = cell[n].x*cell[n].x + cell[n].y*cell[n].y + cell[n].z*cell[n].z;
+  //
+  //   if (r2 > boundary_radius2)
+  //   {
+  //     boundary_radius2 = r2;
+  //   }
+  // }
+  //
+  // long nboundary_cells = 0;
+  //
+  // for (long n = 0; n < NCELLS; n++)
+  // {
+  //   double r2 = cell[n].x*cell[n].x + cell[n].y*cell[n].y + cell[n].z*cell[n].z;
+  //
+  //   if (r2 >= 0.99*boundary_radius2)
+  //   {
+  //     cell[n].boundary = true;
+  //
+  //     nboundary_cells++;
+  //   }
+  // }
+  //
+  // printf("nboundary_cells = %ld\n", nboundary_cells);
 
-  // Find boundary radius
 
-  double boundary_radius2 = 0.0;
 
-  for (long n = 0; n < NCELLS; n++)
-  {
-    double r2 = cell[n].x*cell[n].x + cell[n].y*cell[n].y + cell[n].z*cell[n].z;
-
-    if (r2 > boundary_radius2)
-    {
-      boundary_radius2 = r2;
-    }
-  }
-
-  long nboundary_cells = 0;
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    double r2 = cell[n].x*cell[n].x + cell[n].y*cell[n].y + cell[n].z*cell[n].z;
-
-    if (r2 >= 0.99*boundary_radius2)
-    {
-      cell[n].boundary = true;
-
-      nboundary_cells++;
-    }
-  }
-
-  printf("nboundary_cells = %ld\n", nboundary_cells);
+  printf ("(Magritte): grid input read\n\n");
 
 
 
-  printf ("(Magritte): grid input read \n\n");
+
+
+  // CREATE HEALPIXVECTORS
+  // _____________________
+
+
+  printf ("(Magritte): Creating HEALPix vectors\n\n");
+
+  const HEALPIXVECTORS healpixvectors;   // (created by constructor)
+
+  printf ("(Magritte): HEALPix vectors created\n\n");
 
 
 
@@ -204,6 +215,45 @@ int main ()
   read_linedata (line_datafile, &line_species, species);
 
 
+  // for (int i=0; i<TOT_NLEV2; i++)
+  // {
+  //
+  //   double a = TESTB_coeff[i];
+  //   double b = line_species.B_coeff[i];
+  //
+  //   double nill = 2.0 * (a - b);
+  //   if (nill != 0.0)
+  //   {
+  //     nill = nill / (a + b);
+  //   }
+  //   // double nill = 2.0 * (TESTA_coeff[i] - line_species.A_coeff[i]);
+  //
+  //   printf("nill = %lE\n", nill);
+  //   // if (n != 0.0)
+  //   // {}
+  // }
+
+  // for (int i=0; i<TOT_CUM_TOT_NCOLTRANTEMP; i++)
+  // {
+  //
+  //   double a = TESTC_data[i];
+  //   double b = line_species.C_data[i];
+  //
+  //   double nill = 2.0 * (a - b);
+  //   if (nill != 0.0)
+  //   {
+  //     nill = nill / (a + b);
+  //   }
+  //   // double nill = 2.0 * (TESTA_coeff[i] - line_species.A_coeff[i]);
+  //
+  //   printf("nill = %lE\n", nill);
+  //   // if (n != 0.0)
+  //   // {}
+  // }
+  //
+  // return(0);
+
+
   printf ("(Magritte): line data read \n\n");
 
 
@@ -218,37 +268,37 @@ int main ()
 
   // Find neighboring cells for each cell
 
-  find_neighbors (NCELLS, cell);
+  find_neighbors (NCELLS, cell, healpixvectors);
 
 
   // Find endpoint of each ray for each cell
 
-  find_endpoints (NCELLS, cell);
+  find_endpoints (NCELLS, cell, healpixvectors);
 
 
   printf ("(Magritte): neighboring cells found \n\n");
 
-
-  printf("thing    %lE\n", cell[123].Z[0]);
-  printf("thing    %lE\n", cell[123].Z[1]);
-  printf("thing    %lE\n", cell[123].Z[2]);
-
-  printf("temp gas %lE\n", cell[123].temperature.gas);
-
-  printf("x        %lE\n", cell[123].x);
-
-  printf("denisty  %lE\n", cell[123].density);
-
-    printf("763 n_neighbors %ld\n", cell[763].n_neighbors);
-
-    printf("763 pos %lE\n", cell[763].x);
-    printf("763 pos %lE\n", cell[763].y);
-    printf("763 pos %lE\n", cell[763].z);
-
-    if(!cell[763].boundary)
-    {
-      printf(" not On boundary!\n");
-    }
+  // 
+  // printf("thing    %lE\n", cell[123].Z[0]);
+  // printf("thing    %lE\n", cell[123].Z[1]);
+  // printf("thing    %lE\n", cell[123].Z[2]);
+  //
+  // printf("temp gas %lE\n", cell[123].temperature.gas);
+  //
+  // printf("x        %lE\n", cell[123].x);
+  //
+  // printf("denisty  %lE\n", cell[123].density);
+  //
+  //   printf("763 n_neighbors %ld\n", cell[763].n_neighbors);
+  //
+  //   printf("763 pos %lE\n", cell[763].x);
+  //   printf("763 pos %lE\n", cell[763].y);
+  //   printf("763 pos %lE\n", cell[763].z);
+  //
+  //   if(!cell[763].boundary)
+  //   {
+  //     printf(" not On boundary!\n");
+  //   }
 
 
   // write_grid("", NCELLS, cell);
@@ -273,7 +323,7 @@ int main ()
 
   // Calculate radiation surface
 
-  calc_rad_surface (NCELLS, cell, G_external);
+  calc_rad_surface (NCELLS, cell, healpixvectors, G_external);
 
   printf ("(Magritte): external radiation field calculated \n\n");
 
@@ -303,7 +353,7 @@ int main ()
 
   // Calculate total column density
 
-  calc_column_density (NCELLS, cell, column_tot, NSPEC-1);
+  calc_column_density (NCELLS, cell, healpixvectors, column_tot, NSPEC-1);
   // write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
 
 
@@ -400,7 +450,7 @@ int main ()
 
   // interpolate (ncells_red1, cell_red1, ncells, cell);
 
-  thermal_balance (ncells, cell, species, reaction, line_species, &timers);
+  thermal_balance (ncells, cell, healpixvectors, species, reaction, line_species, &timers);
 
 
   // delete [] cell_red5;

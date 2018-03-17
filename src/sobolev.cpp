@@ -18,7 +18,7 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
+int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species,
              double *Lambda_diagonal, double *mean_intensity_eff,
              double *source, double *opacity, long origin, int lspec, int kr)
 {
@@ -49,15 +49,13 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
 
     // Get antipodal ray for r
 
-    long ar = antipod[r];
+    long ar = healpixvectors.antipod[r];
 
 
     // Fill source function and optical depth increment along ray r
 
     double tau_r  = 0.0;
     double tau_ar = 0.0;
-
-    // printf("I'm HERE %ld\n", origin);
 
 
     // Walk along antipodal ray (ar) of r
@@ -67,7 +65,7 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
       double dZ = 0.0;
 
       long current  = cell[origin].endpoint[ar];
-      long previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+      long previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
 
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
@@ -83,7 +81,7 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
         tau_ar = tau_ar + dZ*PC*(chi_c + chi_p)/2.0;
 
         current  = previous;
-        previous = previous_cell (NCELLS, cell, origin, ar, &Z, current, &dZ);
+        previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
 
         chi_c = chi_p;
       }
@@ -118,7 +116,7 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
       double dZ = 0.0;
 
       long current = origin;
-      long next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+      long next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
 
       long s_c = LSPECGRIDRAD(lspec,current,kr);
 
@@ -134,7 +132,7 @@ int sobolev (long ncells, CELL *cell, LINE_SPECIES line_species,
         tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
 
         current = next;
-        next    = next_cell (NCELLS, cell, origin, r, &Z, current, &dZ);
+        next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
 
         chi_c = chi_n;
       }
