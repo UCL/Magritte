@@ -19,7 +19,7 @@ int calc_column_density (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 // calc_column_densities: calculate column densities for species needed in chemistry
 //----------------------------------------------------------------------------------
 
-int calc_column_densities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, double *column_H2, double *column_HD,
+int calc_column_densities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, double *column_H2, double *column_HD,
                            double *column_C, double *column_CO);
 
 

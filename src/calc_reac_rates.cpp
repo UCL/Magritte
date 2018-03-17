@@ -14,21 +14,19 @@
 #include "species_tools.hpp"
 
 
-
 // rate_H2_formation: returns rate coefficient for H2 formation reaction
 // ---------------------------------------------------------------------
 
-double rate_H2_formation (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_H2_formation (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   // Following Cazaux & Tielens (2002, ApJ, 575, L29) and (2004, ApJ, 604, 222)
@@ -122,17 +120,16 @@ double rate_H2_formation (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_PAH: returns rate coefficient for reactions with PAHs
 // ----------------------------------------------------------
 
-double rate_PAH (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_PAH (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   // Following  Wolfire et al. (2003, ApJ, 587, 278; 2008, ApJ, 680, 384)
@@ -152,17 +149,16 @@ double rate_PAH (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_CRP: returns rate coefficient for reaction induced by cosmic rays
 // ----------------------------------------------------------------------
 
-double rate_CRP (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_CRP (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   /* Check for large negative gamma values that might cause discrepant
@@ -174,7 +170,7 @@ double rate_CRP (CELL *cell, REACTION *reaction, int reac, long o)
   }
 
   else if ( ( (cell[o].temperature.gas <= RT_max) || (RT_max == 0.0) )
-            && no_better_data(reac, reaction, cell[o].temperature.gas) )
+            && reactions.no_better_data(reac, cell[o].temperature.gas) )
   {
     return alpha * ZETA;
   }
@@ -190,17 +186,16 @@ double rate_CRP (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_CRPHOT: returns rate coefficient for reaction induced by cosmic rays
 // -------------------------------------------------------------------------
 
-double rate_CRPHOT (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_CRPHOT (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   /* Check for large negative gamma values that might cause discrepant
@@ -212,7 +207,7 @@ double rate_CRPHOT (CELL *cell, REACTION *reaction, int reac, long o)
   }
 
   else if ( ( (cell[o].temperature.gas <= RT_max) || (RT_max == 0.0) )
-            && no_better_data(reac, reaction, cell[o].temperature.gas) )
+            && reactions.no_better_data(reac, cell[o].temperature.gas) )
   {
     return alpha * ZETA * pow(cell[o].temperature.gas/300.0, beta) * gamma / (1.0 - OMEGA);
   }
@@ -228,17 +223,16 @@ double rate_CRPHOT (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_FREEZE: returns rate coefficient for freeze-out reaction of neutral species
 // --------------------------------------------------------------------------------
 
-double rate_FREEZE (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_FREEZE (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double sticking_coeff = 0.3;      // dust grain sticking coefficient
@@ -283,17 +277,16 @@ double rate_FREEZE (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_ELFRZE: returns rate coefficient for freeze-out reaction of singly charged positive ions
 // ---------------------------------------------------------------------------------------------
 
-double rate_ELFRZE (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_ELFRZE (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double sticking_coeff = 0.3;       // dust grain sticking coefficient
@@ -334,17 +327,16 @@ double rate_ELFRZE (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_CRH: returns rate coefficient for desorption due to cosmic ray heating
 // ---------------------------------------------------------------------------
 
-double rate_CRH (REACTION *reaction, int reac)
+double rate_CRH (REACTIONS reactions, int reac)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double yield       = 0.0;       // Number of adsorbed molecules released per cosmic ray impact
@@ -374,17 +366,16 @@ double rate_CRH (REACTION *reaction, int reac)
 // rate_THERM: returns rate coefficient for thermal desorption
 // -----------------------------------------------------------
 
-double rate_THERM (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_THERM (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   // Following Hasegawa, Herbst & Leung (1992, ApJS, 82, 167, Equations 2 & 3)
@@ -399,17 +390,16 @@ double rate_THERM (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_GM: returns rate coefficient for grain mantle reactions
 // ------------------------------------------------------------
 
-double rate_GM (REACTION *reaction, int reac)
+double rate_GM (REACTIONS reactions, int reac)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   return alpha;
@@ -422,16 +412,16 @@ double rate_GM (REACTION *reaction, int reac)
 // rate_canonical: returns canonical rate coefficient for reaction
 // ---------------------------------------------------------------
 
-double rate_canonical (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_canonical (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reaction[reac].alpha;
-  double beta   = reaction[reac].beta;
-  double gamma  = reaction[reac].gamma;
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   /* Check for large negative gamma values that might cause discrepant
@@ -443,7 +433,7 @@ double rate_canonical (CELL *cell, REACTION *reaction, int reac, long o)
   }
 
   else if ( ( (cell[o].temperature.gas <= RT_max) || (RT_max == 0.0) )
-            && no_better_data(reac, reaction, cell[o].temperature.gas) )
+            && reactions.no_better_data(reac, cell[o].temperature.gas) )
   {
     return alpha * pow(cell[o].temperature.gas/300.0, beta) * exp(-gamma/cell[o].temperature.gas);
   }

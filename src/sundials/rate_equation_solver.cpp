@@ -15,10 +15,7 @@
 #include <cvode/cvode_direct.h>          // access to CVDls interface
 #include <sundials/sundials_types.h>     // definition of type realtype
 
-#include "../../parameters.hpp"
-#include "../Magritte_config.hpp"
 #include "../declarations.hpp"
-
 #include "rate_equation_solver.hpp"
 #include "rate_equations.cpp"
 // #include "jacobian.cpp"
@@ -41,7 +38,7 @@
 // rate_equation_solver: solves rate equations given in rate_equations.cpp
 // -----------------------------------------------------------------------
 
-int rate_equation_solver (CELL *cell, long o)
+int rate_equation_solver (CELL *cell, SPECIES species, long o)
 {
 
 
@@ -54,7 +51,7 @@ int rate_equation_solver (CELL *cell, long o)
 
   user_data->gp          = o;
   user_data->cellpointer = cell;
-  user_data->electron_abundance = cell[o].abundance[nr_e];
+  user_data->electron_abundance = cell[o].abundance[species.nr_e];
 
 
   SUNMatrix       A  = NULL;
@@ -248,7 +245,7 @@ int rate_equation_solver (CELL *cell, long o)
   }
 
 
-  cell[o].abundance[nr_e] = user_data->electron_abundance;
+  cell[o].abundance[species.nr_e] = user_data->electron_abundance;
 
 
 

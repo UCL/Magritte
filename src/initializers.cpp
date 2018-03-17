@@ -454,7 +454,7 @@ int guess_temperature_gas (long ncells, CELL *cell)
 // initialize_abundances: set abundanceces to initial values
 // ---------------------------------------------------------
 
-int initialize_abundances (long ncells, CELL *cell, SPECIES *species)
+int initialize_abundances (long ncells, CELL *cell, SPECIES species)
 {
 
 # pragma omp parallel              \
@@ -473,7 +473,7 @@ int initialize_abundances (long ncells, CELL *cell, SPECIES *species)
   {
     for (int spec = 0; spec < NSPEC; spec++)
     {
-      cell[n].abundance[spec] = species[spec].initial_abundance;
+      cell[n].abundance[spec] = species.initial_abundance[spec];
     }
   }
   } // end of OpenMP parallel region

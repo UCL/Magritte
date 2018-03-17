@@ -2,7 +2,7 @@
 
 
 # Create and execute the Makefile for the setup
-cd setup
+cd pySetup
 cmake .
 make
 cd ..

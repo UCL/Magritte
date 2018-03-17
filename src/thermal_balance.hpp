@@ -13,14 +13,14 @@
 // thermal_balance: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------
 
-int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES *species, REACTION *reaction,
+int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
                      LINE_SPECIES line_species, TIMERS *timers);
 
 
 // thermal_balance_Brent: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------------
 
-int thermal_balance_Brent (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES *species, REACTION *reaction,
+int thermal_balance_Brent (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
                            LINE_SPECIES line_species, TIMERS *timers);
 
 

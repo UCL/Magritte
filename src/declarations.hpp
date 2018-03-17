@@ -11,7 +11,6 @@
 
 #include "parameters.hpp"
 #include "Magritte_config.hpp"
-// #include "../pySetup/test.hpp"
 #include "Magritte_constants.hpp"
 #include "Magritte_macros.hpp"
 #include "Magritte_types.hpp"
@@ -20,11 +19,6 @@
 // Output directory (absolute path)
 
 extern const std::string output_directory;
-
-
-// HEALPix vectors
-
-extern const HEALPIXVECTORS healpixvectors;
 
 
 // Level populations
@@ -80,32 +74,6 @@ extern const double H_5_roots[5];     // roots of 5th (physicists') Hermite poly
 
 extern const double H_7_weights[7];   // weights for 7th order Gauss-Hermite quadrature
 extern const double H_7_roots[7];     // roots of 7th (physicists') Hermite polynomial
-
-
-
-// Chemistry
-
-
-// Species numbers
-
-extern int nr_e;      // species nr corresponding to electrons
-extern int nr_H2;     // species nr corresponding to H2
-extern int nr_HD;     // species nr corresponding to HD
-extern int nr_C;      // species nr corresponding to C
-extern int nr_H;      // species nr corresponding to H
-extern int nr_H2x;    // species nr corresponding to H2+
-extern int nr_HCOx;   // species nr corresponding to HCO+
-extern int nr_H3x;    // species nr corresponding to H3+
-extern int nr_H3Ox;   // species nr corresponding to H3O+
-extern int nr_Hex;    // species nr corresponding to He+
-extern int nr_CO;     // species nr corresponding to CO
-
-
-// Reaction numbers
-
-extern int nr_C_ionization;
-extern int nr_H2_formation;
-extern int nr_H2_photodissociation;
 
 
 #endif // __DECLARATIONS_HPP_INCLUDED__

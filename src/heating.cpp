@@ -17,12 +17,12 @@
 // heating: calculate total heating
 // --------------------------------
 
-double heating (long ncells, CELL *cell, long o, double* heating_components)
+double heating (long ncells, CELL *cell, SPECIES species, REACTIONS reactions, long o, double* heating_components)
 {
 
   double Habing_field = 1.68 * cell[o].UV;   // UV radiation field in Habing
 
-  double electron_density = cell[o].abundance[nr_e] * cell[o].density;   // e density
+  double electron_density = cell[o].abundance[species.nr_e] * cell[o].density;   // e density
 
 
 
@@ -174,8 +174,8 @@ double heating (long ncells, CELL *cell, long o, double* heating_components)
       Use the C photoionization rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
-  double heating_C_ionization = (1.0*EV) * cell[o].rate[nr_C_ionization]
-                                * cell[o].abundance[nr_C] * cell[o].density;
+  double heating_C_ionization = (1.0*EV) * cell[o].rate[reactions.nr_C_ionization]
+                                * cell[o].abundance[species.nr_C] * cell[o].density;
 
   heating_components[3] = heating_C_ionization;
 
@@ -192,8 +192,8 @@ double heating (long ncells, CELL *cell, long o, double* heating_components)
       Use the H2 formation rate determined in calc_reac_rates.cpp [units: cm^3.s^-1]  */
 
 
-  double heating_H2_formation = (1.5*EV) * cell[o].rate[nr_H2_formation]
-                                * cell[o].density * cell[o].abundance[nr_H]
+  double heating_H2_formation = (1.5*EV) * cell[o].rate[reactions.nr_H2_formation]
+                                * cell[o].density * cell[o].abundance[species.nr_H]
                                 * cell[o].density;
 
   heating_components[4] = heating_H2_formation;
@@ -209,8 +209,8 @@ double heating (long ncells, CELL *cell, long o, double* heating_components)
       Use H2 photodissociation rate determined in calc_reac_rates_rad.cpp [units: s^-1]  */
 
 
-  double heating_H2_photodissociation = (0.4*EV) * cell[o].rate[nr_H2_photodissociation]
-                                        * cell[o].abundance[nr_H2] * cell[o].density;
+  double heating_H2_photodissociation = (0.4*EV) * cell[o].rate[reactions.nr_H2_photodissociation]
+                                        * cell[o].abundance[species.nr_H2] * cell[o].density;
 
   heating_components[5] = heating_H2_photodissociation;
 
@@ -230,11 +230,11 @@ double heating (long ncells, CELL *cell, long o, double* heating_components)
 
   double critical_density
           = 1.0E6 / sqrt(cell[o].temperature.gas)
-            /( 1.6 * cell[o].abundance[nr_H] * exp(-pow(400.0/cell[o].temperature.gas, 2))
-               + 1.4 * cell[o].abundance[nr_H2] * exp(-18100.0/(1200.0+cell[o].temperature.gas)) );
+            /( 1.6 * cell[o].abundance[species.nr_H] * exp(-pow(400.0/cell[o].temperature.gas, 2))
+               + 1.4 * cell[o].abundance[species.nr_H2] * exp(-18100.0/(1200.0+cell[o].temperature.gas)) );
 
-  double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[o].rate[nr_H2_photodissociation]
-                                  * cell[o].abundance[nr_H2] * cell[o].density
+  double heating_H2_FUV_pumping = (2.2*EV) * 9.0 * cell[o].rate[reactions.nr_H2_photodissociation]
+                                  * cell[o].abundance[species.nr_H2] * cell[o].density
                                   / (1.0 + critical_density/cell[o].density);
 
   heating_components[6] = heating_H2_FUV_pumping;
@@ -256,7 +256,7 @@ double heating (long ncells, CELL *cell, long o, double* heating_components)
 
 
   double heating_cosmic_rays = (9.4*EV) * (1.3E-17*ZETA)
-                               * cell[o].abundance[nr_H2] * cell[o].density;
+                               * cell[o].abundance[species.nr_H2] * cell[o].density;
 
   heating_components[7] = heating_cosmic_rays;
 
@@ -300,33 +300,33 @@ double heating (long ncells, CELL *cell, long o, double* heating_components)
   // For so-called REDUCED NETWORK of 3D-PDR
 
   double heating_chemical
-                   = cell[o].abundance[nr_H2x] * cell[o].density      // H2+  +  e-
+                   = cell[o].abundance[species.nr_H2x] * cell[o].density      // H2+  +  e-
                      * electron_density
                      * cell[o].rate[215] * (10.9*EV)
 
-                     + cell[o].abundance[nr_H2x] * cell[o].density    // H2+  +  H
-                       * cell[o].abundance[nr_H] * cell[o].density
+                     + cell[o].abundance[species.nr_H2x] * cell[o].density    // H2+  +  H
+                       * cell[o].abundance[species.nr_H] * cell[o].density
                        * cell[o].rate[154] * (0.94*EV)
 
-                     + cell[o].abundance[nr_HCOx] * cell[o].density   // HCO+  +  e-
+                     + cell[o].abundance[species.nr_HCOx] * cell[o].density   // HCO+  +  e-
                        * electron_density
                        * cell[o].rate[239] * (7.51*EV)
 
-                     + cell[o].abundance[nr_H3x] * cell[o].density    // H3+  +  e-
+                     + cell[o].abundance[species.nr_H3x] * cell[o].density    // H3+  +  e-
                        * electron_density
                        * ( cell[o].rate[216] * (4.76*EV) + cell[o].rate[217] * (9.23*EV) )
 
-                     + cell[o].abundance[nr_H3Ox]*cell[o].density     // H3O+  + e-
+                     + cell[o].abundance[species.nr_H3Ox]*cell[o].density     // H3O+  + e-
                        * electron_density
                        * ( cell[o].rate[235] * (1.16*EV) + cell[o].rate[236] * (5.63*EV)
                            + cell[o].rate[237] * (6.27*EV) )
 
-                     + cell[o].abundance[nr_Hex] * cell[o].density    // He+  + H2
-                       * cell[o].abundance[nr_H2] * cell[o].density
+                     + cell[o].abundance[species.nr_Hex] * cell[o].density    // He+  + H2
+                       * cell[o].abundance[species.nr_H2] * cell[o].density
                        * ( cell[o].rate[49] * (6.51*EV) + cell[o].rate[169] * (6.51*EV) )
 
-                     + cell[o].abundance[nr_Hex] * cell[o].density    // He+  + CO
-                       * cell[o].abundance[nr_CO] * cell[o].density
+                     + cell[o].abundance[species.nr_Hex] * cell[o].density    // He+  + CO
+                       * cell[o].abundance[species.nr_CO] * cell[o].density
                        * ( cell[o].rate[88] * (2.22*EV) + cell[o].rate[89] * (2.22*EV)
                            + cell[o].rate[90] * (2.22*EV) );
 

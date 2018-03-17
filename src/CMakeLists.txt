@@ -29,7 +29,9 @@ include_directories(sundials/include)
 
 # Create a library containing all source code in /src except the main (Magritte.cpp)
 add_library(_MAGRITTE
-../setup/setup_data_tools.cpp
+healpixvectors.cpp
+species.cpp
+reactions.cpp
 initializers.cpp
 chemistry.cpp
 species_tools.cpp

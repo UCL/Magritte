@@ -16,7 +16,7 @@
 // calc_C_coeff: calculates collisional coefficients (C_ij) from line data
 // -----------------------------------------------------------------------
 
-int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
+int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINE_SPECIES line_species,
                   double *C_coeff, long o, int lspec)
 {
 
@@ -29,7 +29,7 @@ int calc_C_coeff (long ncells, CELL *cell, LINE_SPECIES line_species,
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
 
-  if (cell[o].abundance[nr_H2] > 0.0)
+  if (cell[o].abundance[species.nr_H2] > 0.0)
   {
     frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/cell[o].temperature.gas));
     frac_H2_ortho = 1.0 - frac_H2_para;

@@ -55,7 +55,7 @@ int calc_column_density (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 // calc_column_densities: calculates column densities for species needed in chemistry
 // ----------------------------------------------------------------------------------
 
-int calc_column_densities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, double *column_H2, double *column_HD,
+int calc_column_densities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, double *column_H2, double *column_HD,
                            double *column_C, double *column_CO)
 {
 
@@ -63,7 +63,7 @@ int calc_column_densities (long ncells, CELL *cell, HEALPIXVECTORS healpixvector
   // For all cells n and rays r
 
 # pragma omp parallel                                                                            \
-  shared (ncells, cell, healpixvectors, column_H2, column_HD, column_C, column_CO, nr_H2, nr_HD, nr_C, nr_CO )   \
+  shared (ncells, cell, healpixvectors, species, column_H2, column_HD, column_C, column_CO)   \
   default (none)
   {
 
@@ -79,10 +79,10 @@ int calc_column_densities (long ncells, CELL *cell, HEALPIXVECTORS healpixvector
 
     for (long r = 0; r < NRAYS; r++)
     {
-      column_H2[RINDEX(n,r)] = column_density (NCELLS, cell, healpixvectors, n, nr_H2, r);
-      column_HD[RINDEX(n,r)] = column_density (NCELLS, cell, healpixvectors, n, nr_HD, r);
-      column_C[RINDEX(n,r)]  = column_density (NCELLS, cell, healpixvectors, n, nr_C,  r);
-      column_CO[RINDEX(n,r)] = column_density (NCELLS, cell, healpixvectors, n, nr_CO, r);
+      column_H2[RINDEX(n,r)] = column_density (NCELLS, cell, healpixvectors, n, species.nr_H2, r);
+      column_HD[RINDEX(n,r)] = column_density (NCELLS, cell, healpixvectors, n, species.nr_HD, r);
+      column_C[RINDEX(n,r)]  = column_density (NCELLS, cell, healpixvectors, n, species.nr_C,  r);
+      column_CO[RINDEX(n,r)] = column_density (NCELLS, cell, healpixvectors, n, species.nr_CO, r);
     }
 
   } // end of n loop over grid points

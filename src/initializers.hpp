@@ -85,7 +85,7 @@ int guess_temperature_gas (long ncells, CELL *cell);
 // initialize_abundances: set abundanceces to initial values
 // ---------------------------------------------------------
 
-int initialize_abundances (long ncells, CELL *cell, SPECIES *species);
+int initialize_abundances (long ncells, CELL *cell, SPECIES species);
 
 
 // initialize_bool: initialize a boolean variable

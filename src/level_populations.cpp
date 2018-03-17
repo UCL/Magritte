@@ -25,7 +25,8 @@
 // level_populations: iteratively calculates the level populations
 // ---------------------------------------------------------------
 
-int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species)
+int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+                       SPECIES species, LINE_SPECIES line_species)
 {
 
 
@@ -142,7 +143,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, L
     // For every grid point
 
 #   pragma omp parallel                                                             \
-    shared (line_species, ncells, cell, healpixvectors,                             \
+    shared (line_species, ncells, cell, healpixvectors, species,                    \
             opacity, source, Lambda_diagonal, mean_intensity_eff,                   \
             prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2,   \
             nrad, cum_nrad, prev_not_converged, some_not_converged)                 \
@@ -181,7 +182,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, L
             //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
-            calc_C_coeff (NCELLS, cell, line_species, C_coeff, n, lspec);
+            calc_C_coeff (NCELLS, cell, species, line_species, C_coeff, n, lspec);
 
 
             // Fill first part of transition matrix R

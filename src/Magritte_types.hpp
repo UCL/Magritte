@@ -13,7 +13,10 @@
 
 // Include RAYS class
 #include "healpixvectors.hpp"
-
+// Include SPECIES class
+#include "species.hpp"
+// Include REACTIONS class
+#include "reactions.hpp"
 
 
 struct TEMPERATURE
@@ -23,6 +26,7 @@ struct TEMPERATURE
   double gas_prev;   // gas temperature in previous iteration
 
 };
+
 
 struct RAY
 {
@@ -87,9 +91,15 @@ struct COLUMN_DENSITIES
 struct CELL   // (array of structures)
 {
 
-  double x, y, z;            // x, y and z coordinate of cell center
+  // Standard input
 
+  double x,  y,  z;          // x, y and z coordinate of cell center
   double vx, vy, vz;         // x, y and z component of velocity field
+
+  double density;            // total density in cell
+
+
+  // Geometry
 
   long endpoint[NRAYS];      // cell numbers of ray endings
   double Z[NRAYS];           // distance from cell to boundary
@@ -98,11 +108,12 @@ struct CELL   // (array of structures)
   long n_neighbors;          // number of neighbors
 
 
-  double density;            // density
+  // Chemistry
 
   double abundance[NSPEC];   // abundance for each species
-
   double rate[NREAC];        // reaction rate for each reaciton
+
+  // Lines
 
   double pop[TOT_NLEV];              // level population
   double mean_intensity[TOT_NRAD];   // mean intensity
@@ -127,16 +138,16 @@ struct CELL   // (array of structures)
 
 
 
-struct SPECIES
-{
-
-  std::string sym;            // chemical symbol
-
-  double mass;                // molecular mass
-
-  double initial_abundance;   // abundance before chemical evolution
-
-};
+// struct SPECIES
+// {
+//
+//   std::string sym;            // chemical symbol
+//
+//   double mass;                // molecular mass
+//
+//   double initial_abundance;   // abundance before chemical evolution
+//
+// };
 
 
 
@@ -232,30 +243,30 @@ struct LINE_SPECIES   // (structure of arrays)
 
 
 
-
-struct REACTION
-{
-
-  std::string R1;   // reactant 1
-  std::string R2;   // reactant 2
-  std::string R3;   // reactant 3
-
-  std::string P1;   // reaction product 1
-  std::string P2;   // reaction product 2
-  std::string P3;   // reaction product 3
-  std::string P4;   // reaction product 4
-
-
-  double alpha;     // alpha coefficient to calculate rate coefficient k
-  double beta;      // beta  coefficient to calculate rate coefficient k
-  double gamma;     // gamma coefficient to calculate rate coefficient k
-
-  double RT_min;    // RT_min coefficient to calculate rate coefficient k
-  double RT_max;    // RT_max coefficient to calculate rate coefficient k
-
-  int    dup;       // Number of duplicates of this reaction
-
-};
+// 
+// struct REACTION
+// {
+//
+//   std::string R1;   // reactant 1
+//   std::string R2;   // reactant 2
+//   std::string R3;   // reactant 3
+//
+//   std::string P1;   // reaction product 1
+//   std::string P2;   // reaction product 2
+//   std::string P3;   // reaction product 3
+//   std::string P4;   // reaction product 4
+//
+//
+//   double alpha;     // alpha coefficient to calculate rate coefficient k
+//   double beta;      // beta  coefficient to calculate rate coefficient k
+//   double gamma;     // gamma coefficient to calculate rate coefficient k
+//
+//   double RT_min;    // RT_min coefficient to calculate rate coefficient k
+//   double RT_max;    // RT_max coefficient to calculate rate coefficient k
+//
+//   int    dup;       // Number of duplicates of this reaction
+//
+// };
 
 
 

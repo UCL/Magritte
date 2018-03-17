@@ -15,7 +15,7 @@
 
 // Input files
 
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 #define INPUT_FORMAT '.txt'
 #define CELL_BASED  false
 
@@ -62,6 +62,7 @@
 #define REAC_DATAFILE  "data/rates_reduced.txt"
 
 // Line data
+
 #define DATA_FORMAT "LAMDA"
 #define NLSPEC 4
 

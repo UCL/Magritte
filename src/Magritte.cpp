@@ -17,8 +17,6 @@
 #include "declarations.hpp"
 #include "definitions.hpp"
 
-#include "../setup/setup_data_tools.hpp"
-
 #include "initializers.hpp"
 #include "species_tools.hpp"
 
@@ -77,21 +75,15 @@ int main ()
 
   // Define cells (using types defined in declarations.hpp
 
-# if   (FIXED_NCELLS)
+# if (FIXED_NCELLS)
 
     long ncells = NCELLS;
 
     CELL cell[NCELLS];
 
-# elif (!FIXED_NCELLS && (INPUT_FORMAT == '.txt'))
+# else
 
-    long ncells = get_NCELLS_txt (inputfile);
-
-    CELL *cell = new CELL[ncells];
-
-# elif (!FIXED_NCELLS && (INPUT_FORMAT == '.vtu'))
-
-    long ncells = get_NCELLS_vtu (inputfile);
+    long ncells = NCELLS_INIT;
 
     CELL *cell = new CELL[ncells];
 
@@ -167,18 +159,19 @@ int main ()
 
 
 
-  // READ CHEMISTRY DATA
-  // ___________________
+  // READ CHEMICAL SPECIES DATA
+  // __________________________
 
 
-  printf ("(Magritte): reading chemistry data files\n\n");
+  printf ("(Magritte): creating species, reading species data\n\n");
 
+  const SPECIES species (spec_datafile);   // (created by constructor)
 
-  // Read chemical species data
+  printf ("(Magritte): species data read, species created\n\n");
 
-  SPECIES species[NSPEC];
-
-  read_species (spec_datafile, species);
+  // SPECIES species[NSPEC];
+  //
+  // read_species (spec_datafile, species);
 
 
 # if (!RESTART)
@@ -189,14 +182,23 @@ int main ()
 # endif
 
 
-  // Read chemical reaction data
-
-  REACTION reaction[NREAC];
-
-  read_reactions (reac_datafile, reaction);
 
 
-  printf ("(Magritte): chemistry data read\n\n");
+  // READ CHEMICAL REACTION DATA
+  // ___________________________
+
+
+  printf ("(Magritte): creating reactions, reading reaction data\n\n");
+
+  const REACTIONS reactions(reac_datafile);   // (created by constructor)
+
+  printf ("(Magritte): reaction data read, reactions created\n\n");
+
+
+
+  // REACTION reaction[NREAC];
+  //
+  // read_reactions (reac_datafile, reaction);
 
 
 
@@ -428,29 +430,29 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
-  // thermal_balance (ncells_red5, cell_red5, species, reaction, line_species, &timers);
+  // thermal_balance (ncells_red5, cell_red5, species, reactions, line_species, &timers);
 
   // interpolate (ncells_red5, cell_red5, ncells_red4, cell_red4);
 
 
-  // thermal_balance (ncells_red4, cell_red4, species, reaction, line_species, &timers);
+  // thermal_balance (ncells_red4, cell_red4, species, reactions, line_species, &timers);
 
   // interpolate (ncells_red4, cell_red4, ncells_red3, cell_red3);
 
 
-  // thermal_balance (ncells_red3, cell_red3, species, reaction, line_species, &timers);
+  // thermal_balance (ncells_red3, cell_red3, species, reactions, line_species, &timers);
 
   // interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
-  // thermal_balance (ncells_red2, cell_red2, species, reaction, line_species, &timers);
+  // thermal_balance (ncells_red2, cell_red2, species, reactions, line_species, &timers);
 
   // interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
 
-  // thermal_balance (ncells_red1, cell_red1, species, reaction, line_species, &timers);
+  // thermal_balance (ncells_red1, cell_red1, species, reactions, line_species, &timers);
 
   // interpolate (ncells_red1, cell_red1, ncells, cell);
 
-  thermal_balance (ncells, cell, healpixvectors, species, reaction, line_species, &timers);
+  thermal_balance (ncells, cell, healpixvectors, species, reactions, line_species, &timers);
 
 
   // delete [] cell_red5;

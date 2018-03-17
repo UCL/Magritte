@@ -10,7 +10,7 @@
 #include <string>
 
 #include "declarations.hpp"
-#include "../setup/directories.hpp"
+#include "../src/directories.hpp"
 
 
 // Output directory (absolute path)
@@ -44,21 +44,6 @@ const std::string reac_datafile     = project_folder + reac_datafile_rel;   // a
 const std::string line_datafile[NLSPEC] = LINE_DATAFILES;   // list of line data files
 
 
-// HEALPix vectors
-
-// HEALPIXVECTORS healpixvectors;
-
-// const double healpixvector[3*NRAYS] = HEALPIXVECTOR;
-
-// const long antipod[NRAYS] = ANTIPOD;
-
-// const long aligned[NRAYS][NRAYS/2] = ALIGNED;   // NOT USED YET
-
-// const long n_aligned[NRAYS] = N_ALIGNED;        // NOT USED YET
-
-// const long mirror_xz[NRAYS] = MIRROR;
-
-
 // Level populations
 
 const int nlev[NLSPEC] = NLEV;
@@ -85,31 +70,6 @@ const int tot_ncoltrantemp[NLSPEC] = TOT_NCOLTRANTEMP;
 const int cum_tot_ncoltemp[NLSPEC]     = CUM_TOT_NCOLTEMP;
 const int cum_tot_ncoltran[NLSPEC]     = CUM_TOT_NCOLTRAN;
 const int cum_tot_ncoltrantemp[NLSPEC] = CUM_TOT_NCOLTRANTEMP;
-
-
-// Chemistry
-
-
-// Species numbers
-
-int nr_e;      // species nr corresponding to electrons
-int nr_H2;     // species nr corresponding to H2
-int nr_HD;     // species nr corresponding to HD
-int nr_C;      // species nr corresponding to C
-int nr_H;      // species nr corresponding to H
-int nr_H2x;    // species nr corresponding to H2+
-int nr_HCOx;   // species nr corresponding to HCO+
-int nr_H3x;    // species nr corresponding to H3+
-int nr_H3Ox;   // species nr corresponding to H3O+
-int nr_Hex;    // species nr corresponding to He+
-int nr_CO;     // species nr corresponding to CO
-
-
-// Reaction numbers
-
-int nr_C_ionization;
-int nr_H2_formation;
-int nr_H2_photodissociation;
 
 
 #endif // __DEFINITIONS_HPP_INCLUDED__

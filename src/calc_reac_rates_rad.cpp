@@ -23,17 +23,16 @@
 // rate_PHOTD: returns rate coefficient for photodesorption
 // --------------------------------------------------------
 
-double rate_PHOTD (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_PHOTD (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double yield;   // Number of adsorbed molecules released per cosmic ray impact
@@ -85,17 +84,16 @@ double rate_PHOTD (CELL *cell, REACTION *reaction, int reac, long o)
 // rate_H2_photodissociation: returns rate coefficient for H2 dissociation
 // -----------------------------------------------------------------------
 
-double rate_H2_photodissociation (CELL *cell, REACTION *reaction, int reac, double *column_H2, long o)
+double rate_H2_photodissociation (CELL *cell, REACTIONS reactions, int reac, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double lambda = 1000.0;                            // wavelength (in Å) of a typical transition
@@ -127,18 +125,17 @@ double rate_H2_photodissociation (CELL *cell, REACTION *reaction, int reac, doub
 // rate_CO_photodissociation: returns rate coefficient for CO dissociation
 // -----------------------------------------------------------------------
 
-double rate_CO_photodissociation (CELL *cell, REACTION *reaction, int reac,
+double rate_CO_photodissociation (CELL *cell, REACTIONS reactions, int reac,
                                   double *column_CO, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double rate = 0.0;   // reaction rate coefficient
@@ -191,18 +188,17 @@ double rate_CO_photodissociation (CELL *cell, REACTION *reaction, int reac,
 // rate_C_photoionization: returns rate coefficient for C photoionization
 // ----------------------------------------------------------------------
 
-double rate_C_photoionization (CELL *cell, REACTION *reaction, int reac,
+double rate_C_photoionization (CELL *cell, REACTIONS reactions, int reac,
                                double *column_C, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double rate = 0.0;   // reaction rate coefficient
@@ -235,17 +231,16 @@ double rate_C_photoionization (CELL *cell, REACTION *reaction, int reac,
 // rate_SI_photoionization: returns rate coefficient for SI photoionization
 // ------------------------------------------------------------------------
 
-double rate_SI_photoionization (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_SI_photoionization (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double rate = 0.0;   // reaction rate coefficient
@@ -276,17 +271,16 @@ double rate_SI_photoionization (CELL *cell, REACTION *reaction, int reac, long o
 // rate_canonical_photoreaction: returns rate coefficient for a canonical photoreaction
 // ------------------------------------------------------------------------------------
 
-double rate_canonical_photoreaction (CELL *cell, REACTION *reaction, int reac, long o)
+double rate_canonical_photoreaction (CELL *cell, REACTIONS reactions, int reac, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha = reaction[reac].alpha;
-  double beta  = reaction[reac].beta;
-  double gamma = reaction[reac].gamma;
-
-  double RT_min = reaction[reac].RT_min;
-  double RT_max = reaction[reac].RT_max;
+  double alpha  = reactions.alpha[reac];
+  double beta   = reactions.beta[reac];
+  double gamma  = reactions.gamma[reac];
+  double RT_min = reactions.RT_min[reac];
+  double RT_max = reactions.RT_max[reac];
 
 
   double rate = 0.0;   // reaction coefficient
@@ -301,7 +295,7 @@ double rate_canonical_photoreaction (CELL *cell, REACTION *reaction, int reac, l
   }
 
   else if ( ( (cell[o].temperature.gas <= RT_max) || (RT_max == 0.0) )
-            && no_better_data(reac, reaction, cell[o].temperature.gas) )
+            && reactions.no_better_data(reac, cell[o].temperature.gas) )
   {
 
     for (long r = 0; r < NRAYS; r++)

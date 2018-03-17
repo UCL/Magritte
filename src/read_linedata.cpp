@@ -20,7 +20,7 @@
 // read_linedata: read data files containing line information in LAMBDA/RADEX format
 // ---------------------------------------------------------------------------------
 
-int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species, SPECIES *species)
+int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species, SPECIES species)
 {
 
   char buffer[BUFFER_SIZE];            // buffer for a line of data
@@ -52,7 +52,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 
     std::string str(buffer_name);
     line_species->sym[lspec] = buffer_name;
-    line_species->nr[lspec]  = get_species_nr (species, buffer_name);
+    line_species->nr[lspec]  = species.get_species_nr (buffer_name);
 
 
     // Skip first 5 lines
@@ -315,7 +315,7 @@ int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species,
 // extract_collision_partner: extract species corresponding to collision partner
 // -----------------------------------------------------------------------------
 
-int extract_collision_partner (SPECIES *species, LINE_SPECIES *line_species, char *buffer, int lspec, int par)
+int extract_collision_partner (SPECIES species, LINE_SPECIES *line_species, char *buffer, int lspec, int par)
 {
 
   int n;                                        // index
@@ -362,12 +362,12 @@ int extract_collision_partner (SPECIES *species, LINE_SPECIES *line_species, cha
 
   // Use one of species_tools to find species nr corresponding to coll. partner
 
-  line_species->partner[LSPECPAR(lspec,par)] = get_species_nr (species, name);
+  line_species->partner[LSPECPAR(lspec,par)] = species.get_species_nr (name);
 
 
   // Check whether collision partner is ortho- or para- H2 (or something else)
 
-  line_species->ortho_para[LSPECPAR(lspec,par)] = check_ortho_para (name);
+  line_species->ortho_para[LSPECPAR(lspec,par)] = species.check_ortho_para (name);
 
 
   return (0);

@@ -41,6 +41,7 @@ def setupMagritte():
         ncells = numberOfLines(inputFile)
     if fileExtension(inputFile) == '.vtu':
         ncells = mcf.getNCELLSvtu(inputFile, gridType)
+    ncellsInit = ncells
     if not fixedGrid:
         ncells = 'ncells'
     # Get number of chemical species
@@ -104,6 +105,8 @@ def setupMagritte():
     fileName = '../src/Magritte_config.hpp'
     writeHeader(fileName)
     writeDefinition(fileName, ncells,                   'NCELLS')
+    writeDefinition(fileName, ncellsInit,                   'NCELLS_INIT')
+
     writeDefinition(fileName, nspec,                    'NSPEC')
     writeDefinition(fileName, nreac,                    'NREAC')
     writeDefinition(fileName, nlspec,                   'NLSPEC')

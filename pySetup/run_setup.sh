@@ -19,8 +19,8 @@ date_stamp=`date +%y-%m-%d_%H:%M`;
 
 output_directory="$1output/files/${date_stamp}_output/";
 
-echo "#define OUTPUT_DIRECTORY \"$output_directory\"" > directories.hpp
-echo "#define PROJECT_FOLDER \"$1\"" >> directories.hpp
+echo "#define OUTPUT_DIRECTORY \"$output_directory\"" > ../src/directories.hpp
+echo "#define PROJECT_FOLDER \"$1\"" >> ../src/directories.hpp
 
 
 # Make the rate_equation file for the chemistry, based on parameters.hpp

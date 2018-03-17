@@ -24,7 +24,7 @@
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES *species, REACTION *reaction, LINE_SPECIES line_species,
+int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions, LINE_SPECIES line_species,
                                double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers)
 {
 
@@ -54,7 +54,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cell, healpixvectors, species, reaction, column_H2, column_HD, column_C, column_CO);
+    chemistry (NCELLS, cell, healpixvectors, species, reactions, column_H2, column_HD, column_C, column_CO);
 
     timers->chemistry.stop();
 
@@ -85,7 +85,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
   timers->level_pop.start();
 
-  level_populations (NCELLS, cell, healpixvectors, line_species);
+  level_populations (NCELLS, cell, healpixvectors, species, line_species);
 
   timers->level_pop.stop();
 
@@ -107,13 +107,13 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
   // Calculate column densities to get most recent reaction rates
 
-  calc_column_densities (NCELLS, cell, healpixvectors, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cell, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
 
 
   // Calculate thermal balance for each cell
 
 # pragma omp parallel                                                                                  \
-  shared (ncells, cell, reaction, column_H2, column_HD, column_C, column_CO, cum_nlev, line_species)   \
+  shared (ncells, cell, species, reactions, column_H2, column_HD, column_C, column_CO, cum_nlev, line_species)   \
   default (none)
   {
 
@@ -129,10 +129,10 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
     double heating_components[12];
 
 
-    reaction_rates (NCELLS, cell, reaction, o, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (NCELLS, cell, reactions, o, column_H2, column_HD, column_C, column_CO);
 
 
-    double heating_total = heating (NCELLS, cell, o, heating_components);
+    double heating_total = heating (NCELLS, cell, species, reactions, o, heating_components);
     double cooling_total = cooling (NCELLS, cell, line_species, o);
 
     double thermal_flux = heating_total - cooling_total;

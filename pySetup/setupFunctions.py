@@ -39,7 +39,7 @@ def getVariable(name, type):
 
 def getProjectFolder():
     # Return value for variable from parameters.hpp
-    with open('../setup/directories.hpp') as parameterFile:
+    with open('../src/directories.hpp') as parameterFile:
         for line in parameterFile:
             line = line.split()
             if (len(line) is 3) and (line[1] == 'PROJECT_FOLDER'):

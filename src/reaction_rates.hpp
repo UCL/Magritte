@@ -13,7 +13,7 @@
 // reaction_rates: Check which kind of reaction and call appropriate rate calculator
 // ---------------------------------------------------------------------------------
 
-int reaction_rates (long ncells, CELL *cell, REACTION *reaction, long o,
+int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
                     double *column_H2, double *column_HD, double *column_C, double *column_CO);
 
 
