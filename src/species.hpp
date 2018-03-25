@@ -45,7 +45,8 @@ struct SPECIES
   int nr_CO;     // nr for CO
 
 
-  // Constructor reads species data file
+  // Constructor: reads species data file
+  // ------------------------------------
 
   SPECIES (std::string spec_datafile);
 
@@ -53,27 +54,32 @@ struct SPECIES
   // Tools:
 
 
-  // Get name of species as it appears in species file
+  // get_canonical_name: Get name of species as it appears in species file
+  // ---------------------------------------------------------------------
 
   std::string get_canonical_name (std::string name);
 
 
-  // Get number for given species symbol
+  // get_species_nr: Get number for given species symbol
+  // ---------------------------------------------------
 
   int get_species_nr (std::string name);
 
 
-  // Check whether it is ortho or para H2
+  // check_ortho_para: Check whether it is ortho or para H2
+  // ------------------------------------------------------
 
   char check_ortho_para (std::string name);
 
 
-  // Get charge of a species
+  // get_charge: Get charge of a species
+  // -----------------------------------
 
   int get_charge (std::string name);
 
 
-  // Initialize electron abundance so that cell is neutral
+  // get_electron_abundance: Initialize electron abundance so that cell is neutral
+  // -----------------------------------------------------------------------------
 
   double get_electron_abundance ();
 

@@ -10,12 +10,11 @@
 
 #define RUN_NUMBER "0"
 
-#define WRITE_INTERMEDIATE_OUTPUT false
-
+#define WRITE_INTERMEDIATE_OUTPUT true
 
 // Input files
 
-#define FIXED_NCELLS false
+#define FIXED_NCELLS true
 #define INPUT_FORMAT '.txt'
 #define CELL_BASED  false
 
@@ -80,14 +79,14 @@
 
 // Radiative transfer
 
-#define SOBOLEV                    true
+#define SOBOLEV                    false
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 
 
 // Number of various iterations
 
-#define MAX_NITERATIONS  300
+#define MAX_NITERATIONS  100
 #define PRELIM_CHEM_ITER 5
 #define CHEM_ITER        3
 

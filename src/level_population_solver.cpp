@@ -17,7 +17,7 @@
 #define IMD(r,c) ((c)+(r)*m)
 
 
-int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
+int level_population_solver (long ncells, CELL *cell, LINES lines,
                              long o, int lspec, double *R)
 {
 
@@ -57,7 +57,7 @@ int level_population_solver (long ncells, CELL *cell, LINE_SPECIES line_species,
   }
 
 
-  b[nlev[lspec]-1] = cell[o].density * cell[o].abundance[line_species.nr[lspec]];
+  b[nlev[lspec]-1] = cell[o].density * cell[o].abundance[lines.nr[lspec]];
 
 
 

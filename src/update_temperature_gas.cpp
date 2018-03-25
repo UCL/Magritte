@@ -35,9 +35,21 @@ int update_temperature_gas (long ncells, CELL *cell, long o)
   // // printf("f   = %lE\n", f);
   // printf("f_p = %lE\n", f_p);
 
+  if ( (f == f_p) && f > 0.0 )
+  {
+    cell[o].temperature.gas = 1.1 * cell[o].temperature.gas;
+  }
 
-  cell[o].temperature.gas      = (T*f_p - T_p*f) / (f_p - f);
-  cell[o].temperature.gas_prev = T;
+  else if ( (f == f_p) && f < 0.0 )
+  {
+    cell[o].temperature.gas = 0.9 * cell[o].temperature.gas;
+  }
+
+  else
+  {
+    cell[o].temperature.gas      = (T*f_p - T_p*f) / (f_p - f);
+    cell[o].temperature.gas_prev = T;
+  }
 
 
   // Enforce the minimun and maximum temperature

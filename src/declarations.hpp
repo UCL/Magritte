@@ -19,6 +19,11 @@
 // Output directory (absolute path)
 
 extern const std::string output_directory;
+extern const std::string project_folder;
+
+extern const std::string inputfile;
+
+extern int tag_nr;   // Number of times output is already written
 
 
 // Level populations

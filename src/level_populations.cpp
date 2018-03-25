@@ -26,7 +26,7 @@
 // ---------------------------------------------------------------
 
 int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
-                       SPECIES species, LINE_SPECIES line_species)
+                       SPECIES species, LINES lines)
 {
 
 
@@ -108,7 +108,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
         niterations[lspec]++;
 
         printf( "(level_populations): Iteration %d for %s\n",
-                niterations[lspec], line_species.sym[lspec].c_str() );
+                niterations[lspec], lines.sym[lspec].c_str() );
 
 
         n_not_converged[lspec] = 0;   // number of grid points that are not yet converged
@@ -133,9 +133,9 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
         // Calculate source and opacity for all transitions over whole grid
 
-        line_source (NCELLS, cell, line_species, lspec, source);
+        lines.source (NCELLS, cell, lspec, source);
 
-        line_opacity (NCELLS, cell, line_species, lspec, opacity);
+        lines.opacity (NCELLS, cell, lspec, opacity);
       }
     } // end of lspec loop over line producing species
 
@@ -143,7 +143,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
     // For every grid point
 
 #   pragma omp parallel                                                             \
-    shared (line_species, ncells, cell, healpixvectors, species,                    \
+    shared (lines, ncells, cell, healpixvectors, species,                           \
             opacity, source, Lambda_diagonal, mean_intensity_eff,                   \
             prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2,   \
             nrad, cum_nrad, prev_not_converged, some_not_converged)                 \
@@ -182,7 +182,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
             //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
-            calc_C_coeff (NCELLS, cell, species, line_species, C_coeff, n, lspec);
+            calc_C_coeff (NCELLS, cell, species, lines, C_coeff, n, lspec);
 
 
             // Fill first part of transition matrix R
@@ -193,7 +193,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
               {
                 long b_ij = LSPECLEVLEV(lspec,i,j);   // R, A_coeff and C_coeff index
 
-                R[b_ij] = line_species.A_coeff[b_ij] + C_coeff[b_ij];
+                R[b_ij] = lines.A_coeff[b_ij] + C_coeff[b_ij];
               }
             }
 
@@ -210,15 +210,15 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
             {
               long mm_ij = LSPECRAD(lspec,kr);
 
-              int i = line_species.irad[mm_ij];   // i index corresponding to transition kr
-              int j = line_species.jrad[mm_ij];   // j index corresponding to transition kr
+              int i = lines.irad[mm_ij];   // i index corresponding to transition kr
+              int j = lines.jrad[mm_ij];   // j index corresponding to transition kr
 
               long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
               long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
 
-              double A_ij = line_species.A_coeff[b_ij];
-              double B_ij = line_species.B_coeff[b_ij];
-              double B_ji = line_species.B_coeff[b_ji];
+              double A_ij = lines.A_coeff[b_ij];
+              double B_ij = lines.B_coeff[b_ij];
+              double B_ji = lines.B_coeff[b_ji];
 
               long m_ij = LSPECGRIDRAD(lspec,n,kr);
 
@@ -234,7 +234,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
               // printf("YESfdg");
             }
 
-                sobolev (NCELLS, cell, healpixvectors, line_species, Lambda_diagonal, mean_intensity_eff,
+                sobolev (NCELLS, cell, healpixvectors, lines, Lambda_diagonal, mean_intensity_eff,
                          source, opacity, n, lspec, kr);
 
 
@@ -246,7 +246,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
 #             else
 
-                radiative_transfer (NCELLS, cell, healpixvectors, line_species, Lambda_diagonal, mean_intensity_eff,
+                radiative_transfer (NCELLS, cell, healpixvectors, lines, Lambda_diagonal, mean_intensity_eff,
                                     source, opacity, n, lspec, kr);
 
 #             endif
@@ -276,7 +276,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
             // Solve radiative balance equation for level populations
 
-            level_population_solver (NCELLS, cell, line_species, n, lspec, R);
+            level_population_solver (NCELLS, cell, lines, n, lspec, R);
 
 
             if (thread_num == 0)
@@ -294,7 +294,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
               double dpop = cell[n].pop[pp_i] - prev1_pop[p_i];
               double spop = cell[n].pop[pp_i] + prev1_pop[p_i];
 
-              double min_pop = 1.0E-10 * cell[n].abundance[line_species.nr[lspec]];
+              double min_pop = 1.0E-10 * cell[n].abundance[lines.nr[lspec]];
 
 
               if ( (cell[n].pop[pp_i] > min_pop) && (spop != 0.0) )
@@ -356,7 +356,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
   {
     printf ("(level_populations): population levels for %s converged after %d iterations\n"
             "                     with precision %.1lE\n",
-            line_species.sym[lspec].c_str(), niterations[lspec], POP_PREC);
+            lines.sym[lspec].c_str(), niterations[lspec], POP_PREC);
   }
 
 

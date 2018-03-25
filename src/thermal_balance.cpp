@@ -11,9 +11,10 @@
 #include <omp.h>
 
 #include "declarations.hpp"
-#include "initializers.hpp"
 #include "thermal_balance.hpp"
+#include "initializers.hpp"
 #include "chemistry.hpp"
+#include "write_output.hpp"
 #include "thermal_balance_iteration.hpp"
 #include "update_temperature_gas.hpp"
 
@@ -22,7 +23,7 @@
 // ----------------------------------------------------------------------------
 
 int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
-                     LINE_SPECIES line_species, TIMERS *timers)
+                     LINES lines, TIMERS *timers)
 {
 
 
@@ -81,17 +82,9 @@ int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPE
     timers->chemistry.stop();
 
 
-    // Write intermediate output for (potential) restart
+#   if (WRITE_INTERMEDIATE_OUTPUT)
 
-#   if   (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.txt'))
-
-        write_temperature_gas ("", NCELLS, cell);
-        write_temperature_dust ("", NCELLS, cell);
-        write_temperature_gas_prev ("", NCELLS, cell);
-
-#   elif (WRITE_INTERMEDIATE_OUTPUT & (INPUT_FORMAT == '.vtu'))
-
-        write_vtu_output (NCELLS, cell, inputfile);
+      write_output (NCELLS, cell, lines);
 
 #   endif
 
@@ -128,7 +121,7 @@ int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPE
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reactions, line_species,
+    thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reactions, lines,
                                column_H2, column_HD, column_C, column_CO, timers);
 
 
@@ -177,17 +170,9 @@ int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPE
     printf ("(thermal_balance): Not yet converged for %ld of %d\n", n_not_converged, NCELLS);
 
 
-    // Write intermediate output for (potential) restart
+#   if (WRITE_INTERMEDIATE_OUTPUT)
 
-#   if   (WRITE_INTERMEDIATE_OUTPUT && (INPUT_FORMAT == '.txt'))
-
-      write_temperature_gas ("", NCELLS, cell); // should be temperature b !!!!!!!!!!
-      write_temperature_dust ("", NCELLS, cell);
-      write_temperature_gas_prev ("", NCELLS, cell);
-
-#   elif (WRITE_INTERMEDIATE_OUTPUT && (INPUT_FORMAT == '.vtu'))
-
-      write_vtu_output (NCELLS, cell, inputfile);
+      write_output (NCELLS, cell, lines);
 
 #   endif
 
@@ -221,7 +206,7 @@ int thermal_balance (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPE
 // ----------------------------------------------------------------------------------
 
 int thermal_balance_Brent (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
-                           LINE_SPECIES line_species, TIMERS *timers)
+                           LINES lines, TIMERS *timers)
 {
 
     // COLUMN_DENSITIES column;
@@ -371,7 +356,7 @@ int thermal_balance_Brent (long ncells, CELL *cell, HEALPIXVECTORS healpixvector
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reactions, line_species,
+    thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reactions, lines,
                                column_H2, column_HD, column_C, column_CO, timers);
 
 

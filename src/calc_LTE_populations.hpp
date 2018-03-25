@@ -13,7 +13,7 @@
 // calc_LTE_populations: Calculates LTE level populations
 // ------------------------------------------------------
 
-int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species);
+int calc_LTE_populations (long ncells, CELL *cell, LINES lines);
 
 
 #endif // __CALC_LTE_POPULATIONS_HPP_INCLUDED__

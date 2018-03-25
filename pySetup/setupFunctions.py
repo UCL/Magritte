@@ -37,6 +37,30 @@ def getVariable(name, type):
                         return False
 
 
+def readSpeciesNames(fileName):
+    # Return list with species names (in order)
+    speciesNames = []
+    with open(fileName) as dataFile:
+        for line in dataFile:
+            speciesNames += [line.split(',')[1]]
+    return speciesNames
+
+def getProperName(name):
+    if name in ['e']: return 'e-'
+    if name in ['pH2', 'oH2', 'p-H2', 'o-H2']: return 'H2'
+    return name
+
+
+def getSpeciesNumber(speciesNames, name):
+    # Returns number of species given by 'name'
+    if isinstance(name, list):
+        return [getSpeciesNumber(speciesNames,elem) for elem in name]
+    else:
+        for i in range(len(speciesNames)):
+            if (speciesNames[i] == getProperName(name)):
+                return i
+
+
 def getProjectFolder():
     # Return value for variable from parameters.hpp
     with open('../src/directories.hpp') as parameterFile:
@@ -114,14 +138,14 @@ def writeDefinition(fileName, definition, name):
         codeFile.write(line)
 
 
-def writeVariable(fileName, variable, name):
-    # Write variable definition in C format to file
-    if isinstance(variable, list):
-        definition = CArray(variable)
-        for nr in np.shape(np.array(variable)):
-            name += '[' + str(nr) + ']'
-    else:
-        definition = str(variable)
-    line = name + ' = ' + definition + ';\n\n'
-    with open(fileName, 'a') as codeFile:
-        codeFile.write(line)
+# def writeVariable(fileName, variable, name):
+#     # Write variable definition in C format to file
+#     if isinstance(variable, list):
+#         definition = CArray(variable)
+#         for nr in np.shape(np.array(variable)):
+#             name += '[' + str(nr) + ']'
+#     else:
+#         definition = str(variable)
+#     line = name + ' = ' + definition + ';\n\n'
+#     with open(fileName, 'a') as codeFile:
+#         codeFile.write(line)

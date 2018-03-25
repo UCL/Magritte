@@ -18,11 +18,9 @@
 #include "definitions.hpp"
 
 #include "initializers.hpp"
-#include "species_tools.hpp"
 
 #include "read_input.hpp"
-#include "read_chemdata.hpp"
-#include "read_linedata.hpp"
+// #include "read_linedata.hpp"
 
 #include "ray_tracing.hpp"
 #include "reduce.hpp"
@@ -39,7 +37,7 @@
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
 
-#include "defs.hpp"
+
 
 
 // main for Magritte
@@ -175,7 +173,8 @@ int main ()
 
 
 # if (!RESTART)
-  // Initialize abundances in each cell with initial abundances read above
+
+  // Initialize abundances in each cell with initial abundances
 
   initialize_abundances (NCELLS, cell, species);
 
@@ -209,26 +208,23 @@ int main ()
 
   printf ("(Magritte): reading line data file\n");
 
+  const LINES lines;   // (values defined in line_data.hpp)
 
-  // Read line data files stored in list(!) line_data
-
-  LINE_SPECIES line_species;
-
-  read_linedata (line_datafile, &line_species, species);
+  // read_linedata (line_datafile, &lines, species);lines.cpp
 
 
   // for (int i=0; i<TOT_NLEV2; i++)
   // {
   //
   //   double a = TESTB_coeff[i];
-  //   double b = line_species.B_coeff[i];
+  //   double b = lines.B_coeff[i];
   //
   //   double nill = 2.0 * (a - b);
   //   if (nill != 0.0)
   //   {
   //     nill = nill / (a + b);
   //   }
-  //   // double nill = 2.0 * (TESTA_coeff[i] - line_species.A_coeff[i]);
+  //   // double nill = 2.0 * (TESTA_coeff[i] - lines.A_coeff[i]);
   //
   //   printf("nill = %lE\n", nill);
   //   // if (n != 0.0)
@@ -239,14 +235,14 @@ int main ()
   // {
   //
   //   double a = TESTC_data[i];
-  //   double b = line_species.C_data[i];
+  //   double b = lines.C_data[i];
   //
   //   double nill = 2.0 * (a - b);
   //   if (nill != 0.0)
   //   {
   //     nill = nill / (a + b);
   //   }
-  //   // double nill = 2.0 * (TESTA_coeff[i] - line_species.A_coeff[i]);
+  //   // double nill = 2.0 * (TESTA_coeff[i] - lines.A_coeff[i]);
   //
   //   printf("nill = %lE\n", nill);
   //   // if (n != 0.0)
@@ -430,29 +426,29 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
-  // thermal_balance (ncells_red5, cell_red5, species, reactions, line_species, &timers);
+  // thermal_balance (ncells_red5, cell_red5, species, reactions, lines, &timers);
 
   // interpolate (ncells_red5, cell_red5, ncells_red4, cell_red4);
 
 
-  // thermal_balance (ncells_red4, cell_red4, species, reactions, line_species, &timers);
+  // thermal_balance (ncells_red4, cell_red4, species, reactions, lines, &timers);
 
   // interpolate (ncells_red4, cell_red4, ncells_red3, cell_red3);
 
 
-  // thermal_balance (ncells_red3, cell_red3, species, reactions, line_species, &timers);
+  // thermal_balance (ncells_red3, cell_red3, species, reactions, lines, &timers);
 
   // interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
 
-  // thermal_balance (ncells_red2, cell_red2, species, reactions, line_species, &timers);
+  // thermal_balance (ncells_red2, cell_red2, species, reactions, lines, &timers);
 
   // interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
 
-  // thermal_balance (ncells_red1, cell_red1, species, reactions, line_species, &timers);
+  // thermal_balance (ncells_red1, cell_red1, species, reactions, lines, &timers);
 
   // interpolate (ncells_red1, cell_red1, ncells, cell);
 
-  thermal_balance (ncells, cell, healpixvectors, species, reactions, line_species, &timers);
+  thermal_balance (ncells, cell, healpixvectors, species, reactions, lines, &timers);
 
 
   // delete [] cell_red5;
@@ -466,8 +462,8 @@ int main ()
 
 
   printf ("(Magritte): Total calculation time = %lE\n\n", timers.total.duration);
-  printf ("(Magritte): - time in chemistry = %lE\n\n", timers.chemistry.duration);
-  printf ("(Magritte): - time in level_pop = %lE\n\n", timers.level_pop.duration);
+  printf ("(Magritte):    - time in chemistry = %lE\n\n", timers.chemistry.duration);
+  printf ("(Magritte):    - time in level_pop = %lE\n\n", timers.level_pop.duration);
 
 
 
@@ -479,18 +475,9 @@ int main ()
   printf ("(Magritte): writing output \n");
 
 
-# if   (INPUT_FORMAT == '.vtu')
+  write_output(NCELLS, cell, lines);
 
-    write_vtu_output (NCELLS, cell, inputfile);
-
-# elif (INPUT_FORMAT == '.txt')
-
-    write_txt_output (NCELLS, cell, line_species);
-
-# endif
-
-  write_level_populations("", NCELLS, cell, line_species);
-
+  write_output_log();
 
   write_performance_log (timers);
 

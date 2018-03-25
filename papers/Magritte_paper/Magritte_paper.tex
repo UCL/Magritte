@@ -81,7 +81,7 @@
 
 % Title of the paper, and the short title which is used in the headers.
 % Keep the title short and informative.
-\title[Magritte]{\textbf{\textsc{Magritte}}: a new multidimensional accelerated general-purpose radiative transfer code}
+\title[Magritte]{\textsc{Magritte}: a new multidimensional accelerated general-purpose radiative transfer code}
 
 % The list of authors, and the short list which is used in the headers.
 % If you need two or more lines of authors, add an extra line using \newauthor
@@ -91,8 +91,9 @@ J. Yates$^{1}$,
 %J. Hetherington$^{3}$,
 %P.A. Boyle$^{4}$,
 L. Decin$^{2}$,
-T.G. Bisbas$^{5,6}$ and
-S. Viti$^{1}$
+T.G. Bisbas$^{5,6}$,
+S. Viti$^{1}$ and
+M. Barlow$^{1}$
 \\ \\
 % List of institutions
 $^{1}$Department of Physics and Astronomy, University College London, Gower Place, London, WC1E 6BT, UK \\
@@ -117,7 +118,9 @@ $^{4}$Max-Planck-Institut f\"ur Extraterrestrische Physik, Giessenbachstrasse 1,
 
 % Abstract of the paper
 \begin{abstract}
-	Radiative transfer plays a key role in the dynamics, the chemistry and the energy balance of all kinds of astrophysical objects. It provides the radiative pressure to drive stellar winds, it affects the chemistry through various photoionization and photodissociation reactions, and it can very efficiently heat or cool very specific regions in the wind. Therefore it is essential in modelling these objects to properly account for all radiative processes and their interdependence. This however can be complicated by i) an intricate 3D geometrical structure shielding or exposing specific regions to radiation, ii) the scattering by dust or free electrons, and iii) the mixing in frequency space due to Doppler shifts caused by velocity gradients in the medium. The tight coupling between radiative transfer and the often very specialized and diverse dynamical and chemical models furthermore requires a modular code that can easily be integrated. To address these needs we will present \textsc{Magritte}: a new multidimensional accelerated general-purpose radiative transfer code. \textsc{Magritte} is especially designed to have a well scaling performance on various computer architectures.  Appended with a dedicated chemistry and thermal balance module it can self-consitently calculate the temperature field, chemical abundances and level populations. Magritte is a deterministic ray-tracing code that obtains the radiation field by solving the transfer equation along a fixed set of rays originating from each grid cell. It iteratively accounts for scattering and treats the full frequency space. This allows us to self-consistently model the chemistry and energy balance in stellar winds and perform synthetic observations. We will apply {\sc Margritte} by post-processing snapshots of hydrodynamical wind and bowshock simulations and will present its integration in self-consistent hydro-chemical AGB wind models.
+	Radiative transfer is a key ingredient in understanding the dynamics, chemistry and energy balance of various astrophysical objects. Therefore it is essential in astrophysical modelling to properly account for all radiative processes and their interdependence. In this paper we present \textsc{Magritte}: a new multidimensional accelerated general-purpose radiative transfer code. \textsc{Magritte} is a grid-independent deterministic ray-tracing code that obtains the radiation field by solving the transfer equation along a fixed set of rays originating from each grid cell. It iteratively accounts for scattering and treats the full frequency space. Appended with a dedicated chemistry and thermal balance module \textsc{Magritte} can self-consitently calculate the temperature field, chemical abundances and level populations.
+
+	\textsc{Magritte} is especially designed to have a well scaling performance on various computer architectures.   in stellar winds and perform synthetic observations. We will apply {\sc Margritte} by post-processing snapshots of hydrodynamical wind and bowshock simulations and will present its integration in self-consistent hydro-chemical AGB wind models.
 \end{abstract}
 
 % Select between one and six entries from the list of approved keywords.
@@ -130,32 +133,28 @@ radiative transfer, astrochemistry, methods: numerical
 
 %%%%%%%%%%%%%%%%% BODY OF PAPER %%%%%%%%%%%%%%%%%%
 
-% The MNRAS class isn't designed to include a table of contents, but for this document one is useful.
-% I therefore have to do some kludging to make it work without masses of blank space.
-\begingroup
-\let\clearpage\relax
-% \tableofcontents
-\endgroup
-\newpage
-
 
 \section{Introduction}
 
-Radiative transfer plays a key role in the dynamics, the chemistry and the energy balance of all kinds of astrophysical objects. It provides the radiative pressure to drive stellar winds, it affects the chemistry through various photoionization and photodissociation reactions, and it can very efficiently heat or cool very specific regions of a gas. Therefore it is essential in modelling these objects to properly account for all radiative processes and their interdependence. This however can be complicated by i) an intricate 3D geometrical structure shielding or exposing specific regions to radiation, ii) the scattering by dust or free electrons, and iii) the mixing in frequency space due to Doppler shifts caused by velocity gradients in the medium. The tight coupling between radiative transfer and the often very specialized and diverse dynamical and chemical models furthermore requires a modular code that can easily be integrated into various frameworks. To address these needs we will present \textsc{Magritte}: a new multidimensional accelerated general-purpose radiative transfer code. \textsc{Magritte} is especially designed to have a well scaling performance on various computer architectures.  Appended with a dedicated chemistry and thermal balance module it can self-consitently calculate the temperature field, chemical abundances and level populations. Magritte is a deterministic ray-tracing code that obtains the radiation field by solving the transfer equation along a fixed set of rays originating from each grid cell. It iteratively accounts for scattering and treats the full frequency space. This allows us to self-consistently model the chemistry and energy balance in stellar winds and perform synthetic observations. We will apply {\sc Margritte} by post-processing snapshots of hydrodynamical wind and bowshock simulations and will present its integration in self-consistent hydro-chemical AGB wind models.
+Radiative transfer processes play a central role in the dynamics, the chemistry and the energy balance of all kinds of astrophysical objects. It provides a radiative pressure that can drive the dynamics, it affects the chemistry through various photoionization and photodissociation reactions, and it can very efficiently heat or cool very specific regions. Furthermore the radiative transfer determines how these objects appear in observations: which regions are visible in what part of the spectrum. Therefore it is essential in astrophysical modelling to properly account for all radiative processes and their interdependence. This however can be highly complicated by i) an intricate 3D geometrical structure shielding or exposing specific regions to radiation, ii) the scattering of radiation by dust or free electrons yielding additional non-trivial coupling between the geometry and the radiation field, and iii) the mixing in frequency space due to Doppler shifts caused by velocity gradients in the medium. The tight coupling between the radiative processes and the often very specialized but diverse dynamical and chemical models furthermore requires a modular solution method that can easily be integrated into various frameworks.
 
-Post-processing and synthetic observations \citep{Haworth2017}.
+There are two main computational strategies used to solve radiative transfer problems. There are the probabilistic (Monte Carlo) codes e.g. \citep{SKIRT2011, RADMC2012, CMACIONIZE2018} and deterministic ray-tracing codes e.g. \citep{SPHRAY2011, Bisbas2012}. Nowadays most radiative transfer codes use probabilistic methods. They mimic the physical photon transport by propagating a number of photon packets through the medium. The main issue with this approach is that photon packets can get trapped in optically thick regions of the medium which can severely increase the computation time. Although many techniques have been devised to avoid the trapping of photon packets it remains a serious bottleneck for probabilistic codes. Deterministic ray-tracing codes do not suffer from photon trapping. They obtain the radiation field by (iteratively) solving the transfer equation along a number of fixed rays. The fixed (deterministic) computational scheme moreover leads to various opportunities for optimization (De Ceuster et al. \textit{in prep.}).
 
-New C++ code based on 3D-PDR \citep{Bisbas2012} improved performance. separate modules for chemistry, radiative transfer and thermal balance.
+In this paper we present \textsc{Magritte}: a new multidimensional accelerated general-purpose radiative transfer code. \textsc{Magritte} is a deterministic ray-tracing code that is independent of the underlying grid structure. It can trace its rays only using the positions of the cell centers and the nearest neighbours lists. \textsc{Magritte} can iteratively account for anisotropic scattering by a range of dust species and free electrons. The methods are also flexible enough to be extended to scattering from aligned dust grains due to e.g. magnetic fields. The code treats the full frequency space including continuum radiation, and atomic and molecular lines. Appended with a dedicated chemistry and thermal balance module it can self-consitently calculate the temperature field, chemical abundances and level populations.
 
-In this paper we will mainly focus on the physics that is implemented in \textsc{Magritte} and how it can be used in a generic computational setup. In a forthcomming paper (De Ceuster et. al. \textit{in prep.}) we will investigate further optimization techniques that can be used to obtain optimal performance on various computing architectures.
+The development of the code started from the (open source) 3D astrochemistry code \textsc{3d-pdr}\footnote{\href{https://github.com/uclchem/3D-PDR}{github.com/uclchem/3D-PDR}} by \citet{Bisbas2012}. From there it was rewritten and restructured in a more object-oriented way in C++. Starting from an existing code allowed us to heavily test and benchmark the new structure used in \textsc{Magritte}. \textsc{3d-pdr} was made to self-consitently model the chemistry, some atomic and molecular lines and the thermal balance in phododissociation regions (PDRs). In \textsc{3d-pdr} the UV radiation field is obtained by direct integration, neglecting the diffusive radiation using the on-the-spot approximation \citep{Osterbrock1974}. When only considering external UV sources, this approximation is simple enough to allow for a self-consistent treatment of the UV radiation field and the UV photochemistry. The atomic and molecular line tranfer in \textsc{3d-pdr} is treated in the escape probability formalism using the large velocity gradient (LVG) or Sobolev approximation \citep{Sobolev1960, Castor1970, deJong1975, Poelman2005}. Using this approximation the line transfer can be used to calculate the radiative cooling fast enough to self-consitently calculate the temperature field by assuming thermal balance. Although the above assumptions are very useful and reasonable in some situations, they highly limit the applicability of the code. Another limitation to \textsc{3d-pdr} is the high memory cost due to the way in which the rays are stored. This limits the computational size of the models that can be run.
 
-The paper is organized as follows. In section \ref{Computational} we present the new computational scheme and the different modules of Magritte. Section \ref{Benchmarks} describes the different benchmarks that were done to test the code and to compare its performance with 3D-PDR. In Section \ref{Applications} we present the new applications that have become feasible through the nove Finally our conclusions are discussed in Section \ref{Conclusions}.
+As a first step in the development of \textsc{Magritte} the old ray-tracer was rewritten to make use of the neighbours lists of the grid points. This improved its speed which allowed us to trace the rays on-the-fly thus avoiding the need to store them. This drastically reduces the memory cost. Afterwards the atomic and molecular line radiative transfer was replaced by an approximated lambda iteration (ALI) scheme. The new scheme does not make any assumptions on the velocity field and was extened to account for dust scattering. Finally the thermal balance module that self-consistently calculates the temperature field was made more robust. Thanks to the new grid-independent structure of \textsc{Magritte} we have a lot of flexibility in the way we use the grid. We can start the temperature calculations on a very coarse grid and use a slow but careful method to get an idea of the temperature field. Then we can interpolate this onto a more refined grid and recalculate the temperature using a faster method. Since we already had a reasonable idea of the temperature to start with, the faster method will still be stable. The flexibility to make the optimal trade-off between stability and performance is the guiding idea in the object-oriented design and structure of \textsc{Magritte}.
+
+In this paper we mainly focus on the new physics that is implemented in \textsc{Magritte} and benchmark the accuracy of its output. In a forthcomming paper (De Ceuster et al. \textit{in prep.}) we will investigate further optimization and parallelization techniques that can be used to obtain optimal and scalable performance of \textsc{Magritte} on various computer architectures. Afterwards we plan to demonstrate the versatillity of the code by post-processing snapshots of hydrodynamical simulations of both stellar winds and composite galaxies. To demonstrate the modularity we plan to integrate it in \textsc{amrvac} \citep{Xia2018} to be used together with \textsc{krome} \citep{Grassi2014} in self-consistent radiative hydro-chemical AGB wind models.
+
+This paper is organized as follows. In section \ref{Computational} we present the new computational scheme of \textsc{Magritte}. Section \ref{Benchmarks} describes the different benchmarks that were done to test the different modules and to compare its performance against \textsc{3d-pdr}. In Section \ref{Applications} we present some first novel applications. Finally our conclusions are discussed in Section \ref{Conclusions}.
 
 
 \section{Computational Scheme}
 \label{Computational}
 
-Although \textsc{Magritte} is based on \textsc{3d-pdr} (Fortran), the whole code has been rewritten in C++. As input, \textsc{Magritte} takes an unstructured grid. For each grid cell one needs to specify the cell center, the total density and the local gas velocity. If known, one can also specify the nearest neighbours for each cell, otherwise these are calculated by \textsc{Magritte}. Except for the neighbours no other attributes of the grid (e.g. cell edges or faces) are needed. The code does not dependent on the underlying tessellation of the grid. This enables us to easily handle various types of input, from AMR-grids to Voronoi grids as well as SPH-particle data\footnote{We are aware that specifying a certain type of grid (e.g. Voronoi) can further improve the performance in terms of speed. In future versions, when \textsc{Magritte} is used in combination with certain other codes, we might optimize for certain grids.}.
+Although \textsc{Magritte} is based on \textsc{3d-pdr} (Fortran), the whole code has been rewritten and restructured in C++. As input, \textsc{Magritte} takes an unstructured grid. For each grid cell one needs to specify the cell center, the total density and the local gas velocity. If known, one can also specify the nearest neighbours for each cell, otherwise these are calculated by \textsc{Magritte}. Except for the neighbours no other attributes of the grid (e.g. cell edges or faces) are needed. The code does not dependent on the underlying structure (i.e. the tessellation) of the grid. This enables us to easily handle various types of input, from AMR-grids to Voronoi grids as well as SPH-particle data\footnote{We are aware that specifying a certain type of grid (e.g. Voronoi) can further improve the performance in terms of speed. In future versions, when \textsc{Magritte} is used in combination with certain other codes, we will optimize for certain grids.}.
 
 
 \begin{figure}
@@ -172,7 +171,7 @@ Although \textsc{Magritte} is based on \textsc{3d-pdr} (Fortran), the whole code
 
 \subsubsection{Constructing the rays}
 
-In order to solve the transfer equation along a certain ray, we need to know the emissivity and opacity of the cells that are encountered along that ray. Furthermore we need to know the path length of a ray is through a certain cell. This is slightly complicated since the only geometrical information we required from the cells is the location of their cell center and their nearest neighbours. The solution as implemented in \textsc{Magritte} is to walk along the ray and project nearest cell centers onto the ray. Consider a ray originating from a cell, say $o$ (see figure \ref{next_cell}). Clearly the cell $o$ itself should lie on the ray. The next cell to be projected on the ray is the neighbour of $o$ that lies closest to the ray. We will call this cell $p_{1}$. Now the next cell to be projected is the neighbour of $p_{1}$ that lies closest to the ray and that is further away from $o$ than $p_{1}$. The last condition is there to ensure that one proceeds along the ray towards the boundary. This process is repeated untill the boundary of the gird is reached.
+In order to solve the transfer equation along a certain ray, we need to know the emissivity and opacity of the cells that are encountered along that ray. Furthermore we need to know the path length of a ray through a certain cell. This is slightly complicated since the only geometrical information we required from the cells is the location of their cell center and their nearest neighbours. The solution as implemented in \textsc{Magritte} is to walk along the ray and project nearest cell centers onto the ray. Consider a ray originating from a cell, say $o$ (see figure \ref{next_cell}). Clearly the cell $o$ itself should lie on the ray. The next cell to be projected on the ray is the neighbour of $o$ that lies closest to the ray. We will call this cell $p_{1}$. Now the next cell to be projected is the neighbour of $p_{1}$ that lies closest to the ray and that is further away from $o$ than $p_{1}$. The last condition is there to ensure that one proceeds along the ray towards the boundary. This process is repeated untill the boundary of the gird is reached.
 
 The above algorithm constructs the ray from a given cell outward to the boundary. However it is also useful to be able to do the opposite and construct a ray from the boundary inward towards a certain cell. We will refer to this cell for the moment as the origin. To do this one needs to know the end point of each ray, i.e. the final cell of the boundary that will be projected on the ray. These are calculated and stored in the setup of \textsc{Magritte}. Once the endpoints are known the above algorithm can be used to walk along the ray from the boundary to the origin of the ray. The only difference is that one should pick the next cell closest to the ray and that is closer to the origin instead off further away. The last condition is again there to ensure that one recedes along the ray back to the origin.
 
@@ -403,25 +402,14 @@ This simple reorderig of terms in the transition rates yields a significant impr
 \section{Scattering in the Feautrier formalism}
 \label{Scattering}
 
-The radiative transfer equation relates the change in the specific monochromatic intensity $I_{\nu}(\x,\n)$ along a ray in direction $\n$ to the local emissivity and opacity,
-\begin{equation}
-	\n \cdot \nabla I_{\nu}(\x,\n) \ = \ \eta^{\,\text{eff.}}_{\nu}(\x,\n) \ - \ \chi^{\,\text{eff.}}_{\nu}(\x) \ I_{\nu}(\x,\n).
-\label{transfer}
-\end{equation}
-It is usually fair to assume that both the emissivity $\eta_{\nu}(\x)$ and the opacity $\chi_{\nu}(\x)$ are isotropic, i.e. independent of the direction $\n$. However, if we add the contributions for scattering \citep[see e.g.][]{Steinacker2013}, the effective emissivity gains a direction dependence.
+The radiative transfer equation relates the change in specific monochromatic intensity $I_{\nu}(\x,\n)$ along a ray in direction $\n$ to the local emissivity $\eta_{\nu}(\x)$ and opacity $\chi_{\nu}(\x)$. For local radiative processes one can assume that both the emissivity $\eta_{\nu}(\x)$ and the opacity $\chi_{\nu}(\x)$ are isotropic, i.e. independent of the direction $\n$. When considering scattering \citep[see e.g.][]{Chandrasekhar1960,Steinacker2013} there is an extra direction-dependent emmisivity term in the transfer equation
 \begin{equation}
 \begin{split}
-		\eta^{\,\text{eff.}}_{\nu}(\x,\n) \ &= \ \eta_{\nu}(\x) \ + \ \eta^{\,\text{sca.}}_{\nu}(\x,\n) \\
-		\chi^{\,\text{eff.}}_{\nu}(\x,\n)   \ &= \ \chi_{\nu}(\x) \ + \ \chi^{\,\text{sca.}}_{\nu}(\x,\n),
+	\n \cdot \nabla I_{\nu}(\x,\n) \ = & \ \eta_{\nu}(\x) \ - \ \chi_{\nu}(\x) \ I_{\nu}(\x,\n) \\ & \ + \ \oint \D\Omega \ \Psi_{\nu}(\x, \n \, ,\n') \ I_{\nu}(\x,\n').
+\label{transfer}
 \end{split}
-\label{scattering}
 \end{equation}
-where the emissivity due to scattering is given by
-\begin{equation}
-	\eta^{\,\text{sca.}}_{\nu}(\x,\n) \ = \ \chi^{\,\text{sca.}}_{\nu}(\x) \oint \D\Omega \ \Phi(\n\cdot\n') \ I_{\nu}(\x,\n').
-\label{etasca}
-\end{equation}
-$\chi^{\,\text{sca.}}_{\nu}(\x)$ is the extra opacity solely dus to the scattering and $\Phi(\n\cdot\n')$ is the scattering phase function which gives the probability of an incoming photon along direction $\n'$ to be scattered in direction $\n$. Note that we assumed the scattering opacity to be isotropic and the phase function to only depend on the angle between the incoming and outgoing photon. These are valid assumptions if there is no significant alignment in the dust grains. For notational convenience we will drop all position dependences from here on. Now we can proceed, as suggested by \citet{Feautrier1964}, by defining
+where $\Psi(\x, \n \, ,\n')$ is the scattering redistribution function which gives the probability of an incoming photon along direction $\n'$ to be absorbed and then scattered in direction $\n$. To solve the transfer equation we can proceed, as suggested by \citet{Feautrier1964}, by defining
 \begin{equation}
 \begin{split}
 		u_{\nu}(\n) \ &= \ \frac{1}{2}\Big( I_{\nu}(\n) \ + \ I_{\nu}(-\n) \Big), \\
@@ -431,16 +419,16 @@ $\chi^{\,\text{sca.}}_{\nu}(\x)$ is the extra opacity solely dus to the scatteri
 Adding and subtracting the transfer equation (\ref{transfer}) for $\n$ and $-\n$ yields a coupled set of equation for $u_{\nu}(\n)$ and $v_{\nu}(\n)$.
 \begin{equation}
 \begin{split}
-		\n \cdot \nabla u_{\nu}(\n) \ = \ & \frac{1}{2}\Big( \eta^{\,\text{eff.}}_{\nu}(\n)
-		\ - \ \eta^{\,\text{eff.}}_{\nu}(-\n) \Big) \ - \ \chi^{\,\text{eff.}}_{\nu} \ v_{\nu}(\n) \\
-		\n \cdot \nabla v_{\nu}(\n) \ = \ & \frac{1}{2}\Big( \eta^{\,\text{eff.}}_{\nu}(\n)
-		\ + \ \eta^{\,\text{eff.}}_{\nu}(-\n) \Big) \ - \ \chi^{\,\text{eff.}}_{\nu} \ u_{\nu}(\n)
+		\n \cdot \nabla u_{\nu}(\n) \ = \ & \frac{1}{2}\Big( \eta_{\nu}(\n)
+		\ - \ \eta_{\nu}(-\n) \Big) \ - \ \chi_{\nu} \ v_{\nu}(\n) \\
+		\n \cdot \nabla v_{\nu}(\n) \ = \ & \frac{1}{2}\Big( \eta_{\nu}(\n)
+		\ + \ \eta_{\nu}(-\n) \Big) \ - \ \chi_{\nu} \ u_{\nu}(\n)
 \end{split}
 \label{uv}
 \end{equation}
-Defining the effective monochromatic optical depth
+Defining the monochromatic optical depth as usual
 \begin{equation}
-	\D\tau_{\nu} \ = \ \chi^{\,\text{eff.}}_{\nu} \ \n \cdot \D \x,
+	\D\tau_{\nu} \ = \ \chi_{\nu} \ \n \cdot \D \x,
 \end{equation}
 equation (\ref{uv}) can be solved for $u_{\nu}(\x,\n)$.
 \begin{equation}

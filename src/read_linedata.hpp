@@ -13,13 +13,13 @@
 // read_linedata: read data files containing line information in LAMBDA/RADEX format
 // ---------------------------------------------------------------------------------
 
-int read_linedata (const std::string *line_datafile, LINE_SPECIES *line_species, SPECIES species);
+int read_linedata (const std::string *line_datafile, LINES *lines, SPECIES species);
 
 
 // extract_collision_partner: extract species corresponding to collision partner
 // -----------------------------------------------------------------------------
 
-int extract_collision_partner (SPECIES species, LINE_SPECIES *line_species, char *buffer, int lspec, int par);
+int extract_collision_partner (SPECIES species, LINES *lines, char *buffer, int lspec, int par);
 
 
 #endif // __READ_LINEDATA_HPP_INCLUDED__

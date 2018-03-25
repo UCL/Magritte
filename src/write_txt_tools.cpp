@@ -13,11 +13,41 @@
 #include <sstream>
 
 #include "declarations.hpp"
-#include "write_output.hpp"
-#include "species_tools.hpp"
+#include "write_txt_tools.hpp"
 #include "radfield_tools.hpp"
 #include "initializers.hpp"
 #include "calc_LTE_populations.hpp"
+
+
+// write_txt_output: write output in txt format
+// --------------------------------------------
+
+int write_txt_output (std::string tag, long ncells, CELL *cell, LINES lines)
+{
+
+  // write_abundances (tag, NCELLS, cell);
+
+  // write_transition_levels (tag, lines);
+
+  // write_level_populations (tag, NCELLS, cell, lines);
+
+  // write_line_intensities (tag, NCELLS, cell, lines);
+
+  write_temperature_gas (tag, NCELLS, cell);
+
+  write_temperature_gas_prev(tag, NCELLS, cell);
+
+  write_thermal_ratio (tag, NCELLS, cell);
+
+  write_thermal_ratio_prev(tag, NCELLS, cell);
+
+  // write_temperature_dust (tag, NCELLS, cell);
+
+
+  return (0);
+
+}
+
 
 
 
@@ -202,7 +232,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species)
+int write_level_populations (std::string tag, long ncells, CELL *cell, LINES lines)
 {
 
   if (!tag.empty())
@@ -213,7 +243,7 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPEC
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = line_species.sym[lspec];
+    std::string lspec_name = lines.sym[lspec];
     std::string file_name  = output_directory + "level_populations_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen (file_name.c_str(), "w");
@@ -253,7 +283,7 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPEC
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species)
+int write_line_intensities (std::string tag, long ncells, CELL *cell, LINES lines)
 {
 
   if(!tag.empty())
@@ -264,7 +294,7 @@ int write_line_intensities (std::string tag, long ncells, CELL *cell, LINE_SPECI
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = line_species.sym[lspec];
+    std::string lspec_name = lines.sym[lspec];
 
     std::string file_name = output_directory + "line_intensities_" + lspec_name + tag + ".txt";
 
@@ -292,6 +322,81 @@ int write_line_intensities (std::string tag, long ncells, CELL *cell, LINE_SPECI
     fclose (file);
 
   }
+
+
+  return (0);
+
+}
+
+
+
+
+// write_thermal_ratio: write thermal ratio at each cell
+// -----------------------------------------------------
+
+int write_thermal_ratio (std::string tag, long ncells, CELL *cell)
+{
+
+  if (!tag.empty())
+  {
+    tag = "_" + tag;
+  }
+
+  std::string file_name = output_directory + "thermal_ratio" + tag + ".txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%lE\n", cell[n].thermal_ratio);
+  }
+
+  fclose (file);
+
+
+  return (0);
+
+}
+
+
+
+// write_thermal_ratio: write thermal ratio at each cell
+// -----------------------------------------------------
+
+int write_thermal_ratio_prev (std::string tag, long ncells, CELL *cell)
+{
+
+  if (!tag.empty())
+  {
+    tag = "_" + tag;
+  }
+
+  std::string file_name = output_directory + "thermal_ratio_prev" + tag + ".txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+
+  for (long n = 0; n < NCELLS; n++)
+  {
+    fprintf (file, "%lE\n", cell[n].thermal_ratio_prev);
+  }
+
+  fclose (file);
 
 
   return (0);
@@ -884,7 +989,7 @@ int write_double_2 (std::string name, std::string tag, long nrows, long ncols, d
 // write_Einstein_coeff: write Einstein A, B or C coefficients
 // -----------------------------------------------------------
 
-int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
+int write_Einstein_coeff (std::string tag, LINES lines,
                           double *A_coeff, double *B_coeff, double *C_coeff)
 {
 
@@ -896,7 +1001,7 @@ int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = line_species.sym[lspec];
+    std::string lspec_name = lines.sym[lspec];
 
 
     std::string file_name_A = output_directory + "Einstein_A_" + lspec_name + tag + ".txt";
@@ -934,8 +1039,8 @@ int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
     {
       for (long col = 0; col < nlev[lspec]; col++)
       {
-        fprintf (file_A, "%lE\t", line_species.A_coeff[LSPECLEVLEV(lspec,row,col)]);
-        fprintf (file_B, "%lE\t", line_species.B_coeff[LSPECLEVLEV(lspec,row,col)]);
+        fprintf (file_A, "%lE\t", lines.A_coeff[LSPECLEVLEV(lspec,row,col)]);
+        fprintf (file_B, "%lE\t", lines.B_coeff[LSPECLEVLEV(lspec,row,col)]);
         fprintf (file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
       }
 
@@ -962,7 +1067,7 @@ int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species,
 // write_R: write the transition matrix R
 // --------------------------------------
 
-int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long o, double *R)
+int write_R (std::string tag, long ncells, LINES lines, long o, double *R)
 {
 
   if (!tag.empty())
@@ -973,7 +1078,7 @@ int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long o, do
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = line_species.sym[lspec];
+    std::string lspec_name = lines.sym[lspec];
 
     std::string file_name = output_directory + "R_" + lspec_name + tag + ".txt";
 
@@ -1015,7 +1120,7 @@ int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long o, do
 // write_transition_levels: write levels corresponding to each transition
 // ----------------------------------------------------------------------
 
-int write_transition_levels (std::string tag, LINE_SPECIES line_species)
+int write_transition_levels (std::string tag, LINES lines)
 {
 
   if (!tag.empty())
@@ -1026,7 +1131,7 @@ int write_transition_levels (std::string tag, LINE_SPECIES line_species)
 
   for (int lspec = 0; lspec < NLSPEC; lspec++)
   {
-    std::string lspec_name = line_species.sym[lspec];
+    std::string lspec_name = lines.sym[lspec];
 
     std::string file_name = output_directory + "transition_levels_" + lspec_name + tag + ".txt";
 
@@ -1043,8 +1148,8 @@ int write_transition_levels (std::string tag, LINE_SPECIES line_species)
 
     for (int kr = 0; kr < nrad[lspec]; kr++)
     {
-      int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-      int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+      int i = lines.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+      int j = lines.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
       fprintf (file, "%d\t%d\n", i, j);
 

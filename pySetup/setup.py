@@ -14,7 +14,8 @@ numberOfLines    = setupFunctions.numberOfLines
 vectorize        = setupFunctions.vectorize
 writeHeader      = setupFunctions.writeHeader
 writeDefinition  = setupFunctions.writeDefinition
-writeVariable    = setupFunctions.writeVariable
+readSpeciesNames = setupFunctions.readSpeciesNames
+getSpeciesNumber = setupFunctions.getSpeciesNumber
 import lineData
 LineData  = lineData.LineData
 
@@ -47,6 +48,7 @@ def setupMagritte():
     # Get number of chemical species
     specDataFile = getFilePath('SPEC_DATAFILE')
     nspec        = numberOfLines(specDataFile) + 2
+    speciesNames = readSpeciesNames(specDataFile)
     # Get number of chemical reactions
     reacDataFile = getFilePath('REAC_DATAFILE')
     nreac        = numberOfLines(reacDataFile)
@@ -54,11 +56,16 @@ def setupMagritte():
     lineDataFiles = getFilePath('LINE_DATAFILES')
     if not isinstance(lineDataFiles, list):
         lineDataFiles = [lineDataFiles]
-    nlspec        = len(lineDataFiles)
+    nlspec = len(lineDataFiles)
     # Read line data files
     dataFormat = getVariable('DATA_FORMAT', 'str')
     lineData   = [LineData(fileName, dataFormat) for fileName in lineDataFiles]
-    # print lineData[0].C_coeff
+    # Get species numbers of line producing species
+    name   = [ld.name for ld in lineData]
+    number = getSpeciesNumber(speciesNames, name)
+    # Get species numbers of collision partners
+    partner   = vectorize([ld.partner   for ld in lineData])
+    partnerNr = getSpeciesNumber(speciesNames, partner)
     # Setup data structures
     tot_nlev                 = 0
     tot_nrad                 = 0
@@ -105,8 +112,7 @@ def setupMagritte():
     fileName = '../src/Magritte_config.hpp'
     writeHeader(fileName)
     writeDefinition(fileName, ncells,                   'NCELLS')
-    writeDefinition(fileName, ncellsInit,                   'NCELLS_INIT')
-
+    writeDefinition(fileName, ncellsInit,               'NCELLS_INIT')
     writeDefinition(fileName, nspec,                    'NSPEC')
     writeDefinition(fileName, nreac,                    'NREAC')
     writeDefinition(fileName, nlspec,                   'NLSPEC')
@@ -136,6 +142,10 @@ def setupMagritte():
     writeDefinition(fileName, cum_tot_ncoltran,         'CUM_TOT_NCOLTRAN')
     writeDefinition(fileName, cum_tot_ncoltrantemp,     'CUM_TOT_NCOLTRANTEMP')
     # Setup definitions
+    name      = ['\"' + ld.name + '\"' for ld in lineData]   # format as C strings
+    orthoPara = vectorize([ld.orthoPara for ld in lineData])
+    orthoPara = ['\'' + op + '\'' for op in orthoPara]       # format as C strings
+    # Vectorize all variables
     energy    = vectorize([ld.energy    for ld in lineData])
     weight    = vectorize([ld.weight    for ld in lineData])
     irad      = vectorize([ld.irad      for ld in lineData])
@@ -145,20 +155,26 @@ def setupMagritte():
     B         = vectorize([ld.B         for ld in lineData])
     icol      = vectorize([ld.icol      for ld in lineData])
     jcol      = vectorize([ld.jcol      for ld in lineData])
+    coltemp   = vectorize([ld.coltemp   for ld in lineData])
     C_data    = vectorize([ld.C_data    for ld in lineData])
     # Write definitions.hpp
-    fileName = '../src/defs.hpp'
+    fileName = '../src/line_data.hpp'
     writeHeader(fileName)
-    writeVariable(fileName, energy,    'const double TESTenergy')
-    writeVariable(fileName, weight,    'const double TESTweight')
-    writeVariable(fileName, irad,      'const int    TESTirad')
-    writeVariable(fileName, jrad,      'const int    TESTjrad')
-    writeVariable(fileName, frequency, 'const double TESTfrequency')
-    writeVariable(fileName, A,         'const double TESTA_coeff')
-    writeVariable(fileName, B,         'const double TESTB_coeff')
-    writeVariable(fileName, icol,      'const int    TESTicol')
-    writeVariable(fileName, jcol,      'const int    TESTjcol')
-    writeVariable(fileName, C_data,    'const double TESTC_data')
+    writeDefinition(fileName, number,    'NUMBER')
+    writeDefinition(fileName, name,      'NAME')
+    writeDefinition(fileName, partnerNr, 'PARTNER_NR')
+    writeDefinition(fileName, orthoPara, 'ORTHO_PARA')
+    writeDefinition(fileName, energy,    'ENERGY')
+    writeDefinition(fileName, weight,    'WEIGHT')
+    writeDefinition(fileName, irad,      'IRAD')
+    writeDefinition(fileName, jrad,      'JRAD')
+    writeDefinition(fileName, frequency, 'FREQUENCY')
+    writeDefinition(fileName, A,         'A_COEFF')
+    writeDefinition(fileName, B,         'B_COEFF')
+    writeDefinition(fileName, icol,      'ICOL')
+    writeDefinition(fileName, jcol,      'JCOL')
+    writeDefinition(fileName, coltemp,   'COLTEMP')
+    writeDefinition(fileName, C_data,    'C_DATA')
 
 
 # Main

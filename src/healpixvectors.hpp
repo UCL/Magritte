@@ -35,6 +35,7 @@ struct HEALPIXVECTORS
 
 
   // Constructor defines rays based on DIMENSIONS and NRAYS
+  // ------------------------------------------------------
 
   HEALPIXVECTORS ();
 

@@ -12,31 +12,69 @@
 #include <sstream>
 
 #include "declarations.hpp"
-
 #include "write_output.hpp"
 #include "write_txt_tools.hpp"
 #include "write_vtu_tools.hpp"
 
 
-// write_txt_output: write output in txt format
-// --------------------------------------------
 
-int write_txt_output (long ncells, CELL *cell, LINE_SPECIES line_species)
+
+// write_output: write output
+// --------------------------
+
+int write_output (long ncells, CELL *cell, LINES lines)
 {
 
-  std::string tag = "";
+  // Get tag to distinguish outputs
 
-  write_abundances (tag, NCELLS, cell);
+  std::ostringstream conv_tag_nr;
+  conv_tag_nr << tag_nr;
+  std::string tag = conv_tag_nr.str();
 
-  write_transition_levels (tag, line_species);
+  tag_nr++;
 
-  write_level_populations (tag, NCELLS, cell, line_species);
 
-  write_line_intensities (tag, NCELLS, cell, line_species);
+# if   (INPUT_FORMAT == '.vtu')
 
-  write_temperature_gas (tag, NCELLS, cell);
+    write_vtu_output (tag, NCELLS, cell);
 
-  write_temperature_dust (tag, NCELLS, cell);
+# elif (INPUT_FORMAT == '.txt')
+
+    write_txt_output (tag, NCELLS, cell, lines);
+
+# endif
+
+
+  return (0);
+
+}
+
+
+
+
+// write_output_log: write output info
+// -----------------------------------
+
+int write_output_log ()
+{
+
+  std::string file_name = output_directory + "output.log";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+  // fprintf (file, "outputDirectory %s\n", output_directory.c_str());
+
+  fprintf (file, "tag_nr %d\n", tag_nr);
+
+  fclose (file);
 
 
   return (0);

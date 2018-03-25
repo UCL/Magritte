@@ -13,6 +13,12 @@
 #include "declarations.hpp"
 
 
+// write_txt_output: write output in txt format
+// --------------------------------------------
+
+int write_txt_output (std::string tag, long ncells, CELL *cell, LINES lines);
+
+
 // write_grid: write grid
 // ----------------------
 
@@ -40,13 +46,25 @@ int write_abundances (std::string tag, long ncells, CELL *cell);
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species);
+int write_level_populations (std::string tag, long ncells, CELL *cell, LINES lines);
 
 
 // write_line_intensities: write line intensities for each species, point and transition
 // -------------------------------------------------------------------------------------
 
-int write_line_intensities (std::string tag, long ncells, CELL *cell, LINE_SPECIES line_species);
+int write_line_intensities (std::string tag, long ncells, CELL *cell, LINES lines);
+
+
+// write_thermal_ratio: write thermal ratio at each cell
+// -----------------------------------------------------
+
+int write_thermal_ratio (std::string tag, long ncells, CELL *cell);
+
+
+// write_thermal_ratio_prev: write thermal ratio at each cell
+// -----------------------------------------------------
+
+int write_thermal_ratio_prev (std::string tag, long ncells, CELL *cell);
 
 
 // write_temperature_gas: write gas temperatures at each point
@@ -120,19 +138,19 @@ int write_double_2 (std::string name, std::string tag, long nrows, long ncols, d
 // write_Einstein_coeff: write  Einstein A, B or C coefficients
 // ------------------------------------------------------------
 
-int write_Einstein_coeff (std::string tag, LINE_SPECIES line_species, double *C_coeff);
+int write_Einstein_coeff (std::string tag, LINES lines, double *C_coeff);
 
 
 // write_R: write transition matrix R
 // ----------------------------------
 
-int write_R (std::string tag, long ncells, LINE_SPECIES line_species, long o, double *R);
+int write_R (std::string tag, long ncells, LINES lines, long o, double *R);
 
 
 // write_transition_levels: write levels corresponding to each transition
 // ----------------------------------------------------------------------
 
-int write_transition_levels (std::string tag, LINE_SPECIES line_species);
+int write_transition_levels (std::string tag, LINES lines);
 
 
 // write_LTE_deviation: write relative deviation of level populations from LTE value

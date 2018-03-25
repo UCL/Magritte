@@ -429,7 +429,7 @@
     \end{center}%
     \vfill%
     \begin{center}%
-    A progress report submitted in partial fulfillment \\
+    Upgrade report submitted in partial fulfillment \\
     of the requirements for the degree of \\
     \textbf{\@degree@string} \\
     of \\

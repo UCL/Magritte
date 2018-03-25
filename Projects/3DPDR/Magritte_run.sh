@@ -4,7 +4,6 @@ project_folder="$(pwd)/"
 
 Magritte_folder="/home/frederik/Dropbox/Astro/Magritte"
 
-
 # Go to Magritte folder
 cd $Magritte_folder
 

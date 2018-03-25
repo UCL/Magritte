@@ -10,7 +10,7 @@
 #include <string>
 
 #include "declarations.hpp"
-#include "../src/directories.hpp"
+#include "directories.hpp"
 
 
 // Output directory (absolute path)
@@ -42,6 +42,8 @@ const std::string reac_datafile     = project_folder + reac_datafile_rel;   // a
 
 
 const std::string line_datafile[NLSPEC] = LINE_DATAFILES;   // list of line data files
+
+int tag_nr = 0;   // Number of times output is already written
 
 
 // Level populations

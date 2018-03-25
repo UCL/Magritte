@@ -18,7 +18,7 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIES line_species,
+int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines,
              double *Lambda_diagonal, double *mean_intensity_eff,
              double *source, double *opacity, long origin, int lspec, int kr)
 {
@@ -27,8 +27,8 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIE
   long mm_ij = LSPECRAD(lspec, kr);             // mean_intensity, S and opacity index
 
 
-  int i = line_species.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-  int j = line_species.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+  int i = lines.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+  int j = lines.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 
   long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
 
@@ -90,7 +90,7 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIE
 
     // Calculate ar's contribution to escape probability
 
-    tau_ar = CC / line_species.frequency[b_ij] / speed_width * tau_ar;
+    tau_ar = CC / lines.frequency[b_ij] / speed_width * tau_ar;
 
 
     if (tau_ar < -5.0)
@@ -141,7 +141,7 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIE
 
     // Calculate r's contribution to escape probability
 
-    tau_r = CC / line_species.frequency[b_ij] / speed_width * tau_r;
+    tau_r = CC / lines.frequency[b_ij] / speed_width * tau_r;
 
 
     if (tau_r < -5.0)
@@ -173,14 +173,14 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINE_SPECIE
 
   // Continuum radiation is assumed to be local
 
-  double factor          = 2.0*HH*pow(line_species.frequency[b_ij],3)/pow(CC,2);
+  double factor          = 2.0*HH*pow(lines.frequency[b_ij],3)/pow(CC,2);
 
   double rho_grain       = 2.0;
   double ngrain          = 2.0E-12*cell[origin].density*METALLICITY*100.0/GAS_TO_DUST;
-  double emissivity_dust = rho_grain*ngrain*0.01*1.3*line_species.frequency[b_ij]/3.0E11;
+  double emissivity_dust = rho_grain*ngrain*0.01*1.3*lines.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/cell[origin].temperature.dust) - 1.0);
-  double Planck_CMB      = 1.0 / (exp(HH*line_species.frequency[b_ij]/KB/T_CMB) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cell[origin].temperature.dust) - 1.0);
+  double Planck_CMB      = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/T_CMB) - 1.0);
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 

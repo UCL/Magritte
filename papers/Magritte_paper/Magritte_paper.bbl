@@ -17,6 +17,18 @@
   {mn@eprint@\@tempb}{\@tempb:\@tempc}{\expandafter \expandafter \csname
   mn@eprint@\@tempb\endcsname \expandafter{\@tempc}}}
 
+\bibitem[\protect\citeauthoryear{{Altay}, {Croft}  \& {Pelupessy}}{{Altay}
+  et~al.}{2011}]{SPHRAY2011}
+{Altay} G.,  {Croft} R.~A.~C.,   {Pelupessy} I.,  2011, {SPHRAY: A Smoothed
+  Particle Hydrodynamics Ray Tracer for Radiative Transfer}, Astrophysics
+  Source Code Library (\mn@eprint {ascl} {1103.009})
+
+\bibitem[\protect\citeauthoryear{{Baes}, {Dejonghe}  \& {Davies}}{{Baes}
+  et~al.}{2011}]{SKIRT2011}
+{Baes} M.,  {Dejonghe} H.,   {Davies} J.,  2011, {SKIRT: Stellar Kinematics
+  Including Radiative Transfer}, Astrophysics Source Code Library (\mn@eprint
+  {ascl} {1109.003})
+
 \bibitem[\protect\citeauthoryear{Bisbas, Bell, Viti, Yates  \& Barlow}{Bisbas
   et~al.}{2012}]{Bisbas2012}
 Bisbas T.~G.,  Bell T.~A.,  Viti S.,  Yates J.,   Barlow M.~J.,  2012, \mn@doi
@@ -32,6 +44,17 @@ Bisbas T.~G.,  Bell T.~A.,  Viti S.,  Yates J.,   Barlow M.~J.,  2012, \mn@doi
 {Castor} J.~I.,  1970, \mn@doi [\mnras] {10.1093/mnras/149.2.111}, \href
   {http://adsabs.harvard.edu/abs/1970MNRAS.149..111C} {149, 111}
 
+\bibitem[\protect\citeauthoryear{{Chandrasekhar}}{{Chandrasekhar}}{1960}]{Chandrasekhar1960}
+{Chandrasekhar} S.,  1960, {Radiative transfer}
+
+\bibitem[\protect\citeauthoryear{{Dullemond}, {Juhasz}, {Pohl}, {Sereshti},
+  {Shetty}, {Peters}, {Commercon}  \& {Flock}}{{Dullemond}
+  et~al.}{2012}]{RADMC2012}
+{Dullemond} C.~P.,  {Juhasz} A.,  {Pohl} A.,  {Sereshti} F.,  {Shetty} R.,
+  {Peters} T.,  {Commercon} B.,   {Flock} M.,  2012, {RADMC-3D: A multi-purpose
+  radiative transfer tool}, Astrophysics Source Code Library (\mn@eprint {ascl}
+  {1202.015})
+
 \bibitem[\protect\citeauthoryear{{Feautrier}}{{Feautrier}}{1964}]{Feautrier1964}
 {Feautrier} P.,  1964, Comptes Rendus Academie des Sciences (serie non
   specifiee), \href {http://adsabs.harvard.edu/abs/1964CR....258.3189F} {258}
@@ -44,12 +67,12 @@ Bisbas T.~G.,  Bell T.~A.,  Viti S.,  Yates J.,   Barlow M.~J.,  2012, \mn@doi
   {10.1086/427976}, \href {http://adsabs.harvard.edu/abs/2005ApJ...622..759G}
   {622, 759}
 
-\bibitem[\protect\citeauthoryear{{Haworth}, {Glover}, {Koepferl}, {Bisbas}  \&
-  {Dale}}{{Haworth} et~al.}{2017}]{Haworth2017}
-{Haworth} T.~J.,  {Glover} S.~C.~O.,  {Koepferl} C.~M.,  {Bisbas} T.~G.,
-  {Dale} J.~E.,  2017, preprint, \href
-  {http://adsabs.harvard.edu/abs/2017arXiv171105275H} {} (\mn@eprint {arXiv}
-  {1711.05275})
+\bibitem[\protect\citeauthoryear{{Grassi}, {Bovino}, {Schleicher}, {Prieto},
+  {Seifried}, {Simoncini}  \& {Gianturco}}{{Grassi} et~al.}{2014}]{Grassi2014}
+{Grassi} T.,  {Bovino} S.,  {Schleicher} D.~R.~G.,  {Prieto} J.,  {Seifried}
+  D.,  {Simoncini} E.,   {Gianturco} F.~A.,  2014, \mn@doi [\mnras]
+  {10.1093/mnras/stu114}, \href
+  {http://adsabs.harvard.edu/abs/2014MNRAS.439.2386G} {439, 2386}
 
 \bibitem[\protect\citeauthoryear{Holdship, Viti, Jiménez-Serra, Makrymallis
   \& Priestley}{Holdship et~al.}{2017}]{Holdship2017}
@@ -59,6 +82,9 @@ Holdship J.,  Viti S.,  Jiménez-Serra I.,  Makrymallis A.,   Priestley F.,
 \bibitem[\protect\citeauthoryear{{Ng}}{{Ng}}{1974}]{Ng1974}
 {Ng} K.-C.,  1974, \mn@doi [\jcp] {10.1063/1.1682399}, \href
   {http://adsabs.harvard.edu/abs/1974JChPh..61.2680N} {61, 2680}
+
+\bibitem[\protect\citeauthoryear{{Osterbrock}}{{Osterbrock}}{1974}]{Osterbrock1974}
+{Osterbrock} D.~E.,  1974, {Astrophysics of Gaseous Nebulae}
 
 \bibitem[\protect\citeauthoryear{{Poelman} \& {Spaans}}{{Poelman} \&
   {Spaans}}{2005}]{Poelman2005}
@@ -85,11 +111,23 @@ Rybicki G.~B.,  Hummer D.~G.,  1991, Astron. Astrophys., 245, 171
   {10.1146/annurev-astro-082812-141042}, \href
   {http://adsabs.harvard.edu/abs/2013ARA%26A..51...63S} {51, 63}
 
+\bibitem[\protect\citeauthoryear{{Vandenbroucke} \& {Wood}}{{Vandenbroucke} \&
+  {Wood}}{2018}]{CMACIONIZE2018}
+{Vandenbroucke} B.,  {Wood} K.,  2018, {CMacIonize: Monte Carlo photoionisation
+  and moving-mesh radiation hydrodynamics}, Astrophysics Source Code Library
+  (\mn@eprint {arXiv} {1802.09528})
+
 \bibitem[\protect\citeauthoryear{{Woodall}, {Ag{\'u}ndez}, {Markwick-Kemper}
   \& {Millar}}{{Woodall} et~al.}{2007}]{Woodall2007}
 {Woodall} J.,  {Ag{\'u}ndez} M.,  {Markwick-Kemper} A.~J.,   {Millar} T.~J.,
   2007, \mn@doi [\aap] {10.1051/0004-6361:20064981}, \href
   {http://adsabs.harvard.edu/abs/2007A%26A...466.1197W} {466, 1197}
+
+\bibitem[\protect\citeauthoryear{{Xia}, {Teunissen}, {El Mellah}, {Chan{\'e}}
+  \& {Keppens}}{{Xia} et~al.}{2018}]{Xia2018}
+{Xia} C.,  {Teunissen} J.,  {El Mellah} I.,  {Chan{\'e}} E.,   {Keppens} R.,
+  2018, \mn@doi [\apjs] {10.3847/1538-4365/aaa6c8}, \href
+  {http://adsabs.harvard.edu/abs/2018ApJS..234...30X} {234, 30}
 
 \bibitem[\protect\citeauthoryear{{de Jong}, {Dalgarno}  \& {Chu}}{{de Jong}
   et~al.}{1975}]{deJong1975}

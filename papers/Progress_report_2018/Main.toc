@@ -10,7 +10,7 @@
 \contentsline {section}{\numberline {4.1}Bow-shocks between stellar wind and the ISM}{8}{section.4.1}
 \contentsline {section}{\numberline {4.2}Galaxies}{8}{section.4.2}
 \contentsline {section}{\numberline {4.3}Spectral distortions in the CMB}{8}{section.4.3}
-\contentsline {chapter}{\numberline {5}Conclusions and Future work}{9}{chapter.5}
+\contentsline {chapter}{\numberline {5}Conclusion}{9}{chapter.5}
 \contentsline {section}{\numberline {5.1}Project status}{9}{section.5.1}
 \contentsline {section}{\numberline {5.2}Future work}{9}{section.5.2}
 \contentsline {chapter}{Appendices}{10}{section.5.2}

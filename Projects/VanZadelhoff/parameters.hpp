@@ -8,19 +8,26 @@
 #define __PARAMETERS_HPP_INCLUDED__
 
 
-#define RUN_NUMBER "0"
-
 #define WRITE_INTERMEDIATE_OUTPUT false
 
 
 // Input files
-
 #define FIXED_NCELLS true
 #define INPUT_FORMAT '.txt'
+#define CELL_BASED  false
+
+#define NAME_DENSITY              "H2_density"
+#define NAME_VELOCITY             "velocity"
+#define NAME_VX                   "v1"
+#define NAME_VY                   "v2"
+#define NAME_VZ                   "v3"
+#define NAME_TEMPERATURE_GAS      "Gas_temperature"
+#define NAME_TEMPERATURE_DUST     "Gas_temperature"
+#define NAME_TEMPERATURE_GAS_PREV "Gas_temperature"
+#define NAME_CHEM_ABUNDANCES      "Mol_density"
 
 
 // VARIABLE GRID
-
 #define GRID_INIT "input/files/grid.txt"
 
 #define X_MIN -1.0E+00
@@ -43,23 +50,15 @@
 #define RESTART_DIRECTORY "input/files/"
 
 
-
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
 #define INPUTFILE "input/files/grid.txt"
 
-#define SPEC_DATAFILE  "data/species_reduced.txt"
-#define REAC_DATAFILE  "data/rates_reduced.txt"
+#define SPEC_DATAFILE  "data/species.txt"
+#define REAC_DATAFILE  "data/rates.txt"
 
-
-#define NLSPEC 4
-
-// #define LINE_DATAFILES {"data/12C+.txt", "data/16O.txt"}
-
-#define LINE_DATAFILES { "data/12CO.txt", \
-                         "data/12C.txt",  \
-                         "data/12C+.txt", \
-                         "data/16O.txt" }
+#define DATA_FORMAT "VanZadelhoff"
+#define LINE_DATAFILES {"data/hco+.dat"}
 
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
@@ -81,9 +80,9 @@
 // Number of various iterations
 
 #define MAX_NITERATIONS  150
-#define PRELIM_CHEM_ITER 5
-#define PRELIM_TB_ITER   5
-#define CHEM_ITER        3
+#define PRELIM_CHEM_ITER 0
+#define PRELIM_TB_ITER   0
+#define CHEM_ITER        0
 
 
 // Temperature range

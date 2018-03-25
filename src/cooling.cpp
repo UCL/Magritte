@@ -18,7 +18,7 @@
 // cooling: calculate total cooling
 // --------------------------------
 
-double cooling (long ncells, CELL *cell, LINE_SPECIES line_species, long o)
+double cooling (long ncells, CELL *cell, LINES lines, long o)
 {
 
   double cooling_radiative = 0.0;   // radiative cooling
@@ -36,8 +36,8 @@ double cooling (long ncells, CELL *cell, LINE_SPECIES line_species, long o)
 
       long m_ij = LSPECRAD(lspec,kr);   // mean intensity index
 
-      int i = line_species.irad[m_ij];   // i level index corresponding to transition kr
-      int j = line_species.jrad[m_ij];   // j level index corresponding to transition kr
+      int i = lines.irad[m_ij];   // i level index corresponding to transition kr
+      int j = lines.jrad[m_ij];   // j level index corresponding to transition kr
 
       long b_ij = LSPECLEVLEV(lspec,i,j);         // A_coeff, B_coeff and frequency index
       long b_ji = LSPECLEVLEV(lspec,j,i);         // A_coeff, B_coeff and frequency index
@@ -50,15 +50,15 @@ double cooling (long ncells, CELL *cell, LINE_SPECIES line_species, long o)
 
       double Source = 0.0;
 
-      double factor = 2.0 * HH * pow(line_species.frequency[b_ij], 3) / pow(CC, 2);
+      double factor = 2.0 * HH * pow(lines.frequency[b_ij], 3) / pow(CC, 2);
 
-      double tpop   =   cell[o].pop[p_j] * line_species.weight[LSPECLEV(lspec,i)]
-                      / cell[o].pop[p_i] / line_species.weight[LSPECLEV(lspec,j)] - 1.0;
+      double tpop   =   cell[o].pop[p_j] * lines.weight[LSPECLEV(lspec,i)]
+                      / cell[o].pop[p_i] / lines.weight[LSPECLEV(lspec,j)] - 1.0;
 
 
       if (fabs(tpop) < 1.0E-50)
       {
-        Source = HH * line_species.frequency[b_ij] * cell[o].pop[p_i] * line_species.A_coeff[b_ij] / 4.0 / PI;
+        Source = HH * lines.frequency[b_ij] * cell[o].pop[p_i] * lines.A_coeff[b_ij] / 4.0 / PI;
       }
 
       else if (cell[o].pop[p_i] > 0.0)
@@ -72,7 +72,7 @@ double cooling (long ncells, CELL *cell, LINE_SPECIES line_species, long o)
       if (Source != 0.0)
       {
         cooling_radiative = cooling_radiative
-                            + HH*line_species.frequency[b_ij] * line_species.A_coeff[b_ij] * cell[o].pop[p_i]
+                            + HH*lines.frequency[b_ij] * lines.A_coeff[b_ij] * cell[o].pop[p_i]
                               * (1.0 - cell[o].mean_intensity[m_ij]/Source);
       }
 

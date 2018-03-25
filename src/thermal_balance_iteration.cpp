@@ -24,7 +24,7 @@
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions, LINE_SPECIES line_species,
+int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions, LINES lines,
                                double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers)
 {
 
@@ -32,7 +32,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   // +++++++++++++++++++++++++++++
 
 
-  printf ("(thermal_balance_iteration): calculating chemical abundances \n\n");
+  printf ("(thermal_balance_iteration): calculating chemical abundances\n\n");
 
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
@@ -46,7 +46,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
   for (int chem_iteration = 0; chem_iteration < CHEM_ITER; chem_iteration++)
   {
-    printf ( "(thermal_balance_iteration):   chemistry iteration %d of %d \n",
+    printf ( "(thermal_balance_iteration):   chemistry iteration %d of %d\n",
              chem_iteration+1, CHEM_ITER );
 
 
@@ -64,7 +64,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
   printf ("\n(thermal_balance_iteration): time in chemistry: %lf sec\n", timers->chemistry.duration);
 
-  printf ("(thermal_balance_iteration): chemical abundances calculated \n\n");
+  printf ("(thermal_balance_iteration): chemical abundances calculated\n\n");
 
 
 
@@ -73,19 +73,19 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   // +++++++++++++++++++++++++++++++++++++++++
 
 
-  printf("(thermal_balance_iteration): calculating level populations \n\n");
+  printf("(thermal_balance_iteration): calculating level populations\n\n");
 
 
   // Initialize level populations with LTE values
 
-  calc_LTE_populations (NCELLS, cell, line_species);
+  calc_LTE_populations (NCELLS, cell, lines);
 
 
   // Calculate level populations for each line producing species
 
   timers->level_pop.start();
 
-  level_populations (NCELLS, cell, healpixvectors, species, line_species);
+  level_populations (NCELLS, cell, healpixvectors, species, lines);
 
   timers->level_pop.stop();
 
@@ -93,7 +93,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   printf("\n(thermal_balance_iteration): time in level_populations: %lf sec\n", timers->level_pop.duration);
 
 
-  printf("(thermal_balance_iteration): level populations calculated \n\n");
+  printf("(thermal_balance_iteration): level populations calculated\n\n");
 
 
 
@@ -102,7 +102,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   // +++++++++++++++++++++++++++++
 
 
-  printf("(thermal_balance_iteration): calculating heating and cooling \n\n");
+  printf("(thermal_balance_iteration): calculating heating and cooling\n\n");
 
 
   // Calculate column densities to get most recent reaction rates
@@ -113,7 +113,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   // Calculate thermal balance for each cell
 
 # pragma omp parallel                                                                                  \
-  shared (ncells, cell, species, reactions, column_H2, column_HD, column_C, column_CO, cum_nlev, line_species)   \
+  shared (ncells, cell, species, reactions, column_H2, column_HD, column_C, column_CO, cum_nlev, lines)   \
   default (none)
   {
 
@@ -133,7 +133,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
 
     double heating_total = heating (NCELLS, cell, species, reactions, o, heating_components);
-    double cooling_total = cooling (NCELLS, cell, line_species, o);
+    double cooling_total = cooling (NCELLS, cell, lines, o);
 
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;
@@ -152,7 +152,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   } // end of OpenMP parallel region
 
 
-  printf("(thermal_balance_iteration): heating and cooling calculated \n\n");
+  printf("(thermal_balance_iteration): heating and cooling calculated\n\n");
 
 
   return(0);

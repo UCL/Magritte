@@ -33,7 +33,7 @@
 // write_vtu_output: write all physical variables to vtu input grid
 // ----------------------------------------------------------------
 
-int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
+int write_vtu_output (std::string tag, long ncells, CELL *cell)
 {
 
   // Read data from .vtu file on which we need to append data
@@ -125,8 +125,12 @@ int write_vtu_output (long ncells, CELL *cell, std::string inputfile)
 
   // Write .vtu file
 
-  std::string file_name = output_directory + "new_grid.vtu";
-  // std::string file_name = project_folder + "new_grid.vtu";
+  if (tag != "")
+  {
+    tag = "_" + tag;
+  }
+
+  std::string file_name = output_directory + "grid" + tag + ".vtu";
 
 
   vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer

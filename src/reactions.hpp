@@ -53,11 +53,13 @@ struct REACTIONS
 
 
   // Constructor reads reaction data file
+  // ------------------------------------
 
   REACTIONS (std::string reac_datafile);
 
 
-  // Checks whether there data closer to actual temperature
+  // no_better_data: Checks whether there data closer to actual temperature
+  // ----------------------------------------------------------------------
 
   bool no_better_data (int reac, double temperature_gas);
 

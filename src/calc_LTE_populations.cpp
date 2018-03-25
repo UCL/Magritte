@@ -15,7 +15,7 @@
 // calc_LTE_populations: Calculates LTE level populations
 // ------------------------------------------------------
 
-int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
+int calc_LTE_populations (long ncells, CELL *cell, LINES lines)
 {
 
 
@@ -25,7 +25,7 @@ int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
   {
 
 #   pragma omp parallel                                          \
-    shared (ncells, cell, line_species, nlev, cum_nlev, lspec)   \
+    shared (ncells, cell, lines, nlev, cum_nlev, lspec)   \
     default (none)
     {
 
@@ -49,8 +49,8 @@ int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
         int l_i = LSPECLEV(lspec,i);
 
         partition_function = partition_function
-                             + line_species.weight[l_i]
-                               * exp( -line_species.energy[l_i] / (KB*cell[n].temperature.gas) );
+                             + lines.weight[l_i]
+                               * exp( -lines.energy[l_i] / (KB*cell[n].temperature.gas) );
       } // end of i loop over levels
 
 
@@ -60,8 +60,8 @@ int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
       {
         int l_i = LSPECLEV(lspec,i);
 
-        cell[n].pop[l_i] = cell[n].density * cell[n].abundance[line_species.nr[lspec]] * line_species.weight[l_i]
-                           * exp( -line_species.energy[l_i]/(KB*cell[n].temperature.gas) ) / partition_function;
+        cell[n].pop[l_i] = cell[n].density * cell[n].abundance[lines.nr[lspec]] * lines.weight[l_i]
+                           * exp( -lines.energy[l_i]/(KB*cell[n].temperature.gas) ) / partition_function;
 
         total_population = total_population + cell[n].pop[l_i];
 
@@ -70,7 +70,7 @@ int calc_LTE_populations (long ncells, CELL *cell, LINE_SPECIES line_species)
 
       // Check if total population adds up to density
 
-      if ((total_population-cell[n].density*cell[n].abundance[line_species.nr[lspec]])/total_population > 1.0E-3)
+      if ((total_population-cell[n].density*cell[n].abundance[lines.nr[lspec]])/total_population > 1.0E-3)
       {
         printf ("\nERROR : total of level populations differs from density !\n\n");
       }

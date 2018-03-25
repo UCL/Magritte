@@ -14,7 +14,7 @@
 // -----------------------------------------------------------
 
 int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
-                       SPECIES species, LINE_SPECIES line_species);
+                       SPECIES species, LINES lines);
 
 
 #endif // __LEVEL_POPULATIONS_HPP_INCLUDED__

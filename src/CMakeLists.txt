@@ -32,12 +32,11 @@ add_library(_MAGRITTE
 healpixvectors.cpp
 species.cpp
 reactions.cpp
+lines.cpp
 initializers.cpp
 chemistry.cpp
-species_tools.cpp
 read_input.cpp
-read_chemdata.cpp
-read_linedata.cpp
+# read_linedata.cpp
 ray_tracing.cpp
 heapsort.cpp
 reduce.cpp
@@ -51,7 +50,6 @@ thermal_balance.cpp
 thermal_balance_iteration.cpp
 calc_LTE_populations.cpp
 level_populations.cpp
-lines.cpp
 acceleration_Ng.cpp
 calc_C_coeff.cpp
 sobolev.cpp

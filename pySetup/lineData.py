@@ -25,6 +25,20 @@ def readDataFlt(fileName, start, stop, regex):
     return variable
 
 
+def extractCollisionPartner(fileName, line, elem):
+    # Returns collision partner and whether it is ortho or para (for H2)
+    with open(fileName) as dataFile:
+        data = dataFile.readlines()
+    partner   = re.findall(elem.replace('+','\+')+'\s*[\+\-]?\s*([\w\+\-]+)\s*', data[line])[0]
+    excess    = re.findall('[op]\-?', partner)
+    if (len(excess) > 0):
+        orthoPara = re.findall('[op]', partner)[0]
+        partner   = partner.replace(excess[0],'')
+    else:
+        orthoPara = 'n'
+    return [partner, orthoPara]
+
+
 def readColumn(fileName, start, nElem, columnNr, type):
     with open(fileName) as dataFile:
         lineNr = 0
@@ -71,6 +85,7 @@ class LineData():
 
         """ Read line data in LAMDA format """
 
+        self.name      = readColumn(fileName, start=1,            nElem=1,         columnNr=0, type='str')[0]
         self.mass      = readColumn(fileName, start=3,            nElem=1,         columnNr=0, type='float')[0]
         self.nlev      = readColumn(fileName, start=5,            nElem=1,         columnNr=0, type='int')[0]
         self.energy    = readColumn(fileName, start=7,            nElem=self.nlev, columnNr=1, type='float')
@@ -82,28 +97,32 @@ class LineData():
 
         nlr = self.nlev + self.nrad
 
-        self.ncoltran = []
-        self.ncoltemp = []
-        self.coltemp  = []
-        self.icol     = []
-        self.jcol     = []
-        self.C_coeff  = []
+        self.partner   = []
+        self.orthoPara = []
+        self.ncoltran  = []
+        self.ncoltemp  = []
+        self.coltemp   = []
+        self.icol      = []
+        self.jcol      = []
+        self.C_coeff   = []
 
         self.ncolpar = readColumn(fileName, start=11+nlr, nElem=1,  columnNr=0, type='int')[0]
-        index        = 15 + nlr
+        index        = 13 + nlr
 
         # Loop over the collision partners
         for colpar in range(self.ncolpar):
+            self.partner    += [extractCollisionPartner(fileName, line=index, elem=self.name)[0]]
+            self.orthoPara  += [extractCollisionPartner(fileName, line=index, elem=self.name)[1]]
 
-            self.ncoltran += [readColumn(fileName, start=index,   nElem=1, columnNr=0, type='int')[0]]
-            self.ncoltemp += [readColumn(fileName, start=index+2, nElem=1, columnNr=0, type='int')[0]]
+            self.ncoltran += readColumn(fileName, start=index+2, nElem=1, columnNr=0, type='int')
+            self.ncoltemp += readColumn(fileName, start=index+4, nElem=1, columnNr=0, type='int')
 
-            self.coltemp  += [[readColumn(fileName, start=index+4, nElem=1, columnNr=temp, type='float')[0] for temp in range(self.ncoltemp[colpar])]]
+            self.coltemp  += [[readColumn(fileName, start=index+6, nElem=1, columnNr=temp, type='float')[0] for temp in range(self.ncoltemp[colpar])]]
 
-            self.icol     += [readColumn(fileName, start=index+6, nElem=self.ncoltran[colpar], columnNr=1, type='int')]
-            self.jcol     += [readColumn(fileName, start=index+6, nElem=self.ncoltran[colpar], columnNr=2, type='int')]
+            self.icol     += [readColumn(fileName, start=index+8, nElem=self.ncoltran[colpar], columnNr=1, type='int')]
+            self.jcol     += [readColumn(fileName, start=index+8, nElem=self.ncoltran[colpar], columnNr=2, type='int')]
 
-            self.C_coeff  += [[readColumn(fileName, start=index+6, nElem=self.ncoltran[colpar], columnNr=3+temp, type='float') for temp in range(self.ncoltemp[colpar])]]
+            self.C_coeff  += [[readColumn(fileName, start=index+8, nElem=self.ncoltran[colpar], columnNr=3+temp, type='float') for temp in range(self.ncoltemp[colpar])]]
 
             index += 9 + self.ncoltran[colpar]
 
@@ -112,6 +131,7 @@ class LineData():
 
         """ Read line data in RADEX format """
 
+        self.name     = readColumn(fileName,  start=0,  nElem=1,  columnNr=0, type='str')[0]
         self.mass     = readDataFlt(fileName, start=1,  stop=2,   regex='\d+\.\d+')[0]
         self.nlev     = readDataInt(fileName, start=2,  stop=3,   regex='\d+')[0]
         self.nrad     = readDataInt(fileName, start=2,  stop=3,   regex='\d+')[1]
@@ -121,13 +141,21 @@ class LineData():
         self.jrad     = readDataInt(fileName, start=9,  stop=10,  regex='\d+')
         self.A_coeff  = readDataFlt(fileName, start=10, stop=14,  regex='\d+\.\d{3}E[+-]?\d{2}')
 
-        self.ncolpar  = 1
-        self.ncoltran = readDataInt(fileName, start=14, stop=15,  regex='\d+')[0]
-        self.ncoltemp = readDataInt(fileName, start=14, stop=15,  regex='\d+')[1]
-        self.coltemp  = readDataFlt(fileName, start=14, stop=15,  regex='\d+\.\d+')
-        self.icol     = readDataInt(fileName, start=15, stop=24,  regex='\d+')
-        self.jcol     = readDataInt(fileName, start=24, stop=33,  regex='\d+')
-        self.C_coeff  = readDataFlt(fileName, start=33, stop=141, regex='\d+\.\d+E[+-]?\d+')
+        self.ncolpar   = 1
+        self.partner   = ['H2']
+        self.orthoPara = ['n']
+        self.ncoltran  = [readDataInt(fileName, start=14, stop=15,  regex='\d+')[0]]
+        self.ncoltemp  = [readDataInt(fileName, start=14, stop=15,  regex='\d+')[1]]
+        self.coltemp   = [readDataFlt(fileName, start=14, stop=15,  regex='\d+\.\d+')]
+        self.icol      = [readDataInt(fileName, start=15, stop=24,  regex='\d+')]
+        self.jcol      = [readDataInt(fileName, start=24, stop=33,  regex='\d+')]
+        C_temp         = readDataFlt(fileName, start=33, stop=141, regex='\d+\.\d+E[+-]?\d+')
+        # Group C_coeff elements (opposite of vectorize)
+        self.C_coeff = [zero2(self.ncoltemp[0], self.ncoltran[0])]
+        for temp in range(self.ncoltemp[0]):
+            for tran in range(self.ncoltran[0]):
+                self.C_coeff[0][temp][tran] = C_temp[tran + self.ncoltran[0]*temp]
+
 
 
 
@@ -147,6 +175,8 @@ class LineData():
         self.tot_ncoltrantemp = self.cum_ncoltrantemp[-1]+self.ncoltran[-1]*self.ncoltemp[-1]
 
     def setupMatrices(self):
+
+        """ Calculate derived line data """
 
         c = 2.99792458e+10   # speed of light in cgs
         h = 6.62606896E-27   # Planck's constant in cgs

@@ -20,8 +20,15 @@ vy          = np.zeros(ncells)
 vz          = np.zeros(ncells)
 v_turb      = data[5,:]
 
+zeros = np.zeros(ncells)
+ones  = np.ones(ncells)
+
 grid = np.stack((x, y, z, vx, vy, vz, density), axis=1)
 
-np.savetxt('files/grid.txt', grid, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
+abundance = abundance * density
 
+abun = np.stack((zeros, abundance, density, abundance, ones), axis=1)
+
+np.savetxt('files/grid.txt', grid, fmt='%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE')
 np.savetxt('files/temperature_gas.txt', temperature, fmt='%lE')
+np.savetxt('files/abundances.txt', abun, fmt='%lE\t%lE\t%lE\t%lE\t%lE')

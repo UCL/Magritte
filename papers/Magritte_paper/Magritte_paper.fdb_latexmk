@@ -1,15 +1,14 @@
 # Fdb version 3
-["bibtex Magritte_paper"] 1520679734 "Magritte_paper.aux" "Magritte_paper.bbl" "Magritte_paper" 1520679816
+["bibtex Magritte_paper"] 1521926885 "Magritte_paper.aux" "Magritte_paper.bbl" "Magritte_paper" 1521926886
   "./mnras.bst" 1431616402 43377 4db2f843e4986670b152898ac35c448e ""
-  "Magritte_paper.aux" 1520679815 7631 5080a53b0b20a8ecf9cfa47cfc592cad ""
+  "Magritte_paper.aux" 1521926886 8344 193da7d8d16e69a91857f011416054e1 ""
   "Magritte_paper.bcf" 0 -1 0 ""
-  "library.bib" 1520355228 9818 7dae1817aa95e44cfd255db24da87fef ""
+  "library.bib" 1521914861 14156 d13e493e3d1037a288c1212a9784b08c ""
   (generated)
-  "Magritte_paper.blg"
   "Magritte_paper.bbl"
-["pdflatex"] 1520679815 "Magritte_paper.tex" "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.pdf" "Magritte_paper" 1520679816
+["pdflatex"] 1521926885 "Magritte_paper.tex" "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.pdf" "Magritte_paper" 1521926886
   "/etc/texmf/web2c/texmf.cnf" 1490782050 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.aux" 1520679815 7631 5080a53b0b20a8ecf9cfa47cfc592cad ""
+  "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.aux" 1521926886 8344 193da7d8d16e69a91857f011416054e1 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc" 1422827479 2083 60e36f8eac802fcaf19eabe2633b406e ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
@@ -254,17 +253,17 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1503343927 31343 93828589fb0cea665e553ee5a17ad2d4 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1503421706 1863403 f3ff9a4253bcb5fb9a9baaf0c572cb01 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1503421733 3861264 4d6d2aea1e9ec06a6aa565dd168f16d9 ""
-  "Magritte_paper.aux" 1520679815 7631 5080a53b0b20a8ecf9cfa47cfc592cad ""
-  "Magritte_paper.bbl" 1520679735 5129 91c0025ece1e880c79d31bbcfd07759e "bibtex Magritte_paper"
-  "Magritte_paper.out" 1520679815 973 9399e668c2280144f41f30f07b131c25 ""
-  "Magritte_paper.tex" 1520679815 32833 e88291addfd119fc41970b607988f062 ""
+  "Magritte_paper.aux" 1521926886 8344 193da7d8d16e69a91857f011416054e1 ""
+  "Magritte_paper.bbl" 1521926885 7112 23d85f5718b3255892689dfe0fd0eeb8 "bibtex Magritte_paper"
+  "Magritte_paper.out" 1521926886 973 9399e668c2280144f41f30f07b131c25 ""
+  "Magritte_paper.tex" 1521926874 35337 91e119d35670586dc3a0cb704423640d ""
   "figures/next_cell.pdf" 1519329877 4238 800f27498044e563b82a290f6d210236 ""
   "figures/scheme.pdf" 1518561403 48053 1f326516afeed1a8b008ebeb7ad3ae2d ""
   "mnras.cls" 1432310464 62178 771897fe06ecb20a6e140bd3b990ffc5 ""
   (generated)
-  "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.log"
   "Magritte_paper.pdf"
   "Magritte_paper.aux"
   "Magritte_paper.log"
+  "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.log"
   "/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.pdf"
   "Magritte_paper.out"

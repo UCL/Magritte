@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.22)  10 MAR 2018 11:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.22)  24 MAR 2018 21:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -692,49 +692,43 @@ LaTeX Warning: Label `transfer' multiply defined.
 
 LaTeX Warning: Label `scattering' multiply defined.
 
-
-LaTeX Warning: Label `scattering' multiply defined.
-
-
-LaTeX Warning: Label `etasca' multiply defined.
-
 )
 \openout1 = `Magritte_paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 113.
-LaTeX Font Info:    Try loading font information for OML+ntxmi on input line 113.
+LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 114.
+LaTeX Font Info:    Try loading font information for OML+ntxmi on input line 114.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/omlntxmi.fd
 File: omlntxmi.fd 2015/08/25 Fontinst v1.933 font definitions for OML/ntxmi.
 )
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OMS/ntxsy/m/n on input line 113.
-LaTeX Font Info:    Try loading font information for OMS+ntxsy on input line 113.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OMS/ntxsy/m/n on input line 114.
+LaTeX Font Info:    Try loading font information for OMS+ntxsy on input line 114.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/omsntxsy.fd
 File: omsntxsy.fd 2012/11/14 Fontinst v1.933 font definitions for OMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 113.
-LaTeX Font Info:    Try loading font information for U+ntxexa on input line 113.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 114.
+LaTeX Font Info:    Try loading font information for U+ntxexa on input line 114.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 113.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 113.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 114.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 114.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 113.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 113.
-LaTeX Font Info:    ... okay on input line 113.
+LaTeX Font Info:    ... okay on input line 114.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 114.
+LaTeX Font Info:    ... okay on input line 114.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -778,7 +772,7 @@ File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package color Info: Driver file: pdftex.def on input line 143.
 )
-Package hyperref Info: Link coloring ON on input line 113.
+Package hyperref Info: Link coloring ON on input line 114.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -786,9 +780,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count117
 )
-LaTeX Info: Redefining \ref on input line 113.
-LaTeX Info: Redefining \pageref on input line 113.
-LaTeX Info: Redefining \nameref on input line 113.
+LaTeX Info: Redefining \ref on input line 114.
+LaTeX Info: Redefining \pageref on input line 114.
+LaTeX Info: Redefining \nameref on input line 114.
  (/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.out) (/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.out)
 \@outlinefile=\write3
 \openout3 = `Magritte_paper.out'.
@@ -821,142 +815,140 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 
 LaTeX Font Warning: Font shape `T1/aer/bx/sc' undefined
-(Font)              using `T1/aer/bx/n' instead on input line 116.
+(Font)              using `T1/aer/bx/n' instead on input line 117.
 
-LaTeX Font Info:    Try loading font information for OT1+ntxtlf on input line 116.
+LaTeX Font Info:    Try loading font information for OT1+ntxtlf on input line 117.
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/ot1ntxtlf.fd
 File: ot1ntxtlf.fd 2015/01/17 v1.0 font definition file for OT1/ntx/tlf
 )
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 14.4pt on input line 116.
+(Font)              scaled to size 14.4pt on input line 117.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 10.5pt on input line 116.
+(Font)              scaled to size 10.5pt on input line 117.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 7.9pt on input line 116.
+(Font)              scaled to size 7.9pt on input line 117.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <10.5> not available
-(Font)              size <10.95> substituted on input line 116.
+(Font)              size <10.95> substituted on input line 117.
 
-LaTeX Font Info:    Try loading font information for U+ntxmia on input line 116.
+LaTeX Font Info:    Try loading font information for U+ntxmia on input line 117.
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsym on input line 116.
+LaTeX Font Info:    Try loading font information for U+ntxsym on input line 117.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 116.
+LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 117.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 116.
+LaTeX Font Info:    Try loading font information for U+msa on input line 117.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 116.
+LaTeX Font Info:    Try loading font information for U+msb on input line 117.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 116.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 117.
  (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 
 LaTeX Font Warning: Font shape `U/rsfs/m/n' in size <10.5> not available
-(Font)              size <10.95> substituted on input line 116.
+(Font)              size <10.95> substituted on input line 117.
 
-LaTeX Font Info:    Try loading font information for T1+ntxsups on input line 116.
+LaTeX Font Info:    Try loading font information for T1+ntxsups on input line 117.
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/t1ntxsups.fd
 File: t1ntxsups.fd 2015/01/17 v1.0
 )
 LaTeX Font Info:    Font shape `T1/ntxsups/m/n' will be
-(Font)              scaled to size 14.4pt on input line 116.
+(Font)              scaled to size 14.4pt on input line 117.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 8.0pt on input line 116.
+(Font)              scaled to size 8.0pt on input line 117.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 6.2pt on input line 116.
+(Font)              scaled to size 6.2pt on input line 117.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 5.5pt on input line 116.
+(Font)              scaled to size 5.5pt on input line 117.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <5.5> not available
-(Font)              size <5> substituted on input line 116.
+(Font)              size <5> substituted on input line 117.
 
 
 LaTeX Font Warning: Font shape `U/rsfs/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 116.
+(Font)              size <5> substituted on input line 117.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 145.
-LaTeX Font Info:    No file TS1aer.fd. on input line 145.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 144.
+LaTeX Font Info:    No file TS1aer.fd. on input line 144.
 
 
 LaTeX Font Warning: Font shape `TS1/aer/m/n' undefined
 (Font)              using `TS1/cmr/m/n' instead
-(Font)              for symbol `textcopyright' on input line 145.
+(Font)              for symbol `textcopyright' on input line 144.
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 9.0pt on input line 158.
+(Font)              scaled to size 9.0pt on input line 145.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 7.3pt on input line 158.
- <figures/scheme.pdf, id=103, 744.96457pt x 577.57486pt>
+(Font)              scaled to size 7.3pt on input line 145.
+ <figures/scheme.pdf, id=134, 744.96457pt x 577.57486pt>
 File: figures/scheme.pdf Graphic file (type pdf)
  <use figures/scheme.pdf>
-Package pdftex.def Info: figures/scheme.pdf used on input line 163.
+Package pdftex.def Info: figures/scheme.pdf used on input line 162.
 (pdftex.def)             Requested size: 215.99854pt x 167.46597pt.
- <figures/next_cell.pdf, id=109, 168.7446pt x 68.00056pt>
+ [2] <figures/next_cell.pdf, id=163, 168.7446pt x 68.00056pt>
 File: figures/next_cell.pdf Graphic file (type pdf)
  <use figures/next_cell.pdf>
-Package pdftex.def Info: figures/next_cell.pdf used on input line 181.
+Package pdftex.def Info: figures/next_cell.pdf used on input line 180.
 (pdftex.def)             Requested size: 215.99854pt x 87.04767pt.
 
 
 LaTeX Font Warning: Font shape `T1/aer/m/scit' undefined
-(Font)              using `T1/aer/m/n' instead on input line 187.
+(Font)              using `T1/aer/m/n' instead on input line 186.
 
-[2pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.190 
-       </home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/figures/scheme.pdf>] [3pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
+[3pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.257 \textsc{Magritte}
-                        solves the monochromatic transfer equation in Feautr... </home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/figures/next_cell.pdf>]
-Underfull \hbox (badness 3954) in paragraph at lines 348--349
+l.211 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.211 
+       </home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/figures/scheme.pdf> </home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/figures/next_cell.pdf
+
+pdfTeX warning: pdflatex (file /home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/figures/next_cell.pdf): PDF inclusion: multiple pdfs with page group included in a single page
+>] [4]
+Underfull \hbox (badness 3954) in paragraph at lines 347--348
 []\T1/aer/m/scit/9 The source code for Magritte and its sep-a-rate
  []
 
 
-Underfull \hbox (badness 2626) in paragraph at lines 348--349
+Underfull \hbox (badness 2626) in paragraph at lines 347--348
 \T1/aer/m/scit/9 mod-ules will even-tu-ally be made freely avail-able on
  []
 
-(/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.bbl [4]
-
-Package hyperref Warning: Suppressing empty link on input line 51.
-
-LaTeX Font Info:    Try loading font information for T1+aett on input line 52.
-(/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
+(/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.bbl
+LaTeX Font Info:    Try loading font information for T1+aett on input line 118.
+ (/usr/share/texlive/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )) [5]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 489.
- [6
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 489.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 477.
+ [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 477.
  (/home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 489.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 489.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 477.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 477.
 Package rerunfilecheck Info: File `Magritte_paper.out' has not changed.
 (rerunfilecheck)             Checksum: 9399E668C2280144F41F30F07B131C25;973.
 
@@ -970,25 +962,25 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 489.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 477.
  ) 
 Here is how much of TeX's memory you used:
- 10187 strings out of 493029
- 142319 string characters out of 6136234
- 252947 words of memory out of 5000000
- 13306 multiletter control sequences out of 15000+600000
+ 10215 strings out of 493029
+ 142835 string characters out of 6136234
+ 252483 words of memory out of 5000000
+ 13328 multiletter control sequences out of 15000+600000
  121848 words of font info for 257 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,15n,35p,1992b,502s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,15n,35p,1666b,392s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist, replaced by a fixed one
 
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qtmr.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rntxmi.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rntxmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rntxmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rtxmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rtxmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/txex-bar.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txex.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txmia.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.pdf (6 pages, 372375 bytes).
+Output written on /home/frederik/Dropbox/Astro/Magritte/papers/Magritte_paper/Magritte_paper.pdf (6 pages, 378184 bytes).
 PDF statistics:
- 416 PDF objects out of 1000 (max. 8388607)
- 370 compressed objects within 4 object streams
- 78 named destinations out of 1000 (max. 500000)
+ 453 PDF objects out of 1000 (max. 8388607)
+ 406 compressed objects within 5 object streams
+ 84 named destinations out of 1000 (max. 500000)
  139 words of extra memory for PDF output out of 10000 (max. 10000000)
 

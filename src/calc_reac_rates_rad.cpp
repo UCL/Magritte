@@ -13,7 +13,6 @@
 #include "declarations.hpp"
 #include "calc_reac_rates_rad.hpp"
 #include "radfield_tools.hpp"
-#include "species_tools.hpp"
 
 
 /* Note in the arguments that the temperatures are local (doubles), but rad_surface, AV and column

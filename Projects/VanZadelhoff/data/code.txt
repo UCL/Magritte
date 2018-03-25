@@ -1,3 +1,0 @@
-// Generated definitions
-
-const double energy = 29.0

@@ -11,7 +11,6 @@
 
 #include "declarations.hpp"
 #include "calc_reac_rates.hpp"
-#include "species_tools.hpp"
 
 
 // rate_H2_formation: returns rate coefficient for H2 formation reaction
