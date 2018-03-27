@@ -36,7 +36,7 @@ add_library( _feautrier
 test_main.cpp
 ../../../src/initializers.cpp
 ../../../src/read_input.cpp
-../../../src/create_healpixvectors.cpp
+../../../src/create_rays.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
 ../../../src/feautrier.cpp

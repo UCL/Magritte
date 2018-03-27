@@ -24,10 +24,8 @@
 int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
                     double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
-  printf("OK\n");
+
   // For all reactions
-
-
 
   for (int e = 0; e < NREAC; e++)
   {

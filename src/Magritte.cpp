@@ -156,13 +156,13 @@ int main ()
 
 
 
-  // CREATE HEALPIXVECTORS
+  // CREATE RAYS
   // _____________________
 
 
   printf ("(Magritte): Creating HEALPix vectors\n\n");
 
-  const HEALPIXVECTORS healpixvectors;   // (created by constructor)
+  const RAYS rays;   // (created by constructor)
 
   printf ("(Magritte): HEALPix vectors created\n\n");
 
@@ -278,12 +278,12 @@ int main ()
 
   // Find neighboring cells for each cell
 
-  find_neighbors (NCELLS, cells, healpixvectors);
+  find_neighbors (NCELLS, cells, rays);
 
 
   // Find endpoint of each ray for each cell
 
-  find_endpoints (NCELLS, cells, healpixvectors);
+  find_endpoints (NCELLS, cells, rays);
 
 
   printf ("(Magritte): neighboring cells found \n\n");
@@ -333,7 +333,7 @@ int main ()
 
   // Calculate radiation surface
 
-  calc_rad_surface (NCELLS, cells, healpixvectors, G_external);
+  calc_rad_surface (NCELLS, cells, rays, G_external);
 
   printf ("(Magritte): external radiation field calculated \n\n");
 
@@ -363,7 +363,7 @@ int main ()
 
   // Calculate total column density
 
-  calc_column_density (NCELLS, cells, healpixvectors, column_tot, NSPEC-1);
+  calc_column_density (NCELLS, cells, rays, column_tot, NSPEC-1);
   // write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
 
 
@@ -406,7 +406,7 @@ int main ()
 
 
   // Reduce grid
-  // 
+  //
   // long ncells_red1 = reduce (ncells, cells);
   // CELLS Cells_red1 (ncells_red1);
   // CELLS *cells_red1 = &Cells_red1;
@@ -443,29 +443,29 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
-  // thermal_balance (ncells_red5, cells_red5, healpixvectors, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red5, cells_red5, rays, species, reactions, lines, &timers);
   //
   // interpolate (ncells_red5, cells_red5, ncells_red4, cells_red4);
   //
   //
-  // thermal_balance (ncells_red4, cells_red4, healpixvectors, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red4, cells_red4, rays, species, reactions, lines, &timers);
   //
   // interpolate (ncells_red4, cells_red4, ncells_red3, cells_red3);
   //
   //
-  // thermal_balance (ncells_red3, cells_red3, healpixvectors, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
   //
   // interpolate (ncells_red3, cells_red3, ncells_red2, cells_red2);
   //
-  // thermal_balance (ncells_red2, cells_red2, healpixvectors, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
   //
   // interpolate (ncells_red2, cells_red2, ncells_red1, cells_red1);
   //
-  // thermal_balance (ncells_red1, cells_red1, healpixvectors, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
   //
   // interpolate (ncells_red1, cells_red1, ncells, cells);
 
-  thermal_balance (ncells, cells, healpixvectors, species, reactions, lines, &timers);
+  thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
 
 
   // delete [] cell_red5;

@@ -146,10 +146,10 @@ int write_neighbors (std::string tag, long ncells, CELLS *cells)
 
 
 
-// write_healpixvectors: write HEALPix vectors
+// write_rays: write HEALPix vectors
 // -------------------------------------------
 
-int write_healpixvectors (std::string tag, HEALPIXVECTORS healpixvectors)
+int write_rays (std::string tag, RAYS rays)
 {
 
   if (!tag.empty())
@@ -171,9 +171,9 @@ int write_healpixvectors (std::string tag, HEALPIXVECTORS healpixvectors)
 
   for (long r = 0; r < NRAYS; r++)
   {
-    fprintf (file, "%.15f\t%.15f\t%.15f\n", healpixvectors.x[r],
-                                            healpixvectors.y[r],
-                                            healpixvectors.z[r]);
+    fprintf (file, "%.15f\t%.15f\t%.15f\n", rays.x[r],
+                                            rays.y[r],
+                                            rays.z[r]);
   }
 
   fclose (file);

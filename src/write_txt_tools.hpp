@@ -31,10 +31,10 @@ int write_grid (std::string tag, long ncells, CELLS *cells);
 int write_neighbors (std::string tag, long ncells, CELLS *cells);
 
 
-// write_healpixvectors: write unit HEALPix vectors
+// write_rays: write unit HEALPix vectors
 // ------------------------------------------------
 
-int write_healpixvectors (std::string tag, HEALPIXVECTORS healpixvectors);
+int write_rays (std::string tag, RAYS rays);
 
 
 // write_abundances: write abundances at each point

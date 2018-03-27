@@ -8,14 +8,14 @@
 #include <math.h>
 
 #include "declarations.hpp"
-#include "healpixvectors.hpp"
+#include "rays.hpp"
 #include "HEALPix/chealpix.h"
 
 
-// Constructor for HEALPIXVECTORS
+// Constructor for RAYS
 // ------------------------------
 
-HEALPIXVECTORS::HEALPIXVECTORS()
+RAYS::RAYS()
 {
 
   // Create (unit) HEALPix vectors

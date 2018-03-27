@@ -118,7 +118,7 @@ test_main.cpp
 ../../../src/species_tools.cpp
 ../../../src/read_chemdata.cpp
 ../../../src/read_linedata.cpp
-../../../src/create_healpixvectors.cpp
+../../../src/create_rays.cpp
 ../../../src/ray_tracing.cpp
 ../../../src/heapsort.cpp
 ../../../src/chemistry.cpp

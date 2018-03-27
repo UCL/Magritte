@@ -32,7 +32,7 @@
 #include "../../../src/read_input.hpp"
 #include "../../../src/read_chemdata.hpp"
 
-#include "../../../src/create_healpixvectors.hpp"
+#include "../../../src/create_rays.hpp"
 #include "../../../src/ray_tracing.hpp"
 
 #include "../../../src/calc_rad_surface.hpp"
@@ -128,7 +128,7 @@ TEST_CASE("Test chemistry"){
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  create_healpixvectors(healpixvector, antipod);
+  create_rays(healpixvector, antipod);
 
 
   /* Ray tracing */
@@ -211,7 +211,7 @@ TEST_CASE("Test chemistry"){
 
   write_eval("0", evalpoint);
 
-  write_healpixvectors("", healpixvector);
+  write_rays("", healpixvector);
 
   /* Calculate the visual extinction */
 

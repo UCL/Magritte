@@ -18,7 +18,7 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines,
+int sobolev (long ncells, CELLS *cells, RAYS rays, LINES lines,
              double *Lambda_diagonal, double *mean_intensity_eff,
              double *source, double *opacity, long origin, int ls, int kr)
 {
@@ -49,7 +49,7 @@ int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lin
 
     // Get antipodal ray for r
 
-    long ar = healpixvectors.antipod[r];
+    long ar = rays.antipod[r];
 
 
     // Fill source function and optical depth increment along ray r
@@ -65,7 +65,7 @@ int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lin
       double dZ = 0.0;
 
       long current  = cells->endpoint[RINDEX(origin,ar)];
-      long previous = previous_cell (NCELLS, cells, healpixvectors, origin, ar, &Z, current, &dZ);
+      long previous = previous_cell (NCELLS, cells, rays, origin, ar, &Z, current, &dZ);
 
       long s_c = LSPECGRIDRAD(ls,current,kr);
 
@@ -81,7 +81,7 @@ int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lin
         tau_ar = tau_ar + dZ*PC*(chi_c + chi_p)/2.0;
 
         current  = previous;
-        previous = previous_cell (NCELLS, cells, healpixvectors, origin, ar, &Z, current, &dZ);
+        previous = previous_cell (NCELLS, cells, rays, origin, ar, &Z, current, &dZ);
 
         chi_c = chi_p;
       }
@@ -116,7 +116,7 @@ int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lin
       double dZ = 0.0;
 
       long current = origin;
-      long next    = next_cell (NCELLS, cells, healpixvectors, origin, r, &Z, current, &dZ);
+      long next    = next_cell (NCELLS, cells, rays, origin, r, &Z, current, &dZ);
 
       long s_c = LSPECGRIDRAD(ls,current,kr);
 
@@ -132,7 +132,7 @@ int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lin
         tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
 
         current = next;
-        next    = next_cell (NCELLS, cells, healpixvectors, origin, r, &Z, current, &dZ);
+        next    = next_cell (NCELLS, cells, rays, origin, r, &Z, current, &dZ);
 
         chi_c = chi_n;
       }

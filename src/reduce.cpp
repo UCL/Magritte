@@ -263,12 +263,12 @@ int initialize_reduced_grid (long ncells_red, CELLS *cells_red, long ncells, CEL
 
   // // Find neighboring cells for each cell
   //
-  // find_neighbors (ncells_red, cell_red, healpixvectors);
+  // find_neighbors (ncells_red, cell_red, rays);
   //
   //
   // // Find endpoint of each ray for each cell
   //
-  // find_endpoints (ncells_red, cell_red, healpixvectors);
+  // find_endpoints (ncells_red, cell_red, rays);
 
 
   return (0);

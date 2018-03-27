@@ -26,7 +26,7 @@ using namespace std;
 #include "../../../src/initializers.hpp"
 #include "../../../src/read_input.hpp"
 #include "../../../src/read_linedata.hpp"
-#include "../../../src/create_healpixvectors.hpp"
+#include "../../../src/create_rays.hpp"
 #include "../../../src/ray_tracing.hpp"
 #include "../../../src/data_tools.hpp"
 #include "../../../src/setup_data_structures.hpp"
@@ -197,7 +197,7 @@ TEST_CASE("Test chemistry"){
 
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
-  create_healpixvectors(healpixvector, antipod);
+  create_rays(healpixvector, antipod);
 
 
   /* Execute ray_tracing */

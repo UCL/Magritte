@@ -25,7 +25,7 @@
 // level_populations: iteratively calculates the level populations
 // ---------------------------------------------------------------
 
-int level_populations (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
+int level_populations (long ncells, CELLS *cells, RAYS rays,
                        SPECIES species, LINES lines)
 {
 
@@ -139,20 +139,17 @@ int level_populations (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
       }
     } // end of lspec loop over line producing species
 
-printf("sure?\n");
 
     // For every grid point
 
 
 #   pragma omp parallel                                                             \
-    shared (lines, ncells, cells, healpixvectors, species,                          \
+    shared (lines, ncells, cells, rays, species,                          \
             opacity, source, Lambda_diagonal, mean_intensity_eff,                   \
             prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2,   \
             nrad, cum_nrad, prev_not_converged, some_not_converged)                 \
     default (none)
     {
-
-printf("really?\n");
 
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
@@ -185,7 +182,6 @@ printf("really?\n");
             // Calculate collisional terms and fill first part of transition matrix
             //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-printf("alright?\n");
 
             calc_C_coeff (NCELLS, cells, species, lines, C_coeff, p, ls);
 
@@ -239,7 +235,7 @@ printf("alright?\n");
               // printf("YESfdg");
             }
 
-                sobolev (NCELLS, cells, healpixvectors, lines, Lambda_diagonal, mean_intensity_eff,
+                sobolev (NCELLS, cells, rays, lines, Lambda_diagonal, mean_intensity_eff,
                          source, opacity, p, ls, kr);
 
 
@@ -251,7 +247,7 @@ printf("alright?\n");
 
 #             else
 
-                radiative_transfer (NCELLS, cells, healpixvectors, lines, Lambda_diagonal,
+                radiative_transfer (NCELLS, cells, rays, lines, Lambda_diagonal,
                                     mean_intensity_eff, source, opacity, p, ls, kr);
 
 #             endif

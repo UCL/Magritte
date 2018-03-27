@@ -11,7 +11,7 @@
 // calc_rad_surface: calculates UV radiation surface for each ray at each grid point
 // ---------------------------------------------------------------------------------
 
-int calc_rad_surface (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, double *G_external);
+int calc_rad_surface (long ncells, CELLS *cells, RAYS rays, double *G_external);
 
 
 #endif // __CALC_RAD_SURFACE_HPP_INCLUDED__

@@ -30,7 +30,7 @@ include_directories(sundials/include)
 # Create a library containing all source code in /src except the main (Magritte.cpp)
 add_library(_MAGRITTE
 cells.cpp
-healpixvectors.cpp
+rays.cpp
 species.cpp
 reactions.cpp
 lines.cpp

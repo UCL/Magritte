@@ -22,7 +22,7 @@
 // thermal_balance: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------
 
-int thermal_balance (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
+int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
                      LINES lines, TIMERS *timers)
 {
 
@@ -77,7 +77,7 @@ int thermal_balance (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, S
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cells, healpixvectors, species, reactions, column_H2, column_HD, column_C, column_CO);
+    chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
 
     timers->chemistry.stop();
 
@@ -121,7 +121,7 @@ int thermal_balance (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, S
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance_iteration (NCELLS, cells, healpixvectors, species, reactions, lines,
+    thermal_balance_iteration (NCELLS, cells, rays, species, reactions, lines,
                                column_H2, column_HD, column_C, column_CO, timers);
 
 
@@ -205,7 +205,7 @@ int thermal_balance (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, S
 // // thermal_balance_Brent: perform thermal balance iterations to determine temperature
 // // ----------------------------------------------------------------------------------
 //
-// int thermal_balance_Brent (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
+// int thermal_balance_Brent (long ncells, CELL *cell, RAYS rays, SPECIES species, REACTIONS reactions,
 //                            LINES lines, TIMERS *timers)
 // {
 //
@@ -356,7 +356,7 @@ int thermal_balance (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, S
 //     long n_not_converged = 0;   // number of grid points that are not yet converged
 //
 //
-//     thermal_balance_iteration (NCELLS, cell, healpixvectors, species, reactions, lines,
+//     thermal_balance_iteration (NCELLS, cell, rays, species, reactions, lines,
 //                                column_H2, column_HD, column_C, column_CO, timers);
 //
 //

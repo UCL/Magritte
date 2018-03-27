@@ -75,7 +75,7 @@ TEST_CASE("Feautrier solver"){
 
   /* Setup the (unit) HEALPix vectors */
 
-  create_healpixvectors(healpixvector, antipod);
+  create_rays(healpixvector, antipod);
 
 
   /* Ray tracing */
