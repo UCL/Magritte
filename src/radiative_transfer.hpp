@@ -14,7 +14,7 @@
 // radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int radiative_transfer (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines,
+int radiative_transfer (long ncells, CELLS *cells, RAYS rays, LINES lines,
                         double *Lambda_diagonal, double *mean_intensity_eff,
                         double *Source, double *opacity, long o, int ls, int kr);
 
@@ -22,7 +22,7 @@ int radiative_transfer (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors
 // intensity: calculate intensity along a certain ray through a certain point
 // --------------------------------------------------------------------------
 
-int intensities (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines, double *source, double *opacity,
+int intensities (long ncells, CELLS *cells, RAYS rays, LINES lines, double *source, double *opacity,
                  double freq, long o, long r, int ls, int kr,
                  double *u_local, double *v_local, double *L_local);
 

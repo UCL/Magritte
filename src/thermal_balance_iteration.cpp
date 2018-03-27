@@ -24,7 +24,7 @@
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions, LINES lines,
+int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions, LINES lines,
                                double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers)
 {
 
@@ -54,7 +54,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, HEALPIXVECTORS healpix
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cells, healpixvectors, species, reactions, column_H2, column_HD, column_C, column_CO);
+    chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
 
     timers->chemistry.stop();
 
@@ -85,7 +85,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, HEALPIXVECTORS healpix
 
   timers->level_pop.start();
 
-  level_populations (NCELLS, cells, healpixvectors, species, lines);
+  level_populations (NCELLS, cells, rays, species, lines);
 
   timers->level_pop.stop();
 
@@ -107,7 +107,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, HEALPIXVECTORS healpix
 
   // Calculate column densities to get most recent reaction rates
 
-  calc_column_densities (NCELLS, cells, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cells, rays, species, column_H2, column_HD, column_C, column_CO);
 
 
   // Calculate thermal balance for each cell

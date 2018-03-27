@@ -4,8 +4,8 @@
 // _________________________________________________________________________
 
 
-#ifndef __HEALPIXVECTORS_HPP_INCLUDED__
-#define __HEALPIXVECTORS_HPP_INCLUDED__
+#ifndef __RAYS_HPP_INCLUDED__
+#define __RAYS_HPP_INCLUDED__
 
 #include <stdio.h>
 #include <math.h>
@@ -14,7 +14,7 @@
 #include "HEALPix/chealpix.h"
 
 
-struct HEALPIXVECTORS
+struct RAYS
 {
 
   // Direction cosines of ray
@@ -37,9 +37,9 @@ struct HEALPIXVECTORS
   // Constructor defines rays based on DIMENSIONS and NRAYS
   // ------------------------------------------------------
 
-  HEALPIXVECTORS ();
+  RAYS ();
 
 };
 
 
-#endif // __HEALPIXVECTORS_HPP_INCLUDED__
+#endif // __RAYS_HPP_INCLUDED__

@@ -19,14 +19,14 @@
 // calc_rad_surface: calculates UV radiation surface for each ray at each grid point
 // ---------------------------------------------------------------------------------
 
-int calc_rad_surface (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, double *G_external)
+int calc_rad_surface (long ncells, CELLS *cells, RAYS rays, double *G_external)
 {
 
 
   // For all grid points
 
 # pragma omp parallel                                  \
-  shared (ncells, cells, G_external, healpixvectors)   \
+  shared (ncells, cells, G_external, rays)   \
   default (none)
   {
 
@@ -56,9 +56,9 @@ int calc_rad_surface (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, 
       {
         cells->rad_surface[RINDEX(p,r)] = 0.0;
 
-        double product = - G_external[0]*healpixvectors.x[r]
-                         - G_external[1]*healpixvectors.y[r]
-                         - G_external[2]*healpixvectors.z[r];
+        double product = - G_external[0]*rays.x[r]
+                         - G_external[1]*rays.y[r]
+                         - G_external[2]*rays.z[r];
 
         if (product > max_product)
         {

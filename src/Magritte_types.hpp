@@ -14,7 +14,7 @@
 // Include CELLS class
 #include "cells.hpp"
 // Include RAYS class
-#include "healpixvectors.hpp"
+#include "rays.hpp"
 // Include SPECIES class
 #include "species.hpp"
 // Include REACTIONS class

@@ -18,13 +18,13 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
+int chemistry (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
                double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
   // Calculate column densities
 
-  calc_column_densities (NCELLS, cells, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cells, rays, species, column_H2, column_HD, column_C, column_CO);
 
 
   // For all cells
@@ -46,11 +46,8 @@ int chemistry (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES
 
     // Calculate reaction rates
 
-    printf("OKKK?\n");
+    reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
 
-    // reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
-
-    printf("No?\n");
 
     // Solve rate equations
 

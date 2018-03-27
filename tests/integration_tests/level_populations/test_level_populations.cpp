@@ -36,7 +36,7 @@ using namespace std;
 #include "../../../src/read_chemdata.hpp"
 #include "../../../src/read_linedata.hpp"
 
-#include "../../../src/create_healpixvectors.hpp"
+#include "../../../src/create_rays.hpp"
 #include "../../../src/ray_tracing.hpp"
 
 #include "../../../src/calc_rad_surface.hpp"
@@ -223,7 +223,7 @@ TEST_CASE("Test level populations"){
   long   antipod[NRAYS];                                     /* gives antipodal ray for each ray */
 
 
-  create_healpixvectors(healpixvector, antipod);
+  create_rays(healpixvector, antipod);
 
 
   /* Execute ray_tracing */
