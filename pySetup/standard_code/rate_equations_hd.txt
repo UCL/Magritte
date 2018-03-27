@@ -20,9 +20,9 @@ static int f (realtype t, N_Vector y, N_Vector ydot, void *user_data)
 
   long o = data->gp;
 
-  CELL *cell = data->cellpointer;
+  CELLS *cells = data->cellpointer;
 
-  realtype n_H = (realtype) cell[o].density;
+  realtype n_H = (realtype) cells->density[o];
   realtype x_e = 0.0;
 
   realtype loss, form;

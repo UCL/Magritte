@@ -12,7 +12,7 @@ if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS
   "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -mcmodel=medium")
   set(CMAKE_CXX_FLAGS
-  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -mcmodel=medium")
+  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -mcmodel=medium -std=c++11")
   set(CMAKE_EXE_LINKER_FLAGS
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -mcmodel=medium")
 endif()
@@ -29,13 +29,14 @@ include_directories(sundials/include)
 
 # Create a library containing all source code in /src except the main (Magritte.cpp)
 add_library(_MAGRITTE
+cells.cpp
 healpixvectors.cpp
 species.cpp
 reactions.cpp
 lines.cpp
 initializers.cpp
 chemistry.cpp
-read_input.cpp
+# read_input.cpp
 # read_linedata.cpp
 ray_tracing.cpp
 heapsort.cpp

@@ -13,7 +13,7 @@
 // calc_AV: calculates visual extinction along a ray ray at a grid point
 // ---------------------------------------------------------------------
 
-int calc_AV (long ncells, CELL *cell, double *column_tot);
+int calc_AV (long ncells, CELLS *cells, double *column_tot);
 
 // int calc_AV (long ncells, COLUMN_DENSITIES column, double *AV);
 

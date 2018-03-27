@@ -4,18 +4,20 @@
 // _________________________________________________________________________
 
 
-#define GINDEX(r,c)   ( (c) + (r)*NCELLS )   // when second index is grid point
-#define RINDEX(r,c)   ( (c) + (r)*NRAYS )    // when second index is ray
-#define VINDEX(r,c)   ( (c) + (r)*3 )        // when second index is a 3-vector index
+// General index definitions
+
+#define RINDEX(r,c)   ( (c) + (r)*NRAYS )   // when second index is ray
+#define SINDEX(r,c)   ( (c) + (r)*NSPEC )   // when second index is species
+#define READEX(r,c)   ( (c) + (r)*NREAC )   // when second index is reaction
+
+#define LINDEX(r,c)   ( (c) + (r)*TOT_NLEV )   // when second index is level
+#define KINDEX(r,c)   ( (c) + (r)*TOT_NRAD )   // when second index is transition
 
 
-// Special key to find the number of the grid point associated to a certain evaluation point
-
-#define LOCAL_GP_NR_OF_EVALP(ray, evalp)   ( key[ (evalp) + cum_raytot[(ray)] ] )
-// gives grid point number corresponding to "evalp"'th evaluation point on ray "ray"
+#define LLINDEX(ls,i,j)   ( (j) + (i)*nlev[(ls)] )   // when second index are levels
 
 
-/* Level population related index definitions */
+// Line related index definitions
 
 #define LSPECLEV(lspec,i)   ( (i) + cum_nlev[(lspec)] )                                           \
                                /* when first index is line producing species and second is level */
@@ -38,10 +40,7 @@
 /* when first index is line producing species, second is grid point and third is rad. transition */
 
 
-#define LINDEX(lspec,i,j) ((j)+(i)*nlev[(lspec)])                   // when second index are levels
-
-
-/* Collision rate related indices */
+// Collision rate related indices
 
 #define LSPECPAR(lspec,par)   ( (par) + cum_ncolpar[(lspec)] )                                    \
                    /* when first index is line producing species and second is collision partner */

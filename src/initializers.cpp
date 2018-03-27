@@ -237,11 +237,11 @@ int initialize_char_array (long length, char *array)
 // initialize_cells: initialize the cell array
 // -------------------------------------------
 
-int initialize_cells (long ncells, CELL *cell)
+int initialize_cells (long ncells, CELLS *cells)
 {
 
-# pragma omp parallel     \
-  shared (ncells, cell)   \
+# pragma omp parallel      \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -252,68 +252,72 @@ int initialize_cells (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    cell[n].x = 0.0;
-    cell[n].y = 0.0;
-    cell[n].z = 0.0;
+    cells->x[p] = 0.0;
+    cells->y[p] = 0.0;
+    cells->z[p] = 0.0;
 
-    cell[n].n_neighbors = 0;
+    cells->n_neighbors[p] = 0;
 
     for (long r = 0; r < NRAYS; r++)
     {
-      cell[n].neighbor[r] = 0;
-      cell[n].endpoint[r] = 0;
+      cells->neighbor[RINDEX(p,r)] = 0;
+      cells->endpoint[RINDEX(p,r)] = 0;
 
-      cell[n].Z[r]               = 0.0;
-      cell[n].ray[r].intensity   = 0.0;
-      cell[n].ray[r].column      = 0.0;
-      cell[n].ray[r].rad_surface = 0.0;
-      cell[n].ray[r].AV          = 0.0;
+      cells->Z[RINDEX(p,r)]           = 0.0;
+      cells->intensity[RINDEX(p,r)]   = 0.0;
+      cells->column[RINDEX(p,r)]      = 0.0;
+      cells->rad_surface[RINDEX(p,r)] = 0.0;
+      cells->AV[RINDEX(p,r)]          = 0.0;
     }
 
-    cell[n].vx = 0.0;
-    cell[n].vy = 0.0;
-    cell[n].vz = 0.0;
+    cells->vx[p] = 0.0;
+    cells->vy[p] = 0.0;
+    cells->vz[p] = 0.0;
 
-    cell[n].density = 0.0;
+    cells->density[p] = 0.0;
 
-    cell[n].UV = 0.0;
+    cells->UV[p] = 0.0;
 
-    for (int spec = 0; spec < NSPEC; spec++)
+    for (int s = 0; s < NSPEC; s++)
     {
-      cell[n].abundance[spec] = 0.0;
+      cells->abundance[SINDEX(p,s)] = 0.0;
     }
 
-    for (int reac = 0; reac < NREAC; reac++)
+    for (int e = 0; e < NREAC; e++)
     {
-      cell[n].rate[reac] = 0.0;
+      cells->rate[READEX(p,e)] = 0.0;
     }
 
     for (int l = 0; l < TOT_NLEV; l++)
     {
-      cell[n].pop[l] = 0.0;
+      cells->pop[LINDEX(p,l)] = 0.0;
     }
 
     for (int k = 0; k < TOT_NRAD; k++)
     {
-      cell[n].mean_intensity[k] = 0.0;
+      cells->mean_intensity[KINDEX(p,k)] = 0.0;
     }
 
-    cell[n].temperature.gas      = 0.0;
-    cell[n].temperature.dust     = 0.0;
-    cell[n].temperature.gas_prev = 0.0;
+    cells->temperature_gas[p]      = 0.0;
+    cells->temperature_dust[p]     = 0.0;
+    cells->temperature_gas_prev[p] = 0.0;
 
-    cell[n].thermal_ratio      = 1.0;
-    cell[n].thermal_ratio_prev = 1.1;
+    cells->thermal_ratio[p]      = 1.0;
+    cells->thermal_ratio_prev[p] = 1.1;
 
-    cell[n].id = n;
+    cells->id[p] = p;
 
-    cell[n].removed  = false;
-    cell[n].boundary = false;
-    cell[n].mirror   = false;
+    cells->removed[p]  = false;
+    cells->boundary[p] = false;
+    cells->mirror[p]   = false;
   }
   } // end of OpenMP parallel region
+
+
+  initialize_temperature_gas (NCELLS, cells);
+  initialize_previous_temperature_gas (NCELLS, cells);
 
 
   return(0);
@@ -326,11 +330,11 @@ int initialize_cells (long ncells, CELL *cell)
 // initialize_cell_id: initialize the cell id's
 // --------------------------------------------
 
-int initialize_cell_id (long ncells, CELL *cell)
+int initialize_cell_id (long ncells, CELLS *cells)
 {
 
-# pragma omp parallel     \
-  shared (ncells, cell)   \
+# pragma omp parallel      \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -341,9 +345,9 @@ int initialize_cell_id (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    cell[n].id = n;
+    cells->id[p] = p;
   }
   } // end of OpenMP parallel region
 
@@ -358,11 +362,11 @@ int initialize_cell_id (long ncells, CELL *cell)
 // initialize_temperature_gas: set gas temperature to a certain initial value
 // --------------------------------------------------------------------------
 
-int initialize_temperature_gas (long ncells, CELL *cell)
+int initialize_temperature_gas (long ncells, CELLS *cells)
 {
 
-# pragma omp parallel     \
-  shared (ncells, cell)   \
+# pragma omp parallel      \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -373,9 +377,9 @@ int initialize_temperature_gas (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    cell[n].temperature.gas = 10.0;
+    cells->temperature_gas[p] = 10.0;
   }
   } // end of OpenMP parallel region
 
@@ -390,11 +394,11 @@ int initialize_temperature_gas (long ncells, CELL *cell)
 // initialize_previous_temperature_gas: set "previous" gas temperature to be 0.9*temperature_gas
 // ---------------------------------------------------------------------------------------------
 
-int initialize_previous_temperature_gas (long ncells, CELL *cell)
+int initialize_previous_temperature_gas (long ncells, CELLS *cells)
 {
 
 # pragma omp parallel     \
-  shared (ncells, cell)   \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -405,9 +409,9 @@ int initialize_previous_temperature_gas (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    cell[n].temperature.gas_prev = 0.9*cell[n].temperature.gas;
+    cells->temperature_gas_prev[p] = 0.9*cells->temperature_gas[p];
   }
   } // end of OpenMP parallel region
 
@@ -422,11 +426,11 @@ int initialize_previous_temperature_gas (long ncells, CELL *cell)
 // guess_temperature_gas: make a guess for gas temperature based on UV field
 // -------------------------------------------------------------------------
 
-int guess_temperature_gas (long ncells, CELL *cell)
+int guess_temperature_gas (long ncells, CELLS *cells)
 {
 
 # pragma omp parallel     \
-  shared (ncells, cell)   \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -437,9 +441,9 @@ int guess_temperature_gas (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    cell[n].temperature.gas = 100.0*(1.0 + pow(2.0*cell[n].UV, 1.0/3.0));
+    cells->temperature_gas[p] = 100.0*(1.0 + pow(2.0*cells->UV[p], 1.0/3.0));
   }
   } // end of OpenMP parallel region
 
@@ -454,11 +458,11 @@ int guess_temperature_gas (long ncells, CELL *cell)
 // initialize_abundances: set abundanceces to initial values
 // ---------------------------------------------------------
 
-int initialize_abundances (long ncells, CELL *cell, SPECIES species)
+int initialize_abundances (long ncells, CELLS *cells, SPECIES species)
 {
 
-# pragma omp parallel              \
-  shared (ncells, cell, species)   \
+# pragma omp parallel               \
+  shared (ncells, cells, species)   \
   default (none)
   {
 
@@ -469,11 +473,11 @@ int initialize_abundances (long ncells, CELL *cell, SPECIES species)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    for (int spec = 0; spec < NSPEC; spec++)
+    for (int s = 0; s < NSPEC; s++)
     {
-      cell[n].abundance[spec] = species.initial_abundance[spec];
+      cells->abundance[SINDEX(p,s)] = species.initial_abundance[s];
     }
   }
   } // end of OpenMP parallel region

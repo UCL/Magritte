@@ -22,16 +22,16 @@
 // rate_PHOTD: returns rate coefficient for photodesorption
 // --------------------------------------------------------
 
-double rate_PHOTD (CELL *cell, REACTIONS reactions, int reac, long o)
+double rate_PHOTD (CELLS *cells, REACTIONS reactions, int e, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reactions.alpha[reac];
-  double beta   = reactions.beta[reac];
-  double gamma  = reactions.gamma[reac];
-  double RT_min = reactions.RT_min[reac];
-  double RT_max = reactions.RT_max[reac];
+  double alpha  = reactions.alpha[e];
+  double beta   = reactions.beta[e];
+  double gamma  = reactions.gamma[e];
+  double RT_min = reactions.RT_min[e];
+  double RT_max = reactions.RT_max[e];
 
 
   double yield;   // Number of adsorbed molecules released per cosmic ray impact
@@ -43,17 +43,17 @@ double rate_PHOTD (CELL *cell, REACTIONS reactions, int reac, long o)
                                   // = average grain surface area per H atom (devided by PI)
 
 
-  if      (cell[o].temperature.gas < 50.0)
+  if      (cells->temperature_gas[o] < 50.0)
   {
     yield = 3.5E-3;
   }
 
-  else if (cell[o].temperature.gas < 85.0)
+  else if (cells->temperature_gas[o] < 85.0)
   {
     yield = 4.0E-3;
   }
 
-  else if (cell[o].temperature.gas < 100.0)
+  else if (cells->temperature_gas[o] < 100.0)
   {
     yield = 5.5E-3;
   }
@@ -69,7 +69,8 @@ double rate_PHOTD (CELL *cell, REACTIONS reactions, int reac, long o)
 
   for (long r = 0; r < NRAYS; r++)
   {
-    rate = rate + flux * cell[o].ray[r].rad_surface * exp(-1.8*cell[o].ray[r].AV) * grain_param * yield;
+    rate = rate + flux * cells->rad_surface[RINDEX(o,r)]
+                  * exp(-1.8*cells->AV[RINDEX(o,r)]) * grain_param * yield;
   }
 
 
@@ -83,16 +84,16 @@ double rate_PHOTD (CELL *cell, REACTIONS reactions, int reac, long o)
 // rate_H2_photodissociation: returns rate coefficient for H2 dissociation
 // -----------------------------------------------------------------------
 
-double rate_H2_photodissociation (CELL *cell, REACTIONS reactions, int reac, double *column_H2, long o)
+double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reactions.alpha[reac];
-  double beta   = reactions.beta[reac];
-  double gamma  = reactions.gamma[reac];
-  double RT_min = reactions.RT_min[reac];
-  double RT_max = reactions.RT_max[reac];
+  double alpha  = reactions.alpha[e];
+  double beta   = reactions.beta[e];
+  double gamma  = reactions.gamma[e];
+  double RT_min = reactions.RT_min[e];
+  double RT_max = reactions.RT_max[e];
 
 
   double lambda = 1000.0;                            // wavelength (in Å) of a typical transition
@@ -108,9 +109,9 @@ double rate_H2_photodissociation (CELL *cell, REACTIONS reactions, int reac, dou
 
   for (long r = 0; r < NRAYS; r++)
   {
-    rate = rate + alpha * cell[o].ray[r].rad_surface
+    rate = rate + alpha * cells->rad_surface[RINDEX(o,r)]
                         * self_shielding_H2 (column_H2[RINDEX(o,r)], doppler_width, radiation_width)
-                        * dust_scattering (cell[o].ray[r].AV, lambda) / 2.0;
+                        * dust_scattering (cells->AV[RINDEX(o,r)], lambda) / 2.0;
   }
 
 
@@ -124,17 +125,17 @@ double rate_H2_photodissociation (CELL *cell, REACTIONS reactions, int reac, dou
 // rate_CO_photodissociation: returns rate coefficient for CO dissociation
 // -----------------------------------------------------------------------
 
-double rate_CO_photodissociation (CELL *cell, REACTIONS reactions, int reac,
+double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e,
                                   double *column_CO, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reactions.alpha[reac];
-  double beta   = reactions.beta[reac];
-  double gamma  = reactions.gamma[reac];
-  double RT_min = reactions.RT_min[reac];
-  double RT_max = reactions.RT_max[reac];
+  double alpha  = reactions.alpha[e];
+  double beta   = reactions.beta[e];
+  double gamma  = reactions.gamma[e];
+  double RT_min = reactions.RT_min[e];
+  double RT_max = reactions.RT_max[e];
 
 
   double rate = 0.0;   // reaction rate coefficient
@@ -171,9 +172,9 @@ double rate_CO_photodissociation (CELL *cell, REACTIONS reactions, int reac,
     }
 
 
-    rate = rate + alpha * cell[o].ray[r].rad_surface
+    rate = rate + alpha * cells->rad_surface[RINDEX(o,r)]
                         * self_shielding_CO (column_CO[RINDEX(o,r)], column_H2[RINDEX(o,r)])
-                        * dust_scattering (cell[o].ray[r].AV, lambda) / 2.0;
+                        * dust_scattering (cells->AV[RINDEX(o,r)], lambda) / 2.0;
   }
 
 
@@ -187,17 +188,17 @@ double rate_CO_photodissociation (CELL *cell, REACTIONS reactions, int reac,
 // rate_C_photoionization: returns rate coefficient for C photoionization
 // ----------------------------------------------------------------------
 
-double rate_C_photoionization (CELL *cell, REACTIONS reactions, int reac,
+double rate_C_photoionization (CELLS *cells, REACTIONS reactions, int e,
                                double *column_C, double *column_H2, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reactions.alpha[reac];
-  double beta   = reactions.beta[reac];
-  double gamma  = reactions.gamma[reac];
-  double RT_min = reactions.RT_min[reac];
-  double RT_max = reactions.RT_max[reac];
+  double alpha  = reactions.alpha[e];
+  double beta   = reactions.beta[e];
+  double gamma  = reactions.gamma[e];
+  double RT_min = reactions.RT_min[e];
+  double RT_max = reactions.RT_max[e];
 
 
   double rate = 0.0;   // reaction rate coefficient
@@ -209,14 +210,14 @@ double rate_C_photoionization (CELL *cell, REACTIONS reactions, int reac,
     /* Calculate the optical depth in the C absorption band, accounting
        for grain extinction and shielding by C and overlapping H2 lines */
 
-    double tau_C = gamma*cell[o].ray[r].AV + 1.1E-17*column_C[RINDEX(o,r)]
-                   + ( 0.9*pow(cell[o].temperature.gas,0.27)
+    double tau_C = gamma*cells->AV[RINDEX(o,r)] + 1.1E-17*column_C[RINDEX(o,r)]
+                   + ( 0.9*pow(cells->temperature_gas[o],0.27)
                           * pow(column_H2[RINDEX(o,r)]/1.59E21, 0.45) );
 
 
     // Calculate the C photoionization rate
 
-    rate = rate + alpha * cell[o].ray[r].rad_surface * exp(-tau_C) / 2.0;
+    rate = rate + alpha * cells->rad_surface[RINDEX(o,r)] * exp(-tau_C) / 2.0;
   }
 
 
@@ -230,16 +231,16 @@ double rate_C_photoionization (CELL *cell, REACTIONS reactions, int reac,
 // rate_SI_photoionization: returns rate coefficient for SI photoionization
 // ------------------------------------------------------------------------
 
-double rate_SI_photoionization (CELL *cell, REACTIONS reactions, int reac, long o)
+double rate_SI_photoionization (CELLS *cells, REACTIONS reactions, int e, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reactions.alpha[reac];
-  double beta   = reactions.beta[reac];
-  double gamma  = reactions.gamma[reac];
-  double RT_min = reactions.RT_min[reac];
-  double RT_max = reactions.RT_max[reac];
+  double alpha  = reactions.alpha[e];
+  double beta   = reactions.beta[e];
+  double gamma  = reactions.gamma[e];
+  double RT_min = reactions.RT_min[e];
+  double RT_max = reactions.RT_max[e];
 
 
   double rate = 0.0;   // reaction rate coefficient
@@ -251,12 +252,12 @@ double rate_SI_photoionization (CELL *cell, REACTIONS reactions, int reac, long 
     /* Calculate the optical depth in the SI absorption band, accounting
        for grain extinction and shielding by ??? */
 
-    double tau_S = gamma*cell[o].ray[r].AV;
+    double tau_S = gamma*cells->AV[RINDEX(o,r)];
 
 
     // Calculate SI photoionization rate
 
-    rate = rate + alpha * cell[o].ray[r].rad_surface * exp(-tau_S) / 2.0;
+    rate = rate + alpha * cells->rad_surface[RINDEX(o,r)] * exp(-tau_S) / 2.0;
   }
 
 
@@ -270,16 +271,16 @@ double rate_SI_photoionization (CELL *cell, REACTIONS reactions, int reac, long 
 // rate_canonical_photoreaction: returns rate coefficient for a canonical photoreaction
 // ------------------------------------------------------------------------------------
 
-double rate_canonical_photoreaction (CELL *cell, REACTIONS reactions, int reac, long o)
+double rate_canonical_photoreaction (CELLS *cells, REACTIONS reactions, int e, long o)
 {
 
   // Copy reaction data to variables with more convenient names
 
-  double alpha  = reactions.alpha[reac];
-  double beta   = reactions.beta[reac];
-  double gamma  = reactions.gamma[reac];
-  double RT_min = reactions.RT_min[reac];
-  double RT_max = reactions.RT_max[reac];
+  double alpha  = reactions.alpha[e];
+  double beta   = reactions.beta[e];
+  double gamma  = reactions.gamma[e];
+  double RT_min = reactions.RT_min[e];
+  double RT_max = reactions.RT_max[e];
 
 
   double rate = 0.0;   // reaction coefficient
@@ -288,20 +289,20 @@ double rate_canonical_photoreaction (CELL *cell, REACTIONS reactions, int reac, 
   /* Check for large negative gamma values that might cause discrepant
      rates at low temperatures. Set these rates to zero when T < RTMIN. */
 
-  if ( (gamma < -200.0) && (cell[o].temperature.gas < RT_min) )
+  if ( (gamma < -200.0) && (cells->temperature_gas[o] < RT_min) )
   {
     return rate = 0.0;
   }
 
-  else if ( ( (cell[o].temperature.gas <= RT_max) || (RT_max == 0.0) )
-            && reactions.no_better_data(reac, cell[o].temperature.gas) )
+  else if ( ( (cells->temperature_gas[o] <= RT_max) || (RT_max == 0.0) )
+            && reactions.no_better_data(e, cells->temperature_gas[o]) )
   {
 
     for (long r = 0; r < NRAYS; r++)
     {
-      double tau = gamma*cell[o].ray[r].AV;
+      double tau = gamma*cells->AV[RINDEX(o,r)];
 
-      rate = rate + alpha * cell[o].ray[r].rad_surface * exp(-tau) / 2.0;
+      rate = rate + alpha * cells->rad_surface[RINDEX(o,r)] * exp(-tau) / 2.0;
     }
   }
 

@@ -42,7 +42,7 @@
 
 ## A first parallelization (OpenMP)
 
-In a first parallelization round we simply paralellize every loop over all cells.
+In a first parallelization round we simply paralellize every loop over all cells->
 
 
 

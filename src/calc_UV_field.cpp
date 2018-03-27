@@ -16,7 +16,7 @@
 // calc_UV_field: calculates UV radiation field at each cell
 // ---------------------------------------------------------
 
-int calc_UV_field (long ncells, CELL *cell)
+int calc_UV_field (long ncells, CELLS *cells)
 {
 
   const double tau_UV = 3.02;   // conversion factor from visual extinction to UV attenuation
@@ -24,8 +24,8 @@ int calc_UV_field (long ncells, CELL *cell)
 
   // For all grid points
 
-# pragma omp parallel     \
-  shared (ncells, cell)   \
+# pragma omp parallel      \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -36,9 +36,9 @@ int calc_UV_field (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    cell[n].UV = 0.0;
+    cells->UV[p] = 0.0;
 
 
     // External UV radiation field
@@ -49,7 +49,8 @@ int calc_UV_field (long ncells, CELL *cell)
 
     for (long r = 0; r < NRAYS; r++)
     {
-      cell[n].UV = cell[n].UV + cell[n].ray[r].rad_surface*exp(-tau_UV*cell[n].ray[r].AV);
+      cells->UV[p] = cells->UV[p] 
+                    + cells->rad_surface[RINDEX(p,r)]*exp(-tau_UV*cells->AV[RINDEX(p,r)]);
     }
 
 

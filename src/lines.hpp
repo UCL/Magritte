@@ -81,19 +81,19 @@ struct LINES
   // source: calculate line source function
   //---------------------------------------
 
-  int source (long ncells, CELL *cell, int lspec, double *source);
+  int source (long ncells, CELLS *cells, int ls, double *source);
 
 
   // opacity: calculate line opacity
   // -------------------------------
 
-  int opacity (long ncells, CELL *cell, int lspec, double *opacity);
+  int opacity (long ncells, CELLS *cells, int ls, double *opacity);
 
 
   // profile: calculate line profile function
   // ----------------------------------------
 
-  double profile (long ncells, CELL *cell, double velocity, double freq, double line_freq, long o);
+  double profile (long ncells, CELLS *cells, double velocity, double freq, double line_freq, long o);
 
 };
 

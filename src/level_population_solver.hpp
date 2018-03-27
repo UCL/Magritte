@@ -13,8 +13,8 @@
 // level_population_solver: sets up and solves matrix equation corresp. to equilibrium eq.
 // ---------------------------------------------------------------------------------------
 
-int level_population_solver (long ncells, CELL *cell, LINES lines,
-                             long o, int lspec, double *R);
+int level_population_solver (long ncells, CELLS *cells, LINES lines,
+                             long o, int ls, double *R);
 
 
 // Gauss-Jordan solver for an n by n matrix equation a*x=b and m solution vectors b

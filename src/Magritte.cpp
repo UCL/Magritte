@@ -19,7 +19,7 @@
 
 #include "initializers.hpp"
 
-#include "read_input.hpp"
+// #include "read_input.hpp"
 // #include "read_linedata.hpp"
 
 #include "ray_tracing.hpp"
@@ -76,32 +76,44 @@ int main ()
 # if (FIXED_NCELLS)
 
     long ncells = NCELLS;
+    //
+    // CELL cell[NCELLS];
 
-    CELL cell[NCELLS];
+    CELLS Cells (NCELLS);
+
+    CELLS *cells = &Cells;
 
 # else
 
     long ncells = NCELLS_INIT;
 
-    CELL *cell = new CELL[ncells];
+    // CELL *cell = new CELL[ncells];
+
+    CELLS Cells (NCELLS);
+
+    CELLS *cells = &Cells;
 
 # endif
 
 
-  initialize_cells (NCELLS, cell);
+  initialize_cells (NCELLS, cells);
 
 
   // Read input file
 
 # if   (INPUT_FORMAT == '.vtu')
 
-    read_vtu_input (inputfile, NCELLS, cell);
+    // read_vtu_input (inputfile, NCELLS, cell);
 
 # elif (INPUT_FORMAT == '.txt')
 
-    read_txt_input (inputfile, NCELLS, cell);
+    // read_txt_input (inputfile, NCELLS, cell);
+
+    cells->read_txt_input (inputfile);
 
 # endif
+
+// return(0);
 
 
   // // HACK FOR WARD's LIME SPHERES
@@ -176,7 +188,7 @@ int main ()
 
   // Initialize abundances in each cell with initial abundances
 
-  initialize_abundances (NCELLS, cell, species);
+  initialize_abundances (NCELLS, cells, species);
 
 # endif
 
@@ -266,12 +278,12 @@ int main ()
 
   // Find neighboring cells for each cell
 
-  find_neighbors (NCELLS, cell, healpixvectors);
+  find_neighbors (NCELLS, cells, healpixvectors);
 
 
   // Find endpoint of each ray for each cell
 
-  find_endpoints (NCELLS, cell, healpixvectors);
+  find_endpoints (NCELLS, cells, healpixvectors);
 
 
   printf ("(Magritte): neighboring cells found \n\n");
@@ -321,7 +333,7 @@ int main ()
 
   // Calculate radiation surface
 
-  calc_rad_surface (NCELLS, cell, healpixvectors, G_external);
+  calc_rad_surface (NCELLS, cells, healpixvectors, G_external);
 
   printf ("(Magritte): external radiation field calculated \n\n");
 
@@ -351,32 +363,32 @@ int main ()
 
   // Calculate total column density
 
-  calc_column_density (NCELLS, cell, healpixvectors, column_tot, NSPEC-1);
+  calc_column_density (NCELLS, cells, healpixvectors, column_tot, NSPEC-1);
   // write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
 
 
   // Calculate visual extinction
 
-  calc_AV (NCELLS, cell, column_tot);
+  calc_AV (NCELLS, cells, column_tot);
 
 
   // Calculcate UV field
 
-  calc_UV_field (NCELLS, cell);
+  calc_UV_field (NCELLS, cells);
 
 
 # if (!RESTART)
 
     // Make a guess for gas temperature based on UV field
 
-    guess_temperature_gas (NCELLS, cell);
+    guess_temperature_gas (NCELLS, cells);
 
-    initialize_previous_temperature_gas(NCELLS, cell);
+    initialize_previous_temperature_gas (NCELLS, cells);
 
 
     // Calculate the dust temperature
 
-    calc_temperature_dust (NCELLS, cell);
+    calc_temperature_dust (NCELLS, cells);
 
 # endif
 
@@ -394,31 +406,36 @@ int main ()
 
 
   // Reduce grid
-
-  // long ncells_red1 = reduce (ncells, cell);
-  // CELL *cell_red1 = new CELL[ncells_red1];
-  // initialize_reduced_grid (ncells_red1, cell_red1, ncells, cell);
+  // 
+  // long ncells_red1 = reduce (ncells, cells);
+  // CELLS Cells_red1 (ncells_red1);
+  // CELLS *cells_red1 = &Cells_red1;
+  // initialize_reduced_grid (ncells_red1, cells_red1, ncells, cells);
   //
   //
-  // long ncells_red2 = reduce (ncells_red1, cell_red1);
-  // CELL *cell_red2 = new CELL[ncells_red2];
-  // initialize_reduced_grid (ncells_red2, cell_red2, ncells_red1, cell_red1);
+  // long ncells_red2 = reduce (ncells_red1, cells_red1);
+  // CELLS Cells_red2 (ncells_red2);
+  // CELLS *cells_red2 = &Cells_red2;
+  // initialize_reduced_grid (ncells_red2, cells_red2, ncells_red1, cells_red1);
   //
   //
-  // long ncells_red3 = reduce (ncells_red2, cell_red2);
-  // CELL *cell_red3 = new CELL[ncells_red3];
-  // initialize_reduced_grid (ncells_red3, cell_red3, ncells_red2, cell_red2);
+  // long ncells_red3 = reduce (ncells_red2, cells_red2);
+  // CELLS Cells_red3 (ncells_red3);
+  // CELLS *cells_red3 = &Cells_red3;
+  // initialize_reduced_grid (ncells_red3, cells_red3, ncells_red2, cells_red2);
   //
   //
-  // long ncells_red4 = reduce (ncells_red3, cell_red3);
-  // CELL *cell_red4 = new CELL[ncells_red4];
-  // initialize_reduced_grid (ncells_red4, cell_red4, ncells_red3, cell_red3);
+  // long ncells_red4 = reduce (ncells_red3, cells_red3);
+  // CELLS Cells_red4 (ncells_red4);
+  // CELLS *cells_red4 = &Cells_red4;
+  // initialize_reduced_grid (ncells_red4, cells_red4, ncells_red3, cells_red3);
   //
   //
-  // long ncells_red5 = reduce (ncells_red4, cell_red4);
-  // CELL *cell_red5 = new CELL[ncells_red5];
-  // initialize_reduced_grid (ncells_red5, cell_red5, ncells_red4, cell_red4);
-
+  // long ncells_red5 = reduce (ncells_red4, cells_red4);
+  // CELLS Cells_red5 (ncells_red5);
+  // CELLS *cells_red5 = &Cells_red5;
+  // initialize_reduced_grid (ncells_red5, cells_red5, ncells_red4, cells_red4);
+  //
 
 
 
@@ -426,29 +443,29 @@ int main ()
   // CALCULATE TEMPERATURE
   // _____________________
 
-  // thermal_balance (ncells_red5, cell_red5, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red5, cells_red5, healpixvectors, species, reactions, lines, &timers);
+  //
+  // interpolate (ncells_red5, cells_red5, ncells_red4, cells_red4);
+  //
+  //
+  // thermal_balance (ncells_red4, cells_red4, healpixvectors, species, reactions, lines, &timers);
+  //
+  // interpolate (ncells_red4, cells_red4, ncells_red3, cells_red3);
+  //
+  //
+  // thermal_balance (ncells_red3, cells_red3, healpixvectors, species, reactions, lines, &timers);
+  //
+  // interpolate (ncells_red3, cells_red3, ncells_red2, cells_red2);
+  //
+  // thermal_balance (ncells_red2, cells_red2, healpixvectors, species, reactions, lines, &timers);
+  //
+  // interpolate (ncells_red2, cells_red2, ncells_red1, cells_red1);
+  //
+  // thermal_balance (ncells_red1, cells_red1, healpixvectors, species, reactions, lines, &timers);
+  //
+  // interpolate (ncells_red1, cells_red1, ncells, cells);
 
-  // interpolate (ncells_red5, cell_red5, ncells_red4, cell_red4);
-
-
-  // thermal_balance (ncells_red4, cell_red4, species, reactions, lines, &timers);
-
-  // interpolate (ncells_red4, cell_red4, ncells_red3, cell_red3);
-
-
-  // thermal_balance (ncells_red3, cell_red3, species, reactions, lines, &timers);
-
-  // interpolate (ncells_red3, cell_red3, ncells_red2, cell_red2);
-
-  // thermal_balance (ncells_red2, cell_red2, species, reactions, lines, &timers);
-
-  // interpolate (ncells_red2, cell_red2, ncells_red1, cell_red1);
-
-  // thermal_balance (ncells_red1, cell_red1, species, reactions, lines, &timers);
-
-  // interpolate (ncells_red1, cell_red1, ncells, cell);
-
-  thermal_balance (ncells, cell, healpixvectors, species, reactions, lines, &timers);
+  thermal_balance (ncells, cells, healpixvectors, species, reactions, lines, &timers);
 
 
   // delete [] cell_red5;
@@ -475,9 +492,9 @@ int main ()
   printf ("(Magritte): writing output \n");
 
 
-  write_output(NCELLS, cell, lines);
+  write_output (NCELLS, cells, lines);
 
-  write_output_log();
+  write_output_log ();
 
   write_performance_log (timers);
 

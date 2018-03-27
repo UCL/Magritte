@@ -24,7 +24,7 @@
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions, LINES lines,
+int thermal_balance_iteration (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions, LINES lines,
                                double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers)
 {
 
@@ -37,7 +37,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
 
-    initialize_abundances (NCELLS, cell, species);
+    initialize_abundances (NCELLS, cells, species);
 
 # endif
 
@@ -54,7 +54,7 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cell, healpixvectors, species, reactions, column_H2, column_HD, column_C, column_CO);
+    chemistry (NCELLS, cells, healpixvectors, species, reactions, column_H2, column_HD, column_C, column_CO);
 
     timers->chemistry.stop();
 
@@ -78,14 +78,14 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
   // Initialize level populations with LTE values
 
-  calc_LTE_populations (NCELLS, cell, lines);
+  calc_LTE_populations (NCELLS, cells, lines);
 
 
   // Calculate level populations for each line producing species
 
   timers->level_pop.start();
 
-  level_populations (NCELLS, cell, healpixvectors, species, lines);
+  level_populations (NCELLS, cells, healpixvectors, species, lines);
 
   timers->level_pop.stop();
 
@@ -107,13 +107,13 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
 
   // Calculate column densities to get most recent reaction rates
 
-  calc_column_densities (NCELLS, cell, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cells, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
 
 
   // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                                  \
-  shared (ncells, cell, species, reactions, column_H2, column_HD, column_C, column_CO, cum_nlev, lines)   \
+# pragma omp parallel                                                                                      \
+  shared (ncells, cells, species, reactions, column_H2, column_HD, column_C, column_CO, cum_nlev, lines)   \
   default (none)
   {
 
@@ -124,28 +124,28 @@ int thermal_balance_iteration (long ncells, CELL *cell, HEALPIXVECTORS healpixve
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long o = start; o < stop; o++)
+  for (long p = start; p < stop; p++)
   {
     double heating_components[12];
 
 
-    reaction_rates (NCELLS, cell, reactions, o, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
 
 
-    double heating_total = heating (NCELLS, cell, species, reactions, o, heating_components);
-    double cooling_total = cooling (NCELLS, cell, lines, o);
+    double heating_total = heating (NCELLS, cells, species, reactions, p, heating_components);
+    double cooling_total = cooling (NCELLS, cells, lines, p);
 
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;
 
 
-    cell[o].thermal_ratio_prev = cell[o].thermal_ratio;
-    cell[o].thermal_ratio      = 0.0;
+    cells->thermal_ratio_prev[p] = cells->thermal_ratio[p];
+    cells->thermal_ratio[p]      = 0.0;
 
 
     if (thermal_sum != 0.0)
     {
-      cell[o].thermal_ratio = 2.0 * thermal_flux / thermal_sum;
+      cells->thermal_ratio[p] = 2.0 * thermal_flux / thermal_sum;
     }
 
   } // end of o loop over cells

@@ -13,7 +13,7 @@
 // write_vtu_output: write all physical variables to vtu input grid
 // ----------------------------------------------------------------
 
-int write_vtu_output (std::string tag, long ncells, CELL *cell);
+int write_vtu_output (std::string tag, long ncells, CELLS *cells);
 
 
 #endif // __WRITE_VTU_TOOLS_HPP_INCLUDED__

@@ -15,7 +15,7 @@
 // calc_temperature_dust: calculate dust temparatures
 // --------------------------------------------------
 
-int calc_temperature_dust (long ncells, CELL *cell)
+int calc_temperature_dust (long ncells, CELLS *cells)
 {
 
 /* Calculate the dust temperature for each particle using the treatment of Hollenbach, Takahashi
@@ -53,8 +53,8 @@ int calc_temperature_dust (long ncells, CELL *cell)
 
   /* For all grid points */
 
-# pragma omp parallel     \
-  shared (ncells, cell)   \
+# pragma omp parallel      \
+  shared (ncells, cells)   \
   default (none)
   {
 
@@ -65,12 +65,12 @@ int calc_temperature_dust (long ncells, CELL *cell)
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
 
     // Contribution to dust temperature from local FUV flux and CMB background
 
-    cell[n].temperature.dust = 8.9E-11*nu_0*(1.71*cell[n].UV) + pow(T_CMB, 5);
+    cells->temperature_dust[p] = 8.9E-11*nu_0*(1.71*cells->UV[p]) + pow(T_CMB, 5);
 
 
     for (long r = 0; r < NRAYS; r++)
@@ -78,36 +78,36 @@ int calc_temperature_dust (long ncells, CELL *cell)
       /* Minimum dust temperature is related to incident FUV flux along each ray
          Convert incident FUV flux from Draine to Habing units by multiplying by 1.71 */
 
-      double temperature_min = 12.2*pow(1.71*cell[n].ray[r].rad_surface, 0.2);
+      double temperature_min = 12.2*pow(1.71*cells->rad_surface[RINDEX(p,r)], 0.2);
 
 
       // Add contribution to dust temperature from FUV flux incident along this ray
 
       if (temperature_min > 0.0)
       {
-        cell[n].temperature.dust = cell[n].temperature.dust
-                              + (0.42-log(3.45E-2*tau_100*temperature_min))
-                                *(3.45E-2*tau_100)*pow(temperature_min,6);
+        cells->temperature_dust[p] = cells->temperature_dust[p]
+                                   + (0.42-log(3.45E-2*tau_100*temperature_min))
+                                     *(3.45E-2*tau_100)*pow(temperature_min,6);
       }
 
     } // end of r loop over rays
 
 
-    cell[n].temperature.dust = pow(cell[n].temperature.dust, 0.2);
+    cells->temperature_dust[p] = pow(cells->temperature_dust[p], 0.2);
 
 
     /* Impose lower limit on dust temperature, since values below 10 K can dramatically
        limit rate of H2 formation on grains (molecule cannot desorb from surface) */
 
-    if (cell[n].temperature.dust < 10.0)
+    if (cells->temperature_dust[p] < 10.0)
     {
-      cell[n].temperature.dust = 10.0;
+      cells->temperature_dust[p] = 10.0;
     }
 
 
     // Check if the dust temperature is physical
 
-    if (cell[n].temperature.dust > 1000.0)
+    if (cells->temperature_dust[p] > 1000.0)
     {
       printf ("(calc_temperature_dust): ERROR," \
               " calculated dust temperature exceeds 1000 K \n");

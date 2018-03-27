@@ -22,7 +22,7 @@
 // write_output: write output
 // --------------------------
 
-int write_output (long ncells, CELL *cell, LINES lines)
+int write_output (long ncells, CELLS *cells, LINES lines)
 {
 
   // Get tag to distinguish outputs
@@ -36,11 +36,11 @@ int write_output (long ncells, CELL *cell, LINES lines)
 
 # if   (INPUT_FORMAT == '.vtu')
 
-    write_vtu_output (tag, NCELLS, cell);
+    write_vtu_output (tag, NCELLS, cells);
 
 # elif (INPUT_FORMAT == '.txt')
 
-    write_txt_output (tag, NCELLS, cell, lines);
+    write_txt_output (tag, NCELLS, cells, lines);
 
 # endif
 

@@ -18,19 +18,19 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
+int chemistry (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
                double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
 
   // Calculate column densities
 
-  calc_column_densities (NCELLS, cell, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (NCELLS, cells, healpixvectors, species, column_H2, column_HD, column_C, column_CO);
 
 
   // For all cells
 
-# pragma omp parallel                                                                    \
-  shared (ncells, cell, species, reactions, column_H2, column_HD, column_C, column_CO)   \
+# pragma omp parallel                                                                     \
+  shared (ncells, cells, species, reactions, column_H2, column_HD, column_C, column_CO)   \
   default (none)
   {
 
@@ -41,17 +41,20 @@ int chemistry (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES s
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long o = start; o < stop; o++)
+  for (long p = start; p < stop; p++)
   {
 
     // Calculate reaction rates
 
-    reaction_rates (NCELLS, cell, reactions, o, column_H2, column_HD, column_C, column_CO);
+    printf("OKKK?\n");
 
+    // reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
+
+    printf("No?\n");
 
     // Solve rate equations
 
-    rate_equation_solver (cell, species, o);
+    rate_equation_solver (cells, species, p);
 
 
   } // end of o loop over grid points

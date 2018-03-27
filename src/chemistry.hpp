@@ -13,7 +13,7 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
+int chemistry (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, SPECIES species, REACTIONS reactions,
                double *column_H2, double *column_HD, double *column_C, double *column_CO);
 
 

@@ -4,14 +4,14 @@
 // _________________________________________________________________________
 
 
-#ifndef __calc_rad_surface_HPP_INCLUDED__
-#define __calc_rad_surface_HPP_INCLUDED__
+#ifndef __CALC_RAD_SURFACE_HPP_INCLUDED__
+#define __CALC_RAD_SURFACE_HPP_INCLUDED__
 
 
 // calc_rad_surface: calculates UV radiation surface for each ray at each grid point
 // ---------------------------------------------------------------------------------
 
-int calc_rad_surface (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, double *G_external);
+int calc_rad_surface (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, double *G_external);
 
 
-#endif // __calc_rad_surface_HPP_INCLUDED__
+#endif // __CALC_RAD_SURFACE_HPP_INCLUDED__

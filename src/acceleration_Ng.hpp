@@ -11,14 +11,14 @@
 // acceleration_Ng: perform a Ng accelerated iteration for level populations
 // -------------------------------------------------------------------------
 
-int acceleration_Ng (long ncells, CELL *cell, int lspec,
+int acceleration_Ng (long ncells, CELLS *cells, int ls,
                      double *prev3_pop, double *prev2_pop, double *prev1_pop);
 
 
 // store_populations: update previous populations
 // ----------------------------------------------
 
-int store_populations (long ncells, CELL *cell, int lspec,
+int store_populations (long ncells, CELLS *cells, int ls,
                        double *prev3_pop, double *prev2_pop, double *prev1_pop);
 
 

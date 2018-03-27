@@ -11,7 +11,7 @@
 // calc_temperature_dust: calculate dust temparatures
 // --------------------------------------------------
 
-int calc_temperature_dust (long ncells, CELL *cell);
+int calc_temperature_dust (long ncells, CELLS *cells);
 
 
 #endif // __calc_temperature_dust_HPP_INCLUDED__

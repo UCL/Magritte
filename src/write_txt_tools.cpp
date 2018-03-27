@@ -22,26 +22,26 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (std::string tag, long ncells, CELL *cell, LINES lines)
+int write_txt_output (std::string tag, long ncells, CELLS *cells, LINES lines)
 {
 
-  // write_abundances (tag, NCELLS, cell);
+  // write_abundances (tag, NCELLS, cells);
 
   // write_transition_levels (tag, lines);
 
-  // write_level_populations (tag, NCELLS, cell, lines);
+  // write_level_populations (tag, NCELLS, cells, lines);
 
-  // write_line_intensities (tag, NCELLS, cell, lines);
+  // write_line_intensities (tag, NCELLS, cells, lines);
 
-  write_temperature_gas (tag, NCELLS, cell);
+  write_temperature_gas (tag, NCELLS, cells);
 
-  write_temperature_gas_prev(tag, NCELLS, cell);
+  write_temperature_gas_prev(tag, NCELLS, cells);
 
-  write_thermal_ratio (tag, NCELLS, cell);
+  write_thermal_ratio (tag, NCELLS, cells);
 
-  write_thermal_ratio_prev(tag, NCELLS, cell);
+  write_thermal_ratio_prev(tag, NCELLS, cells);
 
-  // write_temperature_dust (tag, NCELLS, cell);
+  // write_temperature_dust (tag, NCELLS, cells);
 
 
   return (0);
@@ -54,7 +54,7 @@ int write_txt_output (std::string tag, long ncells, CELL *cell, LINES lines)
 // write_grid: write input back
 // ----------------------------
 
-int write_grid (std::string tag, long ncells, CELL *cell)
+int write_grid (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -75,15 +75,15 @@ int write_grid (std::string tag, long ncells, CELL *cell)
     exit (1);
   }
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    if (cell[n].id == n)   // cell[n].id == n means cell was not removed
+    if (cells->id[p] == p)   // cell[p].id == p means cell was not removed
     {
       fprintf (file, "%ld\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\t%lE\n",
-               cell[n].id,
-               cell[n].x,  cell[n].y,  cell[n].z,
-               cell[n].vx, cell[n].vy, cell[n].vz,
-               cell[n].density);
+               cells->id[p],
+               cells->x[p],  cells->y[p],  cells->z[p],
+               cells->vx[p], cells->vy[p], cells->vz[p],
+               cells->density[p]);
 
       total++;
     }
@@ -104,7 +104,7 @@ int write_grid (std::string tag, long ncells, CELL *cell)
 // write_neighbors: write neighbors of each cell
 // ---------------------------------------------
 
-int write_neighbors (std::string tag, long ncells, CELL *cell)
+int write_neighbors (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -126,11 +126,11 @@ int write_neighbors (std::string tag, long ncells, CELL *cell)
 
   for (long p = 0; p < ncells; p++)
   {
-    fprintf (file, "%ld\t", cell[p].n_neighbors);
+    fprintf (file, "%ld\t", cells->n_neighbors[p]);
 
     for (long n = 0; n < NRAYS; n++)
     {
-      fprintf (file, "%ld\t", cell[p].neighbor[n]);
+      fprintf (file, "%ld\t", cells->neighbor[RINDEX(p,n)]);
     }
 
     fprintf (file, "\n");
@@ -189,7 +189,7 @@ int write_healpixvectors (std::string tag, HEALPIXVECTORS healpixvectors)
 // write_abundances: write abundances at each point
 // ------------------------------------------------
 
-int write_abundances (std::string tag, long ncells, CELL *cell)
+int write_abundances (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -209,11 +209,11 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
   }
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    for (int spec = 0; spec < NSPEC; spec++)
+    for (int s = 0; s < NSPEC; s++)
     {
-      fprintf (file, "%lE\t", cell[n].abundance[spec]);
+      fprintf (file, "%lE\t", cells->abundance[SINDEX(p,s)]);
     }
 
     fprintf (file, "\n");
@@ -232,7 +232,7 @@ int write_abundances (std::string tag, long ncells, CELL *cell)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, CELL *cell, LINES lines)
+int write_level_populations (std::string tag, long ncells, CELLS *cells, LINES lines)
 {
 
   if (!tag.empty())
@@ -241,9 +241,9 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINES lin
   }
 
 
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  for (int ls = 0; ls < NLSPEC; ls++)
   {
-    std::string lspec_name = lines.sym[lspec];
+    std::string lspec_name = lines.sym[ls];
     std::string file_name  = output_directory + "level_populations_" + lspec_name + tag + ".txt";
 
     FILE *file = fopen (file_name.c_str(), "w");
@@ -257,11 +257,11 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINES lin
     }
 
 
-    for (long n = 0; n < NCELLS; n++)
+    for (long p = 0; p < NCELLS; p++)
     {
-      for (int i = 0; i < nlev[lspec]; i++)
+      for (int i = 0; i < nlev[ls]; i++)
       {
-        fprintf (file, "%lE\t", cell[n].pop[LSPECLEV(lspec, i)]/cell[n].density/cell[n].abundance[1]);
+        fprintf (file, "%lE\t", cells->pop[LINDEX(p,LSPECLEV(ls, i))]); // /cells->density[p]/cells->abundance[SINDEX(p,1)]);
       }
 
       fprintf (file, "\n");
@@ -278,63 +278,63 @@ int write_level_populations (std::string tag, long ncells, CELL *cell, LINES lin
 }
 
 
-
-
-// write_line_intensities: write line intensities for each species, point and transition
-// -------------------------------------------------------------------------------------
-
-int write_line_intensities (std::string tag, long ncells, CELL *cell, LINES lines)
-{
-
-  if(!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
-  {
-    std::string lspec_name = lines.sym[lspec];
-
-    std::string file_name = output_directory + "line_intensities_" + lspec_name + tag + ".txt";
-
-    FILE *file = fopen (file_name.c_str(), "w");
-
-
-    if (file == NULL)
-    {
-      printf ("Error opening file!\n");
-      std::cout << file_name + "\n";
-      exit (1);
-    }
-
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      for (int kr = 0; kr < nrad[lspec]; kr++)
-      {
-        fprintf (file, "%lE\t", cell[n].mean_intensity[LSPECRAD(lspec,kr)]);
-      }
-
-      fprintf (file, "\n");
-    }
-
-    fclose (file);
-
-  }
-
-
-  return (0);
-
-}
-
-
+//
+//
+// // write_line_intensities: write line intensities for each species, point and transition
+// // -------------------------------------------------------------------------------------
+//
+// int write_line_intensities (std::string tag, long ncells, CELL *cell, LINES lines)
+// {
+//
+//   if(!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//
+//   for (int lspec = 0; lspec < NLSPEC; lspec++)
+//   {
+//     std::string lspec_name = lines.sym[lspec];
+//
+//     std::string file_name = output_directory + "line_intensities_" + lspec_name + tag + ".txt";
+//
+//     FILE *file = fopen (file_name.c_str(), "w");
+//
+//
+//     if (file == NULL)
+//     {
+//       printf ("Error opening file!\n");
+//       std::cout << file_name + "\n";
+//       exit (1);
+//     }
+//
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       for (int kr = 0; kr < nrad[lspec]; kr++)
+//       {
+//         fprintf (file, "%lE\t", cell[n].mean_intensity[LSPECRAD(lspec,kr)]);
+//       }
+//
+//       fprintf (file, "\n");
+//     }
+//
+//     fclose (file);
+//
+//   }
+//
+//
+//   return (0);
+//
+// }
+//
+//
 
 
 // write_thermal_ratio: write thermal ratio at each cell
 // -----------------------------------------------------
 
-int write_thermal_ratio (std::string tag, long ncells, CELL *cell)
+int write_thermal_ratio (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -354,9 +354,9 @@ int write_thermal_ratio (std::string tag, long ncells, CELL *cell)
   }
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    fprintf (file, "%lE\n", cell[n].thermal_ratio);
+    fprintf (file, "%lE\n", cells->thermal_ratio[p]);
   }
 
   fclose (file);
@@ -371,7 +371,7 @@ int write_thermal_ratio (std::string tag, long ncells, CELL *cell)
 // write_thermal_ratio: write thermal ratio at each cell
 // -----------------------------------------------------
 
-int write_thermal_ratio_prev (std::string tag, long ncells, CELL *cell)
+int write_thermal_ratio_prev (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -391,9 +391,9 @@ int write_thermal_ratio_prev (std::string tag, long ncells, CELL *cell)
   }
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    fprintf (file, "%lE\n", cell[n].thermal_ratio_prev);
+    fprintf (file, "%lE\n", cells->thermal_ratio_prev[p]);
   }
 
   fclose (file);
@@ -409,7 +409,7 @@ int write_thermal_ratio_prev (std::string tag, long ncells, CELL *cell)
 // write_temperature_gas: write gas temperatures at each cell
 // ----------------------------------------------------------
 
-int write_temperature_gas (std::string tag, long ncells, CELL *cell)
+int write_temperature_gas (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -429,9 +429,9 @@ int write_temperature_gas (std::string tag, long ncells, CELL *cell)
   }
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    fprintf (file, "%lE\n", cell[n].temperature.gas);
+    fprintf (file, "%lE\n", cells->temperature_gas[p]);
   }
 
   fclose (file);
@@ -446,7 +446,7 @@ int write_temperature_gas (std::string tag, long ncells, CELL *cell)
 // write_temperature_dust: write dust temperatures at each cell
 // ------------------------------------------------------------
 
-int write_temperature_dust (std::string tag, long ncells, CELL *cell)
+int write_temperature_dust (std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -466,9 +466,9 @@ int write_temperature_dust (std::string tag, long ncells, CELL *cell)
   }
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    fprintf (file, "%lE\n", cell[n].temperature.dust);
+    fprintf (file, "%lE\n", cells->temperature_dust[p]);
   }
 
   fclose (file);
@@ -485,7 +485,7 @@ int write_temperature_dust (std::string tag, long ncells, CELL *cell)
 // write_temperature_gas_prev: write previous gas temperatures at each cell
 // ------------------------------------------------------------------------
 
-int write_temperature_gas_prev(std::string tag, long ncells, CELL *cell)
+int write_temperature_gas_prev(std::string tag, long ncells, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -505,9 +505,9 @@ int write_temperature_gas_prev(std::string tag, long ncells, CELL *cell)
   }
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    fprintf (file, "%lE\n", cell[n].temperature.gas_prev);
+    fprintf (file, "%lE\n", cells->temperature_gas_prev[p]);
   }
 
   fclose (file);
@@ -517,772 +517,772 @@ int write_temperature_gas_prev(std::string tag, long ncells, CELL *cell)
 
 }
 
-
-
-
-// write_UV_field: write UV field at each cell
-// -------------------------------------------
-
-int write_UV_field (std::string tag, long ncells, double *UV_field)
-{
-
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "UV_field" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    fprintf (file, "%lE\n", UV_field[n]);
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_UV_field: write visual extinction (AV) at each point
-// ----------------------------------------------------------
-
-int write_AV (std::string tag, long ncells, double *AV)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "AV" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    for (long r = 0; r < NRAYS; r++)
-    {
-      fprintf (file, "%lE\t", AV[RINDEX(n,r)]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_rad_surface: write rad surface at each point
-// --------------------------------------------------
-
-int write_rad_surface (std::string tag, long ncells, double *rad_surface)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "rad_surface" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    for (long r = 0; r < NRAYS; r++)
-    {
-      fprintf (file, "%lE\t", rad_surface[RINDEX(n,r)]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_reaction_rates: write rad surface at each cell
-// ----------------------------------------------------
-
-int write_reaction_rates (std::string tag, long ncells, CELL *cell)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + "reaction_rates" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    for (int reac = 0; reac < NREAC; reac++)
-    {
-      fprintf (file, "%lE\t", cell[n].rate[reac]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_certain_reactions: write rates of certain reactions
-// ---------------------------------------------------------
-
-int write_certain_rates (std::string tag, long ncells, CELL *cell, std::string name,
-                         int nr_certain_reac, int *certain_reactions)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-
-  std::string file_name0 = output_directory + name + "_reactions" + tag + ".txt";
-
-  FILE *file0 = fopen (file_name0.c_str(), "w");
-
-  if (file0 == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name0 + "\n";
-    exit (1);
-  }
-
-
-  for (int reac = 0; reac < nr_certain_reac; reac++)
-  {
-    fprintf (file0, "%d\n", certain_reactions[reac]);
-  }
-
-  fclose (file0);
-
-
-  std::string file_name = output_directory + name + "_rates" + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (int reac = 0; reac < nr_certain_reac; reac++)
-  {
-    fprintf (file, "%d \t", certain_reactions[reac]);
-  }
-
-
-  fprintf (file, "\n");
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    for (int reac = 0; reac < nr_certain_reac; reac++)
-    {
-      fprintf (file, "%lE \t", cell[n].rate[certain_reactions[reac]]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_double_1: write a 1D list of doubles
-// ------------------------------------------
-
-int write_double_1 (std::string name, std::string tag, long length, double *variable)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + name + tag + ".txt";
-
-  FILE *file = fopen(file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long n = 0; n < length; n++)
-  {
-    fprintf (file, "%lE\n", variable[n]);
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-// write_double_2: write a 2D array of doubles
-// -------------------------------------------
-
-int write_double_2 (std::string name, std::string tag, long nrows, long ncols, double *variable)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-  std::string file_name = output_directory + name + tag + ".txt";
-
-  FILE *file = fopen (file_name.c_str(), "w");
-
-  if (file == NULL)
-  {
-    printf ("Error opening file!\n");
-    std::cout << file_name + "\n";
-    exit (1);
-  }
-
-
-  for (long row = 0; row < nrows; row++)
-  {
-    for (long col = 0; col < ncols; col++)
-    {
-      fprintf (file, "%lE\t", variable[col + ncols*row]);
-    }
-
-    fprintf (file, "\n");
-  }
-
-  fclose (file);
-
-
-  return (0);
-
-}
-
-
-
-
-/* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
-/*-----------------------------------------------------------------------------------------------*/
 //
-// int write_radfield_tools( std::string tag, double *AV ,double lambda,
-//                           double *column_H2, double *column_CO )
+//
+//
+// // write_UV_field: write UV field at each cell
+// // -------------------------------------------
+//
+// int write_UV_field (std::string tag, long ncells, double *UV_field)
 // {
 //
 //
-//   if ( !tag.empty() ){
-//
+//   if (!tag.empty())
+//   {
 //     tag = "_" + tag;
 //   }
 //
+//   std::string file_name = output_directory + "UV_field" + tag + ".txt";
 //
+//   FILE *file = fopen (file_name.c_str(), "w");
 //
-//   /* Write dust scattering */
-//
-//   std::string file_name = "output/files/dust_scattering" + tag + ".txt";
-//
-//   FILE *ds_file = fopen(file_name.c_str(), "w");
-//
-//   if (ds_file == NULL){
-//
-//     printf("Error opening file!\n");
-//     exit(1);
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
 //   }
 //
 //
-//   for (long n=0; n<NCELLS; n++){
-//
-//     for (long r=0; r<NRAYS; r++){
-//
-//       double w = log10(1.0 + column_H2[RINDEX(n,r)]);
-//       double LLLlambda = (5675.0 - 200.6*w);
-//
-//       fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], LLLlambda) );
-//     }
-//
-//     fprintf( ds_file, "\n" );
+//   for (long n = 0; n < NCELLS; n++)
+//   {
+//     fprintf (file, "%lE\n", UV_field[n]);
 //   }
 //
-//
-//   fclose(ds_file);
-//
+//   fclose (file);
 //
 //
-//   /* Write H2 shield */
-//
-//   std::string file_name2 = "output/files/shielding_H2" + tag + ".txt";
-//
-//   FILE *s_file = fopen(file_name2.c_str(), "w");
-//
-//   if (s_file == NULL){
-//
-//     printf("Error opening file!\n");
-//     exit(1);
-//   }
-//
-//
-//
-//   double doppler_width = V_TURB / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
-//                                                 /* (assuming turbulent broadening with b=3 km/s) */
-//
-//
-//   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
-//
-//
-//   for (long n=0; n<NCELLS; n++){
-//
-//     for (long r=0; r<NRAYS; r++){
-//
-//       fprintf( s_file, "%lE\t", self_shielding_H2( column_H2[RINDEX(n,r)], doppler_width, radiation_width ) );
-//     }
-//
-//     fprintf( s_file, "\n" );
-//   }
-//
-//
-//   fclose(s_file);
-//
-//
-//   /* Write CO shield */
-//
-//   std::string file_name3 = "output/files/shielding_CO" + tag + ".txt";
-//
-//   FILE *c_file = fopen(file_name3.c_str(), "w");
-//
-//   if (c_file == NULL){
-//
-//     printf("Error opening file!\n");
-//     exit(1);
-//   }
-//
-//
-//
-//   for (long n=0; n<NCELLS; n++){
-//
-//     for (long r=0; r<NRAYS; r++){
-//
-//       fprintf( c_file, "%lE\t", self_shielding_CO( column_CO[RINDEX(n,r)], column_H2[RINDEX(n,r)] ) );
-//     }
-//
-//     fprintf( c_file, "\n" );
-//   }
-//
-//
-//   fclose(c_file);
-//
-//
-//
-//   /* Write X_lambda */
-//
-//   std::string file_name4 = "output/files/X_lambda" + tag + ".txt";
-//
-//   FILE *xl_file = fopen(file_name4.c_str(), "w");
-//
-//   if (xl_file == NULL){
-//
-//     printf("Error opening file!\n");
-//     exit(1);
-//   }
-//
-//
-//
-//   for (long n=1; n<=200; n++){
-//
-//     double LLLlambda = pow(10.0, (9.0-2.0)/200.0*n+2.0);
-//     fprintf( xl_file, "%lE\t%lE\n", LLLlambda, X_lambda(LLLlambda) );
-//
-//   }
-//
-//
-//   fclose(xl_file);
-//
-//
-//   // cout << "X lambda " << X_lambda(1000.0) << "\n";
-//
-//   return(0);
+//   return (0);
 //
 // }
-
-
-
-
-// write_Einstein_coeff: write Einstein A, B or C coefficients
-// -----------------------------------------------------------
-
-int write_Einstein_coeff (std::string tag, LINES lines,
-                          double *A_coeff, double *B_coeff, double *C_coeff)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
-  {
-    std::string lspec_name = lines.sym[lspec];
-
-
-    std::string file_name_A = output_directory + "Einstein_A_" + lspec_name + tag + ".txt";
-    std::string file_name_B = output_directory + "Einstein_B_" + lspec_name + tag + ".txt";
-    std::string file_name_C = output_directory + "Einstein_C_" + lspec_name + tag + ".txt";
-
-
-    FILE *file_A = fopen (file_name_A.c_str(), "w");
-    FILE *file_B = fopen (file_name_B.c_str(), "w");
-    FILE *file_C = fopen (file_name_C.c_str(), "w");
-
-    if (file_A == NULL)
-    {
-      printf ("Error opening file!\n");
-      std::cout << file_name_A + "\n";
-      exit (1);
-    }
-
-    if (file_B == NULL)
-    {
-      printf ("Error opening file!\n");
-      std::cout << file_name_B + "\n";
-      exit (1);
-    }
-
-    if (file_C == NULL)
-    {
-      printf ("Error opening file!\n");
-      std::cout << file_name_C + "\n";
-      exit (1);
-    }
-
-
-    for (long row = 0; row < nlev[lspec]; row++)
-    {
-      for (long col = 0; col < nlev[lspec]; col++)
-      {
-        fprintf (file_A, "%lE\t", lines.A_coeff[LSPECLEVLEV(lspec,row,col)]);
-        fprintf (file_B, "%lE\t", lines.B_coeff[LSPECLEVLEV(lspec,row,col)]);
-        fprintf (file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
-      }
-
-      fprintf (file_A, "\n");
-      fprintf (file_B, "\n");
-      fprintf (file_C, "\n");
-    }
-
-
-    fclose (file_A);
-    fclose (file_B);
-    fclose (file_C);
-
-  } // end of lspec loop over line producing species
-
-
-  return (0);
-
-}
-
-
-
-
-// write_R: write the transition matrix R
-// --------------------------------------
-
-int write_R (std::string tag, long ncells, LINES lines, long o, double *R)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
-  {
-    std::string lspec_name = lines.sym[lspec];
-
-    std::string file_name = output_directory + "R_" + lspec_name + tag + ".txt";
-
-    FILE *file = fopen (file_name.c_str(), "w");
-
-
-    if (file == NULL)
-    {
-      printf ("Error opening file!\n");
-      std::cout << file_name + "\n";
-      exit (1);
-    }
-
-
-    for (long row = 0; row < nlev[lspec]; row++)
-    {
-      for (long col = 0; col < nlev[lspec]; col++)
-      {
-        fprintf (file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,o,row,col)]);
-
-      }
-
-      fprintf (file, "\n");
-
-    }
-
-    fclose (file);
-
-  } // end of lspec loop over line producing species
-
-
-  return (0);
-
-}
-
-
-
-
-// write_transition_levels: write levels corresponding to each transition
-// ----------------------------------------------------------------------
-
-int write_transition_levels (std::string tag, LINES lines)
-{
-
-  if (!tag.empty())
-  {
-    tag = "_" + tag;
-  }
-
-
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
-  {
-    std::string lspec_name = lines.sym[lspec];
-
-    std::string file_name = output_directory + "transition_levels_" + lspec_name + tag + ".txt";
-
-    FILE *file = fopen (file_name.c_str(), "w");
-
-
-    if (file == NULL)
-    {
-      printf ("Error opening file!\n");
-      std::cout << file_name + "\n";
-      exit (1);
-    }
-
-
-    for (int kr = 0; kr < nrad[lspec]; kr++)
-    {
-      int i = lines.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-      int j = lines.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
-
-      fprintf (file, "%d\t%d\n", i, j);
-
-    }
-
-    fclose (file);
-
-  } // end of lspec loop over line producing species
-
-
-  return (0);
-
-}
-
-
-
-
-// /* write_LTE_deviation: write the relative deviation of the level populations from the LTE value */
-// /*-----------------------------------------------------------------------------------------------*/
 //
-// int write_LTE_deviation( std::string tag, CELL *cell, double *energy, double* weight,
-//                          double *temperature_gas, double *pop )
+//
+//
+//
+// // write_UV_field: write visual extinction (AV) at each point
+// // ----------------------------------------------------------
+//
+// int write_AV (std::string tag, long ncells, double *AV)
 // {
 //
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
 //
-//   if ( !tag.empty() ){
+//   std::string file_name = output_directory + "AV" + tag + ".txt";
 //
+//   FILE *file = fopen (file_name.c_str(), "w");
+//
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
+//   }
+//
+//
+//   for (long n = 0; n < NCELLS; n++)
+//   {
+//     for (long r = 0; r < NRAYS; r++)
+//     {
+//       fprintf (file, "%lE\t", AV[RINDEX(n,r)]);
+//     }
+//
+//     fprintf (file, "\n");
+//   }
+//
+//   fclose (file);
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// // write_rad_surface: write rad surface at each point
+// // --------------------------------------------------
+//
+// int write_rad_surface (std::string tag, long ncells, double *rad_surface)
+// {
+//
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//   std::string file_name = output_directory + "rad_surface" + tag + ".txt";
+//
+//   FILE *file = fopen (file_name.c_str(), "w");
+//
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
+//   }
+//
+//
+//   for (long n = 0; n < NCELLS; n++)
+//   {
+//     for (long r = 0; r < NRAYS; r++)
+//     {
+//       fprintf (file, "%lE\t", rad_surface[RINDEX(n,r)]);
+//     }
+//
+//     fprintf (file, "\n");
+//   }
+//
+//   fclose (file);
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// // write_reaction_rates: write rad surface at each cell
+// // ----------------------------------------------------
+//
+// int write_reaction_rates (std::string tag, long ncells, CELL *cell)
+// {
+//
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//   std::string file_name = output_directory + "reaction_rates" + tag + ".txt";
+//
+//   FILE *file = fopen (file_name.c_str(), "w");
+//
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
+//   }
+//
+//
+//   for (long n = 0; n < NCELLS; n++)
+//   {
+//     for (int reac = 0; reac < NREAC; reac++)
+//     {
+//       fprintf (file, "%lE\t", cell[n].rate[reac]);
+//     }
+//
+//     fprintf (file, "\n");
+//   }
+//
+//   fclose (file);
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// // write_certain_reactions: write rates of certain reactions
+// // ---------------------------------------------------------
+//
+// int write_certain_rates (std::string tag, long ncells, CELL *cell, std::string name,
+//                          int nr_certain_reac, int *certain_reactions)
+// {
+//
+//   if (!tag.empty())
+//   {
 //     tag = "_" + tag;
 //   }
 //
 //
-//   double LTE_pop[NCELLS*TOT_NLEV];                                        /* level population n_i */
+//   std::string file_name0 = output_directory + name + "_reactions" + tag + ".txt";
 //
-//   initialize_double_array(NCELLS*TOT_NLEV, LTE_pop);
+//   FILE *file0 = fopen (file_name0.c_str(), "w");
 //
-//   calc_LTE_populations(cell, energy, weight, temperature_gas, LTE_pop);
-//
-//
-//   for (int lspec=0; lspec<NLSPEC; lspec++){
-//
-//     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
-//
-//     std::string file_name = output_directory + "LTE_deviations_" + lspec_name + tag + ".txt";
-//
-//     FILE *file = fopen(file_name.c_str(), "w");
+//   if (file0 == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name0 + "\n";
+//     exit (1);
+//   }
 //
 //
-//     if (file == NULL){
+//   for (int reac = 0; reac < nr_certain_reac; reac++)
+//   {
+//     fprintf (file0, "%d\n", certain_reactions[reac]);
+//   }
 //
-//       std :: cout << "Error opening file " << file_name << "!\n";
-//       std::cout << file_name + "\n";
-//       exit(1);
+//   fclose (file0);
+//
+//
+//   std::string file_name = output_directory + name + "_rates" + tag + ".txt";
+//
+//   FILE *file = fopen (file_name.c_str(), "w");
+//
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
+//   }
+//
+//
+//   for (int reac = 0; reac < nr_certain_reac; reac++)
+//   {
+//     fprintf (file, "%d \t", certain_reactions[reac]);
+//   }
+//
+//
+//   fprintf (file, "\n");
+//
+//   for (long n = 0; n < NCELLS; n++)
+//   {
+//     for (int reac = 0; reac < nr_certain_reac; reac++)
+//     {
+//       fprintf (file, "%lE \t", cell[n].rate[certain_reactions[reac]]);
+//     }
+//
+//     fprintf (file, "\n");
+//   }
+//
+//   fclose (file);
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// // write_double_1: write a 1D list of doubles
+// // ------------------------------------------
+//
+// int write_double_1 (std::string name, std::string tag, long length, double *variable)
+// {
+//
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//   std::string file_name = output_directory + name + tag + ".txt";
+//
+//   FILE *file = fopen(file_name.c_str(), "w");
+//
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
+//   }
+//
+//
+//   for (long n = 0; n < length; n++)
+//   {
+//     fprintf (file, "%lE\n", variable[n]);
+//   }
+//
+//   fclose (file);
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// // write_double_2: write a 2D array of doubles
+// // -------------------------------------------
+//
+// int write_double_2 (std::string name, std::string tag, long nrows, long ncols, double *variable)
+// {
+//
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//   std::string file_name = output_directory + name + tag + ".txt";
+//
+//   FILE *file = fopen (file_name.c_str(), "w");
+//
+//   if (file == NULL)
+//   {
+//     printf ("Error opening file!\n");
+//     std::cout << file_name + "\n";
+//     exit (1);
+//   }
+//
+//
+//   for (long row = 0; row < nrows; row++)
+//   {
+//     for (long col = 0; col < ncols; col++)
+//     {
+//       fprintf (file, "%lE\t", variable[col + ncols*row]);
+//     }
+//
+//     fprintf (file, "\n");
+//   }
+//
+//   fclose (file);
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// /* write_radfield_tools: write the output of the functoins defined in radfield_tools             */
+// /*-----------------------------------------------------------------------------------------------*/
+// //
+// // int write_radfield_tools( std::string tag, double *AV ,double lambda,
+// //                           double *column_H2, double *column_CO )
+// // {
+// //
+// //
+// //   if ( !tag.empty() ){
+// //
+// //     tag = "_" + tag;
+// //   }
+// //
+// //
+// //
+// //   /* Write dust scattering */
+// //
+// //   std::string file_name = "output/files/dust_scattering" + tag + ".txt";
+// //
+// //   FILE *ds_file = fopen(file_name.c_str(), "w");
+// //
+// //   if (ds_file == NULL){
+// //
+// //     printf("Error opening file!\n");
+// //     exit(1);
+// //   }
+// //
+// //
+// //   for (long n=0; n<NCELLS; n++){
+// //
+// //     for (long r=0; r<NRAYS; r++){
+// //
+// //       double w = log10(1.0 + column_H2[RINDEX(n,r)]);
+// //       double LLLlambda = (5675.0 - 200.6*w);
+// //
+// //       fprintf( ds_file, "%lE\t", dust_scattering(AV[RINDEX(n,r)], LLLlambda) );
+// //     }
+// //
+// //     fprintf( ds_file, "\n" );
+// //   }
+// //
+// //
+// //   fclose(ds_file);
+// //
+// //
+// //
+// //   /* Write H2 shield */
+// //
+// //   std::string file_name2 = "output/files/shielding_H2" + tag + ".txt";
+// //
+// //   FILE *s_file = fopen(file_name2.c_str(), "w");
+// //
+// //   if (s_file == NULL){
+// //
+// //     printf("Error opening file!\n");
+// //     exit(1);
+// //   }
+// //
+// //
+// //
+// //   double doppler_width = V_TURB / (lambda*1.0E-8);    /* linewidth (in Hz) of typical transition */
+// //                                                 /* (assuming turbulent broadening with b=3 km/s) */
+// //
+// //
+// //   double radiation_width = 8.0E7;         /* radiative linewidth (in Hz) of a typical transition */
+// //
+// //
+// //   for (long n=0; n<NCELLS; n++){
+// //
+// //     for (long r=0; r<NRAYS; r++){
+// //
+// //       fprintf( s_file, "%lE\t", self_shielding_H2( column_H2[RINDEX(n,r)], doppler_width, radiation_width ) );
+// //     }
+// //
+// //     fprintf( s_file, "\n" );
+// //   }
+// //
+// //
+// //   fclose(s_file);
+// //
+// //
+// //   /* Write CO shield */
+// //
+// //   std::string file_name3 = "output/files/shielding_CO" + tag + ".txt";
+// //
+// //   FILE *c_file = fopen(file_name3.c_str(), "w");
+// //
+// //   if (c_file == NULL){
+// //
+// //     printf("Error opening file!\n");
+// //     exit(1);
+// //   }
+// //
+// //
+// //
+// //   for (long n=0; n<NCELLS; n++){
+// //
+// //     for (long r=0; r<NRAYS; r++){
+// //
+// //       fprintf( c_file, "%lE\t", self_shielding_CO( column_CO[RINDEX(n,r)], column_H2[RINDEX(n,r)] ) );
+// //     }
+// //
+// //     fprintf( c_file, "\n" );
+// //   }
+// //
+// //
+// //   fclose(c_file);
+// //
+// //
+// //
+// //   /* Write X_lambda */
+// //
+// //   std::string file_name4 = "output/files/X_lambda" + tag + ".txt";
+// //
+// //   FILE *xl_file = fopen(file_name4.c_str(), "w");
+// //
+// //   if (xl_file == NULL){
+// //
+// //     printf("Error opening file!\n");
+// //     exit(1);
+// //   }
+// //
+// //
+// //
+// //   for (long n=1; n<=200; n++){
+// //
+// //     double LLLlambda = pow(10.0, (9.0-2.0)/200.0*n+2.0);
+// //     fprintf( xl_file, "%lE\t%lE\n", LLLlambda, X_lambda(LLLlambda) );
+// //
+// //   }
+// //
+// //
+// //   fclose(xl_file);
+// //
+// //
+// //   // cout << "X lambda " << X_lambda(1000.0) << "\n";
+// //
+// //   return(0);
+// //
+// // }
+//
+//
+//
+//
+// // write_Einstein_coeff: write Einstein A, B or C coefficients
+// // -----------------------------------------------------------
+//
+// int write_Einstein_coeff (std::string tag, LINES lines,
+//                           double *A_coeff, double *B_coeff, double *C_coeff)
+// {
+//
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//
+//   for (int lspec = 0; lspec < NLSPEC; lspec++)
+//   {
+//     std::string lspec_name = lines.sym[lspec];
+//
+//
+//     std::string file_name_A = output_directory + "Einstein_A_" + lspec_name + tag + ".txt";
+//     std::string file_name_B = output_directory + "Einstein_B_" + lspec_name + tag + ".txt";
+//     std::string file_name_C = output_directory + "Einstein_C_" + lspec_name + tag + ".txt";
+//
+//
+//     FILE *file_A = fopen (file_name_A.c_str(), "w");
+//     FILE *file_B = fopen (file_name_B.c_str(), "w");
+//     FILE *file_C = fopen (file_name_C.c_str(), "w");
+//
+//     if (file_A == NULL)
+//     {
+//       printf ("Error opening file!\n");
+//       std::cout << file_name_A + "\n";
+//       exit (1);
+//     }
+//
+//     if (file_B == NULL)
+//     {
+//       printf ("Error opening file!\n");
+//       std::cout << file_name_B + "\n";
+//       exit (1);
+//     }
+//
+//     if (file_C == NULL)
+//     {
+//       printf ("Error opening file!\n");
+//       std::cout << file_name_C + "\n";
+//       exit (1);
 //     }
 //
 //
-//     for (long n=0; n<NCELLS; n++){
-//
-//       for (int i=0; i<nlev[lspec]; i++){
-//
-//         double dev = 2.0 * (pop[LSPECGRIDLEV(lspec,n, i)] - LTE_pop[LSPECGRIDLEV(lspec,n, i)])
-//                          / (pop[LSPECGRIDLEV(lspec,n, i)] + LTE_pop[LSPECGRIDLEV(lspec,n, i)]);
-//
-//         fprintf(file, "%lE\t", dev);
+//     for (long row = 0; row < nlev[lspec]; row++)
+//     {
+//       for (long col = 0; col < nlev[lspec]; col++)
+//       {
+//         fprintf (file_A, "%lE\t", lines.A_coeff[LSPECLEVLEV(lspec,row,col)]);
+//         fprintf (file_B, "%lE\t", lines.B_coeff[LSPECLEVLEV(lspec,row,col)]);
+//         fprintf (file_C, "%lE\t", C_coeff[LSPECLEVLEV(lspec,row,col)]);
 //       }
 //
-//       fprintf(file, "\n");
+//       fprintf (file_A, "\n");
+//       fprintf (file_B, "\n");
+//       fprintf (file_C, "\n");
 //     }
 //
 //
-//     fclose(file);
+//     fclose (file_A);
+//     fclose (file_B);
+//     fclose (file_C);
 //
-//   } /* end of lspec loop over line producing species */
+//   } // end of lspec loop over line producing species
 //
 //
-//   return(0);
+//   return (0);
 //
 // }
 //
-// /*-----------------------------------------------------------------------------------------------*/
 //
 //
 //
+// // write_R: write the transition matrix R
+// // --------------------------------------
 //
-//
-// /* write_true_level_populations: write the true level populations                                */
-// /*-----------------------------------------------------------------------------------------------*/
-//
-// int write_true_level_populations( std::string tag, CELL *cell, double *pop )
+// int write_R (std::string tag, long ncells, LINES lines, long o, double *R)
 // {
 //
-//
-//   if ( !tag.empty() ){
-//
+//   if (!tag.empty())
+//   {
 //     tag = "_" + tag;
 //   }
 //
 //
-//   for (int lspec=0; lspec<NLSPEC; lspec++){
+//   for (int lspec = 0; lspec < NLSPEC; lspec++)
+//   {
+//     std::string lspec_name = lines.sym[lspec];
 //
-//     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+//     std::string file_name = output_directory + "R_" + lspec_name + tag + ".txt";
 //
-//     std::string file_name = output_directory + "true_level_populations_" + lspec_name + tag + ".txt";
-//
-//     FILE *file = fopen(file_name.c_str(), "w");
+//     FILE *file = fopen (file_name.c_str(), "w");
 //
 //
-//     if (file == NULL){
-//
-//       std :: cout << "Error opening file " << file_name << "!\n";
+//     if (file == NULL)
+//     {
+//       printf ("Error opening file!\n");
 //       std::cout << file_name + "\n";
-//       exit(1);
+//       exit (1);
 //     }
 //
 //
-//     for (long n=0; n<NCELLS; n++){
+//     for (long row = 0; row < nlev[lspec]; row++)
+//     {
+//       for (long col = 0; col < nlev[lspec]; col++)
+//       {
+//         fprintf (file, "%lE\t", R[LSPECGRIDLEVLEV(lspec,o,row,col)]);
 //
-//       for (int i=0; i<nlev[lspec]; i++){
-//
-//         double rel = pop[LSPECGRIDLEV(lspec,n, i)]
-//                      / cell[n].density / cell[n].abundance[lspec_nr[lspec]];
-//
-//         fprintf(file, "%lE\t", rel);
 //       }
 //
-//       fprintf(file, "\n");
+//       fprintf (file, "\n");
+//
+//     }
+//
+//     fclose (file);
+//
+//   } // end of lspec loop over line producing species
+//
+//
+//   return (0);
+//
+// }
+//
+//
+//
+//
+// // write_transition_levels: write levels corresponding to each transition
+// // ----------------------------------------------------------------------
+//
+// int write_transition_levels (std::string tag, LINES lines)
+// {
+//
+//   if (!tag.empty())
+//   {
+//     tag = "_" + tag;
+//   }
+//
+//
+//   for (int lspec = 0; lspec < NLSPEC; lspec++)
+//   {
+//     std::string lspec_name = lines.sym[lspec];
+//
+//     std::string file_name = output_directory + "transition_levels_" + lspec_name + tag + ".txt";
+//
+//     FILE *file = fopen (file_name.c_str(), "w");
+//
+//
+//     if (file == NULL)
+//     {
+//       printf ("Error opening file!\n");
+//       std::cout << file_name + "\n";
+//       exit (1);
 //     }
 //
 //
-//     fclose(file);
+//     for (int kr = 0; kr < nrad[lspec]; kr++)
+//     {
+//       int i = lines.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
+//       int j = lines.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
 //
-//   } /* end of lspec loop over line producing species */
+//       fprintf (file, "%d\t%d\n", i, j);
+//
+//     }
+//
+//     fclose (file);
+//
+//   } // end of lspec loop over line producing species
 //
 //
-//   return(0);
+//   return (0);
 //
 // }
+//
+//
+//
+//
+// // /* write_LTE_deviation: write the relative deviation of the level populations from the LTE value */
+// // /*-----------------------------------------------------------------------------------------------*/
+// //
+// // int write_LTE_deviation( std::string tag, CELL *cell, double *energy, double* weight,
+// //                          double *temperature_gas, double *pop )
+// // {
+// //
+// //
+// //   if ( !tag.empty() ){
+// //
+// //     tag = "_" + tag;
+// //   }
+// //
+// //
+// //   double LTE_pop[NCELLS*TOT_NLEV];                                        /* level population n_i */
+// //
+// //   initialize_double_array(NCELLS*TOT_NLEV, LTE_pop);
+// //
+// //   calc_LTE_populations(cell, energy, weight, temperature_gas, LTE_pop);
+// //
+// //
+// //   for (int lspec=0; lspec<NLSPEC; lspec++){
+// //
+// //     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+// //
+// //     std::string file_name = output_directory + "LTE_deviations_" + lspec_name + tag + ".txt";
+// //
+// //     FILE *file = fopen(file_name.c_str(), "w");
+// //
+// //
+// //     if (file == NULL){
+// //
+// //       std :: cout << "Error opening file " << file_name << "!\n";
+// //       std::cout << file_name + "\n";
+// //       exit(1);
+// //     }
+// //
+// //
+// //     for (long n=0; n<NCELLS; n++){
+// //
+// //       for (int i=0; i<nlev[lspec]; i++){
+// //
+// //         double dev = 2.0 * (pop[LSPECGRIDLEV(lspec,n, i)] - LTE_pop[LSPECGRIDLEV(lspec,n, i)])
+// //                          / (pop[LSPECGRIDLEV(lspec,n, i)] + LTE_pop[LSPECGRIDLEV(lspec,n, i)]);
+// //
+// //         fprintf(file, "%lE\t", dev);
+// //       }
+// //
+// //       fprintf(file, "\n");
+// //     }
+// //
+// //
+// //     fclose(file);
+// //
+// //   } /* end of lspec loop over line producing species */
+// //
+// //
+// //   return(0);
+// //
+// // }
+// //
+// // /*-----------------------------------------------------------------------------------------------*/
+// //
+// //
+// //
+// //
+// //
+// // /* write_true_level_populations: write the true level populations                                */
+// // /*-----------------------------------------------------------------------------------------------*/
+// //
+// // int write_true_level_populations( std::string tag, CELL *cell, double *pop )
+// // {
+// //
+// //
+// //   if ( !tag.empty() ){
+// //
+// //     tag = "_" + tag;
+// //   }
+// //
+// //
+// //   for (int lspec=0; lspec<NLSPEC; lspec++){
+// //
+// //     std::string lspec_name = species[ lspec_nr[lspec] ].sym;
+// //
+// //     std::string file_name = output_directory + "true_level_populations_" + lspec_name + tag + ".txt";
+// //
+// //     FILE *file = fopen(file_name.c_str(), "w");
+// //
+// //
+// //     if (file == NULL){
+// //
+// //       std :: cout << "Error opening file " << file_name << "!\n";
+// //       std::cout << file_name + "\n";
+// //       exit(1);
+// //     }
+// //
+// //
+// //     for (long n=0; n<NCELLS; n++){
+// //
+// //       for (int i=0; i<nlev[lspec]; i++){
+// //
+// //         double rel = pop[LSPECGRIDLEV(lspec,n, i)]
+// //                      / cell[n].density / cell[n].abundance[lspec_nr[lspec]];
+// //
+// //         fprintf(file, "%lE\t", rel);
+// //       }
+// //
+// //       fprintf(file, "\n");
+// //     }
+// //
+// //
+// //     fclose(file);
+// //
+// //   } /* end of lspec loop over line producing species */
+// //
+// //
+// //   return(0);
+// //
+// // }

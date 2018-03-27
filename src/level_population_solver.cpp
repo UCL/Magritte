@@ -17,12 +17,12 @@
 #define IMD(r,c) ((c)+(r)*m)
 
 
-int level_population_solver (long ncells, CELL *cell, LINES lines,
-                             long o, int lspec, double *R)
+int level_population_solver (long ncells, CELLS *cells, LINES lines,
+                             long o, int ls, double *R)
 {
 
-  const int n = nlev[lspec];   // number of rows and columns of matrix
-  const int m = 1;             // number of solution vectors b
+  const int n = nlev[ls];   // number of rows and columns of matrix
+  const int m = 1;          // number of solution vectors b
 
   double *a = new double[n*n];
   double *b = new double[n*m];
@@ -40,12 +40,12 @@ int level_population_solver (long ncells, CELL *cell, LINES lines,
 
     for (int j = 0; j < n; j++)
     {
-      out = out + R[LSPECLEVLEV(lspec,i,j)];
+      out = out + R[LSPECLEVLEV(ls,i,j)];
 
-      a[LINDEX(lspec,i,j)] = R[LSPECLEVLEV(lspec,j,i)];
+      a[LLINDEX(ls,i,j)] = R[LSPECLEVLEV(ls,j,i)];
     }
 
-    a[LINDEX(lspec,i,i)] = -out;
+    a[LLINDEX(ls,i,i)] = -out;
   }
 
 
@@ -53,11 +53,11 @@ int level_population_solver (long ncells, CELL *cell, LINES lines,
   {
     b[i] = 0.0;
 
-    a[LINDEX(lspec,n-1, i)] = 1.0;
+    a[LLINDEX(ls,n-1, i)] = 1.0;
   }
 
 
-  b[nlev[lspec]-1] = cell[o].density * cell[o].abundance[lines.nr[lspec]];
+  b[nlev[ls]-1] = cells->density[o] * cells->abundance[SINDEX(o,lines.nr[ls])];
 
 
 
@@ -75,9 +75,9 @@ int level_population_solver (long ncells, CELL *cell, LINES lines,
   // ____________________________________________
 
 
-  for (int i = 0; i < nlev[lspec]; i++)
+  for (int i = 0; i < nlev[ls]; i++)
   {
-    long p_i = LSPECLEV(lspec,i);
+    long p_i = LINDEX(o,LSPECLEV(ls,i));
 
 
     // avoid too small or too large populations
@@ -86,18 +86,18 @@ int level_population_solver (long ncells, CELL *cell, LINES lines,
     {
       if (b[i] < POP_UPPER_LIMIT)
       {
-        cell[o].pop[p_i] =  b[i];
+        cells->pop[p_i] = b[i];
       }
 
       else
       {
-        cell[o].pop[p_i] = POP_UPPER_LIMIT;
+        cells->pop[p_i] = POP_UPPER_LIMIT;
       }
     }
 
     else
     {
-      cell[o].pop[p_i] = 0.0;
+      cells->pop[p_i] = 0.0;
     }
 
   }

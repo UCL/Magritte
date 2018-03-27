@@ -16,8 +16,8 @@
 // calc_C_coeff: calculates collisional coefficients (C_ij) from line data
 // -----------------------------------------------------------------------
 
-int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
-                  double *C_coeff, long o, int lspec)
+int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
+                  double *C_coeff, long o, int ls)
 {
 
   // cell[0].temperature.gas = 100.0;
@@ -29,9 +29,9 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
 
-  if (cell[o].abundance[species.nr_H2] > 0.0)
+  if (cells->abundance[SINDEX(o,species.nr_H2)] > 0.0)
   {
-    frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/cell[o].temperature.gas));
+    frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/cells->temperature_gas[o]));
     frac_H2_ortho = 1.0 - frac_H2_para;
   }
 
@@ -43,12 +43,12 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
 
   // For all collision partners
 
-  for (int par = 0; par < ncolpar[lspec]; par++)
+  for (int par = 0; par < ncolpar[ls]; par++)
   {
 
     // Get number of species corresponding to collision partner
 
-    int spec = lines.partner[LSPECPAR(lspec,par)];
+    int spec = lines.partner[LSPECPAR(ls,par)];
 
 
     // Find available temperatures closest to actual tamperature
@@ -66,12 +66,12 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
     // }
     // printf("\n");
 
-    if (lines.coltemp[LSPECPARTEMP(lspec,par,ncoltemp[LSPECPAR(lspec,par)]-1)] <= cell[o].temperature.gas)
+    if (lines.coltemp[LSPECPARTEMP(ls,par,ncoltemp[LSPECPAR(ls,par)]-1)] <= cells->temperature_gas[o])
     {
-      tindex_high = tindex_low = ncoltemp[LSPECPAR(lspec,par)]-1;
+      tindex_high = tindex_low = ncoltemp[LSPECPAR(ls,par)]-1;
     }
 
-    else if (lines.coltemp[LSPECPARTEMP(lspec,par,0)] >= cell[o].temperature.gas)
+    else if (lines.coltemp[LSPECPARTEMP(ls,par,0)] >= cells->temperature_gas[o])
     {
       tindex_high = tindex_low = 0;
     }
@@ -79,11 +79,11 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
     else
     {
 
-      for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
+      for (int tindex = 0; tindex < ncoltemp[LSPECPAR(ls,par)]; tindex++)
       {
         // printf("coltemp %1.2lE\n", lines.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
 
-        if (cell[o].temperature.gas < lines.coltemp[LSPECPARTEMP(lspec,par,tindex)])
+        if (cells->temperature_gas[o] < lines.coltemp[LSPECPARTEMP(ls,par,tindex)])
         {
           tindex_low  = tindex-1;
           tindex_high = tindex;
@@ -97,48 +97,48 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
     // printf("%d %d     tot %d\n", tindex_low, tindex_high, ncoltemp[LSPECPAR(lspec,par)]);
 
 
-    double *C_T_low = new double[nlev[lspec]*nlev[lspec]];
+    double *C_T_low = new double[nlev[ls]*nlev[ls]];
 
-    initialize_double_array (nlev[lspec]*nlev[lspec], C_T_low);
+    initialize_double_array (nlev[ls]*nlev[ls], C_T_low);
 
-    double *C_T_high = new double[nlev[lspec]*nlev[lspec]];
+    double *C_T_high = new double[nlev[ls]*nlev[ls]];
 
-    initialize_double_array (nlev[lspec]*nlev[lspec], C_T_high);
+    initialize_double_array (nlev[ls]*nlev[ls], C_T_high);
 
 
-    for (int ckr = 0; ckr < ncoltran[LSPECPAR(lspec,par)]; ckr++)
+    for (int ckr = 0; ckr < ncoltran[LSPECPAR(ls,par)]; ckr++)
     {
-      int i = lines.icol[LSPECPARTRAN(lspec,par,ckr)];
-      int j = lines.jcol[LSPECPARTRAN(lspec,par,ckr)];
+      int i = lines.icol[LSPECPARTRAN(ls,par,ckr)];
+      int j = lines.jcol[LSPECPARTRAN(ls,par,ckr)];
 
-      C_T_low[LINDEX(lspec,i,j)]  = lines.C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_low)];
-      C_T_high[LINDEX(lspec,i,j)] = lines.C_data[LSPECPARTRANTEMP(lspec,par,ckr,tindex_high)];
+      C_T_low[LLINDEX(ls,i,j)]  = lines.C_data[LSPECPARTRANTEMP(ls,par,ckr,tindex_low)];
+      C_T_high[LLINDEX(ls,i,j)] = lines.C_data[LSPECPARTRANTEMP(ls,par,ckr,tindex_high)];
     }
 
 
     // Calculate reverse (excitation) rate coefficients from detailed balance, if not given
     // i.e. C_ji = C_ij * g_i/g_j * exp( -(E_i-E_j)/ (kb T) )
 
-    for (int ckr = 0; ckr < ncoltran[LSPECPAR(lspec,par)]; ckr++)
+    for (int ckr = 0; ckr < ncoltran[LSPECPAR(ls,par)]; ckr++)
     {
-      int i = lines.icol[LSPECPARTRAN(lspec,par,ckr)];
-      int j = lines.jcol[LSPECPARTRAN(lspec,par,ckr)];
+      int i = lines.icol[LSPECPARTRAN(ls,par,ckr)];
+      int j = lines.jcol[LSPECPARTRAN(ls,par,ckr)];
 
-      int l_i = LSPECLEV(lspec,i);
-      int l_j = LSPECLEV(lspec,j);
+      int l_i = LSPECLEV(ls,i);
+      int l_j = LSPECLEV(ls,j);
 
-      if ( (C_T_low[LINDEX(lspec,j,i)] == 0.0) && (C_T_low[LINDEX(lspec,i,j)] != 0.0) )
+      if ( (C_T_low[LLINDEX(ls,j,i)] == 0.0) && (C_T_low[LLINDEX(ls,i,j)] != 0.0) )
       {
-        C_T_low[LINDEX(lspec,j,i)] = C_T_low[LINDEX(lspec,i,j)] * lines.weight[l_i]/lines.weight[l_j]
+        C_T_low[LLINDEX(ls,j,i)] = C_T_low[LLINDEX(ls,i,j)] * lines.weight[l_i]/lines.weight[l_j]
                                * exp( -(lines.energy[l_i] - lines.energy[l_j])
-                                       /(KB*lines.coltemp[LSPECPARTEMP(lspec,par,tindex_low)]) );
+                                       /(KB*lines.coltemp[LSPECPARTEMP(ls,par,tindex_low)]) );
       }
 
-      if ( (C_T_high[LINDEX(lspec,j,i)] == 0.0) && (C_T_high[LINDEX(lspec,i,j)] != 0.0) )
+      if ( (C_T_high[LLINDEX(ls,j,i)] == 0.0) && (C_T_high[LLINDEX(ls,i,j)] != 0.0) )
       {
-        C_T_high[LINDEX(lspec,j,i)] = C_T_high[LINDEX(lspec,i,j)] * lines.weight[l_i]/lines.weight[l_j]
+        C_T_high[LLINDEX(ls,j,i)] = C_T_high[LLINDEX(ls,i,j)] * lines.weight[l_i]/lines.weight[l_j]
                                 * exp( -(lines.energy[l_i] - lines.energy[l_j])
-                                        /(KB*lines.coltemp[LSPECPARTEMP(lspec,par,tindex_high)]) );
+                                        /(KB*lines.coltemp[LSPECPARTEMP(ls,par,tindex_high)]) );
       }
     }
 
@@ -149,9 +149,9 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
 
     if (tindex_high != tindex_low)
     {
-      step = (cell[o].temperature.gas - lines.coltemp[LSPECPARTEMP(lspec,par,tindex_low)])
-              / ( lines.coltemp[LSPECPARTEMP(lspec,par,tindex_high)]
-                  - lines.coltemp[LSPECPARTEMP(lspec,par,tindex_low)] );
+      step = (cells->temperature_gas[o] - lines.coltemp[LSPECPARTEMP(ls,par,tindex_low)])
+              / ( lines.coltemp[LSPECPARTEMP(ls,par,tindex_high)]
+                  - lines.coltemp[LSPECPARTEMP(ls,par,tindex_low)] );
     }
 
         // printf ("T %1.2lE %1.2lE   %1.2lE\n", lines.coltemp[LSPECPARTEMP(lspec,par,tindex_low)],
@@ -162,16 +162,16 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
 
     // Weigh contributions to C by abundance
 
-    double abundance = cell[o].density * cell[o].abundance[spec];
+    double abundance = cells->density[o] * cells->abundance[SINDEX(o,spec)];
 
 
-    if      (lines.ortho_para[LSPECPAR(lspec,par)] == 'o')
+    if      (lines.ortho_para[LSPECPAR(ls,par)] == 'o')
     {
       // printf("O\n");
       abundance = abundance * frac_H2_ortho;
     }
 
-    else if (lines.ortho_para[LSPECPAR(lspec,par)] == 'p')
+    else if (lines.ortho_para[LSPECPAR(ls,par)] == 'p')
     {
       // printf("P\n");
       abundance = abundance * frac_H2_para;
@@ -182,16 +182,16 @@ int calc_C_coeff (long ncells, CELL *cell, SPECIES species, LINES lines,
 
     // For all C matrix elements
 
-    for (int i = 0; i < nlev[lspec]; i++)
+    for (int i = 0; i < nlev[ls]; i++)
     {
-      for (int j = 0; j < nlev[lspec]; j++)
+      for (int j = 0; j < nlev[ls]; j++)
       {
 
         // Make a linear interpolation for C in temperature
 
-        double C_tmp = C_T_low[LINDEX(lspec,i,j)] + (C_T_high[LINDEX(lspec,i,j)] - C_T_low[LINDEX(lspec,i,j)]) * step;
+        double C_tmp = C_T_low[LLINDEX(ls,i,j)] + (C_T_high[LLINDEX(ls,i,j)] - C_T_low[LLINDEX(ls,i,j)]) * step;
 
-        C_coeff[LSPECLEVLEV(lspec,i,j)] = C_coeff[LSPECLEVLEV(lspec,i,j)] + C_tmp*abundance;
+        C_coeff[LSPECLEVLEV(ls,i,j)] = C_coeff[LSPECLEVLEV(ls,i,j)] + C_tmp*abundance;
       }
     }
 

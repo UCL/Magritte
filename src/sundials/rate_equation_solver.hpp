@@ -17,7 +17,7 @@ typedef struct
 {
   long gp;
 
-  CELL *cellpointer;
+  CELLS *cellpointer;
 
   double electron_abundance;
 
@@ -27,7 +27,7 @@ typedef struct
 // rate_equation_solver: solves rate equations given in rate_equations.cpp
 // -----------------------------------------------------------------------
 
-int rate_equation_solver (CELL *cell, SPECIES species, long o);
+int rate_equation_solver (CELLS *cells, SPECIES species, long o);
 
 
 // Private function to print final statistics

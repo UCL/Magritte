@@ -18,22 +18,22 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines,
+int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines,
              double *Lambda_diagonal, double *mean_intensity_eff,
-             double *source, double *opacity, long origin, int lspec, int kr)
+             double *source, double *opacity, long origin, int ls, int kr)
 {
 
-  long m_ij  = LSPECGRIDRAD(lspec,origin,kr);   // mean_intensity, S and opacity index
-  long mm_ij = LSPECRAD(lspec, kr);             // mean_intensity, S and opacity index
+  long m_ij  = LSPECGRIDRAD(ls,origin,kr);   // mean_intensity, S and opacity index
+  long mm_ij = LSPECRAD(ls, kr);             // mean_intensity, S and opacity index
 
 
-  int i = lines.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-  int j = lines.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+  int i = lines.irad[LSPECRAD(ls,kr)];   // i level index corresponding to transition kr
+  int j = lines.jrad[LSPECRAD(ls,kr)];   // j level index corresponding to transition kr
 
-  long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
+  long b_ij = LSPECLEVLEV(ls,i,j);              // frequency index
 
 
-  double speed_width = sqrt(8.0*KB*cell[origin].temperature.gas/PI/MP + pow(V_TURB, 2));
+  double speed_width = sqrt(8.0*KB*cells->temperature_gas[origin]/PI/MP + pow(V_TURB, 2));
 
   double escape_probability = 0.0;                 // escape probability from Sobolev approximation
 
@@ -61,27 +61,27 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines
     // Walk along antipodal ray (ar) of r
 
     {
-      double Z  = cell[origin].Z[ar];
+      double Z  = cells->Z[RINDEX(origin,ar)];
       double dZ = 0.0;
 
-      long current  = cell[origin].endpoint[ar];
-      long previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
+      long current  = cells->endpoint[RINDEX(origin,ar)];
+      long previous = previous_cell (NCELLS, cells, healpixvectors, origin, ar, &Z, current, &dZ);
 
-      long s_c = LSPECGRIDRAD(lspec,current,kr);
+      long s_c = LSPECGRIDRAD(ls,current,kr);
 
       double chi_c = opacity[s_c];
 
 
       while ( (current != origin) && (previous != NCELLS) )
       {
-        long s_p = LSPECGRIDRAD(lspec,previous,kr);
+        long s_p = LSPECGRIDRAD(ls,previous,kr);
 
         double chi_p = opacity[s_p];
 
         tau_ar = tau_ar + dZ*PC*(chi_c + chi_p)/2.0;
 
         current  = previous;
-        previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
+        previous = previous_cell (NCELLS, cells, healpixvectors, origin, ar, &Z, current, &dZ);
 
         chi_c = chi_p;
       }
@@ -116,23 +116,23 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines
       double dZ = 0.0;
 
       long current = origin;
-      long next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
+      long next    = next_cell (NCELLS, cells, healpixvectors, origin, r, &Z, current, &dZ);
 
-      long s_c = LSPECGRIDRAD(lspec,current,kr);
+      long s_c = LSPECGRIDRAD(ls,current,kr);
 
       double chi_c = opacity[s_c];
 
 
       while (next != NCELLS)
       {
-        long s_n = LSPECGRIDRAD(lspec,next,kr);
+        long s_n = LSPECGRIDRAD(ls,next,kr);
 
         double chi_n = opacity[s_n];
 
         tau_r = tau_r + dZ*PC*(chi_c + chi_n)/2.0;
 
         current = next;
-        next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
+        next    = next_cell (NCELLS, cells, healpixvectors, origin, r, &Z, current, &dZ);
 
         chi_c = chi_n;
       }
@@ -176,17 +176,17 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines
   double factor          = 2.0*HH*pow(lines.frequency[b_ij],3)/pow(CC,2);
 
   double rho_grain       = 2.0;
-  double ngrain          = 2.0E-12*cell[origin].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cells->density[origin]*METALLICITY*100.0/GAS_TO_DUST;
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*lines.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cell[origin].temperature.dust) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cells->temperature_dust[origin]) - 1.0);
   double Planck_CMB      = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/T_CMB) - 1.0);
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  cell[origin].mean_intensity[mm_ij] = (1.0 - escape_probability) * source[m_ij]
-                                      + escape_probability * continuum_mean_intensity;
+  cells->mean_intensity[KINDEX(origin,mm_ij)] = (1.0 - escape_probability) * source[m_ij]
+                                               + escape_probability * continuum_mean_intensity;
 
 
   if (ACCELERATION_APPROX_LAMBDA)
@@ -200,7 +200,7 @@ int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines
   {
     Lambda_diagonal[m_ij]    = 0.0;
 
-    mean_intensity_eff[m_ij] = cell[origin].mean_intensity[mm_ij];
+    mean_intensity_eff[m_ij] = cells->mean_intensity[KINDEX(origin,mm_ij)];
   }
 
 

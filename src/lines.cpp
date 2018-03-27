@@ -15,25 +15,25 @@
 // source: calculate line source function
 // --------------------------------------
 
-int LINES::source (long ncells, CELL *cell, int lspec, double *source)
+int LINES::source (long ncells, CELLS *cells, int ls, double *source)
 {
 
 
-  for (int kr = 0; kr < nrad[lspec]; kr++)
+  for (int kr = 0; kr < nrad[ls]; kr++)
   {
-    int i = irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
-    int j = jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
+    int i = irad[LSPECRAD(ls,kr)];   // i index corresponding to transition kr
+    int j = jrad[LSPECRAD(ls,kr)];   // j index corresponding to transition kr
 
-    long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
-    long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
+    long b_ij = LSPECLEVLEV(ls,i,j);   // A_coeff, B_coeff and frequency index
+    long b_ji = LSPECLEVLEV(ls,j,i);   // A_coeff, B_coeff and frequency index
 
     double A_ij = A_coeff[b_ij];
     double B_ij = B_coeff[b_ij];
     double B_ji = B_coeff[b_ji];
 
 
-#   pragma omp parallel                                                                                \
-    shared (ncells, cell, A_ij, B_ij, B_ji, lspec, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source)   \
+#   pragma omp parallel                                                                              \
+    shared (ncells, cells, A_ij, B_ij, B_ji, ls, kr, i, j, nrad, cum_nrad, nlev, cum_nlev, source)   \
     default (none)
     {
 
@@ -44,22 +44,22 @@ int LINES::source (long ncells, CELL *cell, int lspec, double *source)
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long o = start; o < stop; o++)
+    for (long p = start; p < stop; p++)
     {
-      long s_ij = LSPECGRIDRAD(lspec,o,kr);   // source and opacity index
+      long s_ij = LSPECGRIDRAD(ls,p,kr);   // source and opacity index
 
-      long p_i  = LSPECLEV(lspec,i);    // pop index i
-      long p_j  = LSPECLEV(lspec,j);    // pop index j
+      long p_i  = LINDEX(p,LSPECLEV(ls,i));    // pop index i
+      long p_j  = LINDEX(p,LSPECLEV(ls,j));    // pop index j
 
 
-      if ( (cell[o].pop[p_j] > POP_LOWER_LIMIT) || (cell[o].pop[p_i] > POP_LOWER_LIMIT) )
+      if ( (cells->pop[p_j] > POP_LOWER_LIMIT) || (cells->pop[p_i] > POP_LOWER_LIMIT) )
       {
-        source[s_ij]  = A_ij * cell[o].pop[p_i]  / (cell[o].pop[p_j]*B_ji - cell[o].pop[p_i]*B_ij);
+        source[s_ij] = A_ij * cells->pop[p_i]  / (cells->pop[p_j]*B_ji - cells->pop[p_i]*B_ij);
       }
 
       else
       {
-        source[s_ij]  = 0.0;
+        source[s_ij] = 0.0;
       }
 
 
@@ -79,25 +79,25 @@ int LINES::source (long ncells, CELL *cell, int lspec, double *source)
 // opacity: calculate line opacity
 // -------------------------------
 
-int LINES::opacity (long ncells, CELL *cell, int lspec, double *opacity)
+int LINES::opacity (long ncells, CELLS *cells, int ls, double *opacity)
 {
 
-  for (int kr = 0; kr < nrad[lspec]; kr++)
+  for (int kr = 0; kr < nrad[ls]; kr++)
   {
 
-    int i = irad[LSPECRAD(lspec,kr)];   // i index corresponding to transition kr
-    int j = jrad[LSPECRAD(lspec,kr)];   // j index corresponding to transition kr
+    int i = irad[LSPECRAD(ls,kr)];   // i index corresponding to transition kr
+    int j = jrad[LSPECRAD(ls,kr)];   // j index corresponding to transition kr
 
-    long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
-    long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
+    long b_ij = LSPECLEVLEV(ls,i,j);   // A_coeff, B_coeff and frequency index
+    long b_ji = LSPECLEVLEV(ls,j,i);   // A_coeff, B_coeff and frequency index
 
     double B_ij = B_coeff[b_ij];
     double B_ji = B_coeff[b_ji];
 
 
-#   pragma omp parallel                                        \
-    shared (ncells, cell, b_ij, B_ij, B_ji, lspec, kr, i, j,   \
-            nrad, cum_nrad, nlev, cum_nlev, opacity)           \
+#   pragma omp parallel                                      \
+    shared (ncells, cells, b_ij, B_ij, B_ji, ls, kr, i, j,   \
+            nrad, cum_nrad, nlev, cum_nlev, opacity)         \
     default (none)
     {
 
@@ -108,17 +108,17 @@ int LINES::opacity (long ncells, CELL *cell, int lspec, double *opacity)
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long o = start; o < stop; o++)
+    for (long p = start; p < stop; p++)
     {
-      long s_ij = LSPECGRIDRAD(lspec,o,kr);   // source and opacity index
+      long s_ij = LSPECGRIDRAD(ls,p,kr);   // source and opacity index
 
-      long p_i  = LSPECLEV(lspec,i);    // pop index i
-      long p_j  = LSPECLEV(lspec,j);    // pop index j
+      long p_i  = LINDEX(p,LSPECLEV(ls,i));    // pop index i
+      long p_j  = LINDEX(p,LSPECLEV(ls,j));    // pop index j
 
       double hv_4pi = HH * frequency[b_ij] / 4.0 / PI;
 
 
-      opacity[s_ij] =  hv_4pi * (cell[o].pop[p_j]*B_ji - cell[o].pop[p_i]*B_ij);
+      opacity[s_ij] =  hv_4pi * (cells->pop[p_j]*B_ji - cells->pop[p_i]*B_ij);
 
 
       if (opacity[s_ij] < 1.0E-99)
@@ -143,11 +143,11 @@ int LINES::opacity (long ncells, CELL *cell, int lspec, double *opacity)
 // line_profile: calculate line profile function
 // ---------------------------------------------
 
-double LINES::profile (long ncells, CELL *cell, double velocity, double freq, double line_freq, long o)
+double LINES::profile (long ncells, CELLS *cells, double velocity, double freq, double line_freq, long o)
 {
 
   double shift = line_freq * velocity / CC;
-  double width = line_freq / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
+  double width = line_freq / CC * sqrt(2.0*KB*cells->temperature_gas[o]/MP + V_TURB*V_TURB);
 
 
   return exp( -pow((freq - line_freq - shift)/width, 2) ) / sqrt(PI) / width;

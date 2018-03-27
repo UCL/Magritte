@@ -28,12 +28,10 @@
 #include "write_vtu_tools.hpp"
 
 
-
-
 // write_vtu_output: write all physical variables to vtu input grid
 // ----------------------------------------------------------------
 
-int write_vtu_output (std::string tag, long ncells, CELL *cell)
+int write_vtu_output (std::string tag, long ncells, CELLS *cells)
 {
 
   // Read data from .vtu file on which we need to append data
@@ -93,23 +91,23 @@ int write_vtu_output (std::string tag, long ncells, CELL *cell)
   abn->SetName("abundance");
 
 
-  for (long n = 0; n < NCELLS; n++)
+  for (long p = 0; p < NCELLS; p++)
   {
-    id           ->InsertValue(n, cell[n].id);
-    density      ->InsertValue(n, cell[n].density);
-    temp_gas     ->InsertValue(n, cell[n].temperature.gas);
-    temp_dust    ->InsertValue(n, cell[n].temperature.dust);
-    temp_gas_prev->InsertValue(n, cell[n].temperature.gas_prev);
+    id           ->InsertValue(p, cells->id[p]);
+    density      ->InsertValue(p, cells->density[p]);
+    temp_gas     ->InsertValue(p, cells->temperature_gas[p]);
+    temp_dust    ->InsertValue(p, cells->temperature_dust[p]);
+    temp_gas_prev->InsertValue(p, cells->temperature_gas_prev[p]);
 
 
     double abundance[NSPEC];
 
-    for (int spec = 0; spec < NSPEC; spec++)
+    for (int s = 0; s < NSPEC; s++)
     {
-      abundance[spec] = cell[n].abundance[spec];
+      abundance[s] = cells->abundance[SINDEX(p,s)];
     }
 
-    abn->InsertTuple(n, abundance);
+    abn->InsertTuple(p, abundance);
   }
 
 

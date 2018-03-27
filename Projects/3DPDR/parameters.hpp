@@ -12,6 +12,7 @@
 
 #define WRITE_INTERMEDIATE_OUTPUT true
 
+
 // Input files
 
 #define FIXED_NCELLS true
@@ -63,7 +64,6 @@
 // Line data
 
 #define DATA_FORMAT "LAMDA"
-#define NLSPEC 4
 
 #define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
 
@@ -79,7 +79,7 @@
 
 // Radiative transfer
 
-#define SOBOLEV                    false
+#define SOBOLEV                    true
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 

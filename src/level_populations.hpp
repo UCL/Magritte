@@ -13,7 +13,7 @@
 // level_populations: iteratively calculates level populations
 // -----------------------------------------------------------
 
-int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+int level_populations (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
                        SPECIES species, LINES lines);
 
 

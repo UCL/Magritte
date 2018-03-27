@@ -25,181 +25,181 @@
 
 
 
-// read_txt_input: read .txt input file
-// ------------------------------------
-
-int read_txt_input (std::string inputfile, long ncells, CELL *cell)
-{
-
-  char buffer[BUFFER_SIZE];   // buffer for a line of data
-
-
-  // Read input file
-
-  FILE *input = fopen(inputfile.c_str(), "r");
-
-
-  // For all lines in input file
-
-  for (long n = 0; n < NCELLS; n++)
-  {
-    fgets (buffer, BUFFER_SIZE, input);
-
-    sscanf (buffer, "%ld\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
-            &(cell[n].id), &(cell[n].x), &(cell[n].y), &(cell[n].z),
-            &(cell[n].vx), &(cell[n].vy), &(cell[n].vz),
-            &(cell[n].density));
-  }
-
-
-  fclose(input);
-
-
-# if (!RESTART)
-
-  initialize_temperature_gas (NCELLS, cell);
-
-# else
-
-
-  // Get directory containing restart files
-
-  std::string input_directory = RESTART_DIRECTORY;
-  input_directory = project_folder + input_directory;
-
-  std::string tgas_file_name = input_directory + "temperature_gas.txt";
-
-  if( access (tgas_file_name.c_str(), F_OK) != -1)
-  {
-
-    // If temperature gas file exists
-
-    FILE *tgas = fopen (tgas_file_name.c_str(), "r");
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      fgets (buffer, BUFFER_SIZE, tgas);
-      sscanf (buffer, "%lf", &(cell[n].temperature.gas));
-    }
-
-    fclose (tgas);
-  }
-
-  else
-  {
-
-    // If there is no temperature gas file
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      cell[n].temperature.gas = T_CMB;
-    }
-
-  }
-
-
-  std::string tdust_file_name = input_directory + "temperature_dust.txt";
-
-  if( access (tdust_file_name.c_str(), F_OK) != -1 )
-  {
-
-    // If temperature gas file exists
-
-    FILE *tdust = fopen (tdust_file_name.c_str(), "r");
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      fgets (buffer, BUFFER_SIZE, tdust);
-      sscanf (buffer, "%lf", &(cell[n].temperature.dust));
-    }
-
-    fclose (tdust);
-  }
-
-  else
-  {
-
-    // If there is no temperature gas file
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      cell[n].temperature.dust = T_CMB;
-    }
-
-  }
-
-
-  std::string tgas_prev_file_name = input_directory + "temperature_gas_prev.txt";
-
-  if( access (tgas_prev_file_name.c_str(), F_OK) != -1 )
-  {
-
-    // If temperature gas file exists
-
-    FILE *tgas_prev = fopen (tgas_prev_file_name.c_str(), "r");
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      fgets (buffer, BUFFER_SIZE, tgas_prev);
-      sscanf (buffer, "%lf", &(cell[n].temperature.gas_prev));
-    }
-
-    fclose (tgas_prev);
-  }
-
-  else
-  {
-    // If there is no temperature gas file
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      cell[n].temperature.gas_prev = T_CMB;
-    }
-  }
-
-
-  std::string abun_file_name = input_directory + "abundances.txt";
-
-  if( access (abun_file_name.c_str(), F_OK) != -1 )
-  {
-
-    // If temperature gas file exists
-
-    FILE *abun = fopen (abun_file_name.c_str(), "r");
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      for (int spec = 0; spec < NSPEC; spec++)
-      {
-        fscanf (abun, "%lf", &(cell[n].abundance[spec]));
-      }
-    }
-
-    fclose (abun);
-  }
-
-  else
-  {
-
-    // If there is no temperature gas file
-
-    for (long n = 0; n < NCELLS; n++)
-    {
-      for (int spec = 0; spec < NSPEC; spec++)
-      {
-        cell[n].abundance[spec] = 0.0;
-      }
-    }
-
-  }
-
-
-# endif
-
-
-  return (0);
-
-}
+// // read_txt_input: read .txt input file
+// // ------------------------------------
+//
+// int read_txt_input (std::string inputfile, long ncells, CELL *cell)
+// {
+//
+//   char buffer[BUFFER_SIZE];   // buffer for a line of data
+//
+//
+//   // Read input file
+//
+//   FILE *input = fopen(inputfile.c_str(), "r");
+//
+//
+//   // For all lines in input file
+//
+//   for (long n = 0; n < NCELLS; n++)
+//   {
+//     fgets (buffer, BUFFER_SIZE, input);
+//
+//     sscanf (buffer, "%ld\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf",
+//             &(cell[n].id), &(cell[n].x), &(cell[n].y), &(cell[n].z),
+//             &(cell[n].vx), &(cell[n].vy), &(cell[n].vz),
+//             &(cell[n].density));
+//   }
+//
+//
+//   fclose(input);
+//
+//
+// # if (!RESTART)
+//
+//   initialize_temperature_gas (NCELLS, cell);
+//
+// # else
+//
+//
+//   // Get directory containing restart files
+//
+//   std::string input_directory = RESTART_DIRECTORY;
+//   input_directory = project_folder + input_directory;
+//
+//   std::string tgas_file_name = input_directory + "temperature_gas.txt";
+//
+//   if( access (tgas_file_name.c_str(), F_OK) != -1)
+//   {
+//
+//     // If temperature gas file exists
+//
+//     FILE *tgas = fopen (tgas_file_name.c_str(), "r");
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       fgets (buffer, BUFFER_SIZE, tgas);
+//       sscanf (buffer, "%lf", &(cell[n].temperature.gas));
+//     }
+//
+//     fclose (tgas);
+//   }
+//
+//   else
+//   {
+//
+//     // If there is no temperature gas file
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       cell[n].temperature.gas = T_CMB;
+//     }
+//
+//   }
+//
+//
+//   std::string tdust_file_name = input_directory + "temperature_dust.txt";
+//
+//   if( access (tdust_file_name.c_str(), F_OK) != -1 )
+//   {
+//
+//     // If temperature gas file exists
+//
+//     FILE *tdust = fopen (tdust_file_name.c_str(), "r");
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       fgets (buffer, BUFFER_SIZE, tdust);
+//       sscanf (buffer, "%lf", &(cell[n].temperature.dust));
+//     }
+//
+//     fclose (tdust);
+//   }
+//
+//   else
+//   {
+//
+//     // If there is no temperature gas file
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       cell[n].temperature.dust = T_CMB;
+//     }
+//
+//   }
+//
+//
+//   std::string tgas_prev_file_name = input_directory + "temperature_gas_prev.txt";
+//
+//   if( access (tgas_prev_file_name.c_str(), F_OK) != -1 )
+//   {
+//
+//     // If temperature gas file exists
+//
+//     FILE *tgas_prev = fopen (tgas_prev_file_name.c_str(), "r");
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       fgets (buffer, BUFFER_SIZE, tgas_prev);
+//       sscanf (buffer, "%lf", &(cell[n].temperature.gas_prev));
+//     }
+//
+//     fclose (tgas_prev);
+//   }
+//
+//   else
+//   {
+//     // If there is no temperature gas file
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       cell[n].temperature.gas_prev = T_CMB;
+//     }
+//   }
+//
+//
+//   std::string abun_file_name = input_directory + "abundances.txt";
+//
+//   if( access (abun_file_name.c_str(), F_OK) != -1 )
+//   {
+//
+//     // If temperature gas file exists
+//
+//     FILE *abun = fopen (abun_file_name.c_str(), "r");
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       for (int spec = 0; spec < NSPEC; spec++)
+//       {
+//         fscanf (abun, "%lf", &(cell[n].abundance[spec]));
+//       }
+//     }
+//
+//     fclose (abun);
+//   }
+//
+//   else
+//   {
+//
+//     // If there is no temperature gas file
+//
+//     for (long n = 0; n < NCELLS; n++)
+//     {
+//       for (int spec = 0; spec < NSPEC; spec++)
+//       {
+//         cell[n].abundance[spec] = 0.0;
+//       }
+//     }
+//
+//   }
+//
+//
+// # endif
+//
+//
+//   return (0);
+//
+// }
 
 
 

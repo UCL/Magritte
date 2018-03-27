@@ -21,13 +21,13 @@
 // find_neighbors: find neighboring cells for each cell
 // ----------------------------------------------------
 
-int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
+int find_neighbors (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors)
 {
 
   // For all cells
 
-# pragma omp parallel                     \
-  shared (ncells, cell, healpixvectors)   \
+# pragma omp parallel                      \
+  shared (ncells, cells, healpixvectors)   \
   default (none)
   {
 
@@ -42,25 +42,33 @@ int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
   {
     double origin[3];   // cell center of cell p
 
-    origin[0] = cell[p].x;
-    origin[1] = cell[p].y;
-    origin[2] = cell[p].z;
+    origin[0] = cells->x[p];
+    origin[1] = cells->y[p];
+    origin[2] = cells->z[p];
 
 
     // Locate all cell centers w.r.t. origin
 
-    double ra2[NCELLS];   // squares lengths of local position vectors
+#   if (FIXED_NCELLS)
 
-    long rb[NCELLS];      // identifiers of local position vectors
+      double ra2[NCELLS];   // squares lengths of local position vectors
+      long    rb[NCELLS];   // identifiers of local position vectors
+
+#   else
+
+      double *ra2 = new double[ncells];   // squares lengths of local position vectors
+      long   *rb  = new double[ncells];   // identifiers of local position vectors
+
+#   endif
 
 
     for (long n = 0; n < NCELLS; n++)
     {
       double rvec[3];   // position vector w.r.t. origin
 
-      rvec[0] = cell[n].x - origin[0];
-      rvec[1] = cell[n].y - origin[1];
-      rvec[2] = cell[n].z - origin[2];
+      rvec[0] = cells->x[n] - origin[0];
+      rvec[1] = cells->y[n] - origin[1];
+      rvec[2] = cells->z[n] - origin[2];
 
       ra2[n] = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
       rb[n]  = n;
@@ -98,9 +106,9 @@ int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
     {
       double rvec[3];   // position vector w.r.t. origin
 
-      rvec[0] = cell[rb[n]].x - origin[0];
-      rvec[1] = cell[rb[n]].y - origin[1];
-      rvec[2] = cell[rb[n]].z - origin[2];
+      rvec[0] = cells->x[rb[n]] - origin[0];
+      rvec[1] = cells->y[rb[n]] - origin[1];
+      rvec[2] = cells->z[rb[n]] - origin[2];
 
 
       // Get ray where rvec belongs to (using HEALPix functions)
@@ -177,9 +185,9 @@ int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
 
         double rvec[3];   // position vector w.r.t. origin
 
-        rvec[0] = cell[possible_neighbor[pn]].x - origin[0];
-        rvec[1] = cell[possible_neighbor[pn]].y - origin[1];
-        rvec[2] = cell[possible_neighbor[pn]].z - origin[2];
+        rvec[0] = cells->x[possible_neighbor[pn]] - origin[0];
+        rvec[1] = cells->y[possible_neighbor[pn]] - origin[1];
+        rvec[2] = cells->z[possible_neighbor[pn]] - origin[2];
 
 
         // For all other possible neighbors
@@ -202,25 +210,33 @@ int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
 
         // Enforce that two boundary cells cannot be neighbors
 
-        bool both_boundary = cell[possible_neighbor[pn]].boundary && cell[p].boundary;
+        bool both_boundary = cells->boundary[possible_neighbor[pn]] && cells->boundary[p];
 
 
         // If there is a possible neighbor that is not too far
 
         if ( (Z[pn] != 0.0) && (!too_far[pn]) && !both_boundary )
         {
-          cell[p].neighbor[index] = possible_neighbor[pn];
+          cells->neighbor[RINDEX(p,index)] = possible_neighbor[pn];
           index++;
         }
       }
     } // end of pn loop over possible neighbors
 
 
-    cell[p].n_neighbors = index;
+    cells->n_neighbors[p] = index;
 
 
   } // end of p loop over cells (origins)
   } // end of OpenMP parallel region
+
+
+# if (!FIXED_NCELLS)
+
+    delete [] ra2;
+    delete [] rb;
+
+# endif
 
 
   return(0);
@@ -233,7 +249,7 @@ int find_neighbors (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
 // next_cell: find number of next cell on ray and its distance along ray
 // ---------------------------------------------------------------------
 
-long next_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+long next_cell (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
                 long origin, long ray, double *Z, long current, double *dZ)
 {
 
@@ -244,15 +260,15 @@ long next_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
   long next = NCELLS;   // return ncells when there is no next cell
 
 
-  for (long n = 0; n < cell[current].n_neighbors; n++)
+  for (long n = 0; n < cells->n_neighbors[current]; n++)
   {
-    long neighbor = cell[current].neighbor[n];
+    long neighbor = cells->neighbor[RINDEX(current,n)];
 
     double rvec[3];
 
-    rvec[0] = cell[neighbor].x - cell[origin].x;
-    rvec[1] = cell[neighbor].y - cell[origin].y;
-    rvec[2] = cell[neighbor].z - cell[origin].z;
+    rvec[0] = cells->x[neighbor] - cells->x[origin];
+    rvec[1] = cells->y[neighbor] - cells->y[origin];
+    rvec[2] = cells->z[neighbor] - cells->z[origin];
 
     double Z_new =   rvec[0]*healpixvectors.x[ray]
                    + rvec[1]*healpixvectors.y[ray]
@@ -288,13 +304,13 @@ long next_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 // find_endpoints: find endpoint cells for each cell
 // -------------------------------------------------
 
-int find_endpoints (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
+int find_endpoints (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors)
 {
 
   // For all cells
 
-# pragma omp parallel                     \
-  shared (ncells, cell, healpixvectors)   \
+# pragma omp parallel                      \
+  shared (ncells, cells, healpixvectors)   \
   default (none)
   {
 
@@ -314,17 +330,17 @@ int find_endpoints (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
       double dZ = 0.0;
 
       long current = p;
-      long next    = next_cell (NCELLS, cell, healpixvectors, p, r, &Z, current, &dZ);
+      long next    = next_cell (NCELLS, cells, healpixvectors, p, r, &Z, current, &dZ);
 
 
       while (next != NCELLS)
       {
         current = next;
-        next    = next_cell (NCELLS, cell, healpixvectors, p, r, &Z, current, &dZ);
+        next    = next_cell (NCELLS, cells, healpixvectors, p, r, &Z, current, &dZ);
       }
 
-      cell[p].endpoint[r] = current;
-      cell[p].Z[r]        = Z;
+      cells->endpoint[RINDEX(p,r)] = current;
+      cells->Z[RINDEX(p,r)]        = Z;
     }
 
   } // end of p loop over cells (origins)
@@ -341,7 +357,7 @@ int find_endpoints (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors)
 // previous_cell: find number of previous cell on ray and its distance along ray
 // -----------------------------------------------------------------------------
 
-long previous_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+long previous_cell (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
                     long origin, long ray, double *Z, long current, double *dZ)
 {
 
@@ -356,25 +372,25 @@ long previous_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
   double rvec_old[3];
 
-  rvec_old[0] = cell[current].x - cell[origin].x;
-  rvec_old[1] = cell[current].y - cell[origin].y;
-  rvec_old[2] = cell[current].z - cell[origin].z;
+  rvec_old[0] = cells->x[current] - cells->x[origin];
+  rvec_old[1] = cells->y[current] - cells->y[origin];
+  rvec_old[2] = cells->z[current] - cells->z[origin];
 
   double rvec_old2 = rvec_old[0]*rvec_old[0] + rvec_old[1]*rvec_old[1] + rvec_old[2]*rvec_old[2];
 
-  for (long n = 0; n < cell[current].n_neighbors; n++)
+  for (long n = 0; n < cells->n_neighbors[current]; n++)
   {
     // printf("YESSSS\n");
 
-    long neighbor = cell[current].neighbor[n];
+    long neighbor = cells->neighbor[RINDEX(current,n)];
 
     // printf("current %ld, nr %ld, n_neighours %ld, neighbour %ld\n", current, n, cell[current].n_neighbors, neighbor);
 
     double rvec[3];
 
-    rvec[0] = cell[neighbor].x - cell[origin].x;
-    rvec[1] = cell[neighbor].y - cell[origin].y;
-    rvec[2] = cell[neighbor].z - cell[origin].z;
+    rvec[0] = cells->x[neighbor] - cells->x[origin];
+    rvec[1] = cells->y[neighbor] - cells->y[origin];
+    rvec[2] = cells->z[neighbor] - cells->z[origin];
 
     // printf("NOOOOOO\n");
 
@@ -412,12 +428,12 @@ long previous_cell (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 // relative_velocity: get relative velocity of (cell) current w.r.t. (cell) origin along ray
 // -----------------------------------------------------------------------------------------
 
-double relative_velocity (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+double relative_velocity (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
                           long origin, long ray, long current)
 {
 
-  return   (cell[current].vx - cell[origin].vx) * healpixvectors.x[ray]
-         + (cell[current].vy - cell[origin].vy) * healpixvectors.y[ray]
-         + (cell[current].vz - cell[origin].vz) * healpixvectors.z[ray];
+  return   (cells->vx[current] - cells->vx[origin]) * healpixvectors.x[ray]
+         + (cells->vy[current] - cells->vy[origin]) * healpixvectors.y[ray]
+         + (cells->vz[current] - cells->vz[origin]) * healpixvectors.z[ray];
 
 }

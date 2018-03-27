@@ -20,14 +20,14 @@
 // bound_cube: put cube boundary around  grid
 // ------------------------------------------
 
-long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
+long bound_cube (long ncells, CELLS *cells_init, CELLS *cells_full,
                  long size_x, long size_y, long size_z)
 {
 
   // Add initial cells
 
 # pragma omp parallel                     \
-  shared (ncells, cell_init, cell_full)   \
+  shared (ncells, cells_init, cells_full)   \
   default (none)
   {
 
@@ -40,29 +40,29 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
 
   for (long p = start; p < stop; p++)
   {
-    cell_full[p].x = cell_init[p].x;
-    cell_full[p].y = cell_init[p].y;
-    cell_full[p].z = cell_init[p].z;
+    cells_full->x[p] = cells_init->x[p];
+    cells_full->y[p] = cells_init->y[p];
+    cells_full->z[p] = cells_init->z[p];
 
-    cell_full[p].density = cell_init[p].density;
+    cells_full->density[p] = cells_init->density[p];
 
-    cell_full[p].boundary = false;
+    cells_full->boundary[p] = false;
   }
   } // end of OpenMP parallel region
 
 
   // Find minimum and maximum coordinate values;
 
-  double x_min = cell_init[0].x;
-  double x_max = cell_init[0].x;
-  double y_min = cell_init[0].y;
-  double y_max = cell_init[0].y;
-  double z_min = cell_init[0].z;
-  double z_max = cell_init[0].z;
+  double x_min = cells_init->x[0];
+  double x_max = cells_init->x[0];
+  double y_min = cells_init->y[0];
+  double y_max = cells_init->y[0];
+  double z_min = cells_init->z[0];
+  double z_max = cells_init->z[0];
 
 
-# pragma omp parallel                                                    \
-  shared (ncells, cell_init, x_min, x_max, y_min, y_max, z_min, z_max)   \
+# pragma omp parallel                                                     \
+  shared (ncells, cells_init, x_min, x_max, y_min, y_max, z_min, z_max)   \
   default (none)
   {
 
@@ -75,34 +75,34 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
 
   for (long p = start; p < stop; p++)
   {
-    if (x_max < cell_init[p].x)
+    if (x_max < cells_init->x[p])
     {
-      x_max = cell_init[p].x;
+      x_max = cells_init->x[p];
     }
 
-    if (x_min > cell_init[p].x)
+    if (x_min > cells_init->x[p])
     {
-      x_min = cell_init[p].x;
+      x_min = cells_init->x[p];
     }
 
-    if (y_max < cell_init[p].y)
+    if (y_max < cells_init->y[p])
     {
-      y_max = cell_init[p].y;
+      y_max = cells_init->y[p];
     }
 
-    if (y_min > cell_init[p].y)
+    if (y_min > cells_init->y[p])
     {
-      y_min = cell_init[p].y;
+      y_min = cells_init->y[p];
     }
 
-    if (z_max < cell_init[p].z)
+    if (z_max < cells_init->z[p])
     {
-      z_max = cell_init[p].z;
+      z_max = cells_init->z[p];
     }
 
-    if (z_min > cell_init[p].z)
+    if (z_min > cells_init->z[p])
     {
-      z_min = cell_init[p].z;
+      z_min = cells_init->z[p];
     }
 
   }
@@ -123,18 +123,17 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
 
     long n_extra = 2;   // number of boundary cells
 
-    cell_full[NCELLS].x   = x_min - margin_x;
-    cell_full[NCELLS].y   = 0.0;
-    cell_full[NCELLS].z   = 0.0;
+    cells_full->x[NCELLS] = x_min - margin_x;
+    cells_full->y[NCELLS] = 0.0;
+    cells_full->z[NCELLS] = 0.0;
 
-    cell_full[NCELLS].boundary = true;
+    cells_full->boundary[NCELLS] = true;
 
+    cells_full->x[NCELLS+1] = x_max + margin_x;
+    cells_full->y[NCELLS+1] = 0.0;
+    cells_full->z[NCELLS+1] = 0.0;
 
-    cell_full[NCELLS+1].x = x_max + margin_x;
-    cell_full[NCELLS+1].y = 0.0;
-    cell_full[NCELLS+1].z = 0.0;
-
-    cell_full[NCELLS+1].boundary = true;
+    cells_full->boundary[NCELLS+1] = true;
 
 # elif (DIMENSIONS == 2)
 
@@ -142,45 +141,44 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
 
     long index = NCELLS;
 
-
     for (int e = 0; e < size_y; e++)
     {
-      cell_full[index].x = x_min - margin_x;
-      cell_full[index].y = (length_y+2.0*margin_x)/size_y*e + y_min-margin_x;
-      cell_full[index].z = 0.0;
+      cells_full->x[index] = x_min - margin_x;
+      cells_full->y[index] = (length_y+2.0*margin_x)/size_y*e + y_min-margin_x;
+      cells_full->z[index] = 0.0;
 
-      cell_full[index].boundary = true;
+      cells_full->boundary[index] = true;
       index++;
     }
 
     for (int e = 0; e < size_y; e++)
     {
-      cell_full[index].x = x_max + margin_x;
-      cell_full[index].y = -(length_y+2.0*margin_x)/size_y*e + y_max+margin_x;
-      cell_full[index].z = 0.0;
+      cells_full->x[index] = x_max + margin_x;
+      cells_full->y[index] = -(length_y+2.0*margin_x)/size_y*e + y_max+margin_x;
+      cells_full->z[index] = 0.0;
 
-      cell_full[index].boundary = true;
+      cells_full->boundary[index] = true;
       index++;
     }
 
     for (int e = 0; e < size_x; e++)
     {
-      cell_full[index].x = (length_x+2.0*margin_y)/size_x*e + x_min-margin_y;
-      cell_full[index].y = y_max + margin_y;
-      cell_full[index].z = 0.0;
+      cells_full->x[index] = (length_x+2.0*margin_y)/size_x*e + x_min-margin_y;
+      cells_full->y[index] = y_max + margin_y;
+      cells_full->z[index] = 0.0;
 
-      cell_full[index].boundary = true;
-      cell_full[index].mirror   = true;   // Reflective boundary conditions at upper xz-plane
+      cells_full->boundary[index] = true;
+      cells_full->mirror[index]   = true;   // Reflective boundary conditions at upper xz-plane
       index++;
     }
 
     for (int e = 0; e < size_x; e++)
     {
-      cell_full[index].x = -(length_x+2.0*margin_y)/size_x*e + x_max+margin_y;
-      cell_full[index].y = y_min - margin_y;
-      cell_full[index].z = 0.0;
+      cells_full->x[index] = -(length_x+2.0*margin_y)/size_x*e + x_max+margin_y;
+      cells_full->y[index] = y_min - margin_y;
+      cells_full->z[index] = 0.0;
 
-      cell_full[index].boundary = true;
+      cells_full->boundary[index] = true;
       index++;
     }
 
@@ -196,11 +194,11 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     {
       for (int e2 = 0; e2 < size_z; e2++)
       {
-        cell_full[index].x = x_min - margin_x;
-        cell_full[index].y =  (length_y+2.0*margin_x)/size_y*e1 + y_min-margin_x;
-        cell_full[index].z =  (length_z+2.0*margin_x)/size_z*e2 + z_min-margin_x;
+        cells_full->x[index] = x_min - margin_x;
+        cells_full->y[index] = (length_y+2.0*margin_x)/size_y*e1 + y_min-margin_x;
+        cells_full->z[index] = (length_z+2.0*margin_x)/size_z*e2 + z_min-margin_x;
 
-        cell_full[index].boundary = true;
+        cells_full->boundary[index] = true;
         index++;
       }
     }
@@ -209,11 +207,11 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     {
       for (int e2 = 0; e2 < size_z; e2++)
       {
-        cell_full[index].x = x_max + margin_x;
-        cell_full[index].y = -(length_y+2.0*margin_x)/size_y*e1 + y_max+margin_x;
-        cell_full[index].z = -(length_z+2.0*margin_x)/size_z*e2 + z_max+margin_x;;
+        cells_full->x[index] = x_max + margin_x;
+        cells_full->y[index] = -(length_y+2.0*margin_x)/size_y*e1 + y_max+margin_x;
+        cells_full->z[index] = -(length_z+2.0*margin_x)/size_z*e2 + z_max+margin_x;;
 
-        cell_full[index].boundary = true;
+        cells_full->boundary[index] = true;
         index++;
       }
     }
@@ -222,12 +220,12 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     {
       for (int e2 = 0; e2 < size_z; e2++)
       {
-        cell_full[index].x =  (length_x+2.0*margin_y)/size_x*e1 + x_min-margin_y;
-        cell_full[index].y = y_max + margin_y;
-        cell_full[index].z = -(length_z+2.0*margin_y)/size_z*e2 + z_max+margin_y;
+        cells_full->x[index] =  (length_x+2.0*margin_y)/size_x*e1 + x_min-margin_y;
+        cells_full->y[index] = y_max + margin_y;
+        cells_full->z[index] = -(length_z+2.0*margin_y)/size_z*e2 + z_max+margin_y;
 
-        cell_full[index].boundary = true;
-        cell_full[index].mirror   = true;   // Reflective boundary conditions at upper xz-plane
+        cells_full->boundary[index] = true;
+        cells_full->mirror[index]   = true;   // Reflective boundary conditions at upper xz-plane
         index++;
       }
     }
@@ -236,11 +234,11 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     {
       for (int e2 = 0; e2 < size_z; e2++)
       {
-        cell_full[index].x = -(length_x+2.0*margin_y)/size_x*e1 + x_max+margin_y;
-        cell_full[index].y = y_min - margin_y;
-        cell_full[index].z =  (length_z+2.0*margin_y)/size_z*e2 + z_min-margin_y;
+        cells_full->x[index] = -(length_x+2.0*margin_y)/size_x*e1 + x_max+margin_y;
+        cells_full->y[index] = y_min - margin_y;
+        cells_full->z[index] =  (length_z+2.0*margin_y)/size_z*e2 + z_min-margin_y;
 
-        cell_full[index].boundary = true;
+        cells_full->boundary[index] = true;
         index++;
       }
     }
@@ -249,11 +247,11 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     {
       for (int e2 = 0; e2 < size_y; e2++)
       {
-        cell_full[index].x = (length_x+2.0*margin_z)/size_x*e1 + x_min-margin_z;
-        cell_full[index].y = (length_y+2.0*margin_z)/size_y*e2 + y_min-margin_z;
-        cell_full[index].z = z_max + margin_z;
+        cells_full->x[index] = (length_x+2.0*margin_z)/size_x*e1 + x_min-margin_z;
+        cells_full->y[index] = (length_y+2.0*margin_z)/size_y*e2 + y_min-margin_z;
+        cells_full->z[index] = z_max + margin_z;
 
-        cell_full[index].boundary = true;
+        cells_full->boundary[index] = true;
         index++;
       }
     }
@@ -262,23 +260,23 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
     {
       for (int e2 = 0; e2 < size_y; e2++)
       {
-        cell_full[index].x = -(length_x+2.0*margin_z)/size_x*e1 + x_max+margin_z;
-        cell_full[index].y = -(length_y+2.0*margin_z)/size_y*e2 + y_max+margin_z;
-        cell_full[index].z = z_min - margin_z;
+        cells_full->x[index] = -(length_x+2.0*margin_z)/size_x*e1 + x_max+margin_z;
+        cells_full->y[index] = -(length_y+2.0*margin_z)/size_y*e2 + y_max+margin_z;
+        cells_full->z[index] = z_min - margin_z;
 
-        cell_full[index].boundary = true;
+        cells_full->boundary[index] = true;
         index++;
       }
     }
 
-    cell_full[index].x = x_max + margin_x;
-    cell_full[index].y = y_min - margin_y;
-    cell_full[index].z = z_max + margin_z;
+    cells_full->x[index] = x_max + margin_x;
+    cells_full->y[index] = y_min - margin_y;
+    cells_full->z[index] = z_max + margin_z;
     index++;
 
-    cell_full[index].x = x_min - margin_x;
-    cell_full[index].y = y_max + margin_y;
-    cell_full[index].z = z_min - margin_z;
+    cells_full->x[index] = x_min - margin_x;
+    cells_full->y[index] = y_max + margin_y;
+    cells_full->z[index] = z_min - margin_z;
 
 # endif
 
@@ -291,13 +289,13 @@ long bound_cube (long ncells, CELL *cell_init, CELL *cell_full,
 // bound_sphere: put sphere boundary around  grid
 // -----------------------------------------------
 
-long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary_cells)
+long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboundary_cells)
 {
 
   // Add initial cells
 
-# pragma omp parallel                     \
-  shared (ncells, cell_init, cell_full)   \
+# pragma omp parallel                       \
+  shared (ncells, cells_init, cells_full)   \
   default (none)
   {
 
@@ -310,9 +308,9 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
   for (long p = start; p < stop; p++)
   {
-    cell_full[p].x = cell_init[p].x;
-    cell_full[p].y = cell_init[p].y;
-    cell_full[p].z = cell_init[p].z;
+    cells_full->x[p] = cells_init->x[p];
+    cells_full->y[p] = cells_init->y[p];
+    cells_full->z[p] = cells_init->z[p];
   }
   } // end of OpenMP parallel region
 
@@ -324,8 +322,8 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
   double z_av = 0.0;
 
 
-# pragma omp parallel                            \
-  shared (ncells, cell_init, x_av, y_av, z_av)   \
+# pragma omp parallel                             \
+  shared (ncells, cells_init, x_av, y_av, z_av)   \
   default (none)
   {
 
@@ -333,9 +331,9 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
   for (long p = 0; p < NCELLS; p++)
   {
 
-    x_av = x_av + cell_init[p].x;
-    y_av = y_av + cell_init[p].y;
-    z_av = z_av + cell_init[p].z;
+    x_av = x_av + cells_init->x[p];
+    y_av = y_av + cells_init->y[p];
+    z_av = z_av + cells_init->z[p];
 
   }
   } // end of OpenMP parallel region
@@ -351,8 +349,8 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
   double radius = 0.0;
 
 
-# pragma omp parallel                                    \
-  shared (ncells, cell_init, radius, x_av, y_av, z_av)   \
+# pragma omp parallel                                     \
+  shared (ncells, cells_init, radius, x_av, y_av, z_av)   \
   default (none)
   {
 
@@ -365,9 +363,9 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
   for (long p = start; p < stop; p++)
   {
-    double radius_new =   (cell_init[p].x-x_av)*(cell_init[p].x-x_av)
-                        + (cell_init[p].y-y_av)*(cell_init[p].y-y_av)
-                        + (cell_init[p].z-z_av)*(cell_init[p].z-z_av);
+    double radius_new =   (cells_init->x[p]-x_av)*(cells_init->x[p]-x_av)
+                        + (cells_init->y[p]-y_av)*(cells_init->y[p]-y_av)
+                        + (cells_init->z[p]-z_av)*(cells_init->z[p]-z_av);
 
     if (radius < radius_new)
     {
@@ -383,18 +381,17 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
 # if   (DIMENSIONS == 1)
 
-    cell_full[NCELLS].x   = x_av + 1.1*radius;
-    cell_full[NCELLS].y   = 0.0;
-    cell_full[NCELLS].z   = 0.0;
+    cells_full->x[NCELLS] = x_av + 1.1*radius;
+    cells_full->y[NCELLS] = 0.0;
+    cells_full->z[NCELLS] = 0.0;
 
-    cell_full[NCELLS].boundary = true;
+    cells_full->boundary[NCELLS] = true;
 
+    cells_full->x[NCELLS+1] = x_av - 1.1*radius;
+    cells_full->y[NCELLS+1] = 0.0;
+    cells_full->z[NCELLS+1] = 0.0;
 
-    cell_full[NCELLS+1].x = x_av - 1.1*radius;
-    cell_full[NCELLS+1].y = 0.0;
-    cell_full[NCELLS+1].z = 0.0;
-
-    cell_full[NCELLS+1].boundary = true;
+    cells_full->boundary[NCELLS+1] = true;
 
 # elif (DIMENSIONS == 2)
 
@@ -402,11 +399,11 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
     {
       double theta = (2.0*PI*ray) / nboundary_cells;
 
-      cell_full[NCELLS+ray].x = x_av + 1.1*radius*cos(theta);
-      cell_full[NCELLS+ray].y = y_av + 1.1*radius*sin(theta);
-      cell_full[NCELLS+ray].z = 0.0;
+      cells_full->x[NCELLS+ray] = x_av + 1.1*radius*cos(theta);
+      cells_full->y[NCELLS+ray] = y_av + 1.1*radius*sin(theta);
+      cells_full->z[NCELLS+ray] = 0.0;
 
-      cell_full[NCELLS+ray].boundary = true;
+      cells_full->boundary[NCELLS+ray] = true;
     }
 
 # elif (DIMENSIONS == 3)
@@ -419,11 +416,11 @@ long bound_sphere (long ncells, CELL *cell_init, CELL *cell_full, long nboundary
 
       pix2vec_nest (nsides, ipix, vector);
 
-      cell_full[NCELLS+ipix].x = x_av + 1.1*radius*vector[0];
-      cell_full[NCELLS+ipix].y = y_av + 1.1*radius*vector[1];
-      cell_full[NCELLS+ipix].z = z_av + 1.1*radius*vector[2];
+      cells_full->x[NCELLS+ipix] = x_av + 1.1*radius*vector[0];
+      cells_full->y[NCELLS+ipix] = y_av + 1.1*radius*vector[1];
+      cells_full->z[NCELLS+ipix] = z_av + 1.1*radius*vector[2];
 
-      cell_full[NCELLS+ipix].boundary = true;
+      cells_full->boundary[NCELLS+ipix] = true;
     }
 
 # endif

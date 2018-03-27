@@ -19,18 +19,18 @@
 // radiative_transfer: calculate mean intensity at a cell
 // -----------------------------------------------------------
 
-int radiative_transfer (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines,
+int radiative_transfer (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines,
                         double *Lambda_diagonal, double *mean_intensity_eff,
-                        double *source, double *opacity, long o, int lspec, int kr)
+                        double *source, double *opacity, long o, int ls, int kr)
 {
 
-  long m_ij  = LSPECGRIDRAD(lspec,o,kr);   // mean_intensity, S and opacity index
-  long mm_ij = LSPECRAD(lspec,kr);         // mean_intensity, S and opacity index
+  long m_ij  = LSPECGRIDRAD(ls,o,kr);     // mean_intensity, S and opacity index
+  long mm_ij = KINDEX(o,LSPECRAD(ls,kr));   // mean_intensity, S and opacity index
 
-  int i = lines.irad[mm_ij];   // i level index corresponding to transition kr
-  int j = lines.jrad[mm_ij];   // j level index corresponding to transition kr
+  int i = lines.irad[LSPECRAD(ls,kr)];   // i level index corresponding to transition kr
+  int j = lines.jrad[LSPECRAD(ls,kr)];   // j level index corresponding to transition kr
 
-  long b_ij = LSPECLEVLEV(lspec,i,j);   // frequency index
+  long b_ij = LSPECLEVLEV(ls,i,j);   // frequency index
 
 
   // For half of rays (only half is needed since we also consider antipodals)
@@ -48,25 +48,25 @@ int radiative_transfer (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, 
 
       double line_frequency  = lines.frequency[b_ij];
 
-      double width = line_frequency / CC * sqrt(2.0*KB*cell[o].temperature.gas/MP + V_TURB*V_TURB);
+      double width = line_frequency / CC * sqrt(2.0*KB*cells->temperature_gas[o]/MP + V_TURB*V_TURB);
 
       double freq = line_frequency + H_4_roots[ny]*width;
 
 
-      intensities (NCELLS, cell, healpixvectors, lines, source, opacity, freq,
-                   o, ray, lspec, kr, &u_local, &v_local, &L_local);
+      intensities (NCELLS, cells, healpixvectors, lines, source, opacity, freq,
+                   o, ray, ls, kr, &u_local, &v_local, &L_local);
 
 
-      cell[o].mean_intensity[mm_ij] = cell[o].mean_intensity[mm_ij]  + H_4_weights[ny]/width*u_local;
+      cells->mean_intensity[mm_ij] = cells->mean_intensity[mm_ij] + H_4_weights[ny]/width*u_local;
 
-      Lambda_diagonal[m_ij]         = Lambda_diagonal[m_ij] + H_4_weights[ny]/width*L_local;
+      Lambda_diagonal[m_ij]        = Lambda_diagonal[m_ij]       + H_4_weights[ny]/width*L_local;
 
     } // end of ny loop over frequencies
 
   } // end of r loop over half of the rays
 
 
-  cell[o].mean_intensity[mm_ij] = cell[o].mean_intensity[mm_ij] / NRAYS;
+  cells->mean_intensity[mm_ij] = cells->mean_intensity[mm_ij] / NRAYS;
 
 
   /* Add the continuum radiation (due to dust and CMB) */
@@ -75,33 +75,33 @@ int radiative_transfer (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, 
 
   double rho_grain       = 2.0;
 
-  double ngrain          = 2.0E-12*cell[o].density*METALLICITY*100.0/GAS_TO_DUST;
+  double ngrain          = 2.0E-12*cells->density[o]*METALLICITY*100.0/GAS_TO_DUST;
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*lines.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cell[o].temperature.dust) - 1.0);
+  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cells->temperature_dust[o]) - 1.0);
 
   double Planck_CMB      = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/T_CMB) - 1.0);
 
 
-  /* NOTE: Continuum radiation is assumed to be local */
+  // NOTE: Continuum radiation is assumed to be local
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 
 
-  cell[o].mean_intensity[mm_ij] = cell[o].mean_intensity[mm_ij] + continuum_mean_intensity;
+  cells->mean_intensity[mm_ij] = cells->mean_intensity[mm_ij] + continuum_mean_intensity;
 
 
   if (ACCELERATION_APPROX_LAMBDA)
   {
-    mean_intensity_eff[m_ij] = cell[o].mean_intensity[mm_ij] - Lambda_diagonal[m_ij]*source[m_ij];
+    mean_intensity_eff[m_ij] = cells->mean_intensity[mm_ij] - Lambda_diagonal[m_ij]*source[m_ij];
   }
 
   else
   {
     Lambda_diagonal[m_ij] = 0.0;
 
-    mean_intensity_eff[m_ij] = cell[o].mean_intensity[mm_ij];
+    mean_intensity_eff[m_ij] = cells->mean_intensity[mm_ij];
   }
 
 
@@ -115,24 +115,24 @@ int radiative_transfer (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, 
 // intensity: calculate intensity along a certain ray through a certain point
 // --------------------------------------------------------------------------
 
-int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines, double *source, double *opacity,
-                 double freq, long origin, long r, int lspec, int kr,
+int intensities (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines, double *source, double *opacity,
+                 double freq, long origin, long r, int ls, int kr,
                  double *u_local, double *v_local, double *L_local)
 {
 
   // Get the antipodal ray for r
 
-  long ar = healpixvectors.antipod[r];             // index of antipodal ray to r
+  long ar = healpixvectors.antipod[r];               // index of antipodal ray to r
 
-  long bdy_ar = cell[origin].endpoint[ar];
-  long bdy_r  = cell[origin].endpoint[r];
+  long bdy_ar = cells->endpoint[RINDEX(origin,ar)];   // last (boundary) cell following ar
+  long bdy_r  = cells->endpoint[RINDEX(origin,r)];    // last (boundary) cell following r
 
-  long m_ij = LSPECGRIDRAD(lspec,origin,kr);       // mean_intensity, S and opacity index
+  long m_ij = LSPECGRIDRAD(ls,origin,kr);            // mean_intensity, S and opacity index
 
-  int i = lines.irad[LSPECRAD(lspec,kr)];   // i level index corresponding to transition kr
-  int j = lines.jrad[LSPECRAD(lspec,kr)];   // j level index corresponding to transition kr
+  int i = lines.irad[LSPECRAD(ls,kr)];               // i level index corresponding to transition kr
+  int j = lines.jrad[LSPECRAD(ls,kr)];               // j level index corresponding to transition kr
 
-  long b_ij = LSPECLEVLEV(lspec,i,j);              // frequency index
+  long b_ij = LSPECLEVLEV(ls,i,j);                   // frequency index
 
 
 
@@ -156,31 +156,31 @@ int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES l
   // Walk back along antipodal ray (ar) of r
 
   {
-    double Z  = cell[origin].Z[ar];
+    double Z  = cells->Z[RINDEX(origin,ar)];
     double dZ = 0.0;
 
     long current  = bdy_ar;
-    long previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
+    long previous = previous_cell (NCELLS, cells, healpixvectors, origin, ar, &Z, current, &dZ);
 
-    long s_c = LSPECGRIDRAD(lspec,current,kr);
+    long s_c = LSPECGRIDRAD(ls,current,kr);
 
-    double phi_c = lines.profile (NCELLS, cell, 0.0, freq, lines.frequency[b_ij], current);
+    double phi_c = lines.profile (NCELLS, cells, 0.0, freq, lines.frequency[b_ij], current);
     double chi_c = opacity[s_c] * phi_c;
 
 
     while ( (current != origin) && (previous != NCELLS) )
     {
-      long s_p = LSPECGRIDRAD(lspec,previous,kr);
+      long s_p = LSPECGRIDRAD(ls,previous,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, healpixvectors, origin, ar, previous);
-      double phi_p    = lines.profile (NCELLS, cell, velocity, freq, lines.frequency[b_ij], previous);
+      double velocity = relative_velocity (NCELLS, cells, healpixvectors, origin, ar, previous);
+      double phi_p    = lines.profile (NCELLS, cells, velocity, freq, lines.frequency[b_ij], previous);
       double chi_p    = opacity[s_p] * phi_p;
 
       S[ndep]    = (source[s_c] + source[s_p]) / 2.0;
       dtau[ndep] = dZ * PC * (chi_c + chi_p) / 2.0;
 
       current  = previous;
-      previous = previous_cell (NCELLS, cell, healpixvectors, origin, ar, &Z, current, &dZ);
+      previous = previous_cell (NCELLS, cells, healpixvectors, origin, ar, &Z, current, &dZ);
 
       s_c   = s_p;
       chi_c = chi_p;
@@ -200,27 +200,27 @@ int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES l
     double dZ = 0.0;
 
     long current = origin;
-    long next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
+    long next    = next_cell (NCELLS, cells, healpixvectors, origin, r, &Z, current, &dZ);
 
-    long s_c = LSPECGRIDRAD(lspec,current,kr);
+    long s_c = LSPECGRIDRAD(ls,current,kr);
 
-    double phi_c = lines.profile (NCELLS, cell, 0.0, freq, lines.frequency[b_ij], current);
+    double phi_c = lines.profile (NCELLS, cells, 0.0, freq, lines.frequency[b_ij], current);
     double chi_c = opacity[s_c] * phi_c;
 
 
     while (next != NCELLS)
     {
-      long s_n = LSPECGRIDRAD(lspec,next,kr);
+      long s_n = LSPECGRIDRAD(ls,next,kr);
 
-      double velocity = relative_velocity (NCELLS, cell, healpixvectors, origin, r, next);
-      double phi_n    = lines.profile (NCELLS, cell, velocity, freq, lines.frequency[b_ij], next);
+      double velocity = relative_velocity (NCELLS, cells, healpixvectors, origin, r, next);
+      double phi_n    = lines.profile (NCELLS, cells, velocity, freq, lines.frequency[b_ij], next);
       double chi_n    = opacity[s_n] * phi_n;
 
       S[ndep]    = (source[s_c] + source[s_n]) / 2.0;
       dtau[ndep] = dZ * PC * (chi_c + chi_n) / 2.0;
 
       current = next;
-      next    = next_cell (NCELLS, cell, healpixvectors, origin, r, &Z, current, &dZ);
+      next    = next_cell (NCELLS, cells, healpixvectors, origin, r, &Z, current, &dZ);
 
       s_c   = s_n;
       chi_c = chi_n;
@@ -235,8 +235,8 @@ int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES l
   // Add boundary conitions
   // ______________________
 
-  S[0]      = S[0]      + 2.0*cell[bdy_ar].ray[r].intensity/dtau[0];
-  S[ndep-1] = S[ndep-1] + 2.0*cell[bdy_r].ray[ar].intensity/dtau[ndep-1];
+  S[0]      = S[0]      + 2.0*cells->intensity[RINDEX(bdy_ar,r)]/dtau[0];
+  S[ndep-1] = S[ndep-1] + 2.0*cells->intensity[RINDEX(bdy_r,ar)]/dtau[ndep-1];
 
 
 
@@ -265,7 +265,7 @@ int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES l
   {
     *u_local = u[0];
 
-    *v_local = cell[bdy_ar].ray[r].intensity - u[0];
+    *v_local = cells->intensity[RINDEX(bdy_ar,r)] - u[0];
 
     *L_local = L_diag_approx[0];
   }
@@ -274,7 +274,7 @@ int intensities (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES l
   {
     *u_local = u[ndep-1];
 
-    *v_local = u[ndep-1] - cell[bdy_r].ray[ar].intensity;
+    *v_local = u[ndep-1] - cells->intensity[RINDEX(bdy_r,ar)];
 
     *L_local = L_diag_approx[ndep-1];
   }

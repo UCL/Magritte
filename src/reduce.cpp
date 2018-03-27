@@ -20,7 +20,7 @@
 // reduce: reduce number of cells, return resulting number of cells
 // ----------------------------------------------------------------
 
-long reduce (long ncells, CELL *cell)
+long reduce (long ncells, CELLS *cells)
 {
 
   // Specify grid boundaries
@@ -37,17 +37,17 @@ long reduce (long ncells, CELL *cell)
 
   // Crop grid
 
-  crop (ncells, cell, x_min, x_max, y_min, y_max, z_min, z_max);
+  crop (ncells, cells, x_min, x_max, y_min, y_max, z_min, z_max);
 
 
   // Reduce grid
 
-  density_reduce (ncells, cell, threshold);
+  density_reduce (ncells, cells, threshold);
 
 
   // Set id's to relate grid and reduced grid, get ncells_red
 
-  long ncells_red = set_ids (ncells, cell);
+  long ncells_red = set_ids (ncells, cells);
 
 
   return ncells_red;
@@ -60,12 +60,12 @@ long reduce (long ncells, CELL *cell)
 // crop: crop spatial range of data
 // --------------------------------
 
-int crop (long ncells, CELL *cell,
+int crop (long ncells, CELLS *cells,
           double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
 {
 
-# pragma omp parallel                                               \
-  shared (ncells, cell, x_min, x_max, y_min, y_max, z_min, z_max)   \
+# pragma omp parallel                                                \
+  shared (ncells, cells, x_min, x_max, y_min, y_max, z_min, z_max)   \
   default (none)
   {
 
@@ -78,11 +78,11 @@ int crop (long ncells, CELL *cell,
 
   for (long p = start; p < stop; p++)
   {
-    if (    (x_min > cell[p].x) || (cell[p].x > x_max)
-         || (y_min > cell[p].y) || (cell[p].y > y_max)
-         || (z_min > cell[p].z) || (cell[p].z > z_max) )
+    if (    (x_min > cells->x[p]) || (cells->x[p] > x_max)
+         || (y_min > cells->y[p]) || (cells->y[p] > y_max)
+         || (z_min > cells->z[p]) || (cells->z[p] > z_max) )
     {
-      cell[p].removed = true;
+      cells->removed[p] = true;
     }
 
   }
@@ -99,37 +99,37 @@ int crop (long ncells, CELL *cell,
 // density_reduce: reduce number of cell in regions of constant density
 // --------------------------------------------------------------------
 
-int density_reduce (long ncells, CELL *cell, double min_density_change)
+int density_reduce (long ncells, CELLS *cells, double min_density_change)
 {
 
   // Note that this loop cannot be paralellized !
 
   for (long p = 0; p < ncells; p++)
   {
-    if (!cell[p].removed)
+    if (!cells->removed[p])
     {
 
-      double density_c = cell[p].density;   // density of current cell
+      double density_c = cells->density[p];   // density of current cell
 
-      cell[p].removed  = true;              // assume cell can be removed
+      cells->removed[p]  = true;              // assume cell can be removed
 
 
       // Check whether cell can indeed be removed
 
-      for (int n = 0; n < cell[p].n_neighbors; n++)
+      for (int n = 0; n < cells->n_neighbors[p]; n++)
       {
-        long nr = cell[p].neighbor[n];
+        long nr = cells->neighbor[RINDEX(p,n)];
 
-        double rel_density_change = 2.0*fabs(cell[nr].density - density_c)
-                                        / (cell[nr].density + density_c);
+        double rel_density_change = 2.0*fabs(cells->density[nr] - density_c)
+                                    / (cells->density[nr] + density_c);
 
 
         // Do not remove if density changes too much or neighbor was removed
         // The latter to avoid large gaps being formed
 
-        if ( (rel_density_change > min_density_change) || cell[nr].removed || cell[nr].boundary )
+        if ( (rel_density_change > min_density_change) || cells->removed[nr] || cells->boundary[nr] )
         {
-          cell[p].removed = false;
+          cells->removed[p] = false;
         }
       }
 
@@ -147,7 +147,7 @@ int density_reduce (long ncells, CELL *cell, double min_density_change)
 // set_ids: determine cell numbers in the reduced grid, return nr of reduced cells
 // -------------------------------------------------------------------------------
 
-long set_ids (long ncells, CELL *cell)
+long set_ids (long ncells, CELLS *cells)
 {
 
   long cell_id_reduced = 0;
@@ -158,14 +158,14 @@ long set_ids (long ncells, CELL *cell)
 
   for (long p = 0; p < ncells; p++)
   {
-    if (cell[p].removed)
+    if (cells->removed[p])
     {
-      cell[p].id = -1;
+      cells->id[p] = -1;
     }
 
     else
     {
-      cell[p].id = cell_id_reduced;
+      cells->id[p] = cell_id_reduced;
 
       cell_id_reduced++;
     }
@@ -184,14 +184,14 @@ long set_ids (long ncells, CELL *cell)
 // initialized_reduced_grid: initialize reduced grid
 // -------------------------------------------------
 
-int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
+int initialize_reduced_grid (long ncells_red, CELLS *cells_red, long ncells, CELLS *cells)
 {
 
-  initialize_cells (ncells_red, cell_red);
+  initialize_cells (ncells_red, cells_red);
 
 
-# pragma omp parallel                           \
-  shared (ncells_red, cell_red, ncells, cell)   \
+# pragma omp parallel                             \
+  shared (ncells_red, cells_red, ncells, cells)   \
   default (none)
   {
 
@@ -202,58 +202,58 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
   long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
-    if (!cell[n].removed)
+    if (!cells->removed[p])
     {
-      long nr = cell[n].id;   // nr of cell n in reduced grid
+      long nr = cells->id[p];   // nr of cell n in reduced grid
 
-      cell_red[nr].x = cell[n].x;
-      cell_red[nr].y = cell[n].y;
-      cell_red[nr].z = cell[n].z;
+      cells_red->x[nr] = cells->x[p];
+      cells_red->y[nr] = cells->y[p];
+      cells_red->z[nr] = cells->z[p];
 
-      cell_red[nr].vx = cell[n].vx;
-      cell_red[nr].vy = cell[n].vy;
-      cell_red[nr].vz = cell[n].vz;
+      cells_red->vx[nr] = cells->vx[p];
+      cells_red->vy[nr] = cells->vy[p];
+      cells_red->vz[nr] = cells->vz[p];
 
-      cell_red[nr].density = cell[n].density;
+      cells_red->density[nr] = cells->density[p];
 
-      cell_red[nr].temperature.gas      = cell[n].temperature.gas;
-      cell_red[nr].temperature.dust     = cell[n].temperature.dust;
-      cell_red[nr].temperature.gas_prev = cell[n].temperature.gas_prev;
+      cells_red->temperature_gas[nr]      = cells->temperature_gas[p];
+      cells_red->temperature_dust[nr]     = cells->temperature_dust[p];
+      cells_red->temperature_gas_prev[nr] = cells->temperature_gas_prev[p];
 
-      cell_red[nr].thermal_ratio      = cell[n].thermal_ratio;
-      cell_red[nr].thermal_ratio_prev = cell[n].thermal_ratio_prev;
+      cells_red->thermal_ratio[nr]      = cells->thermal_ratio[p];
+      cells_red->thermal_ratio_prev[nr] = cells->thermal_ratio_prev[p];
 
-      cell_red[nr].UV = cell[n].UV;
+      cells_red->UV[nr] = cells->UV[p];
 
 
-      for (int spec = 0; spec < NSPEC; spec++)
+      for (int s = 0; s < NSPEC; s++)
       {
-        cell_red[nr].abundance[spec] = cell[n].abundance[spec];
+        cells_red->abundance[SINDEX(nr,s)] = cells->abundance[SINDEX(p,s)];
       }
 
-      for (int reac = 0; reac < NREAC; reac++)
+      for (int e = 0; e < NREAC; e++)
       {
-        cell_red[nr].rate[reac] = cell[n].rate[reac];
+        cells_red->rate[READEX(nr,e)] = cells->rate[READEX(p,e)];
       }
 
       for (long r = 0; r < NRAYS; r++)
       {
-        cell_red[nr].ray[r].intensity   = cell[n].ray[r].intensity;
-        cell_red[nr].ray[r].column      = cell[n].ray[r].column;
-        cell_red[nr].ray[r].rad_surface = cell[n].ray[r].rad_surface;
-        cell_red[nr].ray[r].AV          = cell[n].ray[r].AV;
+        cells_red->intensity[RINDEX(nr,r)]   = cells->intensity[RINDEX(p,r)];
+        cells_red->column[RINDEX(nr,r)]      = cells->column[RINDEX(p,r)];
+        cells_red->rad_surface[RINDEX(nr,r)] = cells->rad_surface[RINDEX(p,r)];
+        cells_red->AV[RINDEX(nr,r)]          = cells->AV[RINDEX(p,r)];
       }
 
       for (int l = 0; l < TOT_NLEV; l++)
       {
-        cell_red[nr].pop[l] = cell[n].pop[l];
+        cells_red->pop[LINDEX(nr,l)] = cells->pop[LINDEX(p,l)];
       }
 
       for (int k = 0; k < TOT_NRAD; k++)
       {
-        cell_red[nr].mean_intensity[k] = cell[n].mean_intensity[k];
+        cells_red->mean_intensity[KINDEX(nr,k)] = cells->mean_intensity[KINDEX(p,k)];
       }
 
     }
@@ -280,11 +280,11 @@ int initialize_reduced_grid (long ncells_red, CELL *cell_red, long ncells, CELL 
 // interpolate: interpolate reduced grid back to original grid
 // -----------------------------------------------------------
 
-int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
+int interpolate (long ncells_red, CELLS *cells_red, long ncells, CELLS *cells)
 {
 
-# pragma omp parallel                           \
-  shared (ncells_red, cell_red, ncells, cell)   \
+# pragma omp parallel                             \
+  shared (ncells_red, cells_red, ncells, cells)   \
   default (none)
   {
 
@@ -298,54 +298,56 @@ int interpolate (long ncells_red, CELL *cell_red, long ncells, CELL *cell)
   for (long p = start; p < stop; p++)
   {
 
-    if (cell[p].removed)
+    if (cells->removed[p])
     {
 
       // Take average of neighbors
 
-      cell[p].density              = 0.0;
-      cell[p].temperature.gas      = 0.0;
-      cell[p].temperature.gas_prev = 0.0;
+      cells->density[p]              = 0.0;
+      cells->temperature_gas[p]      = 0.0;
+      cells->temperature_gas_prev[p] = 0.0;
+      cells->thermal_ratio[p]        = 0.0;
+      cells->thermal_ratio_prev[p]   = 0.0;
 
 
-      for (int n = 0; n < cell[p].n_neighbors; n++)
+      for (int n = 0; n < cells->n_neighbors[p]; n++)
       {
-        long nr = cell[p].neighbor[n];   // nr of neighbor in grid
+        long nr = cells->neighbor[RINDEX(p,n)];   // nr of neighbor in grid
 
-        if (!cell[nr].removed)
+        if (!cells->removed[nr])
         {
-          long nr_red = cell[nr].id;     // nr of meighbor in reduced grid
+          long nr_red = cells->id[nr];     // nr of meighbor in reduced grid
 
-          cell[p].density              = cell[p].density
-                                         + cell_red[nr_red].density;
-          cell[p].temperature.gas      = cell[p].temperature.gas
-                                         + cell_red[nr_red].temperature.gas;
-          cell[p].temperature.gas_prev = cell[p].temperature.gas_prev
-                                         + cell_red[nr_red].temperature.gas_prev;
-          cell[p].thermal_ratio        = cell[p].thermal_ratio
-                                         + cell_red[nr_red].thermal_ratio;
-          cell[p].thermal_ratio_prev   = cell[p].thermal_ratio_prev
-                                         + cell_red[nr_red].thermal_ratio_prev;
+          cells->density[p]              = cells->density[p]
+                                          + cells_red->density[nr_red];
+          cells->temperature_gas[p]      = cells->temperature_gas[p]
+                                          + cells_red->temperature_gas[nr_red];
+          cells->temperature_gas_prev[p] = cells->temperature_gas_prev[p]
+                                          + cells_red->temperature_gas_prev[nr_red];
+          cells->thermal_ratio[p]        = cells->thermal_ratio[p]
+                                          + cells_red->thermal_ratio[nr_red];
+          cells->thermal_ratio_prev[p]   = cells->thermal_ratio_prev[p]
+                                          + cells_red->thermal_ratio_prev[nr_red];
         }
       }
 
-      cell[p].density              = cell[p].density              / cell[p].n_neighbors;
-      cell[p].temperature.gas      = cell[p].temperature.gas      / cell[p].n_neighbors;
-      cell[p].temperature.gas_prev = cell[p].temperature.gas_prev / cell[p].n_neighbors;
-      cell[p].thermal_ratio        = cell[p].thermal_ratio        / cell[p].n_neighbors;
-      cell[p].thermal_ratio_prev   = cell[p].thermal_ratio_prev   / cell[p].n_neighbors;
+      cells->density[p]              = cells->density[p]              / cells->n_neighbors[p];
+      cells->temperature_gas[p]      = cells->temperature_gas[p]      / cells->n_neighbors[p];
+      cells->temperature_gas_prev[p] = cells->temperature_gas_prev[p] / cells->n_neighbors[p];
+      cells->thermal_ratio[p]        = cells->thermal_ratio[p]        / cells->n_neighbors[p];
+      cells->thermal_ratio_prev[p]   = cells->thermal_ratio_prev[p]   / cells->n_neighbors[p];
 
     }
 
     else
     {
-      long nr_red = cell[p].id;   // nr of cell in reduced grid
+      long nr_red = cells->id[p];   // nr of cell in reduced grid
 
-      cell[p].density              = cell_red[nr_red].density;
-      cell[p].temperature.gas      = cell_red[nr_red].temperature.gas;
-      cell[p].temperature.gas_prev = cell_red[nr_red].temperature.gas_prev;
-      cell[p].thermal_ratio        = cell_red[nr_red].thermal_ratio;
-      cell[p].thermal_ratio_prev   = cell_red[nr_red].thermal_ratio_prev;
+      cells->density[p]              = cells_red->density[nr_red];
+      cells->temperature_gas[p]      = cells_red->temperature_gas[nr_red];
+      cells->temperature_gas_prev[p] = cells_red->temperature_gas_prev[nr_red];
+      cells->thermal_ratio[p]        = cells_red->thermal_ratio[nr_red];
+      cells->thermal_ratio_prev[p]   = cells_red->thermal_ratio_prev[nr_red];
     }
 
   }

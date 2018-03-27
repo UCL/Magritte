@@ -19,14 +19,14 @@
 // calc_rad_surface: calculates UV radiation surface for each ray at each grid point
 // ---------------------------------------------------------------------------------
 
-int calc_rad_surface (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, double *G_external)
+int calc_rad_surface (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, double *G_external)
 {
 
 
   // For all grid points
 
-# pragma omp parallel                                 \
-  shared (ncells, cell, G_external, healpixvectors)   \
+# pragma omp parallel                                  \
+  shared (ncells, cells, G_external, healpixvectors)   \
   default (none)
   {
 
@@ -37,7 +37,7 @@ int calc_rad_surface (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, do
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long n = start; n < stop; n++)
+  for (long p = start; p < stop; p++)
   {
 
     // In case of a UNIdirectional radiation field
@@ -54,7 +54,7 @@ int calc_rad_surface (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, do
 
       for (long r = 0; r < NRAYS; r++)
       {
-        cell[n].ray[r].rad_surface = 0.0;
+        cells->rad_surface[RINDEX(p,r)] = 0.0;
 
         double product = - G_external[0]*healpixvectors.x[r]
                          - G_external[1]*healpixvectors.y[r]
@@ -68,7 +68,7 @@ int calc_rad_surface (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, do
         }
       }
 
-      cell[n].ray[r_max].rad_surface = max_product;
+      cells->rad_surface[RINDEX(p,r_max)] = max_product;
 
     } // end if UNIdirectional radiation field
 
@@ -77,10 +77,12 @@ int calc_rad_surface (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, do
 
     if (FIELD_FORM == "ISO")
     {
+
       for (long r = 0; r < NRAYS; r++)
       {
-        cell[n].ray[r].rad_surface = G_external[0] / (double) NRAYS;
+        cells->rad_surface[RINDEX(p,r)] = G_external[0] / (double) NRAYS;
       }
+      
     } // end if ISOtropic radiation field
 
 

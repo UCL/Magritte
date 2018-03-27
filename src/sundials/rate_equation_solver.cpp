@@ -38,7 +38,7 @@
 // rate_equation_solver: solves rate equations given in rate_equations.cpp
 // -----------------------------------------------------------------------
 
-int rate_equation_solver (CELL *cell, SPECIES species, long o)
+int rate_equation_solver (CELLS *cells, SPECIES species, long o)
 {
 
 
@@ -50,8 +50,8 @@ int rate_equation_solver (CELL *cell, SPECIES species, long o)
   user_data = (USER_DATA) malloc( sizeof(*user_data) );
 
   user_data->gp          = o;
-  user_data->cellpointer = cell;
-  user_data->electron_abundance = cell[o].abundance[species.nr_e];
+  user_data->cellpointer = cells;
+  user_data->electron_abundance = cells->abundance[SINDEX(o,species.nr_e)];
 
 
   SUNMatrix       A  = NULL;
@@ -95,9 +95,9 @@ int rate_equation_solver (CELL *cell, SPECIES species, long o)
 
   for (int i = 0; i < NEQ; i++)
   {
-    if (cell[o].abundance[i+1] > 0.0)
+    if (cells->abundance[SINDEX(o,i+1)] > 0.0)
     {
-      Ith(y,i) = (realtype) cell[o].abundance[i+1];
+      Ith(y,i) = (realtype) cells->abundance[SINDEX(o,i+1)];
     }
 
     else
@@ -235,18 +235,16 @@ int rate_equation_solver (CELL *cell, SPECIES species, long o)
   {
     if (Ith(y,i) > 1.0E-30)
     {
-      cell[o].abundance[i+1] = Ith(y,i);
+      cells->abundance[SINDEX(o,i+1)] = Ith(y,i);
     }
 
     else
     {
-      cell[o].abundance[i+1] = 0.0;
+      cells->abundance[SINDEX(o,i+1)] = 0.0;
     }
   }
 
-
-  cell[o].abundance[species.nr_e] = user_data->electron_abundance;
-
+  cells->abundance[SINDEX(o,species.nr_e)] = user_data->electron_abundance;
 
 
   // Print some final statistics

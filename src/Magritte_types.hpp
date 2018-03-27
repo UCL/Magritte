@@ -11,32 +11,36 @@
 // #include "Eigen/Dense"
 #include <omp.h>
 
+// Include CELLS class
+#include "cells.hpp"
 // Include RAYS class
 #include "healpixvectors.hpp"
 // Include SPECIES class
 #include "species.hpp"
 // Include REACTIONS class
 #include "reactions.hpp"
+// Include LINES class
+#include "lines.hpp"
 
 
 
-struct TEMPERATURE
-{
-  double dust;       // dust temperature
-  double gas;        // gas temperature
-  double gas_prev;   // gas temperature in previous iteration
-
-};
-
-
-struct RAY
-{
-  double intensity;
-  double column;
-
-  double rad_surface;
-  double AV;
-};
+// struct TEMPERATURE
+// {
+//   double dust;       // dust temperature
+//   double gas;        // gas temperature
+//   double gas_prev;   // gas temperature in previous iteration
+//
+// };
+//
+//
+// struct RAY
+// {
+//   double intensity;
+//   double column;
+//
+//   double rad_surface;
+//   double AV;
+// };
 
 
 
@@ -89,52 +93,52 @@ struct COLUMN_DENSITIES
 
 
 
-struct CELL   // (array of structures)
-{
-
-  // Standard input
-
-  double x,  y,  z;          // x, y and z coordinate of cell center
-  double vx, vy, vz;         // x, y and z component of velocity field
-
-  double density;            // total density in cell
-
-
-  // Geometry
-
-  long endpoint[NRAYS];      // cell numbers of ray endings
-  double Z[NRAYS];           // distance from cell to boundary
-
-  long neighbor[NRAYS];      // cell numbers of neighors
-  long n_neighbors;          // number of neighbors
-
-
-  // Chemistry
-
-  double abundance[NSPEC];   // abundance for each species
-  double rate[NREAC];        // reaction rate for each reaciton
-
-  // Lines
-
-  double pop[TOT_NLEV];              // level population
-  double mean_intensity[TOT_NRAD];   // mean intensity
-
-  TEMPERATURE temperature;   // temperatures
-
-  RAY ray[NRAYS];
-
-  double UV;                 // average UV intensity
-
-  long id;                   // cell nr of associated cell in other grid
-  bool removed;              // true when cell is removed
-
-  bool boundary;             // true if boundary cell
-  bool mirror;               // true if reflective boundary
-
-  double thermal_ratio;
-  double thermal_ratio_prev;
-
-};
+// struct CELL   // (array of structures)
+// {
+//
+//   // Standard input
+//
+//   double x,  y,  z;          // x, y and z coordinate of cell center
+//   double vx, vy, vz;         // x, y and z component of velocity field
+//
+//   double density;            // total density in cell
+//
+//
+//   // Geometry
+//
+//   long endpoint[NRAYS];      // cell numbers of ray endings
+//   double Z[NRAYS];           // distance from cell to boundary
+//
+//   long neighbor[NRAYS];      // cell numbers of neighors
+//   long n_neighbors;          // number of neighbors
+//
+//
+//   // Chemistry
+//
+//   double abundance[NSPEC];   // abundance for each species
+//   double rate[NREAC];        // reaction rate for each reaciton
+//
+//   // Lines
+//
+//   double pop[TOT_NLEV];              // level population
+//   double mean_intensity[TOT_NRAD];   // mean intensity
+//
+//   TEMPERATURE temperature;   // temperatures
+//
+//   RAY ray[NRAYS];
+//
+//   double UV;                 // average UV intensity
+//
+//   long id;                   // cell nr of associated cell in other grid
+//   bool removed;              // true when cell is removed
+//
+//   bool boundary;             // true if boundary cell
+//   bool mirror;               // true if reflective boundary
+//
+//   double thermal_ratio;
+//   double thermal_ratio_prev;
+//
+// };
 
 
 
@@ -334,7 +338,7 @@ struct NITERATIONS
 };
 
 // Include LINES class
-#include "lines.hpp"
+// #include "lines.hpp"
 
 
 

@@ -15,17 +15,17 @@
 // calc_LTE_populations: Calculates LTE level populations
 // ------------------------------------------------------
 
-int calc_LTE_populations (long ncells, CELL *cell, LINES lines)
+int calc_LTE_populations (long ncells, CELLS *cells, LINES lines)
 {
 
 
   // For each line producing species at each grid point
 
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  for (int ls = 0; ls < NLSPEC; ls++)
   {
 
-#   pragma omp parallel                                          \
-    shared (ncells, cell, lines, nlev, cum_nlev, lspec)   \
+#   pragma omp parallel                                 \
+    shared (ncells, cells, lines, nlev, cum_nlev, ls)   \
     default (none)
     {
 
@@ -36,7 +36,7 @@ int calc_LTE_populations (long ncells, CELL *cell, LINES lines)
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long n = start; n < stop; n++)
+    for (long p = start; p < stop; p++)
     {
 
       // Calculate partition function
@@ -44,33 +44,32 @@ int calc_LTE_populations (long ncells, CELL *cell, LINES lines)
       double partition_function = 0.0;
       double total_population   = 0.0;
 
-      for (int i = 0; i < nlev[lspec]; i++)
+      for (int i = 0; i < nlev[ls]; i++)
       {
-        int l_i = LSPECLEV(lspec,i);
+        int l_i = LSPECLEV(ls,i);
 
         partition_function = partition_function
                              + lines.weight[l_i]
-                               * exp( -lines.energy[l_i] / (KB*cell[n].temperature.gas) );
-      } // end of i loop over levels
+                               * exp( -lines.energy[l_i] / (KB*cells->temperature_gas[p]) );
+      }
 
 
       // Calculate LTE level populations
 
-      for (int i = 0; i < nlev[lspec]; i++)
+      for (int i = 0; i < nlev[ls]; i++)
       {
-        int l_i = LSPECLEV(lspec,i);
+        int l_i = LSPECLEV(ls,i);
 
-        cell[n].pop[l_i] = cell[n].density * cell[n].abundance[lines.nr[lspec]] * lines.weight[l_i]
-                           * exp( -lines.energy[l_i]/(KB*cell[n].temperature.gas) ) / partition_function;
+        cells->pop[LINDEX(p,l_i)] = cells->density[p] * cells->abundance[SINDEX(p,lines.nr[ls])] * lines.weight[l_i]
+                                   * exp( -lines.energy[l_i]/(KB*cells->temperature_gas[p]) ) / partition_function;
 
-        total_population = total_population + cell[n].pop[l_i];
+        total_population = total_population + cells->pop[LINDEX(p,l_i)];
+      }
 
-
-      } // end of i loop over levels
 
       // Check if total population adds up to density
 
-      if ((total_population-cell[n].density*cell[n].abundance[lines.nr[lspec]])/total_population > 1.0E-3)
+      if ((total_population-cells->density[p]*cells->abundance[SINDEX(p,lines.nr[ls])])/total_population > 1.0E-3)
       {
         printf ("\nERROR : total of level populations differs from density !\n\n");
       }

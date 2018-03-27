@@ -13,9 +13,9 @@
 // sobolev: calculate mean intensity using LVG approximation and escape probabilities
 // ----------------------------------------------------------------------------------
 
-int sobolev (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors, LINES lines,
-                  double *Lambda_diagonal, double *mean_intensity_eff,
-                  double *source, double *opacity, long o, int lspec, int kr );
+int sobolev (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors, LINES lines,
+             double *Lambda_diagonal, double *mean_intensity_eff,
+             double *source, double *opacity, long o, int ls, int kr );
 
 
 #endif // __SOBOLEV_HPP_INCLUDED__

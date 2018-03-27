@@ -1,18 +1,9 @@
 #! /usr/bin/python
 
-# Frederik De Ceuster - University College London & KU Leuven                                     #
-#                                                                                                 #
-# ----------------------------------------------------------------------------------------------- #
-#                                                                                                 #
-# rate_equations: defines the (chemical) rate equations                                           #
-#                                                                                                 #
-#  ( based on odes in 3D-PDR                                                                      #
-#    and the cvRobers_dns example that comes with Sundials )                                      #
-#                                                                                                 #
-# ----------------------------------------------------------------------------------------------- #
-#                                                                                                 #
-# ----------------------------------------------------------------------------------------------- #
-
+# Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+#
+# Developed by: Frederik De Ceuster - University College London & KU Leuven
+# _________________________________________________________________________
 
 
 import math
@@ -23,7 +14,6 @@ import sys
 import time
 
 import numpy as np
-
 
 
 useTtk = False
@@ -461,9 +451,9 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
         for i in range(nReactions):
             if reactants[i].count(species) > 0:
                 if is_H2_formation(reactants[i], products[i]):
-                    lossString += '-2*cell[o].rate['+str(i)+']*n_H'
+                    lossString += '-2*cells->rate[READEX(o,'+str(i)+')]*n_H'
                     continue
-                lossString += '-'+multiple(reactants[i].count(species))+'cell[o].rate['+str(i)+']'
+                lossString += '-'+multiple(reactants[i].count(species))+'cells->rate[READEX(o,'+str(i)+')]'
                 for reactant in speciesList:
                     if reactant == species:
                         for j in range(reactants[i].count(reactant)-1):
@@ -496,9 +486,9 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
             # Formation terms
             if products[i].count(species) > 0:
                 if is_H2_formation(reactants[i], products[i]):
-                    formString += '+cell[o].rate['+str(i)+']*Ith(y,'+str(speciesList.index('H'))+')*n_H'
+                    formString += '+cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(speciesList.index('H'))+')*n_H'
                     continue
-                formString += '+'+multiple(products[i].count(species))+'cell[o].rate['+str(i)+']'
+                formString += '+'+multiple(products[i].count(species))+'cells->rate[READEX(o,'+str(i)+')]'
                 for reactant in speciesList:
                     for j in range(reactants[i].count(reactant)):
                         formString += '*Ith(y,'+str(speciesList.index(reactant))+')'
@@ -630,9 +620,9 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
             for i in range(nReactions):
                 if reactants[i].count(species1) > 0 and reactants[i].count(species2) > 0:
                     if is_H2_formation(reactants[i], products[i]):
-                        matrixString += '-2*cell[o].rate['+str(i)+']*n_H'
+                        matrixString += '-2*cells->rate[READEX(o,'+str(i)+')]*n_H'
                         continue
-                    matrixString += '-'+multiple(reactants[i].count(species1))+multiple(reactants[i].count(species1))+'cell[o].rate['+str(i)+']'
+                    matrixString += '-'+multiple(reactants[i].count(species1))+multiple(reactants[i].count(species1))+'cells->rate[READEX(o,'+str(i)+')]'
                     for reactant in speciesList:
                         if reactant == species2:
                             for j in range(reactants[i].count(reactant)-1):
@@ -650,39 +640,39 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     # X-ray induced secondary ionization
                     if reactants[i].count('XRSEC') == 1:
                         if reactants[i].count('H') == 1:
-                            matrixString = matrixString[:-len('-cell[o].rate['+str(i)+']')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(indexH) +')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(indexH2)+')*zeta_H*(+1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            matrixString = matrixString[:-len('-cells->rate[READEX(o,'+str(i)+')]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(indexH) +')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(indexH2)+')*zeta_H*(+1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
                         elif reactants[i].count('H2') == 1:
-                            matrixString = matrixString[:-len('-cell[o].rate['+str(i)+']')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(indexH) +')*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(indexH2)+')*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+                            matrixString = matrixString[:-len('-cells->rate[READEX(o,'+str(i)+')]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(indexH) +')*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(indexH2)+')*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
                         elif reactants[i].count('He') == 1:
                             matrixString += '*zeta_He'
                         else:
                             matrixString += '*zeta_H'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(n)+')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(n)+')*zeta_H*(-1.00/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(n)+')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(n)+')*zeta_H*(-1.00/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                     if reactants[i].count('XRLYA') == 1:
                         matrixString += '*Ith(y,'+str(indexH)+')*zeta_H'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(n)+')*zeta_H*(-1.89*Ith(y,'+str(indexH)+ ')/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(n)+')*zeta_H*(+1.89*Ith(y,'+str(indexH2)+')/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(n)+')*zeta_H*(-1.89*Ith(y,'+str(indexH)+ ')/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(n)+')*zeta_H*(+1.89*Ith(y,'+str(indexH2)+')/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                     if reactants[i].count('XRPHOT') == 1:
                         matrixString += '*Ith(y,'+str(indexH2)+')*zeta_H2'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(n)+')*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ ')/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cell[o].rate['+str(i)+']*Ith(y,'+str(n)+')*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+')/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(n)+')*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ ')/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') -= cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(n)+')*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+')/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
 
             # Formation terms for species1
             for i in range(nReactions):
                 if products[i].count(species1) > 0 and reactants[i].count(species2) > 0:
                     if is_H2_formation(reactants[i], products[i]):
-                        matrixString += '+cell[o].rate['+str(i)+']*n_H'
+                        matrixString += '+cells->rate[READEX(o,'+str(i)+')]*n_H'
                         continue
-                    matrixString += '+'+multiple(products[i].count(species1))+'cell[o].rate['+str(i)+']'
+                    matrixString += '+'+multiple(products[i].count(species1))+'cells->rate[READEX(o,'+str(i)+')]'
                     for reactant in speciesList:
                         if reactant == species2:
                             for j in range(reactants[i].count(reactant)-1):
@@ -696,31 +686,31 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
                     # X-ray induced secondary ionization
                     if reactants[i].count('XRSEC') == 1:
                         if reactants[i].count('H') == 1:
-                            matrixString = matrixString[:-len('+cell[o].rate['+str(i)+']')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(indexH) +')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(indexH2)+')*zeta_H*(+1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            matrixString = matrixString[:-len('+cells->rate[READEX(o,'+str(i)+')]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(indexH) +')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+']*Ith(y,'+str(indexH2)+')*zeta_H*(+1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
                         elif reactants[i].count('H2') == 1:
-                            matrixString = matrixString[:-len('+cell[o].rate['+str(i)+']')]
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(indexH) +')*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(indexH2)+')*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+                            matrixString = matrixString[:-len('+cells->rate[READEX(o,'+str(i)+')]')]
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(indexH) +')*zeta_H2*(+0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+']*Ith(y,'+str(indexH2)+')*zeta_H2*(-0.53/(Ith(y,'+str(indexH2)+')+0.53*Ith(y,'+str(indexH)+')));\n'
                         elif reactants[i].count('He') == 1:
                             matrixString += '*zeta_He'
                         else:
                             matrixString += '*zeta_H'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(m)+')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
-                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(m)+')*zeta_H*(-1.00/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(m)+')*zeta_H*(-1.89/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
+                            additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(m)+')*zeta_H*(-1.00/(Ith(y,'+str(indexH)+')+1.89*Ith(y,'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-alpha from excited H)
                     if reactants[i].count('XRLYA') == 1:
                         matrixString += '*Ith(y,'+str(indexH)+')*zeta_H'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(m)+')*zeta_H*(-1.89*Ith(y,'+str(indexH)+ ')/(Ith(y'+str(indexH)+')+1.89*Ith(y'+str(indexH2)+')));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(m)+')*zeta_H*(+1.89*Ith(y,'+str(indexH2)+')/(Ith(y'+str(indexH)+')+1.89*Ith(y'+str(indexH2)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(m)+')*zeta_H*(-1.89*Ith(y,'+str(indexH)+ ')/(Ith(y'+str(indexH)+')+1.89*Ith(y'+str(indexH2)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(m)+')*zeta_H*(+1.89*Ith(y,'+str(indexH2)+')/(Ith(y'+str(indexH)+')+1.89*Ith(y'+str(indexH2)+')));\n'
 
                     # Photoreactions due to X-ray induced secondary photons (Lyman-Werner from excited H2)
                     if reactants[i].count('XRPHOT') == 1:
                         matrixString += '*Ith(y,'+str(indexH2)+')*zeta_H2'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(m)+')*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ ')/(Ith(y'+str(indexH2)+')+0.53*Ith(y'+str(indexH)+')));\n'
-#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cell[o].rate['+str(i)+']*Ith(y,'+str(m)+')*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+')/(Ith(y'+str(indexH2)+')+0.53*Ith(y'+str(indexH)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH2)+','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(m)+')*zeta_H2*(+0.53*Ith(y,'+str(indexH)+ ')/(Ith(y'+str(indexH2)+')+0.53*Ith(y'+str(indexH)+')));\n'
+#                        additionalString += '  IJth(J,'+str(formatCode % indexH) +','+str(formatCode % n)+') += cells->rate[READEX(o,'+str(i)+')]*Ith(y,'+str(m)+')*zeta_H2*(-0.53*Ith(y,'+str(indexH2)+')/(Ith(y'+str(indexH2)+')+0.53*Ith(y'+str(indexH)+')));\n'
 
             if matrixString != '':
                 matrixString = '  IJth(J,'+str(formatCode % m)+','+str(formatCode % n)+') = '+matrixString+';\n'

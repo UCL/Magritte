@@ -21,25 +21,27 @@
 // reaction_rates: Check which kind of reaction and call appropriate rate calculator
 // ---------------------------------------------------------------------------------
 
-int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
+int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
                     double *column_H2, double *column_HD, double *column_C, double *column_CO)
 {
-
+  printf("OK\n");
   // For all reactions
 
-  for (int reac = 0; reac < NREAC; reac++)
+
+
+  for (int e = 0; e < NREAC; e++)
   {
 
     // Copy reaction data to variables with more convenient names
 
-    std::string R1 = reactions.R1[reac];   // reactant 1
-    std::string R2 = reactions.R2[reac];   // reactant 2
-    std::string R3 = reactions.R3[reac];   // reactant 3
+    std::string R1 = reactions.R1[e];   // reactant 1
+    std::string R2 = reactions.R2[e];   // reactant 2
+    std::string R3 = reactions.R3[e];   // reactant 3
 
-    std::string P1 = reactions.P1[reac];   // reaction product 1
-    std::string P2 = reactions.P2[reac];   // reaction product 2
-    std::string P3 = reactions.P3[reac];   // reaction product 3
-    std::string P4 = reactions.P4[reac];   // reaction product 4
+    std::string P1 = reactions.P1[e];   // reaction product 1
+    std::string P2 = reactions.P2[e];   // reaction product 2
+    std::string P3 = reactions.P3[e];   // reaction product 3
+    std::string P4 = reactions.P4[e];   // reaction product 4
 
 
     // The following rates are described in calc_reac_rates.c
@@ -54,9 +56,9 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
          &&   P1 == "H2"
          && ( P2 == "" || P2 == "#" ) )
     {
-      reactions.nr_H2_formation = reac;
+      reactions.nr_H2_formation = e;
 
-      cell[o].rate[reac] = rate_H2_formation (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_H2_formation (cells, reactions, e, o);
     }
 
 
@@ -68,7 +70,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
               ||  R1 == "PAH0"  ||  R2 == "PAH0"  ||  R3 == "PAH0"
               ||  R1 == "PAH"   ||  R2 == "PAH"   ||  R3 == "PAH" )
     {
-      cell[o].rate[reac] = rate_PAH (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_PAH (cells, reactions, e, o);
     }
 
 
@@ -76,7 +78,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "CRP")
     {
-      cell[o].rate[reac] = rate_CRP (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_CRP (cells, reactions, e, o);
     }
 
 
@@ -85,7 +87,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "XRAY")
     {
-      cell[o].rate[reac] = 0.0;
+      cells->rate[READEX(o,e)] = 0.0;
     }
 
 
@@ -94,7 +96,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "XRSEC")
     {
-      cell[o].rate[reac] = 0.0;
+      cells->rate[READEX(o,e)] = 0.0;
     }
 
 
@@ -103,7 +105,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "XRLYA")
     {
-      cell[o].rate[reac] = 0.0;
+      cells->rate[READEX(o,e)] = 0.0;
     }
 
 
@@ -112,7 +114,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "XRPHOT")
     {
-      cell[o].rate[reac] = 0.0;
+      cells->rate[READEX(o,e)] = 0.0;
     }
 
 
@@ -120,7 +122,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "CRPHOT")
     {
-      cell[o].rate[reac] = rate_CRPHOT (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_CRPHOT (cells, reactions, e, o);
     }
 
 
@@ -128,7 +130,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "FREEZE")
     {
-      cell[o].rate[reac] = rate_FREEZE (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_FREEZE (cells, reactions, e, o);
     }
 
 
@@ -136,7 +138,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "ELFRZE")
     {
-      cell[o].rate[reac] = rate_ELFRZE (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_ELFRZE (cells, reactions, e, o);
     }
 
 
@@ -145,7 +147,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "CRH")
     {
-      cell[o].rate[reac] = rate_CRH (reactions, reac);
+      cells->rate[READEX(o,e)] = rate_CRH (reactions, e);
     }
 
 
@@ -154,7 +156,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "THERM")
     {
-      cell[o].rate[reac] = rate_THERM (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_THERM (cells, reactions, e, o);
     }
 
 
@@ -162,7 +164,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "#")
     {
-      cell[o].rate[reac] = rate_GM (reactions, reac);
+      cells->rate[READEX(o,e)] = rate_GM (reactions, e);
     }
 
 
@@ -176,7 +178,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "PHOTD")
     {
-      cell[o].rate[reac] = rate_PHOTD (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_PHOTD (cells, reactions, e, o);
     }
 
 
@@ -185,9 +187,9 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if ( (R1 == "H2")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      reactions.nr_H2_photodissociation = reac;
+      reactions.nr_H2_photodissociation = e;
 
-      cell[o].rate[reac] = rate_H2_photodissociation (cell, reactions, reac, column_H2, o);
+      cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, column_H2, o);
     }
 
 
@@ -195,7 +197,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if ( (R1 == "HD")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      cell[o].rate[reac] = rate_H2_photodissociation (cell, reactions, reac, column_HD, o);
+      cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, column_HD, o);
     }
 
 
@@ -205,7 +207,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
               && ( P1 == "C"  ||  P2 == "C"  ||  P3 == "C"  ||  P4 == "C")
               && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O") )
     {
-      cell[o].rate[reac] = rate_CO_photodissociation (cell, reactions, reac, column_CO, column_H2, o);
+      cells->rate[READEX(o,e)] = rate_CO_photodissociation (cells, reactions, e, column_CO, column_H2, o);
     }
 
 
@@ -214,9 +216,9 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
     else if ( (R1 == "C")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               &&  ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) )
     {
-      reactions.nr_C_ionization = reac;
+      reactions.nr_C_ionization = e;
 
-      cell[o].rate[reac] = rate_C_photoionization (cell, reactions, reac, column_C, column_H2, o);
+      cells->rate[READEX(o,e)] = rate_C_photoionization (cells, reactions, e, column_C, column_H2, o);
     }
 
 
@@ -225,7 +227,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
     else if ( (R1 == "S")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               &&  ( (P1 == "S+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "S+") ))
     {
-      cell[o].rate[reac] = rate_SI_photoionization (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_SI_photoionization (cells, reactions, e, o);
     }
 
 
@@ -233,7 +235,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else if (R2 == "PHOTON")
     {
-      cell[o].rate[reac] = rate_canonical_photoreaction (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_canonical_photoreaction (cells, reactions, e, o);
     }
 
 
@@ -245,7 +247,7 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
 
     else
     {
-      cell[o].rate[reac] = rate_canonical (cell, reactions, reac, o);
+      cells->rate[READEX(o,e)] = rate_canonical (cells, reactions, e, o);
     }
 
 
@@ -259,22 +261,22 @@ int reaction_rates (long ncells, CELL *cell, REACTIONS reactions, long o,
     // Rates less than 1E-99 are set to zero.
     // Grain-surface reactions and desorption mechanisms are allowed rates greater than 1.
 
-    if (cell[o].rate[reac] < 0.0)
+    if (cells->rate[READEX(o,e)] < 0.0)
     {
-      printf("(reaction_rates): ERROR, negative rate for reaction %d \n", reac);
+      printf("(reaction_rates): ERROR, negative rate for reaction %d \n", e);
     }
 
-    else if ( (cell[o].rate[reac] > 1.0) && (R2 != "#") )
+    else if ( (cells->rate[READEX(o,e)] > 1.0) && (R2 != "#") )
     {
-      printf("(reaction_rates): WARNING, rate too large for reaction %d \n", reac);
+      printf("(reaction_rates): WARNING, rate too large for reaction %d \n", e);
       printf("(reaction_rates): WARNING, rate is set to 1.0 \n");
 
-      cell[o].rate[reac] = 1.0;
+      cells->rate[READEX(o,e)] = 1.0;
     }
 
-    else if (cell[o].rate[reac] < 1.0E-99)
+    else if (cells->rate[READEX(o,e)] < 1.0E-99)
     {
-      cell[o].rate[reac] = 0.0;
+      cells->rate[READEX(o,e)] = 0.0;
     }
 
 

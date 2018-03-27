@@ -25,7 +25,7 @@
 // level_populations: iteratively calculates the level populations
 // ---------------------------------------------------------------
 
-int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
+int level_populations (long ncells, CELLS *cells, HEALPIXVECTORS healpixvectors,
                        SPECIES species, LINES lines)
 {
 
@@ -84,12 +84,12 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
     some_not_converged = false;
 
-    for (int lspec = 0; lspec < NLSPEC; lspec++)
+    for (int ls = 0; ls < NLSPEC; ls++)
     {
-      if (prev_not_converged[lspec])
+      if (prev_not_converged[ls])
       {
-        prev_not_converged[lspec] = not_converged[lspec];
-        not_converged[lspec]      = false;
+        prev_not_converged[ls] = not_converged[ls];
+        not_converged[ls]      = false;
       }
     }
 
@@ -101,26 +101,26 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
     // For each line producing species
 
-    for (int lspec = 0; lspec < NLSPEC; lspec++)
+    for (int ls = 0; ls < NLSPEC; ls++)
     {
-      if  (prev_not_converged[lspec])
+      if  (prev_not_converged[ls])
       {
-        niterations[lspec]++;
+        niterations[ls]++;
 
         printf( "(level_populations): Iteration %d for %s\n",
-                niterations[lspec], lines.sym[lspec].c_str() );
+                niterations[ls], lines.sym[ls].c_str() );
 
 
-        n_not_converged[lspec] = 0;   // number of grid points that are not yet converged
+        n_not_converged[ls] = 0;   // number of grid points that are not yet converged
 
 
         // Perform an Ng acceleration step every 4th iteration
 
 #       if (ACCELERATION_POP_NG)
 
-          if (niterations[lspec]%4 == 0)
+          if (niterations[ls]%4 == 0)
           {
-            acceleration_Ng (NCELLS, cell, lspec, prev3_pop, prev2_pop, prev1_pop);
+            acceleration_Ng (NCELLS, cells, ls, prev3_pop, prev2_pop, prev1_pop);
           }
 
 #       endif
@@ -128,27 +128,31 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
         // Store populations of previous 3 iterations
 
-        store_populations (NCELLS, cell, lspec, prev3_pop, prev2_pop, prev1_pop);
+        store_populations (NCELLS, cells, ls, prev3_pop, prev2_pop, prev1_pop);
 
 
         // Calculate source and opacity for all transitions over whole grid
 
-        lines.source (NCELLS, cell, lspec, source);
+        lines.source (NCELLS, cells, ls, source);
 
-        lines.opacity (NCELLS, cell, lspec, opacity);
+        lines.opacity (NCELLS, cells, ls, opacity);
       }
     } // end of lspec loop over line producing species
 
+printf("sure?\n");
 
     // For every grid point
 
+
 #   pragma omp parallel                                                             \
-    shared (lines, ncells, cell, healpixvectors, species,                           \
+    shared (lines, ncells, cells, healpixvectors, species,                          \
             opacity, source, Lambda_diagonal, mean_intensity_eff,                   \
             prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2,   \
             nrad, cum_nrad, prev_not_converged, some_not_converged)                 \
     default (none)
     {
+
+printf("really?\n");
 
     int num_threads = omp_get_num_threads();
     int thread_num  = omp_get_thread_num();
@@ -157,12 +161,12 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long n = start; n < stop; n++)
+
+    for (long p = start; p < stop; p++)
     {
-      if (!cell[n].boundary)
+      if (!cells->boundary[p])
       {
         double R[TOT_NLEV2];         // Transition matrix R_ij
-
         double C_coeff[TOT_NLEV2];   // Einstein C_ij coefficient
 
         if (thread_num == 0)
@@ -173,25 +177,26 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
         // For each line producing species
 
-        for (int lspec = 0; lspec < NLSPEC; lspec++)
+        for (int ls = 0; ls < NLSPEC; ls++)
         {
-          if (prev_not_converged[lspec])
+          if (prev_not_converged[ls])
           {
 
             // Calculate collisional terms and fill first part of transition matrix
             //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
+printf("alright?\n");
 
-            calc_C_coeff (NCELLS, cell, species, lines, C_coeff, n, lspec);
+            calc_C_coeff (NCELLS, cells, species, lines, C_coeff, p, ls);
 
 
             // Fill first part of transition matrix R
 
-            for (int i = 0; i < nlev[lspec]; i++)
+            for (int i = 0; i < nlev[ls]; i++)
             {
-              for (int j = 0; j < nlev[lspec]; j++)
+              for (int j = 0; j < nlev[ls]; j++)
               {
-                long b_ij = LSPECLEVLEV(lspec,i,j);   // R, A_coeff and C_coeff index
+                long b_ij = LSPECLEVLEV(ls,i,j);   // R, A_coeff and C_coeff index
 
                 R[b_ij] = lines.A_coeff[b_ij] + C_coeff[b_ij];
               }
@@ -206,23 +211,23 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
             // For all transitions
 
-            for (int kr = 0; kr < nrad[lspec]; kr++)
+            for (int kr = 0; kr < nrad[ls]; kr++)
             {
-              long mm_ij = LSPECRAD(lspec,kr);
+              long mm_ij = LSPECRAD(ls,kr);
 
               int i = lines.irad[mm_ij];   // i index corresponding to transition kr
               int j = lines.jrad[mm_ij];   // j index corresponding to transition kr
 
-              long b_ij = LSPECLEVLEV(lspec,i,j);   // A_coeff, B_coeff and frequency index
-              long b_ji = LSPECLEVLEV(lspec,j,i);   // A_coeff, B_coeff and frequency index
+              long b_ij = LSPECLEVLEV(ls,i,j);   // A_coeff, B_coeff and frequency index
+              long b_ji = LSPECLEVLEV(ls,j,i);   // A_coeff, B_coeff and frequency index
 
               double A_ij = lines.A_coeff[b_ij];
               double B_ij = lines.B_coeff[b_ij];
               double B_ji = lines.B_coeff[b_ji];
 
-              long m_ij = LSPECGRIDRAD(lspec,n,kr);
+              long m_ij = LSPECGRIDRAD(ls,p,kr);
 
-              cell[n].mean_intensity[mm_ij] = 0.0;
+              cells->mean_intensity[KINDEX(p,mm_ij)] = 0.0;
 
 
               // Calculate mean intensity
@@ -234,8 +239,8 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
               // printf("YESfdg");
             }
 
-                sobolev (NCELLS, cell, healpixvectors, lines, Lambda_diagonal, mean_intensity_eff,
-                         source, opacity, n, lspec, kr);
+                sobolev (NCELLS, cells, healpixvectors, lines, Lambda_diagonal, mean_intensity_eff,
+                         source, opacity, p, ls, kr);
 
 
             if (thread_num == 0)
@@ -246,8 +251,8 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
 #             else
 
-                radiative_transfer (NCELLS, cell, healpixvectors, lines, Lambda_diagonal, mean_intensity_eff,
-                                    source, opacity, n, lspec, kr);
+                radiative_transfer (NCELLS, cells, healpixvectors, lines, Lambda_diagonal,
+                                    mean_intensity_eff, source, opacity, p, ls, kr);
 
 #             endif
 
@@ -276,7 +281,7 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
             // Solve radiative balance equation for level populations
 
-            level_population_solver (NCELLS, cell, lines, n, lspec, R);
+            level_population_solver (NCELLS, cells, lines, p, ls, R);
 
 
             if (thread_num == 0)
@@ -286,18 +291,18 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
             // Check for convergence
 
-            for (int i = 0; i < nlev[lspec]; i++)
+            for (int i = 0; i < nlev[ls]; i++)
             {
-              long p_i  = LSPECGRIDLEV(lspec,n,i);   // dpop index
-              long pp_i = LSPECLEV(lspec,i);         // pop index
+              long p_i  = LSPECGRIDLEV(ls,p,i);   // dpop index
+              long pp_i = LSPECLEV(ls,i);         // pop index
 
-              double dpop = cell[n].pop[pp_i] - prev1_pop[p_i];
-              double spop = cell[n].pop[pp_i] + prev1_pop[p_i];
+              double dpop = cells->pop[LINDEX(p,pp_i)] - prev1_pop[p_i];
+              double spop = cells->pop[LINDEX(p,pp_i)] + prev1_pop[p_i];
 
-              double min_pop = 1.0E-10 * cell[n].abundance[lines.nr[lspec]];
+              double min_pop = 1.0E-10 * cells->abundance[SINDEX(p,lines.nr[ls])];
 
 
-              if ( (cell[n].pop[pp_i] > min_pop) && (spop != 0.0) )
+              if ( (cells->pop[LINDEX(p,pp_i)] > min_pop) && (spop != 0.0) )
               {
                 double dpop_rel = 2.0 * fabs(dpop) / spop;
 
@@ -306,10 +311,10 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
                 if (dpop_rel > POP_PREC)
                 {
-                  not_converged[lspec] = true;
-                  some_not_converged   = true;
+                  not_converged[ls]  = true;
+                  some_not_converged = true;
 
-                  n_not_converged[lspec]++;
+                  n_not_converged[ls]++;
                 }
               }
 
@@ -328,19 +333,19 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
     // Limit the number of iterations
 
-    for (int lspec = 0; lspec < NLSPEC; lspec++)
+    for (int ls = 0; ls < NLSPEC; ls++)
     {
-      if (prev_not_converged[lspec])
+      if (prev_not_converged[ls])
       {
-        if (    (niterations[lspec] > MAX_NITERATIONS)
-             || (n_not_converged[lspec] < 0.02*NCELLS*nlev[lspec]) )
+        if (    (niterations[ls] > MAX_NITERATIONS)
+             || (n_not_converged[ls] < 0.02*NCELLS*nlev[ls]) )
         {
-          not_converged[lspec] = false;
-          some_not_converged   = false;
+          not_converged[ls]  = false;
+          some_not_converged = false;
         }
 
         printf ("(level_populations): Not yet converged for %ld of %d (NCELLS = %ld)\n",
-                n_not_converged[lspec], NCELLS*nlev[lspec], NCELLS);
+                n_not_converged[ls], NCELLS*nlev[ls], NCELLS);
 
       }
     }
@@ -352,11 +357,11 @@ int level_populations (long ncells, CELL *cell, HEALPIXVECTORS healpixvectors,
 
   // Print stats for calculations on lspec
 
-  for (int lspec = 0; lspec < NLSPEC; lspec++)
+  for (int ls = 0; ls < NLSPEC; ls++)
   {
     printf ("(level_populations): population levels for %s converged after %d iterations\n"
             "                     with precision %.1lE\n",
-            lines.sym[lspec].c_str(), niterations[lspec], POP_PREC);
+            lines.sym[ls].c_str(), niterations[ls], POP_PREC);
   }
 
 

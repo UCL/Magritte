@@ -17,34 +17,33 @@
 // acceleration_Ng: perform a Ng accelerated iteration for level populations
 // -------------------------------------------------------------------------
 
-int acceleration_Ng (long ncells, CELL *cell, int lspec,
+int acceleration_Ng (long ncells, CELLS *cells, int ls,
                      double *prev3_pop, double *prev2_pop, double *prev1_pop)
 {
 
   // All variable names are based on lecture notes by C.P. Dullemond
 
-
 # if (FIXED_NCELLS)
 
-    double Q1[NCELLS*nlev[lspec]];
-    double Q2[NCELLS*nlev[lspec]];
-    double Q3[NCELLS*nlev[lspec]];
+    double Q1[NCELLS*nlev[ls]];
+    double Q2[NCELLS*nlev[ls]];
+    double Q3[NCELLS*nlev[ls]];
 
-    double Wt[NCELLS*nlev[lspec]];   // weights of inner product
+    double Wt[NCELLS*nlev[ls]];   // weights of inner product
 
 # else
 
-    double *Q1 = new double[ncells*nlev[lspec]];
-    double *Q2 = new double[ncells*nlev[lspec]];
-    double *Q3 = new double[ncells*nlev[lspec]];
+    double *Q1 = new double[ncells*nlev[ls]];
+    double *Q2 = new double[ncells*nlev[ls]];
+    double *Q3 = new double[ncells*nlev[ls]];
 
-    double *Wt = new double[ncells*nlev[lspec]];   // weights of inner product
+    double *Wt = new double[ncells*nlev[ls]];   // weights of inner product
 
 # endif
 
 
-# pragma omp parallel                                                                             \
-  shared (ncells, cell, Q1, Q2, Q3, Wt, nlev, cum_nlev, lspec, prev1_pop, prev2_pop, prev3_pop)   \
+# pragma omp parallel                                                                           \
+  shared (ncells, cells, Q1, Q2, Q3, Wt, nlev, cum_nlev, ls, prev1_pop, prev2_pop, prev3_pop)   \
   default (none)
   {
 
@@ -55,21 +54,21 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
   long stop  = ((thread_num+1)*NCELLS)/num_threads;  // Note brackets
 
 
-  for (long o = start; o < stop; o++)
+  for (long p = start; p < stop; p++)
   {
-    for (int i = 0; i < nlev[lspec]; i++)
+    for (int i = 0; i < nlev[ls]; i++)
     {
-      long p_i  = LSPECGRIDLEV(lspec,o,i);
-      long pp_i = LSPECLEV(lspec,i);
-      long w_i  = LINDEX(lspec,o,i);
+      long p_i  = LSPECGRIDLEV(ls,p,i);
+      long pp_i = LSPECLEV(ls,i);
+      long w_i  = LLINDEX(ls,p,i);
 
-      Q1[w_i] = cell[o].pop[pp_i] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
-      Q2[w_i] = cell[o].pop[pp_i] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
-      Q3[w_i] = cell[o].pop[pp_i] - prev1_pop[p_i];
+      Q1[w_i] = cells->pop[LINDEX(p,pp_i)] - 2.0*prev1_pop[p_i] + prev2_pop[p_i];
+      Q2[w_i] = cells->pop[LINDEX(p,pp_i)] - prev1_pop[p_i] - prev2_pop[p_i] + prev3_pop[p_i];
+      Q3[w_i] = cells->pop[LINDEX(p,pp_i)] - prev1_pop[p_i];
 
-      if (cell[o].pop[pp_i] > 0.0)
+      if (cells->pop[LINDEX(p,pp_i)] > 0.0)
       {
-        Wt[w_i] = 1.0 / fabs(cell[o].pop[pp_i]);
+        Wt[w_i] = 1.0 / fabs(cells->pop[LINDEX(p,pp_i)]);
       }
 
       else
@@ -95,7 +94,7 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
 
 # pragma omp parallel for reduction( + : A1, A2, B1, B2, C1, C2)
 
-  for (long gi = 0; gi < NCELLS*nlev[lspec]; gi++)
+  for (long gi = 0; gi < NCELLS*nlev[ls]; gi++)
   {
     A1      = A1 + Wt[gi]*Q1[gi]*Q1[gi];
     A2 = B1 = A2 + Wt[gi]*Q1[gi]*Q2[gi];
@@ -130,8 +129,8 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
     double b = (C2*A1 - C1*A2) / denominator;
 
 
-#   pragma omp parallel                                                                   \
-    shared (ncells, cell, a, b, nlev, cum_nlev, lspec, prev1_pop, prev2_pop, prev3_pop)   \
+#   pragma omp parallel                                                                 \
+    shared (ncells, cells, a, b, nlev, cum_nlev, ls, prev1_pop, prev2_pop, prev3_pop)   \
     default (none)
     {
 
@@ -142,17 +141,18 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
     long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-    for (long o = start; o < stop; o++)
+    for (long p = start; p < stop; p++)
     {
-      for (int i = 0; i < nlev[lspec]; i++)
+      for (int i = 0; i < nlev[ls]; i++)
       {
-        long p_i  = LSPECGRIDLEV(lspec,o,i);
-        long pp_i = LSPECLEV(lspec,i);
-        long w_i  = LINDEX(lspec,o,i);
+        long p_i  = LSPECGRIDLEV(ls,p,i);
+        long pp_i = LSPECLEV(ls,i);
+        long w_i  = LLINDEX(ls,p,i);
 
-        double pop_tmp = cell[o].pop[pp_i];
+        double pop_tmp = cells->pop[LINDEX(p,pp_i)];
 
-        cell[o].pop[pp_i] = (1.0 - a - b)*cell[o].pop[pp_i] + a*prev1_pop[p_i] + b*prev2_pop[p_i];
+        cells->pop[LINDEX(p,pp_i)] = (1.0 - a - b)*cells->pop[LINDEX(p,pp_i)]
+                                    + a*prev1_pop[p_i] + b*prev2_pop[p_i];
 
         prev3_pop[p_i] = prev2_pop[p_i];
         prev2_pop[p_i] = prev1_pop[p_i];
@@ -176,12 +176,12 @@ int acceleration_Ng (long ncells, CELL *cell, int lspec,
 // store_populations: update previous populations
 // ----------------------------------------------
 
-int store_populations (long ncells, CELL *cell, int lspec,
+int store_populations (long ncells, CELLS *cells, int ls,
                        double *prev3_pop, double *prev2_pop, double *prev1_pop)
 {
 
-# pragma omp parallel                                                             \
-  shared (ncells, cell, lspec, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop)   \
+# pragma omp parallel                                                           \
+  shared (ncells, cells, ls, nlev, cum_nlev, prev3_pop, prev2_pop, prev1_pop)   \
   default (none)
   {
 
@@ -192,17 +192,16 @@ int store_populations (long ncells, CELL *cell, int lspec,
   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
 
 
-  for (long o = start; o < stop; o++)
+  for (long p = start; p < stop; p++)
   {
-    for (int i = 0; i < nlev[lspec]; i++)
+    for (int i = 0; i < nlev[ls]; i++)
     {
-      long p_i  = LSPECGRIDLEV(lspec,o,i);
-      long pp_i = LSPECLEV(lspec,i);
+      long p_i  = LSPECGRIDLEV(ls,p,i);
+      long pp_i = LSPECLEV(ls,i);
 
       prev3_pop[p_i] = prev2_pop[p_i];
       prev2_pop[p_i] = prev1_pop[p_i];
-      prev1_pop[p_i] = cell[o].pop[pp_i];
-
+      prev1_pop[p_i] = cells->pop[LINDEX(p,pp_i)];
     }
 
   } // end of o loop over grid points
