@@ -114,19 +114,19 @@ int write_temperature_gas_prev (std::string tag, long ncells, CELLS *cells);
 //
 // int write_certain_rates (std::string tag, long ncells, CELLS *cells, std::string name,
 //                          int nr_certain_reac, int *certain_reactions);
-//
-//
-// // write_double_1: write a 1D list of doubles
-// // ------------------------------------------
-//
-// int write_double_1 (std::string name, std::string tag, long length, double *variable);
-//
-//
-// // write_double_2: write a 2D array of doubles
-// // -------------------------------------------
-//
-// int write_double_2 (std::string name, std::string tag, long nrows, long ncols, double *variable);
-//
+
+
+// write_double_vector: write a vecotr of doubles
+// ----------------------------------------------
+
+int write_double_vector (std::string name, std::string tag, long length, const double *variable);
+
+
+// write_double_matrix: write a matrix of doubles
+// ----------------------------------------------
+
+int write_double_matrix (std::string name, std::string tag, long nrows, long ncols, const double *variable);
+
 //
 // // // write_radfield_tools: write output of functoins defined in radfield_tools
 // // // -------------------------------------------------------------------------

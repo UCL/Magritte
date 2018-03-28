@@ -14,38 +14,7 @@
 struct LINES
 {
 
-  // int nr[NLSPEC];                // symbol of line producing species
-  // std::string sym[NLSPEC];       // symbol of line producing species
-  //
-  //
-  // int irad[TOT_NRAD];            // level index of radiative transition
-  // int jrad[TOT_NRAD];            // level index of radiative transition
-  //
-  // double energy[TOT_NLEV];       // energy of level
-  // double weight[TOT_NLEV];       // statistical weight of level
-  //
-  // double frequency[TOT_NLEV2];   // frequency corresponing to i -> j transition
-  //
-  // double A_coeff[TOT_NLEV2];     // Einstein A_ij coefficient
-  // double B_coeff[TOT_NLEV2];     // Einstein B_ij coefficient
-  //
-  //
-  // // Collision related variables
-  //
-  // int partner[TOT_NCOLPAR];                  // species number corresponding to a collision partner
-  //
-  // char ortho_para[TOT_NCOLPAR];              // stores whether it is ortho or para H2
-  //
-  // double coltemp[TOT_CUM_TOT_NCOLTEMP];      // Collision temperatures for each partner
-  //
-  // double C_data[TOT_CUM_TOT_NCOLTRANTEMP];   // C_data for each partner, tran. and temp.
-  //
-  // int icol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
-  // int jcol[TOT_CUM_TOT_NCOLTRAN];            // level index corresp. to col. transition
-  //
-
-
-  int nr[NLSPEC]          = NUMBER;         // symbol of line producing species
+  int nr[NLSPEC]          = NUMBER;     // symbol of line producing species
   std::string sym[NLSPEC] = NAME;       // symbol of line producing species
 
   int irad[TOT_NRAD] = IRAD;            // level index of radiative transition

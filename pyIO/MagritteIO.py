@@ -59,9 +59,31 @@ def nOutputs(outputDirectory):
                 return int(line[1])
 
 
+def deVectorize(vector, length):
+    # Devectorize vector of length L into an array containing 'length' arrays of length L / 'length'
+    deVector = []
+    for i in range(len(vector)/length):
+        deVector.append([])
+        for j in range(length):
+            deVector[i].append(vector[j+i*length])
+    return deVector
+
+
+def trans(M):
+    # "Transposes" array M
+    return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
+
+
 class cell():
     # Python copy of the cell class used in Magritte
     def __init__(self, outputDirectory, tag):
+        # Read Magritte's output in outputDirectory
+        self.readMagritteOutput(outputDirectory, tag)
+        # Devectorize vectorized quantities
+        self.arrangeData()
+
+
+    def readMagritteOutput(self, outputDirectory, tag):
         if (tag != ''): tag = '_' + tag
         # inputFile = getVariable(outputDirectory+'parameters.hpp', 'INPUTFILE', 'str')
         # Initialize cells by reading Magritte output
@@ -71,3 +93,16 @@ class cell():
         self.thermalRatioPrev   = readScalar(outputDirectory + 'thermal_ratio_prev'   + tag + '.txt')
         # self.abundances         = readVector(outputDirectory + 'the00rmal_ratio'   + tag + '.txt')
         self.ncells             = len(self.temperatureGas)
+        self.popVec             = readScalar(outputDirectory + 'level_populations' + tag + '.txt')
+
+    def arrangeData(self):
+        self.pop = deVectorize(self.popVec, self.ncells)
+        self.pop = trans(self.pop)
+
+
+        # totNlev = len(self.popVec) / self.ncells
+        # self.pop = []
+        # for i in range(totNlev):
+        #     self.pop.append([])
+        #     for p in range(self.ncells):
+        #         self.pop[i].append(self.popVec[i+p*totNlev])

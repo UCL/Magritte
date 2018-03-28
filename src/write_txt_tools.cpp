@@ -29,7 +29,7 @@ int write_txt_output (std::string tag, long ncells, CELLS *cells, LINES lines)
 
   // write_transition_levels (tag, lines);
 
-  // write_level_populations (tag, NCELLS, cells, lines);
+  write_level_populations (tag, NCELLS, cells, lines);
 
   // write_line_intensities (tag, NCELLS, cells, lines);
 
@@ -42,6 +42,8 @@ int write_txt_output (std::string tag, long ncells, CELLS *cells, LINES lines)
   write_thermal_ratio_prev(tag, NCELLS, cells);
 
   // write_temperature_dust (tag, NCELLS, cells);
+
+  // write_double_vector ("level_populations", tag, NCELLS*TOT_NLEV, cells->pop);
 
 
   return (0);
@@ -758,86 +760,86 @@ int write_temperature_gas_prev(std::string tag, long ncells, CELLS *cells)
 //
 // }
 //
-//
-//
-//
-// // write_double_1: write a 1D list of doubles
-// // ------------------------------------------
-//
-// int write_double_1 (std::string name, std::string tag, long length, double *variable)
-// {
-//
-//   if (!tag.empty())
-//   {
-//     tag = "_" + tag;
-//   }
-//
-//   std::string file_name = output_directory + name + tag + ".txt";
-//
-//   FILE *file = fopen(file_name.c_str(), "w");
-//
-//   if (file == NULL)
-//   {
-//     printf ("Error opening file!\n");
-//     std::cout << file_name + "\n";
-//     exit (1);
-//   }
-//
-//
-//   for (long n = 0; n < length; n++)
-//   {
-//     fprintf (file, "%lE\n", variable[n]);
-//   }
-//
-//   fclose (file);
-//
-//
-//   return (0);
-//
-// }
-//
-//
-//
-//
-// // write_double_2: write a 2D array of doubles
-// // -------------------------------------------
-//
-// int write_double_2 (std::string name, std::string tag, long nrows, long ncols, double *variable)
-// {
-//
-//   if (!tag.empty())
-//   {
-//     tag = "_" + tag;
-//   }
-//
-//   std::string file_name = output_directory + name + tag + ".txt";
-//
-//   FILE *file = fopen (file_name.c_str(), "w");
-//
-//   if (file == NULL)
-//   {
-//     printf ("Error opening file!\n");
-//     std::cout << file_name + "\n";
-//     exit (1);
-//   }
-//
-//
-//   for (long row = 0; row < nrows; row++)
-//   {
-//     for (long col = 0; col < ncols; col++)
-//     {
-//       fprintf (file, "%lE\t", variable[col + ncols*row]);
-//     }
-//
-//     fprintf (file, "\n");
-//   }
-//
-//   fclose (file);
-//
-//
-//   return (0);
-//
-// }
+
+
+
+// write_double_vector: write a vector of doubles
+// ----------------------------------------------
+
+int write_double_vector (std::string name, std::string tag, long length, const double *variable)
+{
+
+  if (!tag.empty())
+  {
+    tag = "_" + tag;
+  }
+
+  std::string file_name = output_directory + name + tag + ".txt";
+
+  FILE *file = fopen(file_name.c_str(), "w");
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+
+  for (long n = 0; n < length; n++)
+  {
+    fprintf (file, "%lE\n", variable[n]);
+  }
+
+  fclose (file);
+
+
+  return (0);
+
+}
+
+
+
+
+// write_double_matrix: write a matrix of doubles
+// ----------------------------------------------
+
+int write_double_matrix (std::string name, std::string tag, long nrows, long ncols, const double *variable)
+{
+
+  if (!tag.empty())
+  {
+    tag = "_" + tag;
+  }
+
+  std::string file_name = output_directory + name + tag + ".txt";
+
+  FILE *file = fopen (file_name.c_str(), "w");
+
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    std::cout << file_name + "\n";
+    exit (1);
+  }
+
+
+  for (long row = 0; row < nrows; row++)
+  {
+    for (long col = 0; col < ncols; col++)
+    {
+      fprintf (file, "%lE\t", variable[col + ncols*row]);
+    }
+
+    fprintf (file, "\n");
+  }
+
+  fclose (file);
+
+
+  return (0);
+
+}
 //
 //
 //

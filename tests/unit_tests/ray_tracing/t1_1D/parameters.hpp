@@ -49,7 +49,7 @@
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE      "input/files/grid.txt"
+#define INPUTFILE      "input/files/grid_2D_test_25.txt"
 
 #define SPEC_DATAFILE  "data/species.txt"
 #define REAC_DATAFILE  "data/rates.txt"
@@ -61,8 +61,8 @@
 
 
 // Ray tracing parameters
-#define DIMENSIONS 1
-#define NRAYS      2
+#define DIMENSIONS 2
+#define NRAYS      8
 #define NSIDES     6
 
 
@@ -100,10 +100,12 @@
 
 
 // Turbulent velocity
+
 #define V_TURB 1.0E5
 
 
 // Cosmic ray variables
+
 #define ZETA   3.846153846153846
 #define OMEGA  0.42
 
@@ -112,12 +114,14 @@
 
 
 // Helper constants
+
 #define MAX_WIDTH 13      // for printing
 #define BUFFER_SIZE 3500  // max number of characters in a line
 
 
 // Parameters for level population iteration
-#define POP_PREC        1.0E-4    // precision used in convergence criterion
+
+#define POP_PREC        1.0E-2    // precision used in convergence criterion
 #define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
 #define POP_UPPER_LIMIT 1.0E+15   // highest population
 #define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray

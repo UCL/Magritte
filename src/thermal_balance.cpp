@@ -161,13 +161,13 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
 
     // Limit number of iterations
 
-    if ( (niterations > MAX_NITERATIONS) || (n_not_converged < NCELLS/10) )
+    if ( (niterations >= MAX_TB_ITER) || (n_not_converged < NCELLS/10) )
     {
       no_thermal_balance = false;
     }
 
 
-    printf ("(thermal_balance): Not yet converged for %ld of %d\n", n_not_converged, NCELLS);
+    printf ("(thermal_balance): Not yet converged for %ld of %ld\n", n_not_converged, NCELLS);
 
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)
@@ -189,8 +189,6 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
     delete [] column_HD;
     delete [] column_C;
     delete [] column_CO;
-
-    // delete [] thermal_ratio;
 
 # endif
 

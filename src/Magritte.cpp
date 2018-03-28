@@ -19,9 +19,6 @@
 
 #include "initializers.hpp"
 
-// #include "read_input.hpp"
-// #include "read_linedata.hpp"
-
 #include "ray_tracing.hpp"
 #include "reduce.hpp"
 #include "bound.hpp"
@@ -76,42 +73,24 @@ int main ()
 # if (FIXED_NCELLS)
 
     long ncells = NCELLS;
-    //
-    // CELL cell[NCELLS];
 
-    CELLS Cells (NCELLS);
-
-    CELLS *cells = &Cells;
+    CELLS Cells (NCELLS);    // create CELLS object Cells
+    CELLS *cells = &Cells;   // pointer to Cells
 
 # else
 
     long ncells = NCELLS_INIT;
 
-    // CELL *cell = new CELL[ncells];
-
-    CELLS Cells (NCELLS);
-
-    CELLS *cells = &Cells;
+    CELLS Cells (ncells);    // create CELLS object Cells
+    CELLS *cells = &Cells;   // pointer to Cells
 
 # endif
 
 
   initialize_cells (NCELLS, cells);
 
+  cells->read_input (inputfile);
 
-  // Read input file
-
-# if   (INPUT_FORMAT == '.vtu')
-
-    // read_vtu_input (inputfile, NCELLS, cell);
-
-# elif (INPUT_FORMAT == '.txt')
-
-    // read_txt_input (inputfile, NCELLS, cell);
-
-    cells->read_txt_input (inputfile);
-
-# endif
 
 // return(0);
 
@@ -179,10 +158,6 @@ int main ()
 
   printf ("(Magritte): species data read, species created\n\n");
 
-  // SPECIES species[NSPEC];
-  //
-  // read_species (spec_datafile, species);
-
 
 # if (!RESTART)
 
@@ -207,12 +182,6 @@ int main ()
 
 
 
-  // REACTION reaction[NREAC];
-  //
-  // read_reactions (reac_datafile, reaction);
-
-
-
 
   // READ LINE DATA FOR EACH LINE PRODUCING SPECIES
   // ______________________________________________
@@ -222,8 +191,9 @@ int main ()
 
   const LINES lines;   // (values defined in line_data.hpp)
 
-  // read_linedata (line_datafile, &lines, species);lines.cpp
-
+  write_double_matrix("Einstein_A", "", nlev[0], nlev[0], lines.A_coeff);
+  write_double_matrix("Einstein_B", "", nlev[0], nlev[0], lines.B_coeff);
+  write_double_matrix("frequency", "", nlev[0], nlev[0], lines.frequency);
 
   // for (int i=0; i<TOT_NLEV2; i++)
   // {
@@ -491,7 +461,6 @@ int main ()
 
   printf ("(Magritte): writing output \n");
 
-
   write_output (NCELLS, cells, lines);
 
   write_output_log ();
@@ -506,7 +475,8 @@ int main ()
 
 # if (!FIXED_NCELLS)
 
-    delete [] cell;
+    cells->~CELLS();
+
     delete [] column_tot;
 
 # endif

@@ -14,6 +14,10 @@ project(Magritte)
 set(CMAKE_BUILD_TYPE Release)
 
 
+# Set compiler flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=medium -std=c++11")
+
+
 # Specify the version of the project
 set(MAGRITTE_VERSION_MAJOR 0)
 set(MAGRITTE_VERSION_MINOR 1)
