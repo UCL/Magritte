@@ -53,12 +53,13 @@ def getProperName(name):
 
 def getSpeciesNumber(speciesNames, name):
     # Returns number of species given by 'name'
+    # Note that there are dummy species in Magritte at places 0 and NLSPEC
     if isinstance(name, list):
         return [getSpeciesNumber(speciesNames,elem) for elem in name]
     else:
         for i in range(len(speciesNames)):
             if (speciesNames[i] == getProperName(name)):
-                return i
+                return i+1
 
 
 def getProjectFolder():

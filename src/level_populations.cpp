@@ -185,6 +185,9 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
             calc_C_coeff (NCELLS, cells, species, lines, C_coeff, p, ls);
 
+            // write_double_matrix("Einstein_B", "", nlev[0], nlev[0], lines.B_coeff);
+
+
 
             // Fill first part of transition matrix R
 

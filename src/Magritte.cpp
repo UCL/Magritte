@@ -81,8 +81,8 @@ int main ()
 
     long ncells = NCELLS_INIT;
 
-    CELLS Cells (ncells);
-    CELLS *cells = &Cells;
+    CELLS Cells (ncells);    // create CELLS object Cells
+    CELLS *cells = &Cells;   // pointer to Cells
 
 # endif
 
@@ -158,10 +158,6 @@ int main ()
 
   printf ("(Magritte): species data read, species created\n\n");
 
-  // SPECIES species[NSPEC];
-  //
-  // read_species (spec_datafile, species);
-
 
 # if (!RESTART)
 
@@ -186,12 +182,6 @@ int main ()
 
 
 
-  // REACTION reaction[NREAC];
-  //
-  // read_reactions (reac_datafile, reaction);
-
-
-
 
   // READ LINE DATA FOR EACH LINE PRODUCING SPECIES
   // ______________________________________________
@@ -201,8 +191,9 @@ int main ()
 
   const LINES lines;   // (values defined in line_data.hpp)
 
-  // read_linedata (line_datafile, &lines, species);lines.cpp
-
+  write_double_matrix("Einstein_A", "", nlev[0], nlev[0], lines.A_coeff);
+  write_double_matrix("Einstein_B", "", nlev[0], nlev[0], lines.B_coeff);
+  write_double_matrix("frequency", "", nlev[0], nlev[0], lines.frequency);
 
   // for (int i=0; i<TOT_NLEV2; i++)
   // {
@@ -469,7 +460,6 @@ int main ()
 
 
   printf ("(Magritte): writing output \n");
-
 
   write_output (NCELLS, cells, lines);
 

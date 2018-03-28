@@ -16,13 +16,8 @@
 
 #include "../../../../src/declarations.hpp"
 #include "../../../../src/definitions.hpp"
-// #include "../../../../setup/setup_data_tools.hpp"
 #include "../../../../src/initializers.hpp"
-// #include "../../../../src/read_input.hpp"
-#include "../../../../src/reduce.hpp"
-#include "../../../../src/bound.hpp"
 #include "../../../../src/ray_tracing.hpp"
-#include "../../../../src/write_txt_tools.hpp"
 
 #define EPS 1.0E-5
 

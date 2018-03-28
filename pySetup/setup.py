@@ -62,6 +62,8 @@ def setupMagritte():
     lineData   = [LineData(fileName, dataFormat) for fileName in lineDataFiles]
     # Get species numbers of line producing species
     name   = [ld.name for ld in lineData]
+    print name
+    print speciesNames
     number = getSpeciesNumber(speciesNames, name)
     # Get species numbers of collision partners
     partner   = vectorize([ld.partner   for ld in lineData])
