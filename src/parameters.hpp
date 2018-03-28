@@ -7,14 +7,9 @@
 #ifndef __PARAMETERS_HPP_INCLUDED__
 #define __PARAMETERS_HPP_INCLUDED__
 
-
-#define RUN_NUMBER "0"
-
 #define WRITE_INTERMEDIATE_OUTPUT true
 
-
 // Input files
-
 #define FIXED_NCELLS true
 #define INPUT_FORMAT '.txt'
 #define CELL_BASED  false
@@ -29,9 +24,9 @@
 #define NAME_TEMPERATURE_GAS_PREV "Gas_temperature"
 #define NAME_CHEM_ABUNDANCES      "Mol_density"
 
-// VARIABLE GRID
 
-#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
+// VARIABLE GRID
+#define GRID_INIT "input/files/grid.txt"
 
 #define X_MIN -1.0E+00
 #define X_MAX +9.9E+99
@@ -48,68 +43,57 @@
 
 
 // Restart options
-
-#define RESTART false
-// #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
-
+#define RESTART true
+#define RESTART_DIRECTORY "input/files/"
 
 
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE      "input/files/1Dn30.dat_conv.txt"
+#define INPUTFILE      "input/files/grid_2D_test_25.txt"
 
-#define SPEC_DATAFILE  "data/species_reduced.txt"
-#define REAC_DATAFILE  "data/rates_reduced.txt"
+#define SPEC_DATAFILE  "data/species.txt"
+#define REAC_DATAFILE  "data/rates.txt"
 
-// Line data
-
-#define DATA_FORMAT "LAMDA"
-
-#define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
+#define DATA_FORMAT    "VanZadelhoff"
+#define LINE_DATAFILES {"data/hco+.dat"}
 
 // #define LINE_DATAFILES {"data/12C.txt", "data/12C+.txt", "data/16O.txt", "data/H2O.dat", "data/12CO.txt"}
 
 
-
 // Ray tracing parameters
-
-#define DIMENSIONS 1
-#define NRAYS      2
+#define DIMENSIONS 2
+#define NRAYS      8
 #define NSIDES     6
 
-// Radiative transfer
 
+// Radiative transfer
 #define SOBOLEV                    true
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 
 
 // Number of various iterations
-
-#define MAX_NITERATIONS  100
-#define PRELIM_CHEM_ITER 5
-#define CHEM_ITER        3
+#define MAX_NITERATIONS  150
+#define PRELIM_CHEM_ITER 0
+#define PRELIM_TB_ITER   0
+#define MAX_TB_ITER      0
+#define CHEM_ITER        0
 
 
 // Temperature range
-
 #define TEMPERATURE_MIN T_CMB
 #define TEMPERATURE_MAX 30000.0
 
 
 // Chemistry
-
-#define METALLICITY       1.0E+0
-#define GAS_TO_DUST       1.0E+2
-#define TIME_END_IN_YEARS 1.0E+7
-
+#define METALLICITY                 1.0E+0
+#define GAS_TO_DUST                 1.0E+2
+#define TIME_END_IN_YEARS           1.0E+7
 #define ALWAYS_INITIALIZE_CHEMISTRY false
 
 
 // External UV field
-
-#define FIELD_FORM "UNI"
-
+#define FIELD_FORM   "UNI"
 #define G_EXTERNAL_X 1.0E+1
 #define G_EXTERNAL_Y 0.0E+0
 #define G_EXTERNAL_Z 0.0E+0

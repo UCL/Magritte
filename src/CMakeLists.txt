@@ -12,7 +12,7 @@ if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS
   "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -mcmodel=medium")
   set(CMAKE_CXX_FLAGS
-  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -mcmodel=medium -std=c++11")
+  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -mcmodel=medium")
   set(CMAKE_EXE_LINKER_FLAGS
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -mcmodel=medium")
 endif()
@@ -36,8 +36,6 @@ reactions.cpp
 lines.cpp
 initializers.cpp
 chemistry.cpp
-# read_input.cpp
-# read_linedata.cpp
 ray_tracing.cpp
 heapsort.cpp
 reduce.cpp

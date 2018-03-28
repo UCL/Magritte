@@ -15,6 +15,9 @@
 struct CELLS
 {
 
+  long ncells;   // number of cells
+
+
 # if (FIXED_NCELLS)
 
 
@@ -147,7 +150,7 @@ struct CELLS
   // Constructor: reads grid input file
   // ----------------------------------
 
-  CELLS (long ncells);
+  CELLS (long number_of_cells);
 
 
   // Destructor: frees allocated memory

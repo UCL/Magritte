@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <string>
 
@@ -16,8 +17,11 @@
 // Constructor for CELLS: reads input file
 // ---------------------------------------
 
-CELLS::CELLS (long ncells)
+CELLS::CELLS (long number_of_cells)
 {
+
+  ncells = number_of_cells;
+
 
 # if (!FIXED_NCELLS)
 

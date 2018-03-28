@@ -76,18 +76,14 @@ int main ()
 # if (FIXED_NCELLS)
 
     long ncells = NCELLS;
-    //
-    // CELL cell[NCELLS];
 
-    CELLS Cells (NCELLS);
+    CELLS Cells (NCELLS);    // create CELLS object Cells
 
-    CELLS *cells = &Cells;
+    CELLS *cells = &Cells;   // pointer to Cells
 
 # else
 
     long ncells = NCELLS_INIT;
-
-    // CELL *cell = new CELL[ncells];
 
     CELLS Cells (NCELLS);
 
@@ -506,7 +502,8 @@ int main ()
 
 # if (!FIXED_NCELLS)
 
-    delete [] cell;
+    cells->~CELLS();
+
     delete [] column_tot;
 
 # endif

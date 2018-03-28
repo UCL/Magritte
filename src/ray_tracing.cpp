@@ -26,7 +26,7 @@ int find_neighbors (long ncells, CELLS *cells, RAYS rays)
 
   // For all cells
 
-# pragma omp parallel                      \
+# pragma omp parallel            \
   shared (ncells, cells, rays)   \
   default (none)
   {
@@ -57,7 +57,7 @@ int find_neighbors (long ncells, CELLS *cells, RAYS rays)
 #   else
 
       double *ra2 = new double[ncells];   // squares lengths of local position vectors
-      long   *rb  = new double[ncells];   // identifiers of local position vectors
+      long   *rb  = new long[ncells];     // identifiers of local position vectors
 
 #   endif
 
@@ -227,16 +227,16 @@ int find_neighbors (long ncells, CELLS *cells, RAYS rays)
     cells->n_neighbors[p] = index;
 
 
+#   if (!FIXED_NCELLS)
+
+      delete [] ra2;
+      delete [] rb;
+
+#   endif
+
+
   } // end of p loop over cells (origins)
   } // end of OpenMP parallel region
-
-
-# if (!FIXED_NCELLS)
-
-    delete [] ra2;
-    delete [] rb;
-
-# endif
 
 
   return(0);

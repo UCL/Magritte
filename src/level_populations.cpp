@@ -144,7 +144,7 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
 
 #   pragma omp parallel                                                             \
-    shared (lines, ncells, cells, rays, species,                          \
+    shared (lines, ncells, cells, rays, species,                                    \
             opacity, source, Lambda_diagonal, mean_intensity_eff,                   \
             prev1_pop, not_converged, n_not_converged, nlev, cum_nlev, cum_nlev2,   \
             nrad, cum_nrad, prev_not_converged, some_not_converged)                 \
@@ -340,7 +340,7 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
           some_not_converged = false;
         }
 
-        printf ("(level_populations): Not yet converged for %ld of %d (NCELLS = %ld)\n",
+        printf ("(level_populations): Not yet converged for %ld of %ld (NCELLS = %ld)\n",
                 n_not_converged[ls], NCELLS*nlev[ls], NCELLS);
 
       }
