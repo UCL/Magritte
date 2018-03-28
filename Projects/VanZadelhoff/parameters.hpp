@@ -101,7 +101,6 @@
 
 
 // Turbulent velocity
-
 #define V_TURB 1.0E5
 
 

@@ -19,9 +19,6 @@
 
 #include "initializers.hpp"
 
-// #include "read_input.hpp"
-// #include "read_linedata.hpp"
-
 #include "ray_tracing.hpp"
 #include "reduce.hpp"
 #include "bound.hpp"
@@ -78,15 +75,13 @@ int main ()
     long ncells = NCELLS;
 
     CELLS Cells (NCELLS);    // create CELLS object Cells
-
     CELLS *cells = &Cells;   // pointer to Cells
 
 # else
 
     long ncells = NCELLS_INIT;
 
-    CELLS Cells (NCELLS);
-
+    CELLS Cells (ncells);
     CELLS *cells = &Cells;
 
 # endif
@@ -94,20 +89,8 @@ int main ()
 
   initialize_cells (NCELLS, cells);
 
+  cells->read_input (inputfile);
 
-  // Read input file
-
-# if   (INPUT_FORMAT == '.vtu')
-
-    // read_vtu_input (inputfile, NCELLS, cell);
-
-# elif (INPUT_FORMAT == '.txt')
-
-    // read_txt_input (inputfile, NCELLS, cell);
-
-    cells->read_txt_input (inputfile);
-
-# endif
 
 // return(0);
 

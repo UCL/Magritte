@@ -65,7 +65,7 @@ TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
 
   initialize_cells (ncells, cells);
 
-  cells->read_txt_input (inputfile);
+  cells->read_input (inputfile);
 
 
   // Find neighbors
