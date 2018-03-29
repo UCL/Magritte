@@ -20,7 +20,7 @@
 // reduce: reduce number of cells, return resulting number of cells
 // ----------------------------------------------------------------
 
-long reduce (long ncells, CELLS *cells)
+long reduce (CELLS *cells)
 {
 
   // Specify grid boundaries
@@ -37,17 +37,17 @@ long reduce (long ncells, CELLS *cells)
 
   // Crop grid
 
-  crop (ncells, cells, x_min, x_max, y_min, y_max, z_min, z_max);
+  crop (cells, x_min, x_max, y_min, y_max, z_min, z_max);
 
 
   // Reduce grid
 
-  density_reduce (ncells, cells, threshold);
+  density_reduce (cells, threshold);
 
 
   // Set id's to relate grid and reduced grid, get ncells_red
 
-  long ncells_red = set_ids (ncells, cells);
+  long ncells_red = set_ids (cells);
 
 
   return ncells_red;
@@ -60,9 +60,14 @@ long reduce (long ncells, CELLS *cells)
 // crop: crop spatial range of data
 // --------------------------------
 
-int crop (long ncells, CELLS *cells,
-          double x_min, double x_max, double y_min, double y_max, double z_min, double z_max)
+int crop (CELLS *cells,
+          double x_min, double x_max,
+          double y_min, double y_max,
+          double z_min, double z_max)
 {
+
+  long ncells = cells->ncells;
+
 
 # pragma omp parallel                                                \
   shared (ncells, cells, x_min, x_max, y_min, y_max, z_min, z_max)   \
@@ -75,7 +80,6 @@ int crop (long ncells, CELLS *cells,
   long start = (thread_num*ncells)/num_threads;
   long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
-
   for (long p = start; p < stop; p++)
   {
     if (    (x_min > cells->x[p]) || (cells->x[p] > x_max)
@@ -84,7 +88,6 @@ int crop (long ncells, CELLS *cells,
     {
       cells->removed[p] = true;
     }
-
   }
   } // end of OpenMP parallel region
 
@@ -99,8 +102,11 @@ int crop (long ncells, CELLS *cells,
 // density_reduce: reduce number of cell in regions of constant density
 // --------------------------------------------------------------------
 
-int density_reduce (long ncells, CELLS *cells, double min_density_change)
+int density_reduce (CELLS *cells, double min_density_change)
 {
+
+  long ncells = cells->ncells;
+
 
   // Note that this loop cannot be paralellized !
 
@@ -109,9 +115,9 @@ int density_reduce (long ncells, CELLS *cells, double min_density_change)
     if (!cells->removed[p])
     {
 
-      double density_c = cells->density[p];   // density of current cell
+      double density_c  = cells->density[p];   // density of current cell
 
-      cells->removed[p]  = true;              // assume cell can be removed
+      cells->removed[p] = true;                // assume cell can be removed
 
 
       // Check whether cell can indeed be removed
@@ -121,7 +127,7 @@ int density_reduce (long ncells, CELLS *cells, double min_density_change)
         long nr = cells->neighbor[RINDEX(p,n)];
 
         double rel_density_change = 2.0*fabs(cells->density[nr] - density_c)
-                                    / (cells->density[nr] + density_c);
+                                          / (cells->density[nr] + density_c);
 
 
         // Do not remove if density changes too much or neighbor was removed
@@ -147,8 +153,10 @@ int density_reduce (long ncells, CELLS *cells, double min_density_change)
 // set_ids: determine cell numbers in the reduced grid, return nr of reduced cells
 // -------------------------------------------------------------------------------
 
-long set_ids (long ncells, CELLS *cells)
+long set_ids (CELLS *cells)
 {
+
+  long ncells = cells->ncells;
 
   long cell_id_reduced = 0;
 
@@ -184,8 +192,12 @@ long set_ids (long ncells, CELLS *cells)
 // initialized_reduced_grid: initialize reduced grid
 // -------------------------------------------------
 
-int initialize_reduced_grid (long ncells_red, CELLS *cells_red, long ncells, CELLS *cells)
+int initialize_reduced_grid (CELLS *cells_red, CELLS *cells, RAYS rays)
 {
+
+  long ncells     = cells->ncells;
+  long ncells_red = cells_red->ncells;
+
 
   initialize_cells (ncells_red, cells_red);
 
@@ -261,14 +273,14 @@ int initialize_reduced_grid (long ncells_red, CELLS *cells_red, long ncells, CEL
   } // end of OpenMP parallel region
 
 
-  // // Find neighboring cells for each cell
-  //
-  // find_neighbors (ncells_red, cell_red, rays);
-  //
-  //
-  // // Find endpoint of each ray for each cell
-  //
-  // find_endpoints (ncells_red, cell_red, rays);
+  // Find neighboring cells for each cell
+
+  find_neighbors (ncells_red, cells_red, rays);
+
+
+  // Find endpoint of each ray for each cell
+
+  find_endpoints (ncells_red, cells_red, rays);
 
 
   return (0);
@@ -280,8 +292,12 @@ int initialize_reduced_grid (long ncells_red, CELLS *cells_red, long ncells, CEL
 // interpolate: interpolate reduced grid back to original grid
 // -----------------------------------------------------------
 
-int interpolate (long ncells_red, CELLS *cells_red, long ncells, CELLS *cells)
+int interpolate (CELLS *cells_red, CELLS *cells)
 {
+
+  long ncells     = cells->ncells;
+  long ncells_red = cells_red->ncells;
+
 
 # pragma omp parallel                             \
   shared (ncells_red, cells_red, ncells, cells)   \

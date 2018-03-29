@@ -429,7 +429,7 @@ int initialize_previous_temperature_gas (long ncells, CELLS *cells)
 int guess_temperature_gas (long ncells, CELLS *cells)
 {
 
-# pragma omp parallel     \
+# pragma omp parallel      \
   shared (ncells, cells)   \
   default (none)
   {
@@ -443,7 +443,7 @@ int guess_temperature_gas (long ncells, CELLS *cells)
 
   for (long p = start; p < stop; p++)
   {
-    cells->temperature_gas[p] = 100.0*(1.0 + pow(2.0*cells->UV[p], 1.0/3.0));
+    cells->temperature_gas[p] = 10.0*(1.0 + pow(2.0*cells->UV[p], 1.0/3.0));
   }
   } // end of OpenMP parallel region
 

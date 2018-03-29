@@ -20,8 +20,6 @@
 #include "heating.hpp"
 #include "cooling.hpp"
 
-#include "write_txt_tools.hpp"
-
 
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
@@ -83,6 +81,9 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
   calc_LTE_populations (NCELLS, cells, lines);
 
   // write_double_vector ("level_populations", "LTE", NCELLS*TOT_NLEV, cells->pop);
+
+  #include "write_output.hpp"
+  write_output(cells, lines);
 
 
   // Calculate level populations for each line producing species

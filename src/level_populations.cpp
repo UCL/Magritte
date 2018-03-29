@@ -39,15 +39,20 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
     double mean_intensity_eff[NCELLS*TOT_NRAD];   // mean intensity for a ray
     double Lambda_diagonal[NCELLS*TOT_NRAD];      // mean intensity for a ray
 
+    double source[NCELLS*TOT_NRAD];    // source function
+    double opacity[NCELLS*TOT_NRAD];   // opacity
 
 # else
 
-    double *prev1_pop = new double[ncells*TOT_NLEV];   // level population n_i 1 iteration ago
-    double *prev2_pop = new double[ncells*TOT_NLEV];   // level population n_i 2 iterations ago
-    double *prev3_pop = new double[ncells*TOT_NLEV];   // level population n_i 3 iterations ago
+    double *prev1_pop = new double[cells->ncells*TOT_NLEV];   // level pops n_i 1 iteration ago
+    double *prev2_pop = new double[cells->ncells*TOT_NLEV];   // level pops n_i 2 iterations ago
+    double *prev3_pop = new double[cells->ncells*TOT_NLEV];   // level pops n_i 3 iterations ago
 
-    double *mean_intensity_eff = new double[ncells*TOT_NRAD];   // mean intensity for a ray
-    double *Lambda_diagonal    = new double[ncells*TOT_NRAD];   // mean intensity for a ray
+    double *mean_intensity_eff = new double[cells->ncells*TOT_NRAD];   // mean intensity for a ray
+    double *Lambda_diagonal    = new double[cells->ncells*TOT_NRAD];   // mean intensity for a ray
+
+    double *source  = new double[cells->ncells*TOT_NRAD];   // source function
+    double *opacity = new double[cells->ncells*TOT_NRAD];   // opacity
 
 # endif
 
@@ -82,21 +87,15 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
     // New iteration, assume populations are converged until proven differently...
 
-    some_not_converged = false;
-
     for (int ls = 0; ls < NLSPEC; ls++)
     {
       if (prev_not_converged[ls])
       {
         prev_not_converged[ls] = not_converged[ls];
         not_converged[ls]      = false;
+        n_not_converged[ls]    = 0;   // number of grid points that are not yet converged
       }
     }
-
-
-    double source[NCELLS*TOT_NRAD];    // source function
-
-    double opacity[NCELLS*TOT_NRAD];   // opacity
 
 
     // For each line producing species
@@ -109,9 +108,6 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
         printf( "(level_populations): Iteration %d for %s\n",
                 niterations[ls], lines.sym[ls].c_str() );
-
-
-        n_not_converged[ls] = 0;   // number of grid points that are not yet converged
 
 
         // Perform an Ng acceleration step every 4th iteration
@@ -134,7 +130,6 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
         // Calculate source and opacity for all transitions over whole grid
 
         lines.source (NCELLS, cells, ls, source);
-
         lines.opacity (NCELLS, cells, ls, opacity);
       }
     } // end of lspec loop over line producing species
@@ -166,11 +161,6 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
         double R[TOT_NLEV2];         // Transition matrix R_ij
         double C_coeff[TOT_NLEV2];   // Einstein C_ij coefficient
 
-        if (thread_num == 0)
-        {
-          // printf("thread 0 on point %ld of %ld\n", n , stop);
-        }
-
 
         // For each line producing species
 
@@ -184,9 +174,6 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
 
             calc_C_coeff (NCELLS, cells, species, lines, C_coeff, p, ls);
-
-            // write_double_matrix("Einstein_B", "", nlev[0], nlev[0], lines.B_coeff);
-
 
 
             // Fill first part of transition matrix R
@@ -233,20 +220,8 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
 #             if (SOBOLEV)
 
-            if (thread_num == 0)
-            {
-              // printf("YESfdg");
-            }
-
                 sobolev (NCELLS, cells, rays, lines, Lambda_diagonal, mean_intensity_eff,
                          source, opacity, p, ls, kr);
-
-
-            if (thread_num == 0)
-            {
-              // printf("NOsgsf");
-            }
-
 
 #             else
 
@@ -273,20 +248,11 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
             // Solve equilibrium equation at each point
             // _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-            if (thread_num == 0)
-            {
-              // printf("YES");
-            }
 
             // Solve radiative balance equation for level populations
 
             level_population_solver (NCELLS, cells, lines, p, ls, R);
 
-
-            if (thread_num == 0)
-            {
-              // printf("NO");
-            }
 
             // Check for convergence
 
@@ -311,8 +277,6 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
                 if (dpop_rel > POP_PREC)
                 {
                   not_converged[ls]  = true;
-                  some_not_converged = true;
-
                   n_not_converged[ls]++;
                 }
               }
@@ -337,15 +301,26 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
       if (prev_not_converged[ls])
       {
         if (    (niterations[ls] > MAX_NITERATIONS)
-             || (n_not_converged[ls] < 0.02*NCELLS*nlev[ls]) )
+             || (n_not_converged[ls] < 0.01*NCELLS*nlev[ls]) )
         {
           not_converged[ls]  = false;
-          some_not_converged = false;
         }
 
         printf ("(level_populations): Not yet converged for %ld of %ld (NCELLS = %ld)\n",
                 n_not_converged[ls], NCELLS*nlev[ls], NCELLS);
+      }
+    }
 
+
+    // If some are not converged
+
+    some_not_converged = false;
+
+    for (int ls = 0; ls < NLSPEC; ls++)
+    {
+      if (not_converged[ls])
+      {
+        some_not_converged = true;
       }
     }
 
@@ -372,6 +347,9 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
     delete [] mean_intensity_eff;
     delete [] Lambda_diagonal;
+
+    delete [] source;
+    delete [] opacity;
 
 # endif
 

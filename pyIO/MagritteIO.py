@@ -80,7 +80,7 @@ class cell():
         # Read Magritte's output in outputDirectory
         self.readMagritteOutput(outputDirectory, tag)
         # Devectorize vectorized quantities
-        self.arrangeData()
+        # self.arrangeData()
 
 
     def readMagritteOutput(self, outputDirectory, tag):
@@ -93,11 +93,11 @@ class cell():
         self.thermalRatioPrev   = readScalar(outputDirectory + 'thermal_ratio_prev'   + tag + '.txt')
         # self.abundances         = readVector(outputDirectory + 'the00rmal_ratio'   + tag + '.txt')
         self.ncells             = len(self.temperatureGas)
-        self.popVec             = readScalar(outputDirectory + 'level_populations' + tag + '.txt')
+        # self.popVec             = readScalar(outputDirectory + 'level_populations' + tag + '.txt')
 
-    def arrangeData(self):
-        self.pop = deVectorize(self.popVec, self.ncells)
-        self.pop = trans(self.pop)
+    # def arrangeData(self):
+        # self.pop = deVectorize(self.popVec, self.ncells)
+        # self.pop = trans(self.pop)
 
 
         # totNlev = len(self.popVec) / self.ncells
