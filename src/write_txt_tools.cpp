@@ -22,26 +22,26 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_txt_output (std::string tag, long ncells, CELLS *cells, LINES lines)
+int write_txt_output (std::string tag, CELLS *cells, LINES lines)
 {
 
-  // write_abundances (tag, NCELLS, cells);
+  // write_abundances (tag, cells);
 
   // write_transition_levels (tag, lines);
 
-  write_level_populations (tag, NCELLS, cells, lines);
+  write_level_populations (tag, cells, lines);
 
-  // write_line_intensities (tag, NCELLS, cells, lines);
+  // write_line_intensities (tag, cells, lines);
 
-  write_temperature_gas (tag, NCELLS, cells);
+  write_temperature_gas (tag, cells);
 
-  write_temperature_gas_prev(tag, NCELLS, cells);
+  write_temperature_gas_prev(tag, cells);
 
-  write_thermal_ratio (tag, NCELLS, cells);
+  write_thermal_ratio (tag, cells);
 
-  write_thermal_ratio_prev(tag, NCELLS, cells);
+  write_thermal_ratio_prev(tag, cells);
 
-  // write_temperature_dust (tag, NCELLS, cells);
+  // write_temperature_dust (tag, cells);
 
   // write_double_vector ("level_populations", tag, NCELLS*TOT_NLEV, cells->pop);
 
@@ -56,7 +56,7 @@ int write_txt_output (std::string tag, long ncells, CELLS *cells, LINES lines)
 // write_grid: write input back
 // ----------------------------
 
-int write_grid (std::string tag, long ncells, CELLS *cells)
+int write_grid (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -106,7 +106,7 @@ int write_grid (std::string tag, long ncells, CELLS *cells)
 // write_neighbors: write neighbors of each cell
 // ---------------------------------------------
 
-int write_neighbors (std::string tag, long ncells, CELLS *cells)
+int write_neighbors (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -126,7 +126,7 @@ int write_neighbors (std::string tag, long ncells, CELLS *cells)
     exit (1);
   }
 
-  for (long p = 0; p < ncells; p++)
+  for (long p = 0; p < NCELLS; p++)
   {
     fprintf (file, "%ld\t", cells->n_neighbors[p]);
 
@@ -191,7 +191,7 @@ int write_rays (std::string tag, RAYS rays)
 // write_abundances: write abundances at each point
 // ------------------------------------------------
 
-int write_abundances (std::string tag, long ncells, CELLS *cells)
+int write_abundances (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -234,7 +234,7 @@ int write_abundances (std::string tag, long ncells, CELLS *cells)
 // write_level_populations: write level populations at each point for each transition
 // ----------------------------------------------------------------------------------
 
-int write_level_populations (std::string tag, long ncells, CELLS *cells, LINES lines)
+int write_level_populations (std::string tag, CELLS *cells, LINES lines)
 {
 
   if (!tag.empty())
@@ -336,7 +336,7 @@ int write_level_populations (std::string tag, long ncells, CELLS *cells, LINES l
 // write_thermal_ratio: write thermal ratio at each cell
 // -----------------------------------------------------
 
-int write_thermal_ratio (std::string tag, long ncells, CELLS *cells)
+int write_thermal_ratio (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -373,7 +373,7 @@ int write_thermal_ratio (std::string tag, long ncells, CELLS *cells)
 // write_thermal_ratio: write thermal ratio at each cell
 // -----------------------------------------------------
 
-int write_thermal_ratio_prev (std::string tag, long ncells, CELLS *cells)
+int write_thermal_ratio_prev (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -411,7 +411,7 @@ int write_thermal_ratio_prev (std::string tag, long ncells, CELLS *cells)
 // write_temperature_gas: write gas temperatures at each cell
 // ----------------------------------------------------------
 
-int write_temperature_gas (std::string tag, long ncells, CELLS *cells)
+int write_temperature_gas (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -448,7 +448,7 @@ int write_temperature_gas (std::string tag, long ncells, CELLS *cells)
 // write_temperature_dust: write dust temperatures at each cell
 // ------------------------------------------------------------
 
-int write_temperature_dust (std::string tag, long ncells, CELLS *cells)
+int write_temperature_dust (std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())
@@ -487,7 +487,7 @@ int write_temperature_dust (std::string tag, long ncells, CELLS *cells)
 // write_temperature_gas_prev: write previous gas temperatures at each cell
 // ------------------------------------------------------------------------
 
-int write_temperature_gas_prev(std::string tag, long ncells, CELLS *cells)
+int write_temperature_gas_prev(std::string tag, CELLS *cells)
 {
 
   if (!tag.empty())

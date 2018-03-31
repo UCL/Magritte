@@ -16,7 +16,7 @@
 // write_txt_output: write output in txt format
 // --------------------------------------------
 
-int write_output (long ncells, CELLS *cells, LINES lines);
+int write_output (CELLS *cells, LINES lines);
 
 
 // write_output_log: write output info

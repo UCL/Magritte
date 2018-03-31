@@ -44,7 +44,7 @@ def setupMagritte():
         ncells = mcf.getNCELLSvtu(inputFile, gridType)
     ncellsInit = ncells
     if not fixedGrid:
-        ncells = 'ncells'
+        ncells = 'cells->ncells'
     # Get number of chemical species
     specDataFile = getFilePath('SPEC_DATAFILE')
     nspec        = numberOfLines(specDataFile) + 2

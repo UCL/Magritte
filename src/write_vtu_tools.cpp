@@ -31,7 +31,7 @@
 // write_vtu_output: write all physical variables to vtu input grid
 // ----------------------------------------------------------------
 
-int write_vtu_output (std::string tag, long ncells, CELLS *cells)
+int write_vtu_output (std::string tag, CELLS *cells)
 {
 
   // Read data from .vtu file on which we need to append data

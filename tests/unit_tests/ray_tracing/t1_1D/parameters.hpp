@@ -10,7 +10,7 @@
 #define WRITE_INTERMEDIATE_OUTPUT true
 
 // Input files
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 #define INPUT_FORMAT '.txt'
 #define CELL_BASED  false
 

@@ -52,10 +52,10 @@ int initialize_double_array_with_value (long length, double value, double *array
 int initialize_char_array (long length, char *array);
 
 
-// initialize_cells: initialize the cell array
-// -------------------------------------------
-
-int initialize_cells (long ncells, CELLS *cells);
+// // initialize_cells: initialize the cell array
+// // -------------------------------------------
+//
+// int initialize_cells (CELLS *cells);
 
 
 // initialize_cell_id: initialize the cell id's
@@ -64,16 +64,16 @@ int initialize_cells (long ncells, CELLS *cells);
 int initialize_cell_id (long ncells, CELLS *cells);
 
 
-// initialize_temperature_gas: set gas temperature to a certain initial value
-// --------------------------------------------------------------------------
-
-int initialize_temperature_gas (long ncells, CELLS *cells);
-
-
-// initialize_previous_temperature_gas: set "previous" gas temperature 0.9*temperature_gas
-// ---------------------------------------------------------------------------------------
-
-int initialize_previous_temperature_gas (long ncells, CELLS *cells);
+// // initialize_temperature_gas: set gas temperature to a certain initial value
+// // --------------------------------------------------------------------------
+//
+// int initialize_temperature_gas (long ncells, CELLS *cells);
+//
+//
+// // initialize_previous_temperature_gas: set "previous" gas temperature 0.9*temperature_gas
+// // ---------------------------------------------------------------------------------------
+//
+// int initialize_previous_temperature_gas (long ncells, CELLS *cells);
 
 
 // gueess_temperature_gas: make a guess for gas temperature based on UV field
@@ -85,7 +85,7 @@ int guess_temperature_gas (long ncells, CELLS *cells);
 // initialize_abundances: set abundanceces to initial values
 // ---------------------------------------------------------
 
-int initialize_abundances (long ncells, CELLS *cells, SPECIES species);
+int initialize_abundances (CELLS *cells, SPECIES species);
 
 
 // initialize_bool: initialize a boolean variable

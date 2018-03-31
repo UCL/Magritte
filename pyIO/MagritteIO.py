@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import os
 
 
 def getVariable(fileName, variable, type):
@@ -34,7 +35,8 @@ def readScalar(fileName):
 
 def projectFolder():
     # Returns current project folder
-    with open('../src/directories.hpp') as parameterFile:
+    dirPath = os.path.dirname(os.path.realpath(__file__))
+    with open(dirPath+'/../src/directories.hpp') as parameterFile:
         for line in parameterFile:
             line = line.split()
             if (len(line) is 3) and (line[1] == 'PROJECT_FOLDER'):
@@ -43,7 +45,8 @@ def projectFolder():
 
 def outputDirectory():
     # Returns current output folder
-    with open('../src/directories.hpp') as parameterFile:
+    dirPath = os.path.dirname(os.path.realpath(__file__))
+    with open(dirPath+'/../src/directories.hpp') as parameterFile:
         for line in parameterFile:
             line = line.split()
             if (len(line) is 3) and (line[1] == 'OUTPUT_DIRECTORY'):
@@ -80,7 +83,7 @@ class cell():
         # Read Magritte's output in outputDirectory
         self.readMagritteOutput(outputDirectory, tag)
         # Devectorize vectorized quantities
-        self.arrangeData()
+        # self.arrangeData()
 
 
     def readMagritteOutput(self, outputDirectory, tag):
@@ -93,11 +96,11 @@ class cell():
         self.thermalRatioPrev   = readScalar(outputDirectory + 'thermal_ratio_prev'   + tag + '.txt')
         # self.abundances         = readVector(outputDirectory + 'the00rmal_ratio'   + tag + '.txt')
         self.ncells             = len(self.temperatureGas)
-        self.popVec             = readScalar(outputDirectory + 'level_populations' + tag + '.txt')
+        # self.popVec             = readScalar(outputDirectory + 'level_populations' + tag + '.txt')
 
-    def arrangeData(self):
-        self.pop = deVectorize(self.popVec, self.ncells)
-        self.pop = trans(self.pop)
+    # def arrangeData(self):
+        # self.pop = deVectorize(self.popVec, self.ncells)
+        # self.pop = trans(self.pop)
 
 
         # totNlev = len(self.popVec) / self.ncells

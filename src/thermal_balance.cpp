@@ -84,7 +84,7 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)
 
-      write_output (NCELLS, cells, lines);
+      write_output (cells, lines);
 
 #   endif
 
@@ -172,7 +172,7 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)
 
-      write_output (NCELLS, cells, lines);
+      write_output (cells, lines);
 
 #   endif
 

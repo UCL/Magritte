@@ -15,17 +15,16 @@
 // calc_LTE_populations: Calculates LTE level populations
 // ------------------------------------------------------
 
-int calc_LTE_populations (long ncells, CELLS *cells, LINES lines)
+int calc_LTE_populations (CELLS *cells, LINES lines)
 {
-
 
   // For each line producing species at each grid point
 
   for (int ls = 0; ls < NLSPEC; ls++)
   {
 
-#   pragma omp parallel                                 \
-    shared (ncells, cells, lines, nlev, cum_nlev, ls)   \
+#   pragma omp parallel                         \
+    shared (cells, lines, nlev, cum_nlev, ls)   \
     default (none)
     {
 

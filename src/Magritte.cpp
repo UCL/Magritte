@@ -87,7 +87,7 @@ int main ()
 # endif
 
 
-  initialize_cells (NCELLS, cells);
+  cells->initialize ();
 
   cells->read_input (inputfile);
 
@@ -163,7 +163,7 @@ int main ()
 
   // Initialize abundances in each cell with initial abundances
 
-  initialize_abundances (NCELLS, cells, species);
+  initialize_abundances (cells, species);
 
 # endif
 
@@ -193,7 +193,7 @@ int main ()
 
   write_double_matrix("Einstein_A", "", nlev[0], nlev[0], lines.A_coeff);
   write_double_matrix("Einstein_B", "", nlev[0], nlev[0], lines.B_coeff);
-  write_double_matrix("frequency", "", nlev[0], nlev[0], lines.frequency);
+  write_double_matrix("frequency",  "", nlev[0], nlev[0], lines.frequency);
 
   // for (int i=0; i<TOT_NLEV2; i++)
   // {
@@ -376,73 +376,86 @@ int main ()
 
 
   // Reduce grid
-  //
-  // long ncells_red1 = reduce (ncells, cells);
-  // CELLS Cells_red1 (ncells_red1);
-  // CELLS *cells_red1 = &Cells_red1;
-  // initialize_reduced_grid (ncells_red1, cells_red1, ncells, cells);
-  //
-  //
-  // long ncells_red2 = reduce (ncells_red1, cells_red1);
-  // CELLS Cells_red2 (ncells_red2);
-  // CELLS *cells_red2 = &Cells_red2;
-  // initialize_reduced_grid (ncells_red2, cells_red2, ncells_red1, cells_red1);
-  //
-  //
-  // long ncells_red3 = reduce (ncells_red2, cells_red2);
-  // CELLS Cells_red3 (ncells_red3);
-  // CELLS *cells_red3 = &Cells_red3;
-  // initialize_reduced_grid (ncells_red3, cells_red3, ncells_red2, cells_red2);
-  //
-  //
-  // long ncells_red4 = reduce (ncells_red3, cells_red3);
+
+  long ncells_red1 = reduce (cells);
+  CELLS Cells_red1 (ncells_red1);
+  CELLS *cells_red1 = &Cells_red1;
+  initialize_reduced_grid (cells_red1, cells, rays);
+
+
+  long ncells_red2 = reduce (cells_red1);
+  CELLS Cells_red2 (ncells_red2);
+  CELLS *cells_red2 = &Cells_red2;
+  initialize_reduced_grid (cells_red2, cells_red1, rays);
+
+
+  long ncells_red3 = reduce (cells_red2);
+  CELLS Cells_red3 (ncells_red3);
+  CELLS *cells_red3 = &Cells_red3;
+  initialize_reduced_grid (cells_red3, cells_red2, rays);
+
+
+  // long ncells_red4 = reduce (cells_red3);
   // CELLS Cells_red4 (ncells_red4);
   // CELLS *cells_red4 = &Cells_red4;
-  // initialize_reduced_grid (ncells_red4, cells_red4, ncells_red3, cells_red3);
+  // initialize_reduced_grid (cells_red4, cells_red3, rays);
   //
   //
-  // long ncells_red5 = reduce (ncells_red4, cells_red4);
+  // long ncells_red5 = reduce (cells_red4);
   // CELLS Cells_red5 (ncells_red5);
   // CELLS *cells_red5 = &Cells_red5;
-  // initialize_reduced_grid (ncells_red5, cells_red5, ncells_red4, cells_red4);
+  // initialize_reduced_grid (cells_red5, cells_red4, rays);
   //
-
+  //
 
 
 
   // CALCULATE TEMPERATURE
   // _____________________
 
+  printf("ncells = %ld\n", ncells);
+  printf("ncells_red = %ld\n", ncells_red1);
+  printf("ncells_red = %ld\n", ncells_red2);
+  printf("ncells_red = %ld\n", ncells_red3);
+  // printf("ncells_red = %ld\n", ncells_red4);
+
+// return(0);
+
   // thermal_balance (ncells_red5, cells_red5, rays, species, reactions, lines, &timers);
-  //
-  // interpolate (ncells_red5, cells_red5, ncells_red4, cells_red4);
-  //
+
+  // write_output (cells_red5, lines);
+
+
+  // interpolate (cells_red5, cells_red4);
+
   //
   // thermal_balance (ncells_red4, cells_red4, rays, species, reactions, lines, &timers);
   //
-  // interpolate (ncells_red4, cells_red4, ncells_red3, cells_red3);
-  //
-  //
-  // thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
-  //
-  // interpolate (ncells_red3, cells_red3, ncells_red2, cells_red2);
-  //
-  // thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
-  //
-  // interpolate (ncells_red2, cells_red2, ncells_red1, cells_red1);
-  //
-  // thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
-  //
+  // interpolate (cells_red4, cells_red3);
+
+
+  thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
+
+  interpolate (cells_red3, cells_red2);
+
+  thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
+
+  interpolate (cells_red2, cells_red1);
+
+  thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
+
+  // return(0);
+
   // interpolate (ncells_red1, cells_red1, ncells, cells);
+  //
+  // thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
 
-  thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
 
-
-  // delete [] cell_red5;
-  // delete [] cell_red4;
-  // delete [] cell_red3;
-  // delete [] cell_red2;
-  // delete [] cell_red1;
+  // delete [] cells_red5;
+  // delete [] cells_red4;
+  // delete [] cells_red3;
+  // delete [] cells_red2;
+  delete [] cells_red1;
 
 
   timers.total.stop();
@@ -461,7 +474,7 @@ int main ()
 
   printf ("(Magritte): writing output \n");
 
-  write_output (NCELLS, cells, lines);
+  write_output (cells, lines);
 
   write_output_log ();
 

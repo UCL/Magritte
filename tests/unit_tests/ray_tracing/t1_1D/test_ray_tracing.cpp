@@ -18,6 +18,7 @@
 #include "../../../../src/definitions.hpp"
 #include "../../../../src/initializers.hpp"
 #include "../../../../src/ray_tracing.hpp"
+#include "../../../../src/bound.hpp"
 
 #define EPS 1.0E-5
 
@@ -58,46 +59,85 @@ TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
 
   CELLS *cells = &Cells;
 
-  initialize_cells (ncells, cells);
+  cells->initialize ();
 
   cells->read_input (inputfile);
 
 
-  // Find neighbors
+  // Define full grid
 
-  find_neighbors (ncells, cells, rays);
+  long size_x = 6;
+  long size_y = 6;
+  long size_z = 0;
+
+  long n_extra = 2*(size_x + size_y);   // number of boundary cells
+
+  long ncells_full = ncells + n_extra;
+
+  CELLS Cells_full (ncells_full);
+
+  CELLS *cells_full = &Cells_full;
+
+  cells_full->initialize ();
+
+
+  // Add boundary
+
+  bound_cube (cells, cells_full, size_x, size_y, size_z);
+
+
+  // Find neighbors and endpoints
+
+  find_neighbors (ncells_full, cells_full, rays);
+  find_endpoints (ncells_full, cells_full, rays);
+
+
+  // Check whether boundary cells
+
+  for (int p = 0; p < ncells_full; p++)
+  {
+    if (cells_full->boundary[p])
+    {
+      for (long n = 0; n < cells_full->n_neighbors[p]; n++)
+      {
+        long neighbor = cells_full->neighbor[RINDEX(p,n)];
+        printf("%ld %ld\n", p, neighbor);
+      }
+    }
+  }
+
 
 
   // Check number of neighbors
 
-  CHECK (cells->n_neighbors[0]  == 3);
-  CHECK (cells->n_neighbors[4]  == 3);
-  CHECK (cells->n_neighbors[20] == 3);
-  CHECK (cells->n_neighbors[24] == 3);
+  CHECK (cells_full->n_neighbors[0]  == 8);
+  CHECK (cells_full->n_neighbors[4]  == 8);
+  CHECK (cells_full->n_neighbors[20] == 8);
+  CHECK (cells_full->n_neighbors[24] == 8);
 
-  CHECK (cells->n_neighbors[1]  == 5);
-  CHECK (cells->n_neighbors[2]  == 5);
-  CHECK (cells->n_neighbors[3]  == 5);
-  CHECK (cells->n_neighbors[5]  == 5);
-  CHECK (cells->n_neighbors[9]  == 5);
-  CHECK (cells->n_neighbors[10] == 5);
-  CHECK (cells->n_neighbors[14] == 5);
-  CHECK (cells->n_neighbors[15] == 5);
-  CHECK (cells->n_neighbors[19] == 5);
-  CHECK (cells->n_neighbors[21] == 5);
-  CHECK (cells->n_neighbors[22] == 5);
-  CHECK (cells->n_neighbors[23] == 5);
+  CHECK (cells_full->n_neighbors[1]  == 8);
+  CHECK (cells_full->n_neighbors[2]  == 8);
+  CHECK (cells_full->n_neighbors[3]  == 8);
+  CHECK (cells_full->n_neighbors[5]  == 8);
+  CHECK (cells_full->n_neighbors[9]  == 8);
+  CHECK (cells_full->n_neighbors[10] == 8);
+  CHECK (cells_full->n_neighbors[14] == 8);
+  CHECK (cells_full->n_neighbors[15] == 8);
+  CHECK (cells_full->n_neighbors[19] == 8);
+  CHECK (cells_full->n_neighbors[21] == 8);
+  CHECK (cells_full->n_neighbors[22] == 8);
+  CHECK (cells_full->n_neighbors[23] == 8);
 
-  CHECK (cells->n_neighbors[11] == 8);
+  CHECK (cells_full->n_neighbors[11] == 8);
 
-  CHECK (cells->neighbor[RINDEX(11,0)] == 16);
-  CHECK (cells->neighbor[RINDEX(11,1)] == 17);
-  CHECK (cells->neighbor[RINDEX(11,2)] == 12);
-  CHECK (cells->neighbor[RINDEX(11,3)] ==  7);
-  CHECK (cells->neighbor[RINDEX(11,4)] ==  6);
-  CHECK (cells->neighbor[RINDEX(11,5)] ==  5);
-  CHECK (cells->neighbor[RINDEX(11,6)] == 10);
-  CHECK (cells->neighbor[RINDEX(11,7)] == 15);
+  CHECK (cells_full->neighbor[RINDEX(11,0)] == 16);
+  CHECK (cells_full->neighbor[RINDEX(11,1)] == 17);
+  CHECK (cells_full->neighbor[RINDEX(11,2)] == 12);
+  CHECK (cells_full->neighbor[RINDEX(11,3)] ==  7);
+  CHECK (cells_full->neighbor[RINDEX(11,4)] ==  6);
+  CHECK (cells_full->neighbor[RINDEX(11,5)] ==  5);
+  CHECK (cells_full->neighbor[RINDEX(11,6)] == 10);
+  CHECK (cells_full->neighbor[RINDEX(11,7)] == 15);
 
 
   long origin = 2;
@@ -106,18 +146,33 @@ TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
   double Z  = 0.0;
   double dZ = 0.0;
 
+  printf("ncells = %ld,   ncells_full = %ld\n", ncells, ncells_full);
+
   long current = origin;
-  long next    = next_cell (NCELLS, cells, rays, origin, r, &Z, current, &dZ);
+  long next    = next_cell (ncells_full, cells_full, rays, origin, r, &Z, current, &dZ);
 
-  // printf("current %ld,   next %ld\n", current, next);
+  printf("current %ld,   next %ld\n", current, next);
 
+  int count = 0;
 
-  while (next != NCELLS)
+  while (next != ncells_full && (count < 100))
   {
     current = next;
-    next    = next_cell (NCELLS, cells, rays, origin, r, &Z, current, &dZ);
+    next    = next_cell (ncells_full, cells_full, rays, origin, r, &Z, current, &dZ);
 
-    // printf("current %ld,   next %ld\n", current, next);
+    printf("current %ld,   next %ld\n", current, next);
+
+    count++;
   }
+
+/*
+  NOTE
+    There is a problem when a boundary point has non-boundary neighbours which can be projected on the ray. Temporary solution is to use a boundary which is "denser" than the interior grid.
+*/
+
+
+  // long wat = next_cell (ncells_full, cells_full, rays, origin, r, &Z, current, &dZ);
+  //
+  // printf("%ld\n", wat);
 
 }

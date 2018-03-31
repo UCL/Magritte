@@ -262,6 +262,10 @@ long next_cell (long ncells, CELLS *cells, RAYS rays,
 
   for (long n = 0; n < cells->n_neighbors[current]; n++)
   {
+    if (cells->boundary[current]){
+      // printf("%ld  n neighbors  = %ld\n", current, cells->n_neighbors[current]);
+    }
+
     long neighbor = cells->neighbor[RINDEX(current,n)];
 
     double rvec[3];

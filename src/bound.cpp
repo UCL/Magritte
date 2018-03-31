@@ -20,22 +20,25 @@
 // bound_cube: put cube boundary around  grid
 // ------------------------------------------
 
-long bound_cube (long ncells, CELLS *cells_init, CELLS *cells_full,
+long bound_cube (CELLS *cells_init, CELLS *cells_full,
                  long size_x, long size_y, long size_z)
 {
 
+  long ncells_init = cells_init->ncells;
+
+
   // Add initial cells
 
-# pragma omp parallel                     \
-  shared (ncells, cells_init, cells_full)   \
+# pragma omp parallel                            \
+  shared (ncells_init, cells_init, cells_full)   \
   default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+  long start = (thread_num*ncells_init)/num_threads;
+  long stop  = ((thread_num+1)*ncells_init)/num_threads;   // Note brackets
 
 
   for (long p = start; p < stop; p++)
@@ -61,16 +64,16 @@ long bound_cube (long ncells, CELLS *cells_init, CELLS *cells_full,
   double z_max = cells_init->z[0];
 
 
-# pragma omp parallel                                                     \
-  shared (ncells, cells_init, x_min, x_max, y_min, y_max, z_min, z_max)   \
+# pragma omp parallel                                                          \
+  shared (ncells_init, cells_init, x_min, x_max, y_min, y_max, z_min, z_max)   \
   default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+  long start = (thread_num*ncells_init)/num_threads;
+  long stop  = ((thread_num+1)*ncells_init)/num_threads;   // Note brackets
 
 
   for (long p = start; p < stop; p++)
@@ -123,23 +126,23 @@ long bound_cube (long ncells, CELLS *cells_init, CELLS *cells_full,
 
     long n_extra = 2;   // number of boundary cells
 
-    cells_full->x[NCELLS] = x_min - margin_x;
-    cells_full->y[NCELLS] = 0.0;
-    cells_full->z[NCELLS] = 0.0;
+    cells_full->x[ncells_init] = x_min - margin_x;
+    cells_full->y[ncells_init] = 0.0;
+    cells_full->z[ncells_init] = 0.0;
 
-    cells_full->boundary[NCELLS] = true;
+    cells_full->boundary[ncells_init] = true;
 
-    cells_full->x[NCELLS+1] = x_max + margin_x;
-    cells_full->y[NCELLS+1] = 0.0;
-    cells_full->z[NCELLS+1] = 0.0;
+    cells_full->x[ncells_init+1] = x_max + margin_x;
+    cells_full->y[ncells_init+1] = 0.0;
+    cells_full->z[ncells_init+1] = 0.0;
 
-    cells_full->boundary[NCELLS+1] = true;
+    cells_full->boundary[ncells_init+1] = true;
 
 # elif (DIMENSIONS == 2)
 
     long n_extra = 2*(size_x + size_y);   // number of boundary cells
 
-    long index = NCELLS;
+    long index = ncells_init;
 
     for (int e = 0; e < size_y; e++)
     {
@@ -187,7 +190,7 @@ long bound_cube (long ncells, CELLS *cells_init, CELLS *cells_full,
 
     long n_extra = 2*(size_x*size_z + size_y*size_z + size_x*size_y + 1);   // number of boundary cells
 
-    long index = NCELLS;
+    long index = ncells_init;
 
 
     for (int e1 = 0; e1 < size_y; e1++)
@@ -289,21 +292,24 @@ long bound_cube (long ncells, CELLS *cells_init, CELLS *cells_full,
 // bound_sphere: put sphere boundary around  grid
 // -----------------------------------------------
 
-long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboundary_cells)
+long bound_sphere (CELLS *cells_init, CELLS *cells_full, long nboundary_cells)
 {
+
+  long ncells_init = cells_init->ncells;
+
 
   // Add initial cells
 
-# pragma omp parallel                       \
-  shared (ncells, cells_init, cells_full)   \
+# pragma omp parallel                            \
+  shared (ncells_init, cells_init, cells_full)   \
   default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+  long start = (thread_num*ncells_init)/num_threads;
+  long stop  = ((thread_num+1)*ncells_init)/num_threads;   // Note brackets
 
 
   for (long p = start; p < stop; p++)
@@ -322,13 +328,13 @@ long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboun
   double z_av = 0.0;
 
 
-# pragma omp parallel                             \
-  shared (ncells, cells_init, x_av, y_av, z_av)   \
+# pragma omp parallel                                  \
+  shared (ncells_init, cells_init, x_av, y_av, z_av)   \
   default (none)
   {
 
 # pragma omp for reduction(+ : x_av, y_av, z_av)
-  for (long p = 0; p < NCELLS; p++)
+  for (long p = 0; p < ncells_init; p++)
   {
 
     x_av = x_av + cells_init->x[p];
@@ -339,9 +345,9 @@ long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboun
   } // end of OpenMP parallel region
 
 
-  x_av = (double) x_av / NCELLS;
-  y_av = (double) y_av / NCELLS;
-  z_av = (double) z_av / NCELLS;
+  x_av = (double) x_av / ncells_init;
+  y_av = (double) y_av / ncells_init;
+  z_av = (double) z_av / ncells_init;
 
 
   // Find radius
@@ -349,16 +355,16 @@ long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboun
   double radius = 0.0;
 
 
-# pragma omp parallel                                     \
-  shared (ncells, cells_init, radius, x_av, y_av, z_av)   \
+# pragma omp parallel                                          \
+  shared (ncells_init, cells_init, radius, x_av, y_av, z_av)   \
   default (none)
   {
 
   int num_threads = omp_get_num_threads();
   int thread_num  = omp_get_thread_num();
 
-  long start = (thread_num*NCELLS)/num_threads;
-  long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
+  long start = (thread_num*ncells_init)/num_threads;
+  long stop  = ((thread_num+1)*ncells_init)/num_threads;   // Note brackets
 
 
   for (long p = start; p < stop; p++)
@@ -381,17 +387,17 @@ long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboun
 
 # if   (DIMENSIONS == 1)
 
-    cells_full->x[NCELLS] = x_av + 1.1*radius;
-    cells_full->y[NCELLS] = 0.0;
-    cells_full->z[NCELLS] = 0.0;
+    cells_full->x[ncells_init] = x_av + 1.1*radius;
+    cells_full->y[ncells_init] = 0.0;
+    cells_full->z[ncells_init] = 0.0;
 
-    cells_full->boundary[NCELLS] = true;
+    cells_full->boundary[ncells_init] = true;
 
-    cells_full->x[NCELLS+1] = x_av - 1.1*radius;
-    cells_full->y[NCELLS+1] = 0.0;
-    cells_full->z[NCELLS+1] = 0.0;
+    cells_full->x[ncells_init+1] = x_av - 1.1*radius;
+    cells_full->y[ncells_init+1] = 0.0;
+    cells_full->z[ncells_init+1] = 0.0;
 
-    cells_full->boundary[NCELLS+1] = true;
+    cells_full->boundary[ncells_init+1] = true;
 
 # elif (DIMENSIONS == 2)
 
@@ -399,11 +405,11 @@ long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboun
     {
       double theta = (2.0*PI*ray) / nboundary_cells;
 
-      cells_full->x[NCELLS+ray] = x_av + 1.1*radius*cos(theta);
-      cells_full->y[NCELLS+ray] = y_av + 1.1*radius*sin(theta);
-      cells_full->z[NCELLS+ray] = 0.0;
+      cells_full->x[ncells_init+ray] = x_av + 1.1*radius*cos(theta);
+      cells_full->y[ncells_init+ray] = y_av + 1.1*radius*sin(theta);
+      cells_full->z[ncells_init+ray] = 0.0;
 
-      cells_full->boundary[NCELLS+ray] = true;
+      cells_full->boundary[ncells_init+ray] = true;
     }
 
 # elif (DIMENSIONS == 3)
@@ -416,11 +422,11 @@ long bound_sphere (long ncells, CELLS *cells_init, CELLS *cells_full, long nboun
 
       pix2vec_nest (nsides, ipix, vector);
 
-      cells_full->x[NCELLS+ipix] = x_av + 1.1*radius*vector[0];
-      cells_full->y[NCELLS+ipix] = y_av + 1.1*radius*vector[1];
-      cells_full->z[NCELLS+ipix] = z_av + 1.1*radius*vector[2];
+      cells_full->x[ncells_init+ipix] = x_av + 1.1*radius*vector[0];
+      cells_full->y[ncells_init+ipix] = y_av + 1.1*radius*vector[1];
+      cells_full->z[ncells_init+ipix] = z_av + 1.1*radius*vector[2];
 
-      cells_full->boundary[NCELLS+ipix] = true;
+      cells_full->boundary[ncells_init+ipix] = true;
     }
 
 # endif

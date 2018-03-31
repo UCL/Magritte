@@ -65,7 +65,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
   // For all lines in input file
 
-  for (long p = 0; p < NCELLS; p++)
+  for (long p = 0; p < ncells; p++)
   {
     fgets (buffer, BUFFER_SIZE, input);
 
@@ -96,7 +96,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     FILE *tgas = fopen (tgas_file_name.c_str(), "r");
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       fgets (buffer, BUFFER_SIZE, tgas);
       sscanf (buffer, "%lf", &(temperature_gas[p]));
@@ -110,7 +110,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     // If there is no temperature gas file
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       temperature_gas[p] = T_CMB;
     }
@@ -127,7 +127,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     FILE *tdust = fopen (tdust_file_name.c_str(), "r");
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       fgets (buffer, BUFFER_SIZE, tdust);
       sscanf (buffer, "%lf", &(temperature_dust[p]));
@@ -141,7 +141,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     // If there is no temperature gas file
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       temperature_dust[p] = T_CMB;
     }
@@ -158,7 +158,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     FILE *tgas_prev = fopen (tgas_prev_file_name.c_str(), "r");
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       fgets (buffer, BUFFER_SIZE, tgas_prev);
       sscanf (buffer, "%lf", &(temperature_gas_prev[p]));
@@ -171,7 +171,7 @@ int CELLS::read_txt_input (std::string inputfile)
   {
     // If there is no temperature gas file
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       temperature_gas_prev[p] = T_CMB;
     }
@@ -187,7 +187,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     FILE *abun = fopen (abun_file_name.c_str(), "r");
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       for (int s = 0; s < NSPEC; s++)
       {
@@ -203,7 +203,7 @@ int CELLS::read_txt_input (std::string inputfile)
 
     // If there is no temperature gas file
 
-    for (long p = 0; p < NCELLS; p++)
+    for (long p = 0; p < ncells; p++)
     {
       for (int s = 0; s < NSPEC; s++)
       {
@@ -260,7 +260,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 # endif
 
 
-  for (long p = 0; p < NCELLS; p++)
+  for (long p = 0; p < ncells; p++)
   {
     double point[3];
 
@@ -321,7 +321,7 @@ int CELLS::read_vtu_input (std::string inputfile)
     if (name == NAME_DENSITY)
     {
 
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         density[p] = data->GetTuple1(p);
       }
@@ -332,7 +332,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_VELOCITY)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         double *velocity = new double[3];
 
@@ -349,7 +349,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_VX)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         vx[p] = data->GetTuple1(p);
       }
@@ -357,7 +357,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_VY)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         vy[p] = data->GetTuple1(p);
       }
@@ -365,7 +365,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_VZ)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         vz[p] = data->GetTuple1(p);
       }
@@ -376,7 +376,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_CHEM_ABUNDANCES)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         double *abundances = new double[NSPEC-2];
 
@@ -396,7 +396,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_TEMPERATURE_GAS)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         temperature_gas[p] = data->GetTuple1(p);
       }
@@ -404,7 +404,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_TEMPERATURE_DUST)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         temperature_dust[p] = data->GetTuple1(p);
       }
@@ -412,7 +412,7 @@ int CELLS::read_vtu_input (std::string inputfile)
 
     if (name == NAME_TEMPERATURE_GAS_PREV)
     {
-      for (long p = 0; p < NCELLS; p++)
+      for (long p = 0; p < ncells; p++)
       {
         temperature_gas_prev[p] = data->GetTuple1(p);
       }
