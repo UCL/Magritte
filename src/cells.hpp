@@ -162,6 +162,12 @@ struct CELLS
   // Tools:
 
 
+  // initialize: initialize cells
+  // ----------------------------
+
+  int initialize ();
+
+
   // read_txt_input: read .txt input file
   // ------------------------------------
 
@@ -173,7 +179,6 @@ struct CELLS
     int read_txt_input(std::string inputfile);
 
     int read_vtu_input(std::string inputfile);
-
 
 };
 

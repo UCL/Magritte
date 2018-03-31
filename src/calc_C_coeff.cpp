@@ -16,12 +16,9 @@
 // calc_C_coeff: calculates collisional coefficients (C_ij) from line data
 // -----------------------------------------------------------------------
 
-int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
+int calc_C_coeff (CELLS *cells, SPECIES species, LINES lines,
                   double *C_coeff, long o, int ls)
 {
-
-  // cell[0].temperature.gas = 100.0;
-  // printf("TEMPTEMPTEMP %1.2lE\n", cell[0].temperature.gas);
 
   // Calculate H2 ortho/para fraction at equilibrium for given temperature
 
@@ -58,13 +55,6 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
 
 
     // Find data corresponding to temperatures above and below actual temperature
-    // printf("\n");
-    // printf("%d %d\n", lspec, par);
-    // for (int tindex = 0; tindex < ncoltemp[LSPECPAR(lspec,par)]; tindex++)
-    // {
-    //   printf("%1.1lE ", lines.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
-    // }
-    // printf("\n");
 
     if (lines.coltemp[LSPECPARTEMP(ls,par,ncoltemp[LSPECPAR(ls,par)]-1)] <= cells->temperature_gas[o])
     {
@@ -81,8 +71,6 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
 
       for (int tindex = 0; tindex < ncoltemp[LSPECPAR(ls,par)]; tindex++)
       {
-        // printf("coltemp %1.2lE\n", lines.coltemp[LSPECPARTEMP(lspec,par,tindex)]);
-
         if (cells->temperature_gas[o] < lines.coltemp[LSPECPARTEMP(ls,par,tindex)])
         {
           tindex_low  = tindex-1;
@@ -93,8 +81,6 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
       }
 
     }
-
-    // printf("%d %d     tot %d\n", tindex_low, tindex_high, ncoltemp[LSPECPAR(lspec,par)]);
 
 
     double *C_T_low = new double[nlev[ls]*nlev[ls]];
@@ -117,7 +103,7 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
 
 
     // Calculate reverse (excitation) rate coefficients from detailed balance, if not given
-    // i.e. C_ji = C_ij * g_i/g_j * exp( -(E_i-E_j)/ (kb T) )
+    // i.e. C_ji = C_ij * g_i/g_j * exp( -(E_i-E_j) / (kb T) )
 
     for (int ckr = 0; ckr < ncoltran[LSPECPAR(ls,par)]; ckr++)
     {
@@ -154,11 +140,6 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
                   - lines.coltemp[LSPECPARTEMP(ls,par,tindex_low)] );
     }
 
-        // printf ("T %1.2lE %1.2lE   %1.2lE\n", lines.coltemp[LSPECPARTEMP(lspec,par,tindex_low)],
-                                              // lines.coltemp[LSPECPARTEMP(lspec,par,tindex_high)], step );
-
-
-
 
     // Weigh contributions to C by abundance
 
@@ -167,31 +148,27 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
 
     if      (lines.ortho_para[LSPECPAR(ls,par)] == 'o')
     {
-      // printf("O\n");
       abundance = abundance * frac_H2_ortho;
     }
 
     else if (lines.ortho_para[LSPECPAR(ls,par)] == 'p')
     {
-      // printf("P\n");
       abundance = abundance * frac_H2_para;
     }
 
-    // printf("abn %1.2lE  spec %d \n", abundance, spec);
 
-
-    // For all C matrix elements
+    // Make a linear interpolation for C in temperature
 
     for (int i = 0; i < nlev[ls]; i++)
     {
       for (int j = 0; j < nlev[ls]; j++)
       {
+        long s_ij  = LLINDEX(ls,i,j);
+        long ss_ij = LSPECLEVLEV(ls,i,j);
 
-        // Make a linear interpolation for C in temperature
+        double C_tmp = C_T_low[s_ij] + (C_T_high[s_ij] - C_T_low[s_ij]) * step;
 
-        double C_tmp = C_T_low[LLINDEX(ls,i,j)] + (C_T_high[LLINDEX(ls,i,j)] - C_T_low[LLINDEX(ls,i,j)]) * step;
-
-        C_coeff[LSPECLEVLEV(ls,i,j)] = C_coeff[LSPECLEVLEV(ls,i,j)] + C_tmp*abundance;
+        C_coeff[ss_ij] = C_coeff[ss_ij] + C_tmp*abundance;
       }
     }
 
@@ -201,6 +178,14 @@ int calc_C_coeff (long ncells, CELLS *cells, SPECIES species, LINES lines,
 
   } // end of par loop over collision partners
 
+
+  // for (int i = 0; i < nlev[ls]; i++)
+  // {
+  //   for (int j = 0; j < nlev[ls]; j++)
+  //   {
+  //     printf("C %lE\n", C_coeff[LSPECLEVLEV(ls,i,j)]);
+  //   }
+  // }
 
   return(0);
 

@@ -87,7 +87,7 @@ int main ()
 # endif
 
 
-  initialize_cells (NCELLS, cells);
+  cells->initialize ();
 
   cells->read_input (inputfile);
 
@@ -163,7 +163,7 @@ int main ()
 
   // Initialize abundances in each cell with initial abundances
 
-  initialize_abundances (NCELLS, cells, species);
+  initialize_abundances (cells, species);
 
 # endif
 

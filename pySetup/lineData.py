@@ -1,3 +1,4 @@
+
 import numpy as np
 import re
 
@@ -181,6 +182,9 @@ class LineData():
         c = 2.99792458e+10   # speed of light in cgs
         h = 6.62606896E-27   # Planck's constant in cgs
 
+        # Convert energies from cm^-1 to erg
+        for i in range(len(self.energy)):
+            self.energy[i] = h*c* self.energy[i]
         self.A         = zero2(self.nlev,self.nlev)
         self.B         = zero2(self.nlev,self.nlev)
         self.frequency = zero2(self.nlev,self.nlev)
@@ -203,15 +207,16 @@ class LineData():
         for k in range(self.nrad):
             i = self.irad[k]
             j = self.jrad[k]
-            self.frequency[i][j] = (self.energy[i]-self.energy[j]) * c
+            self.frequency[i][j] = (self.energy[i]-self.energy[j]) / h
             self.frequency[j][i] = self.frequency[i][j]
             self.A[i][j] = self.A_coeff[k]
-            self.B[i][j] = self.A[i][j] / (2.0*h*c*(self.energy[i]-self.energy[j])**3)
+            self.B[i][j] = self.A[i][j] * c**2 / (2.0*h*self.frequency[i][j]**3)
             self.B[j][i] = self.weight[i] / self.weight[j] * self.B[i][j]
 
+        # for ck in range(self.ncoltran):
+
+
         for colpar in range(self.ncolpar):
-            # print np.shape(np.array(self.C_data[colpar]))
-            # print np.shape(np.array(self.C_coeff[colpar]))
             for temp in range(self.ncoltemp[colpar]):
                 for tran in range(self.ncoltran[colpar]):
                     self.C_data[colpar][tran][temp] = self.C_coeff[colpar][temp][tran]

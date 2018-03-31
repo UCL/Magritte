@@ -199,7 +199,7 @@ int initialize_reduced_grid (CELLS *cells_red, CELLS *cells, RAYS rays)
   long ncells_red = cells_red->ncells;
 
 
-  initialize_cells (ncells_red, cells_red);
+  cells_red->initialize ();
 
 
 # pragma omp parallel                             \

@@ -178,3 +178,91 @@ CELLS::~CELLS ()
 
 
 }
+
+
+
+
+// initialize: initialize cells
+// ----------------------------
+
+int CELLS::initialize ()
+{
+
+# pragma omp parallel   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+    x[p] = 0.0;
+    y[p] = 0.0;
+    z[p] = 0.0;
+
+    n_neighbors[p] = 0;
+
+    for (long r = 0; r < NRAYS; r++)
+    {
+      neighbor[RINDEX(p,r)] = 0;
+      endpoint[RINDEX(p,r)] = 0;
+
+      Z[RINDEX(p,r)]           = 0.0;
+      intensity[RINDEX(p,r)]   = 0.0;
+      column[RINDEX(p,r)]      = 0.0;
+      rad_surface[RINDEX(p,r)] = 0.0;
+      AV[RINDEX(p,r)]          = 0.0;
+    }
+
+    vx[p] = 0.0;
+    vy[p] = 0.0;
+    vz[p] = 0.0;
+
+    density[p] = 0.0;
+
+    UV[p] = 0.0;
+
+    for (int s = 0; s < NSPEC; s++)
+    {
+      abundance[SINDEX(p,s)] = 0.0;
+    }
+
+    for (int e = 0; e < NREAC; e++)
+    {
+      rate[READEX(p,e)] = 0.0;
+    }
+
+    for (int l = 0; l < TOT_NLEV; l++)
+    {
+      pop[LINDEX(p,l)] = 0.0;
+    }
+
+    for (int k = 0; k < TOT_NRAD; k++)
+    {
+      mean_intensity[KINDEX(p,k)] = 0.0;
+    }
+
+    temperature_gas[p]      = 10.0;
+    temperature_dust[p]     = 10.0;
+    temperature_gas_prev[p] =  9.0;
+
+    thermal_ratio[p]      = 1.0;
+    thermal_ratio_prev[p] = 1.1;
+
+    id[p] = p;
+
+    removed[p]  = false;
+    boundary[p] = false;
+    mirror[p]   = false;
+  }
+  } // end of OpenMP parallel region
+
+
+  return(0);
+
+}

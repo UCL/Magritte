@@ -2,11 +2,11 @@
 
 #define NCELLS cells->ncells
 
-#define NCELLS_INIT 122
+#define NCELLS_INIT 25
 
-#define NSPEC 35
+#define NSPEC 11
 
-#define NREAC 329
+#define NREAC 1
 
 #define NLSPEC 4
 

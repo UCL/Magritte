@@ -173,7 +173,13 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
             //  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
-            calc_C_coeff (NCELLS, cells, species, lines, C_coeff, p, ls);
+            calc_C_coeff (cells, species, lines, C_coeff, p, ls);
+
+            if (p==0)
+            {
+              #include "write_txt_tools.hpp"
+              write_double_matrix("Einstein_C", "", nlev[ls], nlev[ls], C_coeff);
+            }
 
 
             // Fill first part of transition matrix R
@@ -291,7 +297,6 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
     } // end of n loop over cells
     } // end of OpenMP parallel region
-
 
 
     // Limit the number of iterations

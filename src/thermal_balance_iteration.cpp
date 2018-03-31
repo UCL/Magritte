@@ -37,7 +37,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
 
 # if (ALWAYS_INITIALIZE_CHEMISTRY)
 
-    initialize_abundances (NCELLS, cells, species);
+    initialize_abundances (cells, species);
 
 # endif
 
@@ -78,7 +78,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
 
   // Initialize level populations with LTE values
 
-  calc_LTE_populations (NCELLS, cells, lines);
+  calc_LTE_populations (cells, lines);
 
   // write_double_vector ("level_populations", "LTE", NCELLS*TOT_NLEV, cells->pop);
 

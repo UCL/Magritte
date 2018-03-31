@@ -1,5 +1,6 @@
 import numpy as np
 import re
+import os
 
 
 def getVariable(fileName, variable, type):
@@ -34,7 +35,8 @@ def readScalar(fileName):
 
 def projectFolder():
     # Returns current project folder
-    with open('../src/directories.hpp') as parameterFile:
+    dirPath = os.path.dirname(os.path.realpath(__file__))
+    with open(dirPath+'/../src/directories.hpp') as parameterFile:
         for line in parameterFile:
             line = line.split()
             if (len(line) is 3) and (line[1] == 'PROJECT_FOLDER'):
@@ -43,7 +45,8 @@ def projectFolder():
 
 def outputDirectory():
     # Returns current output folder
-    with open('../src/directories.hpp') as parameterFile:
+    dirPath = os.path.dirname(os.path.realpath(__file__))
+    with open(dirPath+'/../src/directories.hpp') as parameterFile:
         for line in parameterFile:
             line = line.split()
             if (len(line) is 3) and (line[1] == 'OUTPUT_DIRECTORY'):

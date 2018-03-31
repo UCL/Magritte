@@ -59,7 +59,7 @@ TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
 
   CELLS *cells = &Cells;
 
-  initialize_cells (ncells, cells);
+  cells->initialize ();
 
   cells->read_input (inputfile);
 
@@ -78,7 +78,7 @@ TEST_CASE ("Visually inspect 5x5 2D grid: boundary cube")
 
   CELLS *cells_full = &Cells_full;
 
-  initialize_cells (ncells_full, cells_full);
+  cells_full->initialize ();
 
 
   // Add boundary
