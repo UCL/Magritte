@@ -158,8 +158,6 @@ class LineData():
                 self.C_coeff[0][temp][tran] = C_temp[tran + self.ncoltran[0]*temp]
 
 
-
-
     def getLineDataStructures(self):
 
         """ Create additional data structures for vectorization """
@@ -212,9 +210,6 @@ class LineData():
             self.A[i][j] = self.A_coeff[k]
             self.B[i][j] = self.A[i][j] * c**2 / (2.0*h*self.frequency[i][j]**3)
             self.B[j][i] = self.weight[i] / self.weight[j] * self.B[i][j]
-
-        # for ck in range(self.ncoltran):
-
 
         for colpar in range(self.ncolpar):
             for temp in range(self.ncoltemp[colpar]):

@@ -50,6 +50,7 @@ int main ()
   timers.initialize();
   timers.total.start();
 
+
   printf ("                                                                         \n");
   printf ("Magritte: Multidimensional Accelerated General-purpose Radiative Transfer\n");
   printf ("                                                                         \n");
@@ -68,18 +69,17 @@ int main ()
   printf ("(Magritte): reading grid input file\n\n");
 
 
-  // Define cells (using types defined in declarations.hpp
+  // Construct cells
+
+    long ncells = NCELLS_INIT;
+
 
 # if (FIXED_NCELLS)
-
-    long ncells = NCELLS;
 
     CELLS Cells (NCELLS);    // create CELLS object Cells
     CELLS *cells = &Cells;   // pointer to Cells
 
 # else
-
-    long ncells = NCELLS_INIT;
 
     CELLS Cells (ncells);    // create CELLS object Cells
     CELLS *cells = &Cells;   // pointer to Cells
@@ -191,49 +191,6 @@ int main ()
 
   const LINES lines;   // (values defined in line_data.hpp)
 
-  write_double_matrix("Einstein_A", "", nlev[0], nlev[0], lines.A_coeff);
-  write_double_matrix("Einstein_B", "", nlev[0], nlev[0], lines.B_coeff);
-  write_double_matrix("frequency",  "", nlev[0], nlev[0], lines.frequency);
-
-  // for (int i=0; i<TOT_NLEV2; i++)
-  // {
-  //
-  //   double a = TESTB_coeff[i];
-  //   double b = lines.B_coeff[i];
-  //
-  //   double nill = 2.0 * (a - b);
-  //   if (nill != 0.0)
-  //   {
-  //     nill = nill / (a + b);
-  //   }
-  //   // double nill = 2.0 * (TESTA_coeff[i] - lines.A_coeff[i]);
-  //
-  //   printf("nill = %lE\n", nill);
-  //   // if (n != 0.0)
-  //   // {}
-  // }
-
-  // for (int i=0; i<TOT_CUM_TOT_NCOLTRANTEMP; i++)
-  // {
-  //
-  //   double a = TESTC_data[i];
-  //   double b = lines.C_data[i];
-  //
-  //   double nill = 2.0 * (a - b);
-  //   if (nill != 0.0)
-  //   {
-  //     nill = nill / (a + b);
-  //   }
-  //   // double nill = 2.0 * (TESTA_coeff[i] - lines.A_coeff[i]);
-  //
-  //   printf("nill = %lE\n", nill);
-  //   // if (n != 0.0)
-  //   // {}
-  // }
-  //
-  // return(0);
-
-
   printf ("(Magritte): line data read \n\n");
 
 
@@ -339,12 +296,12 @@ int main ()
 
   // Calculate visual extinction
 
-  calc_AV (NCELLS, cells, column_tot);
+  calc_AV (cells, column_tot);
 
 
   // Calculcate UV field
 
-  calc_UV_field (NCELLS, cells);
+  calc_UV_field (cells);
 
 
 # if (!RESTART)
@@ -353,12 +310,13 @@ int main ()
 
     guess_temperature_gas (NCELLS, cells);
 
-    initialize_previous_temperature_gas (NCELLS, cells);
+    initialize_double_array_with_scale (NCELLS, cells->temperature_gas_prev, cells->temperature_gas, 0.9);
 
+    initialize_double_array_with_value (NCELLS, cells->temperature_gas_prev, 9.0);
 
-    // Calculate the dust temperature
+    // initialize_previous_temperature_gas (NCELLS, cells);
 
-    calc_temperature_dust (NCELLS, cells);
+    calc_temperature_dust (NCELLS, cells);   // depends on UV field
 
 # endif
 
@@ -381,6 +339,7 @@ int main ()
   CELLS Cells_red1 (ncells_red1);
   CELLS *cells_red1 = &Cells_red1;
   initialize_reduced_grid (cells_red1, cells, rays);
+
 
 
   long ncells_red2 = reduce (cells_red1);
@@ -438,11 +397,11 @@ int main ()
 
   interpolate (cells_red3, cells_red2);
 
-  thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red2, cells_red1);
 
-  thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
+  // thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
 
   // return(0);
 

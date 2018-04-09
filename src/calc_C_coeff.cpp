@@ -179,14 +179,6 @@ int calc_C_coeff (CELLS *cells, SPECIES species, LINES lines,
   } // end of par loop over collision partners
 
 
-  // for (int i = 0; i < nlev[ls]; i++)
-  // {
-  //   for (int j = 0; j < nlev[ls]; j++)
-  //   {
-  //     printf("C %lE\n", C_coeff[LSPECLEVLEV(ls,i,j)]);
-  //   }
-  // }
-
   return(0);
 
 }

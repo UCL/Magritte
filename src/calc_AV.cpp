@@ -17,7 +17,7 @@
 // calc_AV: calculates visual extinction along a ray ray at a grid point
 // ---------------------------------------------------------------------
 
-int calc_AV (long ncells, CELLS *cells, double *column_tot)
+int calc_AV (CELLS *cells, double *column_tot)
 {
 
   const double A_V0 = 6.289E-22*METALLICITY;   // AV_fac in 3D-PDR code (A_V0 in paper)
@@ -25,8 +25,8 @@ int calc_AV (long ncells, CELLS *cells, double *column_tot)
 
   // For all grid points n and rays r
 
-# pragma omp parallel                  \
-  shared (ncells, cells, column_tot)   \
+# pragma omp parallel          \
+  shared (cells, column_tot)   \
   default (none)
   {
 

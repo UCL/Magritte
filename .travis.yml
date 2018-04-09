@@ -4,15 +4,18 @@ language:
   - bash
 
 install:
-  - sudo apt-get install libvtk5-dev
+  - sudo apt-get install libvtk6-dev
 
 python:
   - "2.7"
 
 addons:
   apt:
+    sources:
+      - boost-latest
     packages:
       - cmake
+      - libboost1.55-all-dev
 
 script:
   - bash configure.sh
