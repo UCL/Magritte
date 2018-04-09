@@ -94,7 +94,7 @@ int write_grid (std::string tag, CELLS *cells)
   fclose (file);
 
 
-  printf("Printed a grid with %ld cells out of a total of %ld\n", total, NCELLS);
+  printf ("Printed a grid with %ld cells out of a total of %ld\n", total, cells->ncells);
 
   return (0);
 

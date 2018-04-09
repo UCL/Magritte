@@ -167,7 +167,7 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
     }
 
 
-    printf ("(thermal_balance): Not yet converged for %ld of %ld\n", n_not_converged, NCELLS);
+    printf ("(thermal_balance): Not yet converged for %ld of %ld\n", n_not_converged, cells->ncells);
 
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)

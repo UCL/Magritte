@@ -1,6 +1,8 @@
 # Add compiler flags
 find_package(OpenMP REQUIRED)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=medium -std=c++11 -std=gnu++11")
+
 if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS
   "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -mcmodel=medium")
