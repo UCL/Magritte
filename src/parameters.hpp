@@ -7,10 +7,12 @@
 #ifndef __PARAMETERS_HPP_INCLUDED__
 #define __PARAMETERS_HPP_INCLUDED__
 
-#define WRITE_INTERMEDIATE_OUTPUT true
+
+#define WRITE_INTERMEDIATE_OUTPUT false
+
 
 // Input files
-#define FIXED_NCELLS true
+#define FIXED_NCELLS false
 #define INPUT_FORMAT '.txt'
 #define CELL_BASED  false
 
@@ -24,8 +26,8 @@
 #define NAME_TEMPERATURE_GAS_PREV "Gas_temperature"
 #define NAME_CHEM_ABUNDANCES      "Mol_density"
 
-// VARIABLE GRID
-#define GRID_INIT "input/files/grid.txt"
+// VARIABLE GRIDs
+#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
 
 #define X_MIN -1.0E+00
 #define X_MAX +9.9E+99
@@ -43,52 +45,61 @@
 
 // Restart options
 #define RESTART false
-// #define RESTART_DIRECTORY "input/files/"
-
+// #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
+// #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
 #define INPUTFILE      "input/files/1Dn30.dat_conv.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 #define REAC_DATAFILE  "data/rates_reduced.txt"
 
+// Line data
+
 #define DATA_FORMAT "LAMDA"
+
 #define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
 
 
 // Ray tracing parameters
+
 #define DIMENSIONS 1
 #define NRAYS      2
-#define NSIDES     1
-
+#define NSIDES     6
 
 // Radiative transfer
+
 #define SOBOLEV                    true
 #define ACCELERATION_POP_NG        true
 #define ACCELERATION_APPROX_LAMBDA true
 
 
 // Number of various iterations
-#define MAX_NITERATIONS  150
-#define PRELIM_CHEM_ITER 1
-#define PRELIM_TB_ITER   0
-#define MAX_TB_ITER      0
-#define CHEM_ITER        0
+
+#define MAX_NITERATIONS  300
+#define MAX_TB_ITER      25
+#define PRELIM_CHEM_ITER 5
+#define CHEM_ITER        3
 
 
 // Temperature range
+
 #define TEMPERATURE_MIN T_CMB
 #define TEMPERATURE_MAX 30000.0
 
 
 // Chemistry
-#define METALLICITY                 1.0E+0
-#define GAS_TO_DUST                 1.0E+2
-#define TIME_END_IN_YEARS           1.0E+7
+
+#define METALLICITY       1.0E+0
+#define GAS_TO_DUST       1.0E+2
+#define TIME_END_IN_YEARS 1.0E+7
+
 #define ALWAYS_INITIALIZE_CHEMISTRY false
 
 
 // External UV field
-#define FIELD_FORM   "UNI"
+
+#define FIELD_FORM "UNI"
+
 #define G_EXTERNAL_X 1.0E+1
 #define G_EXTERNAL_Y 0.0E+0
 #define G_EXTERNAL_Z 0.0E+0
@@ -104,7 +115,6 @@
 #define ZETA   3.846153846153846
 #define OMEGA  0.42
 
-
 #define NFREQ 4
 
 
@@ -116,7 +126,7 @@
 
 // Parameters for level population iteration
 
-#define POP_PREC        1.0E-2    // precision used in convergence criterion
+#define POP_PREC        1.0E-3    // precision used in convergence criterion
 #define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
 #define POP_UPPER_LIMIT 1.0E+15   // highest population
 #define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray
@@ -124,7 +134,7 @@
 
 // Parameters for thermal balance iteration
 
-#define THERMAL_PREC 1.0E-3   // precision used in convergence criterion
+#define THERMAL_PREC 1.0E-2   // precision used in convergence criterion
 
 
 #endif // __PARAMETERS_HPP_INCLUDED__
