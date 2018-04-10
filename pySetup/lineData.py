@@ -215,36 +215,3 @@ class LineData():
             for temp in range(self.ncoltemp[colpar]):
                 for tran in range(self.ncoltran[colpar]):
                     self.C_data[colpar][tran][temp] = self.C_coeff[colpar][temp][tran]
-
-
-
-
-# Arrange Einstein coefficients
-# -----------------------------
-#
-# c = 2.99792458e+10   # speed of light in cgs
-# h = 6.62606896E-27   # Planck's constant in cgs
-#
-# A         = zero2(nlev,nlev)
-# B         = zero2(nlev,nlev)
-# frequency = zero2(nlev,nlev)
-# C_data    = zero3(ncoltemp,nlev,nlev)
-#
-# for k in range(nrad):
-#     i = irad[k]-1
-#     j = jrad[k]-1
-#     A[i][j] = A_coeff[k]
-#     B[i][j] = A[i][j]*(h*c)**2 / (2.0*(energy[i]-energy[j])**3)
-#     B[j][i] = weight[i] / weight[j] * B[i][j]
-#
-# for i in range(nlev):
-#     for j in range(nlev):
-#         frequency[i][j] = (energy[i]-energy[j]) / h
-#         frequency[j][i] = frequency[i][j]
-#
-#
-# for t in range(ncoltemp):
-#     for k in range(ncoltran):
-#         i = icol[k]-1
-#         j = jcol[k]-1
-#         C_data[t][i][j] = C_coeff[k + t*ncoltran]

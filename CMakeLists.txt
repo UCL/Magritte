@@ -29,16 +29,12 @@ set(MAGRITTE_VERSION_MINOR 1)
 
 
 # Run setup script (if parameters.hpp changed)
-add_custom_command(OUTPUT  src/Magritte_config.hpp
-                   COMMAND bash run_setup.sh $(PROJECT_FOLDER)
-                   WORKING_DIRECTORY pySetup
-                   DEPENDS $(PROJECT_FOLDER)parameters.hpp)
-
-add_custom_target(MAKE_SETUP
-                  DEPENDS src/Magritte_config.hpp)
+add_custom_target(MAKE_SETUP ALL
+                  COMMAND python setup.py $(PROJECT_FOLDER)
+                  WORKING_DIRECTORY pySetup)
 
 
-# Specify the subdirectory containing the source code
+# Specify subdirectory containing source code
 add_subdirectory(src)
 
 
@@ -66,19 +62,3 @@ add_executable(Magritte.exe src/Magritte.cpp)
 add_dependencies(Magritte.exe MAKE_SETUP)
 # Link the library of the /src directory to Magritte main code
 target_link_libraries(Magritte.exe _MAGRITTE)
-
-
-# # Create executable for Magritte_io
-# add_executable(Magritte_io.exe src/Magritte_io.cpp)
-# # Ensure that Magritte_io depends on setup command defined above
-# add_dependencies(Magritte_io.exe MAKE_SETUP)
-# # Link the library of the /src directory to Magritte main code
-# target_link_libraries(Magritte_io.exe _IO)
-#
-#
-# # Create executable for Magritte_io
-# add_executable(Magritte_o.exe src/Magritte_o.cpp)
-# # Ensure that Magritte_io depends on setup command defined above
-# add_dependencies(Magritte_o.exe MAKE_SETUP)
-# # Link the library of the /src directory to Magritte main code
-# target_link_libraries(Magritte_o.exe _O)

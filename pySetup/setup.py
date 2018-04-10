@@ -18,7 +18,12 @@ readSpeciesNames = setupFunctions.readSpeciesNames
 getSpeciesNumber = setupFunctions.getSpeciesNumber
 import lineData
 LineData  = lineData.LineData
-
+import makeRates
+import filecmp
+import os
+import shutil
+import time
+import sys
 
 
 def setupMagritte():
@@ -52,6 +57,13 @@ def setupMagritte():
     # Get number of chemical reactions
     reacDataFile = getFilePath('REAC_DATAFILE')
     nreac        = numberOfLines(reacDataFile)
+    # Try to make species and rates
+    try:
+        makeRates.makeRates(specDataFile, reacDataFile)
+    except:
+        writeHeader('../src/sundials/rate_equations.cpp')
+        writeHeader('../src/sundials/jacobian.cpp')
+        print('\n\nWARNING: makeRates failed!\n\n')
     # Get number of data files
     lineDataFiles = getFilePath('LINE_DATAFILES')
     if not isinstance(lineDataFiles, list):
@@ -62,8 +74,6 @@ def setupMagritte():
     lineData   = [LineData(fileName, dataFormat) for fileName in lineDataFiles]
     # Get species numbers of line producing species
     name   = [ld.name for ld in lineData]
-    print name
-    print speciesNames
     number = getSpeciesNumber(speciesNames, name)
     # Get species numbers of collision partners
     partner   = vectorize([ld.partner   for ld in lineData])
@@ -183,7 +193,28 @@ def setupMagritte():
 # ----
 
 if (__name__ == '__main__'):
-    # Execute main
+
+    # Setup Magritte if necessary
+    projectFolder = str(sys.argv[1])
     print('Setting up Magritte...')
-    setupMagritte()
+    # If parameter file is not up to date, run setup
+    if not filecmp.cmp(projectFolder+'parameters.hpp','../src/parameters.hpp'):
+        print('parameters.hpp was out of date, updating...')
+        # Copy parameter file from project to Magritte folder
+        shutil.copyfile(projectFolder+'parameters.hpp','../src/parameters.hpp')
+        # Get date date stamp for output directory
+        dateStamp       = time.strftime("%y-%m-%d_%H:%M:%S", time.gmtime())
+        outputDirectory = projectFolder + 'output/files/' + dateStamp + '/'
+        # Write directories to cpp header
+        fileName = '../src/directories.hpp'
+        writeHeader(fileName)
+        writeDefinition(fileName, '\"'+outputDirectory+'\"', 'OUTPUT_DIRECTORY')
+        writeDefinition(fileName, '\"'+projectFolder+'\"', 'PROJECT_FOLDER')
+        # Run setup
+        setupMagritte()
+        # Create output directory
+        os.mkdir(outputDirectory)
+        os.mkdir(outputDirectory + 'plots/')
+        shutil.copyfile(projectFolder+'parameters.hpp',outputDirectory+'parameters.hpp')
+    print('parameter.hpp is up to date.')
     print('Setup done. Magritte can be compiled now.')

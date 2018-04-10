@@ -11,11 +11,10 @@ if(OPENMP_FOUND)
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -mcmodel=medium")
 endif()
 
-# Make setup executable and execute setup
-add_custom_target(
-MAKE_SETUP ALL
-COMMAND bash run_setup.sh ${CMAKE_CURRENT_BINARY_DIR}/
-WORKING_DIRECTORY ../../../../pySetup )
+# Execute setup
+add_custom_target(MAKE_SETUP ALL
+                  COMMAND python setup.py ${CMAKE_CURRENT_BINARY_DIR}/
+                  WORKING_DIRECTORY ../../../../pySetup)
 
 # Add src directory
 add_subdirectory( ${CMAKE_CURRENT_BINARY_DIR}/../../../../src/
