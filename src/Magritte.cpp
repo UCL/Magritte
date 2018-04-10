@@ -71,24 +71,14 @@ int main ()
 
   // Construct cells
 
-    long ncells = NCELLS_INIT;
+  long ncells = NCELLS_INIT;
 
 
-# if (FIXED_NCELLS)
-
-    CELLS Cells (NCELLS);    // create CELLS object Cells
-    CELLS *cells = &Cells;   // pointer to Cells
-
-# else
-
-    CELLS Cells (ncells);    // create CELLS object Cells
-    CELLS *cells = &Cells;   // pointer to Cells
-
-# endif
+  CELLS Cells (ncells);    // create CELLS object Cells
+  CELLS *cells = &Cells;   // pointer to Cells
 
 
   cells->initialize ();
-
   cells->read_input (inputfile);
 
 
@@ -310,9 +300,9 @@ int main ()
 
     guess_temperature_gas (NCELLS, cells);
 
-    initialize_double_array_with_scale (NCELLS, cells->temperature_gas_prev, cells->temperature_gas, 0.9);
+    initialize_double_array_with_scale (NCELLS, cells->temperature_gas_prev, cells->temperature_gas, 1.0);
 
-    initialize_double_array_with_value (NCELLS, cells->temperature_gas_prev, 9.0);
+    // initialize_double_array_with_value (NCELLS, cells->temperature_gas_prev, 9.0);
 
     // initialize_previous_temperature_gas (NCELLS, cells);
 
@@ -354,11 +344,11 @@ int main ()
   initialize_reduced_grid (cells_red3, cells_red2, rays);
 
 
-  // long ncells_red4 = reduce (cells_red3);
-  // CELLS Cells_red4 (ncells_red4);
-  // CELLS *cells_red4 = &Cells_red4;
-  // initialize_reduced_grid (cells_red4, cells_red3, rays);
-  //
+  long ncells_red4 = reduce (cells_red3);
+  CELLS Cells_red4 (ncells_red4);
+  CELLS *cells_red4 = &Cells_red4;
+  initialize_reduced_grid (cells_red4, cells_red3, rays);
+
   //
   // long ncells_red5 = reduce (cells_red4);
   // CELLS Cells_red5 (ncells_red5);
@@ -376,7 +366,7 @@ int main ()
   printf("ncells_red = %ld\n", ncells_red1);
   printf("ncells_red = %ld\n", ncells_red2);
   printf("ncells_red = %ld\n", ncells_red3);
-  // printf("ncells_red = %ld\n", ncells_red4);
+  printf("ncells_red = %ld\n", ncells_red4);
 
 // return(0);
 
@@ -387,26 +377,19 @@ int main ()
 
   // interpolate (cells_red5, cells_red4);
 
-  //
-  // thermal_balance (ncells_red4, cells_red4, rays, species, reactions, lines, &timers);
-  //
-  // interpolate (cells_red4, cells_red3);
 
+  thermal_balance (ncells_red4, cells_red4, rays, species, reactions, lines, &timers);
 
-  thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
+  interpolate (cells_red4, cells_red3);
+  // thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red3, cells_red2);
-
   // thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red2, cells_red1);
-
   // thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
 
-  // return(0);
-
-  // interpolate (ncells_red1, cells_red1, ncells, cells);
-  //
+  interpolate (cells_red1, cells);
   // thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
 
 
@@ -414,15 +397,15 @@ int main ()
   // delete [] cells_red4;
   // delete [] cells_red3;
   // delete [] cells_red2;
-  delete [] cells_red1;
+  // delete cells_red1;
 
 
   timers.total.stop();
 
 
-  printf ("(Magritte): Total calculation time = %lE\n\n", timers.total.duration);
-  printf ("(Magritte):    - time in chemistry = %lE\n\n", timers.chemistry.duration);
-  printf ("(Magritte):    - time in level_pop = %lE\n\n", timers.level_pop.duration);
+  printf ("(Magritte): Total calculation time = %1.3lE\n\n", timers.total.duration);
+  printf ("(Magritte):    - time in chemistry = %1.3lE\n\n", timers.chemistry.duration);
+  printf ("(Magritte):    - time in level_pop = %1.3lE\n\n", timers.level_pop.duration);
 
 
 
@@ -447,7 +430,7 @@ int main ()
 
 # if (!FIXED_NCELLS)
 
-    cells->~CELLS();
+    // delete cells;
 
     delete [] column_tot;
 
