@@ -43,19 +43,13 @@ int initialize_double_array_with_scale (long length, double *array1, double *arr
 // initialize_double_array_with_value: sets entries of array of doubles equal to value
 // -----------------------------------------------------------------------------------
 
-int initialize_double_array_with_value (long length, double value, double *array);
+int initialize_double_array_with_value (long length, double *array, double value);
 
 
 // initialize_char_array: sets all entries of linearized array of doubles equal to 'i'
 // -----------------------------------------------------------------------------------
 
 int initialize_char_array (long length, char *array);
-
-
-// // initialize_cells: initialize the cell array
-// // -------------------------------------------
-//
-// int initialize_cells (CELLS *cells);
 
 
 // initialize_cell_id: initialize the cell id's

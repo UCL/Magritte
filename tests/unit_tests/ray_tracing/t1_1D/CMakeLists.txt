@@ -1,6 +1,8 @@
 # Add compiler flags
 find_package(OpenMP REQUIRED)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=medium -std=c++11 -std=gnu++11")
+
 if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS
   "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -mcmodel=medium")
@@ -10,11 +12,11 @@ if(OPENMP_FOUND)
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -mcmodel=medium")
 endif()
 
-# Make setup executable and execute setup
-add_custom_target(
-MAKE_SETUP ALL
-COMMAND bash run_setup.sh ${CMAKE_CURRENT_BINARY_DIR}/
-WORKING_DIRECTORY ../../../../pySetup )
+
+# Execute setup
+add_custom_target(MAKE_SETUP ALL
+                  COMMAND python setup.py ${CMAKE_CURRENT_BINARY_DIR}/
+                  WORKING_DIRECTORY ../../../../pySetup)
 
 # Add src directory
 add_subdirectory( ${CMAKE_CURRENT_BINARY_DIR}/../../../../src/

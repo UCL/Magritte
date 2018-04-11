@@ -25,7 +25,7 @@
 int write_txt_output (std::string tag, CELLS *cells, LINES lines)
 {
 
-  // write_abundances (tag, cells);
+  write_abundances (tag, cells);
 
   // write_transition_levels (tag, lines);
 
@@ -41,7 +41,7 @@ int write_txt_output (std::string tag, CELLS *cells, LINES lines)
 
   write_thermal_ratio_prev(tag, cells);
 
-  // write_temperature_dust (tag, cells);
+  write_temperature_dust (tag, cells);
 
   // write_double_vector ("level_populations", tag, NCELLS*TOT_NLEV, cells->pop);
 
@@ -94,7 +94,7 @@ int write_grid (std::string tag, CELLS *cells)
   fclose (file);
 
 
-  printf("Printed a grid with %ld cells out of a total of %ld\n", total, NCELLS);
+  printf ("Printed a grid with %ld cells out of a total of %ld\n", total, cells->ncells);
 
   return (0);
 

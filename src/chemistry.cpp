@@ -5,6 +5,7 @@
 
 
 #include <stdio.h>
+#include <iostream>
 #include <omp.h>
 
 #include "declarations.hpp"

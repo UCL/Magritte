@@ -33,6 +33,10 @@ def readScalar(fileName):
     return np.loadtxt(fileName)
 
 
+def readVector(fileName):
+    # Returns matrix with vector value at each entry
+    return np.loadtxt(fileName)
+
 def projectFolder():
     # Returns current project folder
     dirPath = os.path.dirname(os.path.realpath(__file__))
@@ -91,10 +95,11 @@ class cell():
         # inputFile = getVariable(outputDirectory+'parameters.hpp', 'INPUTFILE', 'str')
         # Initialize cells by reading Magritte output
         self.temperatureGas     = readScalar(outputDirectory + 'temperature_gas' + tag + '.txt')
+        self.temperatureDust    = readScalar(outputDirectory + 'temperature_dust' + tag + '.txt')
         self.thermalRatio       = readScalar(outputDirectory + 'thermal_ratio'   + tag + '.txt')
         self.temperatureGasPrev = readScalar(outputDirectory + 'temperature_gas_prev' + tag + '.txt')
         self.thermalRatioPrev   = readScalar(outputDirectory + 'thermal_ratio_prev'   + tag + '.txt')
-        # self.abundances         = readVector(outputDirectory + 'the00rmal_ratio'   + tag + '.txt')
+        self.abundances         = readVector(outputDirectory + 'abundances' + tag + '.txt')
         self.ncells             = len(self.temperatureGas)
         # self.popVec             = readScalar(outputDirectory + 'level_populations' + tag + '.txt')
 

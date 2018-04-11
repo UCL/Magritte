@@ -173,7 +173,7 @@ int initialize_double_array_with_scale (long length, double *array1, double *arr
 // initialize_double_array_with_value: sets entries of array of doubles equal to value
 // -----------------------------------------------------------------------------------
 
-int initialize_double_array_with_value (long length, double value, double *array)
+int initialize_double_array_with_value (long length, double *array, double value)
 {
 
 # pragma omp parallel             \
@@ -230,95 +230,6 @@ int initialize_char_array (long length, char *array)
   return(0);
 
 }
-
-
-
-//
-// // initialize_cells: initialize the cell array
-// // -------------------------------------------
-//
-// int initialize_cells (CELLS *cells)
-// {
-//
-// # pragma omp parallel   \
-//   shared (cells)        \
-//   default (none)
-//   {
-//
-//   int num_threads = omp_get_num_threads();
-//   int thread_num  = omp_get_thread_num();
-//
-//   long start = (thread_num*NCELLS)/num_threads;
-//   long stop  = ((thread_num+1)*NCELLS)/num_threads;   // Note brackets
-//
-//
-//   for (long p = start; p < stop; p++)
-//   {
-//     cells->x[p] = 0.0;
-//     cells->y[p] = 0.0;
-//     cells->z[p] = 0.0;
-//
-//     cells->n_neighbors[p] = 0;
-//
-//     for (long r = 0; r < NRAYS; r++)
-//     {
-//       cells->neighbor[RINDEX(p,r)] = 0;
-//       cells->endpoint[RINDEX(p,r)] = 0;
-//
-//       cells->Z[RINDEX(p,r)]           = 0.0;
-//       cells->intensity[RINDEX(p,r)]   = 0.0;
-//       cells->column[RINDEX(p,r)]      = 0.0;
-//       cells->rad_surface[RINDEX(p,r)] = 0.0;
-//       cells->AV[RINDEX(p,r)]          = 0.0;
-//     }
-//
-//     cells->vx[p] = 0.0;
-//     cells->vy[p] = 0.0;
-//     cells->vz[p] = 0.0;
-//
-//     cells->density[p] = 0.0;
-//
-//     cells->UV[p] = 0.0;
-//
-//     for (int s = 0; s < NSPEC; s++)
-//     {
-//       cells->abundance[SINDEX(p,s)] = 0.0;
-//     }
-//
-//     for (int e = 0; e < NREAC; e++)
-//     {
-//       cells->rate[READEX(p,e)] = 0.0;
-//     }
-//
-//     for (int l = 0; l < TOT_NLEV; l++)
-//     {
-//       cells->pop[LINDEX(p,l)] = 0.0;
-//     }
-//
-//     for (int k = 0; k < TOT_NRAD; k++)
-//     {
-//       cells->mean_intensity[KINDEX(p,k)] = 0.0;
-//     }
-//
-//     cells->temperature_gas[p]      =  0.0;
-//     cells->temperature_dust[p]     = 10.0;
-//     cells->temperature_gas_prev[p] =  9.0;
-//
-//     cells->thermal_ratio[p]      = 1.0;
-//     cells->thermal_ratio_prev[p] = 1.1;
-//
-//     cells->id[p] = p;
-//
-//     cells->removed[p]  = false;
-//     cells->boundary[p] = false;
-//     cells->mirror[p]   = false;
-//   }
-//   } // end of OpenMP parallel region
-//
-//
-//   return(0);
-//
-// }
 
 
 

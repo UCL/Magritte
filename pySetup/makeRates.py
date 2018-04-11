@@ -528,7 +528,7 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
             if lossString != '': ydotString += '+'
         if lossString != '':
             ydotString += 'Ith(y,'+str(n)+')*loss'
-        ydotString += ';\n'
+        ydotString += ' + 0.0;\n'
         output.write(ydotString)
 
     # If the logarithmic form of the ODEs is to be used, divide each by its abundance
@@ -539,14 +539,14 @@ def write_odes_c(fileName, speciesList, constituentList, reactants, products, lo
             output.write('  Ith(ydot,'+str(n)+') = Ith(ydot,'+str(n)+')/Ith(y,'+str(n)+');\n')
 
     # Write the function footer
-    fileFooter = '\n\n  return(0);\n}\n /*-----------------------------------------------------------------------------------------------*/\n\n'
+    fileFooter = '\n\n  return(0);\n}\n\n'
     output.write(fileFooter)
     output.close()
 
 
 
 # Write the Jacobian matrix file in C language format
-def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
+def write_jac_c(fileName, speciesList, reactants, products, constituentList, logForm=False):
     nSpecies = len(speciesList)
     nReactions = len(reactants)
     output = open(fileName, mode='w')
@@ -768,86 +768,84 @@ def write_jac_c(fileName, speciesList, reactants, products, logForm=False):
 # else:
 #     speciesFile = '<None>'
 
+def makeRates(specDataFile, reacDataFile):
 
-print " "
-print "MakeRates for Magritte"
-print "----------------------"
-print " "
+    speciesFile  = specDataFile
+    reactionFile = reacDataFile
 
-
-# Get the input files from parameters.txt
-
-with open("../src/parameters.hpp") as parameters_file:
-    for line in parameters_file:
-        line = line.split()
-        if len(line) is 3:
-            if line[1] == 'SPEC_DATAFILE':
-                speciesFile = "../" + line[2].split("\"")[1]
-            if line[1] == 'REAC_DATAFILE':
-                reactionFile = "../" + line[2].split("\"")[1]
+    print (" ")
+    print ("MakeRates for Magritte")
+    print ("----------------------")
+    print (" ")
 
 
-outputPrefix = '<None>'
-
-sortSpecies = False
-
-logForm = False
-
-fileFormat = "Rate05"
-
-codeFormat = "C"
-
-
-
-if (os.stat(reactionFile).st_size > 0 or os.stat(speciesFile).st_size > 0):
-
-    # Read the reactants, products, Arrhenius equation parameters and measurement labels for each reaction
-    print '\n  Reading reaction file...'
-    nReactions, reactants, products, alpha, beta, gamma, labels = read_reaction_file(reactionFile)
-
-    # Read the name, abundance and molecular mass for each species
-    if speciesFile != '':
-        print '  Reading species file...'
-        nSpecies, speciesList, abundanceList, massList = read_species_file(speciesFile)
-
-    # Find the total number and full list of reactions containing only these species
-        print '\n  Finding all reactions involving these species...'
-        nReactions, reactants, products, alpha, beta, gamma, labels = find_all_reactions(speciesList, reactants, products, alpha, beta, gamma, labels)
-
-    # Find the total number and full list of unique species contained in the reactions
-    else:
-        print '\n  Finding all species involved in the reactions...'
-        nSpecies, speciesList = find_all_species(reactants, products)
-        abundanceList = [float(0) for i in range(nSpecies)]
-
-    print '\n  Number of reactions:',nReactions
-    print '  Number of species:',nSpecies
+    # Get the input files from parameters.txt
+    # with open("../src/parameters.hpp") as parameters_file:
+    #     for line in parameters_file:
+    #         line = line.split()
+    #         if len(line) is 3:
+    #             if line[1] == 'SPEC_DATAFILE':
+    #                 speciesFile = "../" + line[2].split("\"")[1]
+    #             if line[1] == 'REAC_DATAFILE':
+    #                 reactionFile = "../" + line[2].split("\"")[1]
 
 
-    # Check for "orphan" species that are either never formed or never destroyed
-    print '\n  Checking for species without formation/destruction reactions...'
-    nFormation, nDestruction, missingList = check_orphan_species(speciesList, reactants, products)
+    outputPrefix = '<None>'
+    sortSpecies  = False
+    logForm      = False
+    fileFormat   = "Rate05"
+    codeFormat   = "C"
 
-    # Sort the species first by number of destruction reactions, then by number of formation reactions
-    if sortSpecies:
-        print '\n  Sorting the species by number of formation reactions...'
-        speciesList = sort_species(speciesList, nFormation, nDestruction)
 
-    # Calculate the molecular mass and elemental constituents of each species
-    print '\n  Calculating molecular masses and elemental constituents...'
-    massList, constituentList, elementList = find_constituents(speciesList)
 
-    # Write the ODEs in the appropriate language format
-    if codeFormat == 'C':
-        print '  Writing system of ODEs in C format...'
-        filename = '../src/sundials/rate_equations.cpp'
-        write_odes_c(filename, speciesList, constituentList, reactants, products, logForm=logForm)
+    if (os.stat(reactionFile).st_size > 0 or os.stat(speciesFile).st_size > 0):
 
-    # Write the Jacobian matrix in the appropriate language format
-    if codeFormat == 'C':
-        print '  Writing Jacobian matrix in C format...'
-        filename = '../src/sundials/jacobian.cpp'
-        write_jac_c(filename, speciesList, reactants, products, logForm=False)
+        # Read the reactants, products, Arrhenius equation parameters and measurement labels for each     reaction
+        print('\n  Reading reaction file...')
+        nReactions, reactants, products, alpha, beta, gamma, labels = read_reaction_file(reactionFile)
 
-print '\n  Finished! \n\n'
-print " "
+        # Read the name, abundance and molecular mass for each species
+        if speciesFile != '':
+            print('  Reading species file...')
+            nSpecies, speciesList, abundanceList, massList = read_species_file(speciesFile)
+
+        # Find the total number and full list of reactions containing only these species
+            print('\n  Finding all reactions involving these species...')
+            nReactions, reactants, products, alpha, beta, gamma, labels = find_all_reactions(speciesList,     reactants, products, alpha, beta, gamma, labels)
+
+        # Find the total number and full list of unique species contained in the reactions
+        else:
+            print('\n  Finding all species involved in the reactions...')
+            nSpecies, speciesList = find_all_species(reactants, products)
+            abundanceList = [float(0) for i in range(nSpecies)]
+
+        print('\n  Number of reactions:' + str(nReactions))
+        print('  Number of species:' + str(nSpecies))
+
+
+        # Check for "orphan" species that are either never formed or never destroyed
+        print('\n  Checking for species without formation/destruction reactions...')
+        nFormation, nDestruction, missingList = check_orphan_species(speciesList, reactants, products)
+
+        # Sort the species first by number of destruction reactions, then by number of formation reactions
+        if sortSpecies:
+            print('\n  Sorting the species by number of formation reactions...')
+            speciesList = sort_species(speciesList, nFormation, nDestruction)
+
+        # Calculate the molecular mass and elemental constituents of each species
+        print('\n  Calculating molecular masses and elemental constituents...')
+        massList, constituentList, elementList = find_constituents(speciesList)
+
+        # Write the ODEs in the appropriate language format
+        if codeFormat == 'C':
+            print('  Writing system of ODEs in C format...')
+            filename = '../src/sundials/rate_equations.cpp'
+            write_odes_c(filename, speciesList, constituentList, reactants, products, logForm=logForm)
+
+        # Write the Jacobian matrix in the appropriate language format
+        if codeFormat == 'C':
+            print('  Writing Jacobian matrix in C format...')
+            filename = '../src/sundials/jacobian.cpp'
+            write_jac_c(filename, speciesList, reactants, products, constituentList, logForm=False)
+
+    print('\n  Finished! \n')

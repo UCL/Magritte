@@ -13,7 +13,6 @@
 #define LINDEX(r,c)   ( (c) + (r)*TOT_NLEV )   // when second index is level
 #define KINDEX(r,c)   ( (c) + (r)*TOT_NRAD )   // when second index is transition
 
-
 #define LLINDEX(ls,i,j)   ( (j) + (i)*nlev[(ls)] )   // when second index are levels
 
 

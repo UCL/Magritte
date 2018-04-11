@@ -17,8 +17,22 @@
 // heating: calculate total heating
 // --------------------------------
 
-double heating (long ncells, CELLS *cells, SPECIES species, REACTIONS reactions, long o, double* heating_components)
+/*
+
+  Depends on:
+    - cells->density
+    - cells->temperature_gas
+    - cells->temperature_dust
+    - cells->abundance
+    - cells->rate
+    - cells->UV
+
+*/
+
+double heating (CELLS *cells, SPECIES species, REACTIONS reactions, long o)
 {
+
+  double heating_components[12];
 
   double Habing_field = 1.68 * cells->UV[o];   // UV radiation field in Habing
 
@@ -359,8 +373,8 @@ double heating (long ncells, CELLS *cells, SPECIES species, REACTIONS reactions,
       This value has been used in the expression below  */
 
 
-  double radius_grain = 1.0E-7;                                     /* radius of the dust grains */
-  // double radius_grain = 1.0E-5;                                     /* radius of the dust grains */
+  double radius_grain = 1.0E-7;    // radius of the dust grains
+  // double radius_grain = 1.0E-5;   // radius of the dust grains
 
 
   double accommodation = 0.1
@@ -418,7 +432,6 @@ double heating (long ncells, CELLS *cells, SPECIES species, REACTIONS reactions,
 
 double F (double x, double delta, double gamma)
 {
-
   return pow(x,3) + delta*pow(x,2) - gamma;
 }
 
@@ -430,6 +443,5 @@ double F (double x, double delta, double gamma)
 
 double dF (double x, double delta)
 {
-
   return 3.0*pow(x,2) + 2.0*delta*x;
 }

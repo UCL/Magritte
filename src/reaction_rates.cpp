@@ -54,8 +54,6 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
          &&   P1 == "H2"
          && ( P2 == "" || P2 == "#" ) )
     {
-      reactions.nr_H2_formation = e;
-
       cells->rate[READEX(o,e)] = rate_H2_formation (cells, reactions, e, o);
     }
 
@@ -185,8 +183,6 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
 
     else if ( (R1 == "H2")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      reactions.nr_H2_photodissociation = e;
-
       cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, column_H2, o);
     }
 
@@ -214,8 +210,6 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
     else if ( (R1 == "C")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               &&  ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) )
     {
-      reactions.nr_C_ionization = e;
-
       cells->rate[READEX(o,e)] = rate_C_photoionization (cells, reactions, e, column_C, column_H2, o);
     }
 

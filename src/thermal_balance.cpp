@@ -34,9 +34,6 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
     double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
     double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
 
-    // double thermal_ratio[NCELLS];
-    // double thermal_ratio_prev[NCELLS];
-
 # else
 
     // column.new_column(ncells);
@@ -46,10 +43,6 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
     double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
     double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
 
-    // double *thermal_ratio      = new double[ncells];
-    // double *thermal_ratio_prev = new double[ncells];
-
-
 # endif
 
 
@@ -57,9 +50,6 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
   initialize_double_array (NCELLS*NRAYS, column_HD);
   initialize_double_array (NCELLS*NRAYS, column_C);
   initialize_double_array (NCELLS*NRAYS, column_CO);
-
-  // initialize_double_array (NCELLS, thermal_ratio);
-  // initialize_double_array (NCELLS, thermal_ratio_prev);
 
 
 
@@ -167,7 +157,7 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
     }
 
 
-    printf ("(thermal_balance): Not yet converged for %ld of %ld\n", n_not_converged, NCELLS);
+    printf ("(thermal_balance): Not yet converged for %ld of %ld\n", n_not_converged, cells->ncells);
 
 
 #   if (WRITE_INTERMEDIATE_OUTPUT)

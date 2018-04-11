@@ -75,9 +75,9 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
 
   initialize_int_array (NLSPEC, niterations);
 
-  int n_not_converged[NLSPEC];       // number of not converged cells
+  long n_not_converged[NLSPEC];      // number of not converged cells
 
-  initialize_int_array (NLSPEC, n_not_converged);
+  initialize_long_array (NLSPEC, n_not_converged);
 
 
   // Iterate until level populations converge
@@ -308,11 +308,11 @@ int level_populations (long ncells, CELLS *cells, RAYS rays,
         if (    (niterations[ls] > MAX_NITERATIONS)
              || (n_not_converged[ls] < 0.01*NCELLS*nlev[ls]) )
         {
-          not_converged[ls]  = false;
+          not_converged[ls] = false;
         }
 
-        printf ("(level_populations): Not yet converged for %ld of %ld (NCELLS = %ld)\n",
-                n_not_converged[ls], NCELLS*nlev[ls], NCELLS);
+        printf ("(level_populations): Not yet converged for %ld of %ld (ncells = %ld)\n",
+                n_not_converged[ls], cells->ncells*nlev[ls], cells->ncells);
       }
     }
 
