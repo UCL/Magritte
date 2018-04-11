@@ -153,6 +153,40 @@ REACTIONS::REACTIONS (std::string reac_datafile)
   // delete [] RT_max_buff;
 
 
+  for (int e = 0; e < NREAC; e++)
+  {
+
+    // H2 formation
+
+    if (      R1[e] == "H"
+         &&   R2[e] == "H"
+         && ( R3[e] == "" || R3[e] == "#" )
+         &&   P1[e] == "H2"
+         && ( P2[e] == "" || P2[e] == "#" ) )
+    {
+      nr_H2_formation = e;
+    }
+
+
+    // H2 photodissociation
+
+    else if ( (R1[e] == "H2")  &&  (R2[e] == "PHOTON")  &&  (R3[e] == "") )
+    {
+      nr_H2_photodissociation = e;
+    }
+
+
+    // C photoionization
+
+    else if ( (R1[e] == "C")  &&  (R2[e] == "PHOTON")  &&  (R3[e] == "")
+              &&  ( (P1[e] == "C+"  &&  P2[e] == "e-")  ||  (P1[e] == "e-"  &&  P2[e] == "C+") ) )
+    {
+      nr_C_ionization = e;
+    }
+
+  } // end of reac loop over reactions
+
+
 }
 
 

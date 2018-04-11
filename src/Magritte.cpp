@@ -381,16 +381,16 @@ int main ()
   thermal_balance (ncells_red4, cells_red4, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red4, cells_red3);
-  // thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
+  thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red3, cells_red2);
-  // thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
+  thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red2, cells_red1);
-  // thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
+  thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red1, cells);
-  // thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
+  thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
 
 
   // delete [] cells_red5;

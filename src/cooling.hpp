@@ -11,7 +11,7 @@
 // cooling: calculate total cooling
 // --------------------------------
 
-double cooling (long ncells, CELLS *cells, LINES lines, long o);
+double cooling (CELLS *cells, LINES lines, long o);
 
 
 #endif // __COOLING_HPP_INCLUDED__

@@ -18,7 +18,7 @@
 // cooling: calculate total cooling
 // --------------------------------
 
-double cooling (long ncells, CELLS *cells, LINES lines, long o)
+double cooling (CELLS *cells, LINES lines, long o)
 {
 
   double cooling_radiative = 0.0;   // radiative cooling
@@ -34,13 +34,13 @@ double cooling (long ncells, CELLS *cells, LINES lines, long o)
     for (int kr = 0; kr < nrad[ls]; kr++)
     {
 
-      long m_ij = LSPECRAD(ls,kr);   // mean intensity index
+      long m_ij = LSPECRAD(ls,kr);            // mean intensity index
 
-      int i = lines.irad[m_ij];   // i level index corresponding to transition kr
-      int j = lines.jrad[m_ij];   // j level index corresponding to transition kr
+      int i = lines.irad[m_ij];               // i level index corresponding to transition kr
+      int j = lines.jrad[m_ij];               // j level index corresponding to transition kr
 
-      long b_ij = LSPECLEVLEV(ls,i,j);         // A_coeff, B_coeff and frequency index
-      long b_ji = LSPECLEVLEV(ls,j,i);         // A_coeff, B_coeff and frequency index
+      long b_ij = LSPECLEVLEV(ls,i,j);        // A_coeff, B_coeff and frequency index
+      long b_ji = LSPECLEVLEV(ls,j,i);        // A_coeff, B_coeff and frequency index
 
       long p_i  = LINDEX(o,LSPECLEV(ls,i));   // population at level i
       long p_j  = LINDEX(o,LSPECLEV(ls,j));   // population at level j

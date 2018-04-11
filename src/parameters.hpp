@@ -76,7 +76,7 @@
 // Number of various iterations
 
 #define MAX_NITERATIONS  300
-#define MAX_TB_ITER      25
+#define MAX_TB_ITER      300
 #define PRELIM_CHEM_ITER 5
 #define CHEM_ITER        3
 

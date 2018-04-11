@@ -32,6 +32,7 @@
 #include "../../../src/calc_temperature_dust.hpp"
 
 #include "../../../src/chemistry.hpp"
+#include "../../../src/heating.hpp"
 
 #include "../../../src/write_output.hpp"
 
@@ -131,7 +132,11 @@ TEST_CASE ("Einstein Collisional coefficient at different temperatures")
   write_output(cells, lines);
 
   chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
-  write_output(cells, lines);  
+  write_output(cells, lines);
+
+  // double heating_total = heating (cells, species, reactions, 50);
+
+  // printf("heating = %lE\n", heating_total);
 
   write_output_log ();
 

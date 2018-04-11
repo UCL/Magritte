@@ -131,14 +131,14 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
 
   for (long p = start; p < stop; p++)
   {
-    double heating_components[12];
-
-
     reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
 
 
-    double heating_total = heating (NCELLS, cells, species, reactions, p, heating_components);
-    double cooling_total = cooling (NCELLS, cells, lines, p);
+    double heating_total = heating (cells, species, reactions, p);
+    double cooling_total = cooling (cells, lines, p);
+
+    // printf("heating = %lE\n", heating_total);
+    // printf("cooling = %lE\n", cooling_total);
 
     double thermal_flux = heating_total - cooling_total;
     double thermal_sum  = heating_total + cooling_total;
