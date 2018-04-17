@@ -254,7 +254,7 @@ def check_orphan_species(speciesList, reactants, products):
         if useTkinter:
             app.statusMessage('\n\n  WARNING! The following species are missing from the reaction network:\n\n'+string.join(missingList,', ')+'.', error=True)
         else:
-            print '\n  WARNING! The following species are missing from the reaction network:\n'+string.join(missingList,', ')
+            print('\n  WARNING! The following species are missing from the reaction network:\n'+string.join(missingList,', '))
     return nFormation, nDestruction, missingList
 
 
@@ -272,12 +272,12 @@ def convert_species(species):
 # Sort a list of species first by their total number of destruction
 # reactions and then by their total number of formation reactions
 def sort_species(speciesList, nFormation, nDestruction):
-    zippedList = zip(nDestruction, nFormation, speciesList)
+    zippedList = list(zip(nDestruction, nFormation, speciesList))
     zippedList.sort()
-    nDestruction, nFormation, speciesList = zip(*zippedList)
-    zippedList = zip(nFormation, nDestruction, speciesList)
+    nDestruction, nFormation, speciesList = list(zip(*zippedList))
+    zippedList = list(zip(nFormation, nDestruction, speciesList))
     zippedList.sort()
-    nFormation, nDestruction, speciesList = zip(*zippedList)
+    nFormation, nDestruction, speciesList = list(zip(*zippedList))
     return speciesList
 
 
@@ -310,15 +310,15 @@ def find_constituents(speciesList):
         speciesMass.append(sum([float(constituents[i])*float(elementMass[i]) for i in range(nElements)]))
 
         # Sort the elements in the consituent list by their atomic mass
-        zippedList = zip(elementMass, elementList, constituents)
+        zippedList = list(zip(elementMass, elementList, constituents))
         zippedList.sort()
-        sortedMasses, sortedElements, constituents = zip(*zippedList)
+        sortedMasses, sortedElements, constituents = list(zip(*zippedList))
         speciesConstituents.append(constituents)
 
     # Sort the list of elements by their atomic mass
-    zippedList = zip(elementMass, elementList)
+    zippedList = list(zip(elementMass, elementList))
     zippedList.sort()
-    sortedMasses, sortedElements = zip(*zippedList)
+    sortedMasses, sortedElements = list(zip(*zippedList))
     return speciesMass,speciesConstituents,sortedElements
 
 
@@ -773,10 +773,10 @@ def makeRates(specDataFile, reacDataFile):
     speciesFile  = specDataFile
     reactionFile = reacDataFile
 
-    print (" ")
-    print ("MakeRates for Magritte")
-    print ("----------------------")
-    print (" ")
+    print(" ")
+    print("MakeRates for Magritte")
+    print("----------------------")
+    print(" ")
 
 
     # Get the input files from parameters.txt

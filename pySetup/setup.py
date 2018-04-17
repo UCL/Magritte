@@ -4,12 +4,12 @@
 # _________________________________________________________________________
 
 
-import MagritteCppFunctions as mcf
 import setupFunctions
 getProjectFolder = setupFunctions.getProjectFolder
 getVariable      = setupFunctions.getVariable
 getFilePath      = setupFunctions.getFilePath
 fileExtension    = setupFunctions.fileExtension
+getNCELLS        = setupFunctions.getNCELLS
 numberOfLines    = setupFunctions.numberOfLines
 vectorize        = setupFunctions.vectorize
 writeHeader      = setupFunctions.writeHeader
@@ -43,10 +43,7 @@ def setupMagritte():
     gridType  = getVariable('GRID_TYPE', 'str')
     fixedGrid = getVariable('FIXED_NCELLS', 'bool')
     # Get number of (Magritte) grid cells
-    if fileExtension(inputFile) == '.txt':
-        ncells = numberOfLines(inputFile)
-    if fileExtension(inputFile) == '.vtu':
-        ncells = mcf.getNCELLSvtu(inputFile, gridType)
+    ncells     = getNCELLS(inputFile, gridType)
     ncellsInit = ncells
     if not fixedGrid:
         ncells = 'cells->ncells'
@@ -124,6 +121,8 @@ def setupMagritte():
     fileName = '../src/Magritte_config.hpp'
     writeHeader(fileName)
     writeDefinition(fileName, ncells,                   'NCELLS')
+    if (dimensions == 3):
+        writeDefinition(fileName, nrays,                'NRAYS')
     writeDefinition(fileName, ncellsInit,               'NCELLS_INIT')
     writeDefinition(fileName, nspec,                    'NSPEC')
     writeDefinition(fileName, nreac,                    'NREAC')

@@ -19,19 +19,18 @@
 // abundances: calculate abundances for each species at each grid point
 // --------------------------------------------------------------------
 
-int chemistry (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
-               double *column_H2, double *column_HD, double *column_C, double *column_CO)
+int chemistry (CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions)
 {
 
   // Calculate column densities
 
-  calc_column_densities (NCELLS, cells, rays, species, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (cells, rays, species);
 
 
   // For all cells
 
-# pragma omp parallel                                                                     \
-  shared (ncells, cells, species, reactions, column_H2, column_HD, column_C, column_CO)   \
+# pragma omp parallel                  \
+  shared (cells, species, reactions)   \
   default (none)
   {
 
@@ -47,13 +46,12 @@ int chemistry (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS 
 
     // Calculate reaction rates
 
-    reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (cells, reactions, p);
 
 
     // Solve rate equations
 
     rate_equation_solver (cells, species, p);
-
 
   } // end of o loop over grid points
   } // end of OpenMP parallel region

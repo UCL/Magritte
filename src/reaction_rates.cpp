@@ -17,12 +17,10 @@
 #include "calc_reac_rates_rad.hpp"
 
 
-
 // reaction_rates: Check which kind of reaction and call appropriate rate calculator
 // ---------------------------------------------------------------------------------
 
-int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
-                    double *column_H2, double *column_HD, double *column_C, double *column_CO)
+int reaction_rates (CELLS *cells, REACTIONS reactions, long o)
 {
 
   // For all reactions
@@ -183,7 +181,7 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
 
     else if ( (R1 == "H2")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, column_H2, o);
+      cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, o);
     }
 
 
@@ -191,7 +189,7 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
 
     else if ( (R1 == "HD")  &&  (R2 == "PHOTON")  &&  (R3 == "") )
     {
-      cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, column_HD, o);
+      cells->rate[READEX(o,e)] = rate_H2_photodissociation (cells, reactions, e, o);
     }
 
 
@@ -201,7 +199,7 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
               && ( P1 == "C"  ||  P2 == "C"  ||  P3 == "C"  ||  P4 == "C")
               && ( P1 == "O"  ||  P2 == "O"  ||  P3 == "O"  ||  P4 == "O") )
     {
-      cells->rate[READEX(o,e)] = rate_CO_photodissociation (cells, reactions, e, column_CO, column_H2, o);
+      cells->rate[READEX(o,e)] = rate_CO_photodissociation (cells, reactions, e, o);
     }
 
 
@@ -210,7 +208,7 @@ int reaction_rates (long ncells, CELLS *cells, REACTIONS reactions, long o,
     else if ( (R1 == "C")  &&  (R2 == "PHOTON")  &&  (R3 == "")
               &&  ( (P1 == "C+"  &&  P2 == "e-")  ||  (P1 == "e-"  &&  P2 == "C+") ) )
     {
-      cells->rate[READEX(o,e)] = rate_C_photoionization (cells, reactions, e, column_C, column_H2, o);
+      cells->rate[READEX(o,e)] = rate_C_photoionization (cells, reactions, e, o);
     }
 
 

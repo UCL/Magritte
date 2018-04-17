@@ -23,6 +23,8 @@
 #include "lines.hpp"
 
 
+// enum INPUT_FORMAT {}
+
 struct COLUMN_DENSITIES
 {
 

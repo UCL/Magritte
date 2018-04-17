@@ -13,8 +13,8 @@
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions, LINES lines,
-                               double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers);
+int thermal_balance_iteration (CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
+                               LINES lines, TIMERS *timers);
 
 
 #endif // __THERMAL_BALANCE_ITERATION_HPP_INCLUDED__

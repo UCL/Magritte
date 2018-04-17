@@ -79,9 +79,9 @@ int radiative_transfer (long ncells, CELLS *cells, RAYS rays, LINES lines,
 
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*lines.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cells->temperature_dust[o]) - 1.0);
+  double Planck_dust     = 1.0 / expm1(HH*lines.frequency[b_ij]/KB/cells->temperature_dust[o]);
 
-  double Planck_CMB      = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/T_CMB) - 1.0);
+  double Planck_CMB      = 1.0 / expm1(HH*lines.frequency[b_ij]/KB/T_CMB);
 
 
   // NOTE: Continuum radiation is assumed to be local

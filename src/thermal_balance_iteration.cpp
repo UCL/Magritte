@@ -24,8 +24,8 @@
 // thermal_balance_iteration: perform a thermal balance iteration to calculate thermal flux
 // ----------------------------------------------------------------------------------------
 
-int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions, LINES lines,
-                               double *column_H2, double *column_HD, double *column_C, double *column_CO, TIMERS *timers)
+int thermal_balance_iteration (CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
+                               LINES lines, TIMERS *timers)
 {
 
   // CALCULATE CHEMICAL ABUNDANCES
@@ -54,7 +54,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
+    chemistry (cells, rays, species, reactions);
 
     timers->chemistry.stop();
 
@@ -112,13 +112,13 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
 
   // Calculate column densities to get most recent reaction rates
 
-  calc_column_densities (NCELLS, cells, rays, species, column_H2, column_HD, column_C, column_CO);
+  calc_column_densities (cells, rays, species);
 
 
   // Calculate thermal balance for each cell
 
-# pragma omp parallel                                                                                      \
-  shared (ncells, cells, species, reactions, column_H2, column_HD, column_C, column_CO, cum_nlev, lines)   \
+# pragma omp parallel                                   \
+  shared (cells, species, reactions, cum_nlev, lines)   \
   default (none)
   {
 
@@ -131,7 +131,7 @@ int thermal_balance_iteration (long ncells, CELLS *cells, RAYS rays, SPECIES spe
 
   for (long p = start; p < stop; p++)
   {
-    reaction_rates (NCELLS, cells, reactions, p, column_H2, column_HD, column_C, column_CO);
+    reaction_rates (cells, reactions, p);
 
 
     double heating_total = heating (cells, species, reactions, p);

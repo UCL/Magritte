@@ -65,6 +65,9 @@ def nOutputs(outputDirectory):
             if (len(line) is 2) and (line[0] == 'tag_nr'):
                 return int(line[1])
 
+def fileExtension(fileName):
+    # Returns the file extension given a fileName
+    return os.path.splitext(fileName)[1]
 
 def deVectorize(vector, length):
     # Devectorize vector of length L into an array containing 'length' arrays of length L / 'length'

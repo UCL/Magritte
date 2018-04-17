@@ -17,13 +17,16 @@
 // calc_column_density: calculate column density for given species for each cell and ray
 // -------------------------------------------------------------------------------------
 
-int calc_column_density (long ncells, CELLS *cells, RAYS rays, double *column, int spec)
+int calc_column_tot (CELLS *cells, RAYS rays)
 {
+
+  int spec = NSPEC-1;   // Last species has fractional abundance 1.0, so traces total density.
+
 
   // For all cells n
 
-# pragma omp parallel                                   \
-  shared (ncells, cells, rays, column, spec)   \
+# pragma omp parallel          \
+  shared (cells, rays, spec)   \
   default (none)
   {
 
@@ -35,12 +38,10 @@ int calc_column_density (long ncells, CELLS *cells, RAYS rays, double *column, i
 
   for (long p = start; p < stop; p++)
   {
-
     for (long r = 0; r < NRAYS; r++)
     {
-      column[RINDEX(p,r)] = column_density (NCELLS, cells, rays, p, spec, r);
+      cells->column_tot[RINDEX(p,r)] = column_density (cells, rays, p, spec, r);
     }
-
   } // end of n loop over grid points
   } // end of OpenMP parallel region
 
@@ -55,15 +56,14 @@ int calc_column_density (long ncells, CELLS *cells, RAYS rays, double *column, i
 // calc_column_densities: calculates column densities for species needed in chemistry
 // ----------------------------------------------------------------------------------
 
-int calc_column_densities (long ncells, CELLS *cells, RAYS rays, SPECIES species, double *column_H2, double *column_HD,
-                           double *column_C, double *column_CO)
+int calc_column_densities (CELLS *cells, RAYS rays, SPECIES species)
 {
 
 
   // For all cells n and rays r
 
-# pragma omp parallel                                                                            \
-  shared (ncells, cells, rays, species, column_H2, column_HD, column_C, column_CO)   \
+# pragma omp parallel             \
+  shared (cells, rays, species)   \
   default (none)
   {
 
@@ -76,15 +76,13 @@ int calc_column_densities (long ncells, CELLS *cells, RAYS rays, SPECIES species
 
   for (long p = start; p < stop; p++)
   {
-
     for (long r = 0; r < NRAYS; r++)
     {
-      column_H2[RINDEX(p,r)] = column_density (NCELLS, cells, rays, p, species.nr_H2, r);
-      column_HD[RINDEX(p,r)] = column_density (NCELLS, cells, rays, p, species.nr_HD, r);
-      column_C[RINDEX(p,r)]  = column_density (NCELLS, cells, rays, p, species.nr_C,  r);
-      column_CO[RINDEX(p,r)] = column_density (NCELLS, cells, rays, p, species.nr_CO, r);
+      cells->column_H2[RINDEX(p,r)] = column_density (cells, rays, p, species.nr_H2, r);
+      cells->column_HD[RINDEX(p,r)] = column_density (cells, rays, p, species.nr_HD, r);
+      cells->column_C[RINDEX(p,r)]  = column_density (cells, rays, p, species.nr_C,  r);
+      cells->column_CO[RINDEX(p,r)] = column_density (cells, rays, p, species.nr_CO, r);
     }
-
   } // end of n loop over grid points
   } // end of OpenMP parallel region
 
@@ -99,36 +97,35 @@ int calc_column_densities (long ncells, CELLS *cells, RAYS rays, SPECIES species
 // column_density: calculates column density for a species along a ray at a point
 // ------------------------------------------------------------------------------
 
-double column_density (long ncells, CELLS *cells, RAYS rays, long origin, int spec, long ray)
+double column_density (CELLS *cells, RAYS rays, long origin, int spec, long ray)
 {
 
-  double column_density_res = 0.0;   // resulting column density
+  double column_res = 0.0;   // resulting column density
 
 
   // Walk along ray
 
+  double Z   = 0.0;
+  double dZ  = 0.0;
+
+  long current = origin;
+  long next    = next_cell (NCELLS, cells, rays, origin, ray, &Z, current, &dZ);
+
+
+  while (next != NCELLS)
   {
-    double Z   = 0.0;
-    double dZ  = 0.0;
+    column_res = column_res
+                 + dZ*PC*(cells->density[next]*cells->abundance[SINDEX(next,spec)]
+                          + cells->density[current]*cells->abundance[SINDEX(current,spec)])
+                         / 2.0;
 
-    long current = origin;
-    long next    = next_cell (NCELLS, cells, rays, origin, ray, &Z, current, &dZ);
-
-
-    while (next != NCELLS)
-    {
-      column_density_res = column_density_res
-                           + dZ * PC * (cells->density[next]*cells->abundance[SINDEX(next,spec)]
-                                        + cells->density[current]*cells->abundance[SINDEX(current,spec)]) / 2.0;
-
-      current = next;
-      next    = next_cell (NCELLS, cells, rays, origin, ray, &Z, current, &dZ);
-    }
-
-    column_density_res = column_density_res + cells->column[RINDEX(current,ray)];
+    current = next;
+    next    = next_cell (NCELLS, cells, rays, origin, ray, &Z, current, &dZ);
   }
 
+  column_res = column_res + cells->column[RINDEX(current,ray)];
 
-  return column_density_res;
+
+  return column_res;
 
 }

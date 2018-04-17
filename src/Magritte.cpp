@@ -263,30 +263,29 @@ int main ()
 
   printf("(Magritte): making a guess for gas temperature and calculating dust temperature \n");
 
-
-# if (FIXED_NCELLS)
-
-    double column_tot[NCELLS*NRAYS];   // total column density
-
-# else
-
-    double *column_tot = new double[ncells*NRAYS];   // total column density
-
-# endif
-
-
-  initialize_double_array (NCELLS*NRAYS, column_tot);
+//
+// # if (FIXED_NCELLS)
+//
+//     double column_tot[NCELLS*NRAYS];   // total column density
+//
+// # else
+//
+//     double *column_tot = new double[ncells*NRAYS];   // total column density
+//
+// # endif
+//
+//
+//   initialize_double_array (NCELLS*NRAYS, column_tot);
 
 
   // Calculate total column density
 
-  calc_column_density (NCELLS, cells, rays, column_tot, NSPEC-1);
-  // write_double_2("column_tot", "", NCELLS, NRAYS, column_tot);
+  calc_column_tot (cells, rays);
 
 
   // Calculate visual extinction
 
-  calc_AV (cells, column_tot);
+  calc_AV (cells);
 
 
   // Calculcate UV field
@@ -300,7 +299,7 @@ int main ()
 
     guess_temperature_gas (NCELLS, cells);
 
-    initialize_double_array_with_scale (NCELLS, cells->temperature_gas_prev, cells->temperature_gas, 1.0);
+    initialize_double_array_with_scale (NCELLS, cells->temperature_gas_prev, cells->temperature_gas, 9.0);
 
     // initialize_double_array_with_value (NCELLS, cells->temperature_gas_prev, 9.0);
 
@@ -378,19 +377,19 @@ int main ()
   // interpolate (cells_red5, cells_red4);
 
 
-  thermal_balance (ncells_red4, cells_red4, rays, species, reactions, lines, &timers);
+  thermal_balance (cells_red4, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red4, cells_red3);
-  thermal_balance (ncells_red3, cells_red3, rays, species, reactions, lines, &timers);
+  thermal_balance (cells_red3, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red3, cells_red2);
-  thermal_balance (ncells_red2, cells_red2, rays, species, reactions, lines, &timers);
+  thermal_balance (cells_red2, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red2, cells_red1);
-  thermal_balance (ncells_red1, cells_red1, rays, species, reactions, lines, &timers);
+  thermal_balance (cells_red1, rays, species, reactions, lines, &timers);
 
   interpolate (cells_red1, cells);
-  thermal_balance (ncells, cells, rays, species, reactions, lines, &timers);
+  thermal_balance (cells, rays, species, reactions, lines, &timers);
 
 
   // delete [] cells_red5;
@@ -428,13 +427,13 @@ int main ()
 
 
 
-# if (!FIXED_NCELLS)
-
-    // delete cells;
-
-    delete [] column_tot;
-
-# endif
+// # if (!FIXED_NCELLS)
+//
+//     // delete cells;
+//
+//     delete [] column_tot;
+//
+// # endif
 
 
 

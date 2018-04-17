@@ -69,6 +69,16 @@ CELLS::CELLS (long number_of_cells)
     n_neighbors = new long[ncells];
 
 
+    // Column densities
+
+    column_H2  = new double[ncells*NRAYS];
+    column_HD  = new double[ncells*NRAYS];
+    column_C   = new double[ncells*NRAYS];
+    column_CO  = new double[ncells*NRAYS];
+
+    column_tot = new double[ncells*NRAYS];
+
+
     // Chemistry
 
     abundance = new double[ncells*NSPEC];
@@ -152,6 +162,15 @@ CELLS::~CELLS ()
     delete [] n_neighbors;
 
 
+    // Column densities
+
+    delete [] column_H2;
+    delete [] column_HD;
+    delete [] column_C;
+    delete [] column_CO;
+    delete [] column_tot;
+
+
     // Chemistry
 
     delete [] abundance;
@@ -217,6 +236,13 @@ int CELLS::initialize ()
       column[RINDEX(p,r)]      = 0.0;
       rad_surface[RINDEX(p,r)] = 0.0;
       AV[RINDEX(p,r)]          = 0.0;
+
+      column_H2[RINDEX(p,r)]   = 0.0;
+      column_HD[RINDEX(p,r)]   = 0.0;
+      column_C[RINDEX(p,r)]    = 0.0;
+      column_CO[RINDEX(p,r)]   = 0.0;
+
+      column_tot[RINDEX(p,r)]  = 0.0;
     }
 
     vx[p] = 0.0;

@@ -32,13 +32,14 @@ int update_temperature_gas (long ncells, CELLS *cells, long o)
   double f   = cells->thermal_ratio[o];
   double f_p = cells->thermal_ratio_prev[o];
 
+  // double dT = f*(T-T_p)/(f-f_p);
 
-  if ( /*(f == f_p) &&*/ f > 0.0 )
+  if      ( fabs(f-f_p) < 1.0E-4 && f > 0.0 )
   {
     cells->temperature_gas[o] = 1.1 * cells->temperature_gas[o];
   }
 
-  else if ( /*(f == f_p) &&*/ f < 0.0 )
+  else if ( fabs(f-f_p) < 1.0E-4 && f < 0.0 )
   {
     cells->temperature_gas[o] = 0.9 * cells->temperature_gas[o];
   }

@@ -84,7 +84,7 @@ double rate_PHOTD (CELLS *cells, REACTIONS reactions, int e, long o)
 // rate_H2_photodissociation: returns rate coefficient for H2 dissociation
 // -----------------------------------------------------------------------
 
-double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, double *column_H2, long o)
+double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -110,8 +110,8 @@ double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, doub
   for (long r = 0; r < NRAYS; r++)
   {
     rate = rate + alpha * cells->rad_surface[RINDEX(o,r)]
-                        * self_shielding_H2 (column_H2[RINDEX(o,r)], doppler_width, radiation_width)
-                        * dust_scattering (cells->AV[RINDEX(o,r)], lambda) / 2.0;
+                  * self_shielding_H2 (cells->column_H2[RINDEX(o,r)], doppler_width, radiation_width)
+                  * dust_scattering (cells->AV[RINDEX(o,r)], lambda) / 2.0;
   }
 
 
@@ -125,8 +125,7 @@ double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, doub
 // rate_CO_photodissociation: returns rate coefficient for CO dissociation
 // -----------------------------------------------------------------------
 
-double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e,
-                                  double *column_CO, double *column_H2, long o)
+double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -148,8 +147,8 @@ double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e,
        weighted by their fractional contribution to the total shielding
        van Dishoeck & Black (1988, ApJ, 334, 771, Equation 4) */
 
-    double u = log10(1.0 + column_CO[RINDEX(o,r)]);
-    double w = log10(1.0 + column_H2[RINDEX(o,r)]);
+    double u = log10(1.0 + cells->column_CO[RINDEX(o,r)]);
+    double w = log10(1.0 + cells->column_H2[RINDEX(o,r)]);
 
 
     /* mean wavelength (in Å) of 33 dissociating bands weighted
@@ -173,8 +172,8 @@ double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e,
 
 
     rate = rate + alpha * cells->rad_surface[RINDEX(o,r)]
-                        * self_shielding_CO (column_CO[RINDEX(o,r)], column_H2[RINDEX(o,r)])
-                        * dust_scattering (cells->AV[RINDEX(o,r)], lambda) / 2.0;
+                  * self_shielding_CO (cells->column_CO[RINDEX(o,r)], cells->column_H2[RINDEX(o,r)])
+                  * dust_scattering (cells->AV[RINDEX(o,r)], lambda) / 2.0;
   }
 
 
@@ -188,8 +187,7 @@ double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e,
 // rate_C_photoionization: returns rate coefficient for C photoionization
 // ----------------------------------------------------------------------
 
-double rate_C_photoionization (CELLS *cells, REACTIONS reactions, int e,
-                               double *column_C, double *column_H2, long o)
+double rate_C_photoionization (CELLS *cells, REACTIONS reactions, int e, long o)
 {
 
   // Copy reaction data to variables with more convenient names
@@ -210,14 +208,14 @@ double rate_C_photoionization (CELLS *cells, REACTIONS reactions, int e,
     /* Calculate the optical depth in the C absorption band, accounting
        for grain extinction and shielding by C and overlapping H2 lines */
 
-    double tau_C = gamma*cells->AV[RINDEX(o,r)] + 1.1E-17*column_C[RINDEX(o,r)]
+    double tau_C = gamma*cells->AV[RINDEX(o,r)] + 1.1E-17*cells->column_C[RINDEX(o,r)]
                    + ( 0.9*pow(cells->temperature_gas[o],0.27)
-                          * pow(column_H2[RINDEX(o,r)]/1.59E21, 0.45) );
+                       * pow(cells->column_H2[RINDEX(o,r)]/1.59E21, 0.45) );
 
 
     // Calculate the C photoionization rate
 
-    rate = rate + alpha * cells->rad_surface[RINDEX(o,r)] * exp(-tau_C) / 2.0;
+    rate = rate + alpha*cells->rad_surface[RINDEX(o,r)]*exp(-tau_C)/2.0;
   }
 
 

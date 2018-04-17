@@ -80,19 +80,19 @@ TEST_CASE ("Einstein Collisional coefficient at different temperatures")
   calc_rad_surface (NCELLS, cells, rays, G_external);
 
 
-  double column_tot[NCELLS*NRAYS];   // total column density
-
-  initialize_double_array (NCELLS*NRAYS, column_tot);
+  // double column_tot[NCELLS*NRAYS];   // total column density
+  //
+  // initialize_double_array (NCELLS*NRAYS, column_tot);
 
 
   // Calculate total column density
 
-  calc_column_density (NCELLS, cells, rays, column_tot, NSPEC-1);
+  calc_column_tot (cells, rays);
 
 
   // Calculate visual extinction
 
-  calc_AV (cells, column_tot);
+  calc_AV (cells);
 
 
   // Calculcate UV field
@@ -109,29 +109,29 @@ TEST_CASE ("Einstein Collisional coefficient at different temperatures")
   calc_temperature_dust (NCELLS, cells);   // depends on UV field
 
 
+  //
+  // double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
+  // double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
+  // double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
+  // double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
+  //
+  // initialize_double_array (NCELLS*NRAYS, column_H2);
+  // initialize_double_array (NCELLS*NRAYS, column_HD);
+  // initialize_double_array (NCELLS*NRAYS, column_C);
+  // initialize_double_array (NCELLS*NRAYS, column_CO);
 
-  double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
-  double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
-  double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
-  double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
 
-  initialize_double_array (NCELLS*NRAYS, column_H2);
-  initialize_double_array (NCELLS*NRAYS, column_HD);
-  initialize_double_array (NCELLS*NRAYS, column_C);
-  initialize_double_array (NCELLS*NRAYS, column_CO);
-
-
-  chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
+  chemistry (cells, rays, species, reactions);
   write_output(cells, lines);
 
 
-  chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
+  chemistry (cells, rays, species, reactions);
   write_output(cells, lines);
 
-  chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
+  chemistry (cells, rays, species, reactions);
   write_output(cells, lines);
 
-  chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
+  chemistry (cells, rays, species, reactions);
   write_output(cells, lines);
 
   // double heating_total = heating (cells, species, reactions, 50);

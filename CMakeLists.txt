@@ -39,8 +39,8 @@ add_subdirectory(src)
 
 
 # VTK includes
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
+# find_package(VTK REQUIRED)
+# include(${VTK_USE_FILE})
 
 
 # Add compiler flags
@@ -62,3 +62,5 @@ add_executable(Magritte.exe src/Magritte.cpp)
 add_dependencies(Magritte.exe MAKE_SETUP)
 # Link the library of the /src directory to Magritte main code
 target_link_libraries(Magritte.exe _MAGRITTE)
+# Link VTK libraries
+# target_link_libraries(Magritte.exe ${VTK_LIBRARIES})
