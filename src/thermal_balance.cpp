@@ -22,34 +22,34 @@
 // thermal_balance: perform thermal balance iterations to determine temperature
 // ----------------------------------------------------------------------------
 
-int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
+int thermal_balance (CELLS *cells, RAYS rays, SPECIES species, REACTIONS reactions,
                      LINES lines, TIMERS *timers)
 {
 
 
-# if (FIXED_NCELLS)
-
-    double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
-    double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
-    double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
-    double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
-
-# else
-
-    // column.new_column(ncells);
-
-    double *column_H2 = new double[ncells*NRAYS];   // H2 column density for each ray and cell
-    double *column_HD = new double[ncells*NRAYS];   // HD column density for each ray and cell
-    double *column_C  = new double[ncells*NRAYS];   // C  column density for each ray and cell
-    double *column_CO = new double[ncells*NRAYS];   // CO column density for each ray and cell
-
-# endif
-
-
-  initialize_double_array (NCELLS*NRAYS, column_H2);
-  initialize_double_array (NCELLS*NRAYS, column_HD);
-  initialize_double_array (NCELLS*NRAYS, column_C);
-  initialize_double_array (NCELLS*NRAYS, column_CO);
+// # if (FIXED_NCELLS)
+//
+//     double column_H2[NCELLS*NRAYS];   // H2 column density for each ray and cell
+//     double column_HD[NCELLS*NRAYS];   // HD column density for each ray and cell
+//     double column_C[NCELLS*NRAYS];    // C  column density for each ray and cell
+//     double column_CO[NCELLS*NRAYS];   // CO column density for each ray and cell
+//
+// # else
+//
+//     // column.new_column(ncells);
+//
+//     double *column_H2 = new double[cells->ncells*NRAYS];   // H2 column density for each ray and cell
+//     double *column_HD = new double[cells->ncells*NRAYS];   // HD column density for each ray and cell
+//     double *column_C  = new double[cells->ncells*NRAYS];   // C  column density for each ray and cell
+//     double *column_CO = new double[cells->ncells*NRAYS];   // CO column density for each ray and cell
+//
+// # endif
+//
+//
+//   initialize_double_array (NCELLS*NRAYS, column_H2);
+//   initialize_double_array (NCELLS*NRAYS, column_HD);
+//   initialize_double_array (NCELLS*NRAYS, column_C);
+//   initialize_double_array (NCELLS*NRAYS, column_CO);
 
 
 
@@ -67,7 +67,7 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
 
     timers->chemistry.start();
 
-    chemistry (NCELLS, cells, rays, species, reactions, column_H2, column_HD, column_C, column_CO);
+    chemistry (cells, rays, species, reactions);
 
     timers->chemistry.stop();
 
@@ -111,14 +111,13 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
     long n_not_converged = 0;   // number of grid points that are not yet converged
 
 
-    thermal_balance_iteration (NCELLS, cells, rays, species, reactions, lines,
-                               column_H2, column_HD, column_C, column_CO, timers);
+    thermal_balance_iteration (cells, rays, species, reactions, lines, timers);
 
 
     // Update temperature for each cell
 
-#   pragma omp parallel                                           \
-    shared (ncells, cells, n_not_converged, no_thermal_balance)   \
+#   pragma omp parallel                                   \
+    shared (cells, n_not_converged, no_thermal_balance)   \
     default (none)
     {
 
@@ -173,14 +172,14 @@ int thermal_balance (long ncells, CELLS *cells, RAYS rays, SPECIES species, REAC
   printf ("(thermal_balance): thermal balance reached in %d iterations \n\n", niterations);
 
 
-# if (!FIXED_NCELLS)
-
-    delete [] column_H2;
-    delete [] column_HD;
-    delete [] column_C;
-    delete [] column_CO;
-
-# endif
+// # if (!FIXED_NCELLS)
+//
+//     delete [] column_H2;
+//     delete [] column_HD;
+//     delete [] column_C;
+//     delete [] column_CO;
+//
+// # endif
 
 
   return(0);

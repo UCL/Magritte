@@ -59,6 +59,16 @@ struct CELLS
     long n_neighbors[NCELLS];      // number of neighbors
 
 
+    // Column densities
+
+    double column_H2[NCELLS*NRAYS];    // H2 column density for each ray and cell
+    double column_HD[NCELLS*NRAYS];    // HD column density for each ray and cell
+    double column_C[NCELLS*NRAYS];     // C  column density for each ray and cell
+    double column_CO[NCELLS*NRAYS];    // CO column density for each ray and cell
+
+    double column_tot[NCELLS*NRAYS];   // total column density
+
+
     // Chemistry
 
     double abundance[NCELLS*NSPEC];   // abundance for each species
@@ -120,6 +130,16 @@ struct CELLS
 
     long *neighbor;      // cell numbers of neighors
     long *n_neighbors;   // number of neighbors
+
+
+    // Column densities
+
+    double *column_H2;    // H2 column density for each ray and cell
+    double *column_HD;    // HD column density for each ray and cell
+    double *column_C;     // C  column density for each ray and cell
+    double *column_CO;    // CO column density for each ray and cell
+
+    double *column_tot;   // total column density
 
 
     // Chemistry

@@ -21,21 +21,19 @@ double rate_PHOTD (CELLS *cells, REACTIONS reactions, int e, long o);
 // rate_H2_photodissociation: returns rate coefficient for H2 dissociation
 // -----------------------------------------------------------------------
 
-double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, double *column_H2, long o);
+double rate_H2_photodissociation (CELLS *cells, REACTIONS reactions, int e, long o);
 
 
 // rate_CO_photodissociation: returns rate coefficient for CO dissociation
 // -----------------------------------------------------------------------
 
-double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e,
-                                  double *column_CO, double *column_H2, long o);
+double rate_CO_photodissociation (CELLS *cells, REACTIONS reactions, int e, long o);
 
 
 // rate_C_photoionization: returns rate coefficient for C photoionization
 // ----------------------------------------------------------------------
 
-double rate_C_photoionization (CELLS *cells, REACTIONS reactions, int e,
-                               double *column_C, double *column_H2, long o);
+double rate_C_photoionization (CELLS *cells, REACTIONS reactions, int e, long o);
 
 
 // rate_SI_photoionization: returns rate coefficient for SI photoionization

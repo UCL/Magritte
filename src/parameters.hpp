@@ -10,7 +10,6 @@
 
 #define WRITE_INTERMEDIATE_OUTPUT false
 
-
 // Input files
 #define FIXED_NCELLS false
 #define INPUT_FORMAT '.txt'
@@ -42,7 +41,6 @@
 #define SIZE_Y 0
 #define SIZE_Z 0
 
-
 // Restart options
 #define RESTART false
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
@@ -54,9 +52,7 @@
 #define REAC_DATAFILE  "data/rates_reduced.txt"
 
 // Line data
-
 #define DATA_FORMAT "LAMDA"
-
 #define LINE_DATAFILES {"data/12CO.txt", "data/12C.txt", "data/12C+.txt", "data/16O.txt"}
 
 

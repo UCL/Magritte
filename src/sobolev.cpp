@@ -179,8 +179,8 @@ int sobolev (long ncells, CELLS *cells, RAYS rays, LINES lines,
   double ngrain          = 2.0E-12*cells->density[origin]*METALLICITY*100.0/GAS_TO_DUST;
   double emissivity_dust = rho_grain*ngrain*0.01*1.3*lines.frequency[b_ij]/3.0E11;
 
-  double Planck_dust     = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/cells->temperature_dust[origin]) - 1.0);
-  double Planck_CMB      = 1.0 / (exp(HH*lines.frequency[b_ij]/KB/T_CMB) - 1.0);
+  double Planck_dust     = 1.0 / expm1(HH*lines.frequency[b_ij]/KB/cells->temperature_dust[origin]);
+  double Planck_CMB      = 1.0 / expm1(HH*lines.frequency[b_ij]/KB/T_CMB);
 
   double continuum_mean_intensity = factor * (Planck_CMB + emissivity_dust*Planck_dust);
 

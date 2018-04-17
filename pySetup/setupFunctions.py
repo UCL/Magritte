@@ -4,9 +4,11 @@
 # _________________________________________________________________________
 
 
-import numpy as np
-import os
-import re
+import numpy as np   # NumPy
+import os            # operating system
+import re            # regular expressions
+import vtk           # VTK
+
 
 
 # Readers
@@ -21,7 +23,7 @@ def getVariable(name, type):
                 if type == 'int':
                     return int(splitLine[2])
                 if type == 'long':
-                    return long(splitLine[2])
+                    return int(splitLine[2])
                 if type == 'float':
                     return float(splitLine[2])
                 if type == 'str':
@@ -87,9 +89,29 @@ def fileExtension(fileName):
 
 def numberOfLines(fileName):
     count = 0
-    for line in open(fileName).xreadlines():
+    for line in open(fileName):
         count += 1
     return count
+
+
+def getNCELLS(fileName, gridType):
+    if fileExtension(fileName) == '.txt':
+        ncells = numberOfLines(fileName)
+    if fileExtension(fileName) == '.vtu':
+        reader = vtk.vtkXMLUnstructuredGridReader()
+        reader.SetFileName(fileName)
+        reader.Update()
+        grid = reader.GetOutput()
+        if gridType == 'cell_based':
+            cellCentersFilter = vtk.vtkCellCenters()
+            cellCentersFilter.SetInputData(grid)
+            cellCentersFilter.Update()
+            ncells = cellCentersFilter.GetOutput().GetNumberOfPoints()
+        if gridType == 'point_based':
+            ncells = grid.GetNumberOfPoints()
+        print(ncells)
+    return ncells
+
 
 
 # Tools
