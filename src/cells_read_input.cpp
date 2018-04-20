@@ -31,15 +31,14 @@ int CELLS::read_input (std::string inputfile)
 
   // Read input file
 
-# if   (INPUT_FORMAT == '.vtu')
-
+  if      (INPUT_TYPE == vtu)
+  {
     read_vtu_input (inputfile);
-
-# elif (INPUT_FORMAT == '.txt')
-
+  }
+  else if (INPUT_TYPE == txt)
+  {
     read_txt_input (inputfile);
-
-# endif
+  }
 
 
   return(0);

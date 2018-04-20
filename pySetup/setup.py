@@ -40,6 +40,7 @@ def setupMagritte():
         nrays  = getVariable('NRAYS', 'long')
     # Read grid data
     inputFile = getFilePath('INPUTFILE')
+    inputType = fileExtension(inputFile)
     gridType  = getVariable('GRID_TYPE', 'str')
     fixedGrid = getVariable('FIXED_NCELLS', 'bool')
     # Get number of (Magritte) grid cells
@@ -120,6 +121,7 @@ def setupMagritte():
     # Write Magritte_config.hpp file
     fileName = '../src/Magritte_config.hpp'
     writeHeader(fileName)
+    writeDefinition(fileName, inputType[1:],            'INPUT_TYPE')
     writeDefinition(fileName, ncells,                   'NCELLS')
     if (dimensions == 3):
         writeDefinition(fileName, nrays,                'NRAYS')

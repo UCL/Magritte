@@ -11,11 +11,11 @@ project(Magritte)
 
 
 # Set build type to Release to get optimal performance
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 
 # Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=medium -std=c++11 -std=gnu++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=large -std=c++11 -std=gnu++11")
 
 
 # Specify the version of the project

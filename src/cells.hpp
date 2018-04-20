@@ -68,6 +68,10 @@ struct CELLS
 
     double column_tot[NCELLS*NRAYS];   // total column density
 
+    const int spec_size = 1;
+
+    double spectrum[1*NCELLS*NRAYS];   // placeholder for spectrum
+
 
     // Chemistry
 
@@ -140,6 +144,9 @@ struct CELLS
     double *column_CO;    // CO column density for each ray and cell
 
     double *column_tot;   // total column density
+
+    const int spec_size = 1;
+    double *spectrum;   // placeholder for spectrum
 
 
     // Chemistry

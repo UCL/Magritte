@@ -16,6 +16,9 @@
 #include "Magritte_types.hpp"
 
 
+enum INPUT_TYPES {txt, vtu};
+
+
 // Output directory (absolute path)
 
 extern const std::string output_directory;

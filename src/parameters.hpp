@@ -12,7 +12,7 @@
 
 // Input files
 #define FIXED_NCELLS false
-#define INPUT_FORMAT '.txt'
+
 #define CELL_BASED  false
 
 #define NAME_DENSITY              "H2_density"
@@ -26,14 +26,14 @@
 #define NAME_CHEM_ABUNDANCES      "Mol_density"
 
 // VARIABLE GRIDs
-#define GRID_INIT "input/files/1Dn30.dat_conv.txt"
+#define GRID_INIT "input/files/grid_log2.txt"
 
-#define X_MIN -1.0E+00
+#define X_MIN -9.9E+99
 #define X_MAX +9.9E+99
-#define Y_MIN -1.0E+00
-#define Y_MAX +1.0E+00
-#define Z_MIN -1.0E+00
-#define Z_MAX +1.0E+00
+#define Y_MIN -9.9E+99
+#define Y_MAX +9.9E+99
+#define Z_MIN -9.9E+99
+#define Z_MAX +9.9E+99
 
 #define THRESHOLD 1.0E+99;
 
@@ -46,7 +46,7 @@
 // #define RESTART_DIRECTORY "output/files/17-12-20_15:01_output/"
 // #define INPUTFILE     "output/files/18-01-05_16:05_output/grid_reduced_0.1.txt"
 
-#define INPUTFILE      "input/files/1Dn30.dat_conv.txt"
+#define INPUTFILE      "input/files/grid_log2.txt"
 
 #define SPEC_DATAFILE  "data/species_reduced.txt"
 #define REAC_DATAFILE  "data/rates_reduced.txt"
@@ -58,9 +58,9 @@
 
 // Ray tracing parameters
 
-#define DIMENSIONS 1
-#define NRAYS      2
-#define NSIDES     6
+#define DIMENSIONS 3
+// #define NRAYS      2
+#define NSIDES     4
 
 // Radiative transfer
 
@@ -126,6 +126,7 @@
 #define POP_LOWER_LIMIT 1.0E-26   // lowest non-zero population
 #define POP_UPPER_LIMIT 1.0E+15   // highest population
 #define TAU_MAX         3.0E+2    // cut-off for optical depth along a ray
+
 
 
 // Parameters for thermal balance iteration

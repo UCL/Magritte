@@ -163,7 +163,7 @@ int find_neighbors (long ncells, CELLS *cells, RAYS rays)
 
         if (p == 763)
         {
-          printf("NEIGHBOUR!\n");
+          // printf("NEIGHBOUR!\n");
         }
 
       }
