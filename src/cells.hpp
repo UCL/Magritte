@@ -195,16 +195,13 @@ struct CELLS
   int initialize ();
 
 
-  // read_txt_input: read .txt input file
-  // ------------------------------------
+  // read_input: read input file
+  // ---------------------------
 
   int read_input (std::string inputfile);
 
-
   private:
-
     int read_txt_input(std::string inputfile);
-
     int read_vtu_input(std::string inputfile);
 
 };

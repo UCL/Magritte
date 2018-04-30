@@ -103,10 +103,7 @@ def getNCELLS(fileName, gridType):
         reader.Update()
         grid = reader.GetOutput()
         if gridType == 'cell_based':
-            cellCentersFilter = vtk.vtkCellCenters()
-            cellCentersFilter.SetInputData(grid)
-            cellCentersFilter.Update()
-            ncells = cellCentersFilter.GetOutput().GetNumberOfPoints()
+            ncells = grid.GetNumberOfCells()
         if gridType == 'point_based':
             ncells = grid.GetNumberOfPoints()
         print(ncells)

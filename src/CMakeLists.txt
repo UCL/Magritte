@@ -1,10 +1,12 @@
 # CMakeLists.txt for Magritte (/src directory)
 # --------------------------------------------
 
+# Set VTK_DIR to directory where you built VTK
+SET(VTK_DIR "/home/frederik/software/VTK/build" CACHE PATH "VTK directory override" FORCE)
 
 # VTK includes
-# find_package(VTK REQUIRED)
-# include(${VTK_USE_FILE})
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
 # Add compiler flags
 find_package(OpenMP REQUIRED)
@@ -72,4 +74,4 @@ write_vtu_tools.cpp)
 # Link the libraries of the subdirectories to this library
 target_link_libraries(_MAGRITTE _HEALPix)
 target_link_libraries(_MAGRITTE _sundials)
-# target_link_libraries(_MAGRITTE ${VTK_LIBRARIES})
+target_link_libraries(_MAGRITTE ${VTK_LIBRARIES})
