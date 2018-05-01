@@ -68,6 +68,10 @@ struct CELLS
 
     double column_tot[NCELLS*NRAYS];   // total column density
 
+    const int spec_size = 1;
+
+    double spectrum[1*NCELLS*NRAYS];   // placeholder for spectrum
+
 
     // Chemistry
 
@@ -141,6 +145,9 @@ struct CELLS
 
     double *column_tot;   // total column density
 
+    const int spec_size = 1;
+    double *spectrum;   // placeholder for spectrum
+
 
     // Chemistry
 
@@ -188,16 +195,13 @@ struct CELLS
   int initialize ();
 
 
-  // read_txt_input: read .txt input file
-  // ------------------------------------
+  // read_input: read input file
+  // ---------------------------
 
   int read_input (std::string inputfile);
 
-
   private:
-
     int read_txt_input(std::string inputfile);
-
     int read_vtu_input(std::string inputfile);
 
 };

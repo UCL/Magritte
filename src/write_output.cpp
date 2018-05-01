@@ -34,15 +34,14 @@ int write_output (CELLS *cells, LINES lines)
   tag_nr++;
 
 
-# if   (INPUT_FORMAT == '.vtu')
-
+  if      (INPUT_TYPE == vtu)
+  {
     write_vtu_output (tag, cells);
-
-# elif (INPUT_FORMAT == '.txt')
-
+  }
+  else if (INPUT_TYPE == txt)
+  {
     write_txt_output (tag, cells, lines);
-
-# endif
+  }
 
 
   return (0);

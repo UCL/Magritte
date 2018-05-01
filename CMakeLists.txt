@@ -11,11 +11,11 @@ project(Magritte)
 
 
 # Set build type to Release to get optimal performance
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 
 # Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=medium -std=c++11 -std=gnu++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=large -std=c++11 -std=gnu++11")
 
 
 # Specify the version of the project
@@ -38,9 +38,13 @@ add_custom_target(MAKE_SETUP ALL
 add_subdirectory(src)
 
 
+# Set VTK_DIR to directory where you built VTK
+SET(VTK_DIR "/home/frederik/software/VTK/build" CACHE PATH "VTK directory override" FORCE)
+
+
 # VTK includes
-# find_package(VTK REQUIRED)
-# include(${VTK_USE_FILE})
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
 
 # Add compiler flags
@@ -63,4 +67,4 @@ add_dependencies(Magritte.exe MAKE_SETUP)
 # Link the library of the /src directory to Magritte main code
 target_link_libraries(Magritte.exe _MAGRITTE)
 # Link VTK libraries
-# target_link_libraries(Magritte.exe ${VTK_LIBRARIES})
+target_link_libraries(Magritte.exe ${VTK_LIBRARIES})

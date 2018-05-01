@@ -40,6 +40,7 @@ def setupMagritte():
         nrays  = getVariable('NRAYS', 'long')
     # Read grid data
     inputFile = getFilePath('INPUTFILE')
+    inputType = fileExtension(inputFile)
     gridType  = getVariable('GRID_TYPE', 'str')
     fixedGrid = getVariable('FIXED_NCELLS', 'bool')
     # Get number of (Magritte) grid cells
@@ -59,7 +60,9 @@ def setupMagritte():
         makeRates.makeRates(specDataFile, reacDataFile)
     except:
         writeHeader('../src/sundials/rate_equations.cpp')
-        writeHeader('../src/sundials/jacobian.cpp')
+        with open('../src/sundials/rate_equations.cpp', 'w') as file:
+            file.write('static int f (realtype t, N_Vector y, N_Vector ydot, void *user_data){return (0);}')
+        # writeHeader('../src/sundials/jacobian.cpp')
         print('\n\nWARNING: makeRates failed!\n\n')
     # Get number of data files
     lineDataFiles = getFilePath('LINE_DATAFILES')
@@ -120,6 +123,7 @@ def setupMagritte():
     # Write Magritte_config.hpp file
     fileName = '../src/Magritte_config.hpp'
     writeHeader(fileName)
+    writeDefinition(fileName, inputType[1:],            'INPUT_TYPE')
     writeDefinition(fileName, ncells,                   'NCELLS')
     if (dimensions == 3):
         writeDefinition(fileName, nrays,                'NRAYS')

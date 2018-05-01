@@ -78,6 +78,8 @@ CELLS::CELLS (long number_of_cells)
 
     column_tot = new double[ncells*NRAYS];
 
+    spectrum   = new double[spec_size*ncells*NRAYS];
+
 
     // Chemistry
 
@@ -170,6 +172,8 @@ CELLS::~CELLS ()
     delete [] column_CO;
     delete [] column_tot;
 
+    delete [] spectrum;
+
 
     // Chemistry
 
@@ -243,6 +247,12 @@ int CELLS::initialize ()
       column_CO[RINDEX(p,r)]   = 0.0;
 
       column_tot[RINDEX(p,r)]  = 0.0;
+
+
+      for (int y = 0; y < spec_size; y++)
+      {
+        spectrum[NRAYS*ncells*y + RINDEX(p,r)] = 0.0;
+      }
     }
 
     vx[p] = 0.0;
