@@ -12,11 +12,12 @@
 // #include "parameters.hpp"
 // #include "Magritte_config.hpp"
 #include "Magritte_constants.hpp"
-#include "Magritte_macros.hpp"
+// #include "Magritte_macros.hpp"
 // #include "Magritte_types.hpp"
 
 // #define NRAYS 3
 
+#define RINDEX(r,c)   ( (c) + (r)*Nrays )   // when second index is ray
 
 enum INPUT_TYPES {txt, vtu};
 

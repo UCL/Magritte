@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays, bool Fixed_Ncells, long Ncells>
+
 class CELLS
 {
 
@@ -70,6 +71,8 @@ class CELLS
     ~CELLS ();                      ///< Destructor
 
     int initialize ();              ///< Initializer for members
+
+    long next();                    ///< Next cell along a ray
 
 
   private:

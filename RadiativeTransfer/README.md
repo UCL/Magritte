@@ -1,4 +1,4 @@
-<img src="/docs/images/Magritte_logo.png" height="130">
+<img src="docs/images/Magritte_logo.png" height="130">
 
 ---
 

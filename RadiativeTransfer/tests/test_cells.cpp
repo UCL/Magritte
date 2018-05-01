@@ -23,4 +23,6 @@ TEST_CASE ("RAYS constructor")
   const long Ncells    = 4;
 
   const CELLS<Dimension, Nrays, Fixed_Ncells, Ncells> cells(Ncells);
+
+  std::cout << cells.id[3] << std::endl;
 }

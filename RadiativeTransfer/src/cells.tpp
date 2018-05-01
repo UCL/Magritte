@@ -4,6 +4,8 @@
 // _________________________________________________________________________
 
 
+#include <omp.h>
+
 #include "declarations.hpp"
 
 
@@ -12,6 +14,7 @@
 //////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays, bool Fixed_Ncells, long Ncells>
+
 CELLS <Dimension, Nrays, Fixed_Ncells, Ncells> :: CELLS (long number_of_cells)
 {
 
@@ -51,6 +54,7 @@ CELLS <Dimension, Nrays, Fixed_Ncells, Ncells> :: CELLS (long number_of_cells)
 ////////////////////////////////////////////////
 
 template <int Dimension, long Nrays, bool Fixed_Ncells, long Ncells>
+
 CELLS <Dimension, Nrays, Fixed_Ncells, Ncells> :: ~CELLS ()
 {
 
@@ -87,56 +91,50 @@ CELLS <Dimension, Nrays, Fixed_Ncells, Ncells> :: ~CELLS ()
 ////////////////////////////////
 
 template <int Dimension, long Nrays, bool Fixed_Ncells, long Ncells>
+
 int CELLS <Dimension, Nrays, Fixed_Ncells, Ncells> :: initialize ()
 {
-//
-// # pragma omp parallel   \
-//   default (none)
-//   {
-//
-//   int num_threads = omp_get_num_threads();
-//   int thread_num  = omp_get_thread_num();
-//
-//   long start = (thread_num*ncells)/num_threads;
-//   long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-//
-//
-//   for (long p = start; p < stop; p++)
-//   {
-//     x[p] = 0.0;
-//     y[p] = 0.0;
-//     z[p] = 0.0;
-//
-//     n_neighbors[p] = 0;
-//
-//     for (long r = 0; r < Nrays; r++)
-//     {
-//       neighbor[RINDEX(p,r)] = 0;
-//       endpoint[RINDEX(p,r)] = 0;
-//
-//       Z[RINDEX(p,r)]           = 0.0;
-//
-//       for (int y = 0; y < spec_size; y++)
-//       {
-//         spectrum[Nrays*ncells*y + RINDEX(p,r)] = 0.0;
-//       }
-//     }
-//
-//     vx[p] = 0.0;
-//     vy[p] = 0.0;
-//     vz[p] = 0.0;
-//
-//
-//
-//     id[p] = p;
-//
-//     removed[p]  = false;
-//     boundary[p] = false;
-//     mirror[p]   = false;
-//   }
-//   } // end of OpenMP parallel region
-//
-//
-//   return(0);
-//
+
+# pragma omp parallel   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+    x[p] = 0.0;
+    y[p] = 0.0;
+    z[p] = 0.0;
+
+    n_neighbors[p] = 0;
+
+    for (long r = 0; r < Nrays; r++)
+    {
+      neighbor[RINDEX(p,r)] = 0;
+      endpoint[RINDEX(p,r)] = 0;
+
+      Z[RINDEX(p,r)] = 0.0;
+    }
+
+    vx[p] = 0.0;
+    vy[p] = 0.0;
+    vz[p] = 0.0;
+
+    id[p] = p;
+
+    removed[p]  = false;
+    boundary[p] = false;
+    mirror[p]   = false;
+  }
+  } // end of OpenMP parallel region
+
+
+  return(0);
+
 }
