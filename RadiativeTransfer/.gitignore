@@ -1,0 +1,28 @@
+# CMake related files
+# -------------------
+
+CMakeFiles/
+Makefile
+*.cmake
+CMakeCache.txt
+
+
+
+# Executables
+# -----------
+
+*.o
+*.exe
+
+
+
+# compiled libraries
+# ------------------
+
+*.a
+
+
+# editor generated files
+# ----------------------
+
+*~

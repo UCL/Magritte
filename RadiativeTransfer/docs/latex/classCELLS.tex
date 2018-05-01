@@ -1,0 +1,82 @@
+\hypertarget{classCELLS}{}\section{C\+E\+L\+LS$<$ Dimension, Nrays, Fixed\+\_\+\+Ncells, Ncells $>$ Class Template Reference}
+\label{classCELLS}\index{C\+E\+L\+L\+S$<$ Dimension, Nrays, Fixed\+\_\+\+Ncells, Ncells $>$@{C\+E\+L\+L\+S$<$ Dimension, Nrays, Fixed\+\_\+\+Ncells, Ncells $>$}}
+
+
+\mbox{\hyperlink{classCELLS}{C\+E\+L\+LS}}\+: class containing all geometric data and functions for Radiative Transfer.  
+
+
+
+
+{\ttfamily \#include $<$cells.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classCELLS_a7e1879048b54a1e0c7be7d97c655fb3e}\label{classCELLS_a7e1879048b54a1e0c7be7d97c655fb3e}} 
+\mbox{\hyperlink{classCELLS_a7e1879048b54a1e0c7be7d97c655fb3e}{C\+E\+L\+LS}} (long number\+\_\+of\+\_\+cells)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a56d69b799369f91db8c5d7946acf71ee}\label{classCELLS_a56d69b799369f91db8c5d7946acf71ee}} 
+\mbox{\hyperlink{classCELLS_a56d69b799369f91db8c5d7946acf71ee}{$\sim$\+C\+E\+L\+LS}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a1913eb5085755acf39d63cba740e0b3a}\label{classCELLS_a1913eb5085755acf39d63cba740e0b3a}} 
+int \mbox{\hyperlink{classCELLS_a1913eb5085755acf39d63cba740e0b3a}{initialize}} ()
+\begin{DoxyCompactList}\small\item\em Initializer for members. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classCELLS_a924c191a4fdd3ba7c1a5490ea33e5950}\label{classCELLS_a924c191a4fdd3ba7c1a5490ea33e5950}} 
+long \mbox{\hyperlink{classCELLS_a924c191a4fdd3ba7c1a5490ea33e5950}{ncells}}
+\begin{DoxyCompactList}\small\item\em number of cells \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a7665a428475d8019c3e39ecaaf9570be}\label{classCELLS_a7665a428475d8019c3e39ecaaf9570be}} 
+double $\ast$ {\bfseries x}
+\item 
+\mbox{\Hypertarget{classCELLS_af462f8183ee6f74193f443f60eed3a3e}\label{classCELLS_af462f8183ee6f74193f443f60eed3a3e}} 
+double $\ast$ {\bfseries y}
+\item 
+\mbox{\Hypertarget{classCELLS_a4d8ce80c899346b1dde01c98c357b9bd}\label{classCELLS_a4d8ce80c899346b1dde01c98c357b9bd}} 
+double $\ast$ \mbox{\hyperlink{classCELLS_a4d8ce80c899346b1dde01c98c357b9bd}{z}}
+\begin{DoxyCompactList}\small\item\em coordinates of cell center \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_aeb43f948e5db365e6b78d4d82c4d6ac9}\label{classCELLS_aeb43f948e5db365e6b78d4d82c4d6ac9}} 
+double $\ast$ {\bfseries vx}
+\item 
+\mbox{\Hypertarget{classCELLS_a11fc8be4659f6cf373c192dff13934cd}\label{classCELLS_a11fc8be4659f6cf373c192dff13934cd}} 
+double $\ast$ {\bfseries vy}
+\item 
+\mbox{\Hypertarget{classCELLS_a55946fdf0e5592623dd7ada5871194b5}\label{classCELLS_a55946fdf0e5592623dd7ada5871194b5}} 
+double $\ast$ \mbox{\hyperlink{classCELLS_a55946fdf0e5592623dd7ada5871194b5}{vz}}
+\begin{DoxyCompactList}\small\item\em components of velocity field \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a8acd1bb829638c3b28ae7518a75e0726}\label{classCELLS_a8acd1bb829638c3b28ae7518a75e0726}} 
+bool $\ast$ \mbox{\hyperlink{classCELLS_a8acd1bb829638c3b28ae7518a75e0726}{boundary}}
+\begin{DoxyCompactList}\small\item\em true if boundary cell \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a1bb9e9fa3f6c1eb00bc519bcb6c8f396}\label{classCELLS_a1bb9e9fa3f6c1eb00bc519bcb6c8f396}} 
+bool $\ast$ \mbox{\hyperlink{classCELLS_a1bb9e9fa3f6c1eb00bc519bcb6c8f396}{mirror}}
+\begin{DoxyCompactList}\small\item\em true if reflective boundary \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a9bd7371ebe1f9c29f99b416d79bea243}\label{classCELLS_a9bd7371ebe1f9c29f99b416d79bea243}} 
+long $\ast$ \mbox{\hyperlink{classCELLS_a9bd7371ebe1f9c29f99b416d79bea243}{endpoint}}
+\begin{DoxyCompactList}\small\item\em cell numbers of ray endings \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_addc38a919a9b67d04c033eaae676066a}\label{classCELLS_addc38a919a9b67d04c033eaae676066a}} 
+double $\ast$ \mbox{\hyperlink{classCELLS_addc38a919a9b67d04c033eaae676066a}{Z}}
+\begin{DoxyCompactList}\small\item\em distance from cell to boundary \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a7fea11df30db6c2ad181268d6190a822}\label{classCELLS_a7fea11df30db6c2ad181268d6190a822}} 
+long $\ast$ \mbox{\hyperlink{classCELLS_a7fea11df30db6c2ad181268d6190a822}{neighbor}}
+\begin{DoxyCompactList}\small\item\em cell numbers of neighors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a29c520b4d7909d3a5cc1ad7a71f3389e}\label{classCELLS_a29c520b4d7909d3a5cc1ad7a71f3389e}} 
+long $\ast$ \mbox{\hyperlink{classCELLS_a29c520b4d7909d3a5cc1ad7a71f3389e}{n\+\_\+neighbors}}
+\begin{DoxyCompactList}\small\item\em number of neighbors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_acb12cba62ad26f427e31ded46e31255a}\label{classCELLS_acb12cba62ad26f427e31ded46e31255a}} 
+long $\ast$ \mbox{\hyperlink{classCELLS_acb12cba62ad26f427e31ded46e31255a}{id}}
+\begin{DoxyCompactList}\small\item\em cell nr of associated cell in other grid \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCELLS_a422584a3fa93f4f29194099cb274d7aa}\label{classCELLS_a422584a3fa93f4f29194099cb274d7aa}} 
+bool $\ast$ \mbox{\hyperlink{classCELLS_a422584a3fa93f4f29194099cb274d7aa}{removed}}
+\begin{DoxyCompactList}\small\item\em true when cell is removed \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$int Dimension, long Nrays, bool Fixed\+\_\+\+Ncells, long Ncells$>$\newline
+class C\+E\+L\+L\+S$<$ Dimension, Nrays, Fixed\+\_\+\+Ncells, Ncells $>$}
+
+\mbox{\hyperlink{classCELLS}{C\+E\+L\+LS}}\+: class containing all geometric data and functions for Radiative Transfer. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/\+Radiative\+Transfer/src/cells.\+hpp\end{DoxyCompactItemize}
