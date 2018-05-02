@@ -15,14 +15,19 @@
 
 #define EPS 1.0E-5
 
-TEST_CASE ("RAYS constructor")
+TEST_CASE ("CELLS constructor")
 {
-  const int  Dimension = 1;
-  const long Nrays     = 2;
-  const bool Fixed_Ncells = true;
-  const long Ncells    = 4;
+  const int  Dimension    = 1;
+  const long Nrays        = 2;
+  const bool FixedNcells = true;
+  const long Ncells       = 4;
 
-  const CELLS<Dimension, Nrays, Fixed_Ncells, Ncells> cells(Ncells);
+  CELLS <Dimension, Nrays, FixedNcells, Ncells> cells(Ncells);
 
-  std::cout << cells.id[3] << std::endl;
+  cells.initialize();
+
+  std::cout << cells.boundary[3] << std::endl;
+  std::cout << false << std::endl;
+  std::cout << true  << std::endl;
+
 }
