@@ -1,3 +1,24 @@
+language:
+  - cpp
+  - python
+  - bash
+
+python:
+  - "3"
+
+addons:
+    packages:
+      - cmake
+
+script:
+  - cd RadiativeTransfer
+  - cmake .
+  - make
+  - cd tests
+  - ./run_tests.sh
+  - cd ../..
+
+
 # language:
 #   - cpp
 #   - python

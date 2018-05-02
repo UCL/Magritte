@@ -13,11 +13,14 @@
 #include "rays.hpp"
 
 
-///  CELLS: class containing all geometric data and functions for Radiative Transfer
-////////////////////////////////////////////////////////////////////////////////////
+///  CELLS: class (template) containing all geometric data and functions.
+///    @param Dimension: spacial dimension of grid
+///    @param Nrays: number of rays oroginating from each cell
+///    @param FixedNcells: true if number of cells is know at compile time
+///    @param Ncells: number of cells (fixed in this case)
+//////////////////////////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays, bool Fixed_Ncells, long Ncells>
-
+template <int Dimension, long Nrays, bool FixedCells, long Ncells>
 class CELLS
 {
 
@@ -25,7 +28,7 @@ class CELLS
 
     long ncells;   ///< number of cells
 
-#   if (Fixed_Ncells)
+#   if (FixedNcells)
 
       // Allocate on stack
 
@@ -66,13 +69,13 @@ class CELLS
 #   endif
 
 
-    CELLS (long number_of_cells);   ///< Constructor
+    CELLS (long number_of_cells);                                             ///< Constructor
 
-    ~CELLS ();                      ///< Destructor
+    ~CELLS ();                                                                ///< Destructor
 
-    int initialize ();              ///< Initializer for members
+    int initialize ();                                                        ///< Initialize members
 
-    long next();                    ///< Next cell along a ray
+    long next (long origin, long ray, long current, double *Z, double *dZ);   ///< Next cell on ray
 
 
   private:

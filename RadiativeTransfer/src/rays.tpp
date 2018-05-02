@@ -12,18 +12,23 @@
 /// Constructor for RAYS
 ////////////////////////
 
-template <int Dimension, long Nrays> RAYS <Dimension, Nrays> :: RAYS()
+template <int Dimension, long Nrays>
+RAYS <Dimension, Nrays> ::
+RAYS()
 {
 
   // Assert that Nrays is consistent with Dimension
 
-  static_assert ( (Dimension != 1) || (Nrays == 2), "In 1D there can only be 2 rays!");
+  static_assert ( (Dimension == 1) || (Dimension == 2) || (Dimension == 3),
+                  "Dimension should be 1, 2 or 3.");
+  static_assert ( (Dimension != 1) || (Nrays == 2),
+                  "In 1D there can only be 2 rays!");
 
 
   // Create (unit) HEALPix vectors
 
-  if (Dimension == 1)
-  {
+# if (Dimension == 1)
+
     x[0] = +1.0;
     y[0] =  0.0;
     z[0] =  0.0;
@@ -31,11 +36,12 @@ template <int Dimension, long Nrays> RAYS <Dimension, Nrays> :: RAYS()
     x[1] = -1.0;
     y[1] =  0.0;
     z[1] =  0.0;
-  }
+
+# endif
 
 
-  if (Dimension == 2)
-  {
+# if (Dimension == 2)
+
     for (long ray = 0; ray < Nrays; ray++)
     {
       double theta = (2.0*PI*ray) / Nrays;
@@ -44,11 +50,12 @@ template <int Dimension, long Nrays> RAYS <Dimension, Nrays> :: RAYS()
       y[ray] = sin(theta);
       z[ray] = 0.0;
     }
-  }
+
+# endif
 
 
-  if (Dimension == 3)
-  {
+# if (Dimension == 3)
+
     long nsides = (long) sqrt(Nrays/12);
 
     for (long ipix = 0; ipix < Nrays; ipix++)
@@ -61,7 +68,8 @@ template <int Dimension, long Nrays> RAYS <Dimension, Nrays> :: RAYS()
       y[ipix] = vector[1];
       z[ipix] = vector[2];
     }
-  }
+
+# endif
 
 
   // Find antipodal pairs
