@@ -30,9 +30,9 @@ if( OPENMP_FOUND )
 endif()
 
 # Create documentation
-add_custom_target( DOCUMENTATION ALL
-COMMAND doxygen Doxyfile
-WORKING_DIRECTORY docs )
+# add_custom_target( DOCUMENTATION ALL
+# COMMAND doxygen Doxyfile
+# WORKING_DIRECTORY docs )
 
 
 # Run setup script (if parameters.hpp changed)
