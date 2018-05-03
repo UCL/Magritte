@@ -15,7 +15,7 @@ script:
   - cmake .
   - make
   - cd tests
-  - ./run_tests.sh
+  - bash run_tests.sh
   - cd ../..
 
 

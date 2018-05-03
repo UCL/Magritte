@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 #include <math.h>
+#include <iostream>
 
 #include "declarations.hpp"
 #include "HEALPix/chealpix.h"
@@ -14,7 +15,7 @@
 
 template <int Dimension, long Nrays>
 RAYS <Dimension, Nrays> ::
-RAYS()
+RAYS ()
 {
 
   // Assert that Nrays is consistent with Dimension
@@ -23,12 +24,14 @@ RAYS()
                   "Dimension should be 1, 2 or 3.");
   static_assert ( (Dimension != 1) || (Nrays == 2),
                   "In 1D there can only be 2 rays!");
+  static_assert ( (Dimension != 3) || (sqrt(Nrays/12.0) - long(sqrt(Nrays/12.0)) == 0),
+                  "Nrays should be of the form 12*n*n for an integer n.");
 
 
   // Create (unit) HEALPix vectors
 
-# if (Dimension == 1)
-
+  if (Dimension == 1)
+  {
     x[0] = +1.0;
     y[0] =  0.0;
     z[0] =  0.0;
@@ -36,40 +39,37 @@ RAYS()
     x[1] = -1.0;
     y[1] =  0.0;
     z[1] =  0.0;
+  }
 
-# endif
 
-
-# if (Dimension == 2)
-
-    for (long ray = 0; ray < Nrays; ray++)
+  if (Dimension == 2)
+  {
+    for (long r = 0; r < Nrays; r++)
     {
-      double theta = (2.0*PI*ray) / Nrays;
+      double theta = (2.0*PI*r) / Nrays;
 
-      x[ray] = cos(theta);
-      y[ray] = sin(theta);
-      z[ray] = 0.0;
+      x[r] = cos(theta);
+      y[r] = sin(theta);
+      z[r] = 0.0;
     }
+  }
 
-# endif
 
-
-# if (Dimension == 3)
-
+  if (Dimension == 3)
+  {
     long nsides = (long) sqrt(Nrays/12);
 
-    for (long ipix = 0; ipix < Nrays; ipix++)
+    for (long r = 0; r < Nrays; r++)
     {
       double vector[3];   // unit vector in direction of HEALPix ray
 
-      pix2vec_nest (nsides, ipix, vector);
+      pix2vec_nest (nsides, r, vector);
 
-      x[ipix] = vector[0];
-      y[ipix] = vector[1];
-      z[ipix] = vector[2];
+      x[r] = vector[0];
+      y[r] = vector[1];
+      z[r] = vector[2];
     }
-
-# endif
+  }
 
 
   // Find antipodal pairs

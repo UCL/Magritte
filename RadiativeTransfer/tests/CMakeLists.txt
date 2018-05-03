@@ -28,7 +28,13 @@ test_rays.cpp )
 target_link_libraries( test_rays.exe
 _RADIATIVE_TRANSFER )
 
-# Create executable to test cells
+# Create executable to test cells_f
+add_executable( test_cells_f.exe
+test_cells_f.cpp )
+target_link_libraries( test_cells_f.exe
+_RADIATIVE_TRANSFER )
+
+# # Create executable to test cells
 add_executable( test_cells.exe
 test_cells.cpp )
 target_link_libraries( test_cells.exe

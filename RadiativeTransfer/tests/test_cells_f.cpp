@@ -10,7 +10,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "../src/cells.hpp"
+#include "../src/cells_f.hpp"
 
 
 #define EPS 1.0E-5
@@ -21,7 +21,7 @@ TEST_CASE ("CELLS constructor")
   const long Nrays       = 2;
   const long Ncells      = 10000;
 
-  CELLS <Dimension, Nrays> cells (Ncells);
+  CELLS <Dimension, Nrays, Ncells> cells;
 
   SECTION ("RAYS in CELLS")
   {
@@ -60,7 +60,7 @@ TEST_CASE ("CELLS initialize")
   const long Nrays       = 2;
   const long Ncells      = 10000;
 
-  CELLS <Dimension, Nrays> cells (Ncells);
+  CELLS <Dimension, Nrays, Ncells> cells;
 
   cells.initialize();
 

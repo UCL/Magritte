@@ -18,7 +18,8 @@ add_subdirectory(HEALPix)
 # Create a Radiative Transfer library
 add_library( _RADIATIVE_TRANSFER
 rays.hpp
-cells.hpp )
+cells.hpp
+cells_f.hpp )
 
 # Link HEALPix library
 target_link_libraries( _RADIATIVE_TRANSFER

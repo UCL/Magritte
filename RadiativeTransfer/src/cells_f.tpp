@@ -10,78 +10,11 @@
 #include "declarations.hpp"
 
 
-///  Constructor for CELLS: Allocates memory for cell data
-///    @param number_of_cells: number of cells in grid
-//////////////////////////////////////////////////////////
-
-template <int Dimension, long Nrays>
-CELLS <Dimension, Nrays> ::
-CELLS (long number_of_cells)
-{
-
-  ncells = number_of_cells;
-
-  x = new double[ncells];
-  y = new double[ncells];
-  z = new double[ncells];
-
-  vx = new double[ncells];
-  vy = new double[ncells];
-  vz = new double[ncells];
-
-  endpoint = new long[ncells*Nrays];
-  Z        = new double[ncells*Nrays];
-
-  neighbor    = new long[ncells*Nrays];
-  n_neighbors = new long[ncells];
-
-  id      = new long[ncells];
-  removed = new bool[ncells];
-
-  boundary = new bool[ncells];
-  mirror   = new bool[ncells];
-
-}   // END OF CONSTRUCTOR
-
-
-
-/// Destructor for CELLS: frees allocated memory
-////////////////////////////////////////////////
-
-template <int Dimension, long Nrays>
-CELLS <Dimension, Nrays> ::
-~CELLS ()
-{
-
-  delete [] x;
-  delete [] y;
-  delete [] z;
-
-  delete [] vx;
-  delete [] vy;
-  delete [] vz;
-
-  delete [] endpoint;
-  delete [] Z;
-
-  delete [] neighbor;
-  delete [] n_neighbors;
-
-  delete [] id;
-  delete [] removed;
-
-  delete [] boundary;
-  delete [] mirror;
-
-}   // END OF DESTRUCTOR
-
-
-
 /// initialize: initialize cells with zeros or falses
 /////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays>
-int CELLS <Dimension, Nrays> ::
+template <int Dimension, long Nrays, long Ncells>
+int CELLS <Dimension, Nrays, Ncells> ::
     initialize ()
 {
 
@@ -130,7 +63,6 @@ int CELLS <Dimension, Nrays> ::
 
 
 
-
 ///  next: find number of next cell on ray and its distance along ray
 ///    @param[in] origin: number of cell from which the ray originates
 ///    @param[in] ray: number of the ray along which we are looking
@@ -139,8 +71,8 @@ int CELLS <Dimension, Nrays> ::
 ///    @param[out] *dZ: pointer to the distance increment to the next ray
 /////////////////////////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays>
-long CELLS <Dimension, Nrays> ::
+template <int Dimension, long Nrays, long Ncells>
+long CELLS <Dimension, Nrays, Ncells> ::
      next (long origin, long ray, long current, double *Z, double *dZ)
 {
 

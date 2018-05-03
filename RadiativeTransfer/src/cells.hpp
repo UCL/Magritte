@@ -14,73 +14,47 @@
 
 
 ///  CELLS: class (template) containing all geometric data and functions.
+///  - ASSUMING Ncells is not known at compile time!
 ///    @param Dimension: spacial dimension of grid
 ///    @param Nrays: number of rays oroginating from each cell
 ///    @param FixedNcells: true if number of cells is know at compile time
 ///    @param Ncells: number of cells (fixed in this case)
 //////////////////////////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays, bool FixedCells, long Ncells>
-class CELLS
+template <int Dimension, long Nrays>
+struct CELLS
 {
 
-  public:
+  long ncells;                          ///< number of cells
 
-    long ncells;   ///< number of cells
-
-#   if (FixedNcells)
-
-      // Allocate on stack
-
-      double  x[Ncells],  y[Ncells],  z[Ncells];   ///< coordinates of cell center
-      double vx[Ncells], vy[Ncells], vz[Ncells];   ///< components of velocity field
-
-      bool boundary[Ncells];                       ///< true if boundary cell
-      bool   mirror[Ncells];                       ///< true if reflective boundary
-
-      long endpoint[Ncells*Nrays];                 ///< cell numbers of ray endings
-      double      Z[Ncells*Nrays];                 ///< distance from cell to boundary
-
-      long    neighbor[Ncells*Nrays];              ///< cell numbers of neighors
-      long n_neighbors[Ncells];                    ///< number of neighbors
-
-      long      id[Ncells];                        ///< cell nr of associated cell in other grid
-      bool removed[Ncells];                        ///< true when cell is removed
-
-#   else
-
-      // Allocate on heap (in constructor)
-
-      double  *x,  *y,  *z;   ///< coordinates of cell center
-      double *vx, *vy, *vz;   ///< components of velocity field
-
-      bool *boundary;         ///< true if boundary cell
-      bool *mirror;           ///< true if reflective boundary
-
-      long   *endpoint;       ///< cell numbers of ray endings
-      double *Z;              ///< distance from cell to boundary
-
-      long *neighbor;         ///< cell numbers of neighors
-      long *n_neighbors;      ///< number of neighbors
-
-      long *id;               ///< cell nr of associated cell in other grid
-      bool *removed;          ///< true when cell is removed
-
-#   endif
+  const RAYS <Dimension, Nrays> rays;   ///< rays linking different cells
 
 
-    CELLS (long number_of_cells);                                             ///< Constructor
+  // Allocate on heap (in constructor)
 
-    ~CELLS ();                                                                ///< Destructor
+  double  *x,  *y,  *z;           ///< coordinates of cell center
+  double *vx, *vy, *vz;           ///< components of velocity field
 
-    int initialize ();                                                        ///< Initialize members
+  bool *boundary;                 ///< true if boundary cell
+  bool *mirror;                   ///< true if reflective boundary
 
-    long next (long origin, long ray, long current, double *Z, double *dZ);   ///< Next cell on ray
+  long   *endpoint;               ///< cell numbers of ray endings
+  double *Z;                      ///< distance from cell to boundary
+
+  long *neighbor;                 ///< cell numbers of neighors
+  long *n_neighbors;              ///< number of neighbors
+
+  long *id;                       ///< cell nr of associated cell in other grid
+  bool *removed;                  ///< true when cell is removed
 
 
-  private:
+  CELLS (long number_of_cells);   ///< Constructor
 
-    const RAYS <Dimension, Nrays> rays;   ///< rays linking different cells
+  ~CELLS ();                      ///< Destructor
+
+  int initialize ();                                                        ///< Initializemembers
+
+  long next (long origin, long ray, long current, double *Z, double *dZ);   ///< Next cell on ray
 
 };
 
