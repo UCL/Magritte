@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['y',['y',['../structRAYS.html#a6cf634c858baab20aa13e633231a5b00',1,'RAYS']]]
+  ['_7ecells',['~CELLS',['../structCELLS.html#a14451af2a8aa1b7ebb9d3de656d18b20',1,'CELLS']]]
 ];

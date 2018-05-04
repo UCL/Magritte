@@ -15,11 +15,15 @@ endif()
 # Add HEALPix subdirectory
 add_subdirectory(HEALPix)
 
+# Include this directory to find Eigen
+include_directories(.)
+
 # Create a Radiative Transfer library
 add_library( _RADIATIVE_TRANSFER
 rays.hpp
 cells.hpp
-cells_f.hpp )
+cells_f.hpp
+feautrier.cpp )
 
 # Link HEALPix library
 target_link_libraries( _RADIATIVE_TRANSFER

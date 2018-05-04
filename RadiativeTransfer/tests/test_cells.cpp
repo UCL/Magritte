@@ -7,13 +7,13 @@
 #include <iostream>
 #include <string>
 
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #include "../src/cells.hpp"
 
 
 #define EPS 1.0E-5
+
 
 TEST_CASE ("CELLS constructor")
 {
@@ -22,6 +22,7 @@ TEST_CASE ("CELLS constructor")
   const long Ncells      = 10000;
 
   CELLS <Dimension, Nrays> cells (Ncells);
+
 
   SECTION ("RAYS in CELLS")
   {
@@ -34,11 +35,13 @@ TEST_CASE ("CELLS constructor")
     CHECK (Approx(cells.rays.z[1]).epsilon(EPS) ==  0.0);
   }
 
+
   SECTION ("Antipodal rays in CELLS")
   {
     CHECK (cells.rays.antipod[0] == 1);
     CHECK (cells.rays.antipod[1] == 0);
   }
+
 
   SECTION ("Check memory availability")
   {
@@ -53,6 +56,8 @@ TEST_CASE ("CELLS constructor")
     }
   }
 }
+
+
 
 TEST_CASE ("CELLS initialize")
 {
@@ -82,5 +87,29 @@ TEST_CASE ("CELLS initialize")
     CHECK (cells.boundary[p] == false);
     CHECK (cells.mirror[p]   == false);
   }
+}
 
+
+
+TEST_CASE ("Relative Velocity")
+{
+
+}
+
+
+
+TEST_CASE ("Ray tracer: next function 1D")
+{
+  const int  Dimension   = 1;
+  const long Nrays       = 2;
+  const long Ncells      = 10000;
+
+  CELLS <Dimension, Nrays> cells (Ncells);
+
+  cells.initialize();
+
+  for (long p = 0; p < Ncells; p++)
+  {
+    cells.x[p] = 1.0E10 * (p + 0.012345);
+  }
 }

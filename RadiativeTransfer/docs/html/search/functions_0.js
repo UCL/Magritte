@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cells',['CELLS',['../classCELLS.html#a03fa4d434e21b198d0f96b30ac303cd2',1,'CELLS']]]
+  ['cells',['CELLS',['../structCELLS.html#a686deede740a5b0612ee4193fac0f28f',1,'CELLS']]]
 ];

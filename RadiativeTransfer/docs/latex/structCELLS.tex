@@ -1,0 +1,149 @@
+\hypertarget{structCELLS}{}\section{C\+E\+L\+LS$<$ Dimension, Nrays $>$ Struct Template Reference}
+\label{structCELLS}\index{C\+E\+L\+L\+S$<$ Dimension, Nrays $>$@{C\+E\+L\+L\+S$<$ Dimension, Nrays $>$}}
+
+
+{\ttfamily \#include $<$cells.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structCELLS_a686deede740a5b0612ee4193fac0f28f}\label{structCELLS_a686deede740a5b0612ee4193fac0f28f}} 
+\mbox{\hyperlink{structCELLS_a686deede740a5b0612ee4193fac0f28f}{C\+E\+L\+LS}} (long number\+\_\+of\+\_\+cells)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a14451af2a8aa1b7ebb9d3de656d18b20}\label{structCELLS_a14451af2a8aa1b7ebb9d3de656d18b20}} 
+\mbox{\hyperlink{structCELLS_a14451af2a8aa1b7ebb9d3de656d18b20}{$\sim$\+C\+E\+L\+LS}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_ab089fb695e506952925b2cb4861aecd0}\label{structCELLS_ab089fb695e506952925b2cb4861aecd0}} 
+int \mbox{\hyperlink{structCELLS_ab089fb695e506952925b2cb4861aecd0}{initialize}} ()
+\begin{DoxyCompactList}\small\item\em Initializemembers. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a44921a7e1fe4f959e66ef67982dd14be}\label{structCELLS_a44921a7e1fe4f959e66ef67982dd14be}} 
+long \mbox{\hyperlink{structCELLS_a44921a7e1fe4f959e66ef67982dd14be}{next}} (long origin, long ray, long current, double $\ast$Z, double $\ast$dZ)
+\begin{DoxyCompactList}\small\item\em Next cell on ray. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a4a290690f0721ae523a91954b129c898}\label{structCELLS_a4a290690f0721ae523a91954b129c898}} 
+double \mbox{\hyperlink{structCELLS_a4a290690f0721ae523a91954b129c898}{relative\+\_\+velocity}} (long origin, long r, long current)
+\begin{DoxyCompactList}\small\item\em relative velocity \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_ab089fb695e506952925b2cb4861aecd0}\label{structCELLS_ab089fb695e506952925b2cb4861aecd0}} 
+int \mbox{\hyperlink{structCELLS_ab089fb695e506952925b2cb4861aecd0}{initialize}} ()
+\begin{DoxyCompactList}\small\item\em Initialize members. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a44921a7e1fe4f959e66ef67982dd14be}\label{structCELLS_a44921a7e1fe4f959e66ef67982dd14be}} 
+long \mbox{\hyperlink{structCELLS_a44921a7e1fe4f959e66ef67982dd14be}{next}} (long origin, long ray, long current, double $\ast$Z, double $\ast$dZ)
+\begin{DoxyCompactList}\small\item\em Next cell on ray. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structCELLS_aac708a2c28078bc12ba4bd24e40aa357}\label{structCELLS_aac708a2c28078bc12ba4bd24e40aa357}} 
+long \mbox{\hyperlink{structCELLS_aac708a2c28078bc12ba4bd24e40aa357}{ncells}} = Ncells
+\begin{DoxyCompactList}\small\item\em number of cells \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_aaf512aa19804997e9db9194dac2bf5a7}\label{structCELLS_aaf512aa19804997e9db9194dac2bf5a7}} 
+const \mbox{\hyperlink{structRAYS}{R\+A\+YS}}$<$ Dimension, Nrays $>$ \mbox{\hyperlink{structCELLS_aaf512aa19804997e9db9194dac2bf5a7}{rays}}
+\begin{DoxyCompactList}\small\item\em rays linking different cells \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a49bbf1e6c1b6b50709b59657129d44b7}\label{structCELLS_a49bbf1e6c1b6b50709b59657129d44b7}} 
+double $\ast$ {\bfseries x}
+\item 
+\mbox{\Hypertarget{structCELLS_aa734f9283fd245805ebacfef0c3f9aba}\label{structCELLS_aa734f9283fd245805ebacfef0c3f9aba}} 
+double $\ast$ {\bfseries y}
+\item 
+\mbox{\Hypertarget{structCELLS_ab7c634df2c7b5b56f45c29da2d5013e9}\label{structCELLS_ab7c634df2c7b5b56f45c29da2d5013e9}} 
+double $\ast$ \mbox{\hyperlink{structCELLS_ab7c634df2c7b5b56f45c29da2d5013e9}{z}}
+\begin{DoxyCompactList}\small\item\em coordinates of cell center \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a1cdd63e03479d67cf682ee0dec49e8d0}\label{structCELLS_a1cdd63e03479d67cf682ee0dec49e8d0}} 
+double $\ast$ {\bfseries vx}
+\item 
+\mbox{\Hypertarget{structCELLS_a175fa249e37b544241659b35d21d3f48}\label{structCELLS_a175fa249e37b544241659b35d21d3f48}} 
+double $\ast$ {\bfseries vy}
+\item 
+\mbox{\Hypertarget{structCELLS_a5bbea38ec85a172bc1819a6d3aef4ff7}\label{structCELLS_a5bbea38ec85a172bc1819a6d3aef4ff7}} 
+double $\ast$ \mbox{\hyperlink{structCELLS_a5bbea38ec85a172bc1819a6d3aef4ff7}{vz}}
+\begin{DoxyCompactList}\small\item\em components of velocity field \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a04496a360d3e29065d8a61a81da90f9f}\label{structCELLS_a04496a360d3e29065d8a61a81da90f9f}} 
+bool $\ast$ \mbox{\hyperlink{structCELLS_a04496a360d3e29065d8a61a81da90f9f}{boundary}}
+\begin{DoxyCompactList}\small\item\em true if boundary cell \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a1c40d2d73b81aee2de6d74064f4d32d1}\label{structCELLS_a1c40d2d73b81aee2de6d74064f4d32d1}} 
+bool $\ast$ \mbox{\hyperlink{structCELLS_a1c40d2d73b81aee2de6d74064f4d32d1}{mirror}}
+\begin{DoxyCompactList}\small\item\em true if reflective boundary \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a47d6e0ed045d94afe0eddefe58fd5f5c}\label{structCELLS_a47d6e0ed045d94afe0eddefe58fd5f5c}} 
+long $\ast$ \mbox{\hyperlink{structCELLS_a47d6e0ed045d94afe0eddefe58fd5f5c}{neighbor}}
+\begin{DoxyCompactList}\small\item\em cell numbers of neighors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a2ac51bb380e31381da381c26981cee1f}\label{structCELLS_a2ac51bb380e31381da381c26981cee1f}} 
+long $\ast$ \mbox{\hyperlink{structCELLS_a2ac51bb380e31381da381c26981cee1f}{n\+\_\+neighbors}}
+\begin{DoxyCompactList}\small\item\em number of neighbors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a24fdc09b67570b3c0e8e2afd07ff6cdc}\label{structCELLS_a24fdc09b67570b3c0e8e2afd07ff6cdc}} 
+long $\ast$ \mbox{\hyperlink{structCELLS_a24fdc09b67570b3c0e8e2afd07ff6cdc}{id}}
+\begin{DoxyCompactList}\small\item\em cell nr of associated cell in other grid \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a32a3af7e81ee896ec88407c4b4606bb9}\label{structCELLS_a32a3af7e81ee896ec88407c4b4606bb9}} 
+bool $\ast$ \mbox{\hyperlink{structCELLS_a32a3af7e81ee896ec88407c4b4606bb9}{removed}}
+\begin{DoxyCompactList}\small\item\em true when cell is removed \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a77564f251d6a4453e484f27453f96a50}\label{structCELLS_a77564f251d6a4453e484f27453f96a50}} 
+double {\bfseries x} \mbox{[}Ncells\mbox{]}
+\item 
+\mbox{\Hypertarget{structCELLS_abed732a5c59e94ee71a1c9c3242152cf}\label{structCELLS_abed732a5c59e94ee71a1c9c3242152cf}} 
+double {\bfseries y} \mbox{[}Ncells\mbox{]}
+\item 
+\mbox{\Hypertarget{structCELLS_a64f71acee655d58e3f63050f0aef8379}\label{structCELLS_a64f71acee655d58e3f63050f0aef8379}} 
+double \mbox{\hyperlink{structCELLS_a64f71acee655d58e3f63050f0aef8379}{z}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em coordinates of cell center \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_acc744b7c9a7750581f77b08ffddd23e9}\label{structCELLS_acc744b7c9a7750581f77b08ffddd23e9}} 
+double {\bfseries vx} \mbox{[}Ncells\mbox{]}
+\item 
+\mbox{\Hypertarget{structCELLS_a91d2e1ed9842a7081004ed1299a0f089}\label{structCELLS_a91d2e1ed9842a7081004ed1299a0f089}} 
+double {\bfseries vy} \mbox{[}Ncells\mbox{]}
+\item 
+\mbox{\Hypertarget{structCELLS_a13e57bdfb51169ee7f01868210473e47}\label{structCELLS_a13e57bdfb51169ee7f01868210473e47}} 
+double \mbox{\hyperlink{structCELLS_a13e57bdfb51169ee7f01868210473e47}{vz}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em components of velocity field \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_af24ef37883ef24944d9b152ffb0c4cbb}\label{structCELLS_af24ef37883ef24944d9b152ffb0c4cbb}} 
+bool \mbox{\hyperlink{structCELLS_af24ef37883ef24944d9b152ffb0c4cbb}{boundary}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em true if boundary cell \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a8b5f3445af867b28352d962986dd69e0}\label{structCELLS_a8b5f3445af867b28352d962986dd69e0}} 
+bool \mbox{\hyperlink{structCELLS_a8b5f3445af867b28352d962986dd69e0}{mirror}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em true if reflective boundary \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a2750bb5957e73f6a1d62a049fd5f8f48}\label{structCELLS_a2750bb5957e73f6a1d62a049fd5f8f48}} 
+long \mbox{\hyperlink{structCELLS_a2750bb5957e73f6a1d62a049fd5f8f48}{neighbor}} \mbox{[}Ncells $\ast$Nrays\mbox{]}
+\begin{DoxyCompactList}\small\item\em cell numbers of neighors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a8112fcb9a52a6883574a5ab274277f2e}\label{structCELLS_a8112fcb9a52a6883574a5ab274277f2e}} 
+long \mbox{\hyperlink{structCELLS_a8112fcb9a52a6883574a5ab274277f2e}{n\+\_\+neighbors}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em number of neighbors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_a05305565dce0a09449307f165a98799c}\label{structCELLS_a05305565dce0a09449307f165a98799c}} 
+long \mbox{\hyperlink{structCELLS_a05305565dce0a09449307f165a98799c}{id}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em cell nr of associated cell in other grid \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCELLS_affdae8cfe8261f6dfadb7de3390bba43}\label{structCELLS_affdae8cfe8261f6dfadb7de3390bba43}} 
+bool \mbox{\hyperlink{structCELLS_affdae8cfe8261f6dfadb7de3390bba43}{removed}} \mbox{[}Ncells\mbox{]}
+\begin{DoxyCompactList}\small\item\em true when cell is removed \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$int Dimension, long Nrays$>$\newline
+struct C\+E\+L\+L\+S$<$ Dimension, Nrays $>$}
+
+\mbox{\hyperlink{structCELLS}{C\+E\+L\+LS}}\+: class (template) containing all geometric data and functions.
+\begin{DoxyItemize}
+\item A\+S\+S\+U\+M\+I\+NG Ncells is not known at compile time! 
+\begin{DoxyParams}{Parameters}
+{\em Dimension} & spacial dimension of grid \\
+\hline
+{\em Nrays} & number of rays oroginating from each cell \\
+\hline
+{\em Fixed\+Ncells} & true if number of cells is know at compile time \\
+\hline
+{\em Ncells} & number of cells (fixed in this case)\\
+\hline
+\end{DoxyParams}
+\mbox{\hyperlink{structCELLS}{C\+E\+L\+LS}}\+: class (template) containing all geometric data and functions.
+\item A\+S\+S\+U\+M\+I\+NG Ncells is known at compile time! 
+\begin{DoxyParams}{Parameters}
+{\em Dimension} & spacial dimension of grid \\
+\hline
+{\em Nrays} & number of rays oroginating from each cell \\
+\hline
+{\em Fixed\+Ncells} & true if number of cells is know at compile time \\
+\hline
+{\em Ncells} & number of cells (fixed in this case) \\
+\hline
+\end{DoxyParams}
+
+\end{DoxyItemize}
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/\+Radiative\+Transfer/src/cells.\+hpp\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/\+Radiative\+Transfer/src/cells\+\_\+f.\+hpp\end{DoxyCompactItemize}

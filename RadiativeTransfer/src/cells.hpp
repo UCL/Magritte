@@ -38,9 +38,6 @@ struct CELLS
   bool *boundary;                 ///< true if boundary cell
   bool *mirror;                   ///< true if reflective boundary
 
-  long   *endpoint;               ///< cell numbers of ray endings
-  double *Z;                      ///< distance from cell to boundary
-
   long *neighbor;                 ///< cell numbers of neighors
   long *n_neighbors;              ///< number of neighbors
 
@@ -55,6 +52,8 @@ struct CELLS
   int initialize ();                                                        ///< Initializemembers
 
   long next (long origin, long ray, long current, double *Z, double *dZ);   ///< Next cell on ray
+
+  double relative_velocity (long origin, long r, long current);             ///< relative velocity
 
 };
 

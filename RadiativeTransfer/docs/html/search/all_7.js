@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['rays',['RAYS',['../structRAYS.html',1,'RAYS&lt; dimension, Nrays &gt;'],['../structRAYS.html#a45fc0b991b631af8f470f838e15c15d7',1,'RAYS::RAYS()']]],
-  ['rays_3c_20dimension_2c_20nrays_20_3e',['RAYS&lt; Dimension, Nrays &gt;',['../structRAYS.html',1,'']]],
-  ['removed',['removed',['../classCELLS.html#a7a01a0cd4967ccdd5daf226e1bfab2e1',1,'CELLS']]]
+  ['vz',['vz',['../structCELLS.html#a5bbea38ec85a172bc1819a6d3aef4ff7',1,'CELLS::vz()'],['../structCELLS.html#a13e57bdfb51169ee7f01868210473e47',1,'CELLS::vz()']]]
 ];

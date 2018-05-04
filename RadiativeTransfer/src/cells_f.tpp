@@ -40,8 +40,6 @@ int CELLS <Dimension, Nrays, Ncells> ::
     for (long r = 0; r < Nrays; r++)
     {
       neighbor[RINDEX(p,r)] = 0;
-      endpoint[RINDEX(p,r)] = 0;
-             Z[RINDEX(p,r)] = 0.0;
     }
 
     vx[p] = 0.0;

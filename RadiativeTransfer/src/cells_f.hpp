@@ -38,9 +38,6 @@ struct CELLS
   bool boundary[Ncells];                       ///< true if boundary cell
   bool   mirror[Ncells];                       ///< true if reflective boundary
 
-  long endpoint[Ncells*Nrays];                 ///< cell numbers of ray endings
-  double      Z[Ncells*Nrays];                 ///< distance from cell to boundary
-
   long    neighbor[Ncells*Nrays];              ///< cell numbers of neighors
   long n_neighbors[Ncells];                    ///< number of neighbors
 

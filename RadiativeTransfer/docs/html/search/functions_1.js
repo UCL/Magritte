@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['initialize',['initialize',['../classCELLS.html#a09e52d0da2feba7dba6af80bbe83eb50',1,'CELLS']]]
+  ['initialize',['initialize',['../structCELLS.html#ab089fb695e506952925b2cb4861aecd0',1,'CELLS::initialize()'],['../structCELLS.html#ab089fb695e506952925b2cb4861aecd0',1,'CELLS::initialize()']]]
 ];

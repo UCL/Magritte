@@ -13,6 +13,9 @@ if( OPENMP_FOUND )
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}" )
 endif()
 
+# Include source directory to find Eigen
+include_directories(../src)
+
 # # Execute setup
 # add_custom_target(MAKE_SETUP ALL
 #                   COMMAND python setup.py ${CMAKE_CURRENT_BINARY_DIR}/
@@ -22,29 +25,44 @@ endif()
 # add_subdirectory( ${CMAKE_CURRENT_BINARY_DIR}/../src/
 # ${CMAKE_CURRENT_BINARY_DIR}/RADIATIVE_TRANSFER )
 
+# Create test_main.cpp lib (as advised in Catch docs)
+add_library( _TEST_MAIN
+test_main.cpp )
+
 # Create executable to test rays
 add_executable( test_rays.exe
 test_rays.cpp )
 target_link_libraries( test_rays.exe
-_RADIATIVE_TRANSFER )
+_RADIATIVE_TRANSFER
+_TEST_MAIN )
 
 # Create executable to test cells_f
 add_executable( test_cells_f.exe
 test_cells_f.cpp )
 target_link_libraries( test_cells_f.exe
-_RADIATIVE_TRANSFER )
+_RADIATIVE_TRANSFER
+_TEST_MAIN )
 
 # # Create executable to test cells
 add_executable( test_cells.exe
 test_cells.cpp )
 target_link_libraries( test_cells.exe
-_RADIATIVE_TRANSFER )
+_RADIATIVE_TRANSFER
+_TEST_MAIN )
 
 # Create executable to test ray_tracing
 add_executable( test_ray_tracing.exe
 test_ray_tracing.cpp )
 target_link_libraries( test_ray_tracing.exe
-_RADIATIVE_TRANSFER )
+_RADIATIVE_TRANSFER
+_TEST_MAIN )
+
+# Create executable to test feautrier solver
+add_executable( test_feautrier.exe
+test_feautrier.cpp )
+target_link_libraries( test_feautrier.exe
+_RADIATIVE_TRANSFER
+_TEST_MAIN )
 
 
 # Ensure test_ray_tracing.hpp depends on setup command defined above

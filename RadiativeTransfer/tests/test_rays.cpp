@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string>
 
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #include "../src/rays.hpp"
@@ -23,6 +22,7 @@ TEST_CASE ("RAYS constructor 1D")
 
   const RAYS <Dimension, Nrays> rays;
 
+
   SECTION ("Vector components of rays")
   {
     CHECK (Approx(rays.x[0]).epsilon(EPS) == 1.0);
@@ -33,6 +33,7 @@ TEST_CASE ("RAYS constructor 1D")
     CHECK (Approx(rays.y[1]).epsilon(EPS) ==  0.0);
     CHECK (Approx(rays.z[1]).epsilon(EPS) ==  0.0);
   }
+
 
   SECTION ("Antipodal rays")
   {
@@ -50,6 +51,7 @@ TEST_CASE ("RAYS constructor 2D")
 
   const RAYS <Dimension, Nrays> rays;
 
+
   SECTION ("Vector components of rays")
   {
     CHECK (Approx(rays.x[0]).epsilon(EPS) == 1.0);
@@ -60,6 +62,7 @@ TEST_CASE ("RAYS constructor 2D")
     CHECK (Approx(rays.y[4]).epsilon(EPS) ==  0.0);
     CHECK (Approx(rays.z[4]).epsilon(EPS) ==  0.0);
   }
+
 
   SECTION ("Antipodal rays")
   {
@@ -81,6 +84,7 @@ TEST_CASE ("RAYS constructor 3D")
 
   const RAYS <Dimension, Nrays> rays;
 
+
   SECTION ("Antipodal rays")
   {
     for (long r = 0; r < Nrays; r++)
@@ -92,6 +96,7 @@ TEST_CASE ("RAYS constructor 3D")
       CHECK (Approx(rays.z[r]).epsilon(EPS) == -rays.z[ar]);
     }
   }
+
 
   SECTION ("xy mirror rays")
   {
