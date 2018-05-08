@@ -42,6 +42,7 @@ CELLS (long number_of_cells)
 
 
 
+
 /// Destructor for CELLS: frees allocated memory
 ////////////////////////////////////////////////
 
@@ -68,6 +69,7 @@ CELLS <Dimension, Nrays> ::
   delete [] mirror;
 
 }   // END OF DESTRUCTOR
+
 
 
 
@@ -119,6 +121,7 @@ int CELLS <Dimension, Nrays> ::
   return (0);
 
 }
+
 
 
 
@@ -182,6 +185,7 @@ long CELLS <Dimension, Nrays> ::
   return next;
 
 }
+
 
 
 

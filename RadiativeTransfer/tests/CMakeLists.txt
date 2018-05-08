@@ -64,6 +64,12 @@ target_link_libraries( test_feautrier.exe
 _RADIATIVE_TRANSFER
 _TEST_MAIN )
 
+# Create executable to test radiative transfer
+add_executable( test_RadiativeTransfer.exe
+test_RadiativeTransfer.cpp )
+target_link_libraries( test_RadiativeTransfer.exe
+_RADIATIVE_TRANSFER
+_TEST_MAIN )
 
 # Ensure test_ray_tracing.hpp depends on setup command defined above
 # add_dependencies( test_ray_tracing.exe

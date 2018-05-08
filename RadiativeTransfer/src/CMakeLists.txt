@@ -1,4 +1,4 @@
-# CMakeLists.txt for Magritte: radiative_transfer (/src directory)
+# CMakeLists.txt for Magritte: RadiativeTransfer (/src directory)
 # ----------------------------------------------------------------
 
 # Add compiler flags
@@ -23,6 +23,7 @@ add_library( _RADIATIVE_TRANSFER
 rays.hpp
 cells.hpp
 cells_f.hpp
+RadiativeTransfer.hpp
 feautrier.cpp )
 
 # Link HEALPix library
