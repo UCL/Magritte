@@ -43,8 +43,8 @@ CELLS (long number_of_cells)
 
 
 
-/// Destructor for CELLS: frees allocated memory
-////////////////////////////////////////////////
+///  Destructor for CELLS: frees allocated memory
+/////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 CELLS <Dimension, Nrays> ::
@@ -73,8 +73,8 @@ CELLS <Dimension, Nrays> ::
 
 
 
-/// initialize: initialize cells with zeros or falses
-/////////////////////////////////////////////////////
+///  initialize: initialize cells with zeros or falses
+//////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 int CELLS <Dimension, Nrays> ::

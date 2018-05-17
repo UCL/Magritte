@@ -36,14 +36,7 @@ target_link_libraries( test_rays.exe
 _RADIATIVE_TRANSFER
 _TEST_MAIN )
 
-# Create executable to test cells_f
-add_executable( test_cells_f.exe
-test_cells_f.cpp )
-target_link_libraries( test_cells_f.exe
-_RADIATIVE_TRANSFER
-_TEST_MAIN )
-
-# # Create executable to test cells
+# Create executable to test cells
 add_executable( test_cells.exe
 test_cells.cpp )
 target_link_libraries( test_cells.exe
@@ -58,9 +51,9 @@ _RADIATIVE_TRANSFER
 _TEST_MAIN )
 
 # Create executable to test feautrier solver
-add_executable( test_feautrier.exe
-test_feautrier.cpp )
-target_link_libraries( test_feautrier.exe
+add_executable( test_solve_ray.exe
+test_solve_ray.cpp )
+target_link_libraries( test_solve_ray.exe
 _RADIATIVE_TRANSFER
 _TEST_MAIN )
 

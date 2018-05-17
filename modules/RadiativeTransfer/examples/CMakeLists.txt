@@ -25,9 +25,9 @@ include_directories(../src)
 # add_subdirectory( ${CMAKE_CURRENT_BINARY_DIR}/../src/
 # ${CMAKE_CURRENT_BINARY_DIR}/RADIATIVE_TRANSFER )
 
-add_executable( example_feautrier.exe 
-example_feautrier.cpp )
-target_link_libraries( example_feautrier.exe
+add_executable( example_solve_ray.exe 
+example_solve_ray.cpp )
+target_link_libraries( example_solve_ray.exe
 _RADIATIVE_TRANSFER )
 
 add_executable( example_RadiativeTransfer.exe

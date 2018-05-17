@@ -31,10 +31,10 @@ RADIATION :: RADIATION (long ncells_loc, long nrays_loc, long nfreq_loc)
   	for (long p = 0; p < ncells; p++)
   	{
 	    for (long r = 0; r < nrays; r++)
-			{
-				U_d[RCF(r,p,y)] = 0.0;
-				V_d[RCF(r,p,y)] = 0.0;
-			}	
+      {
+        U_d[RCF(r,p,y)] = 0.0;
+        V_d[RCF(r,p,y)] = 0.0;
+      }	
 	  }
 	}
 
@@ -46,10 +46,10 @@ RADIATION :: RADIATION (long ncells_loc, long nrays_loc, long nfreq_loc)
 RADIATION :: ~RADIATION ()
 {
 
-	delete [] frequencies;
+  delete [] frequencies;
 
-	delete [] U_d;
-	delete [] V_d;
+  delete [] U_d;
+  delete [] V_d;
 
 }   // END OF DESTRUCTOR
 

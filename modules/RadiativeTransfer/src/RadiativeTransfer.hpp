@@ -8,24 +8,23 @@
 #define __RADIATIVE_TRANSFER_HPP_INCLUDED__
 
 
-#include <iostream>
-
-
-#include "declarations.hpp"
 #include "cells.hpp"
 #include "radiation.hpp"
 #include "medium.hpp"
 
 
+///  RadiativeTransfer: solves the transfer equation for the radiation field
+///    @param[in] *cells: pointer to the geometric cell data containing the grid
+///    @param[in/out] *radiation: pointer to (previously calculated) radiation field
+///    @param[in] *medium: pointer to the opacity and emissivity data of the medium
+///    @param[in] nrays: number of rays that are calculated
+///    @param[in] *rays: pointer to the numbers of the rays that are calculated
+///    @param[out] *J: mean intesity of the radiation field
+////////////////////////////////////////////////////////////////////////////////////
+
 template <int Dimension, long Nrays, long Nfreq>
 int RadiativeTransfer (CELLS <Dimension, Nrays> *cells, RADIATION *radiation,
 											 MEDIUM *medium, long nrays, long *rays, double *J);
-
-
-template <int Dimension, long Nrays, long Nfreq>
-int set_up_ray (CELLS <Dimension, Nrays> *cells, RADIATION *radiation,
-		            MEDIUM *medium, long o, long r, long f, double sign,
-	              long *n, double *Su, double *Sv, double *dtau);
 
 
 #include "RadiativeTransfer.tpp"

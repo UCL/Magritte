@@ -36,14 +36,25 @@ struct MEDIUM
 	~MEDIUM ();
 
 
+	// Opacites
+
 	double chi_line (long p, double nu);
 	double chi_cont (long p, double nu);
   double chi_scat (long p, double nu);
 
+
+	// Emissivities
+
 	double eta_line (long p, double nu);
 	double eta_cont (long p, double nu);
 
+
+	// Scattering phase
+
 	double Phi_scat (long r1, long r2, double nu);
+
+
+	// Line profile
 
   double profile (long o, double freq, double line_freq);
 

@@ -10,8 +10,8 @@
 #include "HEALPix/chealpix.h"
 
 
-/// Constructor for RAYS
-////////////////////////
+///  Constructor for RAYS
+/////////////////////////
 
 template <int Dimension, long Nrays>
 RAYS <Dimension, Nrays> ::

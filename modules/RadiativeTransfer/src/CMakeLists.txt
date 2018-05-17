@@ -22,12 +22,12 @@ include_directories(.)
 add_library( _RADIATIVE_TRANSFER
 rays.hpp
 cells.hpp
-cells_f.hpp
 medium.cpp
 radiation.cpp
 RadiativeTransfer.hpp
 interpolation.cpp
-feautrier.cpp )
+set_up_ray.hpp
+solve_ray.cpp )
 
 # Link HEALPix library
 target_link_libraries( _RADIATIVE_TRANSFER
