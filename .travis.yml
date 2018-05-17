@@ -11,7 +11,7 @@ addons:
       - cmake
 
 script:
-  - cd RadiativeTransfer
+  - cd modules/RadiativeTransfer
   - cmake .
   - make
   - cd tests
