@@ -44,36 +44,33 @@ TEST_CASE ("Ray setup")
 	long nfreq_c = 1;
 	long nfreq_s = 1;
 
-	CELLS <Dimension, Nrays> Cells (ncells);
-	CELLS <Dimension, Nrays> *cells = &Cells;
+	CELLS <Dimension, Nrays> cells (ncells);
 	
-	cells->initialize ();
+	cells.initialize ();
 
 
  
 	for (long p = 0; p < ncells; p++)
 	{
-		cells->x[p] = 1.23 * p;
+		cells.x[p] = 1.23 * p;
 	}
 
-  cells->boundary[0]        = true;
-  cells->boundary[ncells-1] = true;
+  cells.boundary[0]        = true;
+  cells.boundary[ncells-1] = true;
 
-	cells->neighbor[RINDEX(0,0)]        = 1;
-	cells->neighbor[RINDEX(ncells-1,0)] = ncells-2;
+	cells.neighbor[RINDEX(0,0)]        = 1;
+	cells.neighbor[RINDEX(ncells-1,0)] = ncells-2;
 
 
 	for (long p = 1; p < ncells-1; p++)
 	{
-		cells->neighbor[RINDEX(p,0)] = p-1;
-		cells->neighbor[RINDEX(p,1)] = p+1;
+		cells.neighbor[RINDEX(p,0)] = p-1;
+		cells.neighbor[RINDEX(p,1)] = p+1;
 	}
 
-  RADIATION Radiation (ncells, Nrays, Nfreq);
-	RADIATION *radiation = &Radiation;
+  RADIATION radiation (ncells, Nrays, Nfreq);
 
-	MEDIUM Medium (ncells, Nrays, nfreq_l, nfreq_c, nfreq_s);
-	MEDIUM *medium = &Medium;
+	MEDIUM medium (ncells, Nrays, nfreq_l, nfreq_c, nfreq_s);
 
 	long freq[Nfreq];
 	long rays[Nrays] = {0, 1};

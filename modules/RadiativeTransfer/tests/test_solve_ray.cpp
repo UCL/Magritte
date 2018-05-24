@@ -4,15 +4,16 @@
 // _________________________________________________________________________
 
 
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <vector>
+using namespace std;
 #include <Eigen/Core>
-#include <Eigen/Dense>
+using namespace Eigen;
 
 #include "catch.hpp"
 
-#include "../src/solve_ray.cpp"
+#include "../src/solve_ray.hpp"
 
 #define EPS 1.0E-4
 
@@ -32,7 +33,7 @@ double relative_error (double A, double B)
 ///    @param[in] i: index of point where Feautrier equation is to be evaluated
 ///////////////////////////////////////////////////////////////////////////////////
 
-double feautrier_error (long i, double *S, double *dtau, double *u)
+double feautrier_error (long i, vector<double>& S, vector<double>& dtau, vector<double>& u)
 {
 
   // Left hand side of Feautrier equation (d^2u / dtau^2 - u)
@@ -63,9 +64,9 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 
   long n;
 
-  double *S     = new double[ndep];
-  double *dtau  = new double[ndep];
-  double *u_sol = new double[ndep];
+  vector<double>     S (ndep);
+  vector<double>  dtau (ndep);
+  vector<double> u_sol (ndep);
 	
 
   for (long i = 0; i < ndep; i++)
@@ -74,12 +75,12 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
   }
 
 
-  double *u      = new double[ndep];
-  double *v      = new double[ndep];
-	double *u_prev = new double[ndep];
-	double *v_prev = new double[ndep];
+  vector<double>      u (ndep);
+  vector<double>      v (ndep);
+	vector<double> u_prev (ndep);
+	vector<double> v_prev (ndep);
 
-  Eigen::MatrixXd Lambda (ndep,ndep);
+  MatrixXd Lambda (ndep,ndep);
 	
 
 	long ndiag = ndep;
@@ -90,13 +91,13 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 		long n_r  = n;
 		long n_ar = ndep-n;
 
-    double    *Su_r = new double[n_r];
-    double    *Sv_r = new double[n_r];
-    double  *dtau_r = new double[n_r];
+    vector<double>   Su_r (n_r);
+    vector<double>   Sv_r (n_r);
+    vector<double> dtau_r (n_r);
 
-    double   *Su_ar = new double[n_ar];
-    double   *Sv_ar = new double[n_ar];
-    double *dtau_ar = new double[n_ar];
+    vector<double>   Su_ar (n_ar);
+    vector<double>   Sv_ar (n_ar);
+    vector<double> dtau_ar (n_ar);
 
 
     for (long m = 0; m < n_ar; m++)
@@ -116,7 +117,7 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 
     solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 				       n_ar, Su_ar, Sv_ar, dtau_ar,
-				       ndep, u, v, ndiag, Lambda);
+				       ndep, 1, u, v, ndiag, Lambda);
 
 
 		/* SECTION ("Feautrier equation") */
@@ -157,9 +158,12 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 	  {	
       // Check the definition of the Lambda operator (u = Lambda[S]) holds.   
 
-      Eigen::Map <Eigen::VectorXd> uu (u,ndep);
-      Eigen::Map <Eigen::VectorXd> vv (v,ndep);
-      Eigen::Map <Eigen::VectorXd> SS (S,ndep);
+			double *pu = &u[0];
+      Map<VectorXd> uu (pu,ndep);
+			double *pv = &v[0];
+      Map<VectorXd> vv (pv,ndep);
+			double *pS = &S[0];
+      Map<VectorXd> SS (pS,ndep);
   
       for (long m = 0; m < ndep; m++)
       {
@@ -168,23 +172,7 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
       }
 		}
 
-		
-   	delete [] Su_r;
-   	delete [] Sv_r;
-  	delete [] dtau_r;
-  	delete [] Su_ar;
-  	delete [] Sv_ar;
-  	delete [] dtau_ar;
   }
 
-
-  delete [] u;
-  delete [] v;
-  delete [] u_prev;
-  delete [] v_prev;
-
-  delete [] S;
-  delete [] dtau;
-  delete [] u_sol;
 
 }

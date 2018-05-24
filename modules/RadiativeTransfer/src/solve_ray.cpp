@@ -4,32 +4,36 @@
 // _________________________________________________________________________
 
 
-#include <math.h>
+#include <vector>
+using namespace std;
 #include <Eigen/Core>
+using namespace Eigen;
+
 #include "solve_ray.hpp"
 
 
 ///  solve_ray: solve radiative transfer equation using the Feautrier method
 ///  and the numerical scheme devised by Rybicki & Hummer (1991)
 ///    @param[in] n_r: number of points on ray r
-///    @param[in] *Su_r: pointer to source function for u along ray r
-///    @param[in] *Sv_r: pointer to source function for v along ray r
-///    @param[in] *dtau_r: pointer to optical depth increments along ray r
+///    @param[in] Su_r: pointer to source function for u along ray r
+///    @param[in] Sv_r: pointer to source function for v along ray r
+///    @param[in] dtau_r: pointer to optical depth increments along ray r
 ///    @param[in] n_ar: number of points on ray ar
-///    @param[in] *Su_ar: pointer to source function for u along ray ar
-///    @param[in] *Sv_ar: pointer to source function for v along ray ar
-///    @param[in] *dtau_ar: pointer to optical depth increments along ray ar
+///    @param[in] Su_ar: pointer to source function for u along ray ar
+///    @param[in] Sv_ar: pointer to source function for v along ray ar
+///    @param[in] dtau_ar: pointer to optical depth increments along ray ar
 ///    @param[in] ndep: total number of points on the combined ray r and ar
-///    @param[out] *u: pointer to resulting Feautrier mean intensity vector
-///    @param[out] *v: pointer to resulting Feautrier flux intensity vector
+///    @param[in] nfreq: number of frequency bins
+///    @param[out] u: pointer to resulting Feautrier mean intensity vector
+///    @param[out] v: pointer to resulting Feautrier flux intensity vector
 ///    @param[in] ndiag: degree of approximation in ALO (e.g. 0->diag, 1->tridiag)
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  double *Su_r,  double *Sv_r,  double *dtau_r,
-	             const long n_ar, double *Su_ar, double *Sv_ar, double *dtau_ar,
-	             const long ndep, double *u,     double *v,
-							 const long ndiag, Eigen::Ref <Eigen::MatrixXd> Lambda)
+int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  vector<double>& dtau_r,
+	             const long n_ar, vector<double>& Su_ar, vector<double>& Sv_ar, vector<double>& dtau_ar,
+	             const long ndep, const long nfreq,      vector<double>& u,     vector<double>& v,
+							 const long ndiag, Ref<MatrixXd> Lambda)
 {
 
 	double B0;                      // B[0]
@@ -37,10 +41,10 @@ int solve_ray (const long n_r,  double *Su_r,  double *Sv_r,  double *dtau_r,
   double Bd;                      // B[ndep-1]
 	double Bd_min_Ad;               // B[ndep-1] - A[ndep-1]
 
-  double *A = new double[ndep];   // A coefficient in Feautrier recursion relation
-  double *C = new double[ndep];   // C coefficient in Feautrier recursion relation
-  double *F = new double[ndep];   // helper variable from Rybicki & Hummer (1991)
-  double *G = new double[ndep];   // helper variable from Rybicki & Hummer (1991)
+  vector<double> A (ndep);   // A coefficient in Feautrier recursion relation
+	vector<double> C (ndep);   // C coefficient in Feautrier recursion relation
+  vector<double> F (ndep);   // helper variable from Rybicki & Hummer (1991)
+  vector<double> G (ndep);   // helper variable from Rybicki & Hummer (1991)
 
 
 
@@ -207,14 +211,6 @@ int solve_ray (const long n_r,  double *Su_r,  double *Sv_r,  double *dtau_r,
       Lambda(n,n-m) = Lambda(n-1,n-m) / (1.0 + G[n]);
     }
   }
-
-
-  // Free allocated memory for temporary variables
-
-  delete [] A;
-  delete [] C;
-  delete [] F;
-  delete [] G;
 
 
   return (0);

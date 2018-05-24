@@ -6,6 +6,8 @@
 
 #include <omp.h>
 #include <limits>
+#include <vector>
+using namespace std;
 
 #include "declarations.hpp"
 
@@ -21,54 +23,25 @@ CELLS (long number_of_cells)
 
   ncells = number_of_cells;
 
-  x = new double[ncells];
-  y = new double[ncells];
-  z = new double[ncells];
+  x.reserve(ncells);
+  y.reserve(ncells);
+  z.reserve(ncells);
 
-  vx = new double[ncells];
-  vy = new double[ncells];
-  vz = new double[ncells];
+  vx.reserve(ncells);
+  vy.reserve(ncells);
+  vz.reserve(ncells);
 
-  neighbor    = new long[ncells*Nrays];
-  n_neighbors = new long[ncells];
+  neighbor.reserve(ncells*Nrays);
+  n_neighbors.reserve(ncells);
 
-  id      = new long[ncells];
-  removed = new bool[ncells];
+  id.reserve(ncells);
+  removed.reserve(ncells);
 
-  boundary = new bool[ncells];
-  mirror   = new bool[ncells];
+  boundary.reserve(ncells);
+  mirror.reserve(ncells);
+
 
 }   // END OF CONSTRUCTOR
-
-
-
-
-///  Destructor for CELLS: frees allocated memory
-/////////////////////////////////////////////////
-
-template <int Dimension, long Nrays>
-CELLS <Dimension, Nrays> ::
-~CELLS ()
-{
-
-  delete [] x;
-  delete [] y;
-  delete [] z;
-
-  delete [] vx;
-  delete [] vy;
-  delete [] vz;
-
-  delete [] neighbor;
-  delete [] n_neighbors;
-
-  delete [] id;
-  delete [] removed;
-
-  delete [] boundary;
-  delete [] mirror;
-
-}   // END OF DESTRUCTOR
 
 
 
@@ -129,19 +102,19 @@ int CELLS <Dimension, Nrays> ::
 ///    @param[in] origin: number of cell from which the ray originates
 ///    @param[in] r: number of the ray along which we are looking
 ///    @param[in] current: number of the cell put last on the ray
-///    @param[in/out] *Z: pointer to the current distance along the ray
-///    @param[out] *dZ: pointer to the distance increment to the next ray
+///    @param[in/out] Z: reference to the current distance along the ray
+///    @param[out] dZ: reference to the distance increment to the next ray
 ///    @return number of the next cell on the ray after the current cell
 /////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 long CELLS <Dimension, Nrays> ::
-     next (long origin, long r, long current, double *Z, double *dZ)
+     next (long origin, long r, long current, double& Z, double& dZ)
 {
 
   // Pick neighbor on "right side" closest to ray
 
-  double D_min = std::numeric_limits <double> :: max();   // Initialize to "infinity"
+  double D_min = numeric_limits<double> :: max();   // Initialize to "infinity"
 
   long next = ncells;   // return ncells when there is no next cell
 
@@ -160,7 +133,7 @@ long CELLS <Dimension, Nrays> ::
                    + rvec[1]*rays.y[r]
                    + rvec[2]*rays.z[r];
 
-    if (*Z < Z_new)
+    if (Z < Z_new)
     {
       double rvec2 = rvec[0]*rvec[0] + rvec[1]*rvec[1] + rvec[2]*rvec[2];
 
@@ -170,7 +143,7 @@ long CELLS <Dimension, Nrays> ::
       {
         D_min = D;
         next  = nb;
-        *dZ   = Z_new - *Z;   // such that dZ > 0.0
+        dZ    = Z_new - Z;   // such that dZ > 0.0
       }
     }
 
@@ -179,7 +152,7 @@ long CELLS <Dimension, Nrays> ::
 
   // Update distance along ray
 
-  *Z = *Z + *dZ;
+  Z = Z + dZ;
 
 
   return next;
