@@ -34,7 +34,7 @@ using namespace Eigen;
 int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  vector<double>& dtau_r,
 	             const long n_ar, vector<double>& Su_ar, vector<double>& Sv_ar, vector<double>& dtau_ar,
 	             const long ndep, const long nfreq,      vector<double>& u,     vector<double>& v,
-							 const long ndiag, Ref<MatrixXd> Lambda)
+							 const long ndiag, vector<MatrixXd>& Lambda)
 {
 
 	vector<double> B0        (nfreq);   // B[CF(0,f)]
@@ -221,15 +221,23 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 
   // Calculate diagonal elements
 
-  Lambda(0,0) = (1.0 + G[CF(1,f)]) / (B0_min_C0[f] + B0[f]*G[CF(1,f)]);
+  for (long f = 0; f < nfreq; f++)
+	{
+    Lambda[f](0,0) = (1.0 + G[CF(1,f)]) / (B0_min_C0[f] + B0[f]*G[CF(1,f)]);
+	}
 
   for (long n = 1; n < ndep-1; n++)
   {
-    Lambda(n,n) = (1.0 + G[CF(n+1,f)]) / ((F[CF(n,f)] + G[CF(n+1,f)] + F[CF(n,f)]*G[CF(n+1,f)]) * C[CF(n,f)]);
+    for (long f = 0; f < nfreq; f++)
+		{
+      Lambda[f](n,n) = (1.0 + G[CF(n+1,f)]) / ((F[CF(n,f)] + G[CF(n+1,f)] + F[CF(n,f)]*G[CF(n+1,f)]) * C[CF(n,f)]);
+		}
   }
 
-  Lambda(ndep-1,ndep-1) = (1.0 + F[CF(ndep-2,f)]) / (Bd_min_Ad[f] + Bd[f]*F[CF(ndep-2,f)]);
-
+  for (long f = 0; f < nfreq; f++)
+	{
+    Lambda[f](ndep-1,ndep-1) = (1.0 + F[CF(ndep-2,f)]) / (Bd_min_Ad[f] + Bd[f]*F[CF(ndep-2,f)]);
+	}
 
   // Add upper-diagonal elements
 
@@ -237,7 +245,10 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
   {	  
     for (long n = 0; n < ndep-m; n++)
     {
-      Lambda(n,n+m) = Lambda(n+1,n+m) / (1.0 + F[CF(n,f)]);
+      for (long f = 0; f < nfreq; f++)
+			{
+        Lambda[f](n,n+m) = Lambda[f](n+1,n+m) / (1.0 + F[CF(n,f)]);
+			}
     }
   }
 
@@ -248,7 +259,10 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
   {	  
     for (long n = m; n < ndep; n++)
     {
-      Lambda(n,n-m) = Lambda(n-1,n-m) / (1.0 + G[CF(n,f)]);
+      for (long f = 0; f < nfreq; f++)
+      {    
+        Lambda[f](n,n-m) = Lambda[f](n-1,n-m) / (1.0 + G[CF(n,f)]);
+		  }
     }
   }
 

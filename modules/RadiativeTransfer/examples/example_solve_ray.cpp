@@ -42,8 +42,15 @@ int main (void)
 	vector<double> u_prev (ndep*nfreq);
 	vector<double> v_prev (ndep*nfreq);
 
-  MatrixXd Lambda (ndep,ndep);
-	
+  vector<MatrixXd> Lambda (nfreq);
+
+  MatrixXd temp (ndep,ndep);   
+
+
+  for (long f = 0; f < nfreq; f++)
+  {
+    Lambda[f] = temp;
+	}
 
 	long ndiag = ndep;
 

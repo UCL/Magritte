@@ -80,7 +80,11 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 	vector<double> u_prev (ndep);
 	vector<double> v_prev (ndep);
 
-  MatrixXd Lambda (ndep,ndep);
+	vector <MatrixXd> Lambda (1);
+	
+  MatrixXd temp (ndep,ndep);
+
+	Lambda[0] = temp;
 	
 
 	long ndiag = ndep;
@@ -167,8 +171,8 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
   
       for (long m = 0; m < ndep; m++)
       {
-  			CHECK (relative_error (uu(m), (Lambda*SS)(m)) == Approx(0.0).epsilon(EPS));
-  			CHECK (relative_error (vv(m), (Lambda*SS)(m)) == Approx(0.0).epsilon(EPS));
+  			CHECK (relative_error (uu(m), (Lambda[0]*SS)(m)) == Approx(0.0).epsilon(EPS));
+  			CHECK (relative_error (vv(m), (Lambda[0]*SS)(m)) == Approx(0.0).epsilon(EPS));
       }
 		}
 

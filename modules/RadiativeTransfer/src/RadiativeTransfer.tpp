@@ -83,9 +83,9 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, RADIATION& radiation,
     Eigen::MatrixXd Lambda (ndep,ndep);
 
 
-    solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
-				       n_ar, Su_ar, Sv_ar, dtau_ar,
-							 ndep, Nfreq, u, v, ndiag, Lambda);
+//    solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
+//				       n_ar, Su_ar, Sv_ar, dtau_ar,
+//							 ndep, Nfreq, u, v, ndiag, Lambda);
 
 
 	  if (n_ar > 0)
