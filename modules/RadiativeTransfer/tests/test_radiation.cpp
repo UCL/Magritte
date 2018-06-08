@@ -34,8 +34,7 @@ TEST_CASE ("Frequency interpolator")
 	  long nrays  = 4;
 	  long nfreq  = 20;
 
-    RADIATION Radiation (ncells, nrays, nfreq);
-  	RADIATION *radiation = &Radiation;
+    RADIATION radiation (ncells, nrays, nfreq);
 	}
   
 

@@ -68,17 +68,20 @@ TEST_CASE ("Ray setup")
 		cells.neighbor[RINDEX(p,1)] = p+1;
 	}
 
+	LINES lines;
+
+	SCATTERING scattering;
+
   RADIATION radiation (ncells, Nrays, Nfreq);
 
-	MEDIUM medium (ncells, Nrays, nfreq_l, nfreq_c, nfreq_s);
 
 	long freq[Nfreq];
 	long rays[Nrays] = {0, 1};
 
-	double *J = new double[Nfreq*ncells];
+
 
 	RadiativeTransfer <Dimension, Nrays, Nfreq>
-										(cells, radiation, medium, Nrays, rays, J);
+										(cells, Nrays, rays, lines, scattering, radiation);
 
 
   std::cout << "I'm fine" << std::endl;  

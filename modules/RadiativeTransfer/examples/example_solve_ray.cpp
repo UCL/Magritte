@@ -9,8 +9,7 @@
 #include <vector>
 using namespace std;
 
-#include "timer.hpp"
-
+#include "../src/timer.hpp"
 #include "../src/solve_ray.cpp"
 
 
@@ -37,10 +36,10 @@ int main (void)
   }
 
 
-  vector<double>      u (ndep*nfreq);
-  vector<double>      v (ndep*nfreq);
-	vector<double> u_prev (ndep*nfreq);
-	vector<double> v_prev (ndep*nfreq);
+  vector<vector<double>>      u (ndep, vector<double> (nfreq));
+  vector<vector<double>>      v (ndep, vector<double> (nfreq));
+	vector<vector<double>> u_prev (ndep, vector<double> (nfreq));
+	vector<vector<double>> v_prev (ndep, vector<double> (nfreq));
 
   vector<MatrixXd> Lambda (nfreq);
 
@@ -58,22 +57,22 @@ int main (void)
 	long n_r  = ndep/2;
 	long n_ar = ndep-n_r;
 
-  vector<double>    Su_r (n_r*nfreq);
-  vector<double>    Sv_r (n_r*nfreq);
-  vector<double>  dtau_r (n_r*nfreq);
+  vector<vector<double>>    Su_r (n_r, vector<double> (nfreq));
+  vector<vector<double>>    Sv_r (n_r, vector<double> (nfreq));
+  vector<vector<double>>  dtau_r (n_r, vector<double> (nfreq));
 
-  vector<double>   Su_ar (n_ar*nfreq);
-  vector<double>   Sv_ar (n_ar*nfreq);
-  vector<double> dtau_ar (n_ar*nfreq);
+  vector<vector<double>>   Su_ar (n_ar, vector<double> (nfreq));
+  vector<vector<double>>   Sv_ar (n_ar, vector<double> (nfreq));
+  vector<vector<double>> dtau_ar (n_ar, vector<double> (nfreq));
 
 
   for (long m = 0; m < n_ar; m++)
   {
 		for (long f = 0; f < nfreq; f++)
 		{
-  	    Su_ar[m*nfreq+f] =    S[n_ar-1-m];
-    	  Sv_ar[m*nfreq+f] =    S[n_ar-1-m];
-    	dtau_ar[m*nfreq+f] = dtau[n_ar-1-m];
+  	    Su_ar[m][f] =    S[n_ar-1-m];
+    	  Sv_ar[m][f] =    S[n_ar-1-m];
+    	dtau_ar[m][f] = dtau[n_ar-1-m];
 		}
 	}	
 		
@@ -81,9 +80,9 @@ int main (void)
 	{
 		for (long f = 0; f < nfreq; f++)
 		{	
-		    Su_r[m*nfreq+f] =    S[n_ar+m];
-		    Sv_r[m*nfreq+f] =    S[n_ar+m];
-		  dtau_r[m*nfreq+f] = dtau[n_ar+m];
+		    Su_r[m][f] =    S[n_ar+m];
+		    Sv_r[m][f] =    S[n_ar+m];
+		  dtau_r[m][f] = dtau[n_ar+m];
 		}
 	}
 

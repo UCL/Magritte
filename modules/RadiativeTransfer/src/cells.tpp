@@ -9,7 +9,7 @@
 #include <vector>
 using namespace std;
 
-#include "declarations.hpp"
+#include "cells.hpp"
 
 
 ///  Constructor for CELLS: Allocates memory for cell data
@@ -23,23 +23,39 @@ CELLS (long number_of_cells)
 
   ncells = number_of_cells;
 
-  x.reserve(ncells);
-  y.reserve(ncells);
-  z.reserve(ncells);
+  x.resize (ncells);
+  y.resize (ncells);
+  z.resize (ncells);
 
-  vx.reserve(ncells);
-  vy.reserve(ncells);
-  vz.reserve(ncells);
+  vx.resize (ncells);
+  vy.resize (ncells);
+  vz.resize (ncells);
 
-  neighbor.reserve(ncells*Nrays);
-  n_neighbors.reserve(ncells);
+  neighbor.resize (ncells);
+  n_neighbors.resize (ncells);
 
-  id.reserve(ncells);
-  removed.reserve(ncells);
+  id.resize (ncells);
+  removed.resize (ncells);
 
-  boundary.reserve(ncells);
-  mirror.reserve(ncells);
+  boundary.resize (ncells);
+  mirror.resize (ncells);
 
+# pragma omp parallel   \
+  default (none)
+  {
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+
+
+  for (long p = start; p < stop; p++)
+  {
+    neighbor[p].resize (Nrays);
+  }
+  } // end of OpenMP parallel region
 
 }   // END OF CONSTRUCTOR
 
@@ -75,7 +91,7 @@ int CELLS <Dimension, Nrays> ::
 
     for (long r = 0; r < Nrays; r++)
     {
-      neighbor[RINDEX(p,r)] = 0;
+      neighbor[p][r] = 0;
     }
 
     vx[p] = 0.0;
@@ -121,7 +137,7 @@ long CELLS <Dimension, Nrays> ::
 
   for (long n = 0; n < n_neighbors[current]; n++)
   {
-    long nb = neighbor[RINDEX(current,n)];
+    long nb = neighbor[current][n];
 
     double rvec[3];
 
@@ -178,21 +194,4 @@ double CELLS <Dimension, Nrays> ::
          + (vy[current] - vy[origin]) * rays.y[r]
          + (vz[current] - vz[origin]) * rays.z[r];
 
-}
-
-
-
-
-///  RC: index of vecotrized array where first two indices are ray and cell number
-///    @param[in] r: ray index
-///    @param[in] c: cell index    
-///    @param[in] f: arbitrary index (e.g. frequency)
-///    @return: index of vecotrized array
-//////////////////////////////////////////////////////////////////////////////////
-
-template <int Dimension, long Nrays>
-long CELLS <Dimension, Nrays> ::
-     RC (long r, long c, long f)
-{
-	return  Nrays*(ncells*r + c) + f;  
 }

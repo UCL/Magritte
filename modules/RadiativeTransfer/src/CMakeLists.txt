@@ -13,26 +13,37 @@ if(OPENMP_FOUND)
 endif()
 
 # Add HEALPix subdirectory
-add_subdirectory(HEALPix)
+add_subdirectory( HEALPix )
 
-# Include this directory to find Eigen
-include_directories(.)
+# Include directories for Eigen library
+include_directories( . )
+
+#Include directories for Lines library
+include_directories( ../.. )
 
 # Create a Radiative Transfer library
 add_library( _RADIATIVE_TRANSFER
+constants.hpp
 rays.hpp
 cells.hpp
-medium.cpp
+species.cpp
+temperature.cpp
+frequencies.cpp
+lines.cpp
+scattering.cpp
 radiation.cpp
+profile.cpp
 RadiativeTransfer.hpp
-interpolation.cpp
 set_up_ray.hpp
-solve_ray.cpp )
+solve_ray.cpp
+timer.hpp
+heapsort.cpp
+interpolation.cpp )
 
-# Link HEALPix library
+# Link libraries
 target_link_libraries( _RADIATIVE_TRANSFER
-_HEALPix )
+_HEALPix
+_LINES )
 
 # Set linker language
 set_target_properties( _RADIATIVE_TRANSFER PROPERTIES LINKER_LANGUAGE CXX )
-

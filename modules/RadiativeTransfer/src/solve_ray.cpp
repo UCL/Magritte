@@ -11,7 +11,6 @@ using namespace Eigen;
 
 #include "solve_ray.hpp"
 
-#define CF(c,f) ( nfreq*(c) + (f) )
 
 ///  solve_ray: solve radiative transfer equation using the Feautrier method
 ///  and the numerical scheme devised by Rybicki & Hummer (1991)
@@ -31,21 +30,21 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  vector<double>& dtau_r,
-	             const long n_ar, vector<double>& Su_ar, vector<double>& Sv_ar, vector<double>& dtau_ar,
-	             const long ndep, const long nfreq,      vector<double>& u,     vector<double>& v,
+int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<double>>& Sv_r,  vector<vector<double>>& dtau_r,
+	             const long n_ar, vector<vector<double>>& Su_ar, vector<vector<double>>& Sv_ar, vector<vector<double>>& dtau_ar,
+	             const long ndep, const long nfreq,              vector<vector<double>>& u,     vector<vector<double>>& v,
 							 const long ndiag, vector<MatrixXd>& Lambda)
 {
 
-	vector<double> B0        (nfreq);   // B[CF(0,f)]
-  vector<double> B0_min_C0 (nfreq);   // B[CF(0,f)] - C[CF(0,f)]
-  vector<double> Bd        (nfreq);   // B[CF(ndep-1,f)]
-	vector<double> Bd_min_Ad (nfreq);   // B[CF(ndep-1,f)] - A[CF(ndep-1,f)]
+	vector<double> B0        (nfreq);   // B[0][f]
+  vector<double> B0_min_C0 (nfreq);   // B[0][f] - C[0][f]
+  vector<double> Bd        (nfreq);   // B[ndep-1][f]
+	vector<double> Bd_min_Ad (nfreq);   // B[ndep-1][f] - A[ndep-1][f]
 
-  vector<double> A (ndep*nfreq);   // A coefficient in Feautrier recursion relation
-	vector<double> C (ndep*nfreq);   // C coefficient in Feautrier recursion relation
-  vector<double> F (ndep*nfreq);   // helper variable from Rybicki & Hummer (1991)
-  vector<double> G (ndep*nfreq);   // helper variable from Rybicki & Hummer (1991)
+  vector<vector<double>> A (ndep, vector<double> (nfreq));   // A coefficient in Feautrier recursion relation
+	vector<vector<double>> C (ndep, vector<double> (nfreq));   // C coefficient in Feautrier recursion relation
+  vector<vector<double>> F (ndep, vector<double> (nfreq));   // helper variable from Rybicki & Hummer (1991)
+  vector<vector<double>> G (ndep, vector<double> (nfreq));   // helper variable from Rybicki & Hummer (1991)
 
 
 
@@ -58,8 +57,8 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 	{
 		for (long f = 0; f < nfreq; f++)
 		{
-      A[CF(n_ar-1,f)] = 2.0 / ((dtau_ar[CF(0,f)] + dtau_r[CF(0,f)]) * dtau_ar[CF(0,f)]);
-      C[CF(n_ar-1,f)] = 2.0 / ((dtau_ar[CF(0,f)] + dtau_r[CF(0,f)]) * dtau_r[CF(0,f)]);
+      A[n_ar-1][f] = 2.0 / ((dtau_ar[0][f] + dtau_r[0][f]) * dtau_ar[0][f]);
+      C[n_ar-1][f] = 2.0 / ((dtau_ar[0][f] + dtau_r[0][f]) * dtau_r[0][f]);
 		}
 	}
 
@@ -68,19 +67,19 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 	{
 		for (long f = 0; f < nfreq; f++)
 		{
-      A[CF(0,f)] = 0.0;
-      C[CF(0,f)] = 2.0/(dtau_ar[CF(n_ar-1,f)]*dtau_ar[CF(n_ar-1,f)]);
+      A[0][f] = 0.0;
+      C[0][f] = 2.0/(dtau_ar[n_ar-1][f]*dtau_ar[n_ar-1][f]);
 
-      B0       [f] = 1.0 + 2.0/dtau_ar[CF(n_ar-1,f)] + 2.0/(dtau_ar[CF(n_ar-1,f)]*dtau_ar[CF(n_ar-1,f)]);
-      B0_min_C0[f] = 1.0 + 2.0/dtau_ar[CF(n_ar-1,f)];
+      B0       [f] = 1.0 + 2.0/dtau_ar[n_ar-1][f] + 2.0/(dtau_ar[n_ar-1][f]*dtau_ar[n_ar-1][f]);
+      B0_min_C0[f] = 1.0 + 2.0/dtau_ar[n_ar-1][f];
 		}
 
     for (long n = n_ar-1; n > 1; n--)
     {
 		  for (long f = 0; f < nfreq; f++)
 			{		
-        A[CF(n_ar-n,f)] = 2.0 / ((dtau_ar[CF(n-1,f)] + dtau_ar[CF(n-2,f)]) * dtau_ar[CF(n-1,f)]);
-        C[CF(n_ar-n,f)] = 2.0 / ((dtau_ar[CF(n-1,f)] + dtau_ar[CF(n-2,f)]) * dtau_ar[CF(n-2,f)]);
+        A[n_ar-n][f] = 2.0 / ((dtau_ar[n-1][f] + dtau_ar[n-2][f]) * dtau_ar[n-1][f]);
+        C[n_ar-n][f] = 2.0 / ((dtau_ar[n-1][f] + dtau_ar[n-2][f]) * dtau_ar[n-2][f]);
 			}
     }
 	}
@@ -92,18 +91,18 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 		{
 		  for (long f = 0; f < nfreq; f++)
 			{
-        A[CF(n_ar+n,f)] = 2.0 / ((dtau_r[CF(n,f)] + dtau_r[CF(n+1,f)]) * dtau_r[CF(n,f)]);
-        C[CF(n_ar+n,f)] = 2.0 / ((dtau_r[CF(n,f)] + dtau_r[CF(n+1,f)]) * dtau_r[CF(n+1,f)]);
+        A[n_ar+n][f] = 2.0 / ((dtau_r[n][f] + dtau_r[n+1][f]) * dtau_r[n][f]);
+        C[n_ar+n][f] = 2.0 / ((dtau_r[n][f] + dtau_r[n+1][f]) * dtau_r[n+1][f]);
 			}
     }
 
 	  for (long f = 0; f < nfreq; f++)
 		{
-      A[CF(ndep-1,f)] = 2.0/(dtau_r[CF(n_r-1,f)]*dtau_r[CF(n_r-1,f)]);
-      C[CF(ndep-1,f)] = 0.0;
+      A[ndep-1][f] = 2.0/(dtau_r[n_r-1][f]*dtau_r[n_r-1][f]);
+      C[ndep-1][f] = 0.0;
 
-      Bd       [f] = 1.0 + 2.0/dtau_r[CF(n_r-1,f)] + 2.0/(dtau_r[CF(n_r-1,f)]*dtau_r[CF(n_r-1,f)]);
-      Bd_min_Ad[f] = 1.0 + 2.0/dtau_r[CF(n_r-1,f)];
+      Bd       [f] = 1.0 + 2.0/dtau_r[n_r-1][f] + 2.0/(dtau_r[n_r-1][f]*dtau_r[n_r-1][f]);
+      Bd_min_Ad[f] = 1.0 + 2.0/dtau_r[n_r-1][f];
 		}
 	}
 
@@ -112,11 +111,11 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 	{
 	  for (long f = 0; f < nfreq; f++)
 		{
-      A[CF(0,f)] = 0.0;
-      C[CF(0,f)] = 2.0/(dtau_r[CF(0,f)]*dtau_r[CF(0,f)]);
+      A[0][f] = 0.0;
+      C[0][f] = 2.0/(dtau_r[0][f]*dtau_r[0][f]);
 
-      B0       [f] = 1.0 + 2.0/dtau_r[CF(0,f)] + 2.0/(dtau_r[CF(0,f)]*dtau_r[CF(0,f)]);
-      B0_min_C0[f] = 1.0 + 2.0/dtau_r[CF(0,f)];
+      B0       [f] = 1.0 + 2.0/dtau_r[0][f] + 2.0/(dtau_r[0][f]*dtau_r[0][f]);
+      B0_min_C0[f] = 1.0 + 2.0/dtau_r[0][f];
 		}
 	}
 
@@ -125,11 +124,11 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 	{
 	  for (long f = 0; f < nfreq; f++)
 		{
-      A[CF(ndep-1,f)] = 2.0/(dtau_ar[CF(0,f)]*dtau_ar[CF(0,f)]);
-      C[CF(ndep-1,f)] = 0.0;
+      A[ndep-1][f] = 2.0/(dtau_ar[0][f]*dtau_ar[0][f]);
+      C[ndep-1][f] = 0.0;
 
-      Bd       [f] = 1.0 + 2.0/dtau_ar[CF(0,f)] + 2.0/(dtau_ar[CF(0,f)]*dtau_ar[CF(0,f)]);
-      Bd_min_Ad[f] = 1.0 + 2.0/dtau_ar[CF(0,f)];
+      Bd       [f] = 1.0 + 2.0/dtau_ar[0][f] + 2.0/(dtau_ar[0][f]*dtau_ar[0][f]);
+      Bd_min_Ad[f] = 1.0 + 2.0/dtau_ar[0][f];
 		}
 	}
 
@@ -140,8 +139,8 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
   {
 	  for (long f = 0; f < nfreq; f++)
 		{
-      u[CF(n_ar-1-n,f)] = Su_ar[CF(n,f)];
-      v[CF(n_ar-1-n,f)] = Sv_ar[CF(n,f)];
+      u[n_ar-1-n][f] = Su_ar[n][f];
+      v[n_ar-1-n][f] = Sv_ar[n][f];
 		}
   }
 
@@ -149,8 +148,8 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
   {
 	  for (long f = 0; f < nfreq; f++)
 		{
-      u[CF(n_ar+n,f)] = Su_r[CF(n,f)];
-      v[CF(n_ar+n,f)] = Sv_r[CF(n,f)];
+      u[n_ar+n][f] = Su_r[n][f];
+      v[n_ar+n][f] = Sv_r[n][f];
 		}
   }
 
@@ -165,32 +164,32 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 
 	for (long f = 0; f < nfreq; f++)
 	{
-    u[CF(0,f)] = u[CF(0,f)] / B0[f];
-    v[CF(0,f)] = v[CF(0,f)] / B0[f];
+    u[0][f] = u[0][f] / B0[f];
+    v[0][f] = v[0][f] / B0[f];
 
-    F[CF(0,f)] = B0_min_C0[f] / C[CF(0,f)];
+    F[0][f] = B0_min_C0[f] / C[0][f];
 	}
 
   for (long n = 1; n < ndep-1; n++)
   {
 	  for (long f = 0; f < nfreq; f++)
 		{
-      F[CF(n,f)] = (1.0 + A[CF(n,f)]*F[CF(n-1,f)]/(1.0 + F[CF(n-1,f)])) / C[CF(n,f)];
+      F[n][f] = (1.0 + A[n][f]*F[n-1][f]/(1.0 + F[n-1][f])) / C[n][f];
 
-      u[CF(n,f)] = (u[CF(n,f)] + A[CF(n,f)]*u[CF(n-1,f)]) / ((1.0 + F[CF(n,f)]) * C[CF(n,f)]);
-      v[CF(n,f)] = (v[CF(n,f)] + A[CF(n,f)]*v[CF(n-1,f)]) / ((1.0 + F[CF(n,f)]) * C[CF(n,f)]);
+      u[n][f] = (u[n][f] + A[n][f]*u[n-1][f]) / ((1.0 + F[n][f]) * C[n][f]);
+      v[n][f] = (v[n][f] + A[n][f]*v[n-1][f]) / ((1.0 + F[n][f]) * C[n][f]);
 		}
   }
 
 	for (long f = 0; f < nfreq; f++)
 	{
-    u[CF(ndep-1,f)] = (u[CF(ndep-1,f)] + A[CF(ndep-1,f)]*u[CF(ndep-2,f)])
-                      / (Bd_min_Ad[f] + Bd[f]*F[CF(ndep-2,f)]) * (1.0 + F[CF(ndep-2,f)]);
+    u[ndep-1][f] = (u[ndep-1][f] + A[ndep-1][f]*u[ndep-2][f])
+                      / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (1.0 + F[ndep-2][f]);
 
-    v[CF(ndep-1,f)] = (v[CF(ndep-1,f)] + A[CF(ndep-1,f)]*v[CF(ndep-2,f)])
-                      / (Bd_min_Ad[f] + Bd[f]*F[CF(ndep-2,f)]) * (1.0 + F[CF(ndep-2,f)]);
+    v[ndep-1][f] = (v[ndep-1][f] + A[ndep-1][f]*v[ndep-2][f])
+                      / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (1.0 + F[ndep-2][f]);
   
-    G[CF(ndep-1,f)] = Bd_min_Ad[f] / A[CF(ndep-1,f)];
+    G[ndep-1][f] = Bd_min_Ad[f] / A[ndep-1][f];
 	}
 
 
@@ -200,17 +199,17 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
   {
 	  for (long f = 0; f < nfreq; f++)
 		{
-      u[CF(n,f)] = u[CF(n,f)] + u[CF(n+1,f)]/(1.0+F[CF(n,f)]);
-      v[CF(n,f)] = v[CF(n,f)] + v[CF(n+1,f)]/(1.0+F[CF(n,f)]);
+      u[n][f] = u[n][f] + u[n+1][f]/(1.0+F[n][f]);
+      v[n][f] = v[n][f] + v[n+1][f]/(1.0+F[n][f]);
 
-      G[CF(n,f)] = (1.0 + C[CF(n,f)]*G[CF(n+1,f)]/(1.0+G[CF(n+1,f)])) / A[CF(n,f)];
+      G[n][f] = (1.0 + C[n][f]*G[n+1][f]/(1.0+G[n+1][f])) / A[n][f];
 		}
   }
 
   for (long f = 0; f < nfreq; f++)
 	{
-    u[CF(0,f)] = u[CF(0,f)] + u[CF(1,f)]/(1.0+F[CF(0,f)]);
-    v[CF(0,f)] = v[CF(0,f)] + v[CF(1,f)]/(1.0+F[CF(0,f)]);
+    u[0][f] = u[0][f] + u[1][f]/(1.0+F[0][f]);
+    v[0][f] = v[0][f] + v[1][f]/(1.0+F[0][f]);
 	}
 
 
@@ -223,20 +222,20 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
 
   for (long f = 0; f < nfreq; f++)
 	{
-    Lambda[f](0,0) = (1.0 + G[CF(1,f)]) / (B0_min_C0[f] + B0[f]*G[CF(1,f)]);
+    Lambda[f](0,0) = (1.0 + G[1][f]) / (B0_min_C0[f] + B0[f]*G[1][f]);
 	}
 
   for (long n = 1; n < ndep-1; n++)
   {
     for (long f = 0; f < nfreq; f++)
 		{
-      Lambda[f](n,n) = (1.0 + G[CF(n+1,f)]) / ((F[CF(n,f)] + G[CF(n+1,f)] + F[CF(n,f)]*G[CF(n+1,f)]) * C[CF(n,f)]);
+      Lambda[f](n,n) = (1.0 + G[n+1][f]) / ((F[n][f] + G[n+1][f] + F[n][f]*G[n+1][f]) * C[n][f]);
 		}
   }
 
   for (long f = 0; f < nfreq; f++)
 	{
-    Lambda[f](ndep-1,ndep-1) = (1.0 + F[CF(ndep-2,f)]) / (Bd_min_Ad[f] + Bd[f]*F[CF(ndep-2,f)]);
+    Lambda[f](ndep-1,ndep-1) = (1.0 + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
 	}
 
   // Add upper-diagonal elements
@@ -247,7 +246,7 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
     {
       for (long f = 0; f < nfreq; f++)
 			{
-        Lambda[f](n,n+m) = Lambda[f](n+1,n+m) / (1.0 + F[CF(n,f)]);
+        Lambda[f](n,n+m) = Lambda[f](n+1,n+m) / (1.0 + F[n][f]);
 			}
     }
   }
@@ -261,7 +260,7 @@ int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  ve
     {
       for (long f = 0; f < nfreq; f++)
       {    
-        Lambda[f](n,n-m) = Lambda[f](n-1,n-m) / (1.0 + G[CF(n,f)]);
+        Lambda[f](n,n-m) = Lambda[f](n-1,n-m) / (1.0 + G[n][f]);
 		  }
     }
   }

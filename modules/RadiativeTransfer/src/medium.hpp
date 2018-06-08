@@ -8,55 +8,40 @@
 #define __MEDIUM_HPP_INCLUDED__
 
 
+#include <vector>
+using namespace std;
+
+
 struct MEDIUM
 {
 
-	long nfreq_line;
-	long nfreq_cont;
-	long nfreq_scat;
+	long nfreq_cont;   ///< total number of continuum frequencies
+	long nfreq_scat;   ///< total number of 
 
-	double *freq_line;
-	double *freq_cont;
-	double *freq_scat;
+	vector<vector<double>> freq_line;
+	vector<double> freq_cont;
+	vector<double> freq_scat;
 
-	double *temperature_gas;
+	vector<vector<double>> opacity_cont;
 
-	double *opacity_line;
-	double *opacity_cont;
-	double *opacity_scat;
-
-	double *phase_scat;
-
-	double *emissivity_line;
-	double *emissivity_cont;
+	vector<vector<double>> emissivity_cont;
 
 
   MEDIUM (long ncells, long nrays, long nfreq_l, long nfreq_c, long nfreq_s);      
 
-	~MEDIUM ();
-
 
 	// Opacites
 
-	double chi_line (long p, double nu);
-	double chi_cont (long p, double nu);
-  double chi_scat (long p, double nu);
+	int add_chi_line (long p, vector<double> frequencies, vector<double>& chi);
+	int add_chi_cont (long p, vector<double> frequencies, vector<double>& chi);
+  int add_chi_scat (long p, vector<double> frequencies, vector<double>& chi);
 
 
 	// Emissivities
 
-	double eta_line (long p, double nu);
-	double eta_cont (long p, double nu);
+	int add_eta_line (long p, vector<double> frequencies, vector<double>& eta);
+	int add_eta_cont (long p, vector<double> frequencies, vector<double>& eta);
 
-
-	// Scattering phase
-
-	double Phi_scat (long r1, long r2, double nu);
-
-
-	// Line profile
-
-  double profile (long o, double freq, double line_freq);
 
 };
 

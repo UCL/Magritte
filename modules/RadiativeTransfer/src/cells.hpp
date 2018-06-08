@@ -11,7 +11,6 @@
 #include <vector>
 using namespace std;
 
-#include "declarations.hpp"
 #include "rays.hpp"
 
 
@@ -38,8 +37,8 @@ struct CELLS
   vector<bool> boundary;                ///< true if boundary cell
   vector<bool> mirror;                  ///< true if reflective boundary
 
-  vector<long> neighbor;                ///< cell numbers of neighors
   vector<long> n_neighbors;             ///< number of neighbors
+  vector<vector<long>> neighbor;        ///< cell numbers of neighors
 
   vector<long> id;                      ///< cell nr of associated cell in other grid
   vector<bool> removed;                 ///< true when cell is removed
@@ -53,8 +52,6 @@ struct CELLS
 
   double relative_velocity (long origin, long r, long current);             ///< relative velocity
 
-
-  long RC (long r, long c, long f);  
 
 };
 

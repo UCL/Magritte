@@ -7,7 +7,6 @@
 #ifndef __RAYS_HPP_INCLUDED__
 #define __RAYS_HPP_INCLUDED__
 
-#include "declarations.hpp"
 #include "HEALPix/chealpix.h"
 
 

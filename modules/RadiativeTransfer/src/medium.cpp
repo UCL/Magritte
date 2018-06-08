@@ -1,148 +1,121 @@
-// Magritte: Muldimensional Accelerated General-purpose Radiative Transfer
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
 //
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
 
 
 #include <math.h>
+#include <vector>
+using namespace std;
 
 #include "medium.hpp"
-#include "declarations.hpp"
-#include "interpolation.hpp"
-
-#define V_TURB 10
-#define C(c,a) (ncells*(c) + (a))
+#include "profile.hpp"
+#include "Common/src/interpolation.hpp"
 
 
-double MEDIUM :: profile (long o, double freq, double line_freq)
-{
-  const double width = line_freq/CC * sqrt(2.0*KB*temperature_gas[o]/MP + V_TURB*V_TURB);
-
-  return exp( -pow((freq - line_freq)/width, 2) ) / sqrt(PI) / width;
-}
-
-
-
-
-MEDIUM :: MEDIUM (long ncells, long nrays, long nfreq_l, long nfreq_c, long nfreq_s)
+MEDIUM :: MEDIUM (long ncells, LINEDATA linedata, long nfreq_c, long nfreq_s)
 {
 
-	nfreq_line = nfreq_l;
   nfreq_cont = nfreq_c;
  	nfreq_scat = nfreq_s;
 
-	freq_line = new double[nfreq_line];
-	freq_cont = new double[nfreq_cont];
-	freq_scat = new double[nfreq_scat];
+	freq_cont.resize (nfreq_cont);
+	freq_scat.resize (nfreq_scat);
 
- 	opacity_line = new double[ncells*nfreq_line];
- 	opacity_cont = new double[ncells*nfreq_cont];
- 	opacity_scat = new double[ncells*nfreq_scat];
+ 	opacity_line.resize (ncells);
+ 	opacity_cont.resize (ncells);
 
- 	emissivity_line = new double[ncells*nfreq_line];
- 	emissivity_cont = new double[ncells*nfreq_cont];
+ 	emissivity_line.resize (ncells);
+ 	emissivity_cont.resize (ncells);
 
-	phase_scat = new double[nrays*nrays*nfreq_scat];
+  freq_line.resize (linedata.nlspec);
 
-	temperature_gas = new double[ncells];
-
-   
-	for (long n = 0; n < ncells; n++)
+	for (int l = 0; l < linedata.nlspec; l++)
 	{
-		for (long y = 0; y < nfreq_l; y++)
-		{
-			opacity_line[nfreq_l*n+y] = 0.0;
-			emissivity_line[nfreq_l*n+y] = 0.0;
-		}
-		for (long y = 0; y < nfreq_c; y++)
-		{
-			opacity_cont[nfreq_c*n+y] = 0.0;
-			emissivity_cont[nfreq_c*n+y] = 0.0;
-		}
-		for (long y = 0; y < nfreq_s; y++)
-		{
-			opacity_scat[nfreq_s*n+y] = 0.0;
-		}
+		freq_line[l].resize (linedata.nrad[l]);
 
-		temperature_gas[n] = 0.0;
+		for (int k = 0; k < linedata.nrad[l]; k++)
+		{
+      const int i = linedata.irad[l][k];
+			const int j = linedata.jrad[l][k];
+
+			freq_line[l][k] = linedata.frequency[l](i,j);
+		}
 	}
 
-	for (long r1 = 0; r1 < nrays; r1++)
+
+	for (long p = 0; p < ncells; p++)
 	{
-		for (long r2 = 0; r2 < nrays; r2++)
+		opacity_line[p].resize (nfreq_line);
+
+		for (long f = 0; f < nfreq_line; f++)
 		{
-			for (long y = 0; y < nfreq_s; y++)
-			{
-				phase_scat[nfreq_s*nrays*r1 + nrays*r2 + y] = 0.0;
-			}
+			   opacity_line[p][f] = 0.0;
+			emissivity_line[p][f] = 0.0;
+		}
+
+		opacity_cont[p].resize (nfreq_cont);
+
+		for (long f = 0; f < nfreq_cont; f++)
+		{
+			   opacity_cont[p][f] = 0.0;
+			emissivity_cont[p][f] = 0.0;
+		}
+
+		opacity_scat[p].resize (nfreq_scat);
+
+		for (long f = 0; f < nfreq_scat; f++)
+		{
+			opacity_scat[p][f] = 0.0;
 		}
 	}
+
 
 }   // END OF CONSTRUCTOR
 
 
 
 
-MEDIUM :: ~MEDIUM ()
+int MEDIUM :: add_chi_line (TEMPERATURE temperature, long p, vector<double> frequencies, vector<double>& chi)
 {
-
-  delete [] freq_line;
-  delete [] freq_cont;
-  delete [] freq_scat;
-
-	delete [] opacity_line;
-	delete [] opacity_cont;
-	delete [] opacity_scat;
-
-	delete [] emissivity_line;
-	delete [] emissivity_cont;
-
-	delete [] phase_scat;
-
-	delete [] temperature_gas;
-
-}   // END OF DESTRUCTOR
-
-
-
-
-double MEDIUM :: chi_line (long p, double nu)
-{
-	double chi = 0.0;
 		
 	// find which lines are close enough to nu
 //	  line[p,]
 
-//		for (long f = 0; f < nfreq; f++)
-//		{
-//			chi += opacity[] * profile (o, freq, line_freq); 
-//		}
+		const double profile = profile (temperature.gas[p], freq_line, freq);
 
-	return chi;
+		for (long y = 0; y < nfreq; y++)
+		{
+		  const double profile = profile (temperature.gas[p], freq_line, freq);
+
+			chi[f] += opacity[]    * profile; 
+			eta[f] += emissivity[] * profile; 
+		}
+
+	return (0);
 }
 
 
 
 
-double MEDIUM :: chi_cont (long p, double nu)
+int MEDIUM :: add_chi_cont (long p, vector<double> frequencies, vector<double>& chi)
 {
-  return 0.0;
+  return (0);
 }
 
 
 
 
-double MEDIUM :: chi_scat (long p, double nu)
+int MEDIUM :: add_chi_scat (long p, vector<double> frequencies, vector<double>& chi)
 {
-	return 0.0;
+	return (0);
 }
 
 	
 
 
-double MEDIUM :: eta_line (long p, double nu)
+int MEDIUM :: add_eta_line (long p, vector<double> frequencies, vector<double>& eta)
 {
-	double chi = 0.0;
 		
 	// find which lines are close enough to nu
 //	  line[p,]
@@ -152,13 +125,13 @@ double MEDIUM :: eta_line (long p, double nu)
 //			chi += opacity[] * profile (o, freq, line_freq); 
 //		}
 
-	return chi;
+	return (0);
 }
 
 
 
 
-double MEDIUM :: eta_cont (long p, double nu)
+int MEDIUM :: add_eta_cont (long p, vector<double> frequencies, vector<double>& eta)
 {
-	return 0.0;
+	return (0);
 }

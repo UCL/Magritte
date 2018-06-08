@@ -9,22 +9,25 @@
 
 
 #include "cells.hpp"
+#include "lines.hpp"
+#include "scattering.hpp"
 #include "radiation.hpp"
-#include "medium.hpp"
 
 
 ///  RadiativeTransfer: solves the transfer equation for the radiation field
-///    @param[in] *cells: pointer to the geometric cell data containing the grid
-///    @param[in/out] *radiation: pointer to (previously calculated) radiation field
-///    @param[in] *medium: pointer to the opacity and emissivity data of the medium
+///    @param[in] cells: reference to the geometric cell data containing the grid
 ///    @param[in] nrays: number of rays that are calculated
 ///    @param[in] *rays: pointer to the numbers of the rays that are calculated
-///    @param[out] *J: mean intesity of the radiation field
-////////////////////////////////////////////////////////////////////////////////////
+///    @param[in] lines: data structure containing the line transfer data
+///    @param[in] scattering: data structure containing the scattering data
+///    @param[in/out] radiation: reference to the  radiation field
+////////////////////////////////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays, long Nfreq>
-int RadiativeTransfer (CELLS <Dimension, Nrays> *cells, RADIATION *radiation,
-											 MEDIUM *medium, long nrays, long *rays, double *J);
+template <int Dimension, long Nrays>
+int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature,
+		                   FREQUENCIES& frequencies, long nrays, long *rays,
+											 LINES& lines, SCATTERING& scattering, RADIATION& radiation,
+											 vector<vector<double>>& J);
 
 
 #include "RadiativeTransfer.tpp"

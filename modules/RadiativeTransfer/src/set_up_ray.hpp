@@ -12,17 +12,19 @@
 using namespace std;
 
 #include "cells.hpp"
-#include "medium.hpp"
+#include "lines.hpp"
+#include "scattering.hpp"
 #include "radiation.hpp"
 
 
 ///  set_up_ray: extract sources and opacities from the grid on the ray
 ///    @param[in] cells: reference to the geometric cell data containing the grid
+///    @param[in] frequencies: reference to data structure containing freqiencies
+///    @param[in] lines: reference to data structure containing line transfer data
+///    @param[in] scattering: reference to data structure containing scattering data
 ///    @param[in] radiation: reference to (previously calculated) radiation field
-///    @param[in] medium: reference to the opacity and emissivity data of the medium
 ///    @param[in] o: number of the cell from which the ray originates
 ///    @param[in] r: number of the ray which is being set up
-///    @param[in] f: number of the frequency bin which is used
 ///    @param[in] sign: +1  if the ray is in the "right" direction, "-1" if opposite
 ///    @param[out] n: reference to the resulting number of points along the ray
 ///    @param[out] Su: reference to the source for u extracted along the ray
@@ -30,10 +32,10 @@ using namespace std;
 ///    @param[out] dtau: reference to the optical depth increments along the ray 
 ////////////////////////////////////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays, long Nfreq>
-int set_up_ray (CELLS <Dimension, Nrays>& cells, RADIATION& radiation,
-		            MEDIUM& medium, long o, long r, long f, double sign,
-	              long& n, vector<double>& Su, vector<double>& Sv, vector<double>& dtau);
+template <int Dimension, long Nrays>
+int set_up_ray (CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies, TEMPERATURE& temperature,
+		            LINES& lines, SCATTERING& scattering, RADIATION& radiation, long o, long r, double sign,
+	              long& n, vector<vector<double>>& Su, vector<vector<double>>& Sv, vector<vector<double>>& dtau);
 
 
 #include "set_up_ray.tpp"

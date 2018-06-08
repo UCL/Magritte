@@ -13,8 +13,11 @@ if( OPENMP_FOUND )
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}" )
 endif()
 
-# Include source directory to find Eigen
+# Include directories for src
 include_directories(../src)
+
+#Include directories for Lines library
+include_directories( ../.. )
 
 # # Execute setup
 # add_custom_target(MAKE_SETUP ALL

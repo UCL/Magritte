@@ -36,7 +36,6 @@ endif()
 # COMMAND doxygen Doxyfile
 # WORKING_DIRECTORY docs )
 
-
 # Run setup script (if parameters.hpp changed)
 # add_custom_target(MAKE_SETUP ALL
 #                   COMMAND python setup.py $(PROJECT_FOLDER)
@@ -46,17 +45,3 @@ endif()
 add_subdirectory( src )
 add_subdirectory( tests )
 add_subdirectory( examples )
-
-# VTK includes
-# find_package(VTK REQUIRED)
-# include(${VTK_USE_FILE})
-
-
-# Create executable for Magritte main code
-# add_executable(Magritte.exe src/Magritte.cpp)
-# Ensure that Magritte depends on setup command defined above
-# add_dependencies(Magritte.exe MAKE_SETUP)
-# Link the library of the /src directory to Magritte main code
-# target_link_libraries(Magritte.exe _MAGRITTE)
-# Link VTK libraries
-# target_link_libraries(Magritte.exe ${VTK_LIBRARIES})

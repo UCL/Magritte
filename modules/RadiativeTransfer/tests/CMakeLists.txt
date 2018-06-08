@@ -13,8 +13,11 @@ if( OPENMP_FOUND )
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}" )
 endif()
 
-# Include source directory to find Eigen
+# Include directories for Eigen library
 include_directories( ../src )
+
+#Include directories for Common library
+include_directories( ../.. )
 
 # # Execute setup
 # add_custom_target(MAKE_SETUP ALL
@@ -26,7 +29,7 @@ include_directories( ../src )
 # ${CMAKE_CURRENT_BINARY_DIR}/RADIATIVE_TRANSFER )
 
 # Create test_main.cpp lib (as advised in Catch docs)
-add_library( _TEST_MAIN
+add_library( _TEST_RT_MAIN
 main.cpp )
 
 # Create executable to test rays
@@ -34,56 +37,70 @@ add_executable( test_rays.exe
 test_rays.cpp )
 target_link_libraries( test_rays.exe
 _RADIATIVE_TRANSFER
-_TEST_MAIN )
+_TEST_RT_MAIN )
 
 # Create executable to test cells
 add_executable( test_cells.exe
 test_cells.cpp )
 target_link_libraries( test_cells.exe
 _RADIATIVE_TRANSFER
-_TEST_MAIN )
+_TEST_RT_MAIN )
 
 # Create executable to test ray_tracing
 add_executable( test_ray_tracing.exe
 test_ray_tracing.cpp )
 target_link_libraries( test_ray_tracing.exe
 _RADIATIVE_TRANSFER
-_TEST_MAIN )
+_TEST_RT_MAIN )
 
 # Create executable to test feautrier solver
 add_executable( test_solve_ray.exe
 test_solve_ray.cpp )
 target_link_libraries( test_solve_ray.exe
 _RADIATIVE_TRANSFER
-_TEST_MAIN )
+_TEST_RT_MAIN )
 
 # Create executable to test radiation field
 add_executable( test_radiation.exe
 test_radiation.cpp )
 target_link_libraries( test_radiation.exe
 _RADIATIVE_TRANSFER
-_TEST_MAIN )
-
-# Create executable to test medium  
-add_executable( test_medium.exe
-test_medium.cpp )
-target_link_libraries( test_medium.exe
-_RADIATIVE_TRANSFER
-_TEST_MAIN )
+_TEST_RT_MAIN )
 
 # Create executable to test interpolation
 add_executable( test_interpolation.exe
 test_interpolation.cpp )
 target_link_libraries( test_interpolation.exe
 _RADIATIVE_TRANSFER
-_TEST_MAIN )
+_TEST_RT_MAIN )
+
+# Create executable to test heapsort
+add_executable( test_heapsort.exe
+test_heapsort.cpp )
+target_link_libraries( test_heapsort.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
+# Create executable to test frequencies
+add_executable( test_frequencies.exe
+test_frequencies.cpp )
+target_link_libraries( test_frequencies.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
+# Create executable to test frequencies
+add_executable( test_lines.exe
+test_lines.cpp )
+target_link_libraries( test_lines.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
 
 # Create executable to test radiative transfer
-add_executable( test_RadiativeTransfer.exe
-test_RadiativeTransfer.cpp )
-target_link_libraries( test_RadiativeTransfer.exe
-_RADIATIVE_TRANSFER
-_TEST_MAIN )
+#add_executable( test_RadiativeTransfer.exe
+#test_RadiativeTransfer.cpp )
+#target_link_libraries( test_RadiativeTransfer.exe
+#_RADIATIVE_TRANSFER
+#_TEST_MAIN )
 
 # Ensure test_ray_tracing.hpp depends on setup command defined above
 # add_dependencies( test_ray_tracing.exe

@@ -31,9 +31,9 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  vector<double>& Su_r,  vector<double>& Sv_r,  vector<double>& dtau_r,
-	             const long n_ar, vector<double>& Su_ar, vector<double>& Sv_ar, vector<double>& dtau_ar,
-	             const long ndep, const long nfreq,      vector<double>& u,     vector<double>& v,
+int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<double>>& Sv_r,  vector<vector<double>>& dtau_r,
+	             const long n_ar, vector<vector<double>>& Su_ar, vector<vector<double>>& Sv_ar, vector<vector<double>>& dtau_ar,
+	             const long ndep, const long nfreq,              vector<vector<double>>& u,     vector<vector<double>>& v,
 							 const long ndiag, vector<MatrixXd>& Lambda);
 
 

@@ -6,7 +6,8 @@
 #include <math.h>
 #include <iostream>
 
-#include "declarations.hpp"
+#include "rays.hpp"
+#include "constants.hpp"
 #include "HEALPix/chealpix.h"
 
 
