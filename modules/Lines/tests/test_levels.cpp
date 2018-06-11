@@ -14,16 +14,21 @@ using namespace Eigen;
 
 #include "catch.hpp"
 
-#include "../src/linedata.hpp"
+#include "../src/levels.hpp"
 
 
-TEST_CASE ("Constructor")
+TEST_CASE ("LEVELS constructor")
 {
+
+	const long ncells = 50;
 
 	LINEDATA linedata;
 
+	LEVELS levels (ncells, linedata);
+
+
 	cout << linedata.irad[0][0] << endl;
-	cout << linedata.num[0] << endl;
+	cout << linedata.num[0]     << endl;
 
 	CHECK (true);
 

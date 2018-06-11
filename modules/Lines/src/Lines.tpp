@@ -37,6 +37,9 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 					 RADIATION& radiation)
 {
 
+	SCATTERING scattering (Nrays, nfreq_scat);
+
+
 	// Initialize levels with LTE populations
 
 	levels.set_LTE_populations (linedata, species, temperature);
@@ -46,7 +49,10 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 	LINES lines (cells.ncells, linedata);
 
-	SCATTERING scattering (Nrays, nfreq_scat);
+  // Calculate source and opacity for all transitions over whole grid
+
+	lines.get_emissivity_and_opacity (linedata, levels);
+
 
 
   int niterations = 0;   // number of iterations
@@ -78,8 +84,6 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 
     // Calculate source and opacity for all transitions over whole grid
-
-		//TODO Maybe move this function to levels?
 
 	  lines.get_emissivity_and_opacity (linedata, levels);
 
@@ -123,7 +127,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
         levels.calc_J_eff (temperature, J, p, l, k);
 
-    		MatrixXd R = linedata.calc_transition_matrix (species, temperature_gas, levels.J_eff, p, l));
+    		MatrixXd R = linedata.calc_transition_matrix (species, temperature_gas, levels.J_eff, p, l);
     	
         levels.update_using_statistical_equilibrium (R, p, l);
 

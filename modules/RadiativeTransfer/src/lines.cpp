@@ -136,49 +136,37 @@ int LINES :: add_emissivity_and_opacity (FREQUENCIES& frequencies, TEMPERATURE& 
 		                                     vector<double>& eta, vector<double>& chi)
 {
 
-	// TODO Does not properly take into account the Doppler shift,
-	//      lines can also shift into the considered frequency!
-
-	// For all lines
-
-  for (int l = 0; l < frequencies.nr_line[p].size(); l++)
-	{
-		for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
-		{
-      const double lower = frequencies.nr_line[p][l][k][0];   // lowest frequency for the line
-      const double upper = frequencies.nr_line[p][l][k][3];   // highest frequency for the line
-
-      const double freq_line = 0.5 * (   frequencies.all[p][frequencies.nr_line[p][l][k][1]]
-					                             + frequencies.all[p][frequencies.nr_line[p][l][k][2]] );
-
-
-		if (p < 5 && l==0 && k==0)
-		{
-//		  cout << emissivity[p][l][k] << endl;
-//      cout <<    opacity[p][l][k] << endl;
-		}
-//			cout << freq_line << endl;
-
-
-
-			for (long index = lower; index <= upper; index++)
-			{
-				const double line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[index]);
-
-				// cout << line_profile << endl;
-				
-
-		    eta[index] += emissivity[p][l][k] * line_profile;
-		    chi[index] +=    opacity[p][l][k] * line_profile;
-			}
-		}
-	}		
-
+  // For all frequencies
+	
 	for (long f = 0; f < frequencies.nfreq; f++)
 	{
-//		cout << eta[f] << endl;
-//		cout << chi[f] << endl;
-	}
+
+
+	  // For all lines
+
+    for (int l = 0; l < frequencies.nr_line[p].size(); l++)
+	  {
+	  	for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
+	  	{
+        const double lower = frequencies.nr_line[p][l][k][0];   // lowest frequency for the line
+        const double upper = frequencies.nr_line[p][l][k][3];   // highest frequency for the line
+
+				if (    (frequencies.all[p][lower] <  frequencies_scaled[f])
+					   && (frequencies.all[p][upper] >  frequencies_scaled[f]) )
+				{
+          const double freq_line = 0.5 * (   frequencies.all[p][frequencies.nr_line[p][l][k][1]]
+	  		  		                             + frequencies.all[p][frequencies.nr_line[p][l][k][2]] );
+
+	  		  const double line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[f]);
+
+	  	    eta[f] += emissivity[p][l][k] * line_profile;
+	  	    chi[f] +=    opacity[p][l][k] * line_profile;
+			  }
+	  	}
+	  }
+
+
+	}	
 
 
 	return (0);

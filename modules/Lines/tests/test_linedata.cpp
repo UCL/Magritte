@@ -34,11 +34,33 @@ TEST_CASE ("Constructor")
 
 TEST_CASE ("calc_Einstein_C")
 {
+	const long ncells = 1;
+	const long nspec  = 5;
 
-//	SPECIES species
-//	LINEDATA linedata;
-//
-//	linedata.calc_Einstein_C (species, temperature_gas, o, l, C);
-//	CHECK (true);
+	const string project_folder = "test_data/";
+
+	const string   species_file = project_folder + "species.txt";
+	const string abundance_file = project_folder + "abundance.txt";
+
+
+	LINEDATA linedata;
+
+	SPECIES species (ncells, nspec, species_file);
+
+	species.read (abundance_file);
+
+
+	long p = 0;
+	int  l = 0;
+
+	double temperature_gas = 100.0;
+
+
+	MatrixXd C = linedata.calc_Einstein_C (species, temperature_gas, p, l);
+
+
+	cout << C << endl;
+
+	CHECK (true);
 
 }

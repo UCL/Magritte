@@ -29,9 +29,6 @@ struct FREQUENCIES
 
   int reset (LINEDATA linedata, TEMPERATURE temperature);   ///< Set frequencies
 
-	double integrate_over_line (TEMPERATURE& temperature, const vector<double>& J,
-			                        const long p, const int l, const int k);
-
 };
 
 

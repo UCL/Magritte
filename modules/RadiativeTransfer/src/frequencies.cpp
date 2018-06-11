@@ -185,7 +185,3 @@ int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
 	return (0);
 
 }
-
-
-
-
