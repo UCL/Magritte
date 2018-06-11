@@ -19,9 +19,11 @@ TEST_CASE ("CELLS constructor")
 {
   const int  Dimension   = 1;
   const long Nrays       = 2;
-  const long Ncells      = 10000;
+  const long Ncells      = 50;
 
-  CELLS <Dimension, Nrays> cells (Ncells);
+	string n_neighbors_file = "test_data/n_neighbors.txt";
+
+  CELLS <Dimension, Nrays> cells (Ncells, n_neighbors_file);
 
 
   SECTION ("RAYS in CELLS")
@@ -63,19 +65,18 @@ TEST_CASE ("CELLS initialize")
 {
   const int  Dimension   = 1;
   const long Nrays       = 2;
-  const long Ncells      = 10000;
+  const long Ncells      = 50;
 
-  CELLS <Dimension, Nrays> cells (Ncells);
+	string n_neighbors_file = "test_data/n_neighbors.txt";
 
-  cells.initialize();
+  CELLS <Dimension, Nrays> cells (Ncells, n_neighbors_file);
+
 
   for (long p = 0; p < Ncells; p++)
   {
     CHECK (cells.x[p] == 0.0);
     CHECK (cells.y[p] == 0.0);
     CHECK (cells.z[p] == 0.0);
-
-    CHECK (cells.n_neighbors[p] == 0);
 
     CHECK (cells.vx[p] == 0.0);
     CHECK (cells.vy[p] == 0.0);
@@ -87,32 +88,57 @@ TEST_CASE ("CELLS initialize")
     CHECK (cells.boundary[p] == false);
     CHECK (cells.mirror[p]   == false);
   }
+	
+
+  CHECK (cells.n_neighbors[0]        == 1);
+  CHECK (cells.n_neighbors[Ncells-1] == 1);
+
+  for (long p = 1; p < Ncells-1; p++)
+  {
+    CHECK (cells.n_neighbors[p] == 2);
+  }
 }
 
 
 
 
-//TEST_CASE ("Relative Velocity")
-//{
-//  CHECK (true);   
-//}
-
-
-
-
-TEST_CASE ("Ray tracer: next function 1D")
+TEST_CASE ("Read")
 {
   const int  Dimension   = 1;
   const long Nrays       = 2;
-  const long Ncells      = 10000;
+  const long Ncells      = 50;
 
-  CELLS <Dimension, Nrays> cells (Ncells);
+	string       cells_file = "test_data/cells.txt";
+	string n_neighbors_file = "test_data/n_neighbors.txt";
+	string   neighbors_file = "test_data/neighbors.txt";
+	string    boundary_file = "test_data/boundary.txt";
 
-  cells.initialize();
+  CELLS <Dimension, Nrays> cells (Ncells, n_neighbors_file);
+	
+  cells.read (cells_file, neighbors_file, boundary_file);
 
   for (long p = 0; p < Ncells; p++)
   {
-    cells.x[p] = 1.0E10 * (p + 0.012345);
+    cout << cells.x[p] << endl;
   }
+
+  CHECK (true);   
 }
+
+
+
+
+//TEST_CASE ("Ray tracer: next function 1D")
+//{
+//  const int  Dimension   = 1;
+//  const long Nrays       = 2;
+//  const long Ncells      = 10000;
+//
+//  CELLS <Dimension, Nrays> cells (Ncells);
+//
+//  for (long p = 0; p < Ncells; p++)
+//  {
+//    cells.x[p] = 1.0E10 * (p + 0.012345);
+//  }
+//}
 

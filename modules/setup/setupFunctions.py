@@ -13,9 +13,9 @@ import re            # regular expressions
 # Readers
 # -------
 
-def getVariable(name, type):
+def getVariable(projectFolder, name, type):
     # Return value for variable from parameters.hpp
-    with open('../src/parameters.hpp') as parameterFile:
+    with open(projectFolder+'parameters.hpp') as parameterFile:
         for line in parameterFile:
             splitLine = line.split()
             if (len(splitLine) > 2) and (splitLine[1] == name):
@@ -46,6 +46,7 @@ def readSpeciesNames(fileName):
             speciesNames += [line.split(',')[1]]
     return speciesNames
 
+
 def getProperName(name):
     if name in ['e']: return 'e-'
     if name in ['pH2', 'oH2', 'p-H2', 'o-H2']: return 'H2'
@@ -63,22 +64,22 @@ def getSpeciesNumber(speciesNames, name):
                 return i+1
 
 
-def getProjectFolder():
-    # Return value for variable from parameters.hpp
-    with open('../src/directories.hpp') as parameterFile:
-        for line in parameterFile:
-            line = line.split()
-            if (len(line) is 3) and (line[1] == 'PROJECT_FOLDER'):
-                return str(re.findall('\"([^,\"]+)\"',line[2])[0])
+#def getProjectFolder():
+#    # Return value for variable from parameters.hpp
+#    with open('../src/directories.hpp') as parameterFile:
+#        for line in parameterFile:
+#            line = line.split()
+#            if (len(line) is 3) and (line[1] == 'PROJECT_FOLDER'):
+#                return str(re.findall('\"([^,\"]+)\"',line[2])[0])
 
 
-def getFilePath(name):
+def getFilePath(projectFolder, name):
     # Return (absolute) file path
-    relativePath = getVariable(name, 'str')
+    relativePath = getVariable(projectFolder, name, 'str')
     if isinstance(relativePath, list):
-        return [getProjectFolder() + item for item in relativePath]
+        return [projectFolder + item for item in relativePath]
     else:
-        return getProjectFolder() + relativePath
+        return projectFolder + relativePath
 
 
 def fileExtension(fileName):
@@ -92,6 +93,21 @@ def numberOfLines(fileName):
         count += 1
     return count
 
+
+def getNcells(fileName, gridType):
+    if fileExtension(fileName) == '.txt':
+        ncells = numberOfLines(fileName)
+    if fileExtension(fileName) == '.vtu':
+        reader = vtk.vtkXMLUnstructuredGridReader()
+        reader.SetFileName(fileName)
+        reader.Update()
+        grid = reader.GetOutput()
+        if gridType == 'cell_based':
+            ncells = grid.GetNumberOfCells()
+        if gridType == 'point_based':
+            ncells = grid.GetNumberOfPoints()
+    print(ncells)
+    return ncells
 
 
 # Tools

@@ -24,7 +24,9 @@ struct TEMPERATURE
 	vector<double> gas_prev;   ///< gas temperature in previous iteration
 
 
-  TEMPERATURE (long num_of_cells);   ///< Constructor
+  TEMPERATURE (long num_of_cells);      ///< Constructor
+
+  int read (string temperature_file);   ///< read initial temperature field
 
 };
 

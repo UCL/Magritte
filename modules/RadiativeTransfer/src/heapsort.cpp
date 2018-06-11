@@ -66,7 +66,7 @@ int downheap (vector<double>& a, vector<long>& b, long n, long i)
 
 
 
-int heapsort (vector<double> a, vector<long>& b, long n)
+int heapsort (vector<double>& a, vector<long>& b, long n)
 {
 
   for (long i = (n-2)/2; i >=0 ; i--)

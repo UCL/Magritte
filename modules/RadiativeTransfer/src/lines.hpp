@@ -42,10 +42,6 @@ struct LINES
 																 	vector<double>& frequencies_scaled, long p,
 			                            vector<double>& eta, vector<double>& chi);
 
-
-	double J_eff (FREQUENCIES& frequencies, TEMPERATURE& temperature,
-			          vector<vector<double>>& J, long p, int l, int k);
-
 };
 
 

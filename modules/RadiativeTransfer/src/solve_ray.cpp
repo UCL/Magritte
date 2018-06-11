@@ -5,6 +5,7 @@
 
 
 #include <vector>
+#include <iostream>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
@@ -47,7 +48,7 @@ int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<dou
   vector<vector<double>> G (ndep, vector<double> (nfreq));   // helper variable from Rybicki & Hummer (1991)
 
 
-
+cout << "We're in!" << endl;
 
   // SETUP FEAUTRIER RECURSION RELATION
   // __________________________________
@@ -183,8 +184,11 @@ int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<dou
 
 	for (long f = 0; f < nfreq; f++)
 	{
+	cout << "Problem region in" << endl;
+	cout << "ndep = " << ndep << endl;
     u[ndep-1][f] = (u[ndep-1][f] + A[ndep-1][f]*u[ndep-2][f])
                       / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (1.0 + F[ndep-2][f]);
+	cout << "Problem region out" << endl;
 
     v[ndep-1][f] = (v[ndep-1][f] + A[ndep-1][f]*v[ndep-2][f])
                       / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (1.0 + F[ndep-2][f]);
@@ -265,6 +269,7 @@ int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<dou
     }
   }
 
+	cout << "About to get out..." << endl;
 
   return (0);
 

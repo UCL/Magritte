@@ -54,6 +54,13 @@ _RADIATIVE_TRANSFER
 _TEST_RT_MAIN )
 
 # Create executable to test feautrier solver
+add_executable( test_set_up_ray.exe
+test_set_up_ray.cpp )
+target_link_libraries( test_set_up_ray.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
+# Create executable to test feautrier solver
 add_executable( test_solve_ray.exe
 test_solve_ray.cpp )
 target_link_libraries( test_solve_ray.exe
@@ -92,6 +99,20 @@ _TEST_RT_MAIN )
 add_executable( test_lines.exe
 test_lines.cpp )
 target_link_libraries( test_lines.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
+# Create executable to test species
+add_executable( test_species.exe
+test_species.cpp )
+target_link_libraries( test_species.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
+# Create executable to test RadiativeTransfer
+add_executable( test_RadiativeTransfer.exe
+test_RadiativeTransfer.cpp )
+target_link_libraries( test_RadiativeTransfer.exe
 _RADIATIVE_TRANSFER
 _TEST_RT_MAIN )
 

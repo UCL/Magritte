@@ -135,9 +135,12 @@ LINEDATA :: LINEDATA ()
 ///    @param[in] species:
 //////////////////////////////////////////////////////////
 
-int LINEDATA :: calc_Einstein_C (SPECIES species, double temperature_gas,
-		                             long o, int l, MatrixXd& C)
+MatrixXd LINEDATA ::
+         calc_Einstein_C (SPECIES& species, double temperature_gas, const long p, const int l)
 {
+
+  MatrixXd C (nlev[l],nlev[l]);   // Einstein C_ij coefficient
+
 
   // Calculate H2 ortho/para fraction at equilibrium for given temperature
 
@@ -145,7 +148,7 @@ int LINEDATA :: calc_Einstein_C (SPECIES species, double temperature_gas,
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
 
-  if (species.abundance[o][species.nr_H2] > 0.0)
+  if (species.abundance[p][species.nr_H2] > 0.0)
   {
     frac_H2_para  = 1.0 / (1.0 + 9.0*exp(-170.5/temperature_gas));
     frac_H2_ortho = 1.0 - frac_H2_para;
@@ -161,7 +164,7 @@ int LINEDATA :: calc_Einstein_C (SPECIES species, double temperature_gas,
 
     int spec = num_col_partner[l][c];
 
-    double abundance = species.density[o] * species.abundance[o][spec];
+    double abundance = species.density[p] * species.abundance[p][spec];
 
 
     if      (orth_or_para_H2[l][c] == 'o')
@@ -201,6 +204,40 @@ int LINEDATA :: calc_Einstein_C (SPECIES species, double temperature_gas,
   } // end of par loop over collision partners
 
 
-  return (0);
+  return C;
 
+}
+
+
+
+
+MatrixXd LINEDATA ::
+         calc_transition_matrix (SPECIES& species, const double temperature_gas,
+						                     const vector<vector<vector<double>>>& J_eff,
+																 const long p, const int l)
+{
+
+  // Calculate collissional Einstein coefficients
+	
+  MatrixXd C = calc_Einstein_C (species, temperature_gas, p, l);
+
+
+  // Add Einstein A and C to transition matrix
+
+  MatrixXd R = A[l] + C;
+
+
+  // Add B_ij<J_ij> term
+
+  for (int k = 0; k < nrad[l]; k++)
+  {
+    const int i = irad[l][k];   // i index corresponding to transition k
+    const int j = jrad[l][k];   // j index corresponding to transition k
+
+    R(i,j) += B[l](i,j) * J_eff[p][l][k]; // - linedata.A[l](i,j)*Lambda(); 
+    R(j,i) += B[l](j,i) * J_eff[p][l][k];
+  }
+	
+
+	return R;
 }

@@ -37,7 +37,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 int calc_level_populations (LINEDATA& linedata, LINES& lines, LEVELS& levels, SPECIES& species,
 		                        FREQUENCIES& frequencies, TEMPERATURE& temperature, vector<vector<double>>& J,
-														vector<bool> not_converged, vector<long> n_not_converged,
+														vector<bool>& not_converged, vector<long>& n_not_converged,
 														bool some_not_converged, long Nrays);
 
 #include "Lines.tpp"

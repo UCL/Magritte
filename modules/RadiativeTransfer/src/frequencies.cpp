@@ -26,32 +26,26 @@ FREQUENCIES :: FREQUENCIES (long num_of_cells, LINEDATA linedata)
 
 	ncells = num_of_cells;
 
-	long index = 0;   // current number of frequencies
+
+	long index = 0;
 
 
-	// Size and initialize nr_line
+  // Count line frequencies  
 
-	nr_line.resize (linedata.nlspec);
-
-	for (int l = 0; l < linedata.nlspec; l++)
-	{
-		nr_line[l].resize (linedata.nrad[l]);
-
-		for (int k = 0; k < linedata.nrad[l]; k++)
-		{
-			nr_line[l][k].resize (4);
-
-			for (int z = 0; z < 4; z++)
-			{
-				nr_line[l][k][z] = index;
+  for (int l = 0; l < linedata.nlspec; l++)
+  {
+  	for (int k = 0; k < linedata.nrad[l]; k++)
+  	{
+  		for (int z = 0; z < 4; z++)
+  		{
 				index++;
-			}
-		}
-	}
+  		}
+  	}
+  }
 
 	
 	/*
-	 *  Add other frequencies...
+	 *  Count other frequencies...
 	 */
 	
 
@@ -63,10 +57,10 @@ FREQUENCIES :: FREQUENCIES (long num_of_cells, LINEDATA linedata)
 	// Size and initialize all, order and deorder
 
     	all.resize (ncells);
-    order.resize (ncells);
-	deorder.resize (ncells);
+	nr_line.resize (ncells);
 
 # pragma omp parallel   \
+	shared (linedata)     \
   default (none)
   {
 
@@ -79,16 +73,31 @@ FREQUENCIES :: FREQUENCIES (long num_of_cells, LINEDATA linedata)
 
   for (long p = start; p < stop; p++)
   {
-      	all[p].resize (nfreq);
-      order[p].resize (nfreq);
-  	deorder[p].resize (nfreq);
+   	all[p].resize (nfreq);
   	
 		for (long f = 0; f < nfreq; f++)
   	{
-        	all[p][f] = 0.0;
-        order[p][f] = f;
-    	deorder[p][f] = 0;
+      all[p][f] = 0.0;
   	}
+
+
+	  nr_line[p].resize (linedata.nlspec);
+
+	  for (int l = 0; l < linedata.nlspec; l++)
+	  {
+	  	nr_line[p][l].resize (linedata.nrad[l]);
+
+	  	for (int k = 0; k < linedata.nrad[l]; k++)
+	  	{
+	  		nr_line[p][l][k].resize (4);
+
+	  		for (int z = 0; z < 4; z++)
+	  		{
+	  			nr_line[p][l][k][z] = 0;
+	  		}
+	  	}
+	  }
+
   }
 	} // end of pragma omp parallel
 
@@ -119,8 +128,10 @@ int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
 
 	for (long p = start; p < stop; p++)
 	{
+		long index1 = 0;
 
-		long index = 0;
+		vector<long> order (nfreq);
+
 
 	  for (int l = 0; l < linedata.nlspec; l++)
 	  {
@@ -134,8 +145,10 @@ int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
   	  	
   	    for (long z = 0; z < 4; z++)
         {
-  	      all[p][index] = freq_line + width*H_4_roots[z];
-					index++;
+  	      all[p][index1] = freq_line + width*H_4_roots[z];
+				   order[index1] = index1;
+				
+					index1++;
   	    }
   	  }
 		}
@@ -148,14 +161,21 @@ int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
 
 		// Sort frequencies
 
-		heapsort (all[p], order[p], nfreq);
+		heapsort (all[p], order, nfreq);
 
 
-	  // Find inverse for order (deorder)
+		long index2 = 0;
 
-		for (long f = 0; f < nfreq; f++)
-		{
-      deorder[p][order[p][f]] = f;
+	  for (int l = 0; l < linedata.nlspec; l++)
+	  {
+			for (int k = 0; k < linedata.nrad[l]; k++)
+			{
+  	    for (long z = 0; z < 4; z++)
+        {
+				  nr_line[p][l][k][z] = order[index2];
+					index2++;
+  	    }
+  	  }
 		}
 
 	}
@@ -165,3 +185,7 @@ int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
 	return (0);
 
 }
+
+
+
+

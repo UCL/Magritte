@@ -5,8 +5,10 @@
 
 
 #include <omp.h>
-#include <limits>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <limits>
 using namespace std;
 
 #include "cells.hpp"
@@ -18,7 +20,7 @@ using namespace std;
 
 template <int Dimension, long Nrays>
 CELLS <Dimension, Nrays> ::
-CELLS (long number_of_cells)
+CELLS (long number_of_cells, string n_neighbors_file)
 {
 
   ncells = number_of_cells;
@@ -31,14 +33,25 @@ CELLS (long number_of_cells)
   vy.resize (ncells);
   vz.resize (ncells);
 
-  neighbor.resize (ncells);
   n_neighbors.resize (ncells);
+    neighbors.resize (ncells);
 
-  id.resize (ncells);
+       id.resize (ncells);
   removed.resize (ncells);
 
   boundary.resize (ncells);
-  mirror.resize (ncells);
+    mirror.resize (ncells);
+
+
+	// Read number of neighbors
+	
+  ifstream nNeighborsFile (n_neighbors_file);
+
+  for (long p = 0; p < ncells; p++)
+	{
+    nNeighborsFile >> n_neighbors[p];
+	}
+
 
 # pragma omp parallel   \
   default (none)
@@ -53,7 +66,26 @@ CELLS (long number_of_cells)
 
   for (long p = start; p < stop; p++)
   {
-    neighbor[p].resize (Nrays);
+    neighbors[p].resize (n_neighbors[p]);
+
+		x[p] = 0.0;
+		y[p] = 0.0;
+		z[p] = 0.0;
+
+		vx[p] = 0.0;
+		vy[p] = 0.0;
+		vz[p] = 0.0;
+		
+    for (long n = 0; n < n_neighbors[p]; n++)
+    {
+      neighbors[p][n] = 0;
+    }
+
+    id[p] = p;
+
+    removed[p]  = false;
+    boundary[p] = false;
+    mirror[p]   = false;
   }
   } // end of OpenMP parallel region
 
@@ -67,45 +99,42 @@ CELLS (long number_of_cells)
 
 template <int Dimension, long Nrays>
 int CELLS <Dimension, Nrays> ::
-    initialize ()
+    read (string cells_file, string neighbors_file, string boundary_file)
 {
 
-# pragma omp parallel   \
-  default (none)
-  {
+	// Read cell centers and velocities
 
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
+  ifstream cellsFile (cells_file);
 
-  long start = (thread_num*ncells)/num_threads;
-  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+  for (long p = 0; p < ncells; p++)
+	{
+    cellsFile >> x[p] >> y[p] >> z[p] >> vx[p] >> vy[p] >> vz[p];
+	}
 
 
-  for (long p = start; p < stop; p++)
-  {
-    x[p] = 0.0;
-    y[p] = 0.0;
-    z[p] = 0.0;
+	// Read nearest neighbors lists
 
-    n_neighbors[p] = 0;
+  ifstream neighborsFile (neighbors_file);
 
-    for (long r = 0; r < Nrays; r++)
-    {
-      neighbor[p][r] = 0;
-    }
+  for (long p = 0; p < ncells; p++)
+	{
+		for (long n = 0; n < n_neighbors[p]; n++)
+		{
+      neighborsFile >> neighbors[p][n];
+		}
+	}
 
-    vx[p] = 0.0;
-    vy[p] = 0.0;
-    vz[p] = 0.0;
+	
+	// Read boundary list
 
-    id[p] = p;
+  ifstream boundaryFile (boundary_file);
 
-    removed[p]  = false;
-    boundary[p] = false;
-    mirror[p]   = false;
-  }
-  } // end of OpenMP parallel region
+	long boundary_nr;
 
+	while (boundaryFile >> boundary_nr)   
+	{
+    boundary[boundary_nr] = true;
+	}
 
   return (0);
 
@@ -137,7 +166,7 @@ long CELLS <Dimension, Nrays> ::
 
   for (long n = 0; n < n_neighbors[current]; n++)
   {
-    long nb = neighbor[current][n];
+    long nb = neighbors[current][n];
 
     double rvec[3];
 

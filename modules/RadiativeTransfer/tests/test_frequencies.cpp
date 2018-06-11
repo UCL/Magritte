@@ -117,17 +117,10 @@ TEST_CASE ("Reset")
 
 	SECTION ("Ordering")
 	{
-	  vector<double> freq_ordered (frequencies.nfreq);
-
-	  for (int f = 0; f < frequencies.nfreq; f++)
-	  {
-      freq_ordered[f] = frequencies.all[0][frequencies.order[0][f]];
-	  }
-
-	  for (int f = 1; f < frequencies.nfreq; f++)
-	  {
-      CHECK (freq_ordered[f-1] < freq_ordered[f]);
-	  }
+	   for (int f = 1; f < frequencies.nfreq; f++)
+	   {
+       CHECK (frequencies.all[0][f-1] < frequencies.all[0][f]);
+	   }
 	}
 
 
@@ -140,8 +133,8 @@ TEST_CASE ("Reset")
 	  		int i = linedata.irad[l][k];
 	  		int j = linedata.jrad[l][k];
 
-	  		long nr1 = frequencies.nr_line[l][k][1];
-	  		long nr2 = frequencies.nr_line[l][k][2];
+	  		long nr1 = frequencies.nr_line[0][l][k][1];
+	  		long nr2 = frequencies.nr_line[0][l][k][2];
 	  		
 	  		double freq     = 0.5 * (frequencies.all[0][nr1] + frequencies.all[0][nr2]);
 	  		double freq_ref = linedata.frequency[l](i,j);
@@ -151,4 +144,5 @@ TEST_CASE ("Reset")
 	  }	
 	}
 	
+
 }

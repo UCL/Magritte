@@ -6,6 +6,7 @@
 
 #include <omp.h>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 #include "radiation.hpp"
@@ -85,7 +86,13 @@ int RADIATION :: resample_U (FREQUENCIES frequencies, long p, long r,
   long start = 0;
 	long stop  = nfreq;
 
-	resample (frequencies.all[p], U[r][p], start, stop, frequencies_scaled, U_scaled);
+	for (long f = 0; f < nfreq; f++)
+	{
+//		cout << U[r][p][f] << endl;
+		U_scaled[f] = 0.0;
+	}
+
+	//resample (frequencies.all[p], U[r][p], start, stop, frequencies_scaled, U_scaled);
 		
  	return (0);
 }
@@ -100,7 +107,12 @@ int RADIATION :: resample_V (FREQUENCIES frequencies, long p, long r,
   long start = 0;
 	long stop  = nfreq;
 
-	resample (frequencies.all[p], V[r][p], start, stop, frequencies_scaled, V_scaled);
+	for (long f = 0; f < nfreq; f++)
+	{
+		V_scaled[f] = 0.0;
+	}
+
+	//resample (frequencies.all[p], V[r][p], start, stop, frequencies_scaled, V_scaled);
 		
  	return (0);
 }

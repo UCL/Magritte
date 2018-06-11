@@ -60,8 +60,14 @@ struct LINEDATA
 
   LINEDATA ();   ///< Constructor
 
-  int calc_Einstein_C (SPECIES species, double temperature_gas,
-                       long o, int l, MatrixXd& C);   ///< interpolate Einstein C_ij given temperature 
+
+  MatrixXd calc_Einstein_C (SPECIES& species, const double temperature_gas,
+			                      const long p, const int l); 
+
+
+  MatrixXd calc_transition_matrix (SPECIES& species, const double temperature_gas,
+			                             const vector<vector<vector<double>>>& J_eff,
+																	 const long p, const int l); 
 
 
 };

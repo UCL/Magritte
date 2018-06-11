@@ -5,6 +5,8 @@
 
 
 #include <vector>
+#include <string>
+#include <fstream>
 using namespace std;
 
 #include "temperature.hpp"
@@ -23,3 +25,20 @@ TEMPERATURE :: TEMPERATURE (long num_of_cells)
 
 
 }   // END OF CONSTRUCTOR
+
+
+
+int TEMPERATURE :: read (string temperature_file)
+{
+
+  ifstream infile (temperature_file);
+
+  for (long p = 0; p < ncells; p++)
+	{
+		infile >> gas[p];
+	}
+
+
+	return (0);
+
+}

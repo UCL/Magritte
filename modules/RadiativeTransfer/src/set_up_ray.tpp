@@ -40,6 +40,10 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies, TEMPE
 	              long& n, vector<vector<double>>& Su, vector<vector<double>>& Sv, vector<vector<double>>& dtau)
 {
 
+      for (long f = 0; f < frequencies.nfreq; f++)
+	    {
+	      //cout << radiation.U[r][o][f] << endl;   
+	    }
   //double tau  = 0.0;   // optical depth along ray
 
   double  Z = 0.0;   // distance from origin (o)
@@ -67,6 +71,10 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies, TEMPE
     {    	
 		 	term1_c[f] = (radiation.U[r][current][f] + eta_c[f]) / chi_c[f];
 			term2_c[f] =  radiation.V[r][current][f]             / chi_c[f];
+
+	//		cout << chi_c[f] << endl;
+	//		cout << term1_c[f] << endl;
+	//		cout << term2_c[f] << endl;
 		}
 
 
@@ -109,6 +117,14 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies, TEMPE
 				dtau[n][f] = 0.5 * dZ * PC *(chi_c[f] + chi_n[f]);
           Su[n][f] = 0.5 * (term1_n[f] + term1_c[f]) + sign * (term2_n[f] - term2_c[f]) / dtau[n][f];
        		Sv[n][f] = 0.5 * (term2_n[f] + term2_c[f]) + sign * (term1_n[f] - term1_c[f]) / dtau[n][f];
+
+	//		  cout << "U_s " << U_scaled[f] << endl;
+	//		  cout << "V_s " << V_scaled[f] << endl;
+
+	//		  cout << "chi " << chi_c[f] << endl;
+	//		  cout << "eta " << eta_c[f] << endl;
+		//	  cout << "tr1 " << term1_c[f] << endl;
+		//	  cout << "tr2 " << term2_c[f] << endl;
 			}
 
  

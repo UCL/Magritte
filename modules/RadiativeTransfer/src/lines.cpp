@@ -6,6 +6,7 @@
 
 #include <omp.h>
 #include <vector>
+#include <iostream>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
@@ -89,7 +90,7 @@ int LINES :: get_emissivity_and_opacity (LINEDATA& linedata, LEVELS& levels)
       double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
 
 #     pragma omp parallel                             \
-      shared (linedata, levels, l, k, i, j, hv_4pi)   \
+      shared (linedata, levels, l, k, i, j, hv_4pi, cout)   \
 	  	default (none)
 	    {
 
@@ -106,6 +107,14 @@ int LINES :: get_emissivity_and_opacity (LINEDATA& linedata, LEVELS& levels)
 
 		       opacity[p][l][k] = hv_4pi * ( levels.population[p][l](j) * linedata.B[l](j,i)
   					                             - levels.population[p][l](i) * linedata.B[l](i,j) );
+
+    //    cout << levels.population[p][l](i) << endl;
+    //    cout << levels.population[p][l](j) << endl;
+
+		//		cout << "emissivity " << p << " " << l << " " << k << " " << emissivity[p][l][k] << endl;
+		//		cout << "   opacity " << p << " " << l << " " << k << " " <<    opacity[p][l][k] << endl;
+		//		cout << opacity[p][l][k] << endl;
+
 		  } 
   	  } // end of OpenMP parallel region
     }
@@ -127,55 +136,51 @@ int LINES :: add_emissivity_and_opacity (FREQUENCIES& frequencies, TEMPERATURE& 
 		                                     vector<double>& eta, vector<double>& chi)
 {
 
-  for (int l = 0; l < frequencies.nr_line.size(); l++)
-	{
-		for (int k = 0; k < frequencies.nr_line[l].size(); k++)
-		{
-      const double lower = frequencies.order[p][frequencies.nr_line[l][k][0]];
-      const double upper = frequencies.order[p][frequencies.nr_line[l][k][3]];
+	// TODO Does not properly take into account the Doppler shift,
+	//      lines can also shift into the considered frequency!
 
-      const double freq_line = 0.5 * (   frequencies.all[p][frequencies.nr_line[l][k][1]]
-					                             + frequencies.all[p][frequencies.nr_line[l][k][2]] );
+	// For all lines
+
+  for (int l = 0; l < frequencies.nr_line[p].size(); l++)
+	{
+		for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
+		{
+      const double lower = frequencies.nr_line[p][l][k][0];   // lowest frequency for the line
+      const double upper = frequencies.nr_line[p][l][k][3];   // highest frequency for the line
+
+      const double freq_line = 0.5 * (   frequencies.all[p][frequencies.nr_line[p][l][k][1]]
+					                             + frequencies.all[p][frequencies.nr_line[p][l][k][2]] );
+
+
+		if (p < 5 && l==0 && k==0)
+		{
+//		  cout << emissivity[p][l][k] << endl;
+//      cout <<    opacity[p][l][k] << endl;
+		}
+//			cout << freq_line << endl;
+
+
 
 			for (long index = lower; index <= upper; index++)
 			{
-				const double line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[frequencies.deorder[p][index]]);
+				const double line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[index]);
 
-		    eta[frequencies.deorder[p][index]] += emissivity[p][l][k] * line_profile;
-		    chi[frequencies.deorder[p][index]] +=    opacity[p][l][k] * line_profile;
+				// cout << line_profile << endl;
+				
+
+		    eta[index] += emissivity[p][l][k] * line_profile;
+		    chi[index] +=    opacity[p][l][k] * line_profile;
 			}
 		}
 	}		
 
-
-	return (0);
-
-}
-
-
-
-
-///  J_eff: effective mean intensity in a line
-//////////////////////////////////////////////
-
-double LINES :: J_eff (FREQUENCIES& frequencies, TEMPERATURE& temperature,
-		                   vector<vector<double>>& J, long p, int l, int k)
-{
-
-  const vector<long> freq_nrs = frequencies.nr_line[l][k];
-
-  const double freq_line = 0.5 * (   frequencies.all[p][freq_nrs[1]]
-			                             + frequencies.all[p][freq_nrs[2]] );
-
-
-	double result = 0.0;
-
-	for (long z = 0; z < 4; z++)
+	for (long f = 0; f < frequencies.nfreq; f++)
 	{
-    result += H_4_weights[z] / profile_width (temperature.gas[p], freq_line) * J[p][freq_nrs[z]];
+//		cout << eta[f] << endl;
+//		cout << chi[f] << endl;
 	}
 
 
-  return result;
+	return (0);
 
 }

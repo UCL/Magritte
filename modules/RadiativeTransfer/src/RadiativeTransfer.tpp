@@ -27,7 +27,7 @@ using namespace Eigen;
 ///    @param[in] lines: data structure containing the line transfer data
 ///    @param[in] scattering: data structure containing the scattering data
 ///    @param[in/out] radiation: reference to the  radiation field
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature,
@@ -38,13 +38,12 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
   const long ndiag = 0;
 
-  for (long ri = 0; ri < nrays; ri++)
+  for (long ri = 0; ri < nrays/2; ri++)
 	{
 
 	  long r  = rays[ri];                // index of ray r
     long ar = cells.rays.antipod[r];   // index of antipodal ray to r
 
-		cout << "we're inside..." << endl;
 
 	  // Loop over all cells
 
@@ -76,24 +75,41 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 	    vector<vector<double>> dtau_ar (cells.ncells, vector<double> (frequencies.nfreq));    // optical depth increment along ray ar
 
 
-      set_up_ray <Dimension, Nrays>
-                 (cells, frequencies, temperature, lines, scattering, radiation, o, r,  1.0, n_r,  Su_r,  Sv_r,  dtau_r);
+
+			cout << "r = " << r << ";  o = " << o << endl;
 
       set_up_ray <Dimension, Nrays>
-                 (cells, frequencies, temperature, lines, scattering, radiation, o, r, -1.0, n_ar, Su_ar, Sv_ar, dtau_ar);
+                 (cells, frequencies, temperature, lines, scattering, radiation, o,  r,  1.0, n_r,  Su_r,  Sv_r,  dtau_r);
 
-       
-			cout << "set-up-ray went well" << endl;
+      set_up_ray <Dimension, Nrays>
+                 (cells, frequencies, temperature, lines, scattering, radiation, o, ar, -1.0, n_ar, Su_ar, Sv_ar, dtau_ar);
+
+			cout << "Rays are set up" << endl;
 
 	    const long ndep = n_r + n_ar;
 
-			cout << "ndep = " << ndep << endl;
+	//		cout << "ndep = " << ndep << endl;
+
+	//		for (long d = 0; d < n_r; d++)
+	//		{
+  //      cout <<   Su_r[d][0] << endl;
+  //      cout <<   Sv_r[d][0] << endl;
+  //      cout << dtau_r[d][0] << endl;
+	//		}
+
+	//		for (long d = 0; d < n_ar; d++)
+	//		{
+  //      cout <<   Su_ar[d][0] << endl;
+  //      cout <<   Sv_ar[d][0] << endl;
+  //      cout << dtau_ar[d][0] << endl;
+	//		}
+
 
       vector<double> u_local (frequencies.nfreq);   // local value of u field in direction r/ar
       vector<double> v_local (frequencies.nfreq);   // local value of v field in direction r/ar
 
 
-	    if (ndep > 0)
+	    if (ndep > 1)
 	    {
 	    	vector<vector<double>> u (ndep, vector<double> (frequencies.nfreq));
 	      vector<vector<double>> v (ndep, vector<double> (frequencies.nfreq));
@@ -104,13 +120,16 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
 	    	for (long f = 0; f < frequencies.nfreq; f++)
 	    	{
-           Lambda[f] = temp;
+          Lambda[f] = temp;
 	    	}
+
+				cout << "Just before solver..." << endl;
 
         solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 	    			       n_ar, Su_ar, Sv_ar, dtau_ar,
       						 ndep, frequencies.nfreq, u, v, ndiag, Lambda);
 
+				cout << "Just after solver!" << endl;
 
 	      if (n_ar > 0)
 	      {
@@ -140,31 +159,27 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 	      }
 	    }
 
-			cout << "how about this?" << endl;
 
 	    for (long f = 0; f < frequencies.nfreq; f++)
 	  	{
-				cout << "this should be fine" << endl;
-				cout << "r = " << r << endl;
-				cout << "o = " << o << endl;
-				cout << "f = " << f << endl;
 	      radiation.u[r][o][f] += u_local[f];
-				cout << "this is harder..:" << endl;
 	      radiation.v[r][o][f] += v_local[f];
+	//	cout << radiation.U[r][o][f] << endl;
 
-				cout << "wassup?" << endl;
 	      radiation.U[r][o][f] += u_local[f];
 	      radiation.V[r][o][f] += v_local[f];
 
 	      J[o][f] += u_local[f];
-	  	}
 
-			cout << "still no prob?" << endl;
+
+				//cout << u_local[f] << endl;
+				//cout << v_local[f] << endl;
+	  	}
 
 	  }
 	  } // end of pragma omp parallel	
 
-	} // end of loop over rays ri
+	} // end of loop over (half) the rays ri
 
 
 	return (0);

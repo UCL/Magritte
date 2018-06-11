@@ -14,6 +14,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 using namespace std;
 
 #include "species.hpp"
@@ -109,6 +110,7 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
 	abundance.resize (ncells);
 
 # pragma omp parallel   \
+	shared (cout)         \
   default (none) 
   { 
   
@@ -134,6 +136,31 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
 }   // END OF CONSTRUCTOR
 
 
+
+int SPECIES :: read (string file_name)
+{
+
+  ifstream infile (file_name);
+
+
+	for (long p = 0; p < ncells; p++)
+	{
+		for (int s = 0; s < nspec; s++)
+	  {
+  		infile >> abundance[p][s];
+	  }
+	}
+	
+
+	for (long p = 0; p < ncells; p++)
+	{
+  	density[p] = abundance[p][nr_H2];
+	}
+
+
+	return (0);
+
+}
 
 
 // get_canonical_name: get name of species as it appears in species.dat file

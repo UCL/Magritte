@@ -51,6 +51,9 @@ struct SPECIES
   SPECIES (long num_of_cells, int num_of_spec, string spec_datafile);
 
 
+  int read (string file_name);
+
+
   // Tools:
 
 
