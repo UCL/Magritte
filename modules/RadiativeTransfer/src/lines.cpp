@@ -77,47 +77,24 @@ LINES :: LINES (long num_of_cells, LINEDATA& linedata)
 ///    @param[in] levels: data structure containing the level populations
 /////////////////////////////////////////////////////////////////////////
 
-int LINES :: get_emissivity_and_opacity (LINEDATA& linedata, LEVELS& levels)
+int LINES ::
+    get_emissivity_and_opacity (const LINEDATA& linedata, const LEVELS& levels,
+		                            const long p, const int l)
 {
 
-	for (int l = 0; l < linedata.nlspec; l++)
+	// For all radiative transitions
+
+  for (int k = 0; k < linedata.nrad[l]; k++)
 	{
-    for (int k = 0; k < linedata.nrad[l]; k++)
-	  {
-	    int i = linedata.irad[l][k];
-		  int j = linedata.jrad[l][k];
+	  const int i = linedata.irad[l][k];
+	  const int j = linedata.jrad[l][k];
 
-      double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
+    const double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
 
-#     pragma omp parallel                             \
-      shared (linedata, levels, l, k, i, j, hv_4pi, cout)   \
-	  	default (none)
-	    {
+	  emissivity[p][l][k] = hv_4pi * linedata.A[l](i,j) * levels.population[p][l](i);
 
-	    const int num_threads = omp_get_num_threads();
-			const int thread_num  = omp_get_thread_num();
-
-  	  const long start = (thread_num*ncells)/num_threads;
-		  const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-
-
-		  for (long p = start; p < stop; p++)
-		  {
-		    emissivity[p][l][k] = hv_4pi * linedata.A[l](i,j) * levels.population[p][l](i);
-
-		       opacity[p][l][k] = hv_4pi * ( levels.population[p][l](j) * linedata.B[l](j,i)
-  					                             - levels.population[p][l](i) * linedata.B[l](i,j) );
-
-    //    cout << levels.population[p][l](i) << endl;
-    //    cout << levels.population[p][l](j) << endl;
-
-		//		cout << "emissivity " << p << " " << l << " " << k << " " << emissivity[p][l][k] << endl;
-		//		cout << "   opacity " << p << " " << l << " " << k << " " <<    opacity[p][l][k] << endl;
-		//		cout << opacity[p][l][k] << endl;
-
-		  } 
-  	  } // end of OpenMP parallel region
-    }
+	     opacity[p][l][k] = hv_4pi * (  levels.population[p][l](j) * linedata.B[l](j,i)
+  		                              - levels.population[p][l](i) * linedata.B[l](i,j) );
   }
 
 
@@ -131,9 +108,10 @@ int LINES :: get_emissivity_and_opacity (LINEDATA& linedata, LEVELS& levels)
 ///  add_emissivity_and_opacity
 ///////////////////////////////
 
-int LINES :: add_emissivity_and_opacity (FREQUENCIES& frequencies, TEMPERATURE& temperature, 
-		                                     vector<double>& frequencies_scaled, long p,
-		                                     vector<double>& eta, vector<double>& chi)
+int LINES ::
+    add_emissivity_and_opacity (const FREQUENCIES& frequencies, const TEMPERATURE& temperature, 
+		                            const vector<double>& frequencies_scaled, const long p,
+		                            vector<double>& eta, vector<double>& chi)
 {
 
   // For all frequencies
@@ -148,8 +126,8 @@ int LINES :: add_emissivity_and_opacity (FREQUENCIES& frequencies, TEMPERATURE& 
 	  {
 	  	for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
 	  	{
-        const double lower = frequencies.nr_line[p][l][k][0];   // lowest frequency for the line
-        const double upper = frequencies.nr_line[p][l][k][3];   // highest frequency for the line
+        const long lower = frequencies.nr_line[p][l][k][0];   // lowest frequency for the line
+        const long upper = frequencies.nr_line[p][l][k][3];   // highest frequency for the line
 
 				if (    (frequencies.all[p][lower] <  frequencies_scaled[f])
 					   && (frequencies.all[p][upper] >  frequencies_scaled[f]) )

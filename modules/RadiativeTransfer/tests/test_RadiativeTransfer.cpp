@@ -93,7 +93,13 @@ TEST_CASE ("Ray setup")
 
 	LINES lines (cells.ncells, linedata);
 
-	lines.get_emissivity_and_opacity (linedata, levels);
+	for (long p = 0; p < ncells; p++)
+	{
+		for (int l = 0; l < linedata.nlspec; l++)
+		{
+	    lines.get_emissivity_and_opacity (linedata, levels, p, l);
+		}
+	}
 
 
 	FREQUENCIES frequencies (ncells, linedata);

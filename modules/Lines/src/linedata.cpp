@@ -7,6 +7,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <iostream>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
@@ -34,17 +35,17 @@ LINEDATA :: LINEDATA ()
   jrad = JRAD;
   
   energy.resize (nlspec);
-	vector<vector<double>> energy_buffer = ENERGY;
+	Double2 energy_buffer = ENERGY;
   weight.resize (nlspec);
-	vector<vector<double>> weight_buffer = WEIGHT;
+	Double2 weight_buffer = WEIGHT;
 
   frequency.resize (nlspec);
-	vector<vector<vector<double>>> frequency_buffer = FREQUENCY;
+	Double3 frequency_buffer = FREQUENCY;
 
   A.resize (nlspec);
-	vector<vector<vector<double>>> A_buffer = A_COEFF;
+	Double3 A_buffer = A_COEFF;
  	B.resize (nlspec);
-	vector<vector<vector<double>>> B_buffer = B_COEFF;
+	Double3 B_buffer = B_COEFF;
 
 	num_col_partner.resize (nlspec);
 	num_col_partner = PARTNER_NR;  
@@ -54,7 +55,7 @@ LINEDATA :: LINEDATA ()
 	temperature_col = COLTEMP;
 
   C_data.resize (nlspec);
-  vector<vector<vector<vector<vector<double>>>>> C_data_buffer = C_DATA;
+  Double5 C_data_buffer = C_DATA;
 
   icol.resize (nlspec);
 	icol = ICOL;
@@ -125,21 +126,25 @@ LINEDATA :: LINEDATA ()
 	}
 
 
-
 }   // END OF CONSTRUCTOR
 
 
 
 
 ///  calc_Einstein_C: calculate the Einstein C coefficient
-///    @param[in] species:
-//////////////////////////////////////////////////////////
+///    @param[in] species: data structure containing chamical species
+///    @param[in] temperature_gas: local gas temperature
+///    @param[in] p: number of the cell under consideration
+///    @param[in] l: number of the line producing species under consideration
+///    @return Einstein C collisional transition matrix
+/////////////////////////////////////////////////////////////////////////////
 
 MatrixXd LINEDATA ::
-         calc_Einstein_C (SPECIES& species, double temperature_gas, const long p, const int l)
+         calc_Einstein_C (const SPECIES& species, const double temperature_gas,
+						              const long p, const int l)
 {
 
-  MatrixXd C (nlev[l],nlev[l]);   // Einstein C_ij coefficient
+  MatrixXd C = MatrixXd :: Zero (nlev[l],nlev[l]);   // Einstein C_ij coefficient
 
 
   // Calculate H2 ortho/para fraction at equilibrium for given temperature
@@ -147,6 +152,7 @@ MatrixXd LINEDATA ::
   double frac_H2_para  = 0.0;   // fraction of para-H2
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
+	cout << "abn H2 = " << species.abundance[p][species.nr_H2] << endl;
 
   if (species.abundance[p][species.nr_H2] > 0.0)
   {
@@ -162,10 +168,14 @@ MatrixXd LINEDATA ::
 
     // Weigh contributions by abundance
 
-    int spec = num_col_partner[l][c];
+    const int spec = num_col_partner[l][c];
 
     double abundance = species.density[p] * species.abundance[p][spec];
 
+		cout << "den = " << species.density[p] << endl;
+		cout << "sab = " << species.abundance[p][spec] << endl;
+		cout << "n col par " << spec << endl;
+		cout << "abn = " << abundance << endl;
 
     if      (orth_or_para_H2[l][c] == 'o')
     {
@@ -212,9 +222,8 @@ MatrixXd LINEDATA ::
 
 
 MatrixXd LINEDATA ::
-         calc_transition_matrix (SPECIES& species, const double temperature_gas,
-						                     const vector<vector<vector<double>>>& J_eff,
-																 const long p, const int l)
+         calc_transition_matrix (const SPECIES& species, const double temperature_gas,
+						                     const Double3& J_eff, const long p, const int l)
 {
 
   // Calculate collissional Einstein coefficients

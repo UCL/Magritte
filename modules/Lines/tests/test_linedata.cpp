@@ -47,13 +47,24 @@ TEST_CASE ("calc_Einstein_C")
 
 	SPECIES species (ncells, nspec, species_file);
 
-	species.read (abundance_file);
+
+	for (int s = 0; s < species.nspec; s++)
+	{
+		cout << species.abundance[0][s] << endl;
+	}
+
+
+	species.density[0] = 1.0;
+
+	// species.abundance[0] = 0.0;
+
+	// species.abundance[4] = 1.0;
 
 
 	long p = 0;
-	int  l = 0;
+	int  l = 1;
 
-	double temperature_gas = 100.0;
+	double temperature_gas = 10.0;
 
 
 	MatrixXd C = linedata.calc_Einstein_C (species, temperature_gas, p, l);

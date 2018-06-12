@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "cells.hpp"
+#include "types.hpp"
 #include "lines.hpp"
 #include "scattering.hpp"
 #include "radiation.hpp"
@@ -33,9 +34,11 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-int set_up_ray (CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies, TEMPERATURE& temperature,
-		            LINES& lines, SCATTERING& scattering, RADIATION& radiation, long o, long r, double sign,
-	              long& n, vector<vector<double>>& Su, vector<vector<double>>& Sv, vector<vector<double>>& dtau);
+int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
+		            const TEMPERATURE& temperature, LINES& lines,
+								SCATTERING& scattering, RADIATION& radiation,
+								const long o, const long r, const double sign,
+	              long& n, Double2& Su, Double2& Sv, Double2& dtau);
 
 
 #include "set_up_ray.tpp"

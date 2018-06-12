@@ -15,6 +15,7 @@ using namespace std;
 using namespace Eigen;
 
 #include "linedata_config.hpp"
+#include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/species.hpp"
 
 
@@ -23,51 +24,50 @@ struct LINEDATA
 
 	int nlspec = NLSPEC;
 
-  vector<int> nlev = NLEV;
-  vector<int> nrad = NRAD;
+  Int1 nlev = NLEV;
+  Int1 nrad = NRAD;
   
-  vector<int> ncolpar = NCOLPAR;
+  Int1 ncolpar = NCOLPAR;
   
-  vector<vector<int>> ntmp = NCOLTEMP;
-  vector<vector<int>> ncol = NCOLTRAN;
+  Int2 ntmp = NCOLTEMP;
+  Int2 ncol = NCOLTRAN;
 
-	vector<int>    num;                               // number of line producing species
-  vector<string> sym;                               // symbol of line producing species
+	Int1    num;               // number of line producing species
+  String1 sym;               // symbol of line producing species
 
-  vector<vector<int>> irad;                         // level index of radiative transition
-  vector<vector<int>> jrad;                         // level index of radiative transition
+  Int2 irad;                 // level index of radiative transition
+  Int2 jrad;                 // level index of radiative transition
 
-  vector<VectorXd> energy;                          // energy of level
-  vector<VectorXd> weight;                          // weight of level (statistical)
+  VectorXd1 energy;          // energy of level
+  VectorXd1 weight;          // weight of level (statistical)
 
-  vector<MatrixXd> frequency;                       // frequency corresponing to i <-> j transition
+  MatrixXd1 frequency;       // frequency corresponing to i <-> j transition
 
-  vector<MatrixXd> A;                               // Einstein A_ij coefficient
-  vector<MatrixXd> B;                               // Einstein B_ij coefficient
+  MatrixXd1 A;               // Einstein A_ij coefficient
+  MatrixXd1 B;               // Einstein B_ij coefficient
 
 
   // Collision related variables
 
-  vector<vector<int>>            num_col_partner;   // species number corresponding to a collision partner
-  vector<vector<char>>           orth_or_para_H2;   // stores whether it is ortho or para H2
-  vector<vector<vector<double>>> temperature_col;   // Collision temperatures for each partner
+  Int2    num_col_partner;   // species number corresponding to a collision partner
+  Char2   orth_or_para_H2;   // stores whether it is ortho or para H2
+  Double3 temperature_col;   // Collision temperatures for each partner
 
-  vector<vector<vector<MatrixXd>>> C_data;          // Einstein C_ij for each partner and temp.
+  MatrixXd3 C_data;          // Einstein C_ij for each partner and temp.
 
-  vector<vector<vector<int>>> icol;                 // level index corresp. to col. transition
-  vector<vector<vector<int>>> jcol;                 // level index corresp. to col. transition
+  Int3 icol;                 // level index corresp. to col. transition
+  Int3 jcol;                 // level index corresp. to col. transition
 
 
   LINEDATA ();   ///< Constructor
 
 
-  MatrixXd calc_Einstein_C (SPECIES& species, const double temperature_gas,
+  MatrixXd calc_Einstein_C (const SPECIES& species, const double temperature_gas,
 			                      const long p, const int l); 
 
 
-  MatrixXd calc_transition_matrix (SPECIES& species, const double temperature_gas,
-			                             const vector<vector<vector<double>>>& J_eff,
-																	 const long p, const int l); 
+  MatrixXd calc_transition_matrix (const SPECIES& species, const double temperature_gas,
+			                             const Double3& J_eff, const long p, const int l); 
 
 
 };

@@ -27,6 +27,7 @@ def setupMagritte(projectFolder):
     """
     Main setup for Magritte
     """
+    gridDataFile = getFilePath(projectFolder, 'INPUTFILE')
     # Get cell data
     ncells = getNcells(gridDataFile, None) 
 

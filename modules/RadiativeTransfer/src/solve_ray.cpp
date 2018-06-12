@@ -11,6 +11,7 @@ using namespace std;
 using namespace Eigen;
 
 #include "solve_ray.hpp"
+#include "types.hpp"
 
 
 ///  solve_ray: solve radiative transfer equation using the Feautrier method
@@ -31,10 +32,10 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<double>>& Sv_r,  vector<vector<double>>& dtau_r,
-	             const long n_ar, vector<vector<double>>& Su_ar, vector<vector<double>>& Sv_ar, vector<vector<double>>& dtau_ar,
-	             const long ndep, const long nfreq,              vector<vector<double>>& u,     vector<vector<double>>& v,
-							 const long ndiag, vector<MatrixXd>& Lambda)
+int solve_ray (const long n_r,  const Double2& Su_r,  const Double2& Sv_r,  const Double2& dtau_r,
+	             const long n_ar, const Double2& Su_ar, const Double2& Sv_ar, const Double2& dtau_ar,
+	             const long ndep, const long nfreq,           Double2& u,           Double2& v,
+							 const long ndiag, MatrixXd1& Lambda)
 {
 
 	vector<double> B0        (nfreq);   // B[0][f]
@@ -48,7 +49,7 @@ int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<dou
   vector<vector<double>> G (ndep, vector<double> (nfreq));   // helper variable from Rybicki & Hummer (1991)
 
 
-cout << "We're in!" << endl;
+
 
   // SETUP FEAUTRIER RECURSION RELATION
   // __________________________________
@@ -184,11 +185,8 @@ cout << "We're in!" << endl;
 
 	for (long f = 0; f < nfreq; f++)
 	{
-	cout << "Problem region in" << endl;
-	cout << "ndep = " << ndep << endl;
     u[ndep-1][f] = (u[ndep-1][f] + A[ndep-1][f]*u[ndep-2][f])
                       / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (1.0 + F[ndep-2][f]);
-	cout << "Problem region out" << endl;
 
     v[ndep-1][f] = (v[ndep-1][f] + A[ndep-1][f]*v[ndep-2][f])
                       / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (1.0 + F[ndep-2][f]);
@@ -269,7 +267,6 @@ cout << "We're in!" << endl;
     }
   }
 
-	cout << "About to get out..." << endl;
 
   return (0);
 

@@ -17,7 +17,7 @@ using namespace std;
 ///  Constructor for RADIATION
 //////////////////////////////
 
-RADIATION :: RADIATION (long num_of_cells, long num_of_rays, long num_of_freq)
+RADIATION :: RADIATION (const long num_of_cells, const long num_of_rays, const long num_of_freq)
 {
 
 	ncells = num_of_cells;
@@ -79,8 +79,8 @@ RADIATION :: RADIATION (long num_of_cells, long num_of_rays, long num_of_freq)
 
 
 
-int RADIATION :: resample_U (FREQUENCIES frequencies, long p, long r,
-	                           vector<double> frequencies_scaled,
+int RADIATION :: resample_U (const FREQUENCIES& frequencies, const long p, const long r,
+	                           const vector<double>& frequencies_scaled,
 		                         vector<double>& U_scaled)
 {
   long start = 0;
@@ -100,8 +100,8 @@ int RADIATION :: resample_U (FREQUENCIES frequencies, long p, long r,
 
 
 
-int RADIATION :: resample_V (FREQUENCIES frequencies, long p, long r,
-		                         vector<double> frequencies_scaled,
+int RADIATION :: resample_V (const FREQUENCIES& frequencies, const long p, const long r,
+		                         const vector<double>& frequencies_scaled,
 		                         vector<double>& V_scaled)
 {
   long start = 0;

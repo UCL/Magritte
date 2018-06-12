@@ -92,9 +92,12 @@ int main (void)
 	TIMER timer;
 	timer.start ();
 
-  solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
-			       n_ar, Su_ar, Sv_ar, dtau_ar,
-						 ndep, nfreq, u, v, ndiag, Lambda);
+	for (int n = 0; n < 5000; n++)
+	{
+    solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
+		  	       n_ar, Su_ar, Sv_ar, dtau_ar,
+			  			 ndep, nfreq, u, v, ndiag, Lambda);
+	}
 
 	timer.stop ();
 	timer.print ();

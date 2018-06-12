@@ -15,7 +15,7 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
-double profile (double temperature_gas, double freq_line, double freq);
+double profile (const double temperature_gas, const double freq_line, const double freq);
 
 
 
@@ -26,7 +26,7 @@ double profile (double temperature_gas, double freq_line, double freq);
 ///    @return width of the correpsonding line profile
 //////////////////////////////////////////////////////////////////////////////////
 
-double profile_width (double temperature_gas, double freq_line);
+double profile_width (const double temperature_gas, const double freq_line);
 
 
 #endif // __PROFILE_HPP_INCLUDED__

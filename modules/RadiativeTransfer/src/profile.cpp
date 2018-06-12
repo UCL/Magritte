@@ -17,7 +17,7 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
-double profile (double temperature_gas, double freq_line, double freq)
+double profile (const double temperature_gas, const double freq_line, const double freq)
 {
 	const double sqrtPi  = sqrt(PI);    // square root of Pi
 
@@ -35,7 +35,7 @@ double profile (double temperature_gas, double freq_line, double freq)
 ///    @return width of the correpsonding line profile
 //////////////////////////////////////////////////////////////////////////////////
 
-double profile_width (double temperature_gas, double freq_line)
+double profile_width (const double temperature_gas, const double freq_line)
 {
 	const double v_turb2 = 100.0;       // turbulent speed squared
 	const double factor  = 2.0*KB/MP;   // 2.0*Kb/Mp (with Boltzmann constant and proton mass)

@@ -35,11 +35,12 @@ struct LINES
   LINES (long num_of_cells, LINEDATA& linedata);   ///< Constructor
 
 
-	int get_emissivity_and_opacity (LINEDATA& linedata, LEVELS& levels);
+	int get_emissivity_and_opacity (const LINEDATA& linedata, const LEVELS& levels,
+			                            const long p, const int l);
 
 
-  int add_emissivity_and_opacity (FREQUENCIES& frequencies, TEMPERATURE& temperature,
-																 	vector<double>& frequencies_scaled, long p,
+  int add_emissivity_and_opacity (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+																 	const vector<double>& frequencies_scaled, const long p,
 			                            vector<double>& eta, vector<double>& chi);
 
 };

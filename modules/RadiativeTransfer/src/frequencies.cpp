@@ -21,7 +21,7 @@ using namespace std;
 ///    @param[in] linedata: data structure containing the line data
 ///////////////////////////////////////////////////////////////////
 
-FREQUENCIES :: FREQUENCIES (long num_of_cells, LINEDATA linedata)
+FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 {
 
 	ncells = num_of_cells;
@@ -112,7 +112,7 @@ FREQUENCIES :: FREQUENCIES (long num_of_cells, LINEDATA linedata)
 ///    @param[in] temperature: data structure containiing the temperature fields
 ////////////////////////////////////////////////////////////////////////////////
 
-int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
+int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperature)
 {
 
 # pragma omp parallel                         \
@@ -130,7 +130,7 @@ int FREQUENCIES :: reset (LINEDATA linedata, TEMPERATURE temperature)
 	{
 		long index1 = 0;
 
-		vector<long> order (nfreq);
+		Long1 order (nfreq);
 
 
 	  for (int l = 0; l < linedata.nlspec; l++)

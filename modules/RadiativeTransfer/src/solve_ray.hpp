@@ -12,6 +12,8 @@ using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
+#include "types.hpp"
+
 
 ///  solve_ray: solve radiative transfer equation using the Feautrier method
 ///  and the numerical scheme devised by Rybicki & Hummer (1991)
@@ -31,10 +33,10 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  vector<vector<double>>& Su_r,  vector<vector<double>>& Sv_r,  vector<vector<double>>& dtau_r,
-	             const long n_ar, vector<vector<double>>& Su_ar, vector<vector<double>>& Sv_ar, vector<vector<double>>& dtau_ar,
-	             const long ndep, const long nfreq,              vector<vector<double>>& u,     vector<vector<double>>& v,
-							 const long ndiag, vector<MatrixXd>& Lambda);
+int solve_ray (const long n_r,  const Double2& Su_r,  const Double2& Sv_r,  const Double2& dtau_r,
+	             const long n_ar, const Double2& Su_ar, const Double2& Sv_ar, const Double2& dtau_ar,
+	             const long ndep, const long nfreq,           Double2& u,           Double2& v,
+							 const long ndiag, MatrixXd1& Lambda);
 
 
 #endif // __SOLVE_RAY_HPP_INCLUDED__

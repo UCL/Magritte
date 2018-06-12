@@ -72,9 +72,9 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
     fgets (buffer, BUFFER_SIZE, specdata);
     sscanf (buffer, "%d,%[^,],%lE,%lf %*[^\n] \n", &n, sym_buff, &abn_buff, &mass_buff);
 
-    sym[l]                = sym_buff;
-    mass[l]               = mass_buff;
-    initial_abundance[l]  = abn_buff;
+                  sym[l] = sym_buff;
+                 mass[l] = mass_buff;
+    initial_abundance[l] = abn_buff;
   }
 
 

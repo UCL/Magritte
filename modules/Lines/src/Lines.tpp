@@ -15,14 +15,14 @@ using namespace Eigen;
 #include "Lines.hpp"
 #include "levels.hpp"
 #include "linedata.hpp"
-#include "acceleration_Ng.hpp"
-#include "RadiativeTransfer/src/species.hpp"
-#include "RadiativeTransfer/src/temperature.hpp"
-#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
+#include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/cells.hpp"
 #include "RadiativeTransfer/src/lines.hpp"
+#include "RadiativeTransfer/src/species.hpp"
 #include "RadiativeTransfer/src/radiation.hpp"
 #include "RadiativeTransfer/src/frequencies.hpp"
+#include "RadiativeTransfer/src/temperature.hpp"
+#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
 
 #define MAX_NITERATIONS 100
@@ -37,6 +37,10 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 					 RADIATION& radiation)
 {
 
+	long nfreq_scat = 1;
+
+	LINES lines (cells.ncells, linedata);
+
 	SCATTERING scattering (Nrays, nfreq_scat);
 
 
@@ -44,10 +48,6 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 	levels.set_LTE_populations (linedata, species, temperature);
 
-
-	long nfreq_scat = 1;
-
-	LINES lines (cells.ncells, linedata);
 
   // Calculate source and opacity for all transitions over whole grid
 
@@ -67,7 +67,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 		// Print number of current iteration
 
-		cout << "(Lines): Level populations iteration " << niterations << endl;
+		cout << "(Lines): Starting iteration " << niterations << endl;
 
 
     // Perform an Ng acceleration step every 4th iteration
@@ -78,18 +78,8 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
     }
 
 
-		// Update previous populations, making memory available for the new ones
 
-    levels.update_previous_populations ();
-
-
-    // Calculate source and opacity for all transitions over whole grid
-
-	  lines.get_emissivity_and_opacity (linedata, levels);
-
-
-
-		vector<vector<double>> J (levels.ncells, vector<double> (frequencies.nfreq));
+		Double2 J (levels.ncells, Double1 (frequencies.nfreq));
 
 		long rays[Nrays];
 
@@ -117,6 +107,8 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
     const long stop  = ((thread_num+1)*levels.ncells)/num_threads;   // Note brackets
 
 
+		// For all cells
+
     for (long p = start; p < stop; p++)
     {
 
@@ -125,13 +117,30 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
       for (int l = 0; l < linedata.nlspec; l++)
       {
 
-        levels.calc_J_eff (temperature, J, p, l, k);
+		    // Update previous populations, making memory available for the new ones
+
+        levels.population_prev3[p][l] = levels.population_prev2[p][l];
+        levels.population_prev2[p][l] = levels.population_prev1[p][l];
+        levels.population_prev1[p][l] = levels.population[p][l];
+
+
+				// Extract the effective mean radiation field in each line
+
+        levels.calc_J_eff (temperature, J, p, l);
+
+
+				// Calculate the transition matrix (for stat. equil. eq.)
 
     		MatrixXd R = linedata.calc_transition_matrix (species, temperature_gas, levels.J_eff, p, l);
     	
         levels.update_using_statistical_equilibrium (R, p, l);
 
     		levels.check_for_convergence (p, l);
+
+
+        // Calculate source and opacity for all transitions over whole grid
+
+	      lines.get_emissivity_and_opacity (linedata, levels, p, l);
 
 
       } // end of lspec loop over line producing species
@@ -188,7 +197,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
   // Print convergence stats
 
-  cout << "(Lines): populations converged after " << niteration << "iterations" << endl;
+  cout << "(Lines): converged after " << niteration << "iterations" << endl;
 
 
   return (0);

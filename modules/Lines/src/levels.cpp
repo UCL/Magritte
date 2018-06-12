@@ -25,7 +25,7 @@ using namespace Eigen;
 ///  Constructor for LEVELS
 ///////////////////////////
 
-LEVELS :: LEVELS (long num_of_cells, LINEDATA linedata)
+LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 {
   
 	ncells = num_of_cells;
@@ -103,9 +103,9 @@ LEVELS :: LEVELS (long num_of_cells, LINEDATA linedata)
 
 
 
-
-int LEVELS :: set_LTE_populations (LINEDATA linedata, SPECIES species,
-		                               TEMPERATURE temperature)
+int LEVELS ::
+    set_LTE_populations (const LINEDATA& linedata, const SPECIES& species,
+		                     const TEMPERATURE& temperature)
 {
 
   // For each line producing species at each grid point
@@ -166,8 +166,8 @@ int LEVELS :: set_LTE_populations (LINEDATA linedata, SPECIES species,
 
 
 
-int LEVELS :: update_using_statistical_equilibrium (const MatrixXd& R,
-		                                                const long p, const int l)
+int LEVELS ::
+    update_using_statistical_equilibrium (const MatrixXd& R, const long p, const int l)
 {
 
 
@@ -212,7 +212,8 @@ int LEVELS :: update_using_statistical_equilibrium (const MatrixXd& R,
 
 
 
-int LEVELS :: check_for_convergence (const long p, const int l)
+int LEVELS ::
+    check_for_convergence (const long p, const int l)
 {
 
   // Start by assuming that the populations are converged
@@ -255,27 +256,26 @@ int LEVELS :: check_for_convergence (const long p, const int l)
 /////////////////////////////////////////////////////////////////
  
 int LEVELS ::
-    calc_J_eff (FREQUENCIES& frequencies, TEMPERATURE& temperature,
-				        const vector<vector<double>>& J,
-	  		        const long p, const int l, const int k)
+    calc_J_eff (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+				        const Double2& J, const long p, const int l)
 {
 
-  const vector<long> freq_nrs = frequencies.nr_line[p][l][k];
+	for (int k = 0; k < nrad[l]; k++)
+	{
+    const vector<long> freq_nrs = frequencies.nr_line[p][l][k];
 
-  const double freq_line = 0.5 * (   frequencies.all[p][freq_nrs[1]]
-                                   + frequencies.all[p][freq_nrs[2]] );
+    const double freq_line = 0.5 * (   frequencies.all[p][freq_nrs[1]]
+                                     + frequencies.all[p][freq_nrs[2]] );
 
+    J_eff[p][l][k] = 0.0;
 
-  J_eff[p][l][k] = 0.0;
-
-
-  for (long z = 0; z < 4; z++)
-  {
-    J_eff[p][l][k] += H_4_weights[z] / profile_width (temperature.gas[p], freq_line) * J[p][freq_nrs[z]];
+    for (long z = 0; z < 4; z++)
+    {
+      J_eff[p][l][k] += H_4_weights[z] / profile_width (temperature.gas[p], freq_line) * J[p][freq_nrs[z]];
+    }
   }
 
 
- return (0);
+  return (0);
 
 }
-

@@ -10,6 +10,7 @@
 #include <vector>
 using namespace std;
 
+#include "types.hpp"
 #include "temperature.hpp"
 #include "Lines/src/linedata.hpp"
 
@@ -17,17 +18,17 @@ using namespace std;
 struct FREQUENCIES
 {
 
-	long ncells;                            ///< number of cells
-	long nfreq;                             ///< number of frequencies
+	long ncells;     ///< number of cells
+	long nfreq;      ///< number of frequencies
 
-	vector<vector<double>> all;             ///< all considered frequencies at each cell (p,f)
+	Double2 all;     ///< all considered frequencies at each cell (p,f)
 	
-	vector<vector<vector<vector<long>>>> nr_line;   ///< frequency number corresponing to line (p,l,k,z)
+	Long4 nr_line;   ///< frequency number corresponing to line (p,l,k,z)
 
 
-	FREQUENCIES (long num_of_cells, LINEDATA linedata);       ///< Constructor
+	FREQUENCIES (const long num_of_cells, const LINEDATA& linedata);        ///< Constructor
 
-  int reset (LINEDATA linedata, TEMPERATURE temperature);   ///< Set frequencies
+  int reset (const LINEDATA& linedata, const TEMPERATURE& temperature);   ///< Set frequencies
 
 };
 

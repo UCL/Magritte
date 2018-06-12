@@ -15,6 +15,7 @@ using namespace std;
 using namespace Eigen;
 
 #include "linedata.hpp"
+#include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
 #include "RadiativeTransfer/src/frequencies.hpp"
 
@@ -22,47 +23,44 @@ using namespace Eigen;
 struct LEVELS
 {
 	
-  long ncells;                                 ///< number of cells
+  long ncells;                      ///< number of cells
 	
-	int nlspec;                                  ///< number of species producing lines
+	int nlspec;                       ///< number of species producing lines
 
-	vector<int> nlev;                            ///< number of levels per species
-	vector<int> nrad;                            ///< number of radiative transitions per species
-	
-	vector<long> nlev_tot;                       ///< total number of levels per species    
+	Int1 nlev;                        ///< number of levels per species
+	Int1 nrad;                        ///< number of radiative transitions per species
 
-  bool some_not_converged;                     ///< true when there are unconverged species
+	Long1 nlev_tot;                   ///< total number of levels per species    
 
-	vector<bool>            not_converged;       ///< true when species is not converged
-  vector<double> fraction_not_converged;       ///< fraction of levels that is not converged
+  bool some_not_converged;          ///< true when there are unconverged species
 
-	vector<vector<VectorXd>> population;         ///< level population (most recent)
+	Bool1            not_converged;   ///< true when species is not converged
+  Double1 fraction_not_converged;   ///< fraction of levels that is not converged
 
-	vector<vector<vector<double>>> J_eff;        ///< effective mean intensity
+	VectorXd2 population;             ///< level population (most recent)
 
-	vector<vector<double>>   population_tot;     ///< total level population (sum over levels)
+	Double3 J_eff;                    ///< effective mean intensity
 
-	vector<vector<VectorXd>> population_prev1;   ///< level populations 1 iteration back
-	vector<vector<VectorXd>> population_prev2;   ///< level populations 2 iterations back
-	vector<vector<VectorXd>> population_prev3;   ///< level populations 3 iterations back
+  Double2   population_tot;         ///< total level population (sum over levels)
 
-
-  LEVELS (long num_of_cells, LINEDATA linedata);   ///< Constructor
+	VectorXd2 population_prev1;       ///< level populations 1 iteration back
+	VectorXd2 population_prev2;       ///< level populations 2 iterations back
+	VectorXd2 population_prev3;       ///< level populations 3 iterations back
 
 
-	int set_LTE_populations (LINEDATA linedata, SPECIES species,
-			                     TEMPERATURE temperature);
+  LEVELS (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
 
-  int calc_J_eff (FREQUENCIES& frequencies, TEMPERATURE& temperature,
-			            const vector<vector<double>>& J,
-  			          const long p, const int l, const int k);
+
+	int set_LTE_populations (const LINEDATA& linedata, const SPECIES& species,
+			                     const TEMPERATURE& temperature);
+
+  int calc_J_eff (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+			            const Double2& J, const long p, const int l);
 
 
 	int update_using_statistical_equilibrium (const MatrixXd& R, const long p, const int l);
 
 	int update_using_Ng_acceleration ();
-
-	int update_previous_populations ();
 
 	int check_for_convergence (const long p, const int l);
 
