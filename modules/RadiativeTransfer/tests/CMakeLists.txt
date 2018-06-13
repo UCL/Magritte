@@ -17,7 +17,7 @@ endif()
 include_directories( ../src )
 
 #Include directories for Common library
-include_directories( ../../RadiativeTransfer/src )
+include_directories( ../.. )
 
 # # Execute setup
 # add_custom_target(MAKE_SETUP ALL
@@ -58,7 +58,9 @@ add_executable( test_set_up_ray.exe
 test_set_up_ray.cpp )
 target_link_libraries( test_set_up_ray.exe
 _RADIATIVE_TRANSFER
-_TEST_RT_MAIN )
+_TEST_RT_MAIN
+_LINES )
+
 
 # Create executable to test feautrier solver
 add_executable( test_solve_ray.exe
@@ -114,7 +116,8 @@ add_executable( test_RadiativeTransfer.exe
 test_RadiativeTransfer.cpp )
 target_link_libraries( test_RadiativeTransfer.exe
 _RADIATIVE_TRANSFER
-_TEST_RT_MAIN )
+_TEST_RT_MAIN
+_LINES )
 
 # Create executable to test radiative transfer
 #add_executable( test_RadiativeTransfer.exe
