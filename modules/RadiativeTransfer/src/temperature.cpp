@@ -12,7 +12,7 @@ using namespace std;
 #include "temperature.hpp"
 
 
-TEMPERATURE :: TEMPERATURE (long num_of_cells)
+TEMPERATURE :: TEMPERATURE (const long num_of_cells)
 {
 	
   ncells = num_of_cells;
@@ -28,7 +28,7 @@ TEMPERATURE :: TEMPERATURE (long num_of_cells)
 
 
 
-int TEMPERATURE :: read (string temperature_file)
+int TEMPERATURE :: read (const string temperature_file)
 {
 
   ifstream infile (temperature_file);

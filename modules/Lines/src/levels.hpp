@@ -52,7 +52,7 @@ struct LEVELS
 
 
 	int set_LTE_populations (const LINEDATA& linedata, const SPECIES& species,
-			                     const TEMPERATURE& temperature);
+			                     const TEMPERATURE& temperature, const long p, const int l);
 
   int calc_J_eff (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
 			            const Double2& J, const long p, const int l);

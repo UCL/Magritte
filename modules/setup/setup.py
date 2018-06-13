@@ -49,9 +49,9 @@ def setupMagritte(projectFolder):
     # Get species numbers of collision partners
     partner   = [ld.partner   for ld in lineData]
     partnerNr = getSpeciesNumber(speciesNames, partner)
-    # Setup definitions
-    name      = ['\"' + ld.name + '\"' for ld in lineData]                       # format as C strings
-    orthoPara = [['\'' + op + '\'' for op in ld.orthoPara] for ld in lineData]   # format as C strings
+    # Format as C strings
+    name      = ['\"' + ld.name + '\"' for ld in lineData]
+    orthoPara = [['\'' + op + '\'' for op in ld.orthoPara] for ld in lineData]
     # Write Magritte_config.hpp file
     fileName = '../Lines/src/linedata_config.hpp'
     writeHeader(fileName)

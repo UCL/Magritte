@@ -62,6 +62,7 @@ def getSpeciesNumber(speciesNames, name):
         for i in range(len(speciesNames)):
             if (speciesNames[i] == getProperName(name)):
                 return i+1
+        return 0
 
 
 #def getProjectFolder():

@@ -88,15 +88,14 @@ TEST_CASE ("Ray setup")
 
 	LEVELS levels (ncells, linedata);
 
-	levels.set_LTE_populations (linedata, species, temperature);
-
-
 	LINES lines (cells.ncells, linedata);
 
 	for (long p = 0; p < ncells; p++)
 	{
 		for (int l = 0; l < linedata.nlspec; l++)
 		{
+	    levels.set_LTE_populations (linedata, species, temperature, p, l);
+
 	    lines.get_emissivity_and_opacity (linedata, levels, p, l);
 		}
 	}
@@ -114,7 +113,7 @@ TEST_CASE ("Ray setup")
 
 	vector<vector<double>> J (cells.ncells, vector<double> (frequencies.nfreq));
 
-	long rays[Nrays] = {0, 1};
+	Long1 rays = {0, 1};
 
 
   RadiativeTransfer<Dimension, Nrays>

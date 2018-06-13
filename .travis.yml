@@ -12,11 +12,16 @@ addons:
 
 script:
   - cd modules/RadiativeTransfer
-  - cmake .
-  - make
+    #  - cmake .
+    #  - make
   - cd tests
   - bash run_tests.sh
   - cd ../..
+  - cd modules/Lines
+    #  - cmake .
+    #  - make
+  - cd tests
+  - bash run_tests.sh
 
 
 # language:

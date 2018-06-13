@@ -105,58 +105,33 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 
 int LEVELS ::
     set_LTE_populations (const LINEDATA& linedata, const SPECIES& species,
-		                     const TEMPERATURE& temperature)
+		                     const TEMPERATURE& temperature, const long p, const int l)
 {
 
-  // For each line producing species at each grid point
+ 	// Set population total
 
-  for (int l = 0; l < linedata.nlspec; l++)
-  {
-
-#   pragma omp parallel                          \
-    shared (linedata, species, temperature, l)   \
-    default (none)
-    {
-
-    int num_threads = omp_get_num_threads();
-    int thread_num  = omp_get_thread_num();
-
-    long start = (thread_num*ncells)/num_threads;
-    long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+ 	population_tot[p][l] = species.density[p] * species.abundance[p][linedata.num[l]];
 
 
-    for (long p = start; p < stop; p++)
-    {
+   // Calculate fractional LTE level populations and partition function
 
-			// Set population total
+   double partition_function = 0.0;
 
-			population_tot[p][l] = species.density[p] * species.abundance[p][linedata.num[l]];
+   for (int i = 0; i < linedata.nlev[l]; i++)
+   {
+     population[p][l](i) = linedata.weight[l](i)
+ 			                    * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
-
-      // Calculate fractional LTE level populations and partition function
-
-      double partition_function = 0.0;
-
-      for (int i = 0; i < linedata.nlev[l]; i++)
-      {
-        population[p][l](i) = linedata.weight[l](i)
-					                    * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
-
-        partition_function += population[p][l](i);
-      }
+     partition_function += population[p][l](i);
+   }
 
 
-      // Rescale (normalize) LTE level populations
+   // Rescale (normalize) LTE level populations
 
-      for (int i = 0; i < linedata.nlev[l]; i++)
-      {
-        population[p][l](i) *= population_tot[p][l] / partition_function;
-      }
-
-    } // end of n loop over cells
-    } // end of OpenMP parallel region
-
-  } // end of lspec loop over line producin species
+   for (int i = 0; i < linedata.nlev[l]; i++)
+   {
+     population[p][l](i) *= population_tot[p][l] / partition_function;
+   }
 
 
   return (0);
@@ -174,19 +149,19 @@ int LEVELS ::
   // Statitstical equilibrium requires sum_j ( n_j R_ji - n_i R_ij) = 0 for all i
 	
 	MatrixXd M = R.transpose();
-  VectorXd y (nlev[l]);   
+  VectorXd y = VectorXd :: Zero (nlev[l]);   
 
 
 	for (int i = 0; i < nlev[l]; i++)
 	{
-		double out = 0.0;
+		double R_i = 0.0;
 
   	for (int j = 0; j < nlev[l]; j++)
 		{
-      out += R(i,j);  
+      R_i += R(i,j);  
 		}
 
-		M(i,i) = -out;
+		M(i,i) -= R_i;
 	}
 
 
@@ -253,7 +228,12 @@ int LEVELS ::
 
 
 ///  calc_J_eff: calculate the effective mean intensity in a line
-/////////////////////////////////////////////////////////////////
+///    @param[in] frequencies: data structure containing frequencies
+///    @param[in] temperature: data structure containing temperatures
+///    @param[in] J: (angle averaged) mean intensity for all frequencies 
+///    @param[in] p: number of the cell under consideration
+///    @param[in] l: number of the line producing species under consideration
+/////////////////////////////////////////////////////////////////////////////
  
 int LEVELS ::
     calc_J_eff (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,

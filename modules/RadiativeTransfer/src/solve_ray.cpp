@@ -38,15 +38,15 @@ int solve_ray (const long n_r,  const Double2& Su_r,  const Double2& Sv_r,  cons
 							 const long ndiag, MatrixXd1& Lambda)
 {
 
-	vector<double> B0        (nfreq);   // B[0][f]
-  vector<double> B0_min_C0 (nfreq);   // B[0][f] - C[0][f]
-  vector<double> Bd        (nfreq);   // B[ndep-1][f]
-	vector<double> Bd_min_Ad (nfreq);   // B[ndep-1][f] - A[ndep-1][f]
+	Double1 B0        (nfreq);           // B[0][f]
+  Double1 B0_min_C0 (nfreq);           // B[0][f] - C[0][f]
+  Double1 Bd        (nfreq);           // B[ndep-1][f]
+	Double1 Bd_min_Ad (nfreq);           // B[ndep-1][f] - A[ndep-1][f]
 
-  vector<vector<double>> A (ndep, vector<double> (nfreq));   // A coefficient in Feautrier recursion relation
-	vector<vector<double>> C (ndep, vector<double> (nfreq));   // C coefficient in Feautrier recursion relation
-  vector<vector<double>> F (ndep, vector<double> (nfreq));   // helper variable from Rybicki & Hummer (1991)
-  vector<vector<double>> G (ndep, vector<double> (nfreq));   // helper variable from Rybicki & Hummer (1991)
+  Double2 A (ndep, Double1 (nfreq));   // A coefficient in Feautrier recursion relation
+	Double2 C (ndep, Double1 (nfreq));   // C coefficient in Feautrier recursion relation
+  Double2 F (ndep, Double1 (nfreq));   // helper variable from Rybicki & Hummer (1991)
+  Double2 G (ndep, Double1 (nfreq));   // helper variable from Rybicki & Hummer (1991)
 
 
 

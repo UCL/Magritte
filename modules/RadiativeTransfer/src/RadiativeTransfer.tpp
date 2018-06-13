@@ -12,6 +12,7 @@ using namespace std;
 using namespace Eigen;
 
 #include "RadiativeTransfer.hpp"
+#include "types.hpp"
 #include "cells.hpp"
 #include "lines.hpp"
 #include "scattering.hpp"
@@ -31,9 +32,9 @@ using namespace Eigen;
 
 template <int Dimension, long Nrays>
 int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature,
-		                   FREQUENCIES& frequencies, long nrays, long *rays,
+		                   FREQUENCIES& frequencies, const long nrays, const Long1& rays,
 		                   LINES& lines, SCATTERING& scattering, RADIATION& radiation,
-											 vector<vector<double>>& J)
+											 Double2& J)
 {
 
   const long ndiag = 0;
@@ -41,14 +42,14 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
   for (long ri = 0; ri < nrays/2; ri++)
 	{
 
-	  long r  = rays[ri];                // index of ray r
-    long ar = cells.rays.antipod[r];   // index of antipodal ray to r
+	  const long r  = rays[ri];                // index of ray r
+    const long ar = cells.rays.antipod[r];   // index of antipodal ray to r
 
 
 	  // Loop over all cells
 
 #   pragma omp parallel                                                                             \
-	  shared (cells, temperature, frequencies, nrays, rays, lines, scattering, radiation, J, r, ar, cout)   \
+	  shared (cells, temperature, frequencies, lines, scattering, radiation, J, cout)   \
     default (none)
     {
 
@@ -64,25 +65,26 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
 	    long n_r = 0;
 
- 	    vector<vector<double>>   Su_r (cells.ncells, vector<double> (frequencies.nfreq));    // effective source for u along ray r
-	    vector<vector<double>>   Sv_r (cells.ncells, vector<double> (frequencies.nfreq));    // effective source for v along ray r
-	    vector<vector<double>> dtau_r (cells.ncells, vector<double> (frequencies.nfreq));    // optical depth increment along ray r
+ 	    Double2   Su_r (cells.ncells, Double1 (frequencies.nfreq));   // effective source for u along ray r
+	    Double2   Sv_r (cells.ncells, Double1 (frequencies.nfreq));   // effective source for v along ray r
+	    Double2 dtau_r (cells.ncells, Double1 (frequencies.nfreq));   // optical depth increment along ray r
 
 	    long n_ar = 0;
 
- 	    vector<vector<double>>   Su_ar (cells.ncells, vector<double> (frequencies.nfreq));    // effective source for u along ray ar
-	    vector<vector<double>>   Sv_ar (cells.ncells, vector<double> (frequencies.nfreq));    // effective source for v along ray ar
-	    vector<vector<double>> dtau_ar (cells.ncells, vector<double> (frequencies.nfreq));    // optical depth increment along ray ar
-
+ 	    Double2   Su_ar (cells.ncells, Double1 (frequencies.nfreq));   // effective source for u along ray ar
+	    Double2   Sv_ar (cells.ncells, Double1 (frequencies.nfreq));   // effective source for v along ray ar
+	    Double2 dtau_ar (cells.ncells, Double1 (frequencies.nfreq));   // optical depth increment along ray ar
 
 
 			cout << "r = " << r << ";  o = " << o << endl;
 
       set_up_ray <Dimension, Nrays>
-                 (cells, frequencies, temperature, lines, scattering, radiation, o,  r,  1.0, n_r,  Su_r,  Sv_r,  dtau_r);
+                 (cells, frequencies, temperature, lines, scattering, radiation,
+									o,  r,  1.0, n_r,  Su_r,  Sv_r,  dtau_r);
 
       set_up_ray <Dimension, Nrays>
-                 (cells, frequencies, temperature, lines, scattering, radiation, o, ar, -1.0, n_ar, Su_ar, Sv_ar, dtau_ar);
+                 (cells, frequencies, temperature, lines, scattering, radiation,
+									o, ar, -1.0, n_ar, Su_ar, Sv_ar, dtau_ar);
 
 			cout << "Rays are set up" << endl;
 
@@ -105,16 +107,16 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 	//		}
 
 
-      vector<double> u_local (frequencies.nfreq);   // local value of u field in direction r/ar
-      vector<double> v_local (frequencies.nfreq);   // local value of v field in direction r/ar
+      Double1 u_local (frequencies.nfreq);   // local value of u field in direction r/ar
+      Double1 v_local (frequencies.nfreq);   // local value of v field in direction r/ar
 
 
 	    if (ndep > 1)
 	    {
-	    	vector<vector<double>> u (ndep, vector<double> (frequencies.nfreq));
-	      vector<vector<double>> v (ndep, vector<double> (frequencies.nfreq));
+	    	Double2 u (ndep, Double1 (frequencies.nfreq));
+	      Double2 v (ndep, Double1 (frequencies.nfreq));
 	    
-        vector<MatrixXd> Lambda (frequencies.nfreq, MatrixXd (ndep, ndep));
+        MatrixXd1 Lambda (frequencies.nfreq, MatrixXd (ndep, ndep));
 
 	    	MatrixXd temp (ndep,ndep); 
 

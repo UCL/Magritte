@@ -49,7 +49,7 @@ struct LINEDATA
 
   // Collision related variables
 
-  Int2    num_col_partner;   // species number corresponding to a collision partner
+  Int2    num_col_partner;   // species number corresponding to collision partner
   Char2   orth_or_para_H2;   // stores whether it is ortho or para H2
   Double3 temperature_col;   // Collision temperatures for each partner
 

@@ -20,7 +20,7 @@ using namespace std;
 
 template <int Dimension, long Nrays>
 CELLS <Dimension, Nrays> ::
-CELLS (long number_of_cells, string n_neighbors_file)
+CELLS (const long number_of_cells, const string n_neighbors_file)
 {
 
   ncells = number_of_cells;
@@ -99,7 +99,7 @@ CELLS (long number_of_cells, string n_neighbors_file)
 
 template <int Dimension, long Nrays>
 int CELLS <Dimension, Nrays> ::
-    read (string cells_file, string neighbors_file, string boundary_file)
+    read (const string cells_file, const string neighbors_file, const string boundary_file)
 {
 
 	// Read cell centers and velocities
@@ -154,7 +154,7 @@ int CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 long CELLS <Dimension, Nrays> ::
-     next (long origin, long r, long current, double& Z, double& dZ)
+     next (const long origin, const long r, const long current, double& Z, double& dZ)
 {
 
   // Pick neighbor on "right side" closest to ray
@@ -216,7 +216,7 @@ long CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 double CELLS <Dimension, Nrays> ::
-       relative_velocity (long origin, long r, long current)
+       relative_velocity (const long origin, const long r, const long current)
 {
 
   return   (vx[current] - vx[origin]) * rays.x[r]

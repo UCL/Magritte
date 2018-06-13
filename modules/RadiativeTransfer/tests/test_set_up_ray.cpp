@@ -11,6 +11,7 @@ using namespace std;
 #include "catch.hpp"
 
 #include "../src/set_up_ray.hpp"
+#include "../src/types.hpp"
 
 
 #define EPS 1.0E-5
@@ -23,10 +24,10 @@ TEST_CASE ("CELLS constructor")
   const long Nrays     = 2;
   const long nspec     = 5;	
 
-	string       cells_file = "test_data/cells.txt";
-	string n_neighbors_file = "test_data/n_neighbors.txt";
-	string   neighbors_file = "test_data/neighbors.txt";
-	string    boundary_file = "test_data/boundary.txt";
+	const string       cells_file = "test_data/cells.txt";
+	const string n_neighbors_file = "test_data/n_neighbors.txt";
+	const string   neighbors_file = "test_data/neighbors.txt";
+	const string    boundary_file = "test_data/boundary.txt";
 
   CELLS<Dimension, Nrays> cells (ncells, neighbors_file);
  
@@ -65,16 +66,17 @@ TEST_CASE ("CELLS constructor")
 
   long n = 0;
 
-  vector<vector<double>>   Su (cells.ncells, vector<double> (frequencies.nfreq));    // effective source for u along ray r
-  vector<vector<double>>   Sv (cells.ncells, vector<double> (frequencies.nfreq));    // effective source for v along ray r
-  vector<vector<double>> dtau (cells.ncells, vector<double> (frequencies.nfreq));    // optical depth increment along ray r
+  Double2   Su (cells.ncells, Double1 (frequencies.nfreq));    // effective source for u along ray r
+  Double2   Sv (cells.ncells, Double1 (frequencies.nfreq));    // effective source for v along ray r
+  Double2 dtau (cells.ncells, Double1 (frequencies.nfreq));    // optical depth increment along ray r
 
 
-	long o = 1;
+	long o = 0;
 	long r = 0;
 
 	set_up_ray <Dimension, Nrays>
-	         	 (cells, frequencies, temperature, lines, scattering, radiation, o, r,  1.0, n,  Su,  Sv,  dtau);
+	         	 (cells, frequencies, temperature, lines, scattering, radiation,
+							o, r,  1.0, n,  Su,  Sv,  dtau);
 
 
 	cout << n << endl;

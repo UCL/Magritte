@@ -44,13 +44,16 @@ struct CELLS
   vector<bool> removed;                     ///< true when cell is removed
 
 
-  CELLS (long number_of_cells, string n_neighbors_file);                       ///< Constructor
+  CELLS (const long number_of_cells, const string n_neighbors_file);           ///< Constructor
 
-  int read (string cells_file, string neighbors_file, string boundary_file);   ///< Read input
+	
+  int read (const string cells_file, const string neighbors_file, const string boundary_file);
 
-  long next (long origin, long ray, long current, double& Z, double& dZ);      ///< Next cell on ray
+	
+  long next (const long origin, const long ray, const long current, double& Z, double& dZ); 
 
-  double relative_velocity (long origin, long r, long current);                ///< relative velocity
+
+  double relative_velocity (const long origin, const long r, long current);
 
 
 };

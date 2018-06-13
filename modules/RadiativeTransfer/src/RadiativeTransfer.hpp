@@ -25,9 +25,9 @@
 
 template <int Dimension, long Nrays>
 int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature,
-		                   FREQUENCIES& frequencies, long nrays, long *rays,
+		                   FREQUENCIES& frequencies, const long nrays, const Long1& rays,
 											 LINES& lines, SCATTERING& scattering, RADIATION& radiation,
-											 vector<vector<double>>& J);
+											 Double2& J);
 
 
 #include "RadiativeTransfer.tpp"

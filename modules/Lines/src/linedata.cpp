@@ -205,7 +205,7 @@ MatrixXd LINEDATA ::
 		else
     {
       const double step = (temperature_gas - temperature_col[l][c][t-1])
-                          / (temperature_col[l][c][t]- temperature_col[l][c][t-1]);
+                          / (temperature_col[l][c][t] - temperature_col[l][c][t-1]);
 
       C += ( C_data[l][c][t-1] + (C_data[l][c][t] - C_data[l][c][t-1])*step ) * abundance;
     }
@@ -220,6 +220,15 @@ MatrixXd LINEDATA ::
 
 
 
+
+///  calc_transition_matrix: calculate the transition matrix
+///    @param[in] species: data structure containing chamical species
+///    @param[in] temperature_gas: local gas temperature
+///    @param[in] J_eff: effective mean intensity
+///    @param[in] p: number of the cell under consideration
+///    @param[in] l: number of the line producing species under consideration
+///    @return Einstein C collisional transition matrix
+/////////////////////////////////////////////////////////////////////////////
 
 MatrixXd LINEDATA ::
          calc_transition_matrix (const SPECIES& species, const double temperature_gas,
@@ -249,4 +258,5 @@ MatrixXd LINEDATA ::
 	
 
 	return R;
+
 }

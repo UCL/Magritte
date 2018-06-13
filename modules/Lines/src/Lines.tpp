@@ -44,14 +44,40 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 	SCATTERING scattering (Nrays, nfreq_scat);
 
 
-	// Initialize levels with LTE populations
+# pragma omp parallel                                      \
+  shared (linedata, lines, levels, species, temperature)   \
+  default (none)
+  {
 
-	levels.set_LTE_populations (linedata, species, temperature);
+  const int num_threads = omp_get_num_threads();
+  const int thread_num  = omp_get_thread_num();
+
+  const long start = (thread_num*levels.ncells)/num_threads;
+  const long stop  = ((thread_num+1)*levels.ncells)/num_threads;   // Note brackets
 
 
-  // Calculate source and opacity for all transitions over whole grid
+	// For all cells
 
-	lines.get_emissivity_and_opacity (linedata, levels);
+  for (long p = start; p < stop; p++)
+  {
+
+    // For each species producing lines
+
+    for (int l = 0; l < linedata.nlspec; l++)
+    {
+
+	    // Initialize levels with LTE populations
+
+	    levels.set_LTE_populations (linedata, species, temperature, p, l);
+
+
+      // Calculate source and opacity for all transitions over whole grid
+
+	    lines.get_emissivity_and_opacity (linedata, levelsi, p, l);
+		}
+	}
+	} // end of pragma omp parallel
+
 
 
 
@@ -81,7 +107,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 		Double2 J (levels.ncells, Double1 (frequencies.nfreq));
 
-		long rays[Nrays];
+		Long1 rays (Nrays);
 
 		for (long r = 0; r < Nrays; r++)
 		{
@@ -91,7 +117,9 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 		// Get radiation field from Radiative Transfer
 
 		cout << "In RT..." << endl;
-    RadiativeTransfer<Dimension, Nrays> (cells, temperature, frequencies, Nrays, rays, lines, scattering, radiation, J);
+    RadiativeTransfer<Dimension, Nrays>
+			               (cells, temperature, frequencies, Nrays,
+											rays, lines, scattering, radiation, J);
 		cout << "Out RT..." << endl;
  
 

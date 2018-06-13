@@ -35,9 +35,8 @@ using namespace std;
 
 template <int Dimension, long Nrays>
 int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
-		            const TEMPERATURE& temperature, LINES& lines,
-								SCATTERING& scattering, RADIATION& radiation,
-								const long o, const long r, const double sign,
+		            const TEMPERATURE& temperature, LINES& lines, SCATTERING& scattering,
+								RADIATION& radiation, const long o, const long r, const double sign,
 	              long& n, Double2& Su, Double2& Sv, Double2& dtau);
 
 
