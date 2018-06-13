@@ -46,12 +46,12 @@ target_link_libraries( test_cells.exe
 _RADIATIVE_TRANSFER
 _TEST_RT_MAIN )
 
-# Create executable to test ray_tracing
-add_executable( test_ray_tracing.exe
-test_ray_tracing.cpp )
-target_link_libraries( test_ray_tracing.exe
-_RADIATIVE_TRANSFER
-_TEST_RT_MAIN )
+## Create executable to test ray_tracing
+#add_executable( test_ray_tracing.exe
+#test_ray_tracing.cpp )
+#target_link_libraries( test_ray_tracing.exe
+#_RADIATIVE_TRANSFER
+#_TEST_RT_MAIN )
 
 # Create executable to test feautrier solver
 add_executable( test_set_up_ray.exe
