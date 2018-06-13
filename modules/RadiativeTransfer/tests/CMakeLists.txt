@@ -17,7 +17,7 @@ endif()
 include_directories( ../src )
 
 #Include directories for Common library
-include_directories( ../.. )
+include_directories( ../../RadiativeTransfer/src )
 
 # # Execute setup
 # add_custom_target(MAKE_SETUP ALL
