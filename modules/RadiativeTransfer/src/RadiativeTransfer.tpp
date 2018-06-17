@@ -13,6 +13,7 @@ using namespace Eigen;
 
 #include "RadiativeTransfer.hpp"
 #include "types.hpp"
+#include "GridTypes.hpp"
 #include "cells.hpp"
 #include "lines.hpp"
 #include "scattering.hpp"
@@ -31,13 +32,20 @@ using namespace Eigen;
 /////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature,
+int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE& temperature,
 		                   FREQUENCIES& frequencies, const long nrays, const Long1& rays,
 		                   LINES& lines, SCATTERING& scattering, RADIATION& radiation,
-											 Double2& J)
+											 vDouble2& J)
 {
 
   const long ndiag = 0;
+
+	const long ncells    = cells.ncells;
+	const long nfreq     = frequencies.nfreq;
+	const long nfreq_red = (nfreq + n_vector_lanes - 1) / n_vector_lanes;
+
+	frequencies.nfreq_red = nfreq_red;
+
 
   for (long ri = 0; ri < nrays/2; ri++)
 	{
@@ -48,7 +56,7 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
 	  // Loop over all cells
 
-#   pragma omp parallel                                                                             \
+#   pragma omp parallel                                                               \
 	  shared (cells, temperature, frequencies, lines, scattering, radiation, J, cout)   \
     default (none)
     {
@@ -56,8 +64,8 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
     const int num_threads = omp_get_num_threads();
     const int thread_num  = omp_get_thread_num();
 
-    const long start = (thread_num*cells.ncells)/num_threads;
-    const long stop  = ((thread_num+1)*cells.ncells)/num_threads;   // Note brackets
+    const long start = (thread_num*ncells)/num_threads;
+    const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
 
     for (long o = start; o < stop; o++)
@@ -65,15 +73,15 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
 	    long n_r = 0;
 
- 	    Double2   Su_r (cells.ncells, Double1 (frequencies.nfreq));   // effective source for u along ray r
-	    Double2   Sv_r (cells.ncells, Double1 (frequencies.nfreq));   // effective source for v along ray r
-	    Double2 dtau_r (cells.ncells, Double1 (frequencies.nfreq));   // optical depth increment along ray r
+ 	    vDouble2   Su_r (ncells, vDouble1 (nfreq_red));   // effective source for u along ray r
+	    vDouble2   Sv_r (ncells, vDouble1 (nfreq_red));   // effective source for v along ray r
+	    vDouble2 dtau_r (ncells, vDouble1 (nfreq_red));   // optical depth increment along ray r
 
 	    long n_ar = 0;
 
- 	    Double2   Su_ar (cells.ncells, Double1 (frequencies.nfreq));   // effective source for u along ray ar
-	    Double2   Sv_ar (cells.ncells, Double1 (frequencies.nfreq));   // effective source for v along ray ar
-	    Double2 dtau_ar (cells.ncells, Double1 (frequencies.nfreq));   // optical depth increment along ray ar
+ 	    vDouble2   Su_ar (ncells, vDouble1 (nfreq_red));   // effective source for u along ray ar
+	    vDouble2   Sv_ar (ncells, vDouble1 (nfreq_red));   // effective source for v along ray ar
+	    vDouble2 dtau_ar (ncells, vDouble1 (nfreq_red));   // optical depth increment along ray ar
 
 
 			cout << "r = " << r << ";  o = " << o << endl;
@@ -107,35 +115,37 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 	//		}
 
 
-      Double1 u_local (frequencies.nfreq);   // local value of u field in direction r/ar
-      Double1 v_local (frequencies.nfreq);   // local value of v field in direction r/ar
+      vDouble1 u_local (nfreq_red);   // local value of u field in direction r/ar
+      vDouble1 v_local (nfreq_red);   // local value of v field in direction r/ar
 
 
 	    if (ndep > 1)
 	    {
-	    	Double2 u (ndep, Double1 (frequencies.nfreq));
-	      Double2 v (ndep, Double1 (frequencies.nfreq));
+	    	vDouble2 u (ndep, vDouble1 (nfreq_red));
+	      vDouble2 v (ndep, vDouble1 (nfreq_red));
 	    
-        MatrixXd1 Lambda (frequencies.nfreq, MatrixXd (ndep, ndep));
+        //MatrixXd1 Lambda (frequencies.nfreq, MatrixXd (ndep, ndep));
 
-	    	MatrixXd temp (ndep,ndep); 
+	    	//MatrixXd temp (ndep,ndep); 
 
-	    	for (long f = 0; f < frequencies.nfreq; f++)
-	    	{
-          Lambda[f] = temp;
-	    	}
+	    	//for (long f = 0; f < frequencies.nfreq; f++)
+	    	//{
+        //  Lambda[f] = temp;
+	    	//}
+				
+				vDouble2 Lambda (ndep, vDouble1 (nfreq_red));
 
 				cout << "Just before solver..." << endl;
 
         solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 	    			       n_ar, Su_ar, Sv_ar, dtau_ar,
-      						 ndep, frequencies.nfreq, u, v, ndiag, Lambda);
+      						 ndep, nfreq_red, u, v, ndiag, Lambda);
 
 				cout << "Just after solver!" << endl;
 
 	      if (n_ar > 0)
 	      {
-	    	  for (long f = 0; f < frequencies.nfreq; f++)
+	    	  for (long f = 0; f < nfreq_red; f++)
 	    		{
 	      	  u_local[f] += u[n_ar-1][f];
 	      	  v_local[f] += v[n_ar-1][f];
@@ -144,7 +154,7 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
 	      if (n_r > 0)
 	      {
-	    	  for (long f = 0; f < frequencies.nfreq; f++)
+	    	  for (long f = 0; f < nfreq_red; f++)
 	    		{
 	      	  u_local[f] += u[n_ar][f];
 	      	  v_local[f] += v[n_ar][f];
@@ -153,7 +163,7 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 
 	      if ( (n_ar > 0) && (n_r > 0) )
 	      {
-	    	  for (long f = 0; f < frequencies.nfreq; f++)
+	    	  for (long f = 0; f < nfreq_red; f++)
 	    		{
 	      	  u_local[f] = 0.5*u_local[f];
 	      	  v_local[f] = 0.5*v_local[f];
@@ -162,7 +172,7 @@ int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature
 	    }
 
 
-	    for (long f = 0; f < frequencies.nfreq; f++)
+	    for (long f = 0; f < nfreq_red; f++)
 	  	{
 	      radiation.u[r][o][f] += u_local[f];
 	      radiation.v[r][o][f] += v_local[f];

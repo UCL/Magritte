@@ -16,6 +16,7 @@ using namespace Eigen;
 
 #include "linedata.hpp"
 #include "RadiativeTransfer/src/types.hpp"
+#include "RadiativeTransfer/src/lines.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
 #include "RadiativeTransfer/src/frequencies.hpp"
 
@@ -23,14 +24,13 @@ using namespace Eigen;
 struct LEVELS
 {
 	
-  long ncells;                      ///< number of cells
+  const long ncells;                ///< number of cells
 	
-	int nlspec;                       ///< number of species producing lines
+	const int nlspec;                 ///< number of species producing lines
 
-	Int1 nlev;                        ///< number of levels per species
-	Int1 nrad;                        ///< number of radiative transitions per species
+	const Int1 nlev;                  ///< number of levels per species
+	const Int1 nrad;                  ///< number of radiative transitions per species
 
-	Long1 nlev_tot;                   ///< total number of levels per species    
 
   bool some_not_converged;          ///< true when there are unconverged species
 
@@ -51,19 +51,29 @@ struct LEVELS
   LEVELS (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
 
 
-	int set_LTE_populations (const LINEDATA& linedata, const SPECIES& species,
-			                     const TEMPERATURE& temperature, const long p, const int l);
+	int iteration_using_LTE (const LINEDATA& linedata, const SPECIES& species,
+	  	                     const TEMPERATURE& temperature, LINES& lines);
 
 
-  int calc_J_eff (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-			            const Double2& J, const long p, const int l);
+	int update_using_LTE (const LINEDATA& linedata, const SPECIES& species,
+			                  const TEMPERATURE& temperature, const long p, const int l);
+
+
+	int update_using_Ng_acceleration ();
 
 
 	int update_using_statistical_equilibrium (const MatrixXd& R, const long p, const int l);
 
 
-	int update_using_Ng_acceleration ();
+	// Communication with Radiative Transfer module
+	
+	int calc_line_emissivity_and_opacity (const LINEDATA& linedata, LINES& lines,
+			                                  const long p, const int l) const;
 
+  int calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+			            vDouble2& J, const long p, const int l);
+
+	// Convergence
 
 	int check_for_convergence (const long p, const int l);
 

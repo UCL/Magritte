@@ -11,6 +11,7 @@ using namespace Eigen;
 
 #include "set_up_ray.hpp"
 #include "types.hpp"
+#include "GridTypes.hpp"
 #include "cells.hpp"
 #include "lines.hpp"
 #include "scattering.hpp"
@@ -36,17 +37,14 @@ const double tau_max = 1.0E9;
 ////////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
+int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
 		            const TEMPERATURE& temperature, LINES& lines, SCATTERING& scattering,
 								RADIATION& radiation, const long o, const long r, const double sign,
-	              long& n, Double2& Su, Double2& Sv, Double2& dtau)
+	              long& n, vDouble2& Su, vDouble2& Sv, vDouble2& dtau)
 {
 
-      for (long f = 0; f < frequencies.nfreq; f++)
-	    {
-	      //cout << radiation.U[r][o][f] << endl;   
-	    }
-  //double tau  = 0.0;   // optical depth along ray
+	const long nfreq_red = frequencies.nfreq_red;
+
 
   double  Z = 0.0;   // distance from origin (o)
   double dZ = 0.0;   // last distance increment from origin (o)
@@ -58,25 +56,21 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
 	if (next != cells.ncells)   // if we are not going out of grid
 	{
 
-		Double1 eta_c (frequencies.nfreq);
-		Double1 chi_c (frequencies.nfreq);
+		vDouble1 eta_c (nfreq_red);
+		vDouble1 chi_c (nfreq_red);
 		
 		lines.add_emissivity_and_opacity (frequencies, temperature, frequencies.all[o], o, eta_c, chi_c);
 
-		scattering.add_opacity (frequencies.all[o], chi_c);  
+		scattering.add_opacity (frequencies.all[o], chi_c);
 
 
-    Double1 term1_c (frequencies.nfreq);
-	  Double1 term2_c (frequencies.nfreq);
+    vDouble1 term1_c (nfreq_red);
+	  vDouble1 term2_c (nfreq_red);
 
-		for (long f = 0; f < frequencies.nfreq; f++)
+		for (long f = 0; f < nfreq_red; f++)
     {    	
 		 	term1_c[f] = (radiation.U[r][current][f] + eta_c[f]) / chi_c[f];
 			term2_c[f] =  radiation.V[r][current][f]             / chi_c[f];
-
-	//		cout << chi_c[f] << endl;
-	//		cout << term1_c[f] << endl;
-	//		cout << term2_c[f] << endl;
 		}
 
 
@@ -85,33 +79,33 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
       const double velocity = cells.relative_velocity (o, r, next);
       const double    scale = 1.0 - velocity/CC;
 
-			Double1 frequencies_scaled (frequencies.nfreq);
+			vDouble1 frequencies_scaled (nfreq_red);
 
-			for (long f = 0; f < frequencies.nfreq; f++)
+			for (long f = 0; f < nfreq_red; f++)
 			{
 			  frequencies_scaled[f] = scale * frequencies.all[o][f];
 			}	
 
 
-		  Double1 eta_n (frequencies.nfreq);
-		  Double1 chi_n (frequencies.nfreq);
+		  vDouble1 eta_n (nfreq_red);
+		  vDouble1 chi_n (nfreq_red);
 
 			lines.add_emissivity_and_opacity (frequencies, temperature, frequencies_scaled, o, eta_n, chi_n);
 
 			scattering.add_opacity (frequencies_scaled, chi_n);  
 
 
-			Double1 U_scaled (frequencies.nfreq);
-			Double1 V_scaled (frequencies.nfreq);
+			vDouble1 U_scaled (nfreq_red);
+			vDouble1 V_scaled (nfreq_red);
 
       radiation.resample_U (frequencies, next, r, frequencies_scaled, U_scaled);
       radiation.resample_V (frequencies, next, r, frequencies_scaled, V_scaled);
 
 
-			Double1 term1_n (frequencies.nfreq);
-			Double1 term2_n (frequencies.nfreq);
+			vDouble1 term1_n (nfreq_red);
+			vDouble1 term2_n (nfreq_red);
 
-			for (long f = 0; f < frequencies.nfreq; f++)
+			for (long f = 0; f < nfreq_red; f++)
 			{
 				term1_n[f] = (U_scaled[f] + eta_n[f]) / chi_n[f];
         term2_n[f] =  V_scaled[f]             / chi_n[f];
@@ -119,14 +113,6 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
 				dtau[n][f] = 0.5 * dZ * PC *(chi_c[f] + chi_n[f]);
           Su[n][f] = 0.5 * (term1_n[f] + term1_c[f]) + sign * (term2_n[f] - term2_c[f]) / dtau[n][f];
        		Sv[n][f] = 0.5 * (term2_n[f] + term2_c[f]) + sign * (term1_n[f] - term1_c[f]) / dtau[n][f];
-
-	//		  cout << "U_s " << U_scaled[f] << endl;
-	//		  cout << "V_s " << V_scaled[f] << endl;
-
-	//		  cout << "chi " << chi_c[f] << endl;
-	//		  cout << "eta " << eta_c[f] << endl;
-		//	  cout << "tr1 " << term1_c[f] << endl;
-		//	  cout << "tr2 " << term2_c[f] << endl;
 			}
 
  
@@ -134,10 +120,10 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
 			{
 				// Add boundary condition
 
-			  for (long f = 0; f < frequencies.nfreq; f++)
+			  for (long f = 0; f < nfreq_red; f++)
 				{
-			  	Su[n][f] += 2.0 / dtau[n][f] * (0.0 - sign * 0.5 * (term2_c[f] + term2_n[f]));
-				  Sv[n][f] += 2.0 / dtau[n][f] * (0.0 - sign * 0.5 * (term1_c[f] + term1_n[f]));
+			  	Su[n][f] += 2.0 / dtau[n][f] * (vZero - sign * 0.5 * (term2_c[f] + term2_n[f]));
+				  Sv[n][f] += 2.0 / dtau[n][f] * (vZero - sign * 0.5 * (term1_c[f] + term1_n[f]));
 				}
 			}
 
@@ -146,18 +132,17 @@ int set_up_ray (CELLS <Dimension, Nrays>& cells, const FREQUENCIES& frequencies,
       next    = cells.next (o, r, current, Z, dZ);
   
 
-			for (long f = 0; f < frequencies.nfreq; f++)
+			for (long f = 0; f < nfreq_red; f++)
 			{
           chi_c[f] =   chi_n[f];
         term1_c[f] = term1_n[f];
         term2_c[f] = term2_n[f];
 			}
 
-			//tau += dtau[n];
       n++;
 		}
 	
-    while ( (!cells.boundary[current]) /*&& (tau < tau_max)*/ );
+    while (!cells.boundary[current]);
 		
 	} // end of if
 

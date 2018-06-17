@@ -12,7 +12,11 @@
 
 #include "catch.hpp"
 
+#include "../../Lines/src/linedata.hpp"
+#include "../../Lines/src/levels.hpp"
 #include "../src/RadiativeTransfer.hpp"
+#include "../src/types.hpp"
+#include "../src/GridTypes.hpp"
 #include "../src/cells.hpp"
 #include "../src/lines.hpp"
 #include "../src/temperature.hpp"
@@ -94,9 +98,9 @@ TEST_CASE ("Ray setup")
 	{
 		for (int l = 0; l < linedata.nlspec; l++)
 		{
-	    levels.set_LTE_populations (linedata, species, temperature, p, l);
+	    levels.update_using_LTE (linedata, species, temperature, p, l);
 
-	    lines.get_emissivity_and_opacity (linedata, levels, p, l);
+	    levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
 		}
 	}
 
@@ -111,7 +115,7 @@ TEST_CASE ("Ray setup")
 
   RADIATION radiation (ncells, Nrays, nfreq);
 
-	vector<vector<double>> J (cells.ncells, vector<double> (frequencies.nfreq));
+	vDouble2 J (cells.ncells, vDouble1 (frequencies.nfreq));
 
 	Long1 rays = {0, 1};
 

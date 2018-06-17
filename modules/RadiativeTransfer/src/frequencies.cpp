@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "frequencies.hpp"
+#include "GridTypes.hpp"
 #include "constants.hpp"
 #include "temperature.hpp"
 #include "heapsort.hpp"
@@ -36,7 +37,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
   {
   	for (int k = 0; k < linedata.nrad[l]; k++)
   	{
-  		for (int z = 0; z < 4; z++)
+  		for (int z = 0; z < N_QUADRATURE_POINTS; z++)
   		{
 				index++;
   		}
@@ -51,7 +52,8 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
 	// Set total number of frequencies
 
-	nfreq = index;
+	nfreq     = index;
+	nfreq_red = (nfreq + n_vector_lanes - 1) / n_vector_lanes; 
 
 
 	// Size and initialize all, order and deorder
@@ -73,9 +75,9 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
   for (long p = start; p < stop; p++)
   {
-   	all[p].resize (nfreq);
+   	all[p].resize (nfreq_red);
   	
-		for (long f = 0; f < nfreq; f++)
+  	for (long f = 0; f < nfreq_red; f++)
   	{
       all[p][f] = 0.0;
   	}
@@ -89,9 +91,9 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
 	  	for (int k = 0; k < linedata.nrad[l]; k++)
 	  	{
-	  		nr_line[p][l][k].resize (4);
+	  		nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
 
-	  		for (int z = 0; z < 4; z++)
+	  		for (int z = 0; z < N_QUADRATURE_POINTS; z++)
 	  		{
 	  			nr_line[p][l][k][z] = 0;
 	  		}
@@ -116,7 +118,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 {
 
 # pragma omp parallel                         \
-  shared (linedata, temperature, H_4_roots, cout)   \
+  shared (linedata, temperature, H_roots, cout)   \
 	default (none)
   {
 
@@ -130,8 +132,8 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 	{
 		long index1 = 0;
 
-		Long1 order (nfreq);
-
+		Long1   order (nfreq);
+    Double1 freqs (nfreq);  
 
 	  for (int l = 0; l < linedata.nlspec; l++)
 	  {
@@ -143,10 +145,10 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 			  const double freq_line = linedata.frequency[l](i,j);
         const double width     = profile_width (temperature.gas[p], freq_line);
   	  	
-  	    for (long z = 0; z < 4; z++)
+  	    for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
-  	      all[p][index1] = freq_line + width*H_4_roots[z];
-				   order[index1] = index1;
+  	      freqs[index1] = freq_line + width*H_roots[z];
+				  order[index1] = index1;
 				
 					index1++;
   	    }
@@ -161,7 +163,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 
 		// Sort frequencies
 
-		heapsort (all[p], order, nfreq);
+		heapsort (freqs, order, nfreq);
 
 
 		long index2 = 0;
@@ -170,8 +172,13 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 	  {
 			for (int k = 0; k < linedata.nrad[l]; k++)
 			{
-  	    for (long z = 0; z < 4; z++)
+  	    for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
+					const long    f = index2 / n_vector_lanes;
+					const long lane = index2 % n_vector_lanes;
+
+  	      all[p][f].putlane(freqs[index2], lane);
+
 				  nr_line[p][l][k][z] = order[index2];
 					index2++;
   	    }

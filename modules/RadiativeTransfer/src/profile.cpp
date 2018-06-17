@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include "profile.hpp"
+#include "GridTypes.hpp"
 #include "constants.hpp"
 
 
@@ -17,13 +18,18 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
-double profile (const double temperature_gas, const double freq_line, const double freq)
+vDouble profile (const double temperature_gas, const double freq_line, const vDouble freq)
 {
-	const double sqrtPi  = sqrt(PI);    // square root of Pi
 
-  const double width = profile_width (temperature_gas, freq_line);
+  const double inverse_width = inverse_profile_width (temperature_gas, freq_line);
 
-  return exp( -pow((freq - freq_line)/width, 2) ) / (sqrt(PI) * width);
+	const vDouble vFreq_line   = freq_line;
+	const vDouble sqrtExponent = inverse_width * (freq - vFreq_line);
+	const vDouble exponent     = sqrtExponent * sqrtExponent;
+
+
+	return inverse_width * INVERSE_SQRT_PI * vExp(exponent);
+
 }
 
 
@@ -37,8 +43,46 @@ double profile (const double temperature_gas, const double freq_line, const doub
 
 double profile_width (const double temperature_gas, const double freq_line)
 {
-	const double v_turb2 = 100.0;       // turbulent speed squared
-	const double factor  = 2.0*KB/MP;   // 2.0*Kb/Mp (with Boltzmann constant and proton mass)
+  return freq_line * sqrt(TWO_KB_OVER_MP_C_SQUARED*temperature_gas + V_TURB_OVER_C_SQUARED);
+}
 
-  return freq_line/CC * sqrt(factor*temperature_gas + v_turb2);
+
+
+
+///  inverse_profile_width: one over the line profile width
+///    @param[in] temperature_gas: temperature of the gas at this cell
+///    @param[in] freq_line: frequency of the line under consideration
+///    @return width of the correpsonding line profile
+//////////////////////////////////////////////////////////////////////////////////
+
+double inverse_profile_width (const double temperature_gas, const double freq_line)
+{
+  return 1.0 / profile_width (temperature_gas, freq_line);
+}
+
+
+
+
+///  vExp: exponential function for vDouble types
+///    @param[in] x: exponent
+///    @return exponential of x
+/////////////////////////////////////////////////
+
+vDouble vExp (const vDouble x)
+{
+	const int n = 10;
+
+  vDouble result = 1.0;
+			 
+  for (int i = n-1; i > 0; i--)
+	{
+		const double   factor = 1.0 / i;
+		const vDouble vFactor = factor;
+
+    result = vOne + x*result*vFactor;
+	}
+
+
+	return result;
+  
 }

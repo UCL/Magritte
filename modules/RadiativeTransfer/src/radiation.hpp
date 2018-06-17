@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "frequencies.hpp"
+#include "GridTypes.hpp"
 
 
 ///  RADIATION: data structure for the radiation field
@@ -22,14 +23,14 @@ struct RADIATION
 
 	long ncells;                          ///< number of cells
 	long nrays;                           ///< number of rays
-	long nfreq;                           ///< number of frequencies
+	long nfreq_red;                       ///< number of frequencies
 
 
-	vector<vector<vector<double>>> u;     ///< u intensity
-	vector<vector<vector<double>>> v;     ///< v intensity
+	vDouble3 u;     ///< u intensity
+	vDouble3 v;     ///< v intensity
 
-	vector<vector<vector<double>>> U;     ///< U scattered intensity
-	vector<vector<vector<double>>> V;     ///< V scattered intensity
+	vDouble3 U;     ///< U scattered intensity
+	vDouble3 V;     ///< V scattered intensity
 
 
 	RADIATION (const long num_of_cells, const long num_of_rays,
@@ -37,13 +38,11 @@ struct RADIATION
 
 
 	int resample_U (const FREQUENCIES& frequencies, const long p, const long r,
-		              const vector<double>& frequencies_scaled,
-		  						vector<double>& U_scaled);   ///< U frequency interpolator
+		              const vDouble1& frequencies_scaled, vDouble1& U_scaled);
 		                                
 
 	int resample_V (const FREQUENCIES& frequencies, const long p, const long r,
-			            const vector<double>& frequencies_scaled,
-							 	  vector<double>& V_scaled);   ///< V frequency interpolator
+			            const vDouble1& frequencies_scaled, vDouble1& V_scaled);
 
 
 };

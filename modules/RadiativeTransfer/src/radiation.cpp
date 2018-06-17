@@ -10,6 +10,7 @@
 using namespace std;
 
 #include "radiation.hpp"
+#include "GridTypes.hpp"
 #include "frequencies.hpp"
 #include "interpolation.hpp"
 
@@ -20,9 +21,9 @@ using namespace std;
 RADIATION :: RADIATION (const long num_of_cells, const long num_of_rays, const long num_of_freq)
 {
 
-	ncells = num_of_cells;
-	nrays  = num_of_rays;
-	nfreq  = num_of_freq;
+	ncells     = num_of_cells;
+	nrays      = num_of_rays;
+	nfreq_red  = num_of_freq;
 
 	
 	// Size and initialize u, v, U and V
@@ -55,13 +56,13 @@ RADIATION :: RADIATION (const long num_of_cells, const long num_of_rays, const l
 
     for (long p = start; p < stop; p++)
     {
-	    u[r][p].resize (nfreq);
-	    v[r][p].resize (nfreq);
+	    u[r][p].resize (nfreq_red);
+	    v[r][p].resize (nfreq_red);
 
-	    U[r][p].resize (nfreq);
-	    V[r][p].resize (nfreq);
+	    U[r][p].resize (nfreq_red);
+	    V[r][p].resize (nfreq_red);
 
-	    for (long f = 0; f < nfreq; f++)
+	    for (long f = 0; f < nfreq_red; f++)
       {
         u[r][p][f] = 0.0;
         v[r][p][f] = 0.0;
@@ -80,17 +81,16 @@ RADIATION :: RADIATION (const long num_of_cells, const long num_of_rays, const l
 
 
 int RADIATION :: resample_U (const FREQUENCIES& frequencies, const long p, const long r,
-	                           const vector<double>& frequencies_scaled,
-		                         vector<double>& U_scaled)
+	                           const vDouble1& frequencies_scaled, vDouble1& U_scaled)
 {
   long start = 0;
-	long stop  = nfreq;
+	long stop  = nfreq_red;
 
-	for (long f = 0; f < nfreq; f++)
-	{
+//	for (long f = 0; f < nfreq; f++)
+//	{
 //		cout << U[r][p][f] << endl;
-		U_scaled[f] = 0.0;
-	}
+//		U_scaled[f] = 0.0;
+//	}
 
 	//resample (frequencies.all[p], U[r][p], start, stop, frequencies_scaled, U_scaled);
 		
@@ -101,16 +101,15 @@ int RADIATION :: resample_U (const FREQUENCIES& frequencies, const long p, const
 
 
 int RADIATION :: resample_V (const FREQUENCIES& frequencies, const long p, const long r,
-		                         const vector<double>& frequencies_scaled,
-		                         vector<double>& V_scaled)
+		                         const vDouble1& frequencies_scaled, vDouble1& V_scaled)
 {
   long start = 0;
-	long stop  = nfreq;
+	long stop  = nfreq_red;
 
-	for (long f = 0; f < nfreq; f++)
-	{
-		V_scaled[f] = 0.0;
-	}
+//	for (long f = 0; f < nfreq; f++)
+//	{
+//		V_scaled[f] = 0.0;
+//	}
 
 	//resample (frequencies.all[p], V[r][p], start, stop, frequencies_scaled, V_scaled);
 		

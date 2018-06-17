@@ -24,10 +24,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-int RadiativeTransfer (CELLS <Dimension, Nrays>& cells, TEMPERATURE& temperature,
+int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE& temperature,
 		                   FREQUENCIES& frequencies, const long nrays, const Long1& rays,
 											 LINES& lines, SCATTERING& scattering, RADIATION& radiation,
-											 Double2& J);
+											 vDouble2& J);
 
 
 #include "RadiativeTransfer.tpp"

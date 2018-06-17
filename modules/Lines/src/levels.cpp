@@ -14,6 +14,9 @@ using namespace Eigen;
 #include "levels.hpp"
 #include "linedata.hpp"
 #include "RadiativeTransfer/src/constants.hpp"
+#include "RadiativeTransfer/src/GridTypes.hpp"
+#include "RadiativeTransfer/src/types.hpp"
+#include "RadiativeTransfer/src/lines.hpp"
 #include "RadiativeTransfer/src/profile.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
 #include "RadiativeTransfer/src/frequencies.hpp"
@@ -26,19 +29,16 @@ using namespace Eigen;
 ///////////////////////////
 
 LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
+  : ncells (num_of_cells)
+  , nlspec (linedata.nlspec)
+  ,	nlev   (linedata.nlev)
+  ,	nrad   (linedata.nrad)
 {
-  
-	ncells = num_of_cells;
-  nlspec = linedata.nlspec;
-  nlev   = linedata.nlev;
-  nrad   = linedata.nrad;
 
   some_not_converged = true;
 
 	         not_converged.resize (nlspec);
   fraction_not_converged.resize (nlspec);
-
-	nlev_tot.resize (nlspec);
 
 
   for (int l = 0; l < nlspec; l++)
@@ -104,8 +104,8 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 
 
 int LEVELS ::
-    set_LTE_populations (const LINEDATA& linedata, const SPECIES& species,
-		                     const TEMPERATURE& temperature, const long p, const int l)
+    update_using_LTE (const LINEDATA& linedata, const SPECIES& species,
+		                  const TEMPERATURE& temperature, const long p, const int l)
 {
 
  	// Set population total
@@ -113,25 +113,25 @@ int LEVELS ::
  	population_tot[p][l] = species.density[p] * species.abundance[p][linedata.num[l]];
 
 
-   // Calculate fractional LTE level populations and partition function
+  // Calculate fractional LTE level populations and partition function
 
-   double partition_function = 0.0;
+  double partition_function = 0.0;
 
-   for (int i = 0; i < linedata.nlev[l]; i++)
-   {
-     population[p][l](i) = linedata.weight[l](i)
- 			                    * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
+  for (int i = 0; i < linedata.nlev[l]; i++)
+  {
+    population[p][l](i) = linedata.weight[l](i)
+ 	 	                    * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
-     partition_function += population[p][l](i);
-   }
+    partition_function += population[p][l](i);
+  }
 
 
-   // Rescale (normalize) LTE level populations
+  // Rescale (normalize) LTE level populations
 
-   for (int i = 0; i < linedata.nlev[l]; i++)
-   {
-     population[p][l](i) *= population_tot[p][l] / partition_function;
-   }
+  for (int i = 0; i < linedata.nlev[l]; i++)
+  {
+    population[p][l](i) *= population_tot[p][l] / partition_function;
+  }
 
 
   return (0);
@@ -227,6 +227,39 @@ int LEVELS ::
 
 
 
+///  get_emissivity_and_opacity
+///    @param[in] linedata: data structure containing the line data
+///    @param[in] levels: data structure containing the level populations
+/////////////////////////////////////////////////////////////////////////
+
+int LEVELS ::
+    calc_line_emissivity_and_opacity (const LINEDATA& linedata, LINES& lines,
+		                                  const long p, const int l) const
+{
+
+	// For all radiative transitions
+
+  for (int k = 0; k < linedata.nrad[l]; k++)
+	{
+	  const int i = linedata.irad[l][k];
+	  const int j = linedata.jrad[l][k];
+
+    const double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
+
+	  lines.emissivity[p][l][k] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+
+	     lines.opacity[p][l][k] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
+  		                                    - population[p][l](i) * linedata.B[l](i,j) );
+  }
+
+
+  return (0);
+
+}
+
+
+
+
 ///  calc_J_eff: calculate the effective mean intensity in a line
 ///    @param[in] frequencies: data structure containing frequencies
 ///    @param[in] temperature: data structure containing temperatures
@@ -236,22 +269,29 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////////
  
 int LEVELS ::
-    calc_J_eff (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-				        const Double2& J, const long p, const int l)
+    calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+				        vDouble2& J, const long p, const int l)
 {
 
 	for (int k = 0; k < nrad[l]; k++)
 	{
-    const vector<long> freq_nrs = frequencies.nr_line[p][l][k];
+    const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
-    const double freq_line = 0.5 * (   frequencies.all[p][freq_nrs[1]]
-                                     + frequencies.all[p][freq_nrs[2]] );
+		const long    f_line = freq_nrs[NR_LINE_CENTER] / n_vector_lanes;
+		const long lane_line = freq_nrs[NR_LINE_CENTER] % n_vector_lanes;
+
+    const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
 
     J_eff[p][l][k] = 0.0;
 
-    for (long z = 0; z < 4; z++)
+    for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
-      J_eff[p][l][k] += H_4_weights[z] / profile_width (temperature.gas[p], freq_line) * J[p][freq_nrs[z]];
+		  const long    f = freq_nrs[z] / n_vector_lanes;
+		  const long lane = freq_nrs[z] % n_vector_lanes;
+
+			const double JJ = J[p][f].getlane(lane);
+
+      J_eff[p][l][k] += H_weights[z] / profile_width (temperature.gas[p], freq_line) * JJ;
     }
   }
 

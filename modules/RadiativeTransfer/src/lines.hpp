@@ -13,11 +13,12 @@ using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
+#include "types.hpp"
+#include "GridTypes.hpp"
 #include "radiation.hpp"
 #include "frequencies.hpp"
 #include "temperature.hpp"
 #include "Lines/src/linedata.hpp"
-#include "Lines/src/levels.hpp"
 
 
 ///  LINES: bridge between Levels and RadiativeTransfer calculations
@@ -26,22 +27,18 @@ using namespace Eigen;
 struct LINES
 {
 
-	long ncells;                                 ///< number of cells
+	long ncells;          ///< number of cells
 
-	vector<vector<vector<double>>> emissivity;   ///< line emissivity (p,l,k)
-	vector<vector<vector<double>>> opacity;      ///< line opacity (p,l,k)
-
-
-  LINES (long num_of_cells, LINEDATA& linedata);   ///< Constructor
+	Double3 emissivity;   ///< line emissivity (p,l,k)
+	Double3 opacity;      ///< line opacity (p,l,k)
 
 
-	int get_emissivity_and_opacity (const LINEDATA& linedata, const LEVELS& levels,
-			                            const long p, const int l);
+  LINES (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
 
 
-  int add_emissivity_and_opacity (const FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-																 	const vector<double>& frequencies_scaled, const long p,
-			                            vector<double>& eta, vector<double>& chi);
+  int add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+																 	vDouble1& frequencies_scaled, const long p,
+			                            vDouble1& eta, vDouble1& chi) const;
 
 };
 

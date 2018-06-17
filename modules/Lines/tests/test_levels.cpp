@@ -29,6 +29,9 @@ TEST_CASE ("LEVELS constructor")
 
 	LEVELS levels (ncells, linedata);
 
+	cout << "ncells is " << levels.ncells << endl;
+	cout << "nrad[nlspec-1] is " << levels.nrad[levels.nlspec-1] << endl;
+
 	CHECK (true);
 
 }

@@ -16,6 +16,7 @@ using namespace Eigen;
 #include "levels.hpp"
 #include "linedata.hpp"
 #include "RadiativeTransfer/src/types.hpp"
+#include "RadiativeTransfer/src/GridTypes.hpp"
 #include "RadiativeTransfer/src/cells.hpp"
 #include "RadiativeTransfer/src/lines.hpp"
 #include "RadiativeTransfer/src/species.hpp"
@@ -68,12 +69,12 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 	    // Initialize levels with LTE populations
 
-	    levels.set_LTE_populations (linedata, species, temperature, p, l);
+	    levels.update_using_LTE (linedata, species, temperature, p, l);
 
 
-      // Calculate source and opacity for all transitions over whole grid
+      // Calculate line source and opacity for the new levels
 
-	    lines.get_emissivity_and_opacity (linedata, levelsi, p, l);
+	    levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
 		}
 	}
 	} // end of pragma omp parallel
@@ -101,11 +102,16 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
     if (niterations%4 == 0)
     {
       levels.update_using_Ng_acceleration ();
+
+
+      // Calculate source and opacity
+
+	    //levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
     }
 
 
 
-		Double2 J (levels.ncells, Double1 (frequencies.nfreq));
+		vDouble2 J (levels.ncells, vDouble1 (frequencies.nfreq_red));
 
 		Long1 rays (Nrays);
 
@@ -154,21 +160,22 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 				// Extract the effective mean radiation field in each line
 
-        levels.calc_J_eff (temperature, J, p, l);
+        levels.calc_J_eff (frequencies, temperature, J, p, l);
 
 
 				// Calculate the transition matrix (for stat. equil. eq.)
 
-    		MatrixXd R = linedata.calc_transition_matrix (species, temperature_gas, levels.J_eff, p, l);
+    		MatrixXd R = linedata.calc_transition_matrix (species, temperature.gas[p],
+						                                          levels.J_eff, p, l);
     	
         levels.update_using_statistical_equilibrium (R, p, l);
 
     		levels.check_for_convergence (p, l);
 
 
-        // Calculate source and opacity for all transitions over whole grid
+        // Calculate source and opacity
 
-	      lines.get_emissivity_and_opacity (linedata, levels, p, l);
+	      levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
 
 
       } // end of lspec loop over line producing species
@@ -192,13 +199,13 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
     // If some are not converged
 
-    some_not_converged = false;
+    levels.some_not_converged = false;
 
     for (int l = 0; l < linedata.nlspec; l++)
     {
-      if (not_converged[l])
+      if (levels.not_converged[l])
       {
-        some_not_converged = true;
+        levels.some_not_converged = true;
       }
     }
 
@@ -207,7 +214,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
     if (niterations > MAX_NITERATIONS)
 		{
-			some_not_converged = false;
+			levels.some_not_converged = false;
 		}
 
 
@@ -215,7 +222,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
     for (int l = 0; l < linedata.nlspec; l++)
     {
-			cout << "(Lines): fraction_not_converged = " << levels.fraction_not_converged << endl;
+			cout << "(Lines): fraction_not_converged = " << levels.fraction_not_converged[l] << endl;
     }
 
 
@@ -225,7 +232,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
   // Print convergence stats
 
-  cout << "(Lines): converged after " << niteration << "iterations" << endl;
+  cout << "(Lines): converged after " << niterations << "iterations" << endl;
 
 
   return (0);

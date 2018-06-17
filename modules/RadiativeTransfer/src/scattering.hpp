@@ -11,22 +11,25 @@
 #include <vector>
 using namespace std;
 
+#include "types.hpp"
+#include "GridTypes.hpp"
+
 
 struct SCATTERING
 {
 
-	long ncells;                                 ///< number of cells
-	long nrays;                                  ///< number of rays
-	long nfreq_scat;                             ///< number of frequencies in scattering data
+	long ncells;            ///< number of cells
+	long nrays;             ///< number of rays
+	long nfreq_scat;        ///< number of frequencies in scattering data
 
-	vector<double> opacity_scat;                 ///< scattering opacity (p,f)
+	Double1 opacity_scat;   ///< scattering opacity (p,f)
 
-	vector<vector<vector<double>>> phase_scat;   ///< scattering phase function (r1,r2,f)
+	Double3 phase_scat;     ///< scattering phase function (r1,r2,f)
 
 
-  SCATTERING (long num_of_rays, long num_of_freq_scat);   ///< Constructor   
+  SCATTERING (const long num_of_rays, const long num_of_freq_scat);   ///< Constructor   
 	
-  int add_opacity (vector<double> frequencies, vector<double>& chi);
+  int add_opacity (const vDouble1& frequencies, vDouble1& chi);
 
 };
 

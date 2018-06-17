@@ -66,9 +66,9 @@ TEST_CASE ("CELLS constructor")
 
   long n = 0;
 
-  Double2   Su (cells.ncells, Double1 (frequencies.nfreq));    // effective source for u along ray r
-  Double2   Sv (cells.ncells, Double1 (frequencies.nfreq));    // effective source for v along ray r
-  Double2 dtau (cells.ncells, Double1 (frequencies.nfreq));    // optical depth increment along ray r
+  vDouble2   Su (cells.ncells, vDouble1 (frequencies.nfreq));    // effective source for u along ray r
+  vDouble2   Sv (cells.ncells, vDouble1 (frequencies.nfreq));    // effective source for v along ray r
+  vDouble2 dtau (cells.ncells, vDouble1 (frequencies.nfreq));    // optical depth increment along ray r
 
 
 	long o = 0;

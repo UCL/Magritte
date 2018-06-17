@@ -12,19 +12,20 @@ using namespace std;
 using namespace Eigen;
 
 #include "lines.hpp"
+#include "types.hpp"
+#include "GridTypes.hpp"
 #include "constants.hpp"
 #include "temperature.hpp"
 #include "frequencies.hpp"
 #include "radiation.hpp"
 #include "profile.hpp"
 #include "Lines/src/linedata.hpp"
-#include "Lines/src/levels.hpp"
 
 
 ///  Constructor for LINES
 //////////////////////////
 
-LINES :: LINES (long num_of_cells, LINEDATA& linedata)
+LINES :: LINES (const long num_of_cells, const LINEDATA& linedata)
 {
 
   ncells = num_of_cells;
@@ -72,51 +73,21 @@ LINES :: LINES (long num_of_cells, LINEDATA& linedata)
 
 
 
-///  get_emissivity_and_opacity
-///    @param[in] linedata: data structure containing the line data
-///    @param[in] levels: data structure containing the level populations
-/////////////////////////////////////////////////////////////////////////
-
-int LINES ::
-    get_emissivity_and_opacity (const LINEDATA& linedata, const LEVELS& levels,
-		                            const long p, const int l)
-{
-
-	// For all radiative transitions
-
-  for (int k = 0; k < linedata.nrad[l]; k++)
-	{
-	  const int i = linedata.irad[l][k];
-	  const int j = linedata.jrad[l][k];
-
-    const double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
-
-	  emissivity[p][l][k] = hv_4pi * linedata.A[l](i,j) * levels.population[p][l](i);
-
-	     opacity[p][l][k] = hv_4pi * (  levels.population[p][l](j) * linedata.B[l](j,i)
-  		                              - levels.population[p][l](i) * linedata.B[l](i,j) );
-  }
-
-
-  return (0);
-
-}
-
-
-
-
 ///  add_emissivity_and_opacity
 ///////////////////////////////
 
 int LINES ::
-    add_emissivity_and_opacity (const FREQUENCIES& frequencies, const TEMPERATURE& temperature, 
-		                            const vector<double>& frequencies_scaled, const long p,
-		                            vector<double>& eta, vector<double>& chi)
+    add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature, 
+		                            vDouble1& frequencies_scaled, const long p,
+		                            vDouble1& eta, vDouble1& chi) const
 {
+
+	// !!! RETHINK THIS !!!!
+
 
   // For all frequencies
 	
-	for (long f = 0; f < frequencies.nfreq; f++)
+	for (long f = 0; f < frequencies.nfreq_red; f++)
 	{
 
 
@@ -126,16 +97,27 @@ int LINES ::
 	  {
 	  	for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
 	  	{
-        const long lower = frequencies.nr_line[p][l][k][0];   // lowest frequency for the line
-        const long upper = frequencies.nr_line[p][l][k][3];   // highest frequency for the line
+				const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
-				if (    (frequencies.all[p][lower] <  frequencies_scaled[f])
-					   && (frequencies.all[p][upper] >  frequencies_scaled[f]) )
+        const long lower = freq_nrs[0];                       // lowest frequency in line
+        const long upper = freq_nrs[N_QUADRATURE_POINTS-1];   // highest frequency in line
+
+		    const long    f_lower = lower / n_vector_lanes;
+		    const long lane_lower = lower % n_vector_lanes;
+
+		    const long    f_upper = upper / n_vector_lanes;
+		    const long lane_upper = upper % n_vector_lanes;
+		
+
+				if (   !(frequencies.all[p][f_lower].getlane(lane_lower) > frequencies_scaled[f].getlane(n_vector_lanes-1))
+					  || !(frequencies.all[p][f_upper].getlane(lane_upper) < frequencies_scaled[f].getlane(0)) )
 				{
-          const double freq_line = 0.5 * (   frequencies.all[p][frequencies.nr_line[p][l][k][1]]
-	  		  		                             + frequencies.all[p][frequencies.nr_line[p][l][k][2]] );
+		      const long    f_line = freq_nrs[NR_LINE_CENTER] / n_vector_lanes;
+		      const long lane_line = freq_nrs[NR_LINE_CENTER] % n_vector_lanes;
 
-	  		  const double line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[f]);
+          const double freq_line =  frequencies.all[p][f_line].getlane(lane_line);
+
+	  		  const vDouble line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[f]);
 
 	  	    eta[f] += emissivity[p][l][k] * line_profile;
 	  	    chi[f] +=    opacity[p][l][k] * line_profile;

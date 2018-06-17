@@ -12,20 +12,30 @@ using namespace std;
 using namespace Eigen;
 
 #include "catch.hpp"
+#include "tools.hpp"
 
 #include "../src/solve_ray.hpp"
+#include "../src/types.hpp"
+#include "../src/GridTypes.hpp"
 
 #define EPS 1.0E-4
 
 
-///  relative_error: returns relative error between A and B
-///////////////////////////////////////////////////////////
-
-double relative_error (double A, double B)
+int print (string text, vDouble a)
 {
-  return 2.0 * fabs(A-B) / fabs(A+B);
+	for (int lane = 0; lane < n_vector_lanes; lane++)
+	{
+    cout << text << " " << a.getlane(lane) << endl;    
+	}
+
+	return (0);
 }
 
+
+vDouble vRelative_error (const vDouble a, const vDouble b)
+{
+	return (a-b) / (a+b);
+}
 
 
 
@@ -33,20 +43,22 @@ double relative_error (double A, double B)
 ///    @param[in] i: index of point where Feautrier equation is to be evaluated
 ///////////////////////////////////////////////////////////////////////////////////
 
-double feautrier_error (long i, long f, vector<vector<double>> S, vector<vector<double>> dtau, vector<vector<double>> u)
+vDouble feautrier_error (const vDouble2& S, const vDouble2& dtau, const vDouble2& u,
+		                     const long i, const long f)
 {
+ 
 
   // Left hand side of Feautrier equation (d^2u / dtau^2 - u)
 
-  double lhs =  ( (u[i+1][f] - u[i][f])/dtau[i+1][f] - (u[i][f] - u[i-1][f])/dtau[i][f] )
-                / ( (dtau[i+1][f] + dtau[i][f]) / 2.0 ) - u[i][f];
+  vDouble lhs =  ( (u[i+1][f] - u[i][f])/dtau[i+1][f] - (u[i][f] - u[i-1][f])/dtau[i][f] )
+		             / ( 0.5 * (dtau[i+1][f] + dtau[i][f]) ) - u[i][f];
 
   // Right hand side of Feautrier equation (-S)
 
-  double rhs = -S[i][f];
+  vDouble rhs = -S[i][f];
 
 
-  return relative_error (rhs, lhs);
+  return vRelative_error (rhs, lhs);
 
 }
 
@@ -60,41 +72,51 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 
   std::ifstream infile ("test_data/feautrier1.txt");
 
-  const long ndep = 100;
-  const long nfreq = 1;
+  const long ndep      = 100;
+  const long nfreq     = n_vector_lanes;
+	const long nfreq_red = 1;
 
-  long n;
-	long f = 0;
 
-  vector<vector<double>>     S (ndep, vector<double> (nfreq));
-  vector<vector<double>>  dtau (ndep, vector<double> (nfreq));
-  vector<double>         u_sol (ndep);
+  vDouble2     S (ndep, vDouble1 (nfreq_red));
+  vDouble2  dtau (ndep, vDouble1 (nfreq_red));
 	
+
+  long   n;
+	double S_local;
+	double dtau_local;
+	double u_sol;
+
 
   for (long i = 0; i < ndep; i++)
   {
-  	infile >> n >> S[i][f] >> dtau[i][f] >> u_sol[i];
+  	infile >> n >> S_local >> dtau_local >> u_sol;
+
+		   S[i][0] =    S_local;
+		dtau[i][0] = dtau_local;
+  	
   }
 
 
-	VectorXd SS (ndep);
+	//VectorXd SS (ndep);
 
-  for (long i = 0; i < ndep; i++)
-  {
-  	SS(i) = S[i][f];
-  }
+  //for (long i = 0; i < ndep; i++)
+  //{
+  //	SS(i) = S[i][f];
+  //}
 
 
-  vector<vector<double>>      u (ndep, vector<double> (nfreq));
-  vector<vector<double>>      v (ndep, vector<double> (nfreq));
-	vector<vector<double>> u_prev (ndep, vector<double> (nfreq));
-	vector<vector<double>> v_prev (ndep, vector<double> (nfreq));
+  vDouble2      u (ndep, vDouble1 (nfreq_red));
+  vDouble2      v (ndep, vDouble1 (nfreq_red));
+	vDouble2 u_prev (ndep, vDouble1 (nfreq_red));
+	vDouble2 v_prev (ndep, vDouble1 (nfreq_red));
 
-	vector <MatrixXd> Lambda (nfreq);
-	
-  MatrixXd temp (ndep,ndep);
+	//vector <MatrixXd> Lambda (nfreq_red);
+	//
+  //MatrixXd temp (ndep,ndep);
 
-	Lambda[f] = temp;
+	//Lambda[f] = temp;
+
+	vDouble2 Lambda (ndep, vDouble1 (nfreq_red));
 	
 
 	long ndiag = ndep;
@@ -105,33 +127,40 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 		long n_r  = n;
 		long n_ar = ndep-n;
 
-    vector<vector<double>>   Su_r (n_r, vector<double> (nfreq));
-    vector<vector<double>>   Sv_r (n_r, vector<double> (nfreq));
-    vector<vector<double>> dtau_r (n_r, vector<double> (nfreq));
+    vDouble2   Su_r (n_r, vDouble1 (nfreq_red));
+    vDouble2   Sv_r (n_r, vDouble1 (nfreq_red));
+    vDouble2 dtau_r (n_r, vDouble1 (nfreq_red));
 
-    vector<vector<double>>   Su_ar (n_ar, vector<double> (nfreq));
-    vector<vector<double>>   Sv_ar (n_ar, vector<double> (nfreq));
-    vector<vector<double>> dtau_ar (n_ar, vector<double> (nfreq));
+    vDouble2   Su_ar (n_ar, vDouble1 (nfreq_red));
+    vDouble2   Sv_ar (n_ar, vDouble1 (nfreq_red));
+    vDouble2 dtau_ar (n_ar, vDouble1 (nfreq_red));
 
 
     for (long m = 0; m < n_ar; m++)
-		{
-  		  Su_ar[m][f] =    S[n_ar-1-m][f];
-  		  Sv_ar[m][f] =    S[n_ar-1-m][f];
-			dtau_ar[m][f] = dtau[n_ar-1-m][f];
-		}	
-		
+    {
+	  	for (long f = 0; f < nfreq_red; f++)
+	  	{
+    	    Su_ar[m][f] =    S[n_ar-1-m][f];
+          Sv_ar[m][f] =    S[n_ar-1-m][f];
+        dtau_ar[m][f] = dtau[n_ar-1-m][f];
+	  	}
+	  }	
+	  	
+
     for (long m = 0; m < n_r; m++)
-		{
-  		  Su_r[m][f] =    S[n_ar+m][f];
-  		  Sv_r[m][f] =    S[n_ar+m][f];
-			dtau_r[m][f] = dtau[n_ar+m][f];
-		}
+	  {
+	  	for (long f = 0; f < nfreq_red; f++)
+	  	{	
+    	    Su_r[m][f] =    S[n_ar+m][f];
+          Sv_r[m][f] =    S[n_ar+m][f];
+        dtau_r[m][f] = dtau[n_ar+m][f];
+	  	}
+	  }
 
 
     solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 				       n_ar, Su_ar, Sv_ar, dtau_ar,
-				       ndep, nfreq, u, v, ndiag, Lambda);
+				       ndep, nfreq_red, u, v, ndiag, Lambda);
 
 
 		/* SECTION ("Feautrier equation") */
@@ -140,8 +169,14 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
 
       for (long m = 1; m < ndep-1; m++)
       {
-        CHECK (feautrier_error (m, f, S, dtau, u) == Approx(0.0).epsilon(EPS));
-        CHECK (feautrier_error (m, f, S, dtau, v) == Approx(0.0).epsilon(EPS));
+				vDouble error_u = feautrier_error (S, dtau, u, m, 0);
+        vDouble error_v = feautrier_error (S, dtau, v, m, 0);
+
+	  		for (int lane = 0; lane < n_vector_lanes; lane++)
+				{
+          CHECK (error_u.getlane(lane) == Approx(0.0).epsilon(EPS));
+          CHECK (error_v.getlane(lane) == Approx(0.0).epsilon(EPS));
+				}
       }
 		}
 
@@ -155,29 +190,35 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
       {
    			if (n != 0)
     		{
-  		  	CHECK (relative_error(u_prev[m][f], u[m][f]) == Approx(0.0).epsilon(EPS));
-  		  	CHECK (relative_error(v_prev[m][f], v[m][f]) == Approx(0.0).epsilon(EPS));
+				  vDouble error_u = vRelative_error (u[m][0], u_prev[m][0]);
+          vDouble error_v = vRelative_error (v[m][0], v_prev[m][0]);
+
+	  		  for (int lane = 0; lane < n_vector_lanes; lane++)
+				  {
+            CHECK (error_u.getlane(lane) == Approx(0.0).epsilon(EPS));
+            CHECK (error_v.getlane(lane) == Approx(0.0).epsilon(EPS));
+				  }
   			}
       }
   		
   		for (long m = 0; m < ndep; m++)
   		{
-  			u_prev[m][f] = u[m][f];
-  			v_prev[m][f] = v[m][f];
+  			u_prev[m][0] = u[m][0];
+  			v_prev[m][0] = v[m][0];
   		}
 		}  
 
 
   	/* SECTION ("(Approximated) Lambda Operator") */
-	  {	
-      // Check the definition of the Lambda operator (u = Lambda[S]) holds.   
-  
-      for (long m = 0; m < ndep; m++)
-      {
-  			CHECK (relative_error (u[m][f], (Lambda[0]*SS)(m)) == Approx(0.0).epsilon(EPS));
-  			CHECK (relative_error (v[m][f], (Lambda[0]*SS)(m)) == Approx(0.0).epsilon(EPS));
-      }
-		}
+//	  {	
+//      // Check the definition of the Lambda operator (u = Lambda[S]) holds.   
+//  
+//      for (long m = 0; m < ndep; m++)
+//      {
+//  			CHECK (relative_error (u[m][f], (Lambda[0]*SS)(m)) == Approx(0.0).epsilon(EPS));
+//  			CHECK (relative_error (v[m][f], (Lambda[0]*SS)(m)) == Approx(0.0).epsilon(EPS));
+//      }
+//		}
 
   }
 

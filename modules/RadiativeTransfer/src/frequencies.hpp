@@ -11,6 +11,7 @@
 using namespace std;
 
 #include "types.hpp"
+#include "GridTypes.hpp"
 #include "temperature.hpp"
 #include "Lines/src/linedata.hpp"
 
@@ -18,12 +19,13 @@ using namespace std;
 struct FREQUENCIES
 {
 
-	long ncells;     ///< number of cells
-	long nfreq;      ///< number of frequencies
+	long ncells;      ///< number of cells
+	long nfreq;       ///< number of frequencies
+	long nfreq_red;   ///< number of frequencies divided by n_vector_lanes
 
-	Double2 all;     ///< all considered frequencies at each cell (p,f)
+	vDouble2 all;     ///< all considered frequencies at each cell (p,f)
 	
-	Long4 nr_line;   ///< frequency number corresponing to line (p,l,k,z)
+	Long4 nr_line;    ///< frequency number corresponing to line (p,l,k,z)
 
 
 	FREQUENCIES (const long num_of_cells, const LINEDATA& linedata);        ///< Constructor

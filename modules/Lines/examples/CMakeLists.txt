@@ -19,6 +19,31 @@ include_directories( ../src )
 #Include directories for Common library
 include_directories( ../.. )
 
+# Set folder where Grid is instaled
+set( GRID_INSTALL_FOLDER "/home/frederik/Codes/Grid/install/" )
+
+# Extract compiler flags for Grid
+execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --cxxflags
+	OUTPUT_VARIABLE GRID_CPP_FLAGS
+  OUTPUT_STRIP_TRAILING_WHITESPACE )
+execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --ldflags
+	OUTPUT_VARIABLE GRID_LD_FLAGS
+  OUTPUT_STRIP_TRAILING_WHITESPACE )
+execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --libs
+	OUTPUT_VARIABLE GRID_LIB_FLAGS
+  OUTPUT_STRIP_TRAILING_WHITESPACE )
+
+# Include directories for Grid
+include_directories( "${GRID_INSTALL_FOLDER}include/Grid/" )
+include_directories( "${GRID_INSTALL_FOLDER}include/" )
+
+# Link directory for Grid
+link_directories( "${GRID_INSTALL_FOLDER}lib/" )
+
+# Add compiler flags for Grid
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_CPP_FLAGS}" )
+set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
+
 # # Execute setup
 # add_custom_target(MAKE_SETUP ALL
 #                   COMMAND python setup.py ${CMAKE_CURRENT_BINARY_DIR}/
@@ -37,11 +62,18 @@ include_directories( ../.. )
 add_executable( example_Lines_Lime1.exe 
 	example_Lines_Lime1.cpp )
 target_link_libraries( example_Lines_Lime1.exe
-_LINES
-_RADIATIVE_TRANSFER
-${MPI_LIBRARIES} )
+  _LINES
+  _RADIATIVE_TRANSFER
+  ${MPI_LIBRARIES} )
 
+add_executable( example_levels.exe 
+	example_levels.cpp )
+target_link_libraries( example_levels.exe
+  _LINES
+  _RADIATIVE_TRANSFER
+  ${MPI_LIBRARIES} )
 
+# Add MPI flags
 if(MPI_COMPILE_FLAGS)
 	set_target_properties( example_Lines_Lime1.exe PROPERTIES
     COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")

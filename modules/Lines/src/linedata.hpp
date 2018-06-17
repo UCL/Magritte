@@ -63,11 +63,11 @@ struct LINEDATA
 
 
   MatrixXd calc_Einstein_C (const SPECIES& species, const double temperature_gas,
-			                      const long p, const int l); 
+			                      const long p, const int l) const; 
 
 
   MatrixXd calc_transition_matrix (const SPECIES& species, const double temperature_gas,
-			                             const Double3& J_eff, const long p, const int l); 
+			                             const Double3& J_eff, const long p, const int l) const; 
 
 
 };

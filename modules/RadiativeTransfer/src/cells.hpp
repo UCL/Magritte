@@ -50,10 +50,10 @@ struct CELLS
   int read (const string cells_file, const string neighbors_file, const string boundary_file);
 
 	
-  long next (const long origin, const long ray, const long current, double& Z, double& dZ); 
+  long next (const long origin, const long ray, const long current, double& Z, double& dZ) const; 
 
 
-  double relative_velocity (const long origin, const long r, long current);
+  double relative_velocity (const long origin, const long r, long current) const;
 
 
 };

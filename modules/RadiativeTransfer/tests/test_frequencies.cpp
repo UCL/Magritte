@@ -14,7 +14,9 @@ using namespace Eigen;
 #include "catch.hpp"
 
 #include "../src/frequencies.hpp"
-#include "Lines/src/linedata.hpp"
+#include "../src/constants.hpp"
+#include "../src/GridTypes.hpp"
+#include "../../Lines/src/linedata.hpp"
 
 #define EPS 1.0E-7
 
@@ -80,7 +82,7 @@ int setup_linedata (LINEDATA& linedata)
 
 
 
-TEST_CASE ("Constructor")
+TEST_CASE ("FREQUENCIES Constructor")
 {
 	long ncells = 1;
 
@@ -115,12 +117,26 @@ TEST_CASE ("Reset")
 	frequencies.reset (linedata, temperature);
 
 
-	SECTION ("Ordering")
+ 	SECTION ("Ordering")
 	{
-	   for (int f = 1; f < frequencies.nfreq; f++)
-	   {
-       CHECK (frequencies.all[0][f-1] < frequencies.all[0][f]);
-	   }
+
+		vector<double> freqs (frequencies.nfreq);
+		long index = 0;
+
+	  for (int f = 0; f < frequencies.nfreq_red; f++)
+	  {
+		  for (int lane = 0; lane < n_vector_lanes; lane++)
+ 		  {
+        freqs[index] = frequencies.all[0][f].getlane(lane);
+				index++;
+		  }
+	  }
+
+
+	  for (int f = 1; f < frequencies.nfreq; f++)
+	  {
+      CHECK (freqs[f-1] < freqs[f]);
+	  }
 	}
 
 
@@ -133,10 +149,12 @@ TEST_CASE ("Reset")
 	  		int i = linedata.irad[l][k];
 	  		int j = linedata.jrad[l][k];
 
-	  		long nr1 = frequencies.nr_line[0][l][k][1];
-	  		long nr2 = frequencies.nr_line[0][l][k][2];
+	  		long nr = frequencies.nr_line[0][l][k][NR_LINE_CENTER];
 	  		
-	  		double freq     = 0.5 * (frequencies.all[0][nr1] + frequencies.all[0][nr2]);
+				long    f = nr / n_vector_lanes;   
+				long lane = nr % n_vector_lanes;   
+
+	  		double freq     = frequencies.all[0][f].getlane(lane);
 	  		double freq_ref = linedata.frequency[l](i,j);
 
 	  		CHECK (relative_error(freq, freq_ref) == Approx(0.0).epsilon(EPS));

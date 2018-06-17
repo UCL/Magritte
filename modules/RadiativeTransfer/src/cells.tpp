@@ -154,7 +154,7 @@ int CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 long CELLS <Dimension, Nrays> ::
-     next (const long origin, const long r, const long current, double& Z, double& dZ)
+     next (const long origin, const long r, const long current, double& Z, double& dZ) const
 {
 
   // Pick neighbor on "right side" closest to ray
@@ -216,7 +216,7 @@ long CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 double CELLS <Dimension, Nrays> ::
-       relative_velocity (const long origin, const long r, const long current)
+       relative_velocity (const long origin, const long r, const long current) const
 {
 
   return   (vx[current] - vx[origin]) * rays.x[r]

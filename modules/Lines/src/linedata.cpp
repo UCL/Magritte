@@ -141,7 +141,7 @@ LINEDATA :: LINEDATA ()
 
 MatrixXd LINEDATA ::
          calc_Einstein_C (const SPECIES& species, const double temperature_gas,
-						              const long p, const int l)
+						              const long p, const int l) const
 {
 
   MatrixXd C = MatrixXd :: Zero (nlev[l],nlev[l]);   // Einstein C_ij coefficient
@@ -232,7 +232,7 @@ MatrixXd LINEDATA ::
 
 MatrixXd LINEDATA ::
          calc_transition_matrix (const SPECIES& species, const double temperature_gas,
-						                     const Double3& J_eff, const long p, const int l)
+						                     const Double3& J_eff, const long p, const int l) const
 {
 
   // Calculate collissional Einstein coefficients

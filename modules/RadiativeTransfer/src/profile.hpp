@@ -8,6 +8,9 @@
 #define __PROFILE_HPP_INCLUDED__
 
 
+#include "GridTypes.hpp"
+
+
 ///  profile: line profile function
 ///    @param[in] temperature_gas: temperature of the gas at this cell
 ///    @param[in] freq_line: frequency of the line under consideration
@@ -15,7 +18,7 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
-double profile (const double temperature_gas, const double freq_line, const double freq);
+vDouble profile (const double temperature_gas, const double freq_line, const vDouble freq);
 
 
 
@@ -27,6 +30,16 @@ double profile (const double temperature_gas, const double freq_line, const doub
 //////////////////////////////////////////////////////////////////////////////////
 
 double profile_width (const double temperature_gas, const double freq_line);
+
+
+
+
+double inverse_profile_width (const double temperature_gas, const double freq_line);
+
+
+
+
+vDouble vExp (const vDouble);
 
 
 #endif // __PROFILE_HPP_INCLUDED__

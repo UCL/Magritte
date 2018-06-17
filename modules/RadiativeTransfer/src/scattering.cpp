@@ -8,6 +8,7 @@
 using namespace std;
 
 #include "scattering.hpp"
+#include "GridTypes.hpp"
 
 
 ///  Constructor for SCATTERING
@@ -15,7 +16,7 @@ using namespace std;
 ///    @param[in] num_of_freq_scat: number of frequencies in scattering table
 /////////////////////////////////////////////////////////////////////////////
 
-SCATTERING :: SCATTERING (long num_of_rays, long num_of_freq_scat)
+SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat)
 {
 
 	nrays      = num_of_rays;
@@ -62,7 +63,7 @@ SCATTERING :: SCATTERING (long num_of_rays, long num_of_freq_scat)
 ///    @param[in/out] chi: opacity to which to add the scattering contribution
 //////////////////////////////////////////////////////////////////////////////
 
-int SCATTERING :: add_opacity (vector<double> frequencies, vector<double>& chi)
+int SCATTERING :: add_opacity (const vDouble1& frequencies, vDouble1& chi)
 {
   return (0);  
 }
