@@ -6,4 +6,4 @@
 ./test_solve_ray.exe
 ./test_interpolation.exe
 ./test_radiation.exe
-./test_RadiativeTransfer.exe
+#./test_RadiativeTransfer.exe

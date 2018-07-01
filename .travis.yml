@@ -14,16 +14,13 @@ before_install:
     - test -n $CC && unset CC
 
 script:
-  - cd modules/RadiativeTransfer
+  - cd modules/Lines
   - cmake .
   - make
   - cd tests
   - bash run_tests.sh
   - cd ../../..
-  - cd modules/Lines
-  - cmake .
-  - make
-  - cd tests
+  - cd modules/RadiativeTransfer
   - bash run_tests.sh
 
 

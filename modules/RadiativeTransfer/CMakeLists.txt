@@ -58,5 +58,5 @@ endif()
 
 # Specify subdirectories containing source code and tests
 add_subdirectory( src )
-#add_subdirectory( tests )
+add_subdirectory( tests )
 add_subdirectory( examples )
