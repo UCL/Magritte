@@ -10,13 +10,18 @@ addons:
     packages:
       - cmake
 
+before_install:
+    - test -n $CC && unset CC
+
 script:
-  - cd RadiativeTransfer
+  - cd modules/Lines
   - cmake .
   - make
   - cd tests
   - bash run_tests.sh
-  - cd ../..
+  - cd ../../..
+  - cd modules/RadiativeTransfer
+  - bash run_tests.sh
 
 
 # language:

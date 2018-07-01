@@ -241,13 +241,13 @@ S(\textbf{x}, \hat{\textbf{n}}) \ = \ \frac{1}{\chi^{\text{tot}}_{\nu}(\textbf{x
 \end{equation}
 
 
-\subsubsection{Feautrier solution method}
+\subsubsection{ier solution method}
 
-Why Feautrier? What are the advantages compared to direct integration? Give motivation!
+Why ier? What are the advantages compared to direct integration? Give motivation!
 
 \bigskip
 
-To solve the radiative transfer equation along a ray we use the Feautrier method. The basic idea of the Feautrier method is to write the transfer equation as a second order instead of first order differential equation. Let us first make a distinction between the radiation travelling up and down a ray. Define
+To solve the radiative transfer equation along a ray we use the ier method. The basic idea of the Feautrier method is to write the transfer equation as a second order instead of first order differential equation. Let us first make a distinction between the radiation travelling up and down a ray. Define
 \begin{equation}
 \begin{cases}
 \ I^{+}_{\nu}(\textbf{x},\hat{\textbf{n}})  &\equiv \ I_{\nu}(\textbf{x},\hat{\textbf{n}}) \\ \\
@@ -278,7 +278,7 @@ By adding and subtracting the two forms of the transfer equation and substitutin
 \frac{\D^{2} u_{\nu}(\textbf{x},\hat{\textbf{n}})}{\D \tau_{\nu}^{2}} \ = \ u_{\nu}(\textbf{x},\hat{\textbf{n}}) - \frac{1}{2}\big( S_{\nu}(\textbf{x},\hat{\textbf{n}}) + S_{\nu}(\textbf{x},-\hat{\textbf{n}}) \big) + \frac{1}{2} \frac{\D}{\D\tau_{\nu}} \big( S_{\nu}(\textbf{x},\hat{\textbf{n}}) -  S_{\nu}(\textbf{x},-\hat{\textbf{n}}) \big) ,
 \label{Feau}
 \end{equation}
-where the source function is defined as usual. Note that this is not the usual Feautrier equation since we did not assume that the emissivity is isotropic. This is neded if we want to consider scattering. To elucidate the structure of this equation we can rewrite it as
+where the source function is defined as usual. Note that this is not the usual ier equation since we did not assume that the emissivity is isotropic. This is neded if we want to consider scattering. To elucidate the structure of this equation we can rewrite it as
 \begin{equation}
 \frac{\D^{2} u_{\nu}(\textbf{x},\hat{\textbf{n}})}{\D \tau_{\nu}^{2}} \ = \ u_{\nu}(\textbf{x},\hat{\textbf{n}}) - S_{\nu}^{\text{eff.}}(\textbf{x},\hat{\textbf{n}}) ,
 \end{equation}
@@ -383,12 +383,12 @@ Since all variables are positive and there are no subtractions this scheme is nu
 
 \subsubsection{Boundary conditions}
 
-So far, we systematically ignored boundary conditions. However in equation (\ref{mateq}) it is clear that the first and last row of the matrix do not contain the right discretized differential operator. This can be solved by imposing appropriate boundary conditions. These are given by the intensities injected in the ray, i.e. $I_{0}^{+}$ and $I_{D}^{-}$. Let us consider these to be known. The boundary conditions can be used to relate the Feautrier variables $u$ and $v$ as, $v_{0} = I_{0}^{+} - u_{0}$ and $v_{D} = u_{D} -I_{D}^{-}$. We can use this to formulate an expression for the first and last row in the matrix equation.
+So far, we systematically ignored boundary conditions. However in equation (\ref{mateq}) it is clear that the first and last row of the matrix do not contain the right discretized differential operator. This can be solved by imposing appropriate boundary conditions. These are given by the intensities injected in the ray, i.e. $I_{0}^{+}$ and $I_{D}^{-}$. Let us consider these to be known. The boundary conditions can be used to relate the ier variables $u$ and $v$ as, $v_{0} = I_{0}^{+} - u_{0}$ and $v_{D} = u_{D} -I_{D}^{-}$. We can use this to formulate an expression for the first and last row in the matrix equation.
 One should note that the first and last row describe a relation between the first and the one to first elements of $u$, and between the last and one to last elements of $u$. Such a relation can be obtained by making a Taylor expansion from the boundary inward. For the the boundary with index 0 this yields
 \begin{equation}
 u_{1} \ = \ u_{0} + \Delta\tau_{0} \left.\frac{\D u}{\D \tau}\right|_{0} + \frac{1}{2} \Delta\tau_{0}^{2} \left.\frac{\D^{2} u}{\D \tau^{2}}\right|_{0} .
 \end{equation}
-Using equations (\ref{uv}) together with the boundary conditions on the Feautrier variables and assuming an isotropic source function at the boundary, we obtain
+Using equations (\ref{uv}) together with the boundary conditions on the ier variables and assuming an isotropic source function at the boundary, we obtain
 \begin{equation}
 u_{1} \ = \ u_{0} + \Delta\tau_{0} \left(u_{0}-I_{0}^{+}\right) + \frac{1}{2} \Delta\tau_{0}^{2} \left( u_{0} - S_{0} \right) .
 \end{equation}
@@ -431,7 +431,7 @@ where T is a tridiagonal matrix. Remembering the definition of  $u_{\nu}$, we ca
 \begin{equation}
 \textbf{u} \ = \ \text{T}^{-1} \ \textbf{S} \ = \ \frac{1}{2}\big(\Lambda^{+}_{\nu} + \Lambda^{-}_{\nu} \big) [\textbf{S}].
 \end{equation}
-Now we can approximate the lambda operator by taking the diagonal, or tridiagonal, or ... part of $\text{T}^{-1}$. If we use the Feautrier method to calculate the mean intensity, there is an efficient way to calculate the approximate lambda operator at the same time \cite{Rybicki1991}.
+Now we can approximate the lambda operator by taking the diagonal, or tridiagonal, or ... part of $\text{T}^{-1}$. If we use the ier method to calculate the mean intensity, there is an efficient way to calculate the approximate lambda operator at the same time \cite{Rybicki1991}.
 
 \bigskip
 
