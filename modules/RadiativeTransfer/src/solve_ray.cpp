@@ -33,21 +33,21 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  const vDouble2& Su_r,  const vDouble2& Sv_r,  const vDouble2& dtau_r,
-	             const long n_ar, const vDouble2& Su_ar, const vDouble2& Sv_ar, const vDouble2& dtau_ar,
-	             const long ndep, const long nfreq_red,        vDouble2& u,           vDouble2& v,
-							 const long ndiag, vDouble2& Lambda)
+int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const vReal2& dtau_r,
+	             const long n_ar, const vReal2& Su_ar, const vReal2& Sv_ar, const vReal2& dtau_ar,
+	             const long ndep, const long nfreq_red,        vReal2& u,           vReal2& v,
+							 const long ndiag, vReal2& Lambda)
 {
 
-	vDouble1 B0        (nfreq_red);           // B[0][f]
-  vDouble1 B0_min_C0 (nfreq_red);           // B[0][f] - C[0][f]
-  vDouble1 Bd        (nfreq_red);           // B[ndep-1][f]
-	vDouble1 Bd_min_Ad (nfreq_red);           // B[ndep-1][f] - A[ndep-1][f]
+	vReal1 B0        (nfreq_red);           // B[0][f]
+  vReal1 B0_min_C0 (nfreq_red);           // B[0][f] - C[0][f]
+  vReal1 Bd        (nfreq_red);           // B[ndep-1][f]
+	vReal1 Bd_min_Ad (nfreq_red);           // B[ndep-1][f] - A[ndep-1][f]
 
-  vDouble2 A (ndep, vDouble1 (nfreq_red));   // A coefficient in Feautrier recursion relation
-	vDouble2 C (ndep, vDouble1 (nfreq_red));   // C coefficient in Feautrier recursion relation
-  vDouble2 F (ndep, vDouble1 (nfreq_red));   // helper variable from Rybicki & Hummer (1991)
-  vDouble2 G (ndep, vDouble1 (nfreq_red));   // helper variable from Rybicki & Hummer (1991)
+  vReal2 A (ndep, vReal1 (nfreq_red));   // A coefficient in Feautrier recursion relation
+	vReal2 C (ndep, vReal1 (nfreq_red));   // C coefficient in Feautrier recursion relation
+  vReal2 F (ndep, vReal1 (nfreq_red));   // helper variable from Rybicki & Hummer (1991)
+  vReal2 G (ndep, vReal1 (nfreq_red));   // helper variable from Rybicki & Hummer (1991)
 
 
 

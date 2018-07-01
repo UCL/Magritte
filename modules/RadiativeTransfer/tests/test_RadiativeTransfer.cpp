@@ -109,25 +109,15 @@ TEST_CASE ("Ray setup")
 
 	frequencies.reset (linedata, temperature);
 
-  long nfreq = frequencies.nfreq;
+  long nfreq_red = frequencies.nfreq_red;
 
-	SCATTERING scattering (Nrays, 1);
+	SCATTERING scattering (Nrays, 1, nfreq_red);
 
-  RADIATION radiation (ncells, Nrays, nfreq);
-
-	vDouble2 J (cells.ncells, vDouble1 (frequencies.nfreq));
-
-	Long1 rays = {0, 1};
+  RADIATION radiation (ncells, Nrays, nfreq_red, 0);
 
 
   RadiativeTransfer<Dimension, Nrays>
-	                 (cells, temperature, frequencies, Nrays, rays, lines, scattering, radiation, J);
-
-
-	for (long p = 0; p < ncells; p++)
-	{
-		cout << J[p][0] << endl;
-	}
+	                 (cells, temperature, frequencies, lines, scattering, radiation);
 
 
 }

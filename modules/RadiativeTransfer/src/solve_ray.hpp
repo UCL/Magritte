@@ -34,10 +34,10 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  const vDouble2& Su_r,  const vDouble2& Sv_r,  const vDouble2& dtau_r,
-	             const long n_ar, const vDouble2& Su_ar, const vDouble2& Sv_ar, const vDouble2& dtau_ar,
-	             const long ndep, const long nfreq_red,        vDouble2& u,           vDouble2& v,
-							 const long ndiag, vDouble2& Lambda);
+int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const vReal2& dtau_r,
+	             const long n_ar, const vReal2& Su_ar, const vReal2& Sv_ar, const vReal2& dtau_ar,
+	             const long ndep, const long nfreq_red,        vReal2& u,           vReal2& v,
+							 const long ndiag, vReal2& Lambda);
 
 
 #endif // __SOLVE_RAY_HPP_INCLUDED__

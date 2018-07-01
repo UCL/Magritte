@@ -11,6 +11,7 @@
 #include <vector>
 using namespace std;
 
+#include "types.hpp"
 #include "rays.hpp"
 
 
@@ -26,31 +27,35 @@ template <int Dimension, long Nrays>
 struct CELLS
 {
 
-  long ncells;                              ///< number of cells
+  const long ncells;                    ///< number of cells
 
-  const RAYS <Dimension, Nrays> rays;       ///< rays linking different cells
+  const RAYS <Dimension, Nrays> rays;   ///< rays linking different cells
 
 
-  vector<double>  x,  y,  z;                ///< coordinates of cell center
-  vector<double> vx, vy, vz;                ///< components of velocity field
+  Double1  x,  y,  z;                   ///< coordinates of cell center
+  Double1 vx, vy, vz;                   ///< components of velocity field
  
-  vector<bool> boundary;                    ///< true if boundary cell
-  vector<bool> mirror;                      ///< true if reflective boundary
+  Bool1 boundary;                       ///< true if boundary cell
+  Bool1 mirror;                         ///< true if reflective boundary
 
-  vector<long> n_neighbors;                 ///< number of neighbors
-  vector<vector<long>> neighbors;           ///< cell numbers of neighors
+  Long1 n_neighbors;                    ///< number of neighbors
+  Long2   neighbors;                    ///< cell numbers of neighors
 
-  vector<long> id;                          ///< cell nr of corresp. cell in other grid
-  vector<bool> removed;                     ///< true when cell is removed
+  Long1 id;                             ///< cell nr of corresp. cell in other grid
+  Bool1 removed;                        ///< true when cell is removed
 
 
-  CELLS (const long number_of_cells, const string n_neighbors_file);           ///< Constructor
-
-	
-  int read (const string cells_file, const string neighbors_file, const string boundary_file);
+  CELLS (const long number_of_cells,
+			   const string n_neighbors_file);   ///< Constructor
 
 	
-  long next (const long origin, const long ray, const long current, double& Z, double& dZ) const; 
+  int read (const string cells_file,
+			      const string neighbors_file,
+						const string boundary_file);
+
+	
+  long next (const long origin, const long ray, const long current,
+			       double& Z, double& dZ) const; 
 
 
   double relative_velocity (const long origin, const long r, long current) const;

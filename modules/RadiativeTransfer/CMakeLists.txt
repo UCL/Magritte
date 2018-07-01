@@ -12,9 +12,24 @@ set( MAGRITTE_VERSION_MAJOR 0 )
 set( MAGRITTE_VERSION_MINOR 1 )
 
 #SET( CMAKE_CXX_COMPILER "/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc" )
+option(INTEL_CC "Use the Intel compiler." OFF)
+
+if (INTEL_CC)
+  find_program(CMAKE_C_COMPILER NAMES icc)
+  find_program(CMAKE_CXX_COMPILER NAMES icpc)
+  find_program(CMAKE_AR NAMES xiar)
+  find_program(CMAKE_LINKER NAMES xild)
+
+  if (CMAKE_C_COMPILER MATCHES CMAKE_C_COMPILER-NOTFOUND OR
+      CMAKE_CXX_COMPILER MATCHES CMAKE_CXX_COMPILER-NOTFOUND OR
+      CMAKE_AR MATCHES CMAKE_AR-NOTFOUND OR
+      CMAKE_LINKER MATCHES CMAKE_LINKER-NOTFOUND)
+    message(FATAL_ERROR "Cannot find Intel compiler.  You may need to run `. /opt/intel/bin/compilervars.sh intel64'")
+  endif ()
+endif (INTEL_CC)
 
 # Set build type to Release to get optimal performance
-set( CMAKE_BUILD_TYPE Release )
+set( CMAKE_BUILD_TYPE Debug )
 
 # Add compiler flags for C++11
 set( CMAKE_CXX_FLAGS
@@ -43,5 +58,5 @@ endif()
 
 # Specify subdirectories containing source code and tests
 add_subdirectory( src )
-add_subdirectory( tests )
+#add_subdirectory( tests )
 add_subdirectory( examples )

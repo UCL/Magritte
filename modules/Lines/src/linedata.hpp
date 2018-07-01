@@ -22,15 +22,15 @@ using namespace Eigen;
 struct LINEDATA
 {
 
-	int nlspec = NLSPEC;
+	const int nlspec = NLSPEC;
 
-  Int1 nlev = NLEV;
-  Int1 nrad = NRAD;
+  const Int1 nlev = NLEV;
+  const Int1 nrad = NRAD;
   
-  Int1 ncolpar = NCOLPAR;
-  
-  Int2 ntmp = NCOLTEMP;
-  Int2 ncol = NCOLTRAN;
+  const Int1 ncolpar = NCOLPAR;
+
+  const Int2 ntmp = NCOLTEMP;
+  const Int2 ncol = NCOLTRAN;
 
 	Int1    num;               // number of line producing species
   String1 sym;               // symbol of line producing species

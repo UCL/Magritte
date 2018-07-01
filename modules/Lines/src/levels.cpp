@@ -250,6 +250,11 @@ int LEVELS ::
 
 	     lines.opacity[p][l][k] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
   		                                    - population[p][l](i) * linedata.B[l](i,j) );
+
+	  lines.emissivity_vec[lines.index(p,l,k)] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+
+	     lines.opacity_vec[lines.index(p,l,k)] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
+                 		                                     - population[p][l](i) * linedata.B[l](i,j) );
   }
 
 
@@ -270,26 +275,33 @@ int LEVELS ::
  
 int LEVELS ::
     calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-				        vDouble2& J, const long p, const int l)
+				        RADIATION& radiation, const long p, const int l)
 {
 
 	for (int k = 0; k < nrad[l]; k++)
 	{
     const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
-		const long    f_line = freq_nrs[NR_LINE_CENTER] / n_vector_lanes;
-		const long lane_line = freq_nrs[NR_LINE_CENTER] % n_vector_lanes;
-
-    const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
+#   if (GRID_SIMD)
+		  const long    f_line = freq_nrs[NR_LINE_CENTER] / n_simd_lanes;
+		  const long lane_line = freq_nrs[NR_LINE_CENTER] % n_simd_lanes;
+      const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
+#   else
+      const double freq_line = frequencies.all[p][freq_nrs[NR_LINE_CENTER]];
+#   endif
 
     J_eff[p][l][k] = 0.0;
 
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
-		  const long    f = freq_nrs[z] / n_vector_lanes;
-		  const long lane = freq_nrs[z] % n_vector_lanes;
 
-			const double JJ = J[p][f].getlane(lane);
+#     if (GRID_SIMD)
+		    const long    f = freq_nrs[z] / n_simd_lanes;
+		    const long lane = freq_nrs[z] % n_simd_lanes;
+		  	const double JJ = radiation.J[radiation.index(p,f)].getlane(lane);
+#     else
+		  	const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
+#     endif
 
       J_eff[p][l][k] += H_weights[z] / profile_width (temperature.gas[p], freq_line) * JJ;
     }
@@ -298,4 +310,4 @@ int LEVELS ::
 
   return (0);
 
-}
+ }

@@ -2,6 +2,11 @@
 set( CMAKE_CXX_FLAGS
 "${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11" )
 
+#Add MPI
+find_package(MPI REQUIRED)
+include_directories(${MPI_INCLUDE_PATH})
+message(STATUS ${MPI_INCLUDE_PATH})
+
 # Add OpenMP compiler flags
 find_package( OpenMP REQUIRED )
 if( OPENMP_FOUND )
@@ -44,7 +49,7 @@ link_directories( "${GRID_INSTALL_FOLDER}lib/" )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_CPP_FLAGS}" )
 set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
 
-add_executable( example_solve_ray.exe 
+add_executable( example_solve_ray.exe
   example_solve_ray.cpp )
 target_link_libraries( example_solve_ray.exe
   _RADIATIVE_TRANSFER )
@@ -53,3 +58,20 @@ add_executable( example_RadiativeTransfer.exe
   example_RadiativeTransfer.cpp )
 target_link_libraries( example_RadiativeTransfer.exe
   _RADIATIVE_TRANSFER )
+
+
+# Add MPI flags
+#if(MPI_COMPILE_FLAGS)
+#	set_target_properties( example_solve_ray.exe PROPERTIES
+#    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+#	set_target_properties( example_RadiativeTransfer.exe PROPERTIES
+#    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+#endif()
+#
+#if(MPI_LINK_FLAGS)
+#	set_target_properties( example_solve_ray.exe PROPERTIES
+#    LINK_FLAGS "${MPI_LINK_FLAGS}")
+#	set_target_properties( example_RadiativeTransfer.exe PROPERTIES
+#  LINK_FLAGS "${MPI_LINK_FLAGS}")
+#endif()
+#

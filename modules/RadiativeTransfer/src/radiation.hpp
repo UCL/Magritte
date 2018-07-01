@@ -21,28 +21,38 @@ using namespace std;
 struct RADIATION
 {
 
-	long ncells;                          ///< number of cells
-	long nrays;                           ///< number of rays
-	long nfreq_red;                       ///< number of frequencies
+	const long ncells;          ///< number of cells
+	const long nrays_red;       ///< reduced number of rays
+	const long nfreq_red;       ///< reduced number of frequencies
+	const long START_raypair;   ///< reduced number of frequencies
 
 
-	vDouble3 u;     ///< u intensity
-	vDouble3 v;     ///< v intensity
+	vReal2 u;   ///< u intensity
+	vReal2 v;   ///< v intensity
 
-	vDouble3 U;     ///< U scattered intensity
-	vDouble3 V;     ///< V scattered intensity
+	vReal2 U;   ///< U scattered intensity
+	vReal2 V;   ///< V scattered intensity
+
+	vReal1 test2;   ///< (angular) mean intensity
+	vReal1 rec2;   ///< (angular) mean intensity
+	vReal1 J;   ///< (angular) mean intensity
 
 
 	RADIATION (const long num_of_cells, const long num_of_rays,
-			       const long num_of_freq);                           ///< Constructor
+			       const long num_of_freq,  const long START_raypair_input);   ///< Constructor
 
+	int initialize ();
+
+  long index (const long r, const long p, const long f) const;
+
+  long index (const long p, const long f) const;
 
 	int resample_U (const FREQUENCIES& frequencies, const long p, const long r,
-		              const vDouble1& frequencies_scaled, vDouble1& U_scaled);
+		              const vReal1& frequencies_scaled, vReal1& U_scaled) const;
 		                                
 
 	int resample_V (const FREQUENCIES& frequencies, const long p, const long r,
-			            const vDouble1& frequencies_scaled, vDouble1& V_scaled);
+			            const vReal1& frequencies_scaled, vReal1& V_scaled) const;
 
 
 };

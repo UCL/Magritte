@@ -18,14 +18,14 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
-vDouble profile (const double temperature_gas, const double freq_line, const vDouble freq)
+vReal profile (const double temperature_gas, const double freq_line, const vReal freq)
 {
 
   const double inverse_width = inverse_profile_width (temperature_gas, freq_line);
 
-	const vDouble vFreq_line   = freq_line;
-	const vDouble sqrtExponent = inverse_width * (freq - vFreq_line);
-	const vDouble exponent     = sqrtExponent * sqrtExponent;
+	const vReal vFreq_line   = freq_line;
+	const vReal sqrtExponent = inverse_width * (freq - vFreq_line);
+	const vReal exponent     = sqrtExponent * sqrtExponent;
 
 
 	return inverse_width * INVERSE_SQRT_PI * vExp(exponent);
@@ -43,7 +43,7 @@ vDouble profile (const double temperature_gas, const double freq_line, const vDo
 
 double profile_width (const double temperature_gas, const double freq_line)
 {
-  return freq_line * sqrt(TWO_KB_OVER_MP_C_SQUARED*temperature_gas + V_TURB_OVER_C_SQUARED);
+  return freq_line * sqrt(TWO_KB_OVER_MP_C_SQUARED*temperature_gas + V_TURB_OVER_C_ALL_SQUARED);
 }
 
 
@@ -63,26 +63,26 @@ double inverse_profile_width (const double temperature_gas, const double freq_li
 
 
 
-///  vExp: exponential function for vDouble types
+///  vExp: exponential function for vReal types
 ///    @param[in] x: exponent
 ///    @return exponential of x
 /////////////////////////////////////////////////
 
-vDouble vExp (const vDouble x)
+vReal vExp (const vReal x)
 {
 	const int n = 10;
 
-  vDouble result = 1.0;
-			 
+  vReal result = 1.0;
+
   for (int i = n-1; i > 0; i--)
 	{
 		const double   factor = 1.0 / i;
-		const vDouble vFactor = factor;
+		const vReal vFactor = factor;
 
     result = vOne + x*result*vFactor;
 	}
 
 
 	return result;
-  
+
 }

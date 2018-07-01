@@ -20,10 +20,9 @@ using namespace std;
 
 template <int Dimension, long Nrays>
 CELLS <Dimension, Nrays> ::
-CELLS (const long number_of_cells, const string n_neighbors_file)
+CELLS (const long num_of_cells, const string n_neighbors_file)
+	: ncells (num_of_cells)
 {
-
-  ncells = number_of_cells;
 
   x.resize (ncells);
   y.resize (ncells);

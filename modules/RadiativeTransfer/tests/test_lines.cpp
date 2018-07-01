@@ -38,6 +38,10 @@ TEST_CASE ("Constructor")
 
 	LINES lines (ncells, linedata);
 
+	for (int l = 0; l < linedata.nlspec; l++)
+	{
+		cout << lines.nrad_cum[l] << endl;
+	}
 	
 	CHECK (true);
 }

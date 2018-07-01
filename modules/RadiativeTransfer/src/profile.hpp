@@ -18,7 +18,7 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
-vDouble profile (const double temperature_gas, const double freq_line, const vDouble freq);
+vReal profile (const double temperature_gas, const double freq_line, const vReal freq);
 
 
 
@@ -39,7 +39,7 @@ double inverse_profile_width (const double temperature_gas, const double freq_li
 
 
 
-vDouble vExp (const vDouble);
+vReal vExp (const vReal);
 
 
 #endif // __PROFILE_HPP_INCLUDED__

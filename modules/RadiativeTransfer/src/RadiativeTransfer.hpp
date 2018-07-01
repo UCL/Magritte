@@ -16,18 +16,18 @@
 
 ///  RadiativeTransfer: solves the transfer equation for the radiation field
 ///    @param[in] cells: reference to the geometric cell data containing the grid
-///    @param[in] nrays: number of rays that are calculated
-///    @param[in] *rays: pointer to the numbers of the rays that are calculated
+///    @param[in] temperature: data structure containing the temperature data
+///    @param[in] frequencies: data structure containing the frequencies data
 ///    @param[in] lines: data structure containing the line transfer data
 ///    @param[in] scattering: data structure containing the scattering data
 ///    @param[in/out] radiation: reference to the  radiation field
-////////////////////////////////////////////////////////////////////////////////
+///    @param[out] J: reference to the  radiation field
+/////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE& temperature,
-		                   FREQUENCIES& frequencies, const long nrays, const Long1& rays,
-											 LINES& lines, SCATTERING& scattering, RADIATION& radiation,
-											 vDouble2& J);
+		                   FREQUENCIES& frequencies, LINES& lines, const SCATTERING& scattering,
+											 RADIATION& radiation);
 
 
 #include "RadiativeTransfer.tpp"

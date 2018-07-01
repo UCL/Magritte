@@ -16,12 +16,11 @@ using namespace std;
 ///    @param[in] num_of_freq_scat: number of frequencies in scattering table
 /////////////////////////////////////////////////////////////////////////////
 
-SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat)
+SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat, const long num_of_freq)
+	: nrays      (num_of_rays)
+	, nfreq_scat (num_of_freq_scat)
+	, nfreq_red  (num_of_freq)
 {
-
-	nrays      = num_of_rays;
-	nfreq_scat = num_of_freq_scat;
-
 
   // Size and initialize scattering opacity
 
@@ -35,19 +34,19 @@ SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat)
 
   // Size and initialize scattering phase function    
 
-	phase_scat.resize (nrays);
+	phase.resize (nrays);
 
 	for (long r1 = 0; r1 < nrays; r1++)
 	{
-	  phase_scat[r1].resize (nrays);
+	  phase[r1].resize (nrays);
 
 		for (long r2 = 0; r2 < nrays; r2++)
 		{
-	    phase_scat[r1][r2].resize (nfreq_scat);
+	    phase[r1][r2].resize (nfreq_red);
 
-			for (long f = 0; f < nfreq_scat; f++)
+			for (long f = 0; f < nfreq_red; f++)
 			{
-				phase_scat[r1][r2][f] = 0.0;
+				phase[r1][r2][f] = 0.0;
 			}
 		}
 	}
@@ -63,7 +62,7 @@ SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat)
 ///    @param[in/out] chi: opacity to which to add the scattering contribution
 //////////////////////////////////////////////////////////////////////////////
 
-int SCATTERING :: add_opacity (const vDouble1& frequencies, vDouble1& chi)
+int SCATTERING :: add_opacity (const vReal1& frequencies, vReal1& chi) const
 {
   return (0);  
 }

@@ -27,18 +27,34 @@ using namespace Eigen;
 struct LINES
 {
 
-	long ncells;          ///< number of cells
+	const long ncells;          ///< number of cells
+	
+	const long nlspec;          ///< number of species producing lines
+
+	const Int1 nrad;
+	const Int1 nrad_cum;
+	const int  nrad_tot;
 
 	Double3 emissivity;   ///< line emissivity (p,l,k)
 	Double3 opacity;      ///< line opacity (p,l,k)
 
 
+	Double1 emissivity_vec;   ///< line emissivity (p,l,k)
+	Double1 opacity_vec;      ///< line opacity (p,l,k)
+
+
   LINES (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
 
+	static Int1 get_nrad_cum (const Int1 nrad);
+	static int  get_nrad_tot (const Int1 nrad);
+
+  long index (const long p, const int l, const int k) const;
 
   int add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-																 	vDouble1& frequencies_scaled, const long p,
-			                            vDouble1& eta, vDouble1& chi) const;
+																 	vReal1& frequencies_scaled, const long p,
+			                            vReal1& eta, vReal1& chi) const;
+
+	int mpi_allgatherv ();
 
 };
 

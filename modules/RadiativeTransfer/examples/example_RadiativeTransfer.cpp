@@ -7,81 +7,95 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <mpi.h>
 #include <omp.h>
 
-#include "../src/timer.hpp"
 #include "../src/RadiativeTransfer.hpp"
+#include "../src/types.hpp"
+#include "../src/GridTypes.hpp"
+#include "../src/timer.hpp"
 #include "../src/cells.hpp"
-#include "../src/medium.hpp"
+#include "../src/temperature.hpp"
+#include "../src/frequencies.hpp"
 #include "../src/radiation.hpp"
-
-
-int read_data (/*CELLS *cells,std::string file_name*/)
-{
-  std::ifstream infile ("thefile.txt");
-
-  int a, b;
-
-  while (infile >> a >> b)
-  {
-    std::cout << a << b << std::endl;
-  }
-
-}
-
+#include "../src/lines.hpp"
+#include "../../Lines/src/linedata.hpp"
 
 
 int main (void)
 {
-//
-//	// Setup data
-//
-//	const int Dimension = 1;
-//	const long Nrays    = 2;
-//	const long Nfreq    = 10;
-//
-//	const long ncells   = 10;
-//
-//	long nfreq_l = 1;
-//	long nfreq_c = 1;
-//	long nfreq_s = 1;
-//
-//	CELLS <Dimension, Nrays> cells (ncells);
-//	
-//	cells.initialize ();
-//
-// 
-//	for (long p = 0; p < ncells; p++)
-//	{
-//		cells.x[p] = 1.23 * p;
-//	}
-//
-//  cells.boundary[0]        = true;
-//  cells.boundary[ncells-1] = true;
-//
-//	cells.neighbor[RINDEX(0,0)]        = 1;
-//	cells.neighbor[RINDEX(ncells-1,0)] = ncells-2;
-//
-//
-//	for (long p = 1; p < ncells-1; p++)
-//	{
-//		cells.neighbor[RINDEX(p,0)] = p-1;
-//		cells.neighbor[RINDEX(p,1)] = p+1;
-//	}
-//
-//
-//  RADIATION radiation (ncells, Nrays, Nfreq);
-//
-//
-//	long freq[Nfreq];
-//	long rays[Nrays] = {0, 1};
-//
 
-//	RadiativeTransfer <Dimension, Nrays, Nfreq>
-//										(cells, medium, Nrays, rays, d_radiation, a_radiation);
 
-  /* radiation.U_d[RC(r,o,f)] += chi_s/chi_e * medium->Phi_scat(,r,freq) * u_loc; */
-  /* radiation.V_d[RC(r,o,f)] += chi_s/chi_e * medium->Phi_scat(,r,freq) * v_loc; */
+	MPI_Init (NULL, NULL);
+
+	const int  Dimension = 3;
+	const long ncells    = 5;
+	const long Nrays     = 12;
+	const long nspec     = 5;
+
+
+	const string project_folder = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data";
+
+	const string       cells_file = project_folder + "cells.txt";
+	const string n_neighbors_file = project_folder + "n_neighbors.txt";
+	const string   neighbors_file = project_folder + "neighbors.txt";
+	const string    boundary_file = project_folder + "boundary.txt";
+	const string     species_file = project_folder + "species.txt";
+  const string   abundance_file = project_folder + "abundance.txt";
+  const string temperature_file = project_folder + "temperature.txt";
+
+
+  // long nrays = Nrays/(2*world_size);
+
+	CELLS<Dimension, Nrays> cells (ncells, n_neighbors_file);
+
+	cells.read (cells_file, neighbors_file, boundary_file);
+
+
+	LINEDATA linedata;   // object containing line data
+
+
+
+	TEMPERATURE temperature (ncells);
+
+	temperature.read (temperature_file);
+
+
+  FREQUENCIES frequencies (ncells, linedata);
+
+	frequencies.reset (linedata, temperature);
+
+	const long nfreq_red = frequencies.nfreq_red;
+
+
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+  const long START_raypair = ( world_rank   *Nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*Nrays/2)/world_size;
+
+	const long nrays_red = STOP_raypair - START_raypair;
+
+	RADIATION radiation (ncells, nrays_red, nfreq_red, START_raypair);
+	
+
+	LINES lines (ncells, linedata);
+
+
+	const long nfreq_scat = 1;
+	SCATTERING scattering (Nrays, nfreq_scat, nfreq_red);
+
+
+	RadiativeTransfer<Dimension,Nrays>
+		               (cells, temperature, frequencies,
+										lines, scattering, radiation);
+
+
+
+  MPI_Finalize ();	
 
 
   return(0);

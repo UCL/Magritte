@@ -13,12 +13,11 @@ using namespace std;
 
 
 TEMPERATURE :: TEMPERATURE (const long num_of_cells)
+	: ncells (num_of_cells)
 {
-	
-  ncells = num_of_cells;
 
 	gas.resize (ncells);
-	
+
 	dust.resize (ncells);
 
 	gas_prev.resize (ncells);
@@ -28,7 +27,8 @@ TEMPERATURE :: TEMPERATURE (const long num_of_cells)
 
 
 
-int TEMPERATURE :: read (const string temperature_file)
+int TEMPERATURE ::
+    read (const string temperature_file)
 {
 
   ifstream infile (temperature_file);

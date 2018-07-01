@@ -1,6 +1,10 @@
 # Add C++11 compiler flags
 set( CMAKE_CXX_FLAGS
-"${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11" )
+  "${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11" )
+
+#Add MPI
+find_package(MPI REQUIRED)
+include_directories(${MPI_INCLUDE_PATH})
 
 # Add OpenMP compiler flags
 find_package( OpenMP REQUIRED )
@@ -16,7 +20,7 @@ endif()
 # Include directories for Eigen library
 include_directories( ../src )
 
-#Include directories for Common library
+#Include directories for Lines library
 include_directories( ../.. )
 
 # Set folder where Grid is instaled

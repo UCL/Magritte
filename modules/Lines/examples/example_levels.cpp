@@ -9,6 +9,7 @@
 using namespace std;
 #include <mpi.h>
 
+#include "RadiativeTransfer/src/timer.hpp"
 
 #include "levels.hpp"
 #include "linedata.hpp"
@@ -18,11 +19,11 @@ using namespace std;
 #include "RadiativeTransfer/src/frequencies.hpp"
 
 
-
 int main (void)
 {
 
-	cout << "levels example." << endl;
+	TIMER timer;	
+	timer.start();
 
   // Initialize MPI environment
 	MPI_Init (NULL, NULL);
@@ -36,32 +37,21 @@ int main (void)
   MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
 
-  // Get the name of the processor
-  char processor_name[MPI_MAX_PROCESSOR_NAME];
-  int  name_len;
-  MPI_Get_processor_name (processor_name, &name_len);
- 
-
-	MPI_Datatype MPI_LINES;
-	MPI_Type_contiguous (2, MPI_DOUBLE, &MPI_LINES);
-  MPI_Type_commit (&MPI_LINES);
-
-  // Print off a hello world message
-  cout << "Hello world from processor "<< processor_name
- 	     << " rank "                     << world_rank
- 	  	 << " out of "                   << world_size
- 	 	 	 << " processors."               << endl;
- 
-
-	const long ncells    = 12;
+	const int  Dimension = 1;
+	const long ncells    = 50;
+	const long Nrays     = 2;
 	const long nspec     = 5;
 
-	string   species_file = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/species.txt";
-  string abundance_file = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/abundance.txt";
+
+	const string project_folder = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/";
+
+	const string       cells_file = project_folder + "grid.txt";
+	const string     species_file = project_folder + "species.txt";
+  const string   abundance_file = project_folder + "abundance.txt";
+  const string temperature_file = project_folder + "temperature.txt";
 
 
-
-	LINEDATA linedata;   // object containing line data
+	LINEDATA linedata;
 
 
 	SPECIES species (ncells, nspec, species_file);
@@ -71,37 +61,31 @@ int main (void)
 
 	TEMPERATURE temperature (ncells);
 
-  for (long p = 0; p < ncells; p++)
-  {
-    temperature.gas[p] = 10.0;
-  }
+	temperature.read (temperature_file);
 
-	FREQUENCIES frequencies (ncells, linedata);
 
-  frequencies.reset (linedata, temperature);
-
-	const long nfreq = frequencies.nfreq;
+//	FREQUENCIES frequencies (ncells, linedata);
+//
+//  frequencies.reset (linedata, temperature);
+//
+//	const long nfreq_red = frequencies.nfreq_red;
 
 
 	LINES lines (ncells, linedata);
 
 	LEVELS levels (ncells, linedata);
 
+
+
 	levels.iteration_using_LTE (linedata, species, temperature, lines);
 
 
-  for (long p = 0; p < ncells; p++)
-  {
-    temperature.gas[p] = 10.0;
-  }
 
   // Finalize the MPI environment.
   MPI_Finalize ();	
 
-
-  cout << "Done." << endl;
-
-
+	timer.stop();
+	timer.print();
 
 	return (0);
 

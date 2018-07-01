@@ -26,63 +26,29 @@ using namespace std;
 int main (void)
 {
 
-	cout << "Lines example." << endl;
 
-//  // Initialize MPI environment
-//	MPI_Init (NULL, NULL);
-//
-//  // Get the number of processes
-//  int world_size;
-//  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-//
-//  // Get the rank of the process
-//  int world_rank;
-//  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-//
-//
-//  // Get the name of the processor
-//  char processor_name[MPI_MAX_PROCESSOR_NAME];
-//  int  name_len;
-//  MPI_Get_processor_name (processor_name, &name_len);
-// 
-//
-//  // Print off a hello world message
-//  cout << "Hello world from processor "<< processor_name
-// 	     << " rank "                     << world_rank
-// 	  	 << " out of "                   << world_size
-// 	 	 	 << " processors."               << endl;
-// 
+	MPI_Init (NULL, NULL);
+
+
 
 	const int  Dimension = 1;
 	const long ncells    = 50;
 	const long Nrays     = 2;
 	const long nspec     = 5;
 
-	string     cells_file = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/grid.txt";
-	string   species_file = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/species.txt";
-  string abundance_file = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/abundance.txt";
+
+	const string project_folder = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data/"
+
+	const string       cells_file = project_folder + "grid.txt";
+	const string     species_file = project_folder + "species.txt";
+  const string   abundance_file = project_folder + "abundance.txt";
+  const string temperature_file = project_folder + "temperature.txt";
 
   // long nrays = Nrays/(2*world_size);
 
 	CELLS<Dimension, Nrays> cells (ncells);
 
 	cells.read (cells_file);
-
-	cells.boundary[0]        = true;
-	cells.boundary[ncells-1] = true;
-	
-	cells.neighbor[0][0]        = 1;
-	cells.n_neighbors[0]        = 1;
-	cells.neighbor[ncells-1][0] = ncells-2;
-	cells.n_neighbors[ncells-1] = 1;
-
-
-  for (long p = 1; p < ncells-1; p++)
-  {
-     cells.neighbor[p][0] = p-1;
-     cells.neighbor[p][1] = p+1;
-	   cells.n_neighbors[p] = 2;
-  }
 
 
 	LINEDATA linedata;   // object containing line data
@@ -95,20 +61,29 @@ int main (void)
 
 	TEMPERATURE temperature (ncells);
 
-  for (long p = 0; p < ncells; p++)
-  {
-    temperature.gas[p] = 10.0;
-  }
+	temperature.read (temperature_file);
+
 
 	FREQUENCIES frequencies (ncells, linedata);
 
 	frequencies.reset (linedata, temperature);
 
-	const long nfreq = frequencies.nfreq;
+	const long nfreq_red = frequencies.nfreq_red;
 
 	LEVELS levels (ncells, linedata);
 
-	RADIATION radiation (ncells, Nrays, nfreq);
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+  const long START_raypair = ( world_rank   *Nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*Nrays/2)/world_size;
+
+	const long nrays_red = STOP_raypair - START_raypair;
+
+	RADIATION radiation (ncells, nrays_red, nfreq_red, START_raypair);
 	
 
  // for (long r = 0; r < Nrays; r++)
@@ -126,11 +101,7 @@ int main (void)
 	Lines<Dimension, Nrays> (cells, linedata, species, temperature, frequencies, levels, radiation);
 
 
-  // Finalize the MPI environment.
-  // MPI_Finalize ();	
-
-
-  cout << "Done." << endl;
+  MPI_Finalize ();	
 
 
 	return (0);

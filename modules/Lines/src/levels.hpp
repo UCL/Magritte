@@ -62,6 +62,14 @@ struct LEVELS
 	int update_using_Ng_acceleration ();
 
 
+	int iteration_using_statistical_equilibrium (const LINEDATA& linedata,
+			                                         const SPECIES& species,
+	  	                                         const TEMPERATURE& temperature,
+																						   FREQUENCIES& frequencies,
+																						   RADIATION& radiation,
+																							 LINES& lines);
+
+
 	int update_using_statistical_equilibrium (const MatrixXd& R, const long p, const int l);
 
 
@@ -71,7 +79,7 @@ struct LEVELS
 			                                  const long p, const int l) const;
 
   int calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-			            vDouble2& J, const long p, const int l);
+			            RADIATION& radiation, const long p, const int l);
 
 	// Convergence
 

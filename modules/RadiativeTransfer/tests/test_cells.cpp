@@ -128,17 +128,32 @@ TEST_CASE ("Read")
 
 
 
-//TEST_CASE ("Ray tracer: next function 1D")
-//{
-//  const int  Dimension   = 1;
-//  const long Nrays       = 2;
-//  const long Ncells      = 10000;
-//
-//  CELLS <Dimension, Nrays> cells (Ncells);
-//
-//  for (long p = 0; p < Ncells; p++)
-//  {
-//    cells.x[p] = 1.0E10 * (p + 0.012345);
-//  }
-//}
+TEST_CASE ("Ray tracer: next function 1D")
+{
+  const int  Dimension   = 3;
+  const long Nrays       = 12;
+  const long Ncells      = 64;
+
+	const string project_folder = "test_data/Cube_64/";
+	
+	const string       cells_file = project_folder + "cells.txt";
+	const string n_neighbors_file = project_folder + "n_neighbors.txt";
+	const string   neighbors_file = project_folder + "neighbors.txt";
+	const string    boundary_file = project_folder + "boundary.txt";
+
+  CELLS <Dimension, Nrays> cells (Ncells, n_neighbors_file);
+	
+  cells.read (cells_file, neighbors_file, boundary_file);
+
+
+
+
+
+  for (long p = 0; p < Ncells; p++)
+  {
+    cout << cells.x[p] << endl;
+  }
+
+  CHECK (true);   
+}
 

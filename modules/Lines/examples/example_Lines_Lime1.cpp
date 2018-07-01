@@ -70,7 +70,7 @@ int main (void)
 	LEVELS levels (ncells, linedata);
 
 
-	RADIATION radiation (ncells, Nrays, nfreq);
+	RADIATION radiation (ncells, Nrays, nfreq, 0);
 	
 
 	Lines<Dimension, Nrays> (cells, linedata, species, temperature, frequencies, levels, radiation);

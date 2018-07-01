@@ -12,16 +12,19 @@
 using namespace std;
 
 
+#include "types.hpp"
+
+
 struct TEMPERATURE
 {
 	
-  long ncells;
+  const long ncells;
 
-	vector<double> gas;        ///< gas temperature
-	
-	vector<double> dust;       ///< dust temparature
+	Double1 gas;        ///< gas temperature
 
-	vector<double> gas_prev;   ///< gas temperature in previous iteration
+	Double1 dust;       ///< dust temparature
+
+	Double1 gas_prev;   ///< gas temperature in previous iteration
 
 
   TEMPERATURE (const long num_of_cells);      ///< Constructor

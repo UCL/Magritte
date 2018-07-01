@@ -21,7 +21,7 @@ using namespace Eigen;
 ///  Constructor for LINEDATA
 /////////////////////////////
 
-LINEDATA :: LINEDATA ()
+LINEDATA :: LINEDATA ()  
 {
 
   num.resize (nlspec);

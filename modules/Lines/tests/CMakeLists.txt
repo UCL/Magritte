@@ -2,6 +2,10 @@
 set( CMAKE_CXX_FLAGS
 "${CMAKE_CXX_FLAGS} -std=c++11 -std=gnu++11" )
 
+#Add MPI
+find_package(MPI REQUIRED)
+include_directories(${MPI_INCLUDE_PATH})
+
 # Add OpenMP compiler flags
 find_package( OpenMP REQUIRED )
 if( OPENMP_FOUND )

@@ -15,6 +15,10 @@ endif()
 # Add HEALPix subdirectory
 add_subdirectory( HEALPix )
 
+# Uncomment the lines below if you want to build from RadiativeTransfer directory
+#add_subdirectory( ../../Lines
+#  ../../Lines )
+
 # Include directories for Eigen library
 include_directories( . )
 

@@ -54,29 +54,30 @@ TEST_CASE ("CELLS constructor")
 
 	FREQUENCIES frequencies (ncells, linedata);
 
-  long nfreq = frequencies.nfreq;
+  long nfreq_red = frequencies.nfreq_red;
 
 	TEMPERATURE temperature (ncells);
 
 	LINES lines (cells.ncells, linedata);
 
-	SCATTERING scattering (Nrays, 1);
+	SCATTERING scattering (Nrays, 1, nfreq_red);
 
-  RADIATION radiation (ncells, Nrays, nfreq);
+  RADIATION radiation (ncells, Nrays, nfreq_red, 0);
 
   long n = 0;
 
-  vDouble2   Su (cells.ncells, vDouble1 (frequencies.nfreq));    // effective source for u along ray r
-  vDouble2   Sv (cells.ncells, vDouble1 (frequencies.nfreq));    // effective source for v along ray r
-  vDouble2 dtau (cells.ncells, vDouble1 (frequencies.nfreq));    // optical depth increment along ray r
+  vReal2   Su (cells.ncells, vReal1 (frequencies.nfreq));    // effective source for u along ray r
+  vReal2   Sv (cells.ncells, vReal1 (frequencies.nfreq));    // effective source for v along ray r
+  vReal2 dtau (cells.ncells, vReal1 (frequencies.nfreq));    // optical depth increment along ray r
 
 
 	long o = 0;
 	long r = 0;
+	long R = 0;
 
 	set_up_ray <Dimension, Nrays>
 	         	 (cells, frequencies, temperature, lines, scattering, radiation,
-							o, r,  1.0, n,  Su,  Sv,  dtau);
+							o, r, R, ray, n, Su, Sv, dtau);
 
 
 	cout << n << endl;

@@ -23,7 +23,7 @@ int main (void)
 
   const long ndep      = 100;
 	const long nfreq     =  50;
-	const long nfreq_red = (nfreq + n_vector_lanes - 1) / n_vector_lanes;
+	const long nfreq_red = (nfreq + n_simd_lanes - 1) / n_simd_lanes;
 
 
 
@@ -40,13 +40,13 @@ int main (void)
   }
 
 
-	//int n_vector_lanes = vDouble :: Nsimd();
+	//int n_simd_lanes = vReal :: Nsimd();
 
 
-  vDouble2 u      (ndep, vDouble1 (nfreq_red));
-  vDouble2 v      (ndep, vDouble1 (nfreq_red));
-	vDouble2 u_prev (ndep, vDouble1 (nfreq_red));
-	vDouble2 v_prev (ndep, vDouble1 (nfreq_red));
+  vReal2 u      (ndep, vReal1 (nfreq_red));
+  vReal2 v      (ndep, vReal1 (nfreq_red));
+	vReal2 u_prev (ndep, vReal1 (nfreq_red));
+	vReal2 v_prev (ndep, vReal1 (nfreq_red));
 
   //vector<MatrixXd> Lambda (nfreq);
 
@@ -58,7 +58,7 @@ int main (void)
   //  Lambda[f] = temp;
 	//}
 
-  vDouble2 Lambda (ndep, vDouble1 (nfreq_red));
+  vReal2 Lambda (ndep, vReal1 (nfreq_red));
 
 	long ndiag = ndep;
 
@@ -66,25 +66,22 @@ int main (void)
 	long n_r  = ndep/2;
 	long n_ar = ndep-n_r;
 
-  vDouble2    Su_r (n_r, vDouble1 (nfreq_red));
-  vDouble2    Sv_r (n_r, vDouble1 (nfreq_red));
-  vDouble2  dtau_r (n_r, vDouble1 (nfreq_red));
+  vReal2    Su_r (n_r, vReal1 (nfreq_red));
+  vReal2    Sv_r (n_r, vReal1 (nfreq_red));
+  vReal2  dtau_r (n_r, vReal1 (nfreq_red));
 
-  vDouble2   Su_ar (n_ar, vDouble1 (nfreq_red));
-  vDouble2   Sv_ar (n_ar, vDouble1 (nfreq_red));
-  vDouble2 dtau_ar (n_ar, vDouble1 (nfreq_red));
+  vReal2   Su_ar (n_ar, vReal1 (nfreq_red));
+  vReal2   Sv_ar (n_ar, vReal1 (nfreq_red));
+  vReal2 dtau_ar (n_ar, vReal1 (nfreq_red));
 
 
   for (long m = 0; m < n_ar; m++)
   {
 		for (long f = 0; f < nfreq_red; f++)
 		{
-			for (int lane = 0; lane < n_vector_lanes; lane++)
-			{
-  	      Su_ar[m][f].putlane (   S[n_ar-1-m], lane);
-    	    Sv_ar[m][f].putlane (   S[n_ar-1-m], lane);
-    	  dtau_ar[m][f].putlane (dtau[n_ar-1-m], lane);
-			}
+        Su_ar[m][f] =    S[n_ar-1-m];
+        Sv_ar[m][f] =    S[n_ar-1-m];
+      dtau_ar[m][f] = dtau[n_ar-1-m];
 		}
 	}	
 		
@@ -93,12 +90,9 @@ int main (void)
 	{
 		for (long f = 0; f < nfreq_red; f++)
 		{	
-			for (int lane = 0; lane < n_vector_lanes; lane++)
-			{
-  	      Su_r[m][f].putlane (   S[n_ar+m], lane);
-    	    Sv_r[m][f].putlane (   S[n_ar+m], lane);
-    	  dtau_r[m][f].putlane (dtau[n_ar+m], lane);
-			}
+  	    Su_r[m][f] =    S[n_ar+m];
+        Sv_r[m][f] =    S[n_ar+m];
+      dtau_r[m][f] = dtau[n_ar+m];
 		}
 	}
 

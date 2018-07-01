@@ -38,47 +38,16 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 					 RADIATION& radiation)
 {
 
-	long nfreq_scat = 1;
+	const long nfreq_scat = 1;
 
 	LINES lines (cells.ncells, linedata);
 
-	SCATTERING scattering (Nrays, nfreq_scat);
+	SCATTERING scattering (Nrays, nfreq_scat, frequencies.nfreq_red);
 
 
-# pragma omp parallel                                      \
-  shared (linedata, lines, levels, species, temperature)   \
-  default (none)
-  {
+	// Initialize levels, emissivities and opacities with LTE values
 
-  const int num_threads = omp_get_num_threads();
-  const int thread_num  = omp_get_thread_num();
-
-  const long start = (thread_num*levels.ncells)/num_threads;
-  const long stop  = ((thread_num+1)*levels.ncells)/num_threads;   // Note brackets
-
-
-	// For all cells
-
-  for (long p = start; p < stop; p++)
-  {
-
-    // For each species producing lines
-
-    for (int l = 0; l < linedata.nlspec; l++)
-    {
-
-	    // Initialize levels with LTE populations
-
-	    levels.update_using_LTE (linedata, species, temperature, p, l);
-
-
-      // Calculate line source and opacity for the new levels
-
-	    levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
-		}
-	}
-	} // end of pragma omp parallel
-
+  levels.iteration_using_LTE (linedata, species, temperature, lines);  
 
 
 
@@ -111,79 +80,15 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 
 
-		vDouble2 J (levels.ncells, vDouble1 (frequencies.nfreq_red));
-
-		Long1 rays (Nrays);
-
-		for (long r = 0; r < Nrays; r++)
-		{
-			rays[r] = r;
-		}
-
 		// Get radiation field from Radiative Transfer
 
 		cout << "In RT..." << endl;
     RadiativeTransfer<Dimension, Nrays>
-			               (cells, temperature, frequencies, Nrays,
-											rays, lines, scattering, radiation, J);
+			               (cells, temperature, frequencies, lines, scattering, radiation);
 		cout << "Out RT..." << endl;
  
-
-#   pragma omp parallel                                                      \
-    shared (linedata, lines, levels, species, frequencies, temperature, J)   \
-    default (none)
-    {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = (thread_num*levels.ncells)/num_threads;
-    const long stop  = ((thread_num+1)*levels.ncells)/num_threads;   // Note brackets
-
-
-		// For all cells
-
-    for (long p = start; p < stop; p++)
-    {
-
-      // For each species producing lines
-
-      for (int l = 0; l < linedata.nlspec; l++)
-      {
-
-		    // Update previous populations, making memory available for the new ones
-
-        levels.population_prev3[p][l] = levels.population_prev2[p][l];
-        levels.population_prev2[p][l] = levels.population_prev1[p][l];
-        levels.population_prev1[p][l] = levels.population[p][l];
-
-
-				// Extract the effective mean radiation field in each line
-
-        levels.calc_J_eff (frequencies, temperature, J, p, l);
-
-
-				// Calculate the transition matrix (for stat. equil. eq.)
-
-    		MatrixXd R = linedata.calc_transition_matrix (species, temperature.gas[p],
-						                                          levels.J_eff, p, l);
-    	
-        levels.update_using_statistical_equilibrium (R, p, l);
-
-    		levels.check_for_convergence (p, l);
-
-
-        // Calculate source and opacity
-
-	      levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
-
-
-      } // end of lspec loop over line producing species
-
-    } // end of n loop over cells
-    } // end of OpenMP parallel region
-
-
+    levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
+				                                            frequencies, radiation, lines);  
 
 		
     // Allow 1% to be not converged
@@ -222,7 +127,9 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
     for (int l = 0; l < linedata.nlspec; l++)
     {
-			cout << "(Lines): fraction_not_converged = " << levels.fraction_not_converged[l] << endl;
+			cout << "(Lines): fraction_not_converged = ";
+			cout << levels.fraction_not_converged[l];
+			cout << endl;
     }
 
 
@@ -232,7 +139,10 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
   // Print convergence stats
 
-  cout << "(Lines): converged after " << niterations << "iterations" << endl;
+  cout << "(Lines): converged after ";
+	cout << niterations;
+	cout << "iterations";
+	cout << endl;
 
 
   return (0);

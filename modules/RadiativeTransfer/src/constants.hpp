@@ -24,7 +24,7 @@ const double SECONDS_IN_YEAR = 3.1556926E+7;    // number of seconds in one year
 
 const double INVERSE_SQRT_PI = 0.56418958354;   // inverse square root of Pi ( 1/sqrt(PI) )
 
-const double V_TURB_OVER_C_SQUARED     = 100.0 / (CC * CC);        // (v_turb / c)^2  
+const double V_TURB_OVER_C_ALL_SQUARED = 100.0 / (CC * CC);        // (v_turb / c)^2  
 const double TWO_KB_OVER_MP_C_SQUARED  = 2.0*KB/ (MP * CC * CC);   // 2.0*Kb/Mp*c^2 
 
 

@@ -18,18 +18,23 @@ using namespace std;
 struct SCATTERING
 {
 
-	long ncells;            ///< number of cells
-	long nrays;             ///< number of rays
-	long nfreq_scat;        ///< number of frequencies in scattering data
+	const long nrays;        ///< number of rays
+	const long nfreq_scat;   ///< number of frequencies in scattering data
+	const long nfreq_red;    ///< number of frequencies
 
-	Double1 opacity_scat;   ///< scattering opacity (p,f)
-
-	Double3 phase_scat;     ///< scattering phase function (r1,r2,f)
+	Double1 opacity_scat;    ///< scattering opacity (p,f)
 
 
-  SCATTERING (const long num_of_rays, const long num_of_freq_scat);   ///< Constructor   
+	// Precalculate phase function for all frequencies
+
+	vReal3 phase;      ///< scattering phase function (r1,r2,f)
+
+
+  SCATTERING (const long num_of_rays,
+			        const long num_of_freq_scat,
+							const long num_of_freq);       ///< Constructor   
 	
-  int add_opacity (const vDouble1& frequencies, vDouble1& chi);
+  int add_opacity (const vReal1& frequencies, vReal1& chi) const;
 
 };
 

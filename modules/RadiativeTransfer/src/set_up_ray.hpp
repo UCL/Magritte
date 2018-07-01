@@ -18,6 +18,7 @@ using namespace std;
 #include "scattering.hpp"
 #include "radiation.hpp"
 
+enum RAYTYPE {ray, antipod};
 
 ///  set_up_ray: extract sources and opacities from the grid on the ray
 ///    @param[in] cells: reference to the geometric cell data containing the grid
@@ -36,9 +37,9 @@ using namespace std;
 
 template <int Dimension, long Nrays>
 int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
-		            const TEMPERATURE& temperature, LINES& lines, SCATTERING& scattering,
-								RADIATION& radiation, const long o, const long r, const double sign,
-	              long& n, vDouble2& Su, vDouble2& Sv, vDouble2& dtau);
+		            const TEMPERATURE& temperature, LINES& lines, const SCATTERING& scattering,
+								RADIATION& radiation, const long o, const long r, const long R, const RAYTYPE raytype,
+	              long& n, vReal2& Su, vReal2& Sv, vReal2& dtau);
 
 
 #include "set_up_ray.tpp"
