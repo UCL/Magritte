@@ -238,7 +238,7 @@ int LINES ::
 	                MPI_DOUBLE,              // type of the received data
 		              MPI_COMM_WORLD);
 
-	assert (ierr_em);
+	assert (ierr_em == 0);
 
 
 	// Call MPI to gather the opacity data
@@ -253,7 +253,7 @@ int LINES ::
               	  MPI_DOUBLE,              // type of the received data
               		MPI_COMM_WORLD);
 
-	assert (ierr_op);
+	assert (ierr_op == 0);
 
 
 	delete [] buffer_lengths;
