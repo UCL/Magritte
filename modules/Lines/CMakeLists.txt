@@ -16,6 +16,16 @@ set( MAGRITTE_VERSION_MINOR 1 )
 # Set build type to Release to get optimal performance
 set( CMAKE_BUILD_TYPE Debug )
 
+# Set compiler paths
+#execute_process( COMMAND which icc
+#  OUTPUT_VARIABLE BUFF_CMAKE_C_COMPILER
+#  OUTPUT_STRIP_TRAILING_WHITESPACE )
+#execute_process( COMMAND which icc
+#  OUTPUT_VARIABLE BUFF_CMAKE_CXX_COMPILER
+#  OUTPUT_STRIP_TRAILING_WHITESPACE )
+#
+#set (CMAKE_C_COMPILER ${BUFF_CMAKE_C_COMPILER})
+#set (CMAKE_CXX_COMPILER ${BUFF_CMAKE_CXX_COMPILER})
 
 # Add compiler flags for C++11
 set( CMAKE_CXX_FLAGS
