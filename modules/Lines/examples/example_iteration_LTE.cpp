@@ -37,7 +37,7 @@ int main (void)
 
 
 	const int  Dimension = 3;
-	const long ncells    = 7*7*7;
+	const long ncells    = 5*5*5;
 	const long Nrays     = 12;
 	const long nspec     = 5;
 
@@ -78,6 +78,9 @@ int main (void)
 	timer.stop();
 	timer.print();
 
+
+
+	// Print out results
 
 	const string output_file = output_folder + "populations.txt";  
   ofstream outputFile (output_file);
