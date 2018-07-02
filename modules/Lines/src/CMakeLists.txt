@@ -23,7 +23,7 @@ include_directories( ../.. )
 include_directories( . )
 
 # Set folder where Grid is instaled
-set( GRID_INSTALL_FOLDER "/home/frederik/Codes/Grid/install/" )
+#set( GRID_INSTALL_FOLDER "/home/frederik/Codes/Grid/install/" )
 
 # Extract compiler flags for Grid
 execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --cxxflags
@@ -62,4 +62,3 @@ target_link_libraries( _LINES
 
 # Set linker language
 set_target_properties( _LINES PROPERTIES LINKER_LANGUAGE CXX )
-

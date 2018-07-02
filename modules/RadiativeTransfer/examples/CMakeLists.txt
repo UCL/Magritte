@@ -25,7 +25,7 @@ include_directories(../src)
 include_directories( ../.. )
 
 # Set folder where Grid is instaled
-set( GRID_INSTALL_FOLDER "/home/frederik/Codes/Grid/install/" )
+#set( GRID_INSTALL_FOLDER "/home/frederik/Codes/Grid/install/" )
 
 # Extract compiler flags for Grid
 execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --cxxflags
