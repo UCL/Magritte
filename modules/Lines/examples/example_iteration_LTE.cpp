@@ -14,6 +14,8 @@ using namespace std;
 
 #include "levels.hpp"
 #include "linedata.hpp"
+#include "RadiativeTransfer/src/configure.hpp"
+#include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/species.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
 #include "RadiativeTransfer/src/lines.hpp"
@@ -36,20 +38,25 @@ int main (void)
   MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
 
-	const int  Dimension = 3;
-	const long ncells    = 5*5*5;
-	const long Nrays     = 12;
-	const long nspec     = 5;
+	//const int  Dimension = 3;
+	//const long ncells    = 5*5*5;
+	//const long Nrays     = 12;
+	//const long nspec     = 5;
 
 
-	const string project_folder = "example_data/iteration_LTE/";
-	const string   input_folder = project_folder + "input/";
-	const string  output_folder = project_folder + "output/";
+	//const string project_folder = "example_data/iteration_LTE/";
+	//const string   input_folder = project_folder + "input/";
+	//const string  output_folder = project_folder + "output/";
 
-	const string       cells_file = input_folder + "grid.txt";
-	const string     species_file = input_folder + "species.txt";
-  const string   abundance_file = input_folder + "abundance.txt";
-  const string temperature_file = input_folder + "temperature.txt";
+	const string  example_folder = Magritte_folder + "../Lines/examples/example_data/iteration_LTE/";
+
+	const string  example_input_folder = example_folder + "input/";
+	const string example_output_folder = example_folder + "output/";
+
+	const string       cells_file = example_input_folder + "grid.txt";
+	const string     species_file = example_input_folder + "species.txt";
+  const string   abundance_file = example_input_folder + "abundance.txt";
+  const string temperature_file = example_input_folder + "temperature.txt";
 
 
 	LINEDATA linedata;
@@ -79,10 +86,12 @@ int main (void)
 	timer.print();
 
 
-
 	// Print out results
 
-	const string output_file = output_folder + "populations.txt";  
+	timer.print_to_file (example_output_folder + "timings.txt");
+
+
+	const string output_file = example_output_folder + "populations.txt";  
   ofstream outputFile (output_file);
 	if (outputFile.is_open())
   {
@@ -93,12 +102,12 @@ int main (void)
 		 {
 			 outputFile << levels.population[p][l][i] << "\t";
 		 }
-	 	 outputFile << "\n";
+	 	 outputFile << endl;
 	 }
 
 	  outputFile.close();
   }
-  else cout << "Unable to open file";
+  else cout << "Unable to open file " << output_file << endl;
 
 
   // Finalize the MPI environment.

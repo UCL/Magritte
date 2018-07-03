@@ -1,0 +1,8 @@
+rank[0]: time = 0.0271326 seconds
+rank[1]: time = 0.0271478 seconds
+rank[2]: time = 0.026774 seconds
+rank[3]: time = 0.0241676 seconds
+rank[4]: time = 0.000223051 seconds
+rank[5]: time = 0.0256978 seconds
+rank[6]: time = 0.0266372 seconds
+rank[7]: time = 0.0271711 seconds
