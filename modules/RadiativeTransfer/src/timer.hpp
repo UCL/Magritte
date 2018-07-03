@@ -19,6 +19,9 @@ struct TIMER
 	vector<double> times;
 
 
+	///  Constructor for TIMER
+	//////////////////////////
+
 	TIMER ()
 	{
 		int world_size;
@@ -27,10 +30,18 @@ struct TIMER
 		times.resize (world_size);
 	}
 
+
+	///  start: start timer i.e. set initial time stamp
+	///////////////////////////////////////////////////
+
   void start ()
   {
     initial = chrono::high_resolution_clock::now();
   }
+
+
+	///  stop: stop timer and calculate interval for every process
+	//////////////////////////////////////////////////////////////
 
   void stop ()
   { 
@@ -49,6 +60,11 @@ struct TIMER
 									 MPI_DOUBLE,
 									 MPI_COMM_WORLD);
   }
+
+
+	///  print_to_file: let rank 0 process print times for every rank to file
+	///    @param[in] file_name: name of the file to print to
+	/////////////////////////////////////////////////////////////////////////
 
 
 	void print_to_file (string file_name)
@@ -72,6 +88,9 @@ struct TIMER
 		}
 	}
 
+
+	///  print: let rank 0 process print times for every rank
+	/////////////////////////////////////////////////////////
 
   void print ()
   {

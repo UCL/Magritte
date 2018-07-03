@@ -48,8 +48,10 @@ int main (void)
 	//const string   input_folder = project_folder + "input/";
 	//const string  output_folder = project_folder + "output/";
 
-	const string  example_input_folder = Magritte_folder + "../Lines/examples/example_data/iteration_LTE/input/";
-	const string example_output_folder = Magritte_folder + "../Lines/examples/example_data/iteration_LTE/output/";
+	const string  example_folder = Magritte_folder + "../Lines/examples/example_data/iteration_LTE/";
+
+	const string  example_input_folder = example_folder + "input/";
+	const string example_output_folder = example_folder + "output/";
 
 	const string       cells_file = example_input_folder + "grid.txt";
 	const string     species_file = example_input_folder + "species.txt";
