@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 
+#include <mpi.h>
 #include <omp.h>
 #include <vector>
 #include <iostream>
@@ -12,17 +13,20 @@ using namespace std;
 #include "radiation.hpp"
 #include "GridTypes.hpp"
 #include "frequencies.hpp"
+#include "scattering.hpp"
 #include "interpolation.hpp"
 
 
 ///  Constructor for RADIATION
 //////////////////////////////
 
-RADIATION :: RADIATION (const long num_of_cells, const long num_of_rays,
-		                    const long num_of_freq,  const long START_raypair_input)
+RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
+		                    const long num_of_rays_red, const long num_of_freq_red,
+												const long START_raypair_input)
 	: ncells        (num_of_cells)
-  , nrays_red     (num_of_rays)
-  , nfreq_red     (num_of_freq)
+	, nrays         (num_of_rays)
+  , nrays_red     (num_of_rays_red)
+  , nfreq_red     (num_of_freq_red)
 	, START_raypair (START_raypair_input)
 {
 
@@ -46,12 +50,9 @@ RADIATION :: RADIATION (const long num_of_cells, const long num_of_rays,
 	}
 
 	J.resize (ncells*nfreq_red);
-	test2.resize (2000);
-	rec2.resize (3000);
 
 
 	initialize();
-
 
 
 }   // END OF CONSTRUCTOR
@@ -128,6 +129,173 @@ int RADIATION ::
 	return (0);
 
 }
+
+
+void mpi_vector_sum (vReal *in, vReal *inout, int *len, MPI_Datatype *datatype)
+{
+	for (int i = 0; i < *len; i++)
+	{
+		inout[i] = in[i] + inout[i];
+	}
+}
+
+
+int RADIATION ::
+    calc_J (void)
+{
+
+  MPI_Datatype MPI_VREAL;
+  MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
+  MPI_Type_commit (&MPI_VREAL);
+
+	MPI_Op MPI_VSUM;
+	MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
+
+
+	int ierr = MPI_Allreduce (
+	             MPI_IN_PLACE,      // pointer to the data to be reduced -> here in place
+	           	 J.data(),          // pointer to the data to be received
+	           	 J.size(),          // size of the data to be received
+	             MPI_VREAL,         // type of the reduced data
+	           	 MPI_VSUM,          // reduction operation
+	           	 MPI_COMM_WORLD);
+
+	assert (ierr == 0);
+
+
+	MPI_Type_free (&MPI_VREAL);
+
+	MPI_Op_free (&MPI_VSUM);
+
+
+	return (0);
+
+}
+
+
+
+
+int RADIATION ::
+    calc_U_and_V (const SCATTERING& scattering)
+{
+
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+  const long START_raypair = ( world_rank   *nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
+
+
+  MPI_Datatype MPI_VREAL;
+  MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
+  MPI_Type_commit (&MPI_VREAL);
+
+	MPI_Op MPI_VSUM;
+	MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
+
+
+	for (int w = 0; w < world_size; w++)
+	{
+
+    const long START_raypair1 = ( w   *nrays/2)/world_size;
+    const long STOP_raypair1  = ((w+1)*nrays/2)/world_size;
+
+    for (long r1 = START_raypair1; r1 < STOP_raypair1; r1++)
+	  {
+			const long R1 = r1 - START_raypair1;
+
+	    vReal1 U_local (ncells*nfreq_red);
+	    vReal1 V_local (ncells*nfreq_red);
+
+#     pragma omp parallel         \
+	    shared (U_local, V_local)   \
+      default (none)
+      {
+
+      const int nthreads = omp_get_num_threads();
+      const int thread   = omp_get_thread_num();
+
+      const long start = ( thread   *ncells)/nthreads;
+      const long stop  = ((thread+1)*ncells)/nthreads;
+
+
+      for (long p = start; p < stop; p++)
+	    {
+	      for (long f = 0; f < nfreq_red; f++)
+	  	  {
+	  	    U_local[index(p,f)] = 0.0;
+	  	    V_local[index(p,f)] = 0.0;
+	  	  }
+	  	}
+	  	}
+
+    	for (long r2 = START_raypair; r2 < STOP_raypair; r2++)
+	  	{
+			 	const long R2 = r2 - START_raypair;
+
+#       pragma omp parallel                             \
+	      shared (scattering, U_local, V_local, r1, r2)   \
+        default (none)
+        {
+
+        const int nthreads = omp_get_num_threads();
+        const int thread   = omp_get_thread_num();
+
+        const long start = ( thread   *ncells)/nthreads;
+        const long stop  = ((thread+1)*ncells)/nthreads;
+
+
+        for (long p = start; p < stop; p++)
+	      {
+	        for (long f = 0; f < nfreq_red; f++)
+	    	  {
+	  		    U_local[index(p,f)] += u[R2][index(p,f)] * scattering.phase[r1][r2][f];
+	  		    V_local[index(p,f)] += v[R2][index(p,f)] * scattering.phase[r1][r2][f];
+	  		  }
+	  		}
+	    	}
+
+	  	}
+
+
+  	  int ierr_u = MPI_Reduce (
+				           U_local.data(),    // pointer to the data to be reduced
+  	  	           U[R1].data(),      // pointer to the data to be received
+  	  	           U[R1].size(),      // size of the data to be received
+  	               MPI_VREAL,         // type of the reduced data
+  	  	           MPI_VSUM,          // reduction operation
+  			           w,                 // rank of root to which we reduce
+  	  	           MPI_COMM_WORLD);
+
+			assert (ierr_u == 0);
+
+
+  	  int ierr_v = MPI_Reduce (
+				           V_local.data(),    // pointer to the data to be reduced
+  	  	           V[R1].data(),      // pointer to the data to be received
+  	  	           V[R1].size(),      // size of the data to be received
+  	               MPI_VREAL,         // type of the reduced data
+  	  	           MPI_VSUM,          // reduction operation
+  			           w,                 // rank of root to which we reduce
+  	  	           MPI_COMM_WORLD);
+
+			assert (ierr_v == 0);
+	  }
+	}
+
+
+	MPI_Type_free (&MPI_VREAL);
+
+	MPI_Op_free (&MPI_VSUM);
+
+
+	return (0);
+
+}
+
 
 
 

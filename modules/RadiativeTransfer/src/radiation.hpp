@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "frequencies.hpp"
+#include "scattering.hpp"
 #include "GridTypes.hpp"
 
 
@@ -22,6 +23,7 @@ struct RADIATION
 {
 
 	const long ncells;          ///< number of cells
+	const long nrays;           ///< number of rays
 	const long nrays_red;       ///< reduced number of rays
 	const long nfreq_red;       ///< reduced number of frequencies
 	const long START_raypair;   ///< reduced number of frequencies
@@ -33,19 +35,22 @@ struct RADIATION
 	vReal2 U;   ///< U scattered intensity
 	vReal2 V;   ///< V scattered intensity
 
-	vReal1 test2;   ///< (angular) mean intensity
-	vReal1 rec2;   ///< (angular) mean intensity
 	vReal1 J;   ///< (angular) mean intensity
 
 
-	RADIATION (const long num_of_cells, const long num_of_rays,
-			       const long num_of_freq,  const long START_raypair_input);   ///< Constructor
+	RADIATION (const long num_of_cells,    const long num_of_rays,
+			       const long num_of_rays_red, const long num_of_freq_red,
+						 const long START_raypair_input);                          ///< Constructor
 
 	int initialize ();
 
   long index (const long r, const long p, const long f) const;
 
   long index (const long p, const long f) const;
+
+	int calc_J (void);
+
+	int calc_U_and_V (const SCATTERING& scattering);
 
 	int resample_U (const FREQUENCIES& frequencies, const long p, const long r,
 		              const vReal1& frequencies_scaled, vReal1& U_scaled) const;

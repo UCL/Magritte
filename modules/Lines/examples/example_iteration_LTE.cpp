@@ -27,33 +27,29 @@ int main (void)
 
 
   // Initialize MPI environment
+	
 	MPI_Init (NULL, NULL);
 
-  // Get the number of processes
+
+  // Get rank of process and total number of processes
+	
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
-  // Get the rank of the process
   int world_rank;
   MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
 
-	//const int  Dimension = 3;
-	//const long ncells    = 5*5*5;
-	//const long Nrays     = 12;
-	//const long nspec     = 5;
+	const long ncells    = 5*5*5;
+	const long nspec     = 5;
 
-
-	//const string project_folder = "example_data/iteration_LTE/";
-	//const string   input_folder = project_folder + "input/";
-	//const string  output_folder = project_folder + "output/";
 
 	const string  example_folder = Magritte_folder + "../Lines/examples/example_data/iteration_LTE/";
 
 	const string  example_input_folder = example_folder + "input/";
 	const string example_output_folder = example_folder + "output/";
 
-	const string       cells_file = example_input_folder + "grid.txt";
+	const string       cells_file = example_input_folder + "cells.txt";
 	const string     species_file = example_input_folder + "species.txt";
   const string   abundance_file = example_input_folder + "abundance.txt";
   const string temperature_file = example_input_folder + "temperature.txt";
@@ -85,6 +81,7 @@ int main (void)
 	timer.stop();
 	timer.print();
 
+	cout << "ncells " << ncells << endl;
 
 	// Print out results
 
@@ -92,16 +89,20 @@ int main (void)
 
 
 	const string output_file = example_output_folder + "populations.txt";  
+
   ofstream outputFile (output_file);
+
 	if (outputFile.is_open())
   {
 	 int l = 0;
+
 	 for (long p = 0; p < ncells; p++)
 	 {
 		 for (int i = 0; i < levels.nlev[l]; i++)
 		 {
 			 outputFile << levels.population[p][l][i] << "\t";
 		 }
+
 	 	 outputFile << endl;
 	 }
 
@@ -110,7 +111,8 @@ int main (void)
   else cout << "Unable to open file " << output_file << endl;
 
 
-  // Finalize the MPI environment.
+  // Finalize the MPI environment
+	
   MPI_Finalize ();	
 
 

@@ -82,10 +82,8 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 		// Get radiation field from Radiative Transfer
 
-		cout << "In RT..." << endl;
     RadiativeTransfer<Dimension, Nrays>
 			               (cells, temperature, frequencies, lines, scattering, radiation);
-		cout << "Out RT..." << endl;
  
     levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
 				                                            frequencies, radiation, lines);  
@@ -139,10 +137,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
   // Print convergence stats
 
-  cout << "(Lines): converged after ";
-	cout << niterations;
-	cout << "iterations";
-	cout << endl;
+  cout << "(Lines): converged after " << niterations << " iterations" << endl;
 
 
   return (0);

@@ -23,25 +23,34 @@ import time
 import sys
 
 
-def setupMagritte(projectFolder):
+def setupMagritte(inputFolder):
     """
     Main setup for Magritte
     """
-    gridDataFile = getFilePath(projectFolder, 'INPUTFILE')
-    # Get cell data
-    ncells = getNcells(gridDataFile, None) 
-
+    # Get number of cells
+    cellsFile = inputFolder + 'cells.txt'
+    ncells    = numberOfLines(cellsFile)
     # Get number of chemical species
-    specDataFile = getFilePath(projectFolder, 'SPEC_DATAFILE')
+    #specDataFile = inputFolder + 'species.txt'
+    #nspec        = numberOfLines(specDataFile) + 2
+    # Set up linedata
+    setupLinedata(inputFolder)
+    
+    
+def setupLinedata(inputFolder):
+    """
+    Set up Line data
+    """
+    # Get number of chemical species
+    specDataFile = inputFolder + 'species.txt'
     nspec        = numberOfLines(specDataFile) + 2
     speciesNames = readSpeciesNames(specDataFile)
     # Get number of data files
-    lineDataFiles = getFilePath(projectFolder, 'LINE_DATAFILES')
-    if not isinstance(lineDataFiles, list):
-        lineDataFiles = [lineDataFiles]
+    lineDataFolder = inputFolder + 'linedata/'
+    lineDataFiles  = [lineDataFolder + lineDataFile for lineDataFile in os.listdir(lineDataFolder)]
     nlspec = len(lineDataFiles)
     # Read line data files
-    dataFormat = getVariable(projectFolder, 'DATA_FORMAT', 'str')
+    dataFormat = 'LAMDA'
     lineData   = [LineData(fileName, dataFormat) for fileName in lineDataFiles]
     # Get species numbers of line producing species
     name   = [ld.name for ld in lineData]
@@ -77,7 +86,7 @@ def setupMagritte(projectFolder):
     writeDefinition(fileName, [ld.jcol      for ld in lineData], 'JCOL')
     writeDefinition(fileName, [ld.coltemp   for ld in lineData], 'COLTEMP')
     writeDefinition(fileName, [ld.C_data    for ld in lineData], 'C_DATA')
-
+    
 
 # Main
 # ----
@@ -85,26 +94,15 @@ def setupMagritte(projectFolder):
 if (__name__ == '__main__'):
 
     # Setup Magritte if necessary
-    projectFolder = str(sys.argv[1])
+    inputFolder = str(sys.argv[1])
     print('Setting up Magritte...')
     # If parameter file is not up to date, run setup
 #    if not filecmp.cmp(projectFolder+'parameters.hpp','../src/parameters.hpp'):
 #        print('parameters.hpp was out of date, updating...')
         # Copy parameter file from project to Magritte folder
        # shutil.copyfile(projectFolder+'parameters.hpp','../src/parameters.hpp')
-    # Get date date stamp for output directory
-    dateStamp       = time.strftime("%y-%m-%d_%H:%M:%S", time.gmtime())
-    outputFolder = projectFolder + 'output/files/' + dateStamp + '/'
-        # Write directories to cpp header
-#    fileName = '../src/directories.hpp'
-#    writeHeader(fileName)
-#    writeDefinition(fileName, '\"'+outputDirectory+'\"', 'OUTPUT_DIRECTORY')
-#    writeDefinition(fileName, '\"'+projectFolder+'\"', 'PROJECT_FOLDER')
+
     # Run setup
-    setupMagritte(projectFolder)
-    # Create output folder
-#    os.mkdir(outputFolder)
-#    os.mkdir(outputFolder + 'plots/')
-       # shutil.copyfile(projectFolder+'parameters.hpp',outputDirectory+'parameters.hpp')
-    print('parameter.hpp is up to date.')
-    print('Setup done. Levels can be compiled now.')
+    setupMagritte(inputFolder)
+    
+    print('Setup done. Magritte can be compiled now.')

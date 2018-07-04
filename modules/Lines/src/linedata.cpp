@@ -266,7 +266,7 @@ MatrixXd LINEDATA ::
   double frac_H2_para  = 0.0;   // fraction of para-H2
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
-	cout << "abn H2 = " << species.abundance[p][species.nr_H2] << endl;
+//	cout << "abn H2 = " << species.abundance[p][species.nr_H2] << endl;
 
   if (species.abundance[p][species.nr_H2] > 0.0)
   {
@@ -286,10 +286,10 @@ MatrixXd LINEDATA ::
 
     double abundance = species.density[p] * species.abundance[p][spec];
 
-		cout << "den = " << species.density[p] << endl;
-		cout << "sab = " << species.abundance[p][spec] << endl;
-		cout << "n col par " << spec << endl;
-		cout << "abn = " << abundance << endl;
+//		cout << "den = " << species.density[p] << endl;
+//		cout << "sab = " << species.abundance[p][spec] << endl;
+//		cout << "n col par " << spec << endl;
+//		cout << "abn = " << abundance << endl;
 
     if      (orth_or_para_H2[l][c] == 'o')
     {
