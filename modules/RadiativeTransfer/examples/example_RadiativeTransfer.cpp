@@ -79,7 +79,7 @@ int main (void)
 
 	const long nrays_red = STOP_raypair - START_raypair;
 
-	RADIATION radiation (ncells, nrays_red, nfreq_red, START_raypair);
+	RADIATION radiation (ncells, Nrays, nrays_red, nfreq_red, START_raypair);
 	
 
 	LINES lines (ncells, linedata);
@@ -89,9 +89,9 @@ int main (void)
 	SCATTERING scattering (Nrays, nfreq_scat, nfreq_red);
 
 
-	RadiativeTransfer<Dimension,Nrays>
-		               (cells, temperature, frequencies,
-										lines, scattering, radiation);
+	RadiativeTransfer <Dimension,Nrays>
+		                (cells, temperature, frequencies,
+										 lines, scattering, radiation);
 
 
 

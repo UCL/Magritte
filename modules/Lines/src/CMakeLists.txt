@@ -14,7 +14,7 @@ endif()
 
 # Add RadiativeTransfer subdirectory
 add_subdirectory( ../../RadiativeTransfer
-  ../../RadiativeTransfer )
+  RadiativeTransfer )
 
 #Include directories for Common and RadiativeTransfer library
 include_directories( ../.. )

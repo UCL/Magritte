@@ -113,7 +113,7 @@ TEST_CASE ("Ray setup")
 
 	SCATTERING scattering (Nrays, 1, nfreq_red);
 
-  RADIATION radiation (ncells, Nrays, nfreq_red, 0);
+  RADIATION radiation (ncells, Nrays, Nrays, nfreq_red, 0);
 
 
   RadiativeTransfer<Dimension, Nrays>
