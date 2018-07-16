@@ -88,27 +88,7 @@ int main (void)
 	timer.print_to_file (example_output_folder + "timings.txt");
 
 
-	const string output_file = example_output_folder + "populations.txt";  
-
-  ofstream outputFile (output_file);
-
-	if (outputFile.is_open())
-  {
-	 int l = 0;
-
-	 for (long p = 0; p < ncells; p++)
-	 {
-		 for (int i = 0; i < levels.nlev[l]; i++)
-		 {
-			 outputFile << levels.population[p][l][i] << "\t";
-		 }
-
-	 	 outputFile << endl;
-	 }
-
-	  outputFile.close();
-  }
-  else cout << "Unable to open file " << output_file << endl;
+	levels.print (example_output_folder, "");
 
 
   // Finalize the MPI environment

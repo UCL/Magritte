@@ -14,7 +14,7 @@
 ///  profile: line profile function
 ///    @param[in] temperature_gas: temperature of the gas at this cell
 ///    @param[in] freq_line: frequency of the line under consideration
-///    @param[in] freq: frequency at which we  want evaluate the profile
+///    @param[in] freq: frequency at which we want evaluate the profile
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,8 @@ vReal profile (const double temperature_gas, const double freq_line, const vReal
 
 double profile_width (const double temperature_gas, const double freq_line)
 {
-  return freq_line * sqrt(TWO_KB_OVER_MP_C_SQUARED*temperature_gas + V_TURB_OVER_C_ALL_SQUARED);
+  return freq_line * sqrt(TWO_KB_OVER_MP_C_SQUARED*temperature_gas
+			                    + V_TURB_OVER_C_ALL_SQUARED);
 }
 
 
@@ -58,6 +59,20 @@ double profile_width (const double temperature_gas, const double freq_line)
 double inverse_profile_width (const double temperature_gas, const double freq_line)
 {
   return 1.0 / profile_width (temperature_gas, freq_line);
+}
+
+
+
+
+///  Planck: Planck energy distribution function (in freqiencies)
+///    @param[in] temperature_gas: temperature of the gad at this cell
+///    @param[in] freq: frequency at which we want evaluate the Planck function
+///////////////////////////////////////////////////////////////////////////////
+
+vReal Planck (const double temperature_gas, const vReal freq)
+{
+	return 2.0 * HH * freq*freq*freq
+		     / (CC*CC*(vExp( HH*freq / (KB*temperature_gas)) - vOne));
 }
 
 

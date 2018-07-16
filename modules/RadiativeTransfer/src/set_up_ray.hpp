@@ -24,21 +24,23 @@ enum RAYTYPE {ray, antipod};
 ///    @param[in] cells: reference to the geometric cell data containing the grid
 ///    @param[in] frequencies: reference to data structure containing freqiencies
 ///    @param[in] lines: reference to data structure containing line transfer data
-///    @param[in] scattering: reference to data structure containing scattering data
+///    @param[in] scattering: reference to structure containing scattering data
 ///    @param[in] radiation: reference to (previously calculated) radiation field
 ///    @param[in] o: number of the cell from which the ray originates
 ///    @param[in] r: number of the ray which is being set up
-///    @param[in] sign: +1  if the ray is in the "right" direction, "-1" if opposite
+///		 @param[in] R: local number of the ray which is being set up
+///    @param[in] raytype: indicates whether we walk forward or backward along ray
 ///    @param[out] n: reference to the resulting number of points along the ray
 ///    @param[out] Su: reference to the source for u extracted along the ray
 ///    @param[out] Sv: reference to the source for v extracted along the ray
 ///    @param[out] dtau: reference to the optical depth increments along the ray 
-////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
-		            const TEMPERATURE& temperature, LINES& lines, const SCATTERING& scattering,
-								RADIATION& radiation, const long o, const long r, const long R, const RAYTYPE raytype,
+		            const TEMPERATURE& temperature, LINES& lines,
+								const SCATTERING& scattering, RADIATION& radiation,
+								const long o, const long r, const long R, const RAYTYPE raytype,
 	              long& n, vReal2& Su, vReal2& Sv, vReal2& dtau);
 
 

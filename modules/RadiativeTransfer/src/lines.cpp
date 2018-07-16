@@ -185,6 +185,27 @@ int LINES ::
 	}	
 
 
+  // For all frequencies
+	
+	for (long f = 0; f < frequencies.nfreq_red; f++)
+	{
+#   if (GRID_SIMD)
+			for (int lane = 0; lane < n_simd_lanes; lane++)
+			{
+		    if (chi[f].getlane(lane) == 0.0)
+				{
+          chi[f].getlane(lane) = 1.0E-30;
+				}
+			}
+#   else
+		  if (chi[f] == 0.0)
+			{
+        chi[f] = 1.0E-30;
+			}
+#   endif
+	}	
+
+
 	return (0);
 
 }

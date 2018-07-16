@@ -6,14 +6,18 @@
 
 #include <mpi.h>
 #include <omp.h>
-#include <vector>
+
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 #include "radiation.hpp"
+#include "constants.hpp"
 #include "GridTypes.hpp"
+#include "cells.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
+#include "profile.hpp"
 #include "interpolation.hpp"
 
 
@@ -22,11 +26,12 @@ using namespace std;
 
 RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 		                    const long num_of_rays_red, const long num_of_freq_red,
-												const long START_raypair_input)
+												const long num_of_bdycells, const long START_raypair_input)
 	: ncells        (num_of_cells)
 	, nrays         (num_of_rays)
   , nrays_red     (num_of_rays_red)
   , nfreq_red     (num_of_freq_red)
+	, nboundary     (num_of_bdycells)
 	, START_raypair (START_raypair_input)
 {
 
@@ -39,6 +44,8 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
   U.resize (nrays_red);
   V.resize (nrays_red);
 
+  boundary_intensity.resize (nrays_red);
+
 
 	for (long r = 0; r < nrays_red; r++)
 	{
@@ -47,12 +54,19 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 
 	  U[r].resize (ncells*nfreq_red);
 	  V[r].resize (ncells*nfreq_red);
+
+	  boundary_intensity[r].resize (ncells);
+
+		for (long p = 0; p < nboundary; p++)
+		{
+			boundary_intensity[r][p].resize (nfreq_red);
+		}
 	}
 
 	J.resize (ncells*nfreq_red);
 
 
-	initialize();
+	initialize ();
 
 
 }   // END OF CONSTRUCTOR
@@ -86,8 +100,8 @@ int RADIATION ::
     const int num_threads = omp_get_num_threads();
     const int thread_num  = omp_get_thread_num();
 
-    const long start = (thread_num*ncells)/num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+    const long start = ( thread_num   *ncells)/num_threads;
+    const long stop  = ((thread_num+1)*ncells)/num_threads;
 
 
     for (long p = start; p < stop; p++)
@@ -112,8 +126,8 @@ int RADIATION ::
     const int num_threads = omp_get_num_threads();
     const int thread_num  = omp_get_thread_num();
 
-    const long start = (thread_num*ncells)/num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+    const long start = ( thread_num*ncells)   /num_threads;
+    const long stop  = ((thread_num+1)*ncells)/num_threads;
 
 
     for (long p = start; p < stop; p++)
@@ -129,6 +143,52 @@ int RADIATION ::
 	return (0);
 
 }
+
+int RADIATION ::
+    read (const string boundary_intensity_file)
+{
+
+	return (0);
+
+}
+
+int RADIATION ::
+    calc_boundary_intensities (const Long1& bdy_to_cell_nr,
+				                       const FREQUENCIES& frequencies)
+{
+
+	for (long r = 0; r < nrays_red; r++)
+	{
+	
+#   pragma omp parallel                       \
+		shared (r, bdy_to_cell_nr, frequencies)   \
+    default (none)
+    {
+
+    const int num_threads = omp_get_num_threads();
+    const int thread_num  = omp_get_thread_num();
+
+    const long start = ( thread_num   *nboundary)/num_threads;
+    const long stop  = ((thread_num+1)*nboundary)/num_threads;
+
+
+    for (long b = start; b < stop; b++)
+    {
+		  const long p = bdy_to_cell_nr[b];
+
+	    for (long f = 0; f < nfreq_red; f++)
+      {
+				boundary_intensity[r][b][f] = Planck (T_CMB, frequencies.all[p][f]);
+      }
+	  }
+	  } // end of pragma omp parallel
+	}
+
+	return (0);
+
+}
+
+
 
 
 void mpi_vector_sum (vReal *in, vReal *inout, int *len, MPI_Datatype *datatype)
@@ -153,10 +213,10 @@ int RADIATION ::
 
 
 	int ierr = MPI_Allreduce (
-	             MPI_IN_PLACE,      // pointer to the data to be reduced -> here in place
-	           	 J.data(),          // pointer to the data to be received
-	           	 J.size(),          // size of the data to be received
-	             MPI_VREAL,         // type of the reduced data
+	             MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
+	           	 J.data(),          // pointer to data to be received
+	           	 J.size(),          // size of data to be received
+	             MPI_VREAL,         // type of reduced data
 	           	 MPI_VSUM,          // reduction operation
 	           	 MPI_COMM_WORLD);
 
@@ -333,4 +393,49 @@ int RADIATION :: resample_V (const FREQUENCIES& frequencies, const long p, const
 	//resample (frequencies.all[p], V[r][p], start, stop, frequencies_scaled, V_scaled);
 
  	return (0);
+}
+
+
+
+ 
+ 
+#include "configure.hpp" 
+
+int RADIATION ::
+    print (string OOOoutput_folder, string tag)
+{
+
+	int world_rank;
+	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+
+	if (world_rank == 0)
+	{
+		string file_name = output_folder + "J" + tag + ".txt";
+
+    ofstream outputFile (file_name);
+
+	  for (long p = 0; p < ncells; p++)
+	  {
+	  	for (int f = 0; f < nfreq_red; f++)
+	  	{    
+#       if (GRID_SIMD)				
+					for (int lane = 0; lane < n_simd_lanes; lane++)
+					{
+	  		    outputFile << J[index(p,f)].getlane(lane) << "\t";
+					}
+#       else
+	  		  outputFile << J[index(p,f)] << "\t";
+#       endif
+	  	}
+
+	  	outputFile << endl;
+	  }
+
+	  outputFile.close ();
+	}
+
+
+	return (0);
+
 }

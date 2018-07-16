@@ -7,6 +7,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <iostream>
 using namespace std;
 #include <Eigen/Core>
@@ -21,7 +22,7 @@ using namespace Eigen;
 ///  Constructor for LINEDATA
 /////////////////////////////
 
-LINEDATA :: LINEDATA () 
+LINEDATA :: LINEDATA ()
 {
 
   num.resize (nlspec);
@@ -33,7 +34,7 @@ LINEDATA :: LINEDATA ()
   irad = IRAD;
   jrad.resize (nlspec);
   jrad = JRAD;
-  
+
   energy.resize (nlspec);
 	Double2 energy_buffer = ENERGY;
   weight.resize (nlspec);
@@ -48,7 +49,7 @@ LINEDATA :: LINEDATA ()
 	Double3 B_buffer = B_COEFF;
 
 	num_col_partner.resize (nlspec);
-	num_col_partner = PARTNER_NR;  
+	num_col_partner = PARTNER_NR;
   orth_or_para_H2.resize (nlspec);
 	orth_or_para_H2 = ORTHO_PARA;
   temperature_col.resize (nlspec);
@@ -82,7 +83,7 @@ LINEDATA :: LINEDATA ()
 		  weight[l](i) =  weight_buffer[l][i];
 
       for (int j = 0; j < nlev[l]; j++)
-			{	
+			{
 			  frequency[l](i,j) = frequency_buffer[l][i][j];
 
 			  A[l](i,j) = A_buffer[l][i][j];
@@ -135,7 +136,7 @@ LINEDATA :: LINEDATA ()
 ///////////////////////////////
 //
 //LINEDATA :: LINEDATA (string input_folder) :
-//  nlspec ()	
+//  nlspec ()
 //{
 //
 //  num.resize (nlspec);
@@ -147,7 +148,7 @@ LINEDATA :: LINEDATA ()
 //  irad = IRAD;
 //  jrad.resize (nlspec);
 //  jrad = JRAD;
-//  
+//
 //  energy.resize (nlspec);
 //	Double2 energy_buffer = ENERGY;
 //  weight.resize (nlspec);
@@ -162,7 +163,7 @@ LINEDATA :: LINEDATA ()
 //	Double3 B_buffer = B_COEFF;
 //
 //	num_col_partner.resize (nlspec);
-//	num_col_partner = PARTNER_NR;  
+//	num_col_partner = PARTNER_NR;
 //  orth_or_para_H2.resize (nlspec);
 //	orth_or_para_H2 = ORTHO_PARA;
 //  temperature_col.resize (nlspec);
@@ -196,7 +197,7 @@ LINEDATA :: LINEDATA ()
 //		  weight[l](i) =  weight_buffer[l][i];
 //
 //      for (int j = 0; j < nlev[l]; j++)
-//			{	
+//			{
 //			  frequency[l](i,j) = frequency_buffer[l][i][j];
 //
 //			  A[l](i,j) = A_buffer[l][i][j];
@@ -242,6 +243,31 @@ LINEDATA :: LINEDATA ()
 //
 //}   // END OF CONSTRUCTOR
 
+
+int LINEDATA ::
+    print (MatrixXd& M, string output_folder, string tag) const
+{
+
+//	int world_rank;
+//	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+//
+//
+//	if (world_rank == 0)
+//	{
+	string file_name = output_folder + tag + ".txt";
+
+  ofstream outputFile (file_name);
+
+  outputFile << M << endl;
+
+	outputFile.close ();
+
+//	}
+
+
+	return (0);
+
+}
 
 
 
@@ -302,8 +328,8 @@ MatrixXd LINEDATA ::
     }
 
 
-    
-    int t = search (temperature_col[l][c], 0, ntmp[l][c], temperature_gas);   
+
+    int t = search (temperature_col[l][c], 0, ntmp[l][c], temperature_gas);
 
 
 		if      (t == 0)
@@ -315,7 +341,7 @@ MatrixXd LINEDATA ::
 		{
       C += C_data[l][c][ntmp[l][c]-1] * abundance;
 		}
-		
+
 		else
     {
       const double step = (temperature_gas - temperature_col[l][c][t-1])
@@ -350,7 +376,7 @@ MatrixXd LINEDATA ::
 {
 
   // Calculate collissional Einstein coefficients
-	
+
   MatrixXd C = calc_Einstein_C (species, temperature_gas, p, l);
 
 
@@ -366,10 +392,32 @@ MatrixXd LINEDATA ::
     const int i = irad[l][k];   // i index corresponding to transition k
     const int j = jrad[l][k];   // j index corresponding to transition k
 
-    R(i,j) += B[l](i,j) * J_eff[p][l][k]; // - linedata.A[l](i,j)*Lambda(); 
+    R(i,j) += B[l](i,j) * J_eff[p][l][k]; // - linedata.A[l](i,j)*Lambda();
     R(j,i) += B[l](j,i) * J_eff[p][l][k];
   }
-	
+
+  //if(p==0)
+  //{
+  //  cout << "A" << endl;
+  //  cout << A[l] << endl;
+
+  //  cout << "B" << endl;
+  //  cout << B[l] << endl;
+
+  //  cout << "C" << endl;
+  //  cout << C << endl;
+
+  //  cout << "R-C" << endl;
+  //  cout << R-C << endl;
+
+  //  cout << "J_eff" << endl;
+
+  //  for (int k = 0; k < nrad[l]; k++)
+  //  {
+  //    cout << J_eff[p][l][k] << endl; // - linedata.A[l](i,j)*Lambda();
+  //  }
+  //}
+
 
 	return R;
 

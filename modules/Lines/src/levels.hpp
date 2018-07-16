@@ -85,6 +85,11 @@ struct LEVELS
 
 	int check_for_convergence (const long p, const int l);
 
+
+	// Print
+	
+	int print (string output_folder, string tag);
+
 };
 
 

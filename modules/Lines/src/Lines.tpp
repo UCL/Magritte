@@ -47,7 +47,10 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 	// Initialize levels, emissivities and opacities with LTE values
 
-  levels.iteration_using_LTE (linedata, species, temperature, lines);  
+  levels.iteration_using_LTE (linedata, species, temperature, lines);
+
+	#include "RadiativeTransfer/src/folders.hpp"
+	levels.print (output_folder, "_LTE");
 
 
 
@@ -68,15 +71,15 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
     // Perform an Ng acceleration step every 4th iteration
 
-    if (niterations%4 == 0)
-    {
-      levels.update_using_Ng_acceleration ();
+    //if (niterations%4 == 0)
+    //{
+    //  levels.update_using_Ng_acceleration ();
 
 
-      // Calculate source and opacity
+    //  // Calculate source and opacity
 
-	    //levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
-    }
+	  //  //levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
+    //}
 
 
 
@@ -84,11 +87,21 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
     RadiativeTransfer<Dimension, Nrays>
 			               (cells, temperature, frequencies, lines, scattering, radiation);
- 
-    levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
-				                                            frequencies, radiation, lines);  
 
-		
+
+    for (int l = 0; l < linedata.nlspec; l++)
+    {
+		  levels.fraction_not_converged[l] = 0.0;
+    }
+
+
+    levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
+				                                            frequencies, radiation, lines);
+
+		#include "RadiativeTransfer/src/folders.hpp"
+		levels.print (output_folder, "_" + to_string(niterations));
+
+
     // Allow 1% to be not converged
 
     for (int l = 0; l < linedata.nlspec; l++)
@@ -130,6 +143,9 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 			cout << endl;
     }
 
+//// TEST
+//		levels.some_not_converged = false;
+////
 
   } // end of while loop of iterations
 

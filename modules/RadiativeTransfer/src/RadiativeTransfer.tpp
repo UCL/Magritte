@@ -106,22 +106,32 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	    const long ndep = n_r + n_ar;
 
-	//		cout << "ndep = " << ndep << endl;
+//			if (cells.boundary[o])
+//			{
+//			
+//
+//			  for (long d = 0; d < n_r; d++)
+//			  {
+//          cout <<   Su_r[d][0] << endl;
+//          cout <<   Sv_r[d][0] << endl;
+//          cout << dtau_r[d][0] << endl;
+//			  }
+//
+//			  for (long d = 0; d < n_ar; d++)
+//			  {
+//          cout <<   Su_ar[d][0] << endl;
+//          cout <<   Sv_ar[d][0] << endl;
+//          cout << dtau_ar[d][0] << endl;
+//			  }
+//	
+//			}
 
-	//		for (long d = 0; d < n_r; d++)
-	//		{
-  //      cout <<   Su_r[d][0] << endl;
-  //      cout <<   Sv_r[d][0] << endl;
-  //      cout << dtau_r[d][0] << endl;
-	//		}
-
-	//		for (long d = 0; d < n_ar; d++)
-	//		{
-  //      cout <<   Su_ar[d][0] << endl;
-  //      cout <<   Sv_ar[d][0] << endl;
-  //      cout << dtau_ar[d][0] << endl;
-	//		}
-
+//			if ((ndep != 9) && !(cells.boundary[o]))
+//			{
+// 			  cout << "ndep = " << ndep << endl;
+//				cout << "o = " << o << endl;
+//				cout << "r = " << r << endl;
+//			}
 
       vReal1 u_local (nfreq_red);   // local value of u field in direction r/ar
       vReal1 v_local (nfreq_red);   // local value of v field in direction r/ar
@@ -186,11 +196,12 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	      radiation.J[radiation.index(o,f)] += u_local[f];
 	  	}
 
+
+
 	  }
 	  } // end of pragma omp parallel
 
 	} // end of loop over ray pairs
-
 
 
 	// Reduce results of all MPI processes to get J, U and V

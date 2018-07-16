@@ -74,6 +74,7 @@ TEST_CASE ("Ray setup")
     cells.n_neighbors[p] = 2;
 	}
 
+	long nboundary = cells.nboundary;
 
   SPECIES species (ncells, nspec, species_file);
  
@@ -113,7 +114,7 @@ TEST_CASE ("Ray setup")
 
 	SCATTERING scattering (Nrays, 1, nfreq_red);
 
-  RADIATION radiation (ncells, Nrays, Nrays, nfreq_red, 0);
+  RADIATION radiation (ncells, Nrays, Nrays, nfreq_red, nboundary, 0);
 
 
   RadiativeTransfer<Dimension, Nrays>

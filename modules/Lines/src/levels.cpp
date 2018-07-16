@@ -5,8 +5,10 @@
 
 
 #include <math.h>
+#include <mpi.h>
 #include <omp.h>
 #include <iostream>
+#include <fstream>
 using namespace std;
 #include <Eigen/QR>
 using namespace Eigen;
@@ -42,7 +44,7 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 
 
   for (int l = 0; l < nlspec; l++)
-	{	
+	{
              not_converged[l] = true;
     fraction_not_converged[l] = 0.0;
 	}
@@ -50,14 +52,14 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 
   population.resize (ncells);
 	     J_eff.resize (ncells);
-	
+
   population_tot.resize (ncells);
 
   population_prev1.resize (ncells);
   population_prev2.resize (ncells);
   population_prev3.resize (ncells);
 
-	
+
 # pragma omp parallel   \
 	shared (linedata)     \
   default (none)
@@ -74,7 +76,7 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
   {
     population[p].resize (nlspec);
 		     J_eff[p].resize (nlspec);
-		
+
     population_tot[p].resize (nlspec);
 
     population_prev1[p].resize (nlspec);
@@ -101,6 +103,53 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 }   // END OF CONSTRUCTOR
 
 
+int LEVELS ::
+    print (string output_folder, string tag)
+{
+
+	int world_rank;
+	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+
+	if (world_rank == 0)
+	{
+	  for (int l = 0; l < nlspec; l++)
+	  {
+			string pops_file = output_folder + "populations_" + to_string (l) + tag + ".txt";
+			string Jeff_file = output_folder + "J_eff_"       + to_string (l) + tag + ".txt";
+
+      ofstream pops_outputFile (pops_file);
+      ofstream Jeff_outputFile (Jeff_file);
+
+	    for (long p = 0; p < ncells; p++)
+	    {
+	    	for (int i = 0; i < nlev[l]; i++)
+	    	{
+	    		pops_outputFile << population[p][l](i) << "\t";
+	    	}
+
+  	    for (int k = 0; k < nrad[l]; k++)
+  	    {
+  	    	Jeff_outputFile << J_eff[p][l][k] << "\t";
+  	    }
+
+	    	pops_outputFile << endl;
+  	    Jeff_outputFile << endl;
+	    }
+
+	    pops_outputFile.close ();
+	    Jeff_outputFile.close ();
+
+      cout << "Written files:" << endl;
+      cout << pops_file        << endl;
+      cout << Jeff_file        << endl;
+	  }
+	}
+
+
+	return (0);
+
+}
 
 
 int LEVELS ::
@@ -147,9 +196,9 @@ int LEVELS ::
 
 
   // Statitstical equilibrium requires sum_j ( n_j R_ji - n_i R_ij) = 0 for all i
-	
+
 	MatrixXd M = R.transpose();
-  VectorXd y = VectorXd :: Zero (nlev[l]);   
+  VectorXd y = VectorXd :: Zero (nlev[l]);
 
 
 	for (int i = 0; i < nlev[l]; i++)
@@ -158,7 +207,7 @@ int LEVELS ::
 
   	for (int j = 0; j < nlev[l]; j++)
 		{
-      R_i += R(i,j);  
+      R_i += R(i,j);
 		}
 
 		M(i,i) -= R_i;
@@ -176,8 +225,19 @@ int LEVELS ::
 
 
   // Solve matrix equation M*x=y for x
-	
+
   population[p][l] = M.householderQr().solve(y);
+
+
+  // Avoid too small (or negative) populations
+
+  for (int i = 0; i < nlev[l]; i++)
+  {
+    if (population[p][l](i)*population_tot[p][l] < 1.0E-20)
+    {
+      population[p][l](i) = 0.0;
+    }
+  }
 
 
 	return (0);
@@ -193,8 +253,7 @@ int LEVELS ::
 
   // Start by assuming that the populations are converged
 
-           not_converged[l] = false;
-  fraction_not_converged[l] = 0.0;
+  not_converged[l] = false;
 
 
 	// Check whether they are indeed converged
@@ -210,11 +269,12 @@ int LEVELS ::
     if (population[p][l](i) > min_pop)
     {
       double relative_change = 2.0 * fabs(dpop(i) / spop(i));
+			//cout << relative_change << endl;
 
       if (relative_change > POP_PREC)
       {
         not_converged[l] = true;
-			
+
         fraction_not_converged[l] += 1.0/(ncells*nlev[l]);
       }
     }
@@ -268,11 +328,11 @@ int LEVELS ::
 ///  calc_J_eff: calculate the effective mean intensity in a line
 ///    @param[in] frequencies: data structure containing frequencies
 ///    @param[in] temperature: data structure containing temperatures
-///    @param[in] J: (angle averaged) mean intensity for all frequencies 
+///    @param[in] J: (angle averaged) mean intensity for all frequencies
 ///    @param[in] p: number of the cell under consideration
 ///    @param[in] l: number of the line producing species under consideration
 /////////////////////////////////////////////////////////////////////////////
- 
+
 int LEVELS ::
     calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
 				        RADIATION& radiation, const long p, const int l)
