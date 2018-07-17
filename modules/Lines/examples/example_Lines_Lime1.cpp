@@ -32,6 +32,12 @@ int main (void)
 	MPI_Init (NULL, NULL);
 
 
+	// Set timer
+
+	TIMER timer_TOTAL ("TOTAL");
+	timer_TOTAL.start ();
+
+
   // Get rank of process and total number of processes
 
   int world_size;
@@ -101,6 +107,12 @@ int main (void)
 	// Print results
 
 	levels.print (output_folder, "");
+
+
+	// Print total time
+
+	timer_TOTAL.stop ();
+	timer_TOTAL.print_to_file ();
 
 
   // Finalize the MPI environment

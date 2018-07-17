@@ -105,7 +105,7 @@ def setupMagritte(projectFolder):
     Main setup for Magritte
     """
     # Create an io folder if is does not exist yet
-    ioFolder = projectFolder + '/io/'
+    ioFolder = projectFolder + 'io/'
     if not os.path.isdir(ioFolder):
         os.mkdir(ioFolder)
     # Get a date stamp to name current folder
