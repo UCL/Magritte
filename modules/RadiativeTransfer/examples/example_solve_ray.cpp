@@ -50,7 +50,7 @@ int main (void)
 
   //vector<MatrixXd> Lambda (nfreq);
 
-  //MatrixXd temp (ndep,ndep);   
+  //MatrixXd temp (ndep,ndep);
 
 
   //for (long f = 0; f < nfreq; f++)
@@ -83,13 +83,13 @@ int main (void)
         Sv_ar[m][f] =    S[n_ar-1-m];
       dtau_ar[m][f] = dtau[n_ar-1-m];
 		}
-	}	
-		
+	}
+
 
   for (long m = 0; m < n_r; m++)
 	{
 		for (long f = 0; f < nfreq_red; f++)
-		{	
+		{
   	    Su_r[m][f] =    S[n_ar+m];
         Sv_r[m][f] =    S[n_ar+m];
       dtau_r[m][f] = dtau[n_ar+m];
@@ -99,7 +99,7 @@ int main (void)
 
 	// Solving Feautrier equations
 
-	TIMER timer;
+	TIMER timer ("solve_ray");
 	timer.start ();
 
 	for (int n = 0; n < 500; n++)

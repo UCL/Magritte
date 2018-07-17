@@ -91,7 +91,7 @@ int RADIATION ::
 
 	for (long r = 0; r < nrays_red; r++)
 	{
-	
+
 #   pragma omp parallel   \
 		shared (r)            \
     default (none)
@@ -110,7 +110,7 @@ int RADIATION ::
       {
 				u[r][index(p,f)] = 0.0;
         v[r][index(p,f)] = 0.0;
-				
+
 				U[r][index(p,f)] = 0.0;
         V[r][index(p,f)] = 0.0;
       }
@@ -159,7 +159,7 @@ int RADIATION ::
 
 	for (long r = 0; r < nrays_red; r++)
 	{
-	
+
 #   pragma omp parallel                       \
 		shared (r, bdy_to_cell_nr, frequencies)   \
     default (none)
@@ -324,7 +324,7 @@ int RADIATION ::
   	  int ierr_u = MPI_Reduce (
 				           U_local.data(),    // pointer to the data to be reduced
   	  	           U[R1].data(),      // pointer to the data to be received
-  	  	           U[R1].size(),      // size of the data to be received
+  	  	           ncells*nfreq_red,  // size of the data to be received
   	               MPI_VREAL,         // type of the reduced data
   	  	           MPI_VSUM,          // reduction operation
   			           w,                 // rank of root to which we reduce
@@ -336,7 +336,7 @@ int RADIATION ::
   	  int ierr_v = MPI_Reduce (
 				           V_local.data(),    // pointer to the data to be reduced
   	  	           V[R1].data(),      // pointer to the data to be received
-  	  	           V[R1].size(),      // size of the data to be received
+  	  	           ncells*nfreq_red,  // size of the data to be received
   	               MPI_VREAL,         // type of the reduced data
   	  	           MPI_VSUM,          // reduction operation
   			           w,                 // rank of root to which we reduce
@@ -397,9 +397,9 @@ int RADIATION :: resample_V (const FREQUENCIES& frequencies, const long p, const
 
 
 
- 
- 
-#include "configure.hpp" 
+
+
+#include "configure.hpp"
 
 int RADIATION ::
     print (string OOOoutput_folder, string tag)
@@ -418,8 +418,8 @@ int RADIATION ::
 	  for (long p = 0; p < ncells; p++)
 	  {
 	  	for (int f = 0; f < nfreq_red; f++)
-	  	{    
-#       if (GRID_SIMD)				
+	  	{
+#       if (GRID_SIMD)
 					for (int lane = 0; lane < n_simd_lanes; lane++)
 					{
 	  		    outputFile << J[index(p,f)].getlane(lane) << "\t";

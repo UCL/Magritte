@@ -48,7 +48,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
   for (long p = start; p < stop; p++)
   {
    	all[p].resize (nfreq_red);
-  	
+
   	for (long f = 0; f < nfreq_red; f++)
   	{
       all[p][f] = 0.0;
@@ -91,7 +91,7 @@ long FREQUENCIES :: count_nfreq (const LINEDATA& linedata)
 	long index = 0;
 
 
-  // Count line frequencies  
+  // Count line frequencies
 
   for (int l = 0; l < linedata.nlspec; l++)
   {
@@ -104,15 +104,15 @@ long FREQUENCIES :: count_nfreq (const LINEDATA& linedata)
   	}
   }
 
-	
+
 	/*
 	 *  Count other frequencies...
 	 */
-	
+
 
 	// Ensure that nfreq is a multiple of n_simd_lanes
 
-  long nfreq_red_tmp = (index + n_simd_lanes - 1) / n_simd_lanes; 
+  long nfreq_red_tmp = (index + n_simd_lanes - 1) / n_simd_lanes;
 
 	return nfreq_red_tmp * n_simd_lanes;
 
@@ -128,7 +128,6 @@ long FREQUENCIES :: count_nfreq (const LINEDATA& linedata)
 
 long FREQUENCIES :: count_nfreq_red (const long nfreq)
 {
-	cout << (nfreq + n_simd_lanes - 1) / n_simd_lanes << endl; 
 	return (nfreq + n_simd_lanes - 1) / n_simd_lanes; 
 }
 
@@ -159,7 +158,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 		long index1 = 0;
 
 		Long1   order (nfreq);
-    Double1 freqs (nfreq);  
+    Double1 freqs (nfreq);
 
 	  for (int l = 0; l < linedata.nlspec; l++)
 	  {
@@ -170,18 +169,18 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 
 			  const double freq_line = linedata.frequency[l](i,j);
         const double width     = profile_width (temperature.gas[p], freq_line);
-  	  	
+
   	    for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
   	      freqs[index1] = freq_line + width*H_roots[z];
 				  order[index1] = index1;
-				
+
 					index1++;
   	    }
   	  }
 		}
 
-		
+
   	/*
   	 *  Set other frequencies...
   	 */

@@ -108,7 +108,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 //			if (cells.boundary[o])
 //			{
-//			
+//
 //
 //			  for (long d = 0; d < n_r; d++)
 //			  {
@@ -123,7 +123,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 //          cout <<   Sv_ar[d][0] << endl;
 //          cout << dtau_ar[d][0] << endl;
 //			  }
-//	
+//
 //			}
 
 //			if ((ndep != 9) && !(cells.boundary[o]))

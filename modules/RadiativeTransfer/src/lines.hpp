@@ -28,7 +28,7 @@ struct LINES
 {
 
 	const long ncells;          ///< number of cells
-	
+
 	const long nlspec;          ///< number of species producing lines
 
 	const Int1 nrad;
@@ -47,6 +47,8 @@ struct LINES
 
 	static Int1 get_nrad_cum (const Int1 nrad);
 	static int  get_nrad_tot (const Int1 nrad);
+
+	int print (string output_folder, string tag) const;
 
   long index (const long p, const int l, const int k) const;
 

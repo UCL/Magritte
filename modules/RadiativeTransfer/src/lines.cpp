@@ -7,6 +7,7 @@
 #include <mpi.h>
 #include <omp.h>
 #include <vector>
+#include <fstream>
 #include <iostream>
 using namespace std;
 #include <Eigen/Core>
@@ -71,7 +72,7 @@ LINES :: LINES (const long num_of_cells, const LINEDATA& linedata)
 			     opacity[p][l][k] = 0.0;
   	  }
 		}
-	
+
 	}
 	} // end of pragma omp parallel
 
@@ -110,6 +111,54 @@ int LINES ::
 }
 
 
+
+
+
+int LINES ::
+		print (string output_folder, string tag) const
+{
+
+	int world_rank;
+	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+
+	if (world_rank == 0)
+	{
+	  for (int l = 0; l < nlspec; l++)
+	  {
+			string eta_file = output_folder + "eta_" + to_string (l) + tag + ".txt";
+			string chi_file = output_folder + "chi_" + to_string (l) + tag + ".txt";
+
+      ofstream eta_outputFile (eta_file);
+      ofstream chi_outputFile (chi_file);
+
+	    for (long p = 0; p < ncells; p++)
+	    {
+  	    for (int k = 0; k < nrad[l]; k++)
+  	    {
+  	    	eta_outputFile << emissivity[p][l][k] << "\t";
+  	    	chi_outputFile <<    opacity[p][l][k] << "\t";
+  	    }
+
+	    	eta_outputFile << endl;
+  	    chi_outputFile << endl;
+	    }
+
+	    eta_outputFile.close ();
+	    chi_outputFile.close ();
+
+      cout << "Written files:" << endl;
+      cout << eta_file         << endl;
+      cout << chi_file         << endl;
+	  }
+	}
+
+
+	return (0);
+
+}
+
+
 long LINES ::
      index (const long p, const int l, const int k) const
 {
@@ -122,7 +171,7 @@ long LINES ::
 ///////////////////////////////
 
 int LINES ::
-    add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature, 
+    add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
 		                            vReal1& frequencies_scaled, const long p,
 		                            vReal1& eta, vReal1& chi) const
 {
@@ -131,7 +180,7 @@ int LINES ::
 
 
   // For all frequencies
-	
+
 	for (long f = 0; f < frequencies.nfreq_red; f++)
 	{
 
@@ -152,7 +201,7 @@ int LINES ::
 
 		    const long    f_upper = upper / n_simd_lanes;
 		    const long lane_upper = upper % n_simd_lanes;
-		
+
 
 				if (   !(frequencies.all[p][f_lower].getlane(lane_lower) > frequencies_scaled[f].getlane(n_simd_lanes-1))
 					  || !(frequencies.all[p][f_upper].getlane(lane_upper) < frequencies_scaled[f].getlane(0)) )
@@ -182,11 +231,11 @@ int LINES ::
 	  }
 
 
-	}	
+	}
 
 
   // For all frequencies
-	
+
 	for (long f = 0; f < frequencies.nfreq_red; f++)
 	{
 #   if (GRID_SIMD)
@@ -203,7 +252,7 @@ int LINES ::
         chi[f] = 1.0E-30;
 			}
 #   endif
-	}	
+	}
 
 
 	return (0);
@@ -235,27 +284,27 @@ int LINES ::
 	  long STOP_w  = ((w+1)*ncells)/world_size;
 
 		long ncells_red_w = STOP_w - START_w;
-	
-		buffer_lengths[w] = ncells_red_w * nrad_tot; 
+
+		buffer_lengths[w] = ncells_red_w * nrad_tot;
 	}
-	
+
 	displacements[0] = 0;
 
 	for (int w = 1; w < world_size; w++)
 	{
-		displacements[w] = buffer_lengths[w-1]; 
+		displacements[w] = buffer_lengths[w-1];
 	}
 
 
 	// Call MPI to gather the emissivity data
 
   int ierr_em =	MPI_Allgatherv (
-	                MPI_IN_PLACE,            // pointer to data to be send (here in place)  
+	                MPI_IN_PLACE,            // pointer to data to be send (here in place)
 		              0,                       // number of elements in the send buffer
 		              MPI_DATATYPE_NULL,       // type of the send data
 		              emissivity_vec.data(),   // pointer to the data to be received
 		              buffer_lengths,          // number of elements in receive buffer
-                  displacements,           // displacements between data blocks 
+                  displacements,           // displacements between data blocks
 	                MPI_DOUBLE,              // type of the received data
 		              MPI_COMM_WORLD);
 
@@ -265,12 +314,12 @@ int LINES ::
 	// Call MPI to gather the opacity data
 
 	int ierr_op = MPI_Allgatherv (
-              	  MPI_IN_PLACE,            // pointer to data to be send (here in place)  
+              	  MPI_IN_PLACE,            // pointer to data to be send (here in place)
               		0,                       // number of elements in the send buffer
               		MPI_DATATYPE_NULL,       // type of the send data
               		opacity_vec.data(),      // pointer to the data to be received
               		buffer_lengths,          // number of elements in receive buffer
-                  displacements,           // displacements between data blocks 
+                  displacements,           // displacements between data blocks
               	  MPI_DOUBLE,              // type of the received data
               		MPI_COMM_WORLD);
 
@@ -279,7 +328,7 @@ int LINES ::
 
 	delete [] buffer_lengths;
 	delete [] displacements;
-  
+
 
 	return (0);
 

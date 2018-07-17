@@ -136,6 +136,9 @@ def setupMagritte(projectFolder):
     setupLinedata(inputFolder)
     # Write configure.hpp file
     with open(MagritteFolder + 'src/configure.hpp', 'w') as config:
+        config.write('#ifndef __CONFIGURE_HPP_INCLUDED__\n')
+        config.write('#define __CONFIGURE_HPP_INCLUDED__\n')
+        config.write('\n')
         config.write('#include <string>\n')
         config.write('using namespace std;\n')
         config.write('#include "folders.hpp"\n')
@@ -144,8 +147,13 @@ def setupMagritte(projectFolder):
         config.write('const long     Nrays = {};\n'.format(nrays))
         config.write('const long    Ncells = {};\n'.format(ncells))
         config.write('const int      Nspec = {};\n'.format(nspec))
+        config.write('\n')
+        config.write('#endif // __CONFIGURE_HPP_INCLUDED__\n')
     # Write folders.hpp file
     with open(MagritteFolder + 'src/folders.hpp', 'w') as folder:
+        folder.write('#ifndef __FOLDERS_HPP_INCLUDED__\n')
+        folder.write('#define __FOLDERS_HPP_INCLUDED__\n')
+        folder.write('\n')
         folder.write('#include <string>\n')
         folder.write('using namespace std;\n')
         folder.write('\n')
@@ -153,6 +161,8 @@ def setupMagritte(projectFolder):
         folder.write('\n')
         folder.write('const string  input_folder = \"{}\";\n'.format(inputFolder))
         folder.write('const string output_folder = \"{}\";\n'.format(outputFolder))
+        folder.write('\n')
+        folder.write('#endif // __FOLDERS_HPP_INCLUDED__\n')
     # Done
 
 

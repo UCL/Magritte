@@ -27,12 +27,12 @@ int main (void)
 
 
   // Initialize MPI environment
-	
+
 	MPI_Init (NULL, NULL);
 
 
   // Get rank of process and total number of processes
-	
+
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
@@ -73,7 +73,7 @@ int main (void)
 	LEVELS levels (ncells, linedata);
 
 
-	TIMER timer;	
+	TIMER timer ("iteration_LTE");
 	timer.start();
 
 	levels.iteration_using_LTE (linedata, species, temperature, lines);
@@ -85,15 +85,15 @@ int main (void)
 
 	// Print out results
 
-	timer.print_to_file (example_output_folder + "timings.txt");
+	timer.print_to_file ();
 
 
 	levels.print (example_output_folder, "");
 
 
   // Finalize the MPI environment
-	
-  MPI_Finalize ();	
+
+  MPI_Finalize ();
 
 
 	return (0);

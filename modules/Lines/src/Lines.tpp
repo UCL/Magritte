@@ -15,6 +15,7 @@ using namespace Eigen;
 #include "Lines.hpp"
 #include "levels.hpp"
 #include "linedata.hpp"
+#include "RadiativeTransfer/src/timer.hpp"
 #include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/GridTypes.hpp"
 #include "RadiativeTransfer/src/cells.hpp"
@@ -47,11 +48,18 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 	// Initialize levels, emissivities and opacities with LTE values
 
+	TIMER timer_LTE ("LTE");
+	timer_LTE.start ();
+
   levels.iteration_using_LTE (linedata, species, temperature, lines);
 
+	timer_LTE.stop ();
+	timer_LTE.print_to_file ();
+
+  {
 	#include "RadiativeTransfer/src/folders.hpp"
 	levels.print (output_folder, "_LTE");
-
+  }
 
 
   int niterations = 0;   // number of iterations
@@ -81,12 +89,21 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 	  //  //levels.calc_line_emissivity_and_opacity (linedata, lines, p, l);
     //}
 
-
+    {
+		#include "RadiativeTransfer/src/folders.hpp"
+		lines.print (output_folder, "_" + to_string(niterations));
+	  }
 
 		// Get radiation field from Radiative Transfer
 
+		TIMER timer_RT ("RT");
+		timer_RT.start ();
+
     RadiativeTransfer<Dimension, Nrays>
 			               (cells, temperature, frequencies, lines, scattering, radiation);
+
+	  timer_RT.stop ();
+	  timer_RT.print_to_file ();
 
 
     for (int l = 0; l < linedata.nlspec; l++)
@@ -95,12 +112,19 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
     }
 
 
+		TIMER timer_SE ("SE");
+		timer_SE.start ();
+
     levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
 				                                            frequencies, radiation, lines);
+	  timer_SE.stop ();
+	  timer_SE.print_to_file ();
 
+
+		{
 		#include "RadiativeTransfer/src/folders.hpp"
 		levels.print (output_folder, "_" + to_string(niterations));
-
+	  }
 
     // Allow 1% to be not converged
 
