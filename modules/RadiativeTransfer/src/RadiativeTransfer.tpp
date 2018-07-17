@@ -13,6 +13,7 @@ using namespace std;
 using namespace Eigen;
 
 #include "RadiativeTransfer.hpp"
+#include "timer.hpp"
 #include "types.hpp"
 #include "GridTypes.hpp"
 #include "cells.hpp"
@@ -38,6 +39,10 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 		                   FREQUENCIES& frequencies, LINES& lines, const SCATTERING& scattering,
 											 RADIATION& radiation)
 {
+
+
+	TIMER timer_RT_CALC ("RT_CALC");
+	timer_RT_CALC.start ();
 
   const long ndiag = 0;
 
@@ -204,12 +209,20 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	} // end of loop over ray pairs
 
 
+	timer_RT_CALC.stop ();
+	timer_RT_CALC.print_to_file ();
+
 	// Reduce results of all MPI processes to get J, U and V
+
+	TIMER timer_RT_COMM ("RT_COMM");
+	timer_RT_COMM.start ();
 
 	radiation.calc_J ();
 
 	radiation.calc_U_and_V (scattering);
 
+	timer_RT_COMM.stop ();
+	timer_RT_COMM.print_to_file ();
 
 	return (0);
 

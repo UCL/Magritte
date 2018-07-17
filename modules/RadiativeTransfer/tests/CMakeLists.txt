@@ -78,9 +78,8 @@ add_executable( test_set_up_ray.exe
 test_set_up_ray.cpp )
 target_link_libraries( test_set_up_ray.exe
 _RADIATIVE_TRANSFER
-_TEST_RT_MAIN
-_LINES )
-
+_LINES
+_TEST_RT_MAIN )
 
 # Create executable to test feautrier solver
 add_executable( test_solve_ray.exe
@@ -136,15 +135,9 @@ add_executable( test_RadiativeTransfer.exe
 test_RadiativeTransfer.cpp )
 target_link_libraries( test_RadiativeTransfer.exe
 _RADIATIVE_TRANSFER
-_TEST_RT_MAIN
-_LINES )
+_LINES
+_TEST_RT_MAIN )
 
-# Create executable to test radiative transfer
-#add_executable( test_RadiativeTransfer.exe
-#test_RadiativeTransfer.cpp )
-#target_link_libraries( test_RadiativeTransfer.exe
-#_RADIATIVE_TRANSFER
-#_TEST_MAIN )
 
 # Ensure test_ray_tracing.hpp depends on setup command defined above
 # add_dependencies( test_ray_tracing.exe

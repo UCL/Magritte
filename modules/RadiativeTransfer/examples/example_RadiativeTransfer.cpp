@@ -51,9 +51,10 @@ int main (void)
 
 	cells.read (cells_file, neighbors_file, boundary_file);
 
+	long nboundary = cells.nboundary;
+
 
 	LINEDATA linedata;   // object containing line data
-
 
 
 	TEMPERATURE temperature (ncells);
@@ -79,8 +80,8 @@ int main (void)
 
 	const long nrays_red = STOP_raypair - START_raypair;
 
-	RADIATION radiation (ncells, Nrays, nrays_red, nfreq_red, START_raypair);
-	
+	RADIATION radiation (ncells, Nrays, nrays_red, nfreq_red, nboundary, START_raypair);
+
 
 	LINES lines (ncells, linedata);
 
@@ -95,7 +96,7 @@ int main (void)
 
 
 
-  MPI_Finalize ();	
+  MPI_Finalize ();
 
 
   return (0);

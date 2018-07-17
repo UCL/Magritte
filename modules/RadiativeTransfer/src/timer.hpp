@@ -1,3 +1,6 @@
+#ifndef __TIMER_HPP_INCLUDED__
+#define __TIMER_HPP_INCLUDED__
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -112,3 +115,6 @@ class TIMER
     }
 
 };
+
+
+#endif // __TIMER_HPP_INCLUDED__
