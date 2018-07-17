@@ -16,27 +16,21 @@ getSpeciesNumber = setupFunctions.getSpeciesNumber
 getNcells        = setupFunctions.getNcells
 import lineData
 LineData  = lineData.LineData
-import filecmp
 import os
-import shutil
 import time
 import sys
+import numpy as np
+
+from subprocess import call
 
 
-def setupMagritte(inputFolder):
-    """
-    Main setup for Magritte
-    """
-    # Get number of cells
-    cellsFile = inputFolder + 'cells.txt'
-    ncells    = numberOfLines(cellsFile)
-    # Get number of chemical species
-    #specDataFile = inputFolder + 'species.txt'
-    #nspec        = numberOfLines(specDataFile) + 2
-    # Set up linedata
-    setupLinedata(inputFolder)
-    
-    
+def getMagritteFolder():
+    '''
+    Get folder of Magritte source code assuming this piece of code is in it.
+    '''
+    return os.path.dirname(os.path.realpath(__file__)) + '/../RadiativeTransfer/'
+
+
 def setupLinedata(inputFolder):
     """
     Set up Line data
@@ -50,8 +44,7 @@ def setupLinedata(inputFolder):
     lineDataFiles  = [lineDataFolder + lineDataFile for lineDataFile in os.listdir(lineDataFolder)]
     nlspec = len(lineDataFiles)
     # Read line data files
-    dataFormat = 'LAMDA'
-    lineData   = [LineData(fileName, dataFormat) for fileName in lineDataFiles]
+    lineData   = [LineData(fileName) for fileName in lineDataFiles]
     # Get species numbers of line producing species
     name   = [ld.name for ld in lineData]
     number = getSpeciesNumber(speciesNames, name)
@@ -62,7 +55,7 @@ def setupLinedata(inputFolder):
     name      = ['\"' + ld.name + '\"' for ld in lineData]
     orthoPara = [['\'' + op + '\'' for op in ld.orthoPara] for ld in lineData]
     # Write Magritte_config.hpp file
-    fileName = '../Lines/src/linedata_config.hpp'
+    fileName = getMagritteFolder() + '../Lines/src/linedata_config.hpp'
     writeHeader(fileName)
     writeDefinition(fileName, nspec,                             'NSPEC')
     writeDefinition(fileName, nlspec,                            'NLSPEC')
@@ -86,23 +79,101 @@ def setupLinedata(inputFolder):
     writeDefinition(fileName, [ld.jcol      for ld in lineData], 'JCOL')
     writeDefinition(fileName, [ld.coltemp   for ld in lineData], 'COLTEMP')
     writeDefinition(fileName, [ld.C_data    for ld in lineData], 'C_DATA')
-    
+
+
+
+def getDimensions(cellsFile):
+    '''
+    Get number of dimensions of grid
+    '''
+    # Read the cells file
+    (x,y,z, vx,vy,vz) = np.loadtxt(cellsFile, unpack=True)
+    # Determine dimension by spread along axis
+    dimension = 0
+    for r in [x,y,z]:
+        if (np.var(r) > 0.0):
+            dimension += 1
+    # Done
+    return dimension
+
+
+
+
+
+def setupMagritte(projectFolder):
+    """
+    Main setup for Magritte
+    """
+    # Create an io folder if is does not exist yet
+    ioFolder = projectFolder + '/io/'
+    if not os.path.isdir(ioFolder):
+        os.mkdir(ioFolder)
+    # Get a date stamp to name current folder
+    dateStamp = time.strftime("%y-%m-%d_%H:%M:%S", time.gmtime())
+    # Create run folder
+    runFolder = ioFolder + dateStamp + '/'
+    os.mkdir(runFolder)
+    # Create input and output folders
+    inputFolder  = runFolder + 'input/'
+    os.mkdir(inputFolder)
+    outputFolder = runFolder + 'output/'
+    os.mkdir(outputFolder)
+    # Call script to prepare the input folder
+    call(['python ' + projectFolder +'createInput.py ' + inputFolder], shell=True)
+    # Extract Magritte (source) folder
+    MagritteFolder = getMagritteFolder()
+    # Get dimension and number of cells
+    cellsFile = inputFolder + 'cells.txt'
+    dimension = getDimensions(cellsFile)
+    ncells    = numberOfLines(cellsFile)
+    # Get number of rays
+    rayFile   = inputFolder + 'rays.txt'
+    nrays     = numberOfLines(rayFile)
+    # Get number of chemical species
+    specsFile = inputFolder + 'species.txt'
+    nspec     = numberOfLines(specsFile) + 2
+    # Set up linedata
+    setupLinedata(inputFolder)
+    # Write configure.hpp file
+    with open(MagritteFolder + 'src/configure.hpp', 'w') as config:
+        config.write('#ifndef __CONFIGURE_HPP_INCLUDED__\n')
+        config.write('#define __CONFIGURE_HPP_INCLUDED__\n')
+        config.write('\n')
+        config.write('#include <string>\n')
+        config.write('using namespace std;\n')
+        config.write('#include "folders.hpp"\n')
+        config.write('\n')
+        config.write('const int  Dimension = {};\n'.format(dimension))
+        config.write('const long     Nrays = {};\n'.format(nrays))
+        config.write('const long    Ncells = {};\n'.format(ncells))
+        config.write('const int      Nspec = {};\n'.format(nspec))
+        config.write('\n')
+        config.write('#endif // __CONFIGURE_HPP_INCLUDED__\n')
+    # Write folders.hpp file
+    with open(MagritteFolder + 'src/folders.hpp', 'w') as folder:
+        folder.write('#ifndef __FOLDERS_HPP_INCLUDED__\n')
+        folder.write('#define __FOLDERS_HPP_INCLUDED__\n')
+        folder.write('\n')
+        folder.write('#include <string>\n')
+        folder.write('using namespace std;\n')
+        folder.write('\n')
+        folder.write('const string Magritte_folder = \"{}\";\n'.format(MagritteFolder))
+        folder.write('\n')
+        folder.write('const string  input_folder = \"{}\";\n'.format(inputFolder))
+        folder.write('const string output_folder = \"{}\";\n'.format(outputFolder))
+        folder.write('\n')
+        folder.write('#endif // __FOLDERS_HPP_INCLUDED__\n')
+    # Done
+
 
 # Main
 # ----
 
 if (__name__ == '__main__'):
-
     # Setup Magritte if necessary
-    inputFolder = str(sys.argv[1])
+    projectFolder = str(sys.argv[1])
     print('Setting up Magritte...')
-    # If parameter file is not up to date, run setup
-#    if not filecmp.cmp(projectFolder+'parameters.hpp','../src/parameters.hpp'):
-#        print('parameters.hpp was out of date, updating...')
-        # Copy parameter file from project to Magritte folder
-       # shutil.copyfile(projectFolder+'parameters.hpp','../src/parameters.hpp')
-
     # Run setup
-    setupMagritte(inputFolder)
-    
+    setupMagritte(projectFolder)
+    # Done
     print('Setup done. Magritte can be compiled now.')

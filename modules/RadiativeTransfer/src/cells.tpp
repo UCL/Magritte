@@ -41,9 +41,12 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
   boundary.resize (ncells);
     mirror.resize (ncells);
 
+	bdy_to_cell_nr.resize (ncells);
+	cell_to_bdy_nr.resize (ncells);
+
 
 	// Read number of neighbors
-	
+
   ifstream nNeighborsFile (n_neighbors_file);
 
   for (long p = 0; p < ncells; p++)
@@ -74,7 +77,7 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
 		vx[p] = 0.0;
 		vy[p] = 0.0;
 		vz[p] = 0.0;
-		
+
     for (long n = 0; n < n_neighbors[p]; n++)
     {
       neighbors[p][n] = 0;
@@ -85,6 +88,10 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
     removed[p]  = false;
     boundary[p] = false;
     mirror[p]   = false;
+
+		cell_to_bdy_nr[p] = ncells;
+		bdy_to_cell_nr[p] = ncells;
+
   }
   } // end of OpenMP parallel region
 
@@ -93,8 +100,8 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
 
 
 
-///  initialize: initialize cells with zeros or falses
-//////////////////////////////////////////////////////
+///  read: read the cells, neighbors and boundary files
+///////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
 int CELLS <Dimension, Nrays> ::
@@ -123,17 +130,26 @@ int CELLS <Dimension, Nrays> ::
 		}
 	}
 
-	
+
 	// Read boundary list
 
   ifstream boundaryFile (boundary_file);
 
-	long boundary_nr;
+	long index = 0;
+	long cell_nr;
 
-	while (boundaryFile >> boundary_nr)   
+	while (boundaryFile >> cell_nr)
 	{
-    boundary[boundary_nr] = true;
+		bdy_to_cell_nr[index]   = cell_nr;
+		cell_to_bdy_nr[cell_nr] = index;
+
+    boundary[cell_nr] = true;
+
+		index++;
 	}
+
+	nboundary = index;
+
 
   return (0);
 

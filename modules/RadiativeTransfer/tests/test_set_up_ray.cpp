@@ -49,6 +49,8 @@ TEST_CASE ("CELLS constructor")
     cells.n_neighbors[p]  = 2;
   }
 
+	long nboundary = cells.nboundary;
+
 
 	LINEDATA linedata;
 
@@ -62,7 +64,7 @@ TEST_CASE ("CELLS constructor")
 
 	SCATTERING scattering (Nrays, 1, nfreq_red);
 
-  RADIATION radiation (ncells, Nrays, Nrays, nfreq_red, 0);
+  RADIATION radiation (ncells, Nrays, Nrays, nfreq_red, nboundary, 0);
 
   long n = 0;
 

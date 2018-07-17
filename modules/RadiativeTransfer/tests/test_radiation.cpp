@@ -30,11 +30,12 @@ TEST_CASE ("Frequency interpolator")
 {
 	SECTION ("TEST")
 	{
-		long ncells = 10;
-	  long nrays  = 4;
-	  long nfreq  = 20;
+		long ncells    = 10;
+	  long nrays     = 4;
+	  long nfreq     = 20;
+		long nboundary = 2;
 
-    RADIATION radiation (ncells, nrays, nrays, nfreq, 0);
+    RADIATION radiation (ncells, nrays, nrays, nfreq, nboundary, 0);
 	}
   
 

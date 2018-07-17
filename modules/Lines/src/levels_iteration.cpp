@@ -155,7 +155,13 @@ int LEVELS ::
 				// Calculate the transition matrix (for stat. equil. eq.)
 
     		MatrixXd R = linedata.calc_transition_matrix (species, temperature.gas[p], J_eff, p, l);
-    	
+
+	      #include "RadiativeTransfer/src/folders.hpp"
+        if (p == 0)
+        {
+	        linedata.print (R, output_folder, "R");
+        }
+
         update_using_statistical_equilibrium (R, p, l);
 
     		check_for_convergence (p, l);

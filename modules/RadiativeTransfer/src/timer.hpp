@@ -6,112 +6,109 @@
 using namespace std;
 #include <mpi.h>
 
+#include "folders.hpp"
+
 
 /// TIMER: struct for precise process timing
 ////////////////////////////////////////////
 
-struct TIMER               
+class TIMER
 {
+  private:
 
-  chrono::duration <double> interval;
-  chrono::high_resolution_clock::time_point initial;
+    string name;
 
-	vector<double> times;
+    int world_size;
+    int world_rank;
 
+    chrono::duration <double> interval;
+    chrono::high_resolution_clock::time_point initial;
 
-	///  Constructor for TIMER
-	//////////////////////////
-
-	TIMER ()
-	{
-		int world_size;
-		MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-		times.resize (world_size);
-	}
+	  vector<double> times;
 
 
-	///  start: start timer i.e. set initial time stamp
-	///////////////////////////////////////////////////
-
-  void start ()
-  {
-    initial = chrono::high_resolution_clock::now();
-  }
+  public:
 
 
-	///  stop: stop timer and calculate interval for every process
-	//////////////////////////////////////////////////////////////
+	  ///  Constructor for TIMER
+	  //////////////////////////
 
-  void stop ()
-  { 
-    interval = chrono::high_resolution_clock::now() - initial;
+	  TIMER (string timer_name)
+	  {
+      name = timer_name;
 
-		int world_rank;
-		MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+	  	MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+	  	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
-		times[world_rank] = interval.count();  
-		
-		MPI_Allgather (MPI_IN_PLACE,
-				           0,
-									 MPI_DATATYPE_NULL,
-									 times.data(),
-									 1,
-									 MPI_DOUBLE,
-									 MPI_COMM_WORLD);
-  }
+	  	times.resize (world_size);
+	  }
 
 
-	///  print_to_file: let rank 0 process print times for every rank to file
-	///    @param[in] file_name: name of the file to print to
-	/////////////////////////////////////////////////////////////////////////
+	  ///  start: start timer i.e. set initial time stamp
+	  ///////////////////////////////////////////////////
+
+    void start ()
+    {
+      initial = chrono::high_resolution_clock::now();
+    }
 
 
-	void print_to_file (string file_name)
-	{
-		int world_size;
-		MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+	  ///  stop: stop timer and calculate interval for every process
+	  //////////////////////////////////////////////////////////////
 
-		int world_rank;
-		MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+    void stop ()
+    {
+      interval = chrono::high_resolution_clock::now() - initial;
 
-		if (world_rank == 0)
-		{
-			ofstream outFile (file_name);
+	  	times[world_rank] = interval.count();
 
-		  for (int w = 0; w < world_size; w++)
-		  {
-        outFile << w << "\t" << times[w] << endl;
-		  }
-
-			outFile.close();
-		}
-	}
+	  	MPI_Allgather (MPI_IN_PLACE,
+	  			           0,
+	  								 MPI_DATATYPE_NULL,
+	  								 times.data(),
+	  								 1,
+	  								 MPI_DOUBLE,
+	  								 MPI_COMM_WORLD);
+    }
 
 
-	///  print: let rank 0 process print times for every rank
-	/////////////////////////////////////////////////////////
+	  ///  print_to_file: let rank 0 process print times for every rank to file
+	  ///    @param[in] file_name: name of the file to print to
+	  /////////////////////////////////////////////////////////////////////////
 
-  void print ()
-  {
-		int world_size;
-		MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
-		int world_rank;
-		MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-		
-		if (world_rank == 0)
-		{
-		  for (int w = 0; w < world_size; w++)
-		  {
-        cout << "rank[" << w << "]: time = " << times[w] << " seconds" << endl;
-		  }
-		}
-  }
+	  void print_to_file ()
+	  {
+	  	if (world_rank == 0)
+	  	{
+        string file_name = output_folder + "timer_" + name + ".txt";
 
-  void print (std::string text)
-  {
-    cout << text << " time  = " << interval.count() << " seconds" << endl;
-  }
+	  		ofstream outFile (file_name, ios_base::app);
+
+	  	  for (int w = 0; w < world_size; w++)
+	  	  {
+          outFile << world_size << "\t" << w << "\t" << times[w] << endl;
+	  	  }
+
+	  		outFile.close();
+	  	}
+	  }
+
+
+	  ///  print: let rank 0 process print times for every rank
+	  /////////////////////////////////////////////////////////
+
+    void print ()
+    {
+	  	if (world_rank == 0)
+	  	{
+        cout << "Timer" << name << ":" << endl;
+
+	  	  for (int w = 0; w < world_size; w++)
+	  	  {
+          cout << "rank[" << w << "]: time = " << times[w] << " seconds" << endl;
+	  	  }
+	  	}
+    }
 
 };

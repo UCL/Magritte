@@ -37,6 +37,12 @@ double profile_width (const double temperature_gas, const double freq_line);
 double inverse_profile_width (const double temperature_gas, const double freq_line);
 
 
+///  Planck: Planck energy distribution function (in freqiencies)
+///    @param[in] temperature_gas: temperature of the gad at this cell
+///    @param[in] freq: frequency at which we want evaluate the Planck function
+///////////////////////////////////////////////////////////////////////////////
+
+vReal Planck (const double temperature_gas, const vReal freq);
 
 
 vReal vExp (const vReal);

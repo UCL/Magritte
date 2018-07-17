@@ -27,12 +27,12 @@ int main (void)
 
 
   // Initialize MPI environment
-	
+
 	MPI_Init (NULL, NULL);
 
 
   // Get rank of process and total number of processes
-	
+
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
@@ -73,7 +73,7 @@ int main (void)
 	LEVELS levels (ncells, linedata);
 
 
-	TIMER timer;	
+	TIMER timer ("iteration_LTE");
 	timer.start();
 
 	levels.iteration_using_LTE (linedata, species, temperature, lines);
@@ -85,35 +85,15 @@ int main (void)
 
 	// Print out results
 
-	timer.print_to_file (example_output_folder + "timings.txt");
+	timer.print_to_file ();
 
 
-	const string output_file = example_output_folder + "populations.txt";  
-
-  ofstream outputFile (output_file);
-
-	if (outputFile.is_open())
-  {
-	 int l = 0;
-
-	 for (long p = 0; p < ncells; p++)
-	 {
-		 for (int i = 0; i < levels.nlev[l]; i++)
-		 {
-			 outputFile << levels.population[p][l][i] << "\t";
-		 }
-
-	 	 outputFile << endl;
-	 }
-
-	  outputFile.close();
-  }
-  else cout << "Unable to open file " << output_file << endl;
+	levels.print (example_output_folder, "");
 
 
   // Finalize the MPI environment
-	
-  MPI_Finalize ();	
+
+  MPI_Finalize ();
 
 
 	return (0);

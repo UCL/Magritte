@@ -36,7 +36,7 @@ struct LINEDATA
 
   const Int1 nlev = NLEV;
   const Int1 nrad = NRAD;
-  
+
   const Int1 ncolpar = NCOLPAR;
 
   const Int2 ntmp = NCOLTEMP;
@@ -71,13 +71,15 @@ struct LINEDATA
 
   LINEDATA ();   ///< Constructor
 
+	int print (MatrixXd& M, string output_folder, string tag) const;
+
 
   MatrixXd calc_Einstein_C (const SPECIES& species, const double temperature_gas,
-			                      const long p, const int l) const; 
+			                      const long p, const int l) const;
 
 
   MatrixXd calc_transition_matrix (const SPECIES& species, const double temperature_gas,
-			                             const Double3& J_eff, const long p, const int l) const; 
+			                             const Double3& J_eff, const long p, const int l) const;
 
 
 };

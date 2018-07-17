@@ -8,12 +8,10 @@
 #define __RADIATION_HPP_INCLUDED__
 
 
-#include <vector>
-using namespace std;
-
 #include "frequencies.hpp"
-#include "scattering.hpp"
 #include "GridTypes.hpp"
+#include "scattering.hpp"
+#include "cells.hpp"
 
 
 ///  RADIATION: data structure for the radiation field
@@ -26,6 +24,7 @@ struct RADIATION
 	const long nrays;           ///< number of rays
 	const long nrays_red;       ///< reduced number of rays
 	const long nfreq_red;       ///< reduced number of frequencies
+	const long nboundary;       ///< number of boundary cells
 	const long START_raypair;   ///< reduced number of frequencies
 
 
@@ -37,16 +36,29 @@ struct RADIATION
 
 	vReal1 J;   ///< (angular) mean intensity
 
+	vReal3 boundary_intensity;
+
 
 	RADIATION (const long num_of_cells,    const long num_of_rays,
 			       const long num_of_rays_red, const long num_of_freq_red,
-						 const long START_raypair_input);                          ///< Constructor
+						 const long num_of_bdycells, const long START_raypair_input);
+
 
 	int initialize ();
+
+  int read (const string boundary_intensity_file);
+
+	int write (const string boundary_intensity_file) const;
+
 
   long index (const long r, const long p, const long f) const;
 
   long index (const long p, const long f) const;
+
+
+  int calc_boundary_intensities (const Long1& bdy_to_cell_nr,
+			                           const FREQUENCIES& frequencies);
+
 
 	int calc_J (void);
 
@@ -58,6 +70,11 @@ struct RADIATION
 
 	int resample_V (const FREQUENCIES& frequencies, const long p, const long r,
 			            const vReal1& frequencies_scaled, vReal1& V_scaled) const;
+
+
+	// Print
+	
+	int print (string output_folder, string tag);
 
 
 };

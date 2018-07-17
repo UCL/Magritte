@@ -38,6 +38,10 @@ struct CELLS
   Bool1 boundary;                       ///< true if boundary cell
   Bool1 mirror;                         ///< true if reflective boundary
 
+	long nboundary;                       ///< number of boundary cells
+	Long1 bdy_to_cell_nr;                 ///< boundary number of cell
+	Long1 cell_to_bdy_nr;                 ///< cell number of boundary
+
   Long1 n_neighbors;                    ///< number of neighbors
   Long2   neighbors;                    ///< cell numbers of neighors
 

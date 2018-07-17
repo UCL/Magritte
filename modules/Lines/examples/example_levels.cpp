@@ -22,7 +22,7 @@ using namespace std;
 int main (void)
 {
 
-	TIMER timer;	
+	TIMER timer ('levels');	
 	timer.start();
 
   // Initialize MPI environment
@@ -82,7 +82,7 @@ int main (void)
 
 
   // Finalize the MPI environment.
-  MPI_Finalize ();	
+  MPI_Finalize ();
 
 	timer.stop();
 	timer.print();
