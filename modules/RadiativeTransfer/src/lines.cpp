@@ -243,7 +243,7 @@ int LINES ::
 			{
 		    if (chi[f].getlane(lane) == 0.0)
 				{
-          chi[f].getlane(lane) = 1.0E-30;
+          chi[f].putlane(1.0E-30, lane);
 				}
 			}
 #   else

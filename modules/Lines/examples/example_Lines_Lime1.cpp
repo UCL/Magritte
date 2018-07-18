@@ -34,7 +34,7 @@ int main (void)
 
 	// Set timer
 
-	TIMER timer_TOTAL ("TOTAL");
+	MPI_TIMER timer_TOTAL ("TOTAL");
 	timer_TOTAL.start ();
 
 

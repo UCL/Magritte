@@ -17,9 +17,17 @@ using namespace std;
 int main (void)
 {
 
+  cout << "n_simd_lanes = " << n_simd_lanes << endl;
+
+  #if (GRID_SIMD)
+    cout << "GRID_SIMD is true" << endl;
+  #else
+    cout << "GRID_SIMD is false" << endl;
+  #endif
+
   // Setup
 
-  std::ifstream infile ("example_data/feautrier1.txt");
+  ifstream infile ("example_data/feautrier1.txt");
 
   const long ndep      = 100;
 	const long nfreq     =  50;

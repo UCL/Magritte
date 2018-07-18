@@ -11,7 +11,7 @@
 using namespace std;
 
 
-#define GRID_SIMD false
+#define GRID_SIMD true
 
 #if (GRID_SIMD)
 #include <Grid.h>

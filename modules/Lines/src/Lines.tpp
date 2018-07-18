@@ -48,7 +48,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 	// Initialize levels, emissivities and opacities with LTE values
 
-	TIMER timer_LTE ("LTE");
+	MPI_TIMER timer_LTE ("LTE");
 	timer_LTE.start ();
 
   levels.iteration_using_LTE (linedata, species, temperature, lines);
@@ -96,7 +96,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 		// Get radiation field from Radiative Transfer
 
-		TIMER timer_RT ("RT");
+		MPI_TIMER timer_RT ("RT");
 		timer_RT.start ();
 
     RadiativeTransfer<Dimension, Nrays>
@@ -112,7 +112,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
     }
 
 
-		TIMER timer_SE ("SE");
+		MPI_TIMER timer_SE ("SE");
 		timer_SE.start ();
 
     levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
