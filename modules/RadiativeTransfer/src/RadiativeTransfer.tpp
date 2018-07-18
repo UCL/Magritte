@@ -41,7 +41,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 {
 
 
-	TIMER timer_RT_CALC ("RT_CALC");
+	MPI_TIMER timer_RT_CALC ("RT_CALC");
 	timer_RT_CALC.start ();
 
   const long ndiag = 0;
@@ -214,7 +214,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	// Reduce results of all MPI processes to get J, U and V
 
-	TIMER timer_RT_COMM ("RT_COMM");
+	MPI_TIMER timer_RT_COMM ("RT_COMM");
 	timer_RT_COMM.start ();
 
 	radiation.calc_J ();

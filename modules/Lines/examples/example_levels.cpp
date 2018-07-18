@@ -22,7 +22,7 @@ using namespace std;
 int main (void)
 {
 
-	TIMER timer ('levels');	
+	MPI_TIMER timer ('levels');	
 	timer.start();
 
   // Initialize MPI environment

@@ -12,10 +12,86 @@ using namespace std;
 #include "folders.hpp"
 
 
-/// TIMER: struct for precise process timing
-////////////////////////////////////////////
+
+/// TIMER: class for precise process timing
+///////////////////////////////////////////
 
 class TIMER
+{
+
+  private:
+
+    string name;
+
+    chrono::duration <double> interval;
+    chrono::high_resolution_clock::time_point initial;
+
+
+  public:
+
+
+	  ///  Constructor for TIMER
+	  //////////////////////////
+
+	  TIMER(string timer_name)
+	  {
+      name = timer_name;
+	  }
+
+
+	  ///  start: start timer i.e. set initial time stamp
+	  ///////////////////////////////////////////////////
+
+    void start ()
+    {
+      initial = chrono::high_resolution_clock::now();
+    }
+
+
+	  ///  stop: stop timer and calculate interval for every process
+	  //////////////////////////////////////////////////////////////
+
+    void stop ()
+    {
+      interval = chrono::high_resolution_clock::now() - initial;
+    }
+
+
+	  ///  print_to_file: print time interval to file
+	  ///////////////////////////////////////////////
+
+
+	  void print_to_file ()
+	  {
+      string file_name = output_folder + "timer_" + name + ".txt";
+
+	  	ofstream outFile (file_name, ios_base::app);
+
+      outFile << interval.count() << endl;
+
+	  	outFile.close();
+	  }
+
+
+	  ///  print: print time interval to screen
+	  /////////////////////////////////////////
+
+    void print ()
+    {
+      cout << "Timer " << name << ":" << endl;
+
+      cout << interval.count() << " seconds" << endl;
+    }
+
+};
+
+
+
+
+/// MPI_TIMER: class for precise process timing when using MPI
+//////////////////////////////////////////////////////////////
+
+class MPI_TIMER
 {
   private:
 
@@ -36,7 +112,7 @@ class TIMER
 	  ///  Constructor for TIMER
 	  //////////////////////////
 
-	  TIMER (string timer_name)
+	  MPI_TIMER(string timer_name)
 	  {
       name = timer_name;
 
@@ -105,7 +181,7 @@ class TIMER
     {
 	  	if (world_rank == 0)
 	  	{
-        cout << "Timer" << name << ":" << endl;
+        cout << "Timer " << name << ":" << endl;
 
 	  	  for (int w = 0; w < world_size; w++)
 	  	  {

@@ -73,7 +73,7 @@ int main (void)
 	LEVELS levels (ncells, linedata);
 
 
-	TIMER timer ("iteration_LTE");
+	MPI_TIMERtimer ("iteration_LTE");
 	timer.start();
 
 	levels.iteration_using_LTE (linedata, species, temperature, lines);
