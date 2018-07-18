@@ -100,7 +100,7 @@ def getDimensions(cellsFile):
 
 
 
-def setupMagritte(projectFolder):
+def setupMagritte(projectFolder, runName=''):
     """
     Main setup for Magritte
     """
@@ -111,7 +111,10 @@ def setupMagritte(projectFolder):
     # Get a date stamp to name current folder
     dateStamp = time.strftime("%y-%m-%d_%H:%M:%S", time.gmtime())
     # Create run folder
-    runFolder = ioFolder + dateStamp + '/'
+    if runName == '':
+        runFolder = ioFolder + dateStamp + '/'
+    else:
+        runFolder = ioFolder + runName + '/'
     os.mkdir(runFolder)
     # Create input and output folders
     inputFolder  = runFolder + 'input/'
@@ -172,8 +175,12 @@ def setupMagritte(projectFolder):
 if (__name__ == '__main__'):
     # Setup Magritte if necessary
     projectFolder = str(sys.argv[1])
+    if len(sys.argv) > 2:
+        ioName    = str(sys.argv[2])
+    else:
+        ioName    = ''
     print('Setting up Magritte...')
     # Run setup
-    setupMagritte(projectFolder)
+    setupMagritte(projectFolder, ioName)
     # Done
     print('Setup done. Magritte can be compiled now.')
