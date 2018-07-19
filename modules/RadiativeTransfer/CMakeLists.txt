@@ -12,7 +12,7 @@ set( MAGRITTE_VERSION_MAJOR 0 )
 set( MAGRITTE_VERSION_MINOR 1 )
 
 # Set build type to Release to get optimal performance
-set( CMAKE_BUILD_TYPE Debug )
+set( CMAKE_BUILD_TYPE Release )
 
 # Add compiler flags for C++11
 set( CMAKE_CXX_FLAGS

@@ -11,7 +11,7 @@ project(Magritte_tests)
 
 
 # Set build type to Debug
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 
 # VTK includes

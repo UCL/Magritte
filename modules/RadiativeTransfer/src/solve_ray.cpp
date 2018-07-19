@@ -4,14 +4,13 @@
 // _________________________________________________________________________
 
 
-#include <vector>
 #include <iostream>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
 #include "solve_ray.hpp"
-#include "types.hpp"
+#include "timer.hpp"
 #include "GridTypes.hpp"
 
 
@@ -35,9 +34,12 @@ using namespace Eigen;
 
 int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const vReal2& dtau_r,
 	             const long n_ar, const vReal2& Su_ar, const vReal2& Sv_ar, const vReal2& dtau_ar,
-	             const long ndep, const long nfreq_red,        vReal2& u,           vReal2& v,
+	             const long ndep, const long nfreq_red,      vReal2& u,           vReal2& v,
 							 const long ndiag, vReal2& Lambda)
 {
+
+	TIMER timer0 ("0");
+	timer0.start ();
 
 	vReal1 B0        (nfreq_red);           // B[0][f]
   vReal1 B0_min_C0 (nfreq_red);           // B[0][f] - C[0][f]
@@ -49,12 +51,15 @@ int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const 
   vReal2 F (ndep, vReal1 (nfreq_red));   // helper variable from Rybicki & Hummer (1991)
   vReal2 G (ndep, vReal1 (nfreq_red));   // helper variable from Rybicki & Hummer (1991)
 
-
+	timer0.stop ();
+	timer0.print_to_file ();
 
 
   // SETUP FEAUTRIER RECURSION RELATION
   // __________________________________
 
+	TIMER timer ("calc");
+	timer.start ();
 
 	if ( (n_ar > 0) && (n_r > 0) )
 	{
@@ -80,7 +85,7 @@ int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const 
     for (long n = n_ar-1; n > 1; n--)
     {
 		  for (long f = 0; f < nfreq_red; f++)
-			{		
+			{
         A[n_ar-n][f] = 2.0 / ((dtau_ar[n-1][f] + dtau_ar[n-2][f]) * dtau_ar[n-1][f]);
         C[n_ar-n][f] = 2.0 / ((dtau_ar[n-1][f] + dtau_ar[n-2][f]) * dtau_ar[n-2][f]);
 			}
@@ -192,7 +197,7 @@ int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const 
 
     v[ndep-1][f] = (v[ndep-1][f] + A[ndep-1][f]*v[ndep-2][f])
                       / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]) * (vOne + F[ndep-2][f]);
-  
+
     G[ndep-1][f] = Bd_min_Ad[f] / A[ndep-1][f];
 	}
 
@@ -245,11 +250,11 @@ int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const 
     Lambda[ndep-1][f] = (vOne + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
 	}
 
-	
+
   //// Add upper-diagonal elements
 
   //for (long m = 1; m < ndiag; m++)
-  //{	  
+  //{
   //  for (long n = 0; n < ndep-m; n++)
   //  {
   //    for (long f = 0; f < nfreq_red; f++)
@@ -263,16 +268,18 @@ int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const 
   //// Add lower-diagonal elements
 
   //for (long m = 1; m < ndiag; m++)
-  //{	  
+  //{
   //  for (long n = m; n < ndep; n++)
   //  {
   //    for (long f = 0; f < nfreq_red; f++)
-  //    {    
+  //    {
   //      Lambda[f](n,n-m) = Lambda[f](n-1,n-m) / (1.0 + G[n][f]);
 	//	  }
   //  }
   //}
 
+	timer.stop ();
+	timer.print_to_file ();
 
   return (0);
 

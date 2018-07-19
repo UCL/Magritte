@@ -7,8 +7,6 @@
 #ifndef __SOLVE_RAY_HPP_INCLUDED__
 #define __SOLVE_RAY_HPP_INCLUDED__
 
-#include <vector>
-using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
@@ -36,7 +34,7 @@ using namespace Eigen;
 
 int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const vReal2& dtau_r,
 	             const long n_ar, const vReal2& Su_ar, const vReal2& Sv_ar, const vReal2& dtau_ar,
-	             const long ndep, const long nfreq_red,        vReal2& u,           vReal2& v,
+	             const long ndep, const long nfreq_red,      vReal2& u,           vReal2& v,
 							 const long ndiag, vReal2& Lambda);
 
 

@@ -6,7 +6,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <vector>
 using namespace std;
 
 #include "../src/timer.hpp"
@@ -30,8 +29,10 @@ int main (void)
   ifstream infile ("example_data/feautrier1.txt");
 
   const long ndep      = 100;
-	const long nfreq     =  50;
+	const long nfreq     = 140;
 	const long nfreq_red = (nfreq + n_simd_lanes - 1) / n_simd_lanes;
+
+  cout << "nfreq_red = " << (nfreq + n_simd_lanes - 1) / n_simd_lanes << endl;
 
 
 
@@ -110,12 +111,12 @@ int main (void)
 	TIMER timer ("solve_ray");
 	timer.start ();
 
-	for (int n = 0; n < 500; n++)
-	{
+	//for (int n = 0; n < 500; n++)
+	//{
     solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 		  	       n_ar, Su_ar, Sv_ar, dtau_ar,
 			  			 ndep, nfreq_red, u, v, ndiag, Lambda);
-	}
+	//}
 
 	timer.stop ();
 	timer.print ();

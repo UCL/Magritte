@@ -41,8 +41,6 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 {
 
 
-	MPI_TIMER timer_RT_CALC ("RT_CALC");
-	timer_RT_CALC.start ();
 
   const long ndiag = 0;
 
@@ -60,7 +58,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
   const long STOP_raypair  = ((world_rank+1)*Nrays/2)/world_size;
 
 
-	radiation.initialize();
+	radiation.initialize ();
 
 
 	// For all ray pairs
@@ -87,6 +85,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
     for (long o = start; o < stop; o++)
 	  {
 
+	MPI_TIMER timer_RT_CALC ("RT_CALC");
+	timer_RT_CALC.start ();
+
 	    long n_r = 0;
 
  	    vReal2   Su_r (ncells, vReal1 (nfreq_red));   // effective source for u along ray r
@@ -100,6 +101,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	    vReal2 dtau_ar (ncells, vReal1 (nfreq_red));   // optical depth increment along ray ar
 
 
+	    MPI_TIMER timer_SU ("SU");
+	    timer_SU.start ();
+
       set_up_ray <Dimension, Nrays>
                  (cells, frequencies, temperature, lines, scattering, radiation,
 									o, r, R,  ray, n_r,  Su_r,  Sv_r,  dtau_r);
@@ -107,6 +111,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
       set_up_ray <Dimension, Nrays>
                  (cells, frequencies, temperature, lines, scattering, radiation,
 									o, r, R, antipod, n_ar, Su_ar, Sv_ar, dtau_ar);
+
+			timer_SU.stop ();
+			timer_SU.print_to_file ();
 
 
 	    const long ndep = n_r + n_ar;
@@ -159,9 +166,15 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 				vReal2 Lambda (ndep, vReal1 (nfreq_red));
 
 
+	      MPI_TIMER timer_SR ("SR");
+	      timer_SR.start ();
+
         solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 	    			       n_ar, Su_ar, Sv_ar, dtau_ar,
       						 ndep, nfreq_red, u, v, ndiag, Lambda);
+
+				timer_SR.stop ();
+				timer_SR.print_to_file ();
 
 
 	      if (n_ar > 0)
@@ -201,6 +214,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	      radiation.J[radiation.index(o,f)] += u_local[f];
 	  	}
 
+	timer_RT_CALC.stop ();
+	timer_RT_CALC.print_to_file ();
 
 
 	  }
@@ -209,8 +224,6 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	} // end of loop over ray pairs
 
 
-	timer_RT_CALC.stop ();
-	timer_RT_CALC.print_to_file ();
 
 	// Reduce results of all MPI processes to get J, U and V
 
