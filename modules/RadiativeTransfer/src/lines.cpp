@@ -39,42 +39,42 @@ LINES :: LINES (const long num_of_cells, const LINEDATA& linedata)
 
   // Size and initialize emissivity, opacity and freq
 
- 	emissivity.resize (ncells);
- 	   opacity.resize (ncells);
-
+// 	//emissivity.resize (ncells);
+// 	//   opacity.resize (ncells);
+//
  	emissivity_vec.resize (ncells*nrad_tot);
  	   opacity_vec.resize (ncells*nrad_tot);
-
-# pragma omp parallel \
-  shared (linedata)   \
-	default (none)
-  {
-
-  const int num_threads = omp_get_num_threads();
-	const int thread_num  = omp_get_thread_num();
-
-  const long start = (thread_num*ncells)/num_threads;
-  const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-
-	for (long p = start; p < stop; p++)
-	{
-		emissivity[p].resize (linedata.nlspec);
-		   opacity[p].resize (linedata.nlspec);
-
-	  for (int l = 0; l < linedata.nlspec; l++)
-	  {
-		  emissivity[p][l].resize (linedata.nrad[l]);
-		     opacity[p][l].resize (linedata.nrad[l]);
-
-		  for (int k = 0; k < linedata.nrad[l]; k++)
-		  {
-			  emissivity[p][l][k] = 0.0;
-			     opacity[p][l][k] = 0.0;
-  	  }
-		}
-
-	}
-	} // end of pragma omp parallel
+//
+//# pragma omp parallel \
+//  shared (linedata)   \
+//	default (none)
+//  {
+//
+//  const int num_threads = omp_get_num_threads();
+//	const int thread_num  = omp_get_thread_num();
+//
+//  const long start = (thread_num*ncells)/num_threads;
+//  const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+//
+//	for (long p = start; p < stop; p++)
+//	{
+//		emissivity[p].resize (linedata.nlspec);
+//		   opacity[p].resize (linedata.nlspec);
+//
+//	  for (int l = 0; l < linedata.nlspec; l++)
+//	  {
+//		  emissivity[p][l].resize (linedata.nrad[l]);
+//		     opacity[p][l].resize (linedata.nrad[l]);
+//
+//		  for (int k = 0; k < linedata.nrad[l]; k++)
+//		  {
+//			  emissivity[p][l][k] = 0.0;
+//			     opacity[p][l][k] = 0.0;
+//  	  }
+//		}
+//
+//	}
+//	} // end of pragma omp parallel
 
 
 }   // END OF CONSTRUCTOR
@@ -136,8 +136,10 @@ int LINES ::
 	    {
   	    for (int k = 0; k < nrad[l]; k++)
   	    {
-  	    	eta_outputFile << emissivity[p][l][k] << "\t";
-  	    	chi_outputFile <<    opacity[p][l][k] << "\t";
+					const long ind = index(p,l,k);
+
+  	    	eta_outputFile << emissivity_vec[ind] << "\t";
+  	    	chi_outputFile <<    opacity_vec[ind] << "\t";
   	    }
 
 	    	eta_outputFile << endl;
@@ -172,87 +174,94 @@ long LINES ::
 
 int LINES ::
     add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-		                            vReal1& frequencies_scaled, const long p,
-		                            vReal1& eta, vReal1& chi) const
+		                            vReal& freq_scaled, const long p, vReal& eta, vReal& chi) const
 {
 
 	// !!! RETHINK THIS !!!!
 
 
-  // For all frequencies
+	// For all lines
 
-	for (long f = 0; f < frequencies.nfreq_red; f++)
+  for (int l = 0; l < frequencies.nr_line[p].size(); l++)
 	{
+		for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
+	 	{
+			const long  line_nr = frequencies.nr_line[p][l][k][NR_LINE_CENTER];
+
+#     if (GRID_SIMD)
+		    const long    f_line = line_nr / n_simd_lanes;
+		    const long lane_line = line_nr % n_simd_lanes;
+
+        const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
+				const double     width = profile_width (temperature.gas[p], freq_line);
+
+				vReal freq_diff = freq_scaled - (vReal) freq_line;
+
+				if (    (freq_diff.getlane(0)              <   3.0*width)
+		       	 && (freq_diff.getlane(n_simd_lanes-1) > - 3.0*width) )
+#     else
+        const double freq_line = frequencies.all[p][freq_nrs[NR_LINE_CENTER]];
+				const double    width = profile_width (temperature.gas[p], freq_line);
+
+				vReal freq_diff = freq_scaled - (vReal) freq_line;
+
+				if (fabs(freq_diff) < 3.0*width)
+# 		endif
+//			const Long1 freq_nrs = frequencies.nr_line[p][l][k];
+//
+//      const long lower = freq_nrs[0];                       // lowest frequency in line
+//      const long upper = freq_nrs[N_QUADRATURE_POINTS-1];   // highest frequency in line
+//#     if (GRID_SIMD)
+//	    const long    f_lower = lower / n_simd_lanes;
+//	    const long lane_lower = lower % n_simd_lanes;
+//
+//	    const long    f_upper = upper / n_simd_lanes;
+//	    const long lane_upper = upper % n_simd_lanes;
 
 
-	  // For all lines
+//			if (   !(frequencies.all[p][f_lower].getlane(lane_lower) > frequencies_scaled.getlane(n_simd_lanes-1))
+//				  || !(frequencies.all[p][f_upper].getlane(lane_upper) < frequencies_scaled.getlane(0)) )
+//#     else
+//			if (   !(frequencies.all[p][lower] > frequencies_scaled)
+//				  || !(frequencies.all[p][upper] < frequencies_scaled) )
+//#      endif
+			{
+//#       if (GRID_SIMD)
+//		    const long    f_line = freq_nrs[NR_LINE_CENTER] / n_simd_lanes;
+//		    const long lane_line = freq_nrs[NR_LINE_CENTER] % n_simd_lanes;
+//
+//        const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
+//#       else
+//        const double freq_line = frequencies.all[p][freq_nrs[NR_LINE_CENTER]];
+//# 			endif
+//
+				const long ind = index (p,l,k);
 
-    for (int l = 0; l < frequencies.nr_line[p].size(); l++)
-	  {
-	  	for (int k = 0; k < frequencies.nr_line[p][l].size(); k++)
-	  	{
-				const Long1 freq_nrs = frequencies.nr_line[p][l][k];
+				const double inverse_width = 1.0 / width;
 
-        const long lower = freq_nrs[0];                       // lowest frequency in line
-        const long upper = freq_nrs[N_QUADRATURE_POINTS-1];   // highest frequency in line
-#       if (GRID_SIMD)
-		    const long    f_lower = lower / n_simd_lanes;
-		    const long lane_lower = lower % n_simd_lanes;
+	  		const vReal line_profile = profile (inverse_width, freq_diff);
 
-		    const long    f_upper = upper / n_simd_lanes;
-		    const long lane_upper = upper % n_simd_lanes;
-
-
-				if (   !(frequencies.all[p][f_lower].getlane(lane_lower) > frequencies_scaled[f].getlane(n_simd_lanes-1))
-					  || !(frequencies.all[p][f_upper].getlane(lane_upper) < frequencies_scaled[f].getlane(0)) )
-#       else
-				if (   !(frequencies.all[p][lower] > frequencies_scaled[f])
-					  || !(frequencies.all[p][upper] < frequencies_scaled[f]) )
-#       endif
-				{
-#         if (GRID_SIMD)
-		      const long    f_line = freq_nrs[NR_LINE_CENTER] / n_simd_lanes;
-		      const long lane_line = freq_nrs[NR_LINE_CENTER] % n_simd_lanes;
-
-          const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
-#         else
-          const double freq_line = frequencies.all[p][freq_nrs[NR_LINE_CENTER]];
-# 				endif
-
-	  		  const vReal line_profile = profile (temperature.gas[p], freq_line, frequencies_scaled[f]);
-
-	  	    eta[f] += emissivity[p][l][k] * line_profile;
-	  	    chi[f] +=    opacity[p][l][k] * line_profile;
-
-	  	    eta[f] += emissivity_vec[index(p,l,k)] * line_profile;
-	  	    chi[f] +=    opacity_vec[index(p,l,k)] * line_profile;
-			  }
-	  	}
+	  	  eta += emissivity_vec[ind] * line_profile;
+	  	  chi +=    opacity_vec[ind] * line_profile;
+			}
 	  }
-
-
 	}
 
 
-  // For all frequencies
-
-	for (long f = 0; f < frequencies.nfreq_red; f++)
-	{
-#   if (GRID_SIMD)
-			for (int lane = 0; lane < n_simd_lanes; lane++)
-			{
-		    if (chi[f].getlane(lane) == 0.0)
-				{
-          chi[f].putlane(1.0E-30, lane);
-				}
-			}
-#   else
-		  if (chi[f] == 0.0)
-			{
-        chi[f] = 1.0E-30;
-			}
-#   endif
-	}
+//# if (GRID_SIMD)
+//		for (int lane = 0; lane < n_simd_lanes; lane++)
+//		{
+//	    if (chi.getlane(lane) == 0.0)
+//			{
+//        chi.putlane(1.0E-30, lane);
+//			}
+//		}
+//# else
+//	  if (chi == 0.0)
+//		{
+//      chi = 1.0E-30;
+//		}
+//# endif
 
 
 	return (0);

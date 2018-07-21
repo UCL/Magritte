@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 project(Magritte_tests)
 
 # Set build type to Debug
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 # Add directories containing tests
 add_subdirectory(t1_1D)

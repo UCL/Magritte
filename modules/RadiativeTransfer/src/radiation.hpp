@@ -2,7 +2,7 @@
 //
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
- 
+
 
 #ifndef __RADIATION_HPP_INCLUDED__
 #define __RADIATION_HPP_INCLUDED__
@@ -44,7 +44,7 @@ struct RADIATION
 						 const long num_of_bdycells, const long START_raypair_input);
 
 
-	int initialize ();
+	//int initialize ();
 
   int read (const string boundary_intensity_file);
 
@@ -60,20 +60,17 @@ struct RADIATION
 			                           const FREQUENCIES& frequencies);
 
 
+
+  int rescale_U_and_V (FREQUENCIES& frequencies, const long p,
+	                     const long R, long& notch, vReal& freq_scaled,
+						           vReal& U_scaled, vReal& V_scaled);
+
 	int calc_J (void);
 
 	int calc_U_and_V (const SCATTERING& scattering);
 
-	int resample_U (const FREQUENCIES& frequencies, const long p, const long r,
-		              const vReal1& frequencies_scaled, vReal1& U_scaled) const;
-		                                
-
-	int resample_V (const FREQUENCIES& frequencies, const long p, const long r,
-			            const vReal1& frequencies_scaled, vReal1& V_scaled) const;
-
-
 	// Print
-	
+
 	int print (string output_folder, string tag);
 
 

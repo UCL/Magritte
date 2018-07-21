@@ -23,6 +23,17 @@ vReal profile (const double temperature_gas, const double freq_line, const vReal
 
 
 
+///  profile: line profile function
+///    @param[in] inverse_width: inverse profile width
+///    @param[in] freq_diff: frequency at which we want evaluate the profile
+///    @return profile function evaluated at frequency freq
+////////////////////////////////////////////////////////////////////////////
+
+vReal profile (const double inverse_width, const vReal freq_diff);
+
+
+
+
 ///  profile_width: line profile width due to thermal and turbulent Doppler shifts
 ///    @param[in] temperature_gas: temperature of the gas at this cell
 ///    @param[in] freq_line: frequency of the line under consideration
@@ -45,7 +56,24 @@ double inverse_profile_width (const double temperature_gas, const double freq_li
 vReal Planck (const double temperature_gas, const vReal freq);
 
 
+
+
+///  vExp: exponential function for vReal types
+///    @param[in] x: exponent
+///    @return exponential of x
+/////////////////////////////////////////////////
+
 vReal vExp (const vReal);
+
+
+
+
+///  vExpm1: exponential minus 1.0 function for vReal types
+///    @param[in] x: exponent
+///    @return exponential minus 1.0 of x
+///////////////////////////////////////////////////////////
+
+vReal vExpm1 (const vReal x);
 
 
 #endif // __PROFILE_HPP_INCLUDED__

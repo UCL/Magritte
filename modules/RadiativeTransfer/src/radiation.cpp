@@ -65,10 +65,6 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 
 	J.resize (ncells*nfreq_red);
 
-
-	initialize ();
-
-
 }   // END OF CONSTRUCTOR
 
 
@@ -85,64 +81,64 @@ long RADIATION ::
 	return f + p*nfreq_red;
 }
 
-int RADIATION ::
-    initialize ()
-{
-
-	for (long r = 0; r < nrays_red; r++)
-	{
-
-#   pragma omp parallel   \
-		shared (r)            \
-    default (none)
-    {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = ( thread_num   *ncells)/num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;
-
-
-    for (long p = start; p < stop; p++)
-    {
-	    for (long f = 0; f < nfreq_red; f++)
-      {
-				u[r][index(p,f)] = 0.0;
-        v[r][index(p,f)] = 0.0;
-
-				U[r][index(p,f)] = 0.0;
-        V[r][index(p,f)] = 0.0;
-      }
-	  }
-	  } // end of pragma omp parallel
-	}
-
-
-#   pragma omp parallel   \
-    default (none)
-    {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = ( thread_num*ncells)   /num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;
-
-
-    for (long p = start; p < stop; p++)
-    {
-	    for (long f = 0; f < nfreq_red; f++)
-      {
-        J[index(p,f)] = 0.0;
-      }
-	  }
-	  } // end of pragma omp parallel
-
-
-	return (0);
-
-}
+//int RADIATION ::
+//    initialize ()
+//{
+//
+//	for (long r = 0; r < nrays_red; r++)
+//	{
+//
+//#   pragma omp parallel   \
+//		shared (r)            \
+//    default (none)
+//    {
+//
+//    const int num_threads = omp_get_num_threads();
+//    const int thread_num  = omp_get_thread_num();
+//
+//    const long start = ( thread_num   *ncells)/num_threads;
+//    const long stop  = ((thread_num+1)*ncells)/num_threads;
+//
+//
+//    for (long p = start; p < stop; p++)
+//    {
+//	    for (long f = 0; f < nfreq_red; f++)
+//      {
+//				u[r][index(p,f)] = 0.0;
+//        v[r][index(p,f)] = 0.0;
+//
+//				U[r][index(p,f)] = 0.0;
+//        V[r][index(p,f)] = 0.0;
+//      }
+//	  }
+//	  } // end of pragma omp parallel
+//	}
+//
+//
+//#   pragma omp parallel   \
+//    default (none)
+//    {
+//
+//    const int num_threads = omp_get_num_threads();
+//    const int thread_num  = omp_get_thread_num();
+//
+//    const long start = ( thread_num*ncells)   /num_threads;
+//    const long stop  = ((thread_num+1)*ncells)/num_threads;
+//
+//
+//    for (long p = start; p < stop; p++)
+//    {
+//	    for (long f = 0; f < nfreq_red; f++)
+//      {
+//        J[index(p,f)] = 0.0;
+//      }
+//	  }
+//	  } // end of pragma omp parallel
+//
+//
+//	return (0);
+//
+//}
 
 int RADIATION ::
     read (const string boundary_intensity_file)
@@ -200,9 +196,76 @@ void mpi_vector_sum (vReal *in, vReal *inout, int *len, MPI_Datatype *datatype)
 }
 
 
+int initialize (vReal1& vec)
+{
+
+# pragma omp parallel   \
+	shared (vec)          \
+  default (none)
+  {
+
+  const int nthreads = omp_get_num_threads();
+  const int thread   = omp_get_thread_num();
+
+  const long start = ( thread   *vec.size())/nthreads;
+  const long stop  = ((thread+1)*vec.size())/nthreads;
+
+
+  for (long i = start; i < stop; i++)
+	{
+	  vec[i] = 0.0;
+	}
+	} // end of pragma omp parallel
+
+
+	return (0);
+
+}
+
+
+
 int RADIATION ::
     calc_J (void)
 {
+
+	initialize (J);
+
+
+	int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+  const long START_raypair = ( world_rank   *nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
+
+  for (long r = START_raypair; r < STOP_raypair; r++)
+  {
+		const long R = r - START_raypair;
+
+#   pragma omp parallel   \
+    default (none)
+    {
+
+    const int nthreads = omp_get_num_threads();
+    const int thread   = omp_get_thread_num();
+
+    const long start = ( thread   *ncells)/nthreads;
+    const long stop  = ((thread+1)*ncells)/nthreads;
+
+
+    for (long p = start; p < stop; p++)
+	  {
+	    for (long f = 0; f < nfreq_red; f++)
+	    {
+	      J[index(p,f)] += u[R][index(p,f)];
+			}
+		}
+		} // end of pragma omp parallel
+
+	} // end of r loop over rays
+
 
   MPI_Datatype MPI_VREAL;
   MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
@@ -239,6 +302,10 @@ int RADIATION ::
     calc_U_and_V (const SCATTERING& scattering)
 {
 
+	vReal1 U_local (ncells*nfreq_red);
+	vReal1 V_local (ncells*nfreq_red);
+
+
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
@@ -259,7 +326,6 @@ int RADIATION ::
 
 	for (int w = 0; w < world_size; w++)
 	{
-
     const long START_raypair1 = ( w   *nrays/2)/world_size;
     const long STOP_raypair1  = ((w+1)*nrays/2)/world_size;
 
@@ -267,30 +333,9 @@ int RADIATION ::
 	  {
 			const long R1 = r1 - START_raypair1;
 
-	    vReal1 U_local (ncells*nfreq_red);
-	    vReal1 V_local (ncells*nfreq_red);
+			initialize (U_local);
+			initialize (V_local);
 
-#     pragma omp parallel         \
-	    shared (U_local, V_local)   \
-      default (none)
-      {
-
-      const int nthreads = omp_get_num_threads();
-      const int thread   = omp_get_thread_num();
-
-      const long start = ( thread   *ncells)/nthreads;
-      const long stop  = ((thread+1)*ncells)/nthreads;
-
-
-      for (long p = start; p < stop; p++)
-	    {
-	      for (long f = 0; f < nfreq_red; f++)
-	  	  {
-	  	    U_local[index(p,f)] = 0.0;
-	  	    V_local[index(p,f)] = 0.0;
-	  	  }
-	  	}
-	  	}
 
     	for (long r2 = START_raypair; r2 < STOP_raypair; r2++)
 	  	{
@@ -318,7 +363,7 @@ int RADIATION ::
 	  		}
 	    	}
 
-	  	}
+	  	} // end of r2 loop over raypairs2
 
 
   	  int ierr_u = MPI_Reduce (
@@ -359,38 +404,36 @@ int RADIATION ::
 
 
 
-int RADIATION :: resample_U (const FREQUENCIES& frequencies, const long p, const long r,
-	                           const vReal1& frequencies_scaled, vReal1& U_scaled) const
+int RADIATION :: rescale_U_and_V (FREQUENCIES& frequencies, const long p,
+	                                const long R, long& notch, vReal& freq_scaled,
+																	vReal& U_scaled, vReal& V_scaled)
 {
-  long start = 0;
-	long stop  = nfreq_red;
 
-//	for (long f = 0; f < nfreq; f++)
-//	{
-//		cout << U[r][p][f] << endl;
-//		U_scaled[f] = 0.0;
-//	}
+  for (int lane = 0; lane < n_simd_lanes; lane++)
+	{
+		double freq = freq_scaled.getlane (lane);
 
-	//resample (frequencies.all[p], U[r][p], start, stop, frequencies_scaled, U_scaled);
+		search (frequencies.all[p], notch, freq);
 
- 	return (0);
-}
+		const long f1    =  notch    / n_simd_lanes;
+    const  int lane1 =  notch    % n_simd_lanes;
 
+		const long f2    = (notch+1) / n_simd_lanes;
+    const  int lane2 = (notch+1) % n_simd_lanes;
 
+		const double nu1 = frequencies.all[p][f1].getlane(lane1);
+		const double nu2 = frequencies.all[p][f2].getlane(lane2);
 
+		const double U1 = U[R][index(p,f1)].getlane(lane1);
+		const double U2 = U[R][index(p,f2)].getlane(lane2);
 
-int RADIATION :: resample_V (const FREQUENCIES& frequencies, const long p, const long r,
-		                         const vReal1& frequencies_scaled, vReal1& V_scaled) const
-{
-  long start = 0;
-	long stop  = nfreq_red;
+		const double V1 = V[R][index(p,f1)].getlane(lane1);
+		const double V2 = V[R][index(p,f2)].getlane(lane2);
 
-//	for (long f = 0; f < nfreq; f++)
-//	{
-//		V_scaled[f] = 0.0;
-//	}
+		U_scaled.putlane(interpolation_1 (nu1, U1, nu2, U2, freq), lane);
+		V_scaled.putlane(interpolation_1 (nu1, V1, nu2, V2, freq), lane);
+	}
 
-	//resample (frequencies.all[p], V[r][p], start, stop, frequencies_scaled, V_scaled);
 
  	return (0);
 }

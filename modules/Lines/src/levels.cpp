@@ -304,17 +304,14 @@ int LEVELS ::
 	  const int i = linedata.irad[l][k];
 	  const int j = linedata.jrad[l][k];
 
+    const long index = lines.index(p,l,k);
+
     const double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
 
-	  lines.emissivity[p][l][k] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+	  lines.emissivity_vec[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
-	     lines.opacity[p][l][k] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
-  		                                    - population[p][l](i) * linedata.B[l](i,j) );
-
-	  lines.emissivity_vec[lines.index(p,l,k)] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
-
-	     lines.opacity_vec[lines.index(p,l,k)] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
-                 		                                     - population[p][l](i) * linedata.B[l](i,j) );
+	     lines.opacity_vec[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
+                 		                        - population[p][l](i) * linedata.B[l](i,j) );
   }
 
 

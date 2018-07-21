@@ -35,8 +35,8 @@ struct LINES
 	const Int1 nrad_cum;
 	const int  nrad_tot;
 
-	Double3 emissivity;   ///< line emissivity (p,l,k)
-	Double3 opacity;      ///< line opacity (p,l,k)
+	//Double3 emissivity;   ///< line emissivity (p,l,k)
+	//Double3 opacity;      ///< line opacity (p,l,k)
 
 
 	Double1 emissivity_vec;   ///< line emissivity (p,l,k)
@@ -53,8 +53,7 @@ struct LINES
   long index (const long p, const int l, const int k) const;
 
   int add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-																 	vReal1& frequencies_scaled, const long p,
-			                            vReal1& eta, vReal1& chi) const;
+																 	vReal& freq_scaled, const long p, vReal& eta, vReal& chi) const;
 
 	int mpi_allgatherv ();
 

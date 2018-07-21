@@ -22,7 +22,7 @@ TEST_CASE ("CELLS constructor")
   const int  Dimension = 1;
   const long ncells    = 50;
   const long Nrays     = 2;
-  const long nspec     = 5;	
+  const long nspec     = 5;
 
 	const string       cells_file = "test_data/cells.txt";
 	const string n_neighbors_file = "test_data/n_neighbors.txt";
@@ -30,18 +30,18 @@ TEST_CASE ("CELLS constructor")
 	const string    boundary_file = "test_data/boundary.txt";
 
   CELLS<Dimension, Nrays> cells (ncells, neighbors_file);
- 
+
   cells.read (cells_file, n_neighbors_file, boundary_file);
- 
+
   cells.boundary[0]        = true;
   cells.boundary[ncells-1] = true;
- 
+
   cells.neighbors[0][0]        = 1;
   cells.n_neighbors[0]         = 1;
   cells.neighbors[ncells-1][0] = ncells-2;
   cells.n_neighbors[ncells-1]  = 1;
- 
- 
+
+
   for (long p = 1; p < ncells-1; p++)
   {
     cells.neighbors[p][0] = p-1;
@@ -68,18 +68,18 @@ TEST_CASE ("CELLS constructor")
 
   long n = 0;
 
-  vReal2   Su (cells.ncells, vReal1 (frequencies.nfreq));    // effective source for u along ray r
-  vReal2   Sv (cells.ncells, vReal1 (frequencies.nfreq));    // effective source for v along ray r
-  vReal2 dtau (cells.ncells, vReal1 (frequencies.nfreq));    // optical depth increment along ray r
+  vReal1   Su (cells.ncells);    // effective source for u along ray r
+  vReal1   Sv (cells.ncells);    // effective source for v along ray r
+  vReal1 dtau (cells.ncells);    // optical depth increment along ray r
 
-
+  long f = 0;
 	long o = 0;
 	long r = 0;
 	long R = 0;
 
 	set_up_ray <Dimension, Nrays>
 	         	 (cells, frequencies, temperature, lines, scattering, radiation,
-							o, r, R, ray, n, Su, Sv, dtau);
+							f, o, r, R, ray, n, Su, Sv, dtau);
 
 
 	cout << n << endl;

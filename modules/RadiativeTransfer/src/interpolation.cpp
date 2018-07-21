@@ -10,7 +10,7 @@
 using namespace std;
 
 #include "interpolation.hpp"
-
+#include "GridTypes.hpp"
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] f: vector of tabulated function values
@@ -36,7 +36,7 @@ double interpolate (vector<double> f, vector<double> x, long start, long stop, d
   long n = search (x, start, stop, value);
 
 	return interpolation_1 (x[n-1], f[n-1], x[n], f[n], value);
-}		
+}
 
 
 
@@ -49,7 +49,7 @@ double interpolate (vector<double> f, vector<double> x, long start, long stop, d
 ///  @return index of x table just above value
 //////////////////////////////////////////////////////////////////
 
-long search (vector<double> x, long start, long stop, double value)
+long search (vector<double>& x, long start, long stop, double value)
 {
   for (long n = start; n < stop; n++)
   {
@@ -57,6 +57,50 @@ long search (vector<double> x, long start, long stop, double value)
 	}
 
 	return stop;
+}
+
+
+
+
+int search (vReal1& vec, long& notch, const double value)
+{
+  long f    = notch / n_simd_lanes;
+   int lane = notch % n_simd_lanes;
+
+  while (f < vec.size())
+  {
+    if (value < vec[f].getlane(lane)) return (0);
+
+    notch++;
+
+    f    = notch / n_simd_lanes;
+    lane = notch % n_simd_lanes;
+  }
+
+  return (1);
+
+}
+
+
+
+
+long search (const vector<double>& x, long start, long stop, const double value)
+{
+  while (stop > start)
+  {
+    const long middle = (stop - start) / 2;
+
+    if (value > x[middle])
+    {
+      start = middle;
+    }
+    else
+    {
+      stop = middle;
+    }
+  }
+
+  return stop;
 }
 
 
@@ -72,9 +116,9 @@ long search (vector<double> x, long start, long stop, double value)
 ///    @param[out] f_new: function values evaluated at new arguments
 /////////////////////////////////////////////////////////////////////
 
-int resample (vector<double> x, vector<double> f, 
+int resample (vector<double>& x, vector<double>& f,
 		          const long start, const long stop,
-	           	vector<double> x_new, vector<double>& f_new)
+	           	vector<double>& x_new, vector<double>& f_new)
 {
 
 	long id     = start;
@@ -117,8 +161,8 @@ int resample (vector<double> x, vector<double> f,
 ///    @return interpolated function value f(x)
 ///////////////////////////////////////////////////////////////////////
 
-inline double interpolation_1 (double x1, double f1, 
-		                           double x2, double f2, double x)
+double interpolation_1 (const double x1, const double f1,
+                        const double x2, const double f2, const double x)
 {
 	return (f2-f1)/(x2-x1) * (x-x1) + f1;
 }

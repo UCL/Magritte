@@ -25,17 +25,19 @@ using namespace Eigen;
 ///    @param[in] Sv_ar: reference to source function for v along ray ar
 ///    @param[in] dtau_ar: reference to optical depth increments along ray ar
 ///    @param[in] ndep: total number of points on the combined ray r and ar
-///    @param[in] nfreq_red: reduced number of frequency bins
+///    @param[in] f: frequency index under consideration
 ///    @param[out] u: reference to resulting Feautrier mean intensity vector
 ///    @param[out] v: reference to resulting Feautrier flux intensity vector
 ///    @param[in] ndiag: degree of approximation in ALO (e.g. 0->diag, 1->tridiag)
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  const vReal2& Su_r,  const vReal2& Sv_r,  const vReal2& dtau_r,
-	             const long n_ar, const vReal2& Su_ar, const vReal2& Sv_ar, const vReal2& dtau_ar,
-	             const long ndep, const long nfreq_red,      vReal2& u,           vReal2& v,
-							 const long ndiag, vReal2& Lambda);
+int solve_ray (const long n_r,  const vReal* Su_r,  const vReal* Sv_r,  const vReal* dtau_r,
+	             const long n_ar, const vReal* Su_ar, const vReal* Sv_ar, const vReal* dtau_ar,
+							     vReal* A,          vReal* C,           vReal* F,           vReal* G,
+									 vReal& B0,         vReal& B0_min_C0,   vReal& Bd,          vReal& Bd_min_Ad,
+	             const long ndep,       vReal* u,           vReal* v,
+							 const long ndiag,      vReal* Lambda);
 
 
 #endif // __SOLVE_RAY_HPP_INCLUDED__

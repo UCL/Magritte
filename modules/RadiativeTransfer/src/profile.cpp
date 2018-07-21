@@ -25,10 +25,30 @@ vReal profile (const double temperature_gas, const double freq_line, const vReal
 
 	const vReal vFreq_line   = freq_line;
 	const vReal sqrtExponent = inverse_width * (freq - vFreq_line);
-	const vReal exponent     = sqrtExponent * sqrtExponent;
+	const vReal exponent     = - sqrtExponent * sqrtExponent;
 
 
-	return inverse_width * INVERSE_SQRT_PI * vExp(exponent);
+	return inverse_width * INVERSE_SQRT_PI * vExp (exponent);
+
+}
+
+
+
+
+///  profile: line profile function
+///    @param[in] inverse_width: inverse profile width
+///    @param[in] freq_diff: frequency at which we want evaluate the profile
+///    @return profile function evaluated at frequency freq
+////////////////////////////////////////////////////////////////////////////
+
+vReal profile (const double inverse_width, const vReal freq_diff)
+{
+
+	const vReal sqrtExponent = inverse_width * freq_diff;
+	const vReal exponent     = - sqrtExponent * sqrtExponent;
+
+
+	return inverse_width * INVERSE_SQRT_PI * vExp (exponent);
 
 }
 
@@ -72,7 +92,7 @@ double inverse_profile_width (const double temperature_gas, const double freq_li
 vReal Planck (const double temperature_gas, const vReal freq)
 {
 	return 2.0 * HH * freq*freq*freq
-		     / (CC*CC*(vExp( HH*freq / (KB*temperature_gas)) - vOne));
+		     / (CC*CC*vExpm1( HH*freq / (KB*temperature_gas)));
 }
 
 
@@ -85,17 +105,44 @@ vReal Planck (const double temperature_gas, const vReal freq)
 
 vReal vExp (const vReal x)
 {
-	const int n = 10;
+	const int n = 9;
 
   vReal result = 1.0;
 
-  for (int i = n-1; i > 0; i--)
+  for (int i = n; i > 0; i--)
 	{
-		const double   factor = 1.0 / i;
+		const double factor = 1.0 / i;
 		const vReal vFactor = factor;
 
     result = vOne + x*result*vFactor;
 	}
+
+
+	return result;
+
+}
+
+
+///  vExpm1: exponential minus 1.0 function for vReal types
+///    @param[in] x: exponent
+///    @return exponential minus 1.0 of x
+///////////////////////////////////////////////////////////
+
+vReal vExpm1 (const vReal x)
+{
+	const int n = 9;
+
+  vReal result = 1.0;
+
+  for (int i = n; i > 1; i--)
+	{
+		const double factor = 1.0 / i;
+		const vReal vFactor = factor;
+
+    result = vOne + x*result*vFactor;
+	}
+
+  result = x*result;
 
 
 	return result;

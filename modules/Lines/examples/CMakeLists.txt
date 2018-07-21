@@ -1,4 +1,4 @@
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 # Add C++11 compiler flags
 set( CMAKE_CXX_FLAGS

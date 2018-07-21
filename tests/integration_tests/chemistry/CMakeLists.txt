@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 project(Magritte_test_chemistry)
 
 # Set build type to Debug
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 # Add compiler flaggs
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcmodel=medium -std=c++11 -std=gnu++11")

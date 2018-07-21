@@ -11,6 +11,8 @@
 #include <vector>
 using namespace std;
 
+#include "GridTypes.hpp"
+
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] f: vector of tabulated function values
@@ -25,6 +27,7 @@ double interpolate (vector<double> f, vector<double> x, long start, long stop, d
 
 
 
+int search (vReal1& vec, long& notch, const double value);
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] x: vector of tabulated argument values
@@ -34,7 +37,7 @@ double interpolate (vector<double> f, vector<double> x, long start, long stop, d
 ///  @return index of x table just above value
 //////////////////////////////////////////////////////////////////
 
-long search (vector<double> x, long start, long stop, double value);
+long search (const vector<double>& x, long start, long stop, const double value);
 
 
 
@@ -49,9 +52,9 @@ long search (vector<double> x, long start, long stop, double value);
 ///    @param[out] f_new: function values evaluated at new arguments
 /////////////////////////////////////////////////////////////////////
 
-int resample (vector<double> x, vector<double> f, 
+int resample (vector<double>& x, vector<double>& f,
 		          const long start, const long stop,
-	           	vector<double> x_new, vector<double>& f_new);
+	           	vector<double>& x_new, vector<double>& f_new);
 
 
 
@@ -65,8 +68,8 @@ int resample (vector<double> x, vector<double> f,
 ///    @return interpolated function value f(x)
 ///////////////////////////////////////////////////////////////////////
 
-inline double interpolation_1 (double x1, double f1, 
-		                           double x2, double f2, double x);
+double interpolation_1 (const double x1, const double f1,
+                        const double x2, const double f2, const double x);
 
 
 #endif //  __INTERPOLATION_HPP_INCLUDED__
