@@ -220,6 +220,43 @@ long CELLS <Dimension, Nrays> ::
 }
 
 
+/// on_ray
+
+template <int Dimension, long Nrays>
+int CELLS <Dimension, Nrays> ::
+    on_ray (const long origin, const long ray,
+			      long *cellNrs, double *dZs, long& n) const
+{
+
+  double  Z = 0.0;   // distance from origin (o)
+	double dZ = 0.0;   // last increment in Z
+
+	long nxt = next (origin, ray, origin, Z, dZ);
+
+
+	if (nxt != ncells)   // if we are not going out of grid
+	{
+    cellNrs[n] = nxt;
+        dZs[n] = dZ;
+
+    n++;
+
+    while (!boundary[nxt])   // while we have not hit the boundary
+		{
+      nxt = next (origin, ray, nxt, Z, dZ);
+
+      cellNrs[n] = nxt;
+          dZs[n] = dZ;
+
+      n++;
+		}
+	}
+
+	return (0);
+
+}
+
+
 
 
 ///  relative_velocity: get relative velocity of current w.r.t. origin along ray

@@ -61,8 +61,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
   for (long r = START_raypair; r < STOP_raypair; r++)
 	{
-		const long R = r - START_raypair;
+		const long R  = r - START_raypair;
 
+    const long ar = cells.rays.antipod[r];
 
 		// Allocate all vector variables outside the omp parallel block
 
@@ -106,8 +107,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
     vReal Bd;          // B[ndep-1]
 	  vReal Bd_min_Ad;   // B[ndep-1] - A[ndep-1]
 
-    vReal u_local;   // local value of u field in direction r/ar
-    vReal v_local;   // local value of v field in direction r/ar
+    //vReal u_local;
+    //vReal v_local;
+
 
 
 	  // Loop over all cells
@@ -117,7 +119,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 		private (eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,          \
 			       freq_scaled, U_scaled, V_scaled,                                         \
 						 u, v, Su_r, Sv_r, dtau_r, Su_ar, Sv_ar, dtau_ar, Lambda, A, C, F, G,     \
-		         B0, B0_min_C0, Bd, Bd_min_Ad, u_local, v_local)                          \
+		         B0, B0_min_C0, Bd, Bd_min_Ad)                                            \
 		default (none)                                                                    \
 
     {
@@ -134,29 +136,73 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	//MPI_TIMER timer_RT_CALC ("RT_CALC");
 	//timer_RT_CALC.start ();
+	    long n_r  = 0;
+	    long n_ar = 0;
 
-			long notch = 0;
+			long  cellNrs_r [ncells];
+			long    notch_r [ncells];
+		  double shifts_r [ncells];   // indicates where we are in frequency space
+			double     dZ_r [ncells];
+
+			long  cellNrs_ar [ncells];
+			long    notch_ar [ncells];
+		  double shifts_ar [ncells];   // indicates where we are in frequency space
+			double     dZ_ar [ncells];
+
+
+			// Extract the cell on ray r and antipodal ar
+
+      cells.on_ray (o, r,  cellNrs_r,  dZ_r,  n_r);
+      cells.on_ray (o, ar, cellNrs_ar, dZ_ar, n_ar);
+
+			
+			for (long q = 0; q < n_r; q++)
+			{
+				 notch_r[q] = 0;
+		    shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
+			}
+
+			for (long q = 0; q < n_ar; q++)
+			{
+				 notch_ar[q] = 0;
+		    shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
+			}
 
 	    for (long f = 0; f < nfreq_red; f++)
 	  	{
 
-	      long n_r  = 0;
-	      long n_ar = 0;
+
 
 	      //MPI_TIMER timer_SU ("SU");
 	      //timer_SU.start ();
+        //set_up_ray <Dimension, Nrays>
+        //           (cells, frequencies, temperature, lines, scattering, radiation,
+			  //					  f, notch, o, r, R,  ray,
+				//						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
+				//				    freq_scaled, U_scaled, V_scaled, n_r,  Su_r,  Sv_r,  dtau_r);
 
-        set_up_ray <Dimension, Nrays>
-                   (cells, frequencies, temperature, lines, scattering, radiation,
-			  					  f, notch, o, r, R,  ray,
-										eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-								    freq_scaled, U_scaled, V_scaled, n_r,  Su_r,  Sv_r,  dtau_r);
+        //set_up_ray <Dimension, Nrays>
+        //           (cells, frequencies, temperature, lines, scattering, radiation,
+				//						f, notch, o, r, R, antipod,
+		  	//						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
+				//				    freq_scaled, U_scaled, V_scaled, n_ar, Su_ar, Sv_ar, dtau_ar);
+				if (n_r > 0)
+				{
+          set_up_ray <Dimension, Nrays>
+				             (cells, ray, frequencies, temperature, lines, scattering, radiation,
+			    					  f, notch_r, o, R, cellNrs_r, shifts_r, dZ_r, n_r,
+				  						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
+				  				    freq_scaled, U_scaled, V_scaled, Su_r,  Sv_r,  dtau_r);
+				}
 
-        set_up_ray <Dimension, Nrays>
-                   (cells, frequencies, temperature, lines, scattering, radiation,
-										f, notch, o, r, R, antipod,
-		  							eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-								    freq_scaled, U_scaled, V_scaled, n_ar, Su_ar, Sv_ar, dtau_ar);
+				if (n_ar > 0)
+				{
+          set_up_ray <Dimension, Nrays>
+				             (cells, antipod, frequencies, temperature, lines, scattering, radiation,
+				  					 f, notch_ar, o, R, cellNrs_ar, shifts_ar, dZ_ar, n_ar,
+		  	  					 eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
+				  				   freq_scaled, U_scaled, V_scaled, Su_ar, Sv_ar, dtau_ar);
+				}
 
 			  //timer_SU.stop ();
 			  //timer_SU.print ();
@@ -194,8 +240,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	    //MPI_TIMER timer_SR ("SR");
 	    //timer_SR.start ();
 
-      	u_local = 0.0;
-      	v_local = 0.0;
+      	vReal u_local = 0.0;   // local value of u field in direction r/ar
+      	vReal v_local = 0.0;   // local value of v field in direction r/ar
 
 	      if (ndep > 1)
 	      {
@@ -239,8 +285,10 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	        }
 	      }
 
-	      radiation.u[R][radiation.index(o,f)] = u_local;
-	      radiation.v[R][radiation.index(o,f)] = v_local;
+				long index = radiation.index(o,f);
+
+	      radiation.u[R][index] = u_local;
+	      radiation.v[R][index] = v_local;
 
 			//timer_SR.stop ();
 			//timer_SR.print ();
