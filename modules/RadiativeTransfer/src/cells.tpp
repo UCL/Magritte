@@ -223,11 +223,10 @@ long CELLS <Dimension, Nrays> ::
 /// on_ray
 
 template <int Dimension, long Nrays>
-int CELLS <Dimension, Nrays> ::
-    on_ray (const long origin, const long ray,
-			      long *cellNrs, double *dZs, long& n) const
+long CELLS <Dimension, Nrays> ::
+     on_ray (const long origin, const long ray, long *cellNrs, double *dZs) const
 {
-
+	long    n = 0;     // number of cells on the ray
   double  Z = 0.0;   // distance from origin (o)
 	double dZ = 0.0;   // last increment in Z
 
@@ -252,7 +251,8 @@ int CELLS <Dimension, Nrays> ::
 		}
 	}
 
-	return (0);
+
+	return n;
 
 }
 

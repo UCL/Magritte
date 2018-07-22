@@ -77,9 +77,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	  vReal chi_n;
 
 	  vReal freq_scaled;
-
-	  vReal U_scaled;
-	  vReal V_scaled;
+	  vReal    U_scaled;
+	  vReal    V_scaled;
+		vReal Ibdy_scaled;
 
 	  vReal term1_n;
 	  vReal term2_n;
@@ -97,15 +97,6 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	  vReal Lambda [ncells];
 
-    vReal A [ncells];   // A coefficient in Feautrier recursion relation
-	  vReal C [ncells];   // C coefficient in Feautrier recursion relation
-    vReal F [ncells];   // helper variable from Rybicki & Hummer (1991)
-    vReal G [ncells];   // helper variable from Rybicki & Hummer (1991)
-
-	  vReal B0;          // B[0]
-    vReal B0_min_C0;   // B[0] - C[0]
-    vReal Bd;          // B[ndep-1]
-	  vReal Bd_min_Ad;   // B[ndep-1] - A[ndep-1]
 
     //vReal u_local;
     //vReal v_local;
@@ -117,9 +108,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 #   pragma omp parallel                                                               \
 	  shared (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
 		private (eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,          \
-			       freq_scaled, U_scaled, V_scaled,                                         \
-						 u, v, Su_r, Sv_r, dtau_r, Su_ar, Sv_ar, dtau_ar, Lambda, A, C, F, G,     \
-		         B0, B0_min_C0, Bd, Bd_min_Ad)                                            \
+			       freq_scaled, U_scaled, V_scaled, Ibdy_scaled,                            \
+						 u, v, Su_r, Sv_r, dtau_r, Su_ar, Sv_ar, dtau_ar, Lambda/*, A, C, F, G,     \
+		         B0, B0_min_C0, Bd, Bd_min_Ad*/)                                            \
 		default (none)                                                                    \
 
     {
@@ -136,37 +127,51 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	//MPI_TIMER timer_RT_CALC ("RT_CALC");
 	//timer_RT_CALC.start ();
-	    long n_r  = 0;
-	    long n_ar = 0;
+	    //MPI_TIMER timer_PS ("PS");
+	    //timer_PS.start ();
 
 			long  cellNrs_r [ncells];
 			long    notch_r [ncells];
+			long   lnotch_r [ncells];
 		  double shifts_r [ncells];   // indicates where we are in frequency space
 			double     dZ_r [ncells];
 
 			long  cellNrs_ar [ncells];
 			long    notch_ar [ncells];
+			long   lnotch_ar [ncells];
 		  double shifts_ar [ncells];   // indicates where we are in frequency space
 			double     dZ_ar [ncells];
 
 
 			// Extract the cell on ray r and antipodal ar
 
-      cells.on_ray (o, r,  cellNrs_r,  dZ_r,  n_r);
-      cells.on_ray (o, ar, cellNrs_ar, dZ_ar, n_ar);
+      long n_r  = cells.on_ray (o, r,  cellNrs_r,  dZ_r);
+      long n_ar = cells.on_ray (o, ar, cellNrs_ar, dZ_ar);
 
-			
+
 			for (long q = 0; q < n_r; q++)
 			{
 				 notch_r[q] = 0;
+				lnotch_r[q] = 0;
 		    shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
 			}
 
 			for (long q = 0; q < n_ar; q++)
 			{
 				 notch_ar[q] = 0;
+				lnotch_ar[q] = 0;
 		    shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
 			}
+
+			lnotch_r[ncells]  = 0;
+			lnotch_ar[ncells] = 0;
+
+			//timer_PS.stop ();
+			//timer_PS.print ();
+
+
+	    //MPI_TIMER timer_SS ("SS");
+	    //timer_SS.start ();
 
 	    for (long f = 0; f < nfreq_red; f++)
 	  	{
@@ -190,18 +195,18 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 				{
           set_up_ray <Dimension, Nrays>
 				             (cells, ray, frequencies, temperature, lines, scattering, radiation,
-			    					  f, notch_r, o, R, cellNrs_r, shifts_r, dZ_r, n_r,
+			    					  f, lnotch_r, notch_r, o, R, cellNrs_r, shifts_r, dZ_r, n_r,
 				  						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-				  				    freq_scaled, U_scaled, V_scaled, Su_r,  Sv_r,  dtau_r);
+				  				    freq_scaled, U_scaled, V_scaled, Ibdy_scaled, Su_r,  Sv_r,  dtau_r);
 				}
 
 				if (n_ar > 0)
 				{
           set_up_ray <Dimension, Nrays>
 				             (cells, antipod, frequencies, temperature, lines, scattering, radiation,
-				  					 f, notch_ar, o, R, cellNrs_ar, shifts_ar, dZ_ar, n_ar,
-		  	  					 eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-				  				   freq_scaled, U_scaled, V_scaled, Su_ar, Sv_ar, dtau_ar);
+				  					  f, lnotch_ar, notch_ar, o, R, cellNrs_ar, shifts_ar, dZ_ar, n_ar,
+		  	  					  eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
+				  				    freq_scaled, U_scaled, V_scaled, Ibdy_scaled, Su_ar, Sv_ar, dtau_ar);
 				}
 
 			  //timer_SU.stop ();
@@ -237,8 +242,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 //				cout << "r = " << r << endl;
 //			}
 
-	    //MPI_TIMER timer_SR ("SR");
-	    //timer_SR.start ();
+	   // MPI_TIMER timer_SR ("SR");
+	   // timer_SR.start ();
 
       	vReal u_local = 0.0;   // local value of u field in direction r/ar
       	vReal v_local = 0.0;   // local value of v field in direction r/ar
@@ -260,9 +265,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
           solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
 	      			       n_ar, Su_ar, Sv_ar, dtau_ar,
-										 A, C, F, G,
-										 B0, B0_min_C0, Bd, Bd_min_Ad,
-        						 ndep, u, v, ndiag, Lambda);
+						/*				 A, C, F, G,
+										 B0, B0_min_C0, Bd, Bd_min_Ad, */
+        						 ndep, u, v, ndiag, Lambda, ncells);
 
 					//cout << "Got solved" << endl;
 
@@ -295,6 +300,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	  	} // end of loop over frequencies
 
+			//timer_SS.stop ();
+			//timer_SS.print ();
 
 	//timer_RT_CALC.stop ();
 	//timer_RT_CALC.print_to_file ();

@@ -36,33 +36,27 @@ enum RAYTYPE {ray, antipod};
 ///    @param[out] dtau: reference to the optical depth increments along the ray
 //////////////////////////////////////////////////////////////////////////////////
 
-template <int Dimension, long Nrays>
-int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
-		            const TEMPERATURE& temperature, LINES& lines,
-								const SCATTERING& scattering, RADIATION& radiation,
-								const long f, long index,
-								const long o, const long r, const long R, const RAYTYPE raytype,
-								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
-								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
-								vReal freq_scaled, vReal U_scaled, vReal V_scaled,
-	              long& n, vReal* Su, vReal* Sv, vReal* dtau);
-
-
-template <int Dimension, long Nrays>
-int get_cells_on_raypair (const CELLS <Dimension, Nrays>& cells,
-								          const long o, const long r,
-                          long *raypoints, double *dZ, long& n);
+//template <int Dimension, long Nrays>
+//int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
+//		            const TEMPERATURE& temperature, LINES& lines,
+//								const SCATTERING& scattering, RADIATION& radiation,
+//								const long f, long index,
+//								const long o, const long r, const long R, const RAYTYPE raytype,
+//								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
+//								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
+//								vReal freq_scaled, vReal U_scaled, vReal V_scaled,
+//	              long& n, vReal* Su, vReal* Sv, vReal* dtau);
 
 
 template <int Dimension, long Nrays>
 int set_up_ray (const CELLS<Dimension, Nrays>& cells, const RAYTYPE raytype,
 	              FREQUENCIES& frequencies, const TEMPERATURE& temperature,
 								LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-								const long f, long *notch, const long o, const long R,
+								const long f, long *lnotch, long *notch, const long o, const long R,
 								long *raypoints, double *scale, double *dZ, long n,
 								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
 								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
-								vReal freq_scaled, vReal U_scaled, vReal V_scaled,
+								vReal freq_scaled, vReal U_scaled, vReal V_scaled, vReal Ibdy_scaled,
 	              vReal* Su, vReal* Sv, vReal* dtau);
 
 

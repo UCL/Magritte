@@ -117,11 +117,11 @@ int main (void)
 	//{
 	  for (long f = 0; f < nfreq_red; f++)
 	  {
-      solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
-	  	  	       n_ar, Su_ar, Sv_ar, dtau_ar,
-                 A, C, F, G,
-								 B0, B0_min_C0, Bd, Bd_min_Ad,
-	  		  			 ndep, u, v, ndiag, Lambda);
+  //    solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
+	//  	  	       n_ar, Su_ar, Sv_ar, dtau_ar,
+  //               A, C, F, G,
+	//							 B0, B0_min_C0, Bd, Bd_min_Ad,
+	//  		  			 ndep, u, v, ndiag, Lambda);
     }
 	//}
 

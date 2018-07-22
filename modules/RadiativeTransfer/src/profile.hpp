@@ -24,12 +24,12 @@ vReal profile (const double temperature_gas, const double freq_line, const vReal
 
 
 ///  profile: line profile function
-///    @param[in] inverse_width: inverse profile width
+///    @param[in] width: profile width
 ///    @param[in] freq_diff: frequency at which we want evaluate the profile
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////////
 
-vReal profile (const double inverse_width, const vReal freq_diff);
+vReal profile (const double width, const vReal freq_diff);
 
 
 

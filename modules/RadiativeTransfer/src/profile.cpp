@@ -41,11 +41,12 @@ vReal profile (const double temperature_gas, const double freq_line, const vReal
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////////
 
-vReal profile (const double inverse_width, const vReal freq_diff)
+vReal profile (const double width, const vReal freq_diff)
 {
 
-	const vReal sqrtExponent = inverse_width * freq_diff;
-	const vReal exponent     = - sqrtExponent * sqrtExponent;
+  const double inverse_width = 1.0 / width;
+	const vReal  sqrtExponent  = inverse_width * freq_diff;
+	const vReal  exponent      = - sqrtExponent * sqrtExponent;
 
 
 	return inverse_width * INVERSE_SQRT_PI * vExp (exponent);

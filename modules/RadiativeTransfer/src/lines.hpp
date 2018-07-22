@@ -52,8 +52,11 @@ struct LINES
 
   long index (const long p, const int l, const int k) const;
 
+  long index (const long p, const long line_index) const;
+
   int add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-																 	vReal& freq_scaled, const long p, vReal& eta, vReal& chi) const;
+																 	vReal& freq_scaled, long& lnotch, const long p,
+																	vReal& eta, vReal& chi) const;
 
 	int mpi_allgatherv ();
 

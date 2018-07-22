@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -24,7 +25,8 @@ using namespace std;
 
 FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
   : ncells    (num_of_cells)
-	, nfreq     (count_nfreq (linedata))
+	, nlines    (count_nlines (linedata))
+  , nfreq     (count_nfreq (nlines))
 	, nfreq_red (count_nfreq_red (nfreq))
 {
 
@@ -76,8 +78,32 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 	} // end of pragma omp parallel
 
 
-}   // END OF CONSTRUCTOR
+  // Find the order of the line center frequencies
 
+  line      .resize (nlines);
+  line_index.resize (nlines);
+
+  long index = 0;
+
+	 for (int l = 0; l < linedata.nlspec; l++)
+	 {
+		for (int k = 0; k < linedata.nrad[l]; k++)
+		{
+		  const int i = linedata.irad[l][k];
+		  const int j = linedata.jrad[l][k];
+
+		  line      [index] = linedata.frequency[l](i,j);
+      line_index[index] = index;
+      index++;
+    }
+	}
+
+	// Sort frequencies
+
+  heapsort (line, line_index, nlines);
+
+
+}   // END OF CONSTRUCTOR
 
 
 
@@ -85,7 +111,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 ///    @param[in] linedata: data structure containing the line data
 ///////////////////////////////////////////////////////////////////
 
-long FREQUENCIES :: count_nfreq (const LINEDATA& linedata)
+long FREQUENCIES :: count_nlines (const LINEDATA& linedata)
 {
 
 	long index = 0;
@@ -97,13 +123,29 @@ long FREQUENCIES :: count_nfreq (const LINEDATA& linedata)
   {
   	for (int k = 0; k < linedata.nrad[l]; k++)
   	{
-  		for (int z = 0; z < N_QUADRATURE_POINTS; z++)
-  		{
-				index++;
-  		}
+			index++;
   	}
   }
 
+
+	return index;
+
+}
+
+
+///  count_nfreq: count the number of frequencies
+///    @param[in] linedata: data structure containing the line data
+///////////////////////////////////////////////////////////////////
+
+long FREQUENCIES :: count_nfreq (const long nlines)
+{
+
+	long index = 0;
+
+
+  // Count line frequencies
+
+  index += nlines * N_QUADRATURE_POINTS;
 
 	/*
 	 *  Count other frequencies...
@@ -128,7 +170,7 @@ long FREQUENCIES :: count_nfreq (const LINEDATA& linedata)
 
 long FREQUENCIES :: count_nfreq_red (const long nfreq)
 {
-	return (nfreq + n_simd_lanes - 1) / n_simd_lanes; 
+	return (nfreq + n_simd_lanes - 1) / n_simd_lanes;
 }
 
 
@@ -142,7 +184,7 @@ long FREQUENCIES :: count_nfreq_red (const long nfreq)
 int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperature)
 {
 
-# pragma omp parallel                         \
+# pragma omp parallel                             \
   shared (linedata, temperature, H_roots, cout)   \
 	default (none)
   {
@@ -157,7 +199,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 	{
 		long index1 = 0;
 
-		Long1   order (nfreq);
+		Long1   nmbrs (nfreq);
     Double1 freqs (nfreq);
 
 	  for (int l = 0; l < linedata.nlspec; l++)
@@ -173,7 +215,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
   	    for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
   	      freqs[index1] = freq_line + width*H_roots[z];
-				  order[index1] = index1;
+				  nmbrs[index1] = index1;
 
 					index1++;
   	    }
@@ -188,7 +230,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 
 		// Sort frequencies
 
-		heapsort (freqs, order, nfreq);
+		heapsort (freqs, nmbrs, nfreq);
 
 
 		long index2 = 0;
@@ -208,7 +250,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
   	        all[p][index2] = freqs[index2];
 #         endif
 
-				  nr_line[p][l][k][z] = order[index2];
+				  nr_line[p][l][k][z] = nmbrs[index2];
 					index2++;
   	    }
   	  }

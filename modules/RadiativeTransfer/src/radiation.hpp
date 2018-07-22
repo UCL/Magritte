@@ -28,13 +28,13 @@ struct RADIATION
 	const long START_raypair;   ///< reduced number of frequencies
 
 
-	vReal2 u;   ///< u intensity
-	vReal2 v;   ///< v intensity
+	vReal2 u;   ///< u intensity           (r, index(p,f))
+	vReal2 v;   ///< v intensity           (r, index(p,f))
 
-	vReal2 U;   ///< U scattered intensity
-	vReal2 V;   ///< V scattered intensity
+	vReal2 U;   ///< U scattered intensity (r, index(p,f))
+	vReal2 V;   ///< V scattered intensity (r, index(p,f))
 
-	vReal1 J;   ///< (angular) mean intensity
+	vReal1 J;   ///< (angular) mean intensity (index(p,f))
 
 	vReal3 boundary_intensity;
 
@@ -60,10 +60,13 @@ struct RADIATION
 			                           const FREQUENCIES& frequencies);
 
 
-
   int rescale_U_and_V (FREQUENCIES& frequencies, const long p,
 	                     const long R, long& notch, vReal& freq_scaled,
 						           vReal& U_scaled, vReal& V_scaled);
+
+  int rescale_U_and_V_and_bdy_I (FREQUENCIES& frequencies, const long p, const long b,
+	                               const long R, long& notch, vReal& freq_scaled,
+															   vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled);
 
 	int calc_J (void);
 

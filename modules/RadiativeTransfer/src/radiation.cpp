@@ -404,10 +404,79 @@ int RADIATION ::
 
 
 
-int RADIATION :: rescale_U_and_V (FREQUENCIES& frequencies, const long p,
-	                                const long R, long& notch, vReal& freq_scaled,
-																	vReal& U_scaled, vReal& V_scaled)
+int RADIATION ::
+    rescale_U_and_V (FREQUENCIES& frequencies, const long p,
+			               const long R, long& notch, vReal& freq_scaled,
+										 vReal& U_scaled, vReal& V_scaled)
 {
+	vReal nu1;
+	vReal nu2;
+
+	vReal U1;
+	vReal U2;
+
+	vReal V1;
+	vReal V2;
+
+  for (int lane = 0; lane < n_simd_lanes; lane++)
+	{
+
+		double freq = freq_scaled.getlane (lane);
+		search (frequencies.all[p], notch, freq);
+
+		const long f1    =  notch    / n_simd_lanes;
+    const  int lane1 =  notch    % n_simd_lanes;
+
+		const long f2    = (notch+1) / n_simd_lanes;
+    const  int lane2 = (notch+1) % n_simd_lanes;
+
+		//const double nu1 = frequencies.all[p][f1].getlane(lane1);
+		//const double nu2 = frequencies.all[p][f2].getlane(lane2);
+
+		//const double U1 = U[R][index(p,f1)].getlane(lane1);
+		//const double U2 = U[R][index(p,f2)].getlane(lane2);
+
+		//const double V1 = V[R][index(p,f1)].getlane(lane1);
+		//const double V2 = V[R][index(p,f2)].getlane(lane2);
+
+		//U_scaled.putlane(interpolation_1 (nu1, U1, nu2, U2, freq), lane);
+		//V_scaled.putlane(interpolation_1 (nu1, V1, nu2, V2, freq), lane);
+
+		nu1.putlane (frequencies.all[p][f1].getlane (lane1), lane);
+		nu2.putlane (frequencies.all[p][f2].getlane (lane2), lane);
+
+		 U1.putlane (U[R][index(p,f1)].getlane (lane1), lane);
+		 U2.putlane (U[R][index(p,f2)].getlane (lane2), lane);
+
+		 V1.putlane (V[R][index(p,f1)].getlane (lane1), lane);
+		 V2.putlane (V[R][index(p,f2)].getlane (lane2), lane);
+	}
+
+	U_scaled = interpolation_1 (nu1, U1, nu2, U2, freq_scaled);
+	V_scaled = interpolation_1 (nu1, V1, nu2, V2, freq_scaled);
+
+
+ 	return (0);
+}
+
+
+
+int RADIATION ::
+    rescale_U_and_V_and_bdy_I (FREQUENCIES& frequencies, const long p, const long b,
+	                             const long R, long& notch, vReal& freq_scaled,
+															 vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled)
+{
+	vReal nu1;
+	vReal nu2;
+
+	vReal U1;
+	vReal U2;
+
+	vReal V1;
+	vReal V2;
+
+	vReal Ibdy1;
+	vReal Ibdy2;
 
   for (int lane = 0; lane < n_simd_lanes; lane++)
 	{
@@ -421,18 +490,38 @@ int RADIATION :: rescale_U_and_V (FREQUENCIES& frequencies, const long p,
 		const long f2    = (notch+1) / n_simd_lanes;
     const  int lane2 = (notch+1) % n_simd_lanes;
 
-		const double nu1 = frequencies.all[p][f1].getlane(lane1);
-		const double nu2 = frequencies.all[p][f2].getlane(lane2);
+		//const double nu1 = frequencies.all[p][f1].getlane(lane1);
+		//const double nu2 = frequencies.all[p][f2].getlane(lane2);
 
-		const double U1 = U[R][index(p,f1)].getlane(lane1);
-		const double U2 = U[R][index(p,f2)].getlane(lane2);
+		//const double U1 = U[R][index(p,f1)].getlane(lane1);
+		//const double U2 = U[R][index(p,f2)].getlane(lane2);
 
-		const double V1 = V[R][index(p,f1)].getlane(lane1);
-		const double V2 = V[R][index(p,f2)].getlane(lane2);
+		//const double V1 = V[R][index(p,f1)].getlane(lane1);
+		//const double V2 = V[R][index(p,f2)].getlane(lane2);
 
-		U_scaled.putlane(interpolation_1 (nu1, U1, nu2, U2, freq), lane);
-		V_scaled.putlane(interpolation_1 (nu1, V1, nu2, V2, freq), lane);
+		//const double Ibdy1 = boundary_intensity[R][b][f1].getlane(lane1);
+		//const double Ibdy2 = boundary_intensity[R][b][f2].getlane(lane2);
+
+		//   U_scaled.putlane (interpolation_1 (nu1, U1,    nu2, U2,    freq), lane);
+		//   V_scaled.putlane (interpolation_1 (nu1, V1,    nu2, V2,    freq), lane);
+		//Ibdy_scaled.putlane (interpolation_1 (nu1, Ibdy1, nu2, Ibdy2, freq), lane);
+
+		  nu1.putlane (      frequencies.all[p][f1].getlane (lane1), lane);
+		  nu2.putlane (      frequencies.all[p][f2].getlane (lane2), lane);
+
+		   U1.putlane (           U[R][index(p,f1)].getlane (lane1), lane);
+		   U2.putlane (           U[R][index(p,f2)].getlane (lane2), lane);
+
+		   V1.putlane (           V[R][index(p,f1)].getlane (lane1), lane);
+		   V2.putlane (           V[R][index(p,f2)].getlane (lane2), lane);
+
+		Ibdy1.putlane (boundary_intensity[R][b][f1].getlane (lane1), lane);
+		Ibdy2.putlane (boundary_intensity[R][b][f2].getlane (lane2), lane);
 	}
+
+	   U_scaled = interpolation_1 (nu1, U1,    nu2,    U2, freq_scaled);
+	   V_scaled = interpolation_1 (nu1, V1,    nu2,    V2, freq_scaled);
+	Ibdy_scaled = interpolation_1 (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
 
 
  	return (0);

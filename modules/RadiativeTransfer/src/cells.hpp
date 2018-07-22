@@ -61,8 +61,8 @@ struct CELLS
   long next (const long origin, const long ray, const long current,
              double& Z, double& dZ) const;
 
-  int on_ray (const long origin, const long ray,
-              long *cellNrs, double *dZs, long& n) const;
+  long on_ray (const long origin, const long ray,
+               long *cellNrs, double *dZs) const;
 
 
   double relative_velocity (const long origin, const long r, long current) const;

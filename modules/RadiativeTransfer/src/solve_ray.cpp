@@ -34,12 +34,21 @@ using namespace Eigen;
 
 int solve_ray (const long n_r,  const vReal* Su_r,  const vReal* Sv_r,  const vReal* dtau_r,
 	             const long n_ar, const vReal* Su_ar, const vReal* Sv_ar, const vReal* dtau_ar,
-							     vReal* A,          vReal* C,           vReal* F,           vReal* G,
-						  		 vReal& B0,         vReal& B0_min_C0,   vReal& Bd,          vReal& Bd_min_Ad,
+							  /*   vReal* A,          vReal* C,           vReal* F,           vReal* G,
+						  		 vReal& B0,         vReal& B0_min_C0,   vReal& Bd,          vReal& Bd_min_Ad,*/
 	             const long ndep,       vReal* u,           vReal* v,
-							 const long ndiag,      vReal* Lambda)
+							 const long ndiag,      vReal* Lambda, const long ncells)
 {
 
+    vReal A [ncells];   // A coefficient in Feautrier recursion relation
+	  vReal C [ncells];   // C coefficient in Feautrier recursion relation
+    vReal F [ncells];   // helper variable from Rybicki & Hummer (1991)
+    vReal G [ncells];   // helper variable from Rybicki & Hummer (1991)
+
+	  vReal B0;          // B[0]
+    vReal B0_min_C0;   // B[0] - C[0]
+    vReal Bd;          // B[ndep-1]
+	  vReal Bd_min_Ad;   // B[ndep-1] - A[ndep-1]
 
   // SETUP FEAUTRIER RECURSION RELATION
   // __________________________________

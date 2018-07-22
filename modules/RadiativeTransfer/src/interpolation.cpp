@@ -166,3 +166,19 @@ double interpolation_1 (const double x1, const double f1,
 {
 	return (f2-f1)/(x2-x1) * (x-x1) + f1;
 }
+
+
+///  interpolation_1: linear interpolation of f(x) in interval [x1, x2]
+///    @param[in] x1: function argument 1
+///    @param[in] f1: f(x1)
+///    @param[in] x2: function argument 2
+///    @param[in] f2: f(x2)
+///    @param[in] x: value at which the function has to be interpolated
+///    @return interpolated function value f(x)
+///////////////////////////////////////////////////////////////////////
+
+vReal interpolation_1 (const vReal x1, const vReal f1,
+                       const vReal x2, const vReal f2, const vReal x)
+{
+	return (f2-f1)/(x2-x1) * (x-x1) + f1;
+}
