@@ -6,6 +6,15 @@ language:
 python:
   - "3"
 
+env:
+  - WITH_MPI=OFF
+  - WITH_MPI=ON
+
+cache:
+  directories:
+  - mpich
+  - mpich-3.2
+
 addons:
     packages:
       - cmake
@@ -14,7 +23,7 @@ before_install:
     - test -n $CC && unset CC
 
 script:
-  - bash installMPICH.sh
+#  - bash installMPICH.sh
   - bash installGrid.sh
   - mkdir build; cd build
   - CC=gcc CCX=g++  cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines

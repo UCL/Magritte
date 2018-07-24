@@ -439,8 +439,8 @@ int RADIATION ::
 		//const double V1 = V[R][index(p,f1)].getlane(lane1);
 		//const double V2 = V[R][index(p,f2)].getlane(lane2);
 
-		//U_scaled.putlane(interpolation_1 (nu1, U1, nu2, U2, freq), lane);
-		//V_scaled.putlane(interpolation_1 (nu1, V1, nu2, V2, freq), lane);
+		//U_scaled.putlane(interpolate_linear (nu1, U1, nu2, U2, freq), lane);
+		//V_scaled.putlane(interpolate_linear (nu1, V1, nu2, V2, freq), lane);
 
 		nu1.putlane (frequencies.all[p][f1].getlane (lane1), lane);
 		nu2.putlane (frequencies.all[p][f2].getlane (lane2), lane);
@@ -452,8 +452,8 @@ int RADIATION ::
 		 V2.putlane (V[R][index(p,f2)].getlane (lane2), lane);
 	}
 
-	U_scaled = interpolation_1 (nu1, U1, nu2, U2, freq_scaled);
-	V_scaled = interpolation_1 (nu1, V1, nu2, V2, freq_scaled);
+	U_scaled = interpolate_linear (nu1, U1, nu2, U2, freq_scaled);
+	V_scaled = interpolate_linear (nu1, V1, nu2, V2, freq_scaled);
 
 
  	return (0);
@@ -502,9 +502,9 @@ int RADIATION ::
 		//const double Ibdy1 = boundary_intensity[R][b][f1].getlane(lane1);
 		//const double Ibdy2 = boundary_intensity[R][b][f2].getlane(lane2);
 
-		//   U_scaled.putlane (interpolation_1 (nu1, U1,    nu2, U2,    freq), lane);
-		//   V_scaled.putlane (interpolation_1 (nu1, V1,    nu2, V2,    freq), lane);
-		//Ibdy_scaled.putlane (interpolation_1 (nu1, Ibdy1, nu2, Ibdy2, freq), lane);
+		//   U_scaled.putlane (interpolate_linear (nu1, U1,    nu2, U2,    freq), lane);
+		//   V_scaled.putlane (interpolate_linear (nu1, V1,    nu2, V2,    freq), lane);
+		//Ibdy_scaled.putlane (interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq), lane);
 
 		  nu1.putlane (      frequencies.all[p][f1].getlane (lane1), lane);
 		  nu2.putlane (      frequencies.all[p][f2].getlane (lane2), lane);
@@ -519,9 +519,9 @@ int RADIATION ::
 		Ibdy2.putlane (boundary_intensity[R][b][f2].getlane (lane2), lane);
 	}
 
-	   U_scaled = interpolation_1 (nu1, U1,    nu2,    U2, freq_scaled);
-	   V_scaled = interpolation_1 (nu1, V1,    nu2,    V2, freq_scaled);
-	Ibdy_scaled = interpolation_1 (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
+	   U_scaled = interpolate_linear (nu1, U1,    nu2,    U2, freq_scaled);
+	   V_scaled = interpolate_linear (nu1, V1,    nu2,    V2, freq_scaled);
+	Ibdy_scaled = interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
 
 
  	return (0);

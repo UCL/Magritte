@@ -37,7 +37,7 @@ inline double interpolate (const Double1& f, const Double1& x, const long start,
 
   long n = search (x, start, stop, value);
 
-	return interpolation_1 (x[n-1], f[n-1], x[n], f[n], value);
+	return interpolate_linear (x[n-1], f[n-1], x[n], f[n], value);
 }
 
 
@@ -137,7 +137,7 @@ inline long search (const Double1& x, long start, long stop, const double value)
 //	{
 //  	while (x[id] < x_new[id_new])	id++;
 //
-//    f_new[id_new] = interpolation_1 (x[id], f[id], x[id-1], f[id-1], x_new[id_new]);
+//    f_new[id_new] = interpolate_linear (x[id], f[id], x[id-1], f[id-1], x_new[id_new]);
 //		id_new++;
 //	}
 //
@@ -155,33 +155,33 @@ inline long search (const Double1& x, long start, long stop, const double value)
 
 
 
-///  interpolation_1: linear interpolation of f(x) in interval [x1, x2]
+///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
 ///    @param[in] x1: function argument 1
 ///    @param[in] f1: f(x1)
 ///    @param[in] x2: function argument 2
 ///    @param[in] f2: f(x2)
 ///    @param[in] x: value at which the function has to be interpolated
 ///    @return interpolated function value f(x)
-///////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
-inline double interpolation_1 (const double x1, const double f1,
-                               const double x2, const double f2, const double x)
+inline double interpolate_linear (const double x1, const double f1,
+                                  const double x2, const double f2, const double x)
 {
 	return (f2-f1)/(x2-x1) * (x-x1) + f1;
 }
 
 
-///  interpolation_1: linear interpolation of f(x) in interval [x1, x2]
+///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
 ///    @param[in] x1: function argument 1
 ///    @param[in] f1: f(x1)
 ///    @param[in] x2: function argument 2
 ///    @param[in] f2: f(x2)
 ///    @param[in] x: value at which the function has to be interpolated
 ///    @return interpolated function value f(x)
-///////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
-inline vReal interpolation_1 (const vReal x1, const vReal f1,
-                              const vReal x2, const vReal f2, const vReal x)
+inline vReal interpolate_linear (const vReal x1, const vReal f1,
+                                 const vReal x2, const vReal f2, const vReal x)
 {
 	return (f2-f1)/(x2-x1) * (x-x1) + f1;
 }
