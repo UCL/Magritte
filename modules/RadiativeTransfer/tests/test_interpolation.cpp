@@ -5,25 +5,15 @@
 
 
 #include <iostream>
-#include <vector>
 using namespace std;
 
 #include "catch.hpp"
 
-#include "../src/interpolation.hpp"
+#include "interpolation.hpp"
+#include "GridTypes.hpp"
+#include "types.hpp"
 
 #define EPS 1.0E-4
-
-
-///  relative_error: returns relative error between A and B
-///////////////////////////////////////////////////////////
-
-double relative_error (double A, double B)
-{
-  return 2.0 * fabs(A-B) / fabs(A+B);
-}
-
-
 
 
 TEST_CASE ("Simple search")
@@ -59,7 +49,7 @@ TEST_CASE ("Simple interpolation")
 
 }
 
-
+TEST_CASE
 
 
 //TEST_CASE ("Simple resample")
@@ -74,7 +64,7 @@ TEST_CASE ("Simple interpolation")
 //
 //	vector<double> x_new = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
 //	vector<double> f_new = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//	
+//
 //  resample (x, f, start, stop, x_new, f_new);
 //
 //	CHECK (f_new[0] == 0.0);
