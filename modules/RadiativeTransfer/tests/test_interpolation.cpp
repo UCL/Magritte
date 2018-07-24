@@ -62,25 +62,25 @@ TEST_CASE ("Simple interpolation")
 
 
 
-TEST_CASE ("Simple resample")
-{
-	vector<double> x = {2.0, 4.0, 6.0, 8.0, 10.0, 12.0};
-	vector<double> f = {1.0, 2.0, 3.0, 4.0,  5.0,  6.0};
-
-	double scale = 0.5;
-
-  long start = 1;
-	long stop  = 5;
-
-	vector<double> x_new = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-	vector<double> f_new = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-	
-  resample (x, f, start, stop, x_new, f_new);
-
-	CHECK (f_new[0] == 0.0);
-	CHECK (f_new[1] == 2.0);
-	CHECK (f_new[2] == 2.0);
-	CHECK (f_new[3] == 2.0);
-	CHECK (f_new[4] == 2.5);
-	CHECK (f_new[5] == 0.0);
-}
+//TEST_CASE ("Simple resample")
+//{
+//	vector<double> x = {2.0, 4.0, 6.0, 8.0, 10.0, 12.0};
+//	vector<double> f = {1.0, 2.0, 3.0, 4.0,  5.0,  6.0};
+//
+//	double scale = 0.5;
+//
+//  long start = 1;
+//	long stop  = 5;
+//
+//	vector<double> x_new = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+//	vector<double> f_new = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//	
+//  resample (x, f, start, stop, x_new, f_new);
+//
+//	CHECK (f_new[0] == 0.0);
+//	CHECK (f_new[1] == 2.0);
+//	CHECK (f_new[2] == 2.0);
+//	CHECK (f_new[3] == 2.0);
+//	CHECK (f_new[4] == 2.5);
+//	CHECK (f_new[5] == 0.0);
+//}

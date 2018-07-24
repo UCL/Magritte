@@ -8,10 +8,8 @@
 #define __INTERPOLATION_HPP_INCLUDED__
 
 
-#include <vector>
-using namespace std;
-
 #include "GridTypes.hpp"
+#include "types.hpp"
 
 
 ///  interpolate: interpolate tabulated function for a given range
