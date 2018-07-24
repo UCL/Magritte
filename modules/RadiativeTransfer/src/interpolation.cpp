@@ -11,6 +11,7 @@ using namespace std;
 
 #include "interpolation.hpp"
 #include "GridTypes.hpp"
+#include "types.hpp"
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] f: vector of tabulated function values
@@ -21,7 +22,8 @@ using namespace std;
 ///  @return function f evaluated at value
 //////////////////////////////////////////////////////////////////
 
-double interpolate (vector<double> f, vector<double> x, long start, long stop, double value)
+inline double interpolate (const Double1& f, const Double1& x, const long start,
+                           const long stop, const double value)
 {
   if (value < x[start])
 	{
@@ -49,7 +51,8 @@ double interpolate (vector<double> f, vector<double> x, long start, long stop, d
 ///  @return index of x table just above value
 //////////////////////////////////////////////////////////////////
 
-long search (vector<double>& x, long start, long stop, double value)
+inline long search (const Double1& x, const long start,
+                    const long stop, const double value)
 {
   for (long n = start; n < stop; n++)
   {
@@ -62,7 +65,7 @@ long search (vector<double>& x, long start, long stop, double value)
 
 
 
-int search (vReal1& vec, long& notch, const double value)
+inline int search (vReal1& vec, long& notch, const double value)
 {
   long f    = notch / n_simd_lanes;
    int lane = notch % n_simd_lanes;
@@ -84,7 +87,7 @@ int search (vReal1& vec, long& notch, const double value)
 
 
 
-long search (const vector<double>& x, long start, long stop, const double value)
+inline long search (const Double1& x, long start, long stop, const double value)
 {
   while (stop > start)
   {

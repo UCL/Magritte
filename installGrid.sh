@@ -3,6 +3,22 @@
 export CWD=`pwd`
 
 
+# Install mpfr
+
+wget https://www.mpfr.org/mpfr-current/mpfr-4.0.1.zip
+
+unzip mpfr-4.0.1.zip
+rm    mpfr-4.0.1.zip
+
+cd mpfr-4.0.1
+
+./configure
+
+make
+
+make install
+
+
 # Install Grid
 
 mkdir $CWD/GridInstall

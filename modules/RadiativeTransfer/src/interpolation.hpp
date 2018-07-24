@@ -23,12 +23,12 @@ using namespace std;
 ///  @return function f evaluated at value
 //////////////////////////////////////////////////////////////////
 
-double interpolate (vector<double> f, vector<double> x, long start, long stop, double value);
+inline double interpolate (vector<double> f, vector<double> x, long start, long stop, double value);
 
 
 
 
-int search (vReal1& vec, long& notch, const double value);
+inline int search (vReal1& vec, long& notch, const double value);
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] x: vector of tabulated argument values
@@ -38,24 +38,24 @@ int search (vReal1& vec, long& notch, const double value);
 ///  @return index of x table just above value
 //////////////////////////////////////////////////////////////////
 
-long search (const vector<double>& x, long start, long stop, const double value);
+inline long search (const vector<double>& x, long start, long stop, const double value);
 
 
 
 
-///  resample: resample function at x_new values
-///  ASSUMING x_new preserves the order of x
-///    @param[in] x: vector containing function arguments
-///    @param[in] f: vector containing function values
-///    @param[in] start: start point to look for interpolation
-///    @param[in] stop: end point to look for interpolation
-///    @param[in] x_new: vector containing new function arguments
-///    @param[out] f_new: function values evaluated at new arguments
-/////////////////////////////////////////////////////////////////////
-
-int resample (vector<double>& x, vector<double>& f,
-		          const long start, const long stop,
-	           	vector<double>& x_new, vector<double>& f_new);
+/////  resample: resample function at x_new values
+/////  ASSUMING x_new preserves the order of x
+/////    @param[in] x: vector containing function arguments
+/////    @param[in] f: vector containing function values
+/////    @param[in] start: start point to look for interpolation
+/////    @param[in] stop: end point to look for interpolation
+/////    @param[in] x_new: vector containing new function arguments
+/////    @param[out] f_new: function values evaluated at new arguments
+///////////////////////////////////////////////////////////////////////
+//
+//inline int resample (vector<double>& x, vector<double>& f,
+//		                 const long start, const long stop,
+//	           	       vector<double>& x_new, vector<double>& f_new);
 
 
 
@@ -69,8 +69,8 @@ int resample (vector<double>& x, vector<double>& f,
 ///    @return interpolated function value f(x)
 ///////////////////////////////////////////////////////////////////////
 
-double interpolation_1 (const double x1, const double f1,
-                        const double x2, const double f2, const double x);
+inline double interpolation_1 (const double x1, const double f1,
+                               const double x2, const double f2, const double x);
 
 
 
@@ -84,8 +84,11 @@ double interpolation_1 (const double x1, const double f1,
 ///    @return interpolated function value f(x)
 ///////////////////////////////////////////////////////////////////////
 
-vReal interpolation_1 (const vReal x1, const vReal f1,
-                       const vReal x2, const vReal f2, const vReal x);
+inline vReal interpolation_1 (const vReal x1, const vReal f1,
+                              const vReal x2, const vReal f2, const vReal x);
+
+
+#include "interpolation.cpp"
 
 
 #endif //  __INTERPOLATION_HPP_INCLUDED__
