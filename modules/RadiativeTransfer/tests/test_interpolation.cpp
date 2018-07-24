@@ -65,17 +65,20 @@ TEST_CASE ("search_with_notch function (double)")
   {
     for (int lane = 0; lane < n_simd_lanes; lane++)
     {
-      vec[i].putlane(lane) = index;
+      vec[i].putlane(index, lane);
       index++;
     }
   }
 
-  double notch = 3;
+  long notch = 3;
 
   double reff   = 6.0;
-  double result = search_with_notch (vec, notch, 6);
 
-  //CHECK (result == reff);
+  search_with_notch (vec, notch, 6);
+
+  cout << notch << endl;
+
+  CHECK (notch == reff);
 
 }
 
