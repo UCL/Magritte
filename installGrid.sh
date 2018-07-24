@@ -18,6 +18,8 @@ make
 
 make install
 
+cd $CWD
+
 
 # Install Grid
 

@@ -67,7 +67,7 @@ add_library( _RADIATIVE_TRANSFER
   solve_ray.hpp
   timer.hpp
   heapsort.cpp
-  interpolation.cpp )
+  interpolation.hpp )
 
 # Link libraries
 target_link_libraries( _RADIATIVE_TRANSFER
