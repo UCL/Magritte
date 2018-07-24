@@ -49,12 +49,12 @@ using namespace std;
 //
 //}
 
-TEST_CASE ("notch_search function (double)")
+TEST_CASE ("search_with_notch function (double)")
 {
 
-  vReal vec = {}
+  vReal1 vec = {1.0, 2.0, 3.0, 4.0, 5.0};
 
-
+  double notch = 3;
 
   double reff   = 6.0;
   double result = search_with_notch (vec, notch, value);
