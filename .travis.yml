@@ -16,7 +16,7 @@ before_install:
 script:
   - bash installGrid.sh
   - mkdir build; cd build
-  - CC=gcc CCX=g++ cmake -DGRID_INSTALL_FOLDER=../GridInstall/ ../modules/Lines
+  - CC=gcc CCX=g++ cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
   - make
   #- cd tests
   #- bash run_tests.sh
