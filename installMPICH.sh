@@ -30,5 +30,5 @@ else
   rm -rf mpich-3.2
 fi
 
-export MPI_C_INCLUDE_PATH=-I./mpich/include
-export MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib
+export MPI_C_INCLUDE_PATH=./mpich/include
+export MPI_C_LIBRARIES=./mpich/lib
