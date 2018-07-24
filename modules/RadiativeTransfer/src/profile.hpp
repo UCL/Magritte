@@ -11,16 +11,6 @@
 #include "GridTypes.hpp"
 
 
-///  profile: line profile function
-///    @param[in] temperature_gas: temperature of the gas at this cell
-///    @param[in] freq_line: frequency of the line under consideration
-///    @param[in] freq: frequency at which we  want evaluate the profile
-///    @return profile function evaluated at frequency freq
-////////////////////////////////////////////////////////////////////////
-
-vReal profile (const double temperature_gas, const double freq_line, const vReal freq);
-
-
 
 
 ///  profile: line profile function
@@ -29,7 +19,7 @@ vReal profile (const double temperature_gas, const double freq_line, const vReal
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////////
 
-vReal profile (const double width, const vReal freq_diff);
+inline vReal profile (const double width, const vReal freq_diff);
 
 
 
@@ -40,12 +30,9 @@ vReal profile (const double width, const vReal freq_diff);
 ///    @return width of the correpsonding line profile
 //////////////////////////////////////////////////////////////////////////////////
 
-double profile_width (const double temperature_gas, const double freq_line);
+inline double profile_width (const double temperature_gas, const double freq_line);
 
 
-
-
-double inverse_profile_width (const double temperature_gas, const double freq_line);
 
 
 ///  Planck: Planck energy distribution function (in freqiencies)
@@ -53,7 +40,7 @@ double inverse_profile_width (const double temperature_gas, const double freq_li
 ///    @param[in] freq: frequency at which we want evaluate the Planck function
 ///////////////////////////////////////////////////////////////////////////////
 
-vReal Planck (const double temperature_gas, const vReal freq);
+inline vReal Planck (const double temperature_gas, const vReal freq);
 
 
 
@@ -63,7 +50,7 @@ vReal Planck (const double temperature_gas, const vReal freq);
 ///    @return exponential of x
 /////////////////////////////////////////////////
 
-vReal vExp (const vReal);
+inline vReal vExp (const vReal);
 
 
 
@@ -73,7 +60,10 @@ vReal vExp (const vReal);
 ///    @return exponential minus 1.0 of x
 ///////////////////////////////////////////////////////////
 
-vReal vExpm1 (const vReal x);
+inline vReal vExpm1 (const vReal x);
+
+
+#include "profile.cpp"
 
 
 #endif // __PROFILE_HPP_INCLUDED__

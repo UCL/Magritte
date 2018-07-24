@@ -1,0 +1,132 @@
+# Compiled Object files #
+#########################
+*.slo
+*.lo
+*.o
+*.obj
+
+# Editor files #
+################
+*~
+*#
+*.sublime-*
+
+# Precompiled Headers #
+#######################
+*.gch
+*.pch
+
+# Compiled Dynamic libraries #
+##############################
+*.so
+*.dylib
+*.dll
+
+# Fortran module files #
+########################
+*.mod
+
+# Compiled Static libraries #
+#############################
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables #
+###############
+*.exe
+*.out
+*.app
+
+# http://www.gnu.org/software/automake #
+########################################
+Makefile.in
+Makefile
+Config.h
+Config.h.in
+config.log
+config.status
+.deps
+Make.inc
+eigen.inc
+Eigen.inc
+
+# http://www.gnu.org/software/autoconf #
+########################################
+autom4te.cache
+aclocal.m4
+compile
+configure
+depcomp
+install-sh
+missing
+stamp-h1
+config.sub
+config.guess
+INSTALL
+.dirstamp
+ltmain.sh
+ 
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+ 
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# build directory #
+###################
+build*/*
+
+# IDE related files #
+#####################
+*.xcodeproj/*
+build.sh
+.vscode
+*.code-workspace
+
+# Eigen source #
+################
+lib/Eigen/*
+
+# FFTW source #
+################
+lib/fftw/*
+
+# libtool macros #
+##################
+m4/lt*
+m4/libtool.m4
+
+# github pages #
+################
+gh-pages/
+
+# Buck files #
+##############
+.buck*
+buck-out
+BUCK
+make-bin-BUCK.sh
+
+# generated sources #
+#####################
+lib/qcd/spin/gamma-gen/*.h
+lib/qcd/spin/gamma-gen/*.cc
+lib/version.h
+
+# vs code editor files #
+########################
+.vscode/
+.vscode/settings.json
+settings.json

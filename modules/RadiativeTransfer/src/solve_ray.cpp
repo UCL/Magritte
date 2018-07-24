@@ -32,101 +32,44 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-int solve_ray (const long n_r,  const vReal* Su_r,  const vReal* Sv_r,  const vReal* dtau_r,
-	             const long n_ar, const vReal* Su_ar, const vReal* Sv_ar, const vReal* dtau_ar,
-							  /*   vReal* A,          vReal* C,           vReal* F,           vReal* G,
-						  		 vReal& B0,         vReal& B0_min_C0,   vReal& Bd,          vReal& Bd_min_Ad,*/
-	             const long ndep,       vReal* u,           vReal* v,
-							 const long ndiag,      vReal* Lambda, const long ncells)
+inline int solve_ray (const long ndep, vReal *Su, vReal *Sv, const vReal* dtau,
+			        				const long ndiag, vReal *Lambda, const long ncells)
 {
 
-    vReal A [ncells];   // A coefficient in Feautrier recursion relation
-	  vReal C [ncells];   // C coefficient in Feautrier recursion relation
-    vReal F [ncells];   // helper variable from Rybicki & Hummer (1991)
-    vReal G [ncells];   // helper variable from Rybicki & Hummer (1991)
+    vReal A[ncells];   // A coefficient in Feautrier recursion relation
+	  vReal C[ncells];   // C coefficient in Feautrier recursion relation
+    vReal F[ncells];   // helper variable from Rybicki & Hummer (1991)
+    vReal G[ncells];   // helper variable from Rybicki & Hummer (1991)
 
 	  vReal B0;          // B[0]
     vReal B0_min_C0;   // B[0] - C[0]
     vReal Bd;          // B[ndep-1]
 	  vReal Bd_min_Ad;   // B[ndep-1] - A[ndep-1]
 
+
+
+
   // SETUP FEAUTRIER RECURSION RELATION
   // __________________________________
 
 
-	if ( (n_ar > 0) && (n_r > 0) )
+  A[0] = 0.0;
+  C[0] = 2.0/(dtau[0]*dtau[0]);
+
+  B0        = vOne + 2.0/dtau[0] + 2.0/(dtau[0]*dtau[0]);
+  B0_min_C0 = vOne + 2.0/dtau[0];
+
+  for (long n = 0; n < ndep; n++)
 	{
-    A[n_ar-1] = 2.0 / ((dtau_ar[0] + dtau_r[0]) * dtau_ar[0]);
-    C[n_ar-1] = 2.0 / ((dtau_ar[0] + dtau_r[0]) * dtau_r[0]);
-	}
-
-
-	if (n_ar > 0)
-	{
-    A[0] = 0.0;
-    C[0] = 2.0/(dtau_ar[n_ar-1]*dtau_ar[n_ar-1]);
-
-    B0        = vOne + 2.0/dtau_ar[n_ar-1] + 2.0/(dtau_ar[n_ar-1]*dtau_ar[n_ar-1]);
-    B0_min_C0 = vOne + 2.0/dtau_ar[n_ar-1];
-
-    for (long n = n_ar-1; n > 1; n--)
-    {
-      A[n_ar-n] = 2.0 / ((dtau_ar[n-1] + dtau_ar[n-2]) * dtau_ar[n-1]);
-      C[n_ar-n] = 2.0 / ((dtau_ar[n-1] + dtau_ar[n-2]) * dtau_ar[n-2]);
-    }
-	}
-
-
-
-	if (n_r > 0)
-	{
-    for (long n = 0; n < n_r-1; n++)
-		{
-      A[n_ar+n] = 2.0 / ((dtau_r[n] + dtau_r[n+1]) * dtau_r[n]);
-      C[n_ar+n] = 2.0 / ((dtau_r[n] + dtau_r[n+1]) * dtau_r[n+1]);
-    }
-
-    A[ndep-1] = 2.0/(dtau_r[n_r-1]*dtau_r[n_r-1]);
-    C[ndep-1] = 0.0;
-
-    Bd        = vOne + 2.0/dtau_r[n_r-1] + 2.0/(dtau_r[n_r-1]*dtau_r[n_r-1]);
-    Bd_min_Ad = vOne + 2.0/dtau_r[n_r-1];
-	}
-
-
-	if (n_ar == 0)
-	{
-    A[0] = 0.0;
-    C[0] = 2.0/(dtau_r[0]*dtau_r[0]);
-
-    B0        = vOne + 2.0/dtau_r[0] + 2.0/(dtau_r[0]*dtau_r[0]);
-    B0_min_C0 = vOne + 2.0/dtau_r[0];
-	}
-
-
-	if (n_r == 0)
-	{
-    A[ndep-1] = 2.0/(dtau_ar[0]*dtau_ar[0]);
-    C[ndep-1] = 0.0;
-
-    Bd        = vOne + 2.0/dtau_ar[0] + 2.0/(dtau_ar[0]*dtau_ar[0]);
-    Bd_min_Ad = vOne + 2.0/dtau_ar[0];
-	}
-
-
-  // Store source function S initially in u
-
-  for (long n = n_ar-1; n >= 0; n--)
-  {
-    u[n_ar-1-n] = Su_ar[n];
-    v[n_ar-1-n] = Sv_ar[n];
+    A[n] = 2.0 / ((dtau[n] + dtau[n+1]) * dtau[n]);
+    C[n] = 2.0 / ((dtau[n] + dtau[n+1]) * dtau[n+1]);
   }
 
-  for (long n = 0; n < n_r; n++)
-  {
-    u[n_ar+n] = Su_r[n];
-    v[n_ar+n] = Sv_r[n];
-  }
+  A[ndep-1] = 2.0/(dtau[ndep-1]*dtau[ndep-1]);
+  C[ndep-1] = 0.0;
+
+  Bd        = vOne + 2.0/dtau[ndep-1] + 2.0/(dtau[ndep-1]*dtau[ndep-1]);
+  Bd_min_Ad = vOne + 2.0/dtau[ndep-1];
 
 
 
@@ -137,8 +80,8 @@ int solve_ray (const long n_r,  const vReal* Su_r,  const vReal* Sv_r,  const vR
 
   // Elimination step
 
-  u[0] = u[0] / B0;
-  v[0] = v[0] / B0;
+  Su[0] = Su[0] / B0;
+  Sv[0] = Sv[0] / B0;
 
   F[0] = B0_min_C0 / C[0];
 
@@ -146,14 +89,14 @@ int solve_ray (const long n_r,  const vReal* Su_r,  const vReal* Sv_r,  const vR
   {
     F[n] = (vOne + A[n]*F[n-1]/(vOne + F[n-1])) / C[n];
 
-    u[n] = (u[n] + A[n]*u[n-1]) / ((vOne + F[n]) * C[n]);
-    v[n] = (v[n] + A[n]*v[n-1]) / ((vOne + F[n]) * C[n]);
+    Su[n] = (Su[n] + A[n]*Su[n-1]) / ((vOne + F[n]) * C[n]);
+    Sv[n] = (Sv[n] + A[n]*Sv[n-1]) / ((vOne + F[n]) * C[n]);
   }
 
-  u[ndep-1] = (u[ndep-1] + A[ndep-1]*u[ndep-2])
+  Su[ndep-1] = (Su[ndep-1] + A[ndep-1]*Su[ndep-2])
               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
 
-  v[ndep-1] = (v[ndep-1] + A[ndep-1]*v[ndep-2])
+  Sv[ndep-1] = (Sv[ndep-1] + A[ndep-1]*Sv[ndep-2])
               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
 
   G[ndep-1] = Bd_min_Ad / A[ndep-1];
@@ -163,14 +106,14 @@ int solve_ray (const long n_r,  const vReal* Su_r,  const vReal* Sv_r,  const vR
 
   for (long n = ndep-2; n > 0; n--)
   {
-    u[n] = u[n] + u[n+1]/(vOne+F[n]);
-    v[n] = v[n] + v[n+1]/(vOne+F[n]);
+    Su[n] = Su[n] + Su[n+1]/(vOne+F[n]);
+    Sv[n] = Sv[n] + Sv[n+1]/(vOne+F[n]);
 
     G[n] = (vOne + C[n]*G[n+1]/(vOne+G[n+1])) / A[n];
   }
 
-  u[0] = u[0] + u[1]/(vOne+F[0]);
-  v[0] = v[0] + v[1]/(vOne+F[0]);
+  Su[0] = Su[0] + Su[1]/(vOne+F[0]);
+  Sv[0] = Sv[0] + Sv[1]/(vOne+F[0]);
 
 
 

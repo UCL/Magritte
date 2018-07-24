@@ -34,269 +34,177 @@ using namespace Eigen;
 ///    @param[out] dtau: reference to the optical depth increments along the ray
 //////////////////////////////////////////////////////////////////////////////////
 
-//template <int Dimension, long Nrays>
-//int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
-//		            const TEMPERATURE& temperature, LINES& lines,
-//								const SCATTERING& scattering, RADIATION& radiation,
-//								const long f, long notch,
-//								const long o, const long r, const long R, const RAYTYPE raytype,
-//								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
-//								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
-//								vReal freq_scaled, vReal U_scaled, vReal V_scaled,
-//	              long& n, vReal* Su, vReal* Sv, vReal* dtau)
-//{
-//
-//	long   dir;
-//	double sign;
-//
-//	//MPI_TIMER timer_0 ("0");
-//	//timer_0.start ();
-//
-//	const long nfreq_red = frequencies.nfreq_red;
-//
-//	// Move these out !!! They might block the multithreadings
-//
-//
-//	//timer_0.stop ();
-//	//timer_0.print_to_file ();
-//
-//
-//	if (raytype == ray)
-//	{
-//    dir  = r;
-//	  sign =  1.0;
-//	}
-//	else if (raytype == antipod)
-//	{
-//		dir  = cells.rays.antipod[r];
-//	  sign = -1.0;
-//	}
-//
-//
-//
-//
-//  double  Z = 0.0;   // distance from origin (o)
-//  double dZ = 0.0;   // last distance increment from origin (o)
-//
-//	//MPI_TIMER timer_DO ("nxt");
-//	//timer_DO.start ();
-//
-//	long current = o;                                   // current cell under consideration
-//  long next    = cells.next (o, dir, current, Z, dZ);   // next cell under consideration
-//
-//	//timer_DO.stop ();
-//	//timer_DO.print ();
-//
-//
-//	if (next != cells.ncells)   // if we are not going out of grid
-//	{
-//
-//		lines.add_emissivity_and_opacity (frequencies, temperature, frequencies.all[o][f], o, //eta_c, chi_c);
-//
-//		scattering.add_opacity (frequencies.all[o][f], chi_c);
-//
-//
-//		term1_c = (radiation.U[R][radiation.index(current,f)] + eta_c) / chi_c;
-//		term2_c =  radiation.V[R][radiation.index(current,f)]          / chi_c;
-//
-//	  //MPI_TIMER timer_DO ("do");
-//	  //timer_DO.start ();
-//
-//		do
-//		{
-//      const double velocity = cells.relative_velocity (o, dir, next);
-//      const double    scale = 1.0 - velocity/CC;
-//
-//	    //MPI_TIMER timer_ADD ("add");
-//	    //timer_ADD.start ();
-//
-//			freq_scaled = scale * frequencies.all[o][f];
-//
-//			lines.add_emissivity_and_opacity (frequencies, temperature,
-//					                              freq_scaled, o, eta_n, chi_n);
-//
-//			//timer_ADD.stop ();
-//			//timer_ADD.print ();
-//
-//			scattering.add_opacity (freq_scaled, chi_n);
-//
-//
-//      //radiation.rescale_U_and_V (frequencies, next, R, notch,
-//			//	                         freq_scaled, U_scaled, V_scaled);
-//
-//
-//			term1_n = (U_scaled + eta_n) / chi_n;
-//      term2_n =  V_scaled          / chi_n;
-//
-//			dtau[n] = 0.5 * dZ * PC *(chi_c + chi_n);
-//        Su[n] = 0.5 * (term1_n + term1_c) + sign * (term2_n - term2_c) / dtau[n];
-//       	Sv[n] = 0.5 * (term2_n + term2_c) + sign * (term1_n - term1_c) / dtau[n];
-//
-//////				if (cells.boundary[o])
-//////				{
-//////				  cout << Su[n][f] << endl;
-//////				  cout << Sv[n][f] << endl;
-//////				}
-//
-//
-//			if (cells.boundary[next])
-//			{
-//				// Add boundary condition
-//
-//				const long b = cells.cell_to_bdy_nr[next];
-//
-//				// Add something to account for Doppler shift in boundary intensity
-//
-//			  Su[n] += 2.0 / dtau[n] * (radiation.boundary_intensity[R][b][f]
-//						                      - sign*0.5 * (term2_c + term2_n));
-//				Sv[n] += 2.0 / dtau[n] * (radiation.boundary_intensity[R][b][f]
-//						                      - sign*0.5 * (term1_c + term1_n));
-//			}
-//
-//	  //  MPI_TIMER timer_NXT ("nxt");
-//	  //  timer_NXT.start ();
-//			//cout << "c" << next << endl;
-//      current = next;
-//      next    = cells.next (o, dir, current, Z, dZ);
-//			//cout << "n" << next << endl;
-//		//	timer_NXT.stop ();
-//		//	timer_NXT.print ();
-//
-//
-//        chi_c =   chi_n;
-//      term1_c = term1_n;
-//      term2_c = term2_n;
-//
-//      n++;
-//		}
-//
-//    while (!cells.boundary[current]);
-//	  //timer_DO.stop ();
-//	  //timer_DO.print ();
-//
-//	} // end of if
-//
-//
-//	return (0);
-//
-//}
+template <int Dimension, long Nrays>
+inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& frequencies,
+	                     const TEMPERATURE& temperature, LINES& lines, const SCATTERING& scattering,
+								       RADIATION& radiation, const long f, const long o, const long R,
+								       long *lnotch_ar, long *notch_ar, const long *cellNrs_ar,
+								       const double *shifts_ar, const double *dZs_ar, const long n_ar,
+								       long *lnotch_r, long *notch_r, const long *cellNrs_r,
+								       const double *shifts_r, const double *dZs_r, const long n_r,
+	                     vReal* Su, vReal* Sv, vReal* dtau, const long ndep)
+{
+
+  vReal chi_o, term1_o, term2_o, eta_o;
+	vReal chi_c, term1_c, term2_c;
+	vReal chi_n, term1_n, term2_n;
+
+	vReal Ibdy_scaled;
 
 
+  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
+	                 lnotch_r[cells.ncells], o, frequencies.all[o][f], eta_o, chi_o);
 
+	  chi_c =   chi_o;
+	term1_c = term2_o = (radiation.U[R][radiation.index(o,f)] + eta_o) / chi_o;
+	term2_c = term2_o =  radiation.V[R][radiation.index(o,f)]          / chi_o;
+
+
+	if (n_ar > 0)
+	{
+	  for (long q = 0; q < n_r-1; q++)
+	  {
+      get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
+		                     lnotch_ar[q], notch_ar[q], cellNrs_ar[q], shifts_ar[q], term1_n, term2_n, chi_n);
+
+	  	dtau[n_ar-1-q] = 0.5 * (chi_c + chi_n) * dZs_ar[q];
+        Su[n_ar-1-q] = 0.5 * (term1_n + term1_c) - (term2_n - term2_c) / dtau[q];
+       	Sv[n_ar-1-q] = 0.5 * (term2_n + term2_c) - (term1_n - term1_c) / dtau[q];
+
+        chi_c =   chi_n;
+      term1_c = term1_n;
+      term2_c = term2_n;
+    }
+
+
+    get_terms_chi_and_Ibdy (cells, frequencies, temperature, lines, scattering, radiation, f, o, R,
+		                        lnotch_ar[n_ar-1], notch_ar[n_ar-1], cellNrs_ar[n_ar-1], shifts_ar[n_ar-1],
+														term1_n, term2_n, chi_n, Ibdy_scaled);
+
+	  dtau[0] = 0.5 * (chi_c + chi_n) * dZs_ar[n_ar-1];
+      Su[0] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[0] * (Ibdy_scaled + term2_c);
+     	Sv[0] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[0] * (Ibdy_scaled + term1_c);
+
+      //Su[n_ray-1] = 0.5 * (term1_n + term1_c) + sign * (term2_n - term2_c) / dtau[n_ray-1]
+	  	//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term2_c + term2_n));
+     	//Sv[n_ray-1] = 0.5 * (term2_n + term2_c) + sign * (term1_n - term1_c) / dtau[n_ray-1];
+	  	//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term1_c + term1_n));
+
+      chi_c =   chi_o;
+	  term1_c = term1_o;
+	  term2_c = term2_o;
+	}
+
+	// For ray r
+
+
+	if (n_r > 0)
+	{
+
+	  for (long q = 0; q < n_r-1; q++)
+	  {
+      get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
+		                     lnotch_r[q], notch_r[q], cellNrs_r[q], shifts_r[q], term1_n, term2_n, chi_n);
+
+	  	dtau[n_ar+q] = 0.5 * (chi_c + chi_n) * dZs_r[q];
+        Su[n_ar+q] = 0.5 * (term1_n + term1_c) + (term2_n - term2_c) / dtau[n_ar+q];
+       	Sv[n_ar+q] = 0.5 * (term2_n + term2_c) + (term1_n - term1_c) / dtau[n_ar+q];
+
+
+        chi_c =   chi_n;
+      term1_c = term1_n;
+      term2_c = term2_n;
+    }
+
+
+    get_terms_chi_and_Ibdy (cells, frequencies, temperature, lines, scattering, radiation, f, o, R,
+		                        lnotch_r[n_r-1], notch_r[n_r-1], cellNrs_r[n_r-1], shifts_r[n_r-1],
+														term1_n, term2_n, chi_n, Ibdy_scaled);
+
+	  dtau[ndep] = 0.5 * (chi_c + chi_n) * dZs_r[n_r-1];
+      Su[ndep] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[ndep] * (Ibdy_scaled - term2_c);
+     	Sv[ndep] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[ndep] * (Ibdy_scaled - term1_c);
+
+      //Su[n_ray-1] = 0.5 * (term1_n + term1_c) + sign * (term2_n - term2_c) / dtau[n_ray-1]
+	  	//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term2_c + term2_n));
+     	//Sv[n_ray-1] = 0.5 * (term2_n + term2_c) + sign * (term1_n - term1_c) / dtau[n_ray-1];
+	  	//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term1_c + term1_n));
+	}
+
+
+	return (0);
+
+}
+
+
+inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+	                          LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
+						                const long f, const long o, long& lnotch, const long cellNrs,
+														vReal freq_scaled, vReal& eta, vReal& chi)
+{
+
+	lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled, lnotch, cellNrs, eta, chi);
+
+	scattering.add_opacity (freq_scaled, chi);
+
+
+	return (0);
+
+}
+
+
+inline int get_terms_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+	                            LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
+						                  const long f, const long o, const long R,
+								              long& lnotch, long& notch, const long cellNrs, const double shifts,
+	                            vReal& term1, vReal& term2, vReal& chi)
+{
+
+	vReal eta, U_scaled, V_scaled;
+
+	vReal freq_scaled = shifts * frequencies.all[o][f];
+
+  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
+	                 lnotch, cellNrs, freq_scaled, eta, chi);
+
+	// Placeholer for continuum...
+
+  radiation.rescale_U_and_V (frequencies, cellNrs, R, notch, freq_scaled, U_scaled, V_scaled);
+
+
+	term1 = (U_scaled + eta) / chi;
+  term2 =  V_scaled        / chi;
+
+
+	return (0);
+
+}
 
 
 template <int Dimension, long Nrays>
-int set_up_ray (const CELLS<Dimension, Nrays>& cells, const RAYTYPE raytype,
-	              FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-								LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-								const long f, long *lnotch, long *notch, const long o, const long R,
-								long *cellNrs, double *shifts, double *dZ, long n_ray,
-								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
-								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
-								vReal freq_scaled, vReal U_scaled, vReal V_scaled, vReal Ibdy_scaled,
-	              vReal* Su, vReal* Sv, vReal* dtau)
+inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& frequencies,
+	                                 const TEMPERATURE& temperature, LINES& lines,
+																	 const SCATTERING& scattering, RADIATION& radiation,
+						                       const long f, const long o, const long R,
+								                   long& lnotch, long& notch, const long cellNrs, const double shifts,
+	                                 vReal& term1, vReal& term2, vReal& chi, vReal& Ibdy_scaled)
 {
 
-	double sign;
+	vReal eta, U_scaled, V_scaled;
+
+	vReal freq_scaled = shifts * frequencies.all[o][f];
+
+  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
+	                 lnotch, cellNrs, freq_scaled, eta, chi);
+
+	const long b = cells.cell_to_bdy_nr[cellNrs];
+
+  radiation.rescale_U_and_V_and_bdy_I (frequencies, cellNrs, b, R, notch, freq_scaled,
+		                                   U_scaled, V_scaled, Ibdy_scaled);
 
 
-
-	if (raytype == ray)
-	{
-	  sign =  1.0;
-	}
-	else if (raytype == antipod)
-	{
-	  sign = -1.0;
-	}
-
-
-	lines.add_emissivity_and_opacity (
-		frequencies,
-		temperature,
-		frequencies.all[o][f],
-		lnotch[cells.ncells],
-		o,
-		eta_c,
-		chi_c	);
-
-	scattering.add_opacity (frequencies.all[o][f], chi_c);
-
-	term1_c = (radiation.U[R][radiation.index(o,f)] + eta_c) / chi_c;
-	term2_c =  radiation.V[R][radiation.index(o,f)]          / chi_c;
-
-
-	for (long q = 0; q < n_ray-1; q++)
-	{
-	  MPI_TIMER timer_S ("S");
-	  timer_S.start ();
-
-		freq_scaled = shifts[q] * frequencies.all[o][f];
-
-		lines.add_emissivity_and_opacity (frequencies, temperature,
-				                              freq_scaled, lnotch[q], cellNrs[q], eta_n, chi_n);
-
-		timer_S.stop ();
-		timer_S.print ();
-
-	  MPI_TIMER timer_RU ("RU");
-	  timer_RU.start ();
-
-		scattering.add_opacity (freq_scaled, chi_n);
-
-    radiation.rescale_U_and_V (frequencies, cellNrs[q], R, notch[q],
-			                         freq_scaled, U_scaled, V_scaled);
-		timer_RU.stop ();
-		timer_RU.print ();
-
-	  //MPI_TIMER timer_C ("C");
-	  //timer_C.start ();
-
-		term1_n = (U_scaled + eta_n) / chi_n;
-    term2_n =  V_scaled          / chi_n;
-
-		dtau[q] = 0.5 * dZ[q] * PC *(chi_c + chi_n);
-      Su[q] = 0.5 * (term1_n + term1_c) + sign * (term2_n - term2_c) / dtau[q];
-     	Sv[q] = 0.5 * (term2_n + term2_c) + sign * (term1_n - term1_c) / dtau[q];
-
-      chi_c =   chi_n;
-    term1_c = term1_n;
-    term2_c = term2_n;
-
-		//timer_C.stop ();
-		//timer_C.print ();
-
-  }
-
-
-	// Add boundary condition
-
-	freq_scaled = shifts[n_ray-1] * frequencies.all[o][f];
-
-	lines.add_emissivity_and_opacity (frequencies, temperature,
-			                              freq_scaled, lnotch[n_ray-1],
-																		cellNrs[n_ray-1], eta_n, chi_n);
-
-	scattering.add_opacity (freq_scaled, chi_n);
-
-	const long b = cells.cell_to_bdy_nr[cellNrs[n_ray-1]];
-
-  radiation.rescale_U_and_V_and_bdy_I (frequencies, cellNrs[n_ray-1], b, R,
-		                                   notch[n_ray-1], freq_scaled,
-																			 U_scaled, V_scaled, Ibdy_scaled);
-
-	term1_n = (U_scaled + eta_n) / chi_n;
-  term2_n =  V_scaled          / chi_n;
-
-	dtau[n_ray-1] = 0.5 * dZ[n_ray-1] * PC *(chi_c + chi_n);
-    Su[n_ray-1] = 0.5 * (term1_n + term1_c) + 2.0/dtau[n_ray-1] * (Ibdy_scaled - sign*term2_c);
-   	Sv[n_ray-1] = 0.5 * (term2_n + term2_c) + 2.0/dtau[n_ray-1] * (Ibdy_scaled - sign*term1_c);
-
-    //Su[n_ray-1] = 0.5 * (term1_n + term1_c) + sign * (term2_n - term2_c) / dtau[n_ray-1]
-		//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term2_c + term2_n));
-   	//Sv[n_ray-1] = 0.5 * (term2_n + term2_c) + sign * (term1_n - term1_c) / dtau[n_ray-1];
-		//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term1_c + term1_n));
-
+	term1 = (U_scaled + eta) / chi;
+  term2 =  V_scaled        / chi;
 
 
 	return (0);

@@ -9,7 +9,7 @@
 using namespace std;
 
 #include "../src/timer.hpp"
-#include "../src/solve_ray.cpp"
+#include "../src/solve_ray.hpp"
 #include "../src/GridTypes.hpp"
 
 

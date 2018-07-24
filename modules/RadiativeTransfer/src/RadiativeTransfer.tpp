@@ -36,8 +36,8 @@ using namespace Eigen;
 
 template <int Dimension, long Nrays>
 int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE& temperature,
-		                   FREQUENCIES& frequencies, LINES& lines, const SCATTERING& scattering,
-											 RADIATION& radiation)
+	                     FREQUENCIES& frequencies, LINES& lines, const SCATTERING& scattering,
+	                     RADIATION& radiation)
 {
 
   const long ndiag = 0;
@@ -65,54 +65,19 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
     const long ar = cells.rays.antipod[r];
 
-		// Allocate all vector variables outside the omp parallel block
-
-	  vReal eta_c;
-	  vReal chi_c;
-
-    vReal term1_c;
-	  vReal term2_c;
-
-	  vReal eta_n;
-	  vReal chi_n;
-
-	  vReal freq_scaled;
-	  vReal    U_scaled;
-	  vReal    V_scaled;
-		vReal Ibdy_scaled;
-
-	  vReal term1_n;
-	  vReal term2_n;
-
-	  vReal u [ncells];
-	  vReal v [ncells];
-
-    vReal   Su_r [ncells];   // effective source for u along ray r
-	  vReal   Sv_r [ncells];   // effective source for v along ray r
-	  vReal dtau_r [ncells];   // optical depth increment along ray r
-
-    vReal   Su_ar [ncells];   // effective source for u along ray ar
-	  vReal   Sv_ar [ncells];   // effective source for v along ray ar
-	  vReal dtau_ar [ncells];   // optical depth increment along ray ar
+    vReal   Su [ncells];   // effective source for u along ray r
+	  vReal   Sv [ncells];   // effective source for v along ray r
+	  vReal dtau [ncells];   // optical depth increment along ray r
 
 	  vReal Lambda [ncells];
 
 
-    //vReal u_local;
-    //vReal v_local;
-
-
-
 	  // Loop over all cells
 
-#   pragma omp parallel                                                               \
-	  shared (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
-		private (eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,          \
-			       freq_scaled, U_scaled, V_scaled, Ibdy_scaled,                            \
-						 u, v, Su_r, Sv_r, dtau_r, Su_ar, Sv_ar, dtau_ar, Lambda/*, A, C, F, G,     \
-		         B0, B0_min_C0, Bd, Bd_min_Ad*/)                                            \
-		default (none)                                                                    \
-
+#   pragma omp parallel                                                                \
+	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
+		private (Su, Sv, dtau, Lambda)                                                     \
+		default (none)
     {
 
     const int num_threads = omp_get_num_threads();
@@ -134,171 +99,110 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 			long    notch_r [ncells];
 			long   lnotch_r [ncells];
 		  double shifts_r [ncells];   // indicates where we are in frequency space
-			double     dZ_r [ncells];
+			double    dZs_r [ncells];
 
 			long  cellNrs_ar [ncells];
 			long    notch_ar [ncells];
 			long   lnotch_ar [ncells];
 		  double shifts_ar [ncells];   // indicates where we are in frequency space
-			double     dZ_ar [ncells];
+			double    dZs_ar [ncells];
 
 
 			// Extract the cell on ray r and antipodal ar
 
-      long n_r  = cells.on_ray (o, r,  cellNrs_r,  dZ_r);
-      long n_ar = cells.on_ray (o, ar, cellNrs_ar, dZ_ar);
-
-
-			for (long q = 0; q < n_r; q++)
-			{
-				 notch_r[q] = 0;
-				lnotch_r[q] = 0;
-		    shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
-			}
-
-			for (long q = 0; q < n_ar; q++)
-			{
-				 notch_ar[q] = 0;
-				lnotch_ar[q] = 0;
-		    shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
-			}
-
-			lnotch_r[ncells]  = 0;
-			lnotch_ar[ncells] = 0;
-
-			//timer_PS.stop ();
-			//timer_PS.print ();
-
-
-	    //MPI_TIMER timer_SS ("SS");
-	    //timer_SS.start ();
-
-	    for (long f = 0; f < nfreq_red; f++)
-	  	{
-
-
-
-	      //MPI_TIMER timer_SU ("SU");
-	      //timer_SU.start ();
-        //set_up_ray <Dimension, Nrays>
-        //           (cells, frequencies, temperature, lines, scattering, radiation,
-			  //					  f, notch, o, r, R,  ray,
-				//						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-				//				    freq_scaled, U_scaled, V_scaled, n_r,  Su_r,  Sv_r,  dtau_r);
-
-        //set_up_ray <Dimension, Nrays>
-        //           (cells, frequencies, temperature, lines, scattering, radiation,
-				//						f, notch, o, r, R, antipod,
-		  	//						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-				//				    freq_scaled, U_scaled, V_scaled, n_ar, Su_ar, Sv_ar, dtau_ar);
-				if (n_r > 0)
-				{
-          set_up_ray <Dimension, Nrays>
-				             (cells, ray, frequencies, temperature, lines, scattering, radiation,
-			    					  f, lnotch_r, notch_r, o, R, cellNrs_r, shifts_r, dZ_r, n_r,
-				  						eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-				  				    freq_scaled, U_scaled, V_scaled, Ibdy_scaled, Su_r,  Sv_r,  dtau_r);
-				}
-
-				if (n_ar > 0)
-				{
-          set_up_ray <Dimension, Nrays>
-				             (cells, antipod, frequencies, temperature, lines, scattering, radiation,
-				  					  f, lnotch_ar, notch_ar, o, R, cellNrs_ar, shifts_ar, dZ_ar, n_ar,
-		  	  					  eta_c, chi_c, term1_c, term2_c, eta_n, chi_n, term1_n, term2_n,
-				  				    freq_scaled, U_scaled, V_scaled, Ibdy_scaled, Su_ar, Sv_ar, dtau_ar);
-				}
-
-			  //timer_SU.stop ();
-			  //timer_SU.print ();
-			//cout << "Got out" << endl;
+      long n_r  = cells.on_ray (o, r,  cellNrs_r,  dZs_r);
+      long n_ar = cells.on_ray (o, ar, cellNrs_ar, dZs_ar);
 
 	    const long ndep = n_r + n_ar;
 
-//			if (cells.boundary[o])
-//			{
-//
-//
-//			  for (long d = 0; d < n_r; d++)
-//			  {
-//          cout <<   Su_r[d][0] << endl;
-//          cout <<   Sv_r[d][0] << endl;
-//          cout << dtau_r[d][0] << endl;
-//			  }
-//
-//			  for (long d = 0; d < n_ar; d++)
-//			  {
-//          cout <<   Su_ar[d][0] << endl;
-//          cout <<   Sv_ar[d][0] << endl;
-//          cout << dtau_ar[d][0] << endl;
-//			  }
-//
-//			}
+	    if (ndep > 1)
+			{
 
-//			if ((ndep != 9) && !(cells.boundary[o]))
-//			{
-// 			  cout << "ndep = " << ndep << endl;
-//				cout << "o = " << o << endl;
-//				cout << "r = " << r << endl;
-//			}
+			  for (long q = 0; q < n_ar; q++)
+			  {
+			  	 notch_ar[q] = 0;
+			  	lnotch_ar[q] = 0;
+		      shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
+			  }
 
-	   // MPI_TIMER timer_SR ("SR");
-	   // timer_SR.start ();
-
-      	vReal u_local = 0.0;   // local value of u field in direction r/ar
-      	vReal v_local = 0.0;   // local value of v field in direction r/ar
-
-	      if (ndep > 1)
-	      {
-
-          //MatrixXd1 Lambda (frequencies.nfreq, MatrixXd (ndep, ndep));
-
-	      	//MatrixXd temp (ndep,ndep);
-
-	      	//for (long f = 0; f < frequencies.nfreq; f++)
-	      	//{
-          //  Lambda[f] = temp;
-	      	//}
+			  for (long q = 0; q < n_r; q++)
+			  {
+			  	 notch_r[q] = 0;
+			  	lnotch_r[q] = 0;
+		      shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
+			  }
 
 
-					//cout << "Trying to solve" << endl;
+			  lnotch_r[ncells]  = 0;
+			  lnotch_ar[ncells] = 0;
 
-          solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
-	      			       n_ar, Su_ar, Sv_ar, dtau_ar,
-						/*				 A, C, F, G,
-										 B0, B0_min_C0, Bd, Bd_min_Ad, */
-        						 ndep, u, v, ndiag, Lambda, ncells);
 
-					//cout << "Got solved" << endl;
+	      for (long f = 0; f < nfreq_red; f++)
+	  	  {
+
+          set_up_ray <Dimension, Nrays>
+					           (cells, frequencies, temperature,lines, scattering, radiation, f, o, R,
+											lnotch_ar, notch_ar, cellNrs_ar, shifts_ar, dZs_ar, n_ar,
+          						lnotch_r,  notch_r,  cellNrs_r,  shifts_r,  dZs_r,  n_r,
+            	        Su, Sv, dtau, ndep);
+
+
+          solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
+
+
+        	vReal u_local = 0.0;   // local value of u field in direction r/ar
+        	vReal v_local = 0.0;   // local value of v field in direction r/ar
 
 	        if (n_ar > 0)
 	        {
-	       	  u_local += u[n_ar-1];
-	       	  v_local += v[n_ar-1];
+	          u_local += Su[n_ar-1];   // Su now contains u
+	          v_local += Sv[n_ar-1];   // Sv now contains v
 	        }
 
 	        if (n_r > 0)
 	        {
-	       	  u_local += u[n_ar];
-	       	  v_local += v[n_ar];
+	          u_local += Su[n_ar];     // Su now contains u
+	          v_local += Sv[n_ar];     // Sv now contains v
 	        }
 
 	        if ( (n_ar > 0) && (n_r > 0) )
 	        {
-	       	  u_local = 0.5*u_local;
-	       	  v_local = 0.5*v_local;
+	          u_local = 0.5*u_local;
+	          v_local = 0.5*v_local;
 	        }
-	      }
 
-				long index = radiation.index(o,f);
 
-	      radiation.u[R][index] = u_local;
-	      radiation.v[R][index] = v_local;
+			  	const long index = radiation.index(o,f);
 
-			//timer_SR.stop ();
-			//timer_SR.print ();
+	        radiation.u[R][index] = u_local;
+	        radiation.v[R][index] = v_local;
 
-	  	} // end of loop over frequencies
+	  	  } // end of loop over frequencies
+
+	    }
+
+			else if (ndep == 1)
+			{
+				// set up ray
+
+				// trivially solve ray
+
+			}
+
+			else
+			{
+	      const long b = cells.cell_to_bdy_nr[o];
+
+	      for (long f = 0; f < nfreq_red; f++)
+	  	  {
+		      const long index = radiation.index(o,f);
+
+	        radiation.u[R][index] = 0.5 * (  radiation.boundary_intensity[r][b][f]
+						                             + radiation.boundary_intensity[ar][b][f]);
+	        radiation.v[R][index] = 0.5 * (  radiation.boundary_intensity[r][b][f]
+						                             - radiation.boundary_intensity[ar][b][f]);
+				}
+		  }
 
 			//timer_SS.stop ();
 			//timer_SS.print ();
@@ -316,15 +220,15 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	// Reduce results of all MPI processes to get J, U and V
 
-	// MPI_TIMER timer_RT_COMM ("RT_COMM");
-	// timer_RT_COMM.start ();
+	MPI_TIMER timer_RT_COMM ("RT_COMM");
+	timer_RT_COMM.start ();
 
 	radiation.calc_J ();
 
 	radiation.calc_U_and_V (scattering);
 
-	// timer_RT_COMM.stop ();
-	// timer_RT_COMM.print_to_file ();
+	timer_RT_COMM.stop ();
+	timer_RT_COMM.print ();
 
 	return (0);
 

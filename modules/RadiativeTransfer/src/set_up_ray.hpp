@@ -36,29 +36,38 @@ enum RAYTYPE {ray, antipod};
 ///    @param[out] dtau: reference to the optical depth increments along the ray
 //////////////////////////////////////////////////////////////////////////////////
 
-//template <int Dimension, long Nrays>
-//int set_up_ray (const CELLS <Dimension, Nrays>& cells, FREQUENCIES& frequencies,
-//		            const TEMPERATURE& temperature, LINES& lines,
-//								const SCATTERING& scattering, RADIATION& radiation,
-//								const long f, long index,
-//								const long o, const long r, const long R, const RAYTYPE raytype,
-//								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
-//								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
-//								vReal freq_scaled, vReal U_scaled, vReal V_scaled,
-//	              long& n, vReal* Su, vReal* Sv, vReal* dtau);
+template <int Dimension, long Nrays>
+inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, /*const RAYTYPE raytype,*/
+	                     FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+								       LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
+								       const long f, const long o, const long R,
+								       long *lnotch_ar, long *notch_ar, const long *cellNrs_ar,
+								       const double *shifts_ar, const double *dZs_ar, const long n_ar,
+								       long *lnotch_r, long *notch_r, const long *cellNrs_r,
+								       const double *shifts_r, const double *dZs_r, const long n_r,
+	                     vReal* Su, vReal* Sv, vReal* dtau, const long ndep);
+
+
+inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+	                          LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
+						                const long f, const long o, long& lnotch, const long cellNrs,
+														vReal freq_scaled, vReal& eta, vReal& chi);
+
+
+inline int get_terms_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
+	                            LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
+						                  const long f, const long o, const long R,
+								              long& lnotch, long& notch, const long cellNrs, const double shifts,
+	                            vReal& term1, vReal& term2, vReal& chi);
 
 
 template <int Dimension, long Nrays>
-int set_up_ray (const CELLS<Dimension, Nrays>& cells, const RAYTYPE raytype,
-	              FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-								LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-								const long f, long *lnotch, long *notch, const long o, const long R,
-								long *raypoints, double *scale, double *dZ, long n,
-								vReal eta_c, vReal chi_c, vReal term1_c, vReal term2_c,
-								vReal eta_n, vReal chi_n, vReal term1_n, vReal term2_n,
-								vReal freq_scaled, vReal U_scaled, vReal V_scaled, vReal Ibdy_scaled,
-	              vReal* Su, vReal* Sv, vReal* dtau);
-
+inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& frequencies,
+	                                 const TEMPERATURE& temperature, LINES& lines,
+																	 const SCATTERING& scattering, RADIATION& radiation,
+						                       const long f, const long o, const long R,
+								                   long& lnotch, long& notch, const long cellNrs, const double shifts,
+	                                 vReal& term1, vReal& term2, vReal& chi, vReal& Ibdy_scaled);
 
 #include "set_up_ray.tpp"
 
