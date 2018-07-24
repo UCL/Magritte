@@ -65,7 +65,7 @@ inline double interpolate (const Double1& f, const Double1& x, const long start,
 
 
 
-inline int search (vReal1& vec, long& notch, const double value)
+inline int search_with_notch (vReal1& vec, long& notch, const double value)
 {
   long f    = notch / n_simd_lanes;
    int lane = notch % n_simd_lanes;

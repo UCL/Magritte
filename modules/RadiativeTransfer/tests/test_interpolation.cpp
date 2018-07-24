@@ -52,7 +52,14 @@ using namespace std;
 TEST_CASE ("search_with_notch function (double)")
 {
 
-  vReal1 vec = {1.0, 2.0, 3.0, 4.0, 5.0};
+  const int nElem = 3;
+
+  vReal1 vec (nElem);
+
+  for (int i = 0; i < nElem; i++)
+  {
+
+  }
 
   double notch = 3;
 
