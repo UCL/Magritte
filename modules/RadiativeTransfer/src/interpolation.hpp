@@ -27,7 +27,7 @@ inline double interpolate (const Double1& f, const Double1& x, const long start,
 
 
 
-inline int search (vReal1& vec, long& notch, const double value);
+inline int search_with_notch (vReal1& vec, long& notch, const double value);
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] x: vector of tabulated argument values
