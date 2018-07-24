@@ -14,6 +14,7 @@ before_install:
     - test -n $CC && unset CC
 
 script:
+  - bash installMPICH.sh
   - bash installGrid.sh
   - mkdir build; cd build
   - CC=gcc CCX=g++ cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines

@@ -2,7 +2,10 @@
 
 export CWD=`pwd`
 
-mkdir GridInstall
+
+# Install Grid
+
+mkdir $CWD/GridInstall
 
 wget https://github.com/paboyle/Grid/archive/master.zip
 

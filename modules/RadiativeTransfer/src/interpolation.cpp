@@ -105,49 +105,49 @@ long search (const vector<double>& x, long start, long stop, const double value)
 
 
 
-
-///  resample: resample function at x_new values
-///  ASSUMING x_new preserves the order of x
-///    @param[in] x: vector containing function arguments
-///    @param[in] f: vector containing function values
-///    @param[in] start: start point to look for interpolation
-///    @param[in] stop: end point to look for interpolation
-///    @param[in] x_new: vector containing new function arguments
-///    @param[out] f_new: function values evaluated at new arguments
-/////////////////////////////////////////////////////////////////////
-
-int resample (vector<double>& x, vector<double>& f,
-		          const long start, const long stop,
-	           	vector<double>& x_new, vector<double>& f_new)
-{
-
-	long id     = start;
-	long id_new = start;
-
-	while ( (x_new[id_new] < x[start]) && (id_new < stop) )
-	{
-		f_new[id_new] = f[start];
-		id_new++;
-	}
-
-	while ( (x_new[id_new] < x[stop-1]) && (id_new < stop) )
-	{
-  	while (x[id] < x_new[id_new])	id++;
-
-    f_new[id_new] = interpolation_1 (x[id], f[id], x[id-1], f[id-1], x_new[id_new]);
-		id_new++;
-	}
-
-	while (id_new < stop)
-	{
-		f_new[id_new] = f[stop-1];
-		id_new++;
-	}
-
-
-	return (0);
-
-}
+//
+/////  resample: resample function at x_new values
+/////  ASSUMING x_new preserves the order of x
+/////    @param[in] x: vector containing function arguments
+/////    @param[in] f: vector containing function values
+/////    @param[in] start: start point to look for interpolation
+/////    @param[in] stop: end point to look for interpolation
+/////    @param[in] x_new: vector containing new function arguments
+/////    @param[out] f_new: function values evaluated at new arguments
+///////////////////////////////////////////////////////////////////////
+//
+//int resample (vector<double>& x, vector<double>& f,
+//		          const long start, const long stop,
+//	           	vector<double>& x_new, vector<double>& f_new)
+//{
+//
+//	long id     = start;
+//	long id_new = start;
+//
+//	while ( (x_new[id_new] < x[start]) && (id_new < stop) )
+//	{
+//		f_new[id_new] = f[start];
+//		id_new++;
+//	}
+//
+//	while ( (x_new[id_new] < x[stop-1]) && (id_new < stop) )
+//	{
+//  	while (x[id] < x_new[id_new])	id++;
+//
+//    f_new[id_new] = interpolation_1 (x[id], f[id], x[id-1], f[id-1], x_new[id_new]);
+//		id_new++;
+//	}
+//
+//	while (id_new < stop)
+//	{
+//		f_new[id_new] = f[stop-1];
+//		id_new++;
+//	}
+//
+//
+//	return (0);
+//
+//}
 
 
 
@@ -161,8 +161,8 @@ int resample (vector<double>& x, vector<double>& f,
 ///    @return interpolated function value f(x)
 ///////////////////////////////////////////////////////////////////////
 
-double interpolation_1 (const double x1, const double f1,
-                        const double x2, const double f2, const double x)
+inline double interpolation_1 (const double x1, const double f1,
+                               const double x2, const double f2, const double x)
 {
 	return (f2-f1)/(x2-x1) * (x-x1) + f1;
 }
@@ -177,8 +177,8 @@ double interpolation_1 (const double x1, const double f1,
 ///    @return interpolated function value f(x)
 ///////////////////////////////////////////////////////////////////////
 
-vReal interpolation_1 (const vReal x1, const vReal f1,
-                       const vReal x2, const vReal f2, const vReal x)
+inline vReal interpolation_1 (const vReal x1, const vReal f1,
+                              const vReal x2, const vReal f2, const vReal x)
 {
 	return (f2-f1)/(x2-x1) * (x-x1) + f1;
 }
