@@ -34,13 +34,7 @@ cd mpfr-4.0.1
 make -j4
 make install
 
-
-
-
-
-
-
-
+export LD_LIBRARY_PATH=$CWD/mpfr/lib/:$LD_LIBRARY_PATH
 
 cd $CWD
 

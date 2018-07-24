@@ -25,7 +25,7 @@ addons:
 before_install:
   - test -n $CC && unset CC
   - bash installMPICH.sh
-  - export LD_LIBRARY_PATH=$HOME/mpfr/lib:$LD_LIBRARY_PATH
+  - export LD_LIBRARY_PATH=$HOME/mpfr/lib/:$LD_LIBRARY_PATH
   - bash installGrid.sh
 
 script:

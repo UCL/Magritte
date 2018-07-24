@@ -422,6 +422,7 @@ int RADIATION ::
 	{
 
 		double freq = freq_scaled.getlane (lane);
+		
 		search_with_notch (frequencies.all[p], notch, freq);
 
 		const long f1    =  notch    / n_simd_lanes;

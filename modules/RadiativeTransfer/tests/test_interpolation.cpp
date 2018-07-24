@@ -70,15 +70,20 @@ TEST_CASE ("search_with_notch function (double)")
     }
   }
 
-  long notch = 3;
 
-  double reff   = 6.0;
+  SECTION ()
+  {
 
-  search_with_notch (vec, notch, 6);
+    long notch = 3;
+    long reff  = 6.0;
 
-  cout << notch << endl;
+    search_with_notch (vec, notch, 6);
 
-  CHECK (notch == reff);
+    cout << notch << endl;
+
+    CHECK (notch == reff);
+
+  }
 
 }
 

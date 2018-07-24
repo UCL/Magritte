@@ -63,10 +63,10 @@ inline double interpolate (const Double1& f, const Double1& x, const long start,
 //}
 
 
-///  search_with_notch:
-///    @param[in] vec: vector in which to look for value
-///    @param[in] notch:
-///    @param[in]
+///  search_with_notch: linear search for value in ordered list vec
+///    @param[in] vec: vectorized (and ordered) list in which to search value
+///    @param[in/out] notch: 
+///    @param[in] value: the value we look for in vec
 ////////////////////////////////////////////////////////
 
 inline int search_with_notch (vReal1& vec, long& notch, const double value)
