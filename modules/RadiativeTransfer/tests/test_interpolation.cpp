@@ -49,7 +49,7 @@ using namespace std;
 //
 //}
 
-TEST_CASE ("search_with_notch function (double)")
+TEST_CASE ("search_with_notch function")
 {
 
   const int nElem = 3;
@@ -71,11 +71,25 @@ TEST_CASE ("search_with_notch function (double)")
   }
 
 
-  SECTION ()
+  SECTION ("notch below value")
   {
 
     long notch = 3;
-    long reff  = 6.0;
+    long reff  = 6;
+
+    search_with_notch (vec, notch, 6);
+
+    cout << notch << endl;
+
+    CHECK (notch == reff);
+
+  }
+
+  SECTION ("notch above value")
+  {
+
+    long notch = 9;
+    long reff  = 9;
 
     search_with_notch (vec, notch, 6);
 

@@ -405,24 +405,18 @@ int RADIATION ::
 
 
 int RADIATION ::
-    rescale_U_and_V (FREQUENCIES& frequencies, const long p,
-			               const long R, long& notch, vReal& freq_scaled,
-										 vReal& U_scaled, vReal& V_scaled)
+    rescale_U_and_V (FREQUENCIES& frequencies, const long p, const long R,
+	  	               long& notch, vReal& freq_scaled,
+	  								 vReal& U_scaled, vReal& V_scaled)
 {
-	vReal nu1;
-	vReal nu2;
 
-	vReal U1;
-	vReal U2;
-
-	vReal V1;
-	vReal V2;
+	vReal nu1, nu2, U1, U2, V1, V2;
 
   for (int lane = 0; lane < n_simd_lanes; lane++)
 	{
 
 		double freq = freq_scaled.getlane (lane);
-		
+
 		search_with_notch (frequencies.all[p], notch, freq);
 
 		const long f1    =  notch    / n_simd_lanes;
@@ -458,6 +452,7 @@ int RADIATION ::
 
 
  	return (0);
+
 }
 
 

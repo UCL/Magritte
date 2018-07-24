@@ -30,7 +30,7 @@ rm    mpfr-4.0.1.zip
 
 cd mpfr-4.0.1
 
-./configure --prefix=$HOME/mpfr
+./configure
 make -j4
 make install
 
