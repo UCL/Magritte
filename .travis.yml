@@ -17,7 +17,7 @@ script:
   - bash installMPICH.sh
   - bash installGrid.sh
   - mkdir build; cd build
-  - CC=gcc CCX=g++ cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
+  - CC=gcc CCX=g++ MPI_C_INCLUDE_PATH=-I./mpich/include MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
   - make
   #- cd tests
   #- bash run_tests.sh
@@ -25,6 +25,8 @@ script:
   #- cd modules/RadiativeTransfer
   #- bash run_tests.sh
 
+export
+export MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib
 
 # language:
 #   - cpp

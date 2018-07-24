@@ -43,24 +43,24 @@ inline double interpolate (const Double1& f, const Double1& x, const long start,
 
 
 
-///  interpolate: interpolate tabulated function for a given range
-///  @param[in] x: vector of tabulated argument values
-///  @param[in] start: start point to look for interpolation
-///  @param[in] stop: end point to look for interpolation
-///  @param[in] value: function argument to which we interpolate
-///  @return index of x table just above value
-//////////////////////////////////////////////////////////////////
-
-inline long search (const Double1& x, const long start,
-                    const long stop, const double value)
-{
-  for (long n = start; n < stop; n++)
-  {
-  	if (value < x[n]) return n;
-	}
-
-	return stop;
-}
+/////  interpolate: interpolate tabulated function for a given range
+/////  @param[in] x: vector of tabulated argument values
+/////  @param[in] start: start point to look for interpolation
+/////  @param[in] stop: end point to look for interpolation
+/////  @param[in] value: function argument to which we interpolate
+/////  @return index of x table just above value
+////////////////////////////////////////////////////////////////////
+//
+//inline long search (const Double1& x, const long start,
+//                    const long stop, const double value)
+//{
+//  for (long n = start; n < stop; n++)
+//  {
+//  	if (value < x[n]) return n;
+//	}
+//
+//	return stop;
+//}
 
 
 

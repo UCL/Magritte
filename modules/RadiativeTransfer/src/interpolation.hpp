@@ -23,7 +23,8 @@ using namespace std;
 ///  @return function f evaluated at value
 //////////////////////////////////////////////////////////////////
 
-inline double interpolate (vector<double> f, vector<double> x, long start, long stop, double value);
+inline double interpolate (const Double1& f, const Double1& x, const long start,
+	                         const long stop, const double value);
 
 
 
@@ -38,7 +39,8 @@ inline int search (vReal1& vec, long& notch, const double value);
 ///  @return index of x table just above value
 //////////////////////////////////////////////////////////////////
 
-inline long search (const vector<double>& x, long start, long stop, const double value);
+inline long search (const Double1& x, const long start,
+	                  const long stop, const double value);
 
 
 
