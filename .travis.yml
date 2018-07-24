@@ -25,8 +25,8 @@ script:
   #- cd modules/RadiativeTransfer
   #- bash run_tests.sh
 
-export
-export MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib
+#export
+#export MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib
 
 # language:
 #   - cpp
