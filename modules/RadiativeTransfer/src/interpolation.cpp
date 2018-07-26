@@ -6,12 +6,11 @@
 
 
 #include <math.h>
-#include <vector>
-using namespace std;
 
 #include "interpolation.hpp"
 #include "GridTypes.hpp"
 #include "types.hpp"
+
 
 ///  interpolate: interpolate tabulated function for a given range
 ///  @param[in] f: vector of tabulated function values
@@ -43,56 +42,18 @@ inline double interpolate (const Double1& f, const Double1& x, const long start,
 
 
 
-/////  interpolate: interpolate tabulated function for a given range
-/////  @param[in] x: vector of tabulated argument values
-/////  @param[in] start: start point to look for interpolation
-/////  @param[in] stop: end point to look for interpolation
-/////  @param[in] value: function argument to which we interpolate
-/////  @return index of x table just above value
-////////////////////////////////////////////////////////////////////
-//
-//inline long search (const Double1& x, const long start,
-//                    const long stop, const double value)
-//{
-//  for (long n = start; n < stop; n++)
-//  {
-//  	if (value < x[n]) return n;
-//	}
-//
-//	return stop;
-//}
+///  search: look up the index of a value in a list
+///  @param[in] x: vector of tabulated argument values
+///  @param[in] start: start point to look for value
+///  @param[in] stop: end point to look for value
+///  @param[in] value: value to search for
+///  @return index of x table just above value
+//////////////////////////////////////////////////////
 
-
-///  search_with_notch: linear search for value in ordered list vec
-///    @param[in] vec: vectorized (and ordered) list in which to search value
-///    @param[in/out] notch: 
-///    @param[in] value: the value we look for in vec
-////////////////////////////////////////////////////////
-
-inline int search_with_notch (vReal1& vec, long& notch, const double value)
+inline long search (const Double1& x, long start,
+                    long stop, const double value)
 {
-  long f    = notch / n_simd_lanes;
-   int lane = notch % n_simd_lanes;
 
-  while (f < vec.size())
-  {
-    if (value < vec[f].getlane(lane)) return (0);
-
-    notch++;
-
-    f    = notch / n_simd_lanes;
-    lane = notch % n_simd_lanes;
-  }
-
-  return (1);
-
-}
-
-
-
-
-inline long search (const Double1& x, long start, long stop, const double value)
-{
   while (stop > start)
   {
     const long middle = (stop - start) / 2;
@@ -107,12 +68,80 @@ inline long search (const Double1& x, long start, long stop, const double value)
     }
   }
 
+
   return stop;
+
 }
 
 
 
-//
+
+///  search_with_notch: linear search for value in ordered list vec
+///    @param[in] vec: vectorized (and ordered) list in which to search value
+///    @param[in/out] notch:
+///    @param[in] value: the value we look for in vec
+/////////////////////////////////////////////////////////////////////////////
+
+inline int search_with_notch (vReal1& vec, long& notch, const double value)
+{
+
+  long f    = notch / n_simd_lanes;
+   int lane = notch % n_simd_lanes;
+
+  while (f < vec.size())
+  {
+
+    if (value <= vec[f].getlane(lane)) return (0);
+
+    notch++;
+
+    f    = notch / n_simd_lanes;
+    lane = notch % n_simd_lanes;
+  }
+
+  return (1);
+
+}
+
+
+
+
+///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
+///    @param[in] x1: function argument 1
+///    @param[in] f1: f(x1)
+///    @param[in] x2: function argument 2
+///    @param[in] f2: f(x2)
+///    @param[in] x: value at which the function has to be interpolated
+///    @return interpolated function value f(x)
+//////////////////////////////////////////////////////////////////////////
+
+inline double interpolate_linear (const double x1, const double f1,
+                                  const double x2, const double f2, const double x)
+{
+	return (f2-f1)/(x2-x1) * (x-x1) + f1;
+}
+
+
+
+
+///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
+///    @param[in] x1: function argument 1
+///    @param[in] f1: f(x1)
+///    @param[in] x2: function argument 2
+///    @param[in] f2: f(x2)
+///    @param[in] x: value at which the function has to be interpolated
+///    @return interpolated function value f(x)
+//////////////////////////////////////////////////////////////////////////
+
+inline vReal interpolate_linear (const vReal x1, const vReal f1,
+                                 const vReal x2, const vReal f2, const vReal x)
+{
+	return (f2-f1)/(x2-x1) * (x-x1) + f1;
+}
+
+
+
+
 /////  resample: resample function at x_new values
 /////  ASSUMING x_new preserves the order of x
 /////    @param[in] x: vector containing function arguments
@@ -155,37 +184,3 @@ inline long search (const Double1& x, long start, long stop, const double value)
 //	return (0);
 //
 //}
-
-
-
-
-///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
-///    @param[in] x1: function argument 1
-///    @param[in] f1: f(x1)
-///    @param[in] x2: function argument 2
-///    @param[in] f2: f(x2)
-///    @param[in] x: value at which the function has to be interpolated
-///    @return interpolated function value f(x)
-//////////////////////////////////////////////////////////////////////////
-
-inline double interpolate_linear (const double x1, const double f1,
-                                  const double x2, const double f2, const double x)
-{
-	return (f2-f1)/(x2-x1) * (x-x1) + f1;
-}
-
-
-///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
-///    @param[in] x1: function argument 1
-///    @param[in] f1: f(x1)
-///    @param[in] x2: function argument 2
-///    @param[in] f2: f(x2)
-///    @param[in] x: value at which the function has to be interpolated
-///    @return interpolated function value f(x)
-//////////////////////////////////////////////////////////////////////////
-
-inline vReal interpolate_linear (const vReal x1, const vReal f1,
-                                 const vReal x2, const vReal f2, const vReal x)
-{
-	return (f2-f1)/(x2-x1) * (x-x1) + f1;
-}

@@ -14,6 +14,7 @@ using namespace std;
 #include "radiation.hpp"
 #include "constants.hpp"
 #include "GridTypes.hpp"
+#include "mpiTypes.hpp"
 #include "cells.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
@@ -81,64 +82,6 @@ long RADIATION ::
 	return f + p*nfreq_red;
 }
 
-//int RADIATION ::
-//    initialize ()
-//{
-//
-//	for (long r = 0; r < nrays_red; r++)
-//	{
-//
-//#   pragma omp parallel   \
-//		shared (r)            \
-//    default (none)
-//    {
-//
-//    const int num_threads = omp_get_num_threads();
-//    const int thread_num  = omp_get_thread_num();
-//
-//    const long start = ( thread_num   *ncells)/num_threads;
-//    const long stop  = ((thread_num+1)*ncells)/num_threads;
-//
-//
-//    for (long p = start; p < stop; p++)
-//    {
-//	    for (long f = 0; f < nfreq_red; f++)
-//      {
-//				u[r][index(p,f)] = 0.0;
-//        v[r][index(p,f)] = 0.0;
-//
-//				U[r][index(p,f)] = 0.0;
-//        V[r][index(p,f)] = 0.0;
-//      }
-//	  }
-//	  } // end of pragma omp parallel
-//	}
-//
-//
-//#   pragma omp parallel   \
-//    default (none)
-//    {
-//
-//    const int num_threads = omp_get_num_threads();
-//    const int thread_num  = omp_get_thread_num();
-//
-//    const long start = ( thread_num*ncells)   /num_threads;
-//    const long stop  = ((thread_num+1)*ncells)/num_threads;
-//
-//
-//    for (long p = start; p < stop; p++)
-//    {
-//	    for (long f = 0; f < nfreq_red; f++)
-//      {
-//        J[index(p,f)] = 0.0;
-//      }
-//	  }
-//	  } // end of pragma omp parallel
-//
-//
-//	return (0);
-//
-//}
 
 int RADIATION ::
     read (const string boundary_intensity_file)
@@ -300,6 +243,9 @@ int RADIATION ::
 
 int RADIATION ::
     calc_U_and_V (const SCATTERING& scattering)
+
+#	if (MPI_PARALLEL)
+
 {
 
 	vReal1 U_local (ncells*nfreq_red);
@@ -320,8 +266,8 @@ int RADIATION ::
   MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
   MPI_Type_commit (&MPI_VREAL);
 
-	MPI_Op MPI_VSUM;
-	MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
+  MPI_Op MPI_VSUM;
+  MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
 	for (int w = 0; w < world_size; w++)
@@ -388,6 +334,8 @@ int RADIATION ::
   	  	           MPI_COMM_WORLD);
 
 			assert (ierr_v == 0);
+
+
 	  }
 	}
 
@@ -401,6 +349,54 @@ int RADIATION ::
 
 }
 
+#else
+
+{
+
+	vReal1 U_local (ncells*nfreq_red);
+	vReal1 V_local (ncells*nfreq_red);
+
+  for (long r1 = 0; r1 < nrays/2; r1++)
+	{
+		initialize (U_local);
+		initialize (V_local);
+
+    for (long r2 = 0; r2 < nrays/2; r2++)
+	  {
+
+#     pragma omp parallel                             \
+	    shared (scattering, U_local, V_local, r1, r2)   \
+      default (none)
+      {
+
+      const int nthreads = omp_get_num_threads();
+      const int thread   = omp_get_thread_num();
+
+      const long start = ( thread   *ncells)/nthreads;
+      const long stop  = ((thread+1)*ncells)/nthreads;
+
+
+      for (long p = start; p < stop; p++)
+	    {
+	      for (long f = 0; f < nfreq_red; f++)
+	      {
+	  	    U_local[index(p,f)] += u[r2][index(p,f)] * scattering.phase[r1][r2][f];
+	  	    V_local[index(p,f)] += v[r2][index(p,f)] * scattering.phase[r1][r2][f];
+	  	  }
+	  	}
+	    }
+
+	  } // end of r2 loop over raypairs2
+
+	}
+
+
+	return (0);
+
+}
+
+#endif
+
 
 
 
@@ -408,6 +404,9 @@ int RADIATION ::
     rescale_U_and_V (FREQUENCIES& frequencies, const long p, const long R,
 	  	               long& notch, vReal& freq_scaled,
 	  								 vReal& U_scaled, vReal& V_scaled)
+
+#if (GRID_SIMD)
+
 {
 
 	vReal nu1, nu2, U1, U2, V1, V2;
@@ -455,6 +454,31 @@ int RADIATION ::
 
 }
 
+#else
+
+{
+
+	search_with_notch (frequencies.all[p], notch, freq_scaled);
+
+	const long f1    = notch;
+	const long f2    = notch+1;
+
+	const double nu1 = frequencies.all[p][f1];
+	const double nu2 = frequencies.all[p][f2];
+
+	const double U1 = U[R][index(p,f1)];
+	const double U2 = U[R][index(p,f2)];
+
+	const double V1 = V[R][index(p,f1)];
+	const double V2 = V[R][index(p,f2)];
+
+	U_scaled = interpolate_linear (nu1, U1, nu2, U2, freq);
+	V_scaled = interpolate_linear (nu1, V1, nu2, V2, freq);
+
+
+ 	return (0);
+
+}
 
 
 int RADIATION ::
@@ -462,17 +486,8 @@ int RADIATION ::
 	                             const long R, long& notch, vReal& freq_scaled,
 															 vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled)
 {
-	vReal nu1;
-	vReal nu2;
 
-	vReal U1;
-	vReal U2;
-
-	vReal V1;
-	vReal V2;
-
-	vReal Ibdy1;
-	vReal Ibdy2;
+	vReal nu1, nu2, U1, U2, V1, V2, Ibdy1, Ibdy2;
 
   for (int lane = 0; lane < n_simd_lanes; lane++)
 	{

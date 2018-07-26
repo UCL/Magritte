@@ -49,6 +49,59 @@ using namespace std;
 //
 //}
 
+
+TEST_CASE ("search function")
+{
+
+  const int nElem = 30;
+
+  Double1 x (nElem);
+
+
+  // Populate x {1, 2, 3, 4, ...}
+
+  for (int i = 0; i < nElem; i++)
+  {
+    x[i] = i;
+  }
+
+
+  SECTION ("notch below value")
+  {
+
+    long notch = 3;
+    long reff  = 6;
+
+    search (x, start, stop, 6);
+
+    cout << notch << endl;
+
+    CHECK (notch == reff);
+
+  }
+
+
+  SECTION ("notch above value")
+  {
+
+    long notch = 9;
+    long reff  = 9;
+
+    search_with_notch (vec, notch, 6);
+
+    cout << notch << endl;
+
+    CHECK (notch == reff);
+
+  }
+
+}
+
+
+
+
+////////////////////////////////////////
+
 TEST_CASE ("search_with_notch function")
 {
 
@@ -85,6 +138,7 @@ TEST_CASE ("search_with_notch function")
 
   }
 
+
   SECTION ("notch above value")
   {
 
@@ -104,6 +158,8 @@ TEST_CASE ("search_with_notch function")
 
 
 
+//////////////////////////////////////////////////
+
 TEST_CASE ("interpolate_linear function (double)")
 {
 
@@ -122,6 +178,8 @@ TEST_CASE ("interpolate_linear function (double)")
 
 
 
+
+/////////////////////////////////////////////////
 
 TEST_CASE ("interpolate_linear function (vReal)")
 {
