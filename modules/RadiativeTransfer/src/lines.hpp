@@ -39,8 +39,8 @@ struct LINES
 	//Double3 opacity;      ///< line opacity (p,l,k)
 
 
-	Double1 emissivity_vec;   ///< line emissivity (p,l,k)
-	Double1 opacity_vec;      ///< line opacity (p,l,k)
+	Double1 emissivity;   ///< line emissivity (p,l,k)
+	Double1 opacity;      ///< line opacity (p,l,k)
 
 
   LINES (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor

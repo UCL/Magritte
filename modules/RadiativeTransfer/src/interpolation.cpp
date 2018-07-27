@@ -12,32 +12,32 @@
 #include "types.hpp"
 
 
-///  interpolate: interpolate tabulated function for a given range
-///  @param[in] f: vector of tabulated function values
-///  @param[in] x: vector of tabulated argument values
-///  @param[in] start: start point to look for interpolation
-///  @param[in] stop: end point to look for interpolation
-///  @param[in] value: function argument to which we interpolate
-///  @return function f evaluated at value
-//////////////////////////////////////////////////////////////////
-
-inline double interpolate (const Double1& f, const Double1& x, const long start,
-                           const long stop, const double value)
-{
-  if (value < x[start])
-	{
-		return f[start];
-	}
-
-	if (value > x[stop-1])
-	{
-		return f[stop-1];
-	}
-
-  long n = search (x, start, stop, value);
-
-	return interpolate_linear (x[n-1], f[n-1], x[n], f[n], value);
-}
+/////  interpolate: interpolate tabulated function for a given range
+/////  @param[in] f: vector of tabulated function values
+/////  @param[in] x: vector of tabulated argument values
+/////  @param[in] start: start point to look for interpolation
+/////  @param[in] stop: end point to look for interpolation
+/////  @param[in] value: function argument to which we interpolate
+/////  @return function f evaluated at value
+////////////////////////////////////////////////////////////////////
+//
+//inline double interpolate (const Double1& f, const Double1& x, const long start,
+//                           const long stop, const double value)
+//{
+//  if (value < x[start])
+//	{
+//		return f[start];
+//	}
+//
+//	if (value > x[stop-1])
+//	{
+//		return f[stop-1];
+//	}
+//
+//  long n = search (x, start, stop, value);
+//
+//	return interpolate_linear (x[n-1], f[n-1], x[n], f[n], value);
+//}
 
 
 
@@ -56,7 +56,7 @@ inline long search (const Double1& x, long start,
 
   while (stop > start)
   {
-    const long middle = (stop - start) / 2;
+    const long middle = (stop - start) / 2 + start;
 
     if (value > x[middle])
     {
@@ -83,6 +83,9 @@ inline long search (const Double1& x, long start,
 /////////////////////////////////////////////////////////////////////////////
 
 inline int search_with_notch (vReal1& vec, long& notch, const double value)
+
+#if (GRID_SIMD)
+
 {
 
   long f    = notch / n_simd_lanes;
@@ -90,7 +93,6 @@ inline int search_with_notch (vReal1& vec, long& notch, const double value)
 
   while (f < vec.size())
   {
-
     if (value <= vec[f].getlane(lane)) return (0);
 
     notch++;
@@ -99,10 +101,27 @@ inline int search_with_notch (vReal1& vec, long& notch, const double value)
     lane = notch % n_simd_lanes;
   }
 
+
   return (1);
 
 }
 
+#else
+
+{
+
+  while (notch < vec.size())
+  {
+    if (value <= vec[notch]) return (0);
+
+    notch++;
+  }
+
+  return (1);
+
+}
+
+#endif
 
 
 

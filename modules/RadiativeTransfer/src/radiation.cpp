@@ -480,6 +480,10 @@ int RADIATION ::
 
 }
 
+#endif
+
+
+
 
 int RADIATION ::
     rescale_U_and_V_and_bdy_I (FREQUENCIES& frequencies, const long p, const long b,

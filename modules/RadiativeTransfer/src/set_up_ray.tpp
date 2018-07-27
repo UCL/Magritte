@@ -142,6 +142,9 @@ inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempera
 						                const long f, const long o, long& lnotch, const long cellNrs,
 														vReal freq_scaled, vReal& eta, vReal& chi)
 {
+	
+	eta = 0.0;
+	chi = 0.0;
 
 	lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled, lnotch, cellNrs, eta, chi);
 

@@ -66,34 +66,14 @@ TEST_CASE ("search function")
   }
 
 
-  SECTION ("notch below value")
-  {
+  long start = 3;
+  long stop  = 30;
 
-    long notch = 3;
-    long reff  = 6;
-
-    search (x, start, stop, 6);
-
-    cout << notch << endl;
-
-    CHECK (notch == reff);
-
-  }
+  long reff  = 6;
+  long index = search (x, start, stop, 6);
 
 
-  SECTION ("notch above value")
-  {
-
-    long notch = 9;
-    long reff  = 9;
-
-    search_with_notch (vec, notch, 6);
-
-    cout << notch << endl;
-
-    CHECK (notch == reff);
-
-  }
+  CHECK (index == reff);
 
 }
 

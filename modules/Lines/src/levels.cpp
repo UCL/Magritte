@@ -308,9 +308,9 @@ int LEVELS ::
 
     const double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
 
-	  lines.emissivity_vec[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+	  lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
-	     lines.opacity_vec[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
+	     lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
                  		                        - population[p][l](i) * linedata.B[l](i,j) );
   }
 
