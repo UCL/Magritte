@@ -11,7 +11,6 @@ using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
-
 #include "catch.hpp"
 #include "tools.hpp"
 
@@ -48,7 +47,7 @@ TEST_CASE ("LEVELS update_using_statistical_equilibrium")
 
 
 	LINEDATA linedata;
-	
+
 	LEVELS levels (ncells, linedata);
 
 
@@ -77,7 +76,7 @@ TEST_CASE ("LEVELS update_using_statistical_equilibrium")
 
 	for (int i = 0; i < linedata.nlev[l]; i++)
 	{
-		tot += levels.population[p][l](i);  
+		tot += levels.population[p][l](i);
 	}
 
 	CHECK (relative_error (levels.population_tot[p][l], tot) == Approx(0.0).epsilon(EPS));

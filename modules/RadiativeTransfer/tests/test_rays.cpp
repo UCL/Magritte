@@ -9,7 +9,7 @@
 
 #include "catch.hpp"
 
-#include "../src/rays.hpp"
+#include "rays.hpp"
 
 
 #define EPS 1.0E-9   // error bar for checking doubles
@@ -44,6 +44,9 @@ TEST_CASE ("RAYS constructor 1D")
 
 
 
+
+/////////////////////////////////
+
 TEST_CASE ("RAYS constructor 2D")
 {
   const int  Dimension = 2;
@@ -75,6 +78,9 @@ TEST_CASE ("RAYS constructor 2D")
 }
 
 
+
+
+/////////////////////////////////
 
 TEST_CASE ("RAYS constructor 3D")
 {

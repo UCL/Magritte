@@ -20,6 +20,7 @@ using namespace Eigen;
 
 #include "test_data/linedata_config.hpp"
 #include "Lines/src/linedata.hpp"
+#include "Lines/src/linedata.cpp"
 
 #define EPS 1.0E-7
 

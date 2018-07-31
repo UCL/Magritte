@@ -18,13 +18,13 @@ double relative_error (const double a, const double b)
 
 
 
-///  relative_error: compute the relative difference between two values
-///    @param[in] a: value 1
-///    @paran[in] b: value 2
-///    @return relative differencte between a and b
-///////////////////////////////////////////////////////////////////////
-
-vReal relative_error (const vReal a, const vReal b)
-{
-	return (a-b) / (a+b);
-}
+/////  relative_error: compute the relative difference between two values
+/////    @param[in] a: value 1
+/////    @paran[in] b: value 2
+/////    @return relative differencte between a and b
+/////////////////////////////////////////////////////////////////////////
+//
+//vReal relative_error (const vReal a, const vReal b)
+//{
+//	return (a-b) / (a+b);
+//}

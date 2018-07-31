@@ -52,13 +52,13 @@ set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
 add_library( _TEST_RT_MAIN
 main.cpp )
 
-## Create executable to test rays
-#add_executable( test_rays.exe
-#test_rays.cpp )
-#target_link_libraries( test_rays.exe
-#_RADIATIVE_TRANSFER
-#_TEST_RT_MAIN )
-#
+# Create executable to test rays
+add_executable( test_rays.exe
+  test_rays.cpp )
+target_link_libraries( test_rays.exe
+  _RADIATIVE_TRANSFER
+  _TEST_RT_MAIN )
+
 ## Create executable to test cells
 #add_executable( test_cells.exe
 #test_cells.cpp )

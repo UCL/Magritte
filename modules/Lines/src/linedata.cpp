@@ -331,7 +331,6 @@ MatrixXd LINEDATA ::
     }
 
 
-
     int t = search (temperature_col[l][c], temperature_gas);
 
 
