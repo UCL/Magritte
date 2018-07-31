@@ -12,6 +12,7 @@
 
 const double PI    = 3.141592653589;   // pi
 const double CC    = 2.99792458E+10;   // speed of light in cgs units
+
 const double HH    = 6.62606896E-27;   // Planck's constant in cgs units
 const double KB    = 1.38065040E-16;   // Boltzmann's constant in cgs units
 const double EV    = 1.60217646E-12;   // one electron Volt in erg
@@ -22,11 +23,16 @@ const double T_CMB = 2.725;            // CMB  temperature in K
 
 const double SECONDS_IN_YEAR = 3.1556926E+7;    // number of seconds in one year
 
+const double C_SQUARED = 8.98755179E+20;   // speed of light squared in cgs units
+
 const double INVERSE_SQRT_PI = 0.56418958354;   // inverse square root of Pi ( 1/sqrt(PI) )
 
-const double V_TURB_OVER_C_ALL_SQUARED = 100.0 / (CC * CC);        // (v_turb / c)^2
-const double TWO_KB_OVER_MP_C_SQUARED  = 2.0*KB/ (MP * CC * CC);   // 2.0*Kb/Mp*c^2
+const double V_TURB_OVER_C_ALL_SQUARED = 100.0 / C_SQUARED;        // (v_turb / c)^2
+const double TWO_KB_OVER_MP_C_SQUARED  = 2.0*KB/ (MP * C_SQUARED);   // 2.0*Kb/Mp*c^2
 
+const double TWO_HH_OVER_CC_SQUARED = 2.0 * HH / C_SQUARED;
+
+const double HH_OVER_KB = HH / KB;
 
 const int N_QUADRATURE_POINTS = 7;
 

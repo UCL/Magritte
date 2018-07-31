@@ -86,7 +86,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
 	// Sort frequencies
 
-  heapsort (line, line_index, nlines);
+  heapsort (line, line_index);
 
 
 }   // END OF CONSTRUCTOR
@@ -216,7 +216,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 
 		// Sort frequencies
 
-		heapsort (freqs, nmbrs, nfreq);
+		heapsort (freqs, nmbrs);
 
 
 		long index2 = 0;

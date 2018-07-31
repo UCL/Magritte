@@ -26,7 +26,7 @@ TEST_CASE ("heapsort function")
 	  vector<double> a = {3.0, 2.0, 1.0, 5.0, 4.0, 0.0};
 	  vector<long>   b = {3,   2,   1,   5,   4  , 0  };
 
-	  heapsort (a, b, length);
+	  heapsort (a, b);
 
 	  for (int n=0; n<length; n++)
 	  {
@@ -43,7 +43,7 @@ TEST_CASE ("heapsort function")
 	  vector<double> a = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 	  vector<long>   b = {0,   1,   2,   3,   4  , 5  };
 
-	  heapsort (a, b, length);
+	  heapsort (a, b);
 
 	  for (int n=0; n<length; n++)
 	  {

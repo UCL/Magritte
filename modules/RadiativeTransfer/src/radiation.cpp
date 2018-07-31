@@ -91,6 +91,11 @@ int RADIATION ::
 
 }
 
+
+
+///  calc_boundary_intensities: calculate the boundary intensities
+//////////////////////////////////////////////////////////////////
+
 int RADIATION ::
     calc_boundary_intensities (const Long1& bdy_to_cell_nr,
 				                       const FREQUENCIES& frequencies)
@@ -99,8 +104,8 @@ int RADIATION ::
 	for (long r = 0; r < nrays_red; r++)
 	{
 
-#   pragma omp parallel                       \
-		shared (r, bdy_to_cell_nr, frequencies)   \
+#   pragma omp parallel                             \
+		shared (r, bdy_to_cell_nr, frequencies, cout)   \
     default (none)
     {
 
@@ -117,6 +122,7 @@ int RADIATION ::
 
 	    for (long f = 0; f < nfreq_red; f++)
       {
+				cout << b << " " << p << endl;
 				boundary_intensity[r][b][f] = Planck (T_CMB, frequencies.all[p][f]);
       }
 	  }

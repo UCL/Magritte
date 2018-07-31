@@ -46,11 +46,22 @@ inline vReal Planck (const double temperature_gas, const vReal freq);
 
 
 ///  vExp: exponential function for vReal types
+///  !!! Only good for positive exponents !!!
 ///    @param[in] x: exponent
 ///    @return exponential of x
 /////////////////////////////////////////////////
 
 inline vReal vExp (const vReal);
+
+
+
+
+///  vExpMinus: exponential function for vReal types
+///    @param[in] x: exponent
+///    @return exponential of minus x
+/////////////////////////////////////////////////
+
+inline vReal vExpMinus (const vReal x);
 
 
 

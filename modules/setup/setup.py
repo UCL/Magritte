@@ -76,7 +76,7 @@ def setupLinedata(inputFolder):
     writeDefinition(fileName, [ld.weight    for ld in lineData], 'WEIGHT')
     writeDefinition(fileName, [ld.irad      for ld in lineData], 'IRAD')
     writeDefinition(fileName, [ld.jrad      for ld in lineData], 'JRAD')
-    writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQUENCY')
+    #writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQUENCY')
     writeDefinition(fileName, [ld.freq      for ld in lineData], 'FREQ')
     writeDefinition(fileName, [ld.A         for ld in lineData], 'A_COEFF')
     writeDefinition(fileName, [ld.B         for ld in lineData], 'B_COEFF')

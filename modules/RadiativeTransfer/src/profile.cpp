@@ -4,8 +4,6 @@
 // _________________________________________________________________________
 
 
-#include <math.h>
-
 #include "profile.hpp"
 #include "GridTypes.hpp"
 #include "constants.hpp"
@@ -22,10 +20,10 @@ inline vReal profile (const double width, const vReal freq_diff)
 
   const double inverse_width = 1.0 / width;
 	const vReal  sqrtExponent  = inverse_width * freq_diff;
-	const vReal  exponent      = - sqrtExponent * sqrtExponent;
+	const vReal  exponent      = sqrtExponent * sqrtExponent;
 
 
-	return inverse_width * INVERSE_SQRT_PI * vExp (exponent);
+	return inverse_width * INVERSE_SQRT_PI * vExpMinus (exponent);
 
 }
 
@@ -54,25 +52,28 @@ inline double profile_width (const double temperature_gas, const double freq_lin
 
 inline vReal Planck (const double temperature_gas, const vReal freq)
 {
-	return 2.0 * HH * freq*freq*freq
-		     / (CC*CC*vExpm1( HH*freq / (KB*temperature_gas)));
+  const double h_over_kbT = HH_OVER_KB / temperature_gas;
+
+	return TWO_HH_OVER_CC_SQUARED * (freq*freq*freq) * vExpm1(h_over_kbT*freq);
 }
 
 
 
 
 ///  vExp: exponential function for vReal types
+///  !!! Only good for positive exponents !!!
 ///    @param[in] x: exponent
 ///    @return exponential of x
 /////////////////////////////////////////////////
 
 inline vReal vExp (const vReal x)
 {
-	const int n = 9;
+
+	const int n = 23;
 
   vReal result = 1.0;
 
-  for (int i = n; i > 0; i--)
+  for (int i = n; i > 1; i--)
 	{
 		const double factor = 1.0 / i;
 		const vReal vFactor = factor;
@@ -80,9 +81,24 @@ inline vReal vExp (const vReal x)
     result = vOne + x*result*vFactor;
 	}
 
+  result = vOne + x*result;
+
 
 	return result;
 
+}
+
+
+
+
+///  vExpMinus: exponential function for vReal types
+///    @param[in] x: exponent
+///    @return exponential of minus x
+/////////////////////////////////////////////////
+
+inline vReal vExpMinus (const vReal x)
+{
+	return 1.0 / vExp (x);
 }
 
 
@@ -95,6 +111,7 @@ inline vReal vExp (const vReal x)
 
 inline vReal vExpm1 (const vReal x)
 {
+
 	const int n = 9;
 
   vReal result = 1.0;

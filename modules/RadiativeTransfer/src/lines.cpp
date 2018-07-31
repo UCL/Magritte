@@ -6,6 +6,7 @@
 
 #include <mpi.h>
 #include <omp.h>
+#include <assert.h>
 #include <vector>
 #include <fstream>
 #include <iostream>

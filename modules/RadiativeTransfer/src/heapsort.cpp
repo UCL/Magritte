@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 
+#include <assert.h>
 #include <vector>
 using namespace std;
 
@@ -66,8 +67,20 @@ int downheap (vector<double>& a, vector<long>& b, long n, long i)
 
 
 
-int heapsort (vector<double>& a, vector<long>& b, long n)
+int heapsort (vector<double>& a, vector<long>& b)
 {
+
+  // Get vector length
+
+  const long n = a.size();
+
+
+  // Assert that both vectors are equally long
+
+  assert (n == b.size());
+
+
+  // Sort vectors
 
   for (long i = (n-2)/2; i >=0 ; i--)
   {
