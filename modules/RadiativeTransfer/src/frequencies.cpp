@@ -51,11 +51,6 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
   {
    	all[p].resize (nfreq_red);
 
-  	for (long f = 0; f < nfreq_red; f++)
-  	{
-      all[p][f] = 0.0;
-  	}
-
 
 	  nr_line[p].resize (linedata.nlspec);
 
@@ -66,14 +61,8 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 	  	for (int k = 0; k < linedata.nrad[l]; k++)
 	  	{
 	  		nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
-
-	  		for (int z = 0; z < N_QUADRATURE_POINTS; z++)
-	  		{
-	  			nr_line[p][l][k][z] = 0;
-	  		}
 	  	}
 	  }
-
   }
 	} // end of pragma omp parallel
 
@@ -89,10 +78,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 	 {
 		for (int k = 0; k < linedata.nrad[l]; k++)
 		{
-		  const int i = linedata.irad[l][k];
-		  const int j = linedata.jrad[l][k];
-
-		  line      [index] = linedata.frequency[l](i,j);
+		  line      [index] = linedata.frequency[l][k];
       line_index[index] = index;
       index++;
     }
@@ -104,6 +90,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
 
 }   // END OF CONSTRUCTOR
+
 
 
 
@@ -131,6 +118,8 @@ long FREQUENCIES :: count_nlines (const LINEDATA& linedata)
 	return index;
 
 }
+
+
 
 
 ///  count_nfreq: count the number of frequencies
@@ -206,10 +195,7 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 	  {
 			for (int k = 0; k < linedata.nrad[l]; k++)
 			{
-			  const int i = linedata.irad[l][k];
-			  const int j = linedata.jrad[l][k];
-
-			  const double freq_line = linedata.frequency[l](i,j);
+			  const double freq_line = linedata.frequency[l][k];
         const double width     = profile_width (temperature.gas[p], freq_line);
 
   	    for (long z = 0; z < N_QUADRATURE_POINTS; z++)

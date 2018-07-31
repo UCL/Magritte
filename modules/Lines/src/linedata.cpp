@@ -41,7 +41,7 @@ LINEDATA :: LINEDATA ()
 	Double2 weight_buffer = WEIGHT;
 
   frequency.resize (nlspec);
-	Double3 frequency_buffer = FREQUENCY;
+  Double2 frequency_buffer = FREQ;
 
   A.resize (nlspec);
 	Double3 A_buffer = A_COEFF;
@@ -72,7 +72,7 @@ LINEDATA :: LINEDATA ()
 		energy[l].resize (nlev[l]);
 		weight[l].resize (nlev[l]);
 
-		frequency[l].resize (nlev[l],nlev[l]);
+		frequency[l].resize (nrad[l]);
 
 		A[l].resize (nlev[l],nlev[l]);
 		B[l].resize (nlev[l],nlev[l]);
@@ -84,13 +84,16 @@ LINEDATA :: LINEDATA ()
 
       for (int j = 0; j < nlev[l]; j++)
 			{
-			  frequency[l](i,j) = frequency_buffer[l][i][j];
-
 			  A[l](i,j) = A_buffer[l][i][j];
 			  B[l](i,j) = B_buffer[l][i][j];
 			}
 		}
 
+
+    for (int k = 0; k < nrad[l]; k++)
+		{
+		  frequency[l][k] = frequency_buffer[l][k];
+		}
 
  	  num_col_partner[l].resize (ncolpar[l]);
     orth_or_para_H2[l].resize (ncolpar[l]);
@@ -329,7 +332,7 @@ MatrixXd LINEDATA ::
 
 
 
-    int t = search (temperature_col[l][c], 0, ntmp[l][c], temperature_gas);
+    int t = search (temperature_col[l][c], temperature_gas);
 
 
 		if      (t == 0)

@@ -4,30 +4,20 @@
 // _________________________________________________________________________
 
 
-#include <iostream>
-using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
 #include "solve_ray.hpp"
-#include "timer.hpp"
 #include "GridTypes.hpp"
 
 
 ///  solve_ray: solve radiative transfer equation using the Feautrier method
 ///  and the numerical scheme devised by Rybicki & Hummer (1991)
-///    @param[in] n_r: number of points on ray r
-///    @param[in] Su_r: reference to source function for u along ray r
-///    @param[in] Sv_r: reference to source function for v along ray r
-///    @param[in] dtau_r: reference to optical depth increments along ray r
-///    @param[in] n_ar: number of points on ray ar
-///    @param[in] Su_ar: reference to source function for u along ray ar
-///    @param[in] Sv_ar: reference to source function for v along ray ar
-///    @param[in] dtau_ar: reference to optical depth increments along ray ar
+///    @param[in] ndep: number of points on ray this ray pair
+///    @param[in/out] Su: in pointer to source function for u / out solution for u
+///    @param[in/out] Sv: in pointer to source function for v / out solution for v
+///    @param[in] dtau: pointer to optical depth increments along ray r
 ///    @param[in] ndep: total number of points on the combined ray r and ar
-///    @param[in] f: frequency index under consideration
-///    @param[out] u: reference to resulting Feautrier mean intensity vector
-///    @param[out] v: reference to resulting Feautrier flux intensity vector
 ///    @param[in] ndiag: degree of approximation in ALO (e.g. 0->diag, 1->tridiag)
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////

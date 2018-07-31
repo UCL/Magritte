@@ -25,12 +25,12 @@ struct FREQUENCIES
 	const long nfreq;          ///< number of frequencies
 	const long nfreq_red;      ///< number of frequencies divided by n_simd_lanes
 
-	vReal2 all;            ///< all considered frequencies at each cell (ordered in f) (p,f)
+	vReal2 all;                ///< all considered frequencies at each cell (ordered in f) (p,f)
 
-	Long4 nr_line;         ///< frequency number corresponing to line (p,l,k,z)
+	Long4 nr_line;             ///< frequency number corresponing to line (p,l,k,z)
 
-	Double1 line;          ///< ordered line center frequencies
-	Long1   line_index;    ///< (l,k) index of the corresponding frequency in line
+	Double1 line;              ///< ordered line center frequencies
+	Long1   line_index;        ///< (l,k) index of the corresponding frequency in line
 
 
 	FREQUENCIES (const long num_of_cells, const LINEDATA& linedata);        ///< Constructor

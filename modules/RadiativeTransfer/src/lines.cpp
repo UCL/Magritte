@@ -291,7 +291,7 @@ int LINES ::
 	                MPI_IN_PLACE,            // pointer to data to be send (here in place)
 		              0,                       // number of elements in the send buffer
 		              MPI_DATATYPE_NULL,       // type of the send data
-		              emissivity.data(),   // pointer to the data to be received
+		              emissivity.data(),       // pointer to the data to be received
 		              buffer_lengths,          // number of elements in receive buffer
                   displacements,           // displacements between data blocks
 	                MPI_DOUBLE,              // type of the received data
@@ -306,7 +306,7 @@ int LINES ::
               	  MPI_IN_PLACE,            // pointer to data to be send (here in place)
               		0,                       // number of elements in the send buffer
               		MPI_DATATYPE_NULL,       // type of the send data
-              		opacity.data(),      // pointer to the data to be received
+              		opacity.data(),          // pointer to the data to be received
               		buffer_lengths,          // number of elements in receive buffer
                   displacements,           // displacements between data blocks
               	  MPI_DOUBLE,              // type of the received data

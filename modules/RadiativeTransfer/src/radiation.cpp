@@ -36,7 +36,6 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 	, START_raypair (START_raypair_input)
 {
 
-
 	// Size and initialize u, v, U and V
 
   u.resize (nrays_red);
@@ -65,6 +64,7 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 	}
 
 	J.resize (ncells*nfreq_red);
+
 
 }   // END OF CONSTRUCTOR
 
@@ -546,7 +546,7 @@ int RADIATION ::
 
 
 
-#include "configure.hpp"
+#include "folders.hpp"
 
 int RADIATION ::
     print (string OOOoutput_folder, string tag)

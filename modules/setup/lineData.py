@@ -191,6 +191,7 @@ class LineData():
         # Initialize data structures to zero
         self.A         = zero2(self.nlev,self.nlev)
         self.B         = zero2(self.nlev,self.nlev)
+        self.freq      = [0.0 for _ in range(self.nrad)]
         self.frequency = zero2(self.nlev,self.nlev)
         self.C_data    = [ [zero2(self.nlev,self.nlev) for _ in range(self.ncoltemp[colpar])] for colpar in range(self.ncolpar)]
         # Shift level indices for radiative transitions such that they are in [0, nlev-1]
@@ -208,6 +209,7 @@ class LineData():
             j = self.jrad[k]
             self.frequency[i][j] = (self.energy[i]-self.energy[j]) / h
             self.frequency[j][i] = self.frequency[i][j]
+            self.freq[k] = self.frequency[i][j]
             self.A[i][j] = self.A_coeff[k]
             self.B[i][j] = self.A[i][j] * c**2 / (2.0*h*self.frequency[i][j]**3)
             self.B[j][i] = self.weight[i] / self.weight[j] * self.B[i][j]

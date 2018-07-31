@@ -16,40 +16,6 @@ using namespace std;
 #define EPS 1.0E-4
 
 
-//TEST_CASE ("Simple search")
-//{
-//
-//	vector<double> x = {1.0, 3.4, 4.2, 5.4, 9.3, 13.4};
-//
-//  long start = 1;
-//	long stop  = 4;
-//
-//	CHECK (search (x, start, stop, 2.9) == 1);
-//	CHECK (search (x, start, stop, 4.1) == 2);
-//	CHECK (search (x, start, stop, 5.1) == 3);
-//
-//}
-//
-//
-//
-//
-//TEST_CASE ("Simple interpolation")
-//{
-//
-//	vector<double> x = {2.0, 4.0, 6.0, 8.0, 10.0, 12.0};
-//	vector<double> f = {1.0, 2.0, 3.0, 4.0,  5.0,  6.0};
-//
-//  long start = 1;
-//	long stop  = 4;
-//
-//	CHECK (interpolate (f, x, start, stop,  0.9) == 2.0);
-//	CHECK (interpolate (f, x, start, stop,  5.0) == 2.5);
-//	CHECK (interpolate (f, x, start, stop,  6.0) == 3.0);
-//	CHECK (interpolate (f, x, start, stop, 11.1) == 4.0);
-//
-//}
-
-
 TEST_CASE ("search function")
 {
 
@@ -62,19 +28,24 @@ TEST_CASE ("search function")
 
   for (int i = 0; i < nElem; i++)
   {
-    x[i] = i;
+    x[i] = i - 0.7;
   }
 
 
-  long start = 3;
-  long stop  = 30;
+  long reff1  = 7;
+  long index1 = search (x, 6);
 
-  long reff  = 6;
-  long index = search (x, start, stop, 6);
+  CHECK (index1 == reff1);
 
+  long reff2  = 0;
+  long index2 = search (x, -1);
 
-  CHECK (index == reff);
+  CHECK (index2 == reff2);
 
+  long reff3  = 29;
+  long index3 = search (x, 636);
+
+  CHECK (index3 == reff3);
 }
 
 
@@ -112,8 +83,6 @@ TEST_CASE ("search_with_notch function")
 
     search_with_notch (vec, notch, 6);
 
-    cout << notch << endl;
-
     CHECK (notch == reff);
 
   }
@@ -126,8 +95,6 @@ TEST_CASE ("search_with_notch function")
     long reff  = 9;
 
     search_with_notch (vec, notch, 6);
-
-    cout << notch << endl;
 
     CHECK (notch == reff);
 
@@ -179,26 +146,3 @@ TEST_CASE ("interpolate_linear function (vReal)")
   }
 
 }
-
-//TEST_CASE ("Simple resample")
-//{
-//	vector<double> x = {2.0, 4.0, 6.0, 8.0, 10.0, 12.0};
-//	vector<double> f = {1.0, 2.0, 3.0, 4.0,  5.0,  6.0};
-//
-//	double scale = 0.5;
-//
-//  long start = 1;
-//	long stop  = 5;
-//
-//	vector<double> x_new = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
-//	vector<double> f_new = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-//
-//  resample (x, f, start, stop, x_new, f_new);
-//
-//	CHECK (f_new[0] == 0.0);
-//	CHECK (f_new[1] == 2.0);
-//	CHECK (f_new[2] == 2.0);
-//	CHECK (f_new[3] == 2.0);
-//	CHECK (f_new[4] == 2.5);
-//	CHECK (f_new[5] == 0.0);
-//}

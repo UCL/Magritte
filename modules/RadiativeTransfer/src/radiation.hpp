@@ -28,15 +28,15 @@ struct RADIATION
 	const long START_raypair;   ///< reduced number of frequencies
 
 
-	vReal2 u;   ///< u intensity           (r, index(p,f))
-	vReal2 v;   ///< v intensity           (r, index(p,f))
+	vReal2 u;                   ///< u intensity           (r, index(p,f))
+	vReal2 v;                   ///< v intensity           (r, index(p,f))
 
-	vReal2 U;   ///< U scattered intensity (r, index(p,f))
-	vReal2 V;   ///< V scattered intensity (r, index(p,f))
+	vReal2 U;                   ///< U scattered intensity (r, index(p,f))
+	vReal2 V;                   ///< V scattered intensity (r, index(p,f))
 
-	vReal1 J;   ///< (angular) mean intensity (index(p,f))
+	vReal1 J;                   ///< (angular) mean intensity (index(p,f))
 
-	vReal3 boundary_intensity;
+	vReal3 boundary_intensity;   ///< intensity at the boundary (b,r,f)
 
 
 	RADIATION (const long num_of_cells,    const long num_of_rays,

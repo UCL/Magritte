@@ -9,21 +9,11 @@
 #include <iostream>
 
 #include "catch.hpp"
+#include "tools.hpp"
 
-#include "../src/radiation.hpp"
+#include "radiation.hpp"
 
 #define EPS 1.0E-4
-
-
-///  relative_error: returns relative error between A and B
-///////////////////////////////////////////////////////////
-
-double relative_error (double A, double B)
-{
-  return 2.0 * fabs(A-B) / fabs(A+B);
-}
-
-
 
 
 TEST_CASE ("Frequency interpolator")
@@ -37,6 +27,21 @@ TEST_CASE ("Frequency interpolator")
 
     RADIATION radiation (ncells, nrays, nrays, nfreq, nboundary, 0);
 	}
-  
+
+
+}
+
+
+TEST_CASE ("rescale_U_and_V function")
+{
+
+	const long ncells    = 10;
+  const long nrays     = 4;
+  const long nfreq     = 20;
+	const long nboundary = 2;
+
+  RADIATION radiation (ncells, nrays, nrays, nfreq, nboundary, 0);
+
+
 
 }
