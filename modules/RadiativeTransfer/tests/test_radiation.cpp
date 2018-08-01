@@ -25,7 +25,7 @@ TEST_CASE ("Frequency interpolator")
 	  long nfreq     = 20;
 		long nboundary = 2;
 
-    RADIATION radiation (ncells, nrays, nrays, nfreq, nboundary, 0);
+    RADIATION radiation (ncells, nrays, nfreq, nboundary);
 	}
 
 
@@ -40,7 +40,7 @@ TEST_CASE ("rescale_U_and_V function")
   const long nfreq     = 20;
 	const long nboundary = 2;
 
-  RADIATION radiation (ncells, nrays, nrays, nfreq, nboundary, 0);
+  RADIATION radiation (ncells, nrays, nfreq, nboundary);
 
 
 

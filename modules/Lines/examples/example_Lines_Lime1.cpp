@@ -38,15 +38,6 @@ int main (void)
 	timer_TOTAL.start ();
 
 
-  // Get rank of process and total number of processes
-
-  int world_size;
-  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-
 	const string       cells_file = input_folder + "cells.txt";
 	const string n_neighbors_file = input_folder + "n_neighbors.txt";
 	const string   neighbors_file = input_folder + "neighbors.txt";
@@ -86,27 +77,19 @@ int main (void)
 	LEVELS levels (Ncells, linedata);
 
 
-  const long START_raypair = ( world_rank   *Nrays/2)/world_size;
-  const long STOP_raypair  = ((world_rank+1)*Nrays/2)/world_size;
-
-	const long nrays_red = STOP_raypair - START_raypair;
-
-	RADIATION radiation (Ncells, Nrays, nrays_red, nfreq_red,
-			                 nboundary, START_raypair);
-
-	// radiation.initialize ();
+	RADIATION radiation (Ncells, Nrays, nfreq_red, nboundary);
 
 	radiation.calc_boundary_intensities (cells.bdy_to_cell_nr, frequencies);
 
 
-//	Lines <Dimension, Nrays>
-//		    (cells, linedata, species, temperature,
-//				 frequencies, levels, radiation);
-//
-//
-//	// Print results
-//
-//	levels.print (output_folder, "");
+	Lines <Dimension, Nrays>
+		    (cells, linedata, species, temperature,
+				 frequencies, levels, radiation);
+
+
+	// Print results
+
+	levels.print (output_folder, "");
 
 
 	// Print total time

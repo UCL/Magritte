@@ -74,18 +74,7 @@ int main (void)
 	const long nfreq_red = frequencies.nfreq_red;
 
 
-  int world_size;
-  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-  const long START_raypair = ( world_rank   *Nrays/2)/world_size;
-  const long STOP_raypair  = ((world_rank+1)*Nrays/2)/world_size;
-
-	const long nrays_red = STOP_raypair - START_raypair;
-
-	RADIATION radiation (Ncells, Nrays, nrays_red, nfreq_red, nboundary, START_raypair);
+	RADIATION radiation (Ncells, Nrays, nfreq_red, nboundary);
 
 
 	LINES lines (Ncells, linedata);

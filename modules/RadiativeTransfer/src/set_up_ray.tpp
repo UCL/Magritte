@@ -62,7 +62,7 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 
 	if (n_ar > 0)
 	{
-	  for (long q = 0; q < n_r-1; q++)
+	  for (long q = 0; q < n_ar-1; q++)
 	  {
       get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
 		                     lnotch_ar[q], notch_ar[q], cellNrs_ar[q], shifts_ar[q], term1_n, term2_n, chi_n);
@@ -121,9 +121,9 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 		                        lnotch_r[n_r-1], notch_r[n_r-1], cellNrs_r[n_r-1], shifts_r[n_r-1],
 														term1_n, term2_n, chi_n, Ibdy_scaled);
 
-	  dtau[ndep] = 0.5 * (chi_c + chi_n) * dZs_r[n_r-1];
-      Su[ndep] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[ndep] * (Ibdy_scaled - term2_c);
-     	Sv[ndep] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[ndep] * (Ibdy_scaled - term1_c);
+	  dtau[ndep-1] = 0.5 * (chi_c + chi_n) * dZs_r[n_r-1];
+      Su[ndep-1] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[ndep-1] * (Ibdy_scaled - term2_c);
+     	Sv[ndep-1] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[ndep-1] * (Ibdy_scaled - term1_c);
 
       //Su[n_ray-1] = 0.5 * (term1_n + term1_c) + sign * (term2_n - term2_c) / dtau[n_ray-1]
 	  	//              + 2.0 / dtau[n_ray-1] * (Ibdy_scaled - sign*0.5*(term2_c + term2_n));
@@ -142,7 +142,7 @@ inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempera
 						                const long f, const long o, long& lnotch, const long cellNrs,
 														vReal freq_scaled, vReal& eta, vReal& chi)
 {
-	
+
 	eta = 0.0;
 	chi = 0.0;
 
@@ -150,6 +150,32 @@ inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempera
 
 	scattering.add_opacity (freq_scaled, chi);
 
+
+	// Avoid zero optical depths
+
+# if (GRID_SIMD)
+		for (int lane = 0; lane < n_simd_lanes; lane++)
+		{
+	    if (fabs(chi.getlane(lane)) < 1.0E-30)
+			{
+        chi.putlane(1.0E-30, lane);
+			}
+		}
+# else
+	  if (fabs(chi) < 1.0E-30)
+		{
+      chi = 1.0E-30;
+		}
+# endif
+
+//cout << "Start" << endl;
+//  for (int lane = 0; lane < n_simd_lanes; lane++)
+//  {
+//  	if (isnan(chi.getlane(lane)))
+//  	{
+//	    cout << lane << " " << eta << " " << chi << endl;
+//		}
+//	}
 
 	return (0);
 
@@ -174,6 +200,11 @@ inline int get_terms_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempe
 
   radiation.rescale_U_and_V (frequencies, cellNrs, R, notch, freq_scaled, U_scaled, V_scaled);
 
+
+  // temporary !!!
+
+	U_scaled = 0.0;
+	V_scaled = 0.0;
 
 	term1 = (U_scaled + eta) / chi;
   term2 =  V_scaled        / chi;
@@ -205,6 +236,12 @@ inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays>& cells, FREQUEN
   radiation.rescale_U_and_V_and_bdy_I (frequencies, cellNrs, b, R, notch, freq_scaled,
 		                                   U_scaled, V_scaled, Ibdy_scaled);
 
+
+  // temporary !!!
+
+	U_scaled = 0.0;
+	V_scaled = 0.0;
+	Ibdy_scaled = 0.0;
 
 	term1 = (U_scaled + eta) / chi;
   term2 =  V_scaled        / chi;

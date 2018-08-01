@@ -27,8 +27,18 @@ const double C_SQUARED = 8.98755179E+20;   // speed of light squared in cgs unit
 
 const double INVERSE_SQRT_PI = 0.56418958354;   // inverse square root of Pi ( 1/sqrt(PI) )
 
-const double V_TURB_OVER_C_ALL_SQUARED = 100.0 / C_SQUARED;        // (v_turb / c)^2
-const double TWO_KB_OVER_MP_C_SQUARED  = 2.0*KB/ (MP * C_SQUARED);   // 2.0*Kb/Mp*c^2
+const double v_turb = 10;
+const double V_TURB_OVER_C_ALL_SQUARED = v_turb * v_turb / C_SQUARED;   // (v_turb / c)^2
+
+//extern const double v_turb;
+//extern const double V_TURB_OVER_C_ALL_SQUARED;
+//
+//#ifndef __VTURB_DEFINED__
+//const double v_turb = 10;
+//const double V_TURB_OVER_C_ALL_SQUARED = v_turb * v_turb / C_SQUARED;   // (v_turb / c)^2
+//#endif
+
+const double TWO_KB_OVER_MP_C_SQUARED  = 2.0 * KB / (MP * C_SQUARED);   // 2.0*Kb/Mp*c^2
 
 const double TWO_HH_OVER_CC_SQUARED = 2.0 * HH / C_SQUARED;
 

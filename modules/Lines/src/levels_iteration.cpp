@@ -169,7 +169,7 @@ int LEVELS ::
 
         // Calculate source and opacity
 
-	      calc_line_emissivity_and_opacity (linedata, lines, p, l);
+	      //calc_line_emissivity_and_opacity (linedata, lines, p, l);
 	  	}
 	  }
 

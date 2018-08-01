@@ -35,32 +35,146 @@ struct LINES
 	const Int1 nrad_cum;
 	const int  nrad_tot;
 
-	//Double3 emissivity;   ///< line emissivity (p,l,k)
-	//Double3 opacity;      ///< line opacity (p,l,k)
-
-
 	Double1 emissivity;   ///< line emissivity (p,l,k)
 	Double1 opacity;      ///< line opacity (p,l,k)
 
 
-  LINES (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
-
 	static Int1 get_nrad_cum (const Int1 nrad);
 	static int  get_nrad_tot (const Int1 nrad);
 
+
+  LINES (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
+
+
 	int print (string output_folder, string tag) const;
 
-  long index (const long p, const int l, const int k) const;
+  inline long index (const long p, const int l, const int k) const;
 
-  long index (const long p, const long line_index) const;
+  inline long index (const long p, const long line_index) const;
 
-  int add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-																 	vReal& freq_scaled, long& lnotch, const long p,
-																	vReal& eta, vReal& chi) const;
+  inline int add_emissivity_and_opacity (FREQUENCIES& frequencies,
+		                                     const TEMPERATURE& temperature,
+																 	       vReal& freq_scaled, long& lnotch,
+																				 const long p,
+																	       vReal& eta, vReal& chi) const;
 
 	int mpi_allgatherv ();
 
 };
+
+
+
+
+#include "profile.hpp"
+
+
+
+
+///  index:
+///////////
+
+inline long LINES ::
+            index (const long p, const int l, const int k) const
+{
+	return k + nrad_cum[l] + p*nrad_tot;
+}
+
+
+
+///  index:
+///////////
+
+inline long LINES ::
+            index (const long p, const long line_index) const
+{
+	return line_index + p*nrad_tot;
+}
+
+
+
+
+///  add_emissivity_and_opacity
+///////////////////////////////
+
+inline int LINES ::
+           add_emissivity_and_opacity (FREQUENCIES& frequencies,
+						                           const TEMPERATURE& temperature,
+		                                   vReal& freq_scaled,
+																			 long& lnotch, const long p,
+																       vReal& eta, vReal& chi) const
+{
+
+	vReal  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
+	double     width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+
+
+# if (GRID_SIMD)
+		while (   (freq_diff.getlane(0) > 3.0*width)
+		       && (lnotch < nrad_tot) )
+# else
+		while (   (freq_diff            > 3.0*width)
+		       && (lnotch < nrad_tot) )
+# endif
+	{
+	  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
+	      width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+
+		lnotch++;
+	}
+
+
+	vReal line_profile = profile (width, freq_diff);
+	long           ind = index   (p, frequencies.line_index[lnotch]);
+
+	eta += emissivity[ind] * line_profile;
+	chi +=    opacity[ind] * line_profile;
+
+
+	for (int lane = 0; lane < n_simd_lanes; lane++)
+	{
+		if (isnan(chi.getlane(lane)))
+		{
+			cout << opacity[ind] << " " << line_profile << " " << width << " " << freq_diff << endl;
+		}
+	}
+
+
+	long lindex = lnotch+1;
+
+# if (GRID_SIMD)
+	  while (   (freq_diff.getlane(n_simd_lanes-1) > -3.0*width)
+		       && (lindex < nrad_tot) )
+# else
+	  while (   (freq_diff                         > -3.0*width)
+		       && (lindex < nrad_tot) )
+# endif
+	{
+	  freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
+	      width = profile_width (temperature.gas[p], frequencies.line[lindex]);
+
+	  line_profile = profile (width, freq_diff);
+	           ind = index   (p, frequencies.line_index[lindex]);
+
+	  eta += emissivity[ind] * line_profile;
+	  chi +=    opacity[ind] * line_profile;
+
+
+	  for (int lane = 0; lane < n_simd_lanes; lane++)
+	  {
+	  	if (isnan(chi.getlane(lane)))
+	  	{
+	  		cout << opacity[ind] << " " << line_profile << " " << width << " " << freq_diff <<  endl;
+	  	}
+	  }
+
+		lindex++;
+	}
+
+
+
+	return (0);
+
+}
 
 
 #endif // __LINES_HPP_INCLUDED__

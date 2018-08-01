@@ -146,8 +146,25 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
           						lnotch_r,  notch_r,  cellNrs_r,  shifts_r,  dZs_r,  n_r,
             	        Su, Sv, dtau, ndep);
 
+					//for (long n = 0; n < ndep; n++)
+					//{
+		      //  for (int lane = 0; lane < n_simd_lanes; lane++)
+		      //  {
+		      //  	if (isnan(Su[n].getlane(lane)))
+		      //  	{
+					//	    cout << f << " " << n << " " << ndep << endl;
+					//	    cout << Su[n] << endl;
+					//	    cout << dtau[n] << endl;
+					//		}
+					//	}
+					//}
 
           solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
+
+					//for (long n = 0; n < ndep; n++)
+					//{
+					//	cout << Su[n] << endl;
+					//}
 
 
         	vReal u_local = 0.0;   // local value of u field in direction r/ar
@@ -167,8 +184,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	        if ( (n_ar > 0) && (n_r > 0) )
 	        {
-	          u_local = 0.5*u_local;
-	          v_local = 0.5*v_local;
+	          u_local *= 0.5;
+	          v_local *= 0.5;
 	        }
 
 
@@ -176,6 +193,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	        radiation.u[R][index] = u_local;
 	        radiation.v[R][index] = v_local;
+
+					//cout << u_local << endl;
 
 	  	  } // end of loop over frequencies
 

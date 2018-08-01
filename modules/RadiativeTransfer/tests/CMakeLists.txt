@@ -123,13 +123,13 @@ target_link_libraries( test_profile.exe
   _RADIATIVE_TRANSFER
   _TEST_RT_MAIN )
 
-## Create executable to test frequencies
-#add_executable( test_lines.exe
-#test_lines.cpp )
-#target_link_libraries( test_lines.exe
-#_RADIATIVE_TRANSFER
-#_TEST_RT_MAIN )
-#
+# Create executable to test frequencies
+add_executable( test_lines.exe
+  test_lines.cpp )
+target_link_libraries( test_lines.exe
+  _RADIATIVE_TRANSFER
+  _TEST_RT_MAIN )
+
 ## Create executable to test species
 #add_executable( test_species.exe
 #test_species.cpp )

@@ -27,7 +27,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
 
-#define MAX_NITERATIONS 100
+#define MAX_NITERATIONS 1
 
 
 ///  Lines: iteratively calculates level populations
@@ -99,8 +99,12 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 		MPI_TIMER timer_RT ("RT");
 		timer_RT.start ();
 
+cout << "before RT" << endl;
+
     RadiativeTransfer<Dimension, Nrays>
 			               (cells, temperature, frequencies, lines, scattering, radiation);
+
+cout << "after RT" << endl;
 
 	  timer_RT.stop ();
 	  timer_RT.print_to_file ();
@@ -152,7 +156,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 
 		// Limit the number of iteration
 
-    if (niterations > MAX_NITERATIONS)
+    if (niterations >= MAX_NITERATIONS)
 		{
 			levels.some_not_converged = false;
 		}
@@ -167,9 +171,6 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
 			cout << endl;
     }
 
-//// TEST
-//		levels.some_not_converged = false;
-////
 
   } // end of while loop of iterations
 

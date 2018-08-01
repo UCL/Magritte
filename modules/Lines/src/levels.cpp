@@ -180,7 +180,13 @@ int LEVELS ::
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
     population[p][l](i) *= population_tot[p][l] / partition_function;
+
+      //if (isnan(population[p][l](i)))
+      //{
+      //  cout << population_tot[p][l] << " " << partition_function << endl;
+      //}
   }
+
 
 
   return (0);
@@ -312,6 +318,11 @@ int LEVELS ::
 
 	     lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
                  		                        - population[p][l](i) * linedata.B[l](i,j) );
+
+     //if (isnan(lines.emissivity[index]))
+     //{
+    //   cout << p << " " << l << " " << i << " " << population[p][l](i) << endl;
+     //}
   }
 
 

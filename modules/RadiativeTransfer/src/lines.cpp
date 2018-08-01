@@ -7,7 +7,6 @@
 #include <mpi.h>
 #include <omp.h>
 #include <assert.h>
-#include <vector>
 #include <fstream>
 #include <iostream>
 using namespace std;
@@ -28,7 +27,8 @@ using namespace Eigen;
 ///  Constructor for LINES
 //////////////////////////
 
-LINES :: LINES (const long num_of_cells, const LINEDATA& linedata)
+LINES ::
+LINES (const long num_of_cells, const LINEDATA& linedata)
 	: ncells   (num_of_cells)
 	, nlspec   (linedata.nlspec)
 	, nrad     (linedata.nrad)
@@ -36,46 +36,8 @@ LINES :: LINES (const long num_of_cells, const LINEDATA& linedata)
 	, nrad_tot (get_nrad_tot (nrad))
 {
 
-
-
-  // Size and initialize emissivity, opacity and freq
-
-// 	//emissivity.resize (ncells);
-// 	//   opacity.resize (ncells);
-//
  	emissivity.resize (ncells*nrad_tot);
  	   opacity.resize (ncells*nrad_tot);
-//
-//# pragma omp parallel \
-//  shared (linedata)   \
-//	default (none)
-//  {
-//
-//  const int num_threads = omp_get_num_threads();
-//	const int thread_num  = omp_get_thread_num();
-//
-//  const long start = (thread_num*ncells)/num_threads;
-//  const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-//
-//	for (long p = start; p < stop; p++)
-//	{
-//		emissivity[p].resize (linedata.nlspec);
-//		   opacity[p].resize (linedata.nlspec);
-//
-//	  for (int l = 0; l < linedata.nlspec; l++)
-//	  {
-//		  emissivity[p][l].resize (linedata.nrad[l]);
-//		     opacity[p][l].resize (linedata.nrad[l]);
-//
-//		  for (int k = 0; k < linedata.nrad[l]; k++)
-//		  {
-//			  emissivity[p][l][k] = 0.0;
-//			     opacity[p][l][k] = 0.0;
-//  	  }
-//		}
-//
-//	}
-//	} // end of pragma omp parallel
 
 
 }   // END OF CONSTRUCTOR
@@ -162,92 +124,6 @@ int LINES ::
 }
 
 
-long LINES ::
-     index (const long p, const int l, const int k) const
-{
-	return k + nrad_cum[l] + p*nrad_tot;
-}
-
-long LINES ::
-     index (const long p, const long line_index) const
-{
-	return line_index + p*nrad_tot;
-}
-
-
-///  add_emissivity_and_opacity
-///////////////////////////////
-
-int LINES ::
-    add_emissivity_and_opacity (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-		                            vReal& freq_scaled, long& lnotch, const long p,
-																vReal& eta, vReal& chi) const
-{
-
-	vReal  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-	double     width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
-
-
-# if (GRID_SIMD)
-		while (freq_diff.getlane(0) > 3.0*width)
-# else
-		while (freq_diff            > 3.0*width)
-# endif
-	{
-	  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-	      width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
-
-		lnotch++;
-	}
-
-
-	vReal line_profile = profile (width, freq_diff);
-	long           ind = index   (p, frequencies.line_index[lnotch]);
-
-	eta += emissivity[ind] * line_profile;
-	chi +=    opacity[ind] * line_profile;
-
-
-	long lindex = lnotch+1;
-
-# if (GRID_SIMD)
-	  while (freq_diff.getlane(n_simd_lanes-1) > -3.0*width)
-# else
-	  while (freq_diff                         > -3.0*width)
-# endif
-	{
-	  freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
-	      width = profile_width (temperature.gas[p], frequencies.line[lindex]);
-
-	  line_profile = profile (width, freq_diff);
-	           ind = index   (p, frequencies.line_index[lindex]);
-
-	  eta += emissivity[ind] * line_profile;
-	  chi +=    opacity[ind] * line_profile;
-
-		lindex++;
-	}
-
-
-//# if (GRID_SIMD)
-//		for (int lane = 0; lane < n_simd_lanes; lane++)
-//		{
-//	    if (chi.getlane(lane) == 0.0)
-//			{
-//        chi.putlane(1.0E-30, lane);
-//			}
-//		}
-//# else
-//	  if (chi == 0.0)
-//		{
-//      chi = 1.0E-30;
-//		}
-//# endif
-
-
-	return (0);
-
-}
 
 
 

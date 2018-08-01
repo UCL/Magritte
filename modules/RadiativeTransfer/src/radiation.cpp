@@ -15,7 +15,6 @@ using namespace std;
 #include "constants.hpp"
 #include "GridTypes.hpp"
 #include "mpiTypes.hpp"
-#include "cells.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
 #include "profile.hpp"
@@ -26,14 +25,12 @@ using namespace std;
 //////////////////////////////
 
 RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
-		                    const long num_of_rays_red, const long num_of_freq_red,
-												const long num_of_bdycells, const long START_raypair_input)
+		                    const long num_of_freq_red, const long num_of_bdycells)
 	: ncells        (num_of_cells)
 	, nrays         (num_of_rays)
-  , nrays_red     (num_of_rays_red)
+  , nrays_red     (get_nrays_red (nrays))
   , nfreq_red     (num_of_freq_red)
 	, nboundary     (num_of_bdycells)
-	, START_raypair (START_raypair_input)
 {
 
 	// Size and initialize u, v, U and V
@@ -69,19 +66,19 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 }   // END OF CONSTRUCTOR
 
 
-
-long RADIATION ::
-     index (const long r, const long p, const long f) const
+long RADIATION :: get_nrays_red (const long nrays)
 {
-	return f + (p + (r-START_raypair)*ncells)*nfreq_red;
-}
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
-long RADIATION ::
-     index (const long p, const long f) const
-{
-	return f + p*nfreq_red;
-}
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
+  const long START_raypair = ( world_rank   *nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
+
+	return STOP_raypair - START_raypair;
+}
 
 int RADIATION ::
     read (const string boundary_intensity_file)
@@ -90,8 +87,6 @@ int RADIATION ::
 	return (0);
 
 }
-
-
 
 ///  calc_boundary_intensities: calculate the boundary intensities
 //////////////////////////////////////////////////////////////////
@@ -122,7 +117,6 @@ int RADIATION ::
 
 	    for (long f = 0; f < nfreq_red; f++)
       {
-				cout << b << " " << p << endl;
 				boundary_intensity[r][b][f] = Planck (T_CMB, frequencies.all[p][f]);
       }
 	  }
@@ -402,151 +396,6 @@ int RADIATION ::
 }
 
 #endif
-
-
-
-
-int RADIATION ::
-    rescale_U_and_V (FREQUENCIES& frequencies, const long p, const long R,
-	  	               long& notch, vReal& freq_scaled,
-	  								 vReal& U_scaled, vReal& V_scaled)
-
-#if (GRID_SIMD)
-
-{
-
-	vReal nu1, nu2, U1, U2, V1, V2;
-
-  for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
-
-		double freq = freq_scaled.getlane (lane);
-
-		search_with_notch (frequencies.all[p], notch, freq);
-
-		const long f1    =  notch    / n_simd_lanes;
-    const  int lane1 =  notch    % n_simd_lanes;
-
-		const long f2    = (notch+1) / n_simd_lanes;
-    const  int lane2 = (notch+1) % n_simd_lanes;
-
-		//const double nu1 = frequencies.all[p][f1].getlane(lane1);
-		//const double nu2 = frequencies.all[p][f2].getlane(lane2);
-
-		//const double U1 = U[R][index(p,f1)].getlane(lane1);
-		//const double U2 = U[R][index(p,f2)].getlane(lane2);
-
-		//const double V1 = V[R][index(p,f1)].getlane(lane1);
-		//const double V2 = V[R][index(p,f2)].getlane(lane2);
-
-		//U_scaled.putlane(interpolate_linear (nu1, U1, nu2, U2, freq), lane);
-		//V_scaled.putlane(interpolate_linear (nu1, V1, nu2, V2, freq), lane);
-
-		nu1.putlane (frequencies.all[p][f1].getlane (lane1), lane);
-		nu2.putlane (frequencies.all[p][f2].getlane (lane2), lane);
-
-		 U1.putlane (U[R][index(p,f1)].getlane (lane1), lane);
-		 U2.putlane (U[R][index(p,f2)].getlane (lane2), lane);
-
-		 V1.putlane (V[R][index(p,f1)].getlane (lane1), lane);
-		 V2.putlane (V[R][index(p,f2)].getlane (lane2), lane);
-	}
-
-	U_scaled = interpolate_linear (nu1, U1, nu2, U2, freq_scaled);
-	V_scaled = interpolate_linear (nu1, V1, nu2, V2, freq_scaled);
-
-
- 	return (0);
-
-}
-
-#else
-
-{
-
-	search_with_notch (frequencies.all[p], notch, freq_scaled);
-
-	const long f1    = notch;
-	const long f2    = notch+1;
-
-	const double nu1 = frequencies.all[p][f1];
-	const double nu2 = frequencies.all[p][f2];
-
-	const double U1 = U[R][index(p,f1)];
-	const double U2 = U[R][index(p,f2)];
-
-	const double V1 = V[R][index(p,f1)];
-	const double V2 = V[R][index(p,f2)];
-
-	U_scaled = interpolate_linear (nu1, U1, nu2, U2, freq);
-	V_scaled = interpolate_linear (nu1, V1, nu2, V2, freq);
-
-
- 	return (0);
-
-}
-
-#endif
-
-
-
-
-int RADIATION ::
-    rescale_U_and_V_and_bdy_I (FREQUENCIES& frequencies, const long p, const long b,
-	                             const long R, long& notch, vReal& freq_scaled,
-															 vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled)
-{
-
-	vReal nu1, nu2, U1, U2, V1, V2, Ibdy1, Ibdy2;
-
-  for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
-		double freq = freq_scaled.getlane (lane);
-
-		search_with_notch (frequencies.all[p], notch, freq);
-
-		const long f1    =  notch    / n_simd_lanes;
-    const  int lane1 =  notch    % n_simd_lanes;
-
-		const long f2    = (notch+1) / n_simd_lanes;
-    const  int lane2 = (notch+1) % n_simd_lanes;
-
-		//const double nu1 = frequencies.all[p][f1].getlane(lane1);
-		//const double nu2 = frequencies.all[p][f2].getlane(lane2);
-
-		//const double U1 = U[R][index(p,f1)].getlane(lane1);
-		//const double U2 = U[R][index(p,f2)].getlane(lane2);
-
-		//const double V1 = V[R][index(p,f1)].getlane(lane1);
-		//const double V2 = V[R][index(p,f2)].getlane(lane2);
-
-		//const double Ibdy1 = boundary_intensity[R][b][f1].getlane(lane1);
-		//const double Ibdy2 = boundary_intensity[R][b][f2].getlane(lane2);
-
-		//   U_scaled.putlane (interpolate_linear (nu1, U1,    nu2, U2,    freq), lane);
-		//   V_scaled.putlane (interpolate_linear (nu1, V1,    nu2, V2,    freq), lane);
-		//Ibdy_scaled.putlane (interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq), lane);
-
-		  nu1.putlane (      frequencies.all[p][f1].getlane (lane1), lane);
-		  nu2.putlane (      frequencies.all[p][f2].getlane (lane2), lane);
-
-		   U1.putlane (           U[R][index(p,f1)].getlane (lane1), lane);
-		   U2.putlane (           U[R][index(p,f2)].getlane (lane2), lane);
-
-		   V1.putlane (           V[R][index(p,f1)].getlane (lane1), lane);
-		   V2.putlane (           V[R][index(p,f2)].getlane (lane2), lane);
-
-		Ibdy1.putlane (boundary_intensity[R][b][f1].getlane (lane1), lane);
-		Ibdy2.putlane (boundary_intensity[R][b][f2].getlane (lane2), lane);
-	}
-
-	   U_scaled = interpolate_linear (nu1, U1,    nu2,    U2, freq_scaled);
-	   V_scaled = interpolate_linear (nu1, V1,    nu2,    V2, freq_scaled);
-	Ibdy_scaled = interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
-
-
- 	return (0);
-}
 
 
 

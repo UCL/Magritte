@@ -58,14 +58,15 @@ struct CELLS
 						const string boundary_file);
 
 
-  long next (const long origin, const long ray, const long current,
-             double& Z, double& dZ) const;
+  inline long next (const long origin, const long ray, const long current,
+                    double& Z, double& dZ) const;
 
-  long on_ray (const long origin, const long ray,
-               long *cellNrs, double *dZs) const;
+  inline long on_ray (const long origin, const long ray,
+                      long *cellNrs, double *dZs) const;
 
 
-  double relative_velocity (const long origin, const long r, long current) const;
+  inline double relative_velocity (const long origin, const long r,
+                                   const long current) const;
 
 
 };
