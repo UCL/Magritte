@@ -161,6 +161,10 @@ int LEVELS ::
 
  	population_tot[p][l] = species.density[p] * species.abundance[p][linedata.num[l]];
 
+  if (population_tot[p][l] == 0.0)
+  {
+    cout << p << " " << l << endl;
+  }
 
   // Calculate fractional LTE level populations and partition function
 
@@ -317,7 +321,7 @@ int LEVELS ::
 	  lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
 	     lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
-                 		                        - population[p][l](i) * linedata.B[l](i,j) );
+                 		                    - population[p][l](i) * linedata.B[l](i,j) );
 
      //if (isnan(lines.emissivity[index]))
      //{

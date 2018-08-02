@@ -49,9 +49,7 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
   for (long p = start; p < stop; p++)
   {
-   	all[p].resize (nfreq_red);
-
-
+   	    all[p].resize (nfreq_red);
 	  nr_line[p].resize (linedata.nlspec);
 
 	  for (int l = 0; l < linedata.nlspec; l++)
@@ -63,8 +61,18 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 	  		nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
 	  	}
 	  }
+
+
+    // frequencies.all has to be initialized (for unused entries)
+
+    for (long f = 0; f < nfreq_red; f++)
+    {
+      all[p][f] = 0.0;
+    }
+
   }
 	} // end of pragma omp parallel
+
 
 
   // Find the order of the line center frequencies

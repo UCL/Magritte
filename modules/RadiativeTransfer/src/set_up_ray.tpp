@@ -51,6 +51,10 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 
 	vReal Ibdy_scaled;
 
+	//if (o==0 && f==0)
+	//{
+	//	cout << "O IS NUL !!!" << endl;
+	//}
 
   get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
 	                 lnotch_r[cells.ncells], o, frequencies.all[o][f], eta_o, chi_o);
@@ -68,8 +72,8 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 		                     lnotch_ar[q], notch_ar[q], cellNrs_ar[q], shifts_ar[q], term1_n, term2_n, chi_n);
 
 	  	dtau[n_ar-1-q] = 0.5 * (chi_c + chi_n) * dZs_ar[q];
-        Su[n_ar-1-q] = 0.5 * (term1_n + term1_c) - (term2_n - term2_c) / dtau[q];
-       	Sv[n_ar-1-q] = 0.5 * (term2_n + term2_c) - (term1_n - term1_c) / dtau[q];
+        Su[n_ar-1-q] = 0.5 * (term1_n + term1_c) - (term2_n - term2_c) / dtau[n_ar-1-q];
+       	Sv[n_ar-1-q] = 0.5 * (term2_n + term2_c) - (term1_n - term1_c) / dtau[n_ar-1-q];
 
         chi_c =   chi_n;
       term1_c = term1_n;
@@ -132,6 +136,27 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 	}
 
 
+	//if (o==0 && f==0)
+	//{
+
+	//	cout << n_r << " " << n_ar << endl;
+
+	//	for (long n = 0; n < ndep; n++)
+	//  {
+	//	  for (int lane = 0; lane < n_simd_lanes; lane++)
+	//	  {
+	//	    if (isnan(Su[n].getlane(lane)))
+	//	    {
+	//  	    cout << f << " " << n << " " << ndep << endl;
+	//  	    cout << Su[n] << endl;
+	//  	    cout << dtau[n] << endl;
+	//  		}
+	//  	}
+	//  }
+	//}
+
+
+
 	return (0);
 
 }
@@ -169,13 +194,16 @@ inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempera
 # endif
 
 //cout << "Start" << endl;
-//  for (int lane = 0; lane < n_simd_lanes; lane++)
-//  {
-//  	if (isnan(chi.getlane(lane)))
-//  	{
-//	    cout << lane << " " << eta << " " << chi << endl;
-//		}
-//	}
+	//if (o==0 && f==0)
+	//{
+	//  for (int lane = 0; lane < n_simd_lanes; lane++)
+  //  {
+  //  //	if (isnan(eta.getlane(lane)))
+  //  	{
+	//      cout << lane << " " << eta << " " << chi << endl;
+	//  	}
+	//  }
+	//}
 
 	return (0);
 

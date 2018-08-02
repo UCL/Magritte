@@ -73,6 +73,11 @@ int main (void)
 
 	const long nfreq_red = frequencies.nfreq_red;
 
+	//for (int i = 0; i < frequencies.line.size(); i++)
+	//{
+	//	cout << frequencies.line[i] << endl;
+	//}
+
 
 	LEVELS levels (Ncells, linedata);
 

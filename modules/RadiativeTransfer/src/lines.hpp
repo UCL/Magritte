@@ -123,20 +123,27 @@ inline int LINES ::
 	}
 
 
-	vReal line_profile = profile (width, freq_diff);
-	long           ind = index   (p, frequencies.line_index[lnotch]);
-
-	eta += emissivity[ind] * line_profile;
-	chi +=    opacity[ind] * line_profile;
-
-
-	for (int lane = 0; lane < n_simd_lanes; lane++)
+  if (lnotch < nrad_tot)
 	{
-		if (isnan(chi.getlane(lane)))
-		{
-			cout << opacity[ind] << " " << line_profile << " " << width << " " << freq_diff << endl;
-		}
+		vReal line_profile = profile (width, freq_diff);
+		long           ind = index   (p, frequencies.line_index[lnotch]);
+
+		eta += emissivity[ind] * line_profile;
+		chi +=    opacity[ind] * line_profile;
+
+
+	  //for (int lane = 0; lane < n_simd_lanes; lane++)
+	  //{
+	  //	if (isnan(chi.getlane(lane)))
+	  //	{
+	  //		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << frequencies.line[lnotch] << endl;
+	  //  }
+	  //}
+
+
 	}
+
+
 
 
 	long lindex = lnotch+1;
@@ -152,20 +159,20 @@ inline int LINES ::
 	  freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
 	      width = profile_width (temperature.gas[p], frequencies.line[lindex]);
 
-	  line_profile = profile (width, freq_diff);
-	           ind = index   (p, frequencies.line_index[lindex]);
+	  vReal line_profile = profile (width, freq_diff);
+	  long           ind = index   (p, frequencies.line_index[lindex]);
 
 	  eta += emissivity[ind] * line_profile;
 	  chi +=    opacity[ind] * line_profile;
 
 
-	  for (int lane = 0; lane < n_simd_lanes; lane++)
-	  {
-	  	if (isnan(chi.getlane(lane)))
-	  	{
-	  		cout << opacity[ind] << " " << line_profile << " " << width << " " << freq_diff <<  endl;
-	  	}
-	  }
+	  //for (int lane = 0; lane < n_simd_lanes; lane++)
+	  //{
+	  //	if (isnan(chi.getlane(lane)))
+	  //	{
+	  //		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << frequencies.line[lnotch] << endl;
+	  //	}
+	  //}
 
 		lindex++;
 	}
