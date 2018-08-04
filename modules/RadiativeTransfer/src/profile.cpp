@@ -54,7 +54,7 @@ inline vReal Planck (const double temperature_gas, const vReal freq)
 {
   const double h_over_kbT = HH_OVER_KB / temperature_gas;
 
-	return TWO_HH_OVER_CC_SQUARED * (freq*freq*freq) * vExpm1(h_over_kbT*freq);
+	return TWO_HH_OVER_CC_SQUARED * (freq*freq*freq) / vExpm1(h_over_kbT*freq);
 }
 
 

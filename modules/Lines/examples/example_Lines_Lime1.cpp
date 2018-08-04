@@ -73,6 +73,8 @@ int main (void)
 
 	const long nfreq_red = frequencies.nfreq_red;
 
+	frequencies.write("");
+
 	//for (int i = 0; i < frequencies.line.size(); i++)
 	//{
 	//	cout << frequencies.line[i] << endl;
@@ -86,6 +88,7 @@ int main (void)
 
 	radiation.calc_boundary_intensities (cells.bdy_to_cell_nr, frequencies);
 
+	radiation.print ("","");
 
 	Lines <Dimension, Nrays>
 		    (cells, linedata, species, temperature,
@@ -96,6 +99,7 @@ int main (void)
 
 	levels.print (output_folder, "");
 
+	radiation.print ("","final");
 
 	// Print total time
 

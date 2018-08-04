@@ -354,14 +354,6 @@ int LEVELS ::
 	{
     const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
-#   if (GRID_SIMD)
-		  const long    f_line = freq_nrs[NR_LINE_CENTER] / n_simd_lanes;
-		  const long lane_line = freq_nrs[NR_LINE_CENTER] % n_simd_lanes;
-      const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
-#   else
-      const double freq_line = frequencies.all[p][freq_nrs[NR_LINE_CENTER]];
-#   endif
-
     J_eff[p][l][k] = 0.0;
 
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
@@ -375,7 +367,7 @@ int LEVELS ::
 		  	const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
 #     endif
 
-      J_eff[p][l][k] += H_weights[z] / profile_width (temperature.gas[p], freq_line) * JJ;
+      J_eff[p][l][k] += H_weights[z] * JJ;
     }
   }
 

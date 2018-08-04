@@ -35,6 +35,8 @@ struct FREQUENCIES
 
 	FREQUENCIES (const long num_of_cells, const LINEDATA& linedata);        ///< Constructor
 
+	int write (string tag);
+
   int reset (const LINEDATA& linedata, const TEMPERATURE& temperature);   ///< Set frequencies
 
 	static long count_nlines (const LINEDATA& linedata);

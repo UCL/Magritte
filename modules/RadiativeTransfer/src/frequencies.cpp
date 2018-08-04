@@ -102,6 +102,40 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
 
 
+#include "folders.hpp"
+
+
+int FREQUENCIES ::
+    write (string tag)
+{
+
+		string file_name = output_folder + "frequencies_all" + tag + ".txt";
+
+    ofstream outputFile (file_name);
+
+    for (long p = 0; p < ncells; p++)
+    {
+	    for (long f = 0; f < nfreq_red; f++)
+      {
+#       if (GRID_SIMD)
+				  for (int lane = 0; lane < n_simd_lanes; lane++)
+				  {
+	  		    outputFile << all[p][f].getlane(lane) << "\t";
+				  }
+#       else
+	  		  outputFile << all[p][f] << "\t";
+#       endif
+      }
+
+			outputFile << endl;
+
+	   }
+
+	  outputFile.close ();
+
+  }
+
+
 ///  count_nfreq: count the number of frequencies
 ///    @param[in] linedata: data structure containing the line data
 ///////////////////////////////////////////////////////////////////

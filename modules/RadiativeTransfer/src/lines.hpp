@@ -109,10 +109,10 @@ inline int LINES ::
 
 
 # if (GRID_SIMD)
-		while (   (freq_diff.getlane(0) > 3.0*width)
+		while (   (freq_diff.getlane(0) > 3*width)
 		       && (lnotch < nrad_tot) )
 # else
-		while (   (freq_diff            > 3.0*width)
+		while (   (freq_diff            > 3*width)
 		       && (lnotch < nrad_tot) )
 # endif
 	{
@@ -149,10 +149,10 @@ inline int LINES ::
 	long lindex = lnotch+1;
 
 # if (GRID_SIMD)
-	  while (   (freq_diff.getlane(n_simd_lanes-1) > -3.0*width)
+	  while (   (freq_diff.getlane(n_simd_lanes-1) > -3*width)
 		       && (lindex < nrad_tot) )
 # else
-	  while (   (freq_diff                         > -3.0*width)
+	  while (   (freq_diff                         > -3*width)
 		       && (lindex < nrad_tot) )
 # endif
 	{

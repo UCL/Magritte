@@ -269,7 +269,7 @@ inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays>& cells, FREQUEN
 
 	U_scaled = 0.0;
 	V_scaled = 0.0;
-	Ibdy_scaled = 0.0;
+	//Ibdy_scaled = 0.0;
 
 	term1 = (U_scaled + eta) / chi;
   term2 =  V_scaled        / chi;

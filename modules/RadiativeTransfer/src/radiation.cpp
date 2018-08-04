@@ -202,7 +202,7 @@ int RADIATION ::
 	  {
 	    for (long f = 0; f < nfreq_red; f++)
 	    {
-	      J[index(p,f)] += u[R][index(p,f)];
+	      J[index(p,f)] += (2.0/nrays) * u[R][index(p,f)];
 			}
 		}
 		} // end of pragma omp parallel
@@ -413,9 +413,9 @@ int RADIATION ::
 
 	if (world_rank == 0)
 	{
-		string file_name = output_folder + "J" + tag + ".txt";
+		string file_name_J = output_folder + "J" + tag + ".txt";
 
-    ofstream outputFile (file_name);
+    ofstream outputFile_J (file_name_J);
 
 	  for (long p = 0; p < ncells; p++)
 	  {
@@ -424,17 +424,45 @@ int RADIATION ::
 #       if (GRID_SIMD)
 					for (int lane = 0; lane < n_simd_lanes; lane++)
 					{
-	  		    outputFile << J[index(p,f)].getlane(lane) << "\t";
+	  		    outputFile_J << J[index(p,f)].getlane(lane) << "\t";
 					}
 #       else
-	  		  outputFile << J[index(p,f)] << "\t";
+	  		  outputFile_J << J[index(p,f)] << "\t";
 #       endif
 	  	}
 
-	  	outputFile << endl;
+	  	outputFile_J << endl;
 	  }
 
-	  outputFile.close ();
+	  outputFile_J.close ();
+
+
+		string file_name_bc = output_folder + "bc" + tag + ".txt";
+
+    ofstream outputFile_bc (file_name_bc);
+
+	  //for (long r = 0; r < nrays_red; r++)
+	  //{
+		long r = 0;
+      for (long b = 0; b < nboundary; b++)
+      {
+	      for (long f = 0; f < nfreq_red; f++)
+        {
+#       if (GRID_SIMD)
+					for (int lane = 0; lane < n_simd_lanes; lane++)
+					{
+	  			  outputFile_bc << boundary_intensity[r][b][f].getlane(lane) << "\t";
+					}
+#       else
+	  			outputFile_bc << boundary_intensity[r][b][f] << "\t";
+#       endif
+        }
+				outputFile_bc << endl;
+	    }
+	  //}
+
+	  outputFile_bc.close ();
+
 	}
 
 

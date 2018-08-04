@@ -15,6 +15,7 @@ using namespace Eigen;
 
 #include "linedata.hpp"
 #include "linedata_config.hpp"
+#include "RadiativeTransfer/src/constants.hpp"
 #include "RadiativeTransfer/src/species.hpp"
 #include "RadiativeTransfer/src/interpolation.hpp"
 
@@ -394,8 +395,8 @@ MatrixXd LINEDATA ::
     const int i = irad[l][k];   // i index corresponding to transition k
     const int j = jrad[l][k];   // j index corresponding to transition k
 
-    R(i,j) += B[l](i,j) * J_eff[p][l][k]; // - linedata.A[l](i,j)*Lambda();
-    R(j,i) += B[l](j,i) * J_eff[p][l][k];
+    R(i,j) += 4.0 * PI * J_eff[p][l][k] * B[l](i,j); // - linedata.A[l](i,j)*Lambda();
+    R(j,i) += 4.0 * PI * J_eff[p][l][k] * B[l](j,i);
   }
 
   //if(p==0)
