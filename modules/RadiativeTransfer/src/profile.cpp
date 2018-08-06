@@ -69,7 +69,7 @@ inline vReal Planck (const double temperature_gas, const vReal freq)
 inline vReal vExp (const vReal x)
 {
 
-	const int n = 23;
+	const int n = 9;
 
   vReal result = 1.0;
 

@@ -32,7 +32,8 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
 	// Size and initialize all, order and deorder
 
-    	all.resize (ncells);
+   	   nu.resize (ncells);
+      dnu.resize (ncells);
 	nr_line.resize (ncells);
 
 # pragma omp parallel   \
@@ -49,7 +50,8 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 
   for (long p = start; p < stop; p++)
   {
-   	    all[p].resize (nfreq_red);
+   	     nu[p].resize (nfreq_red);
+   	    dnu[p].resize (nfreq_red);
 	  nr_line[p].resize (linedata.nlspec);
 
 	  for (int l = 0; l < linedata.nlspec; l++)
@@ -63,11 +65,12 @@ FREQUENCIES :: FREQUENCIES (const long num_of_cells, const LINEDATA& linedata)
 	  }
 
 
-    // frequencies.all has to be initialized (for unused entries)
+    // frequencies.nu has to be initialized (for unused entries)
 
     for (long f = 0; f < nfreq_red; f++)
     {
-      all[p][f] = 0.0;
+       nu[p][f] = 0.0;
+      dnu[p][f] = 0.0;
     }
 
   }
@@ -109,7 +112,7 @@ int FREQUENCIES ::
     write (string tag)
 {
 
-		string file_name = output_folder + "frequencies_all" + tag + ".txt";
+		string file_name = output_folder + "frequencies_nu" + tag + ".txt";
 
     ofstream outputFile (file_name);
 
@@ -120,10 +123,10 @@ int FREQUENCIES ::
 #       if (GRID_SIMD)
 				  for (int lane = 0; lane < n_simd_lanes; lane++)
 				  {
-	  		    outputFile << all[p][f].getlane(lane) << "\t";
+	  		    outputFile << nu[p][f].getlane(lane) << "\t";
 				  }
 #       else
-	  		  outputFile << all[p][f] << "\t";
+	  		  outputFile << nu[p][f] << "\t";
 #       endif
       }
 
@@ -261,6 +264,46 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 		heapsort (freqs, nmbrs);
 
 
+    // Set all frequencies nu
+
+	  for (long fl = 0; fl < nfreq; fl++)
+	  {
+#     if (GRID_SIMD)
+		    const long    f = fl / n_simd_lanes;
+		    const long lane = fl % n_simd_lanes;
+  	    nu[p][f].putlane(freqs[fl], lane);
+#		  else
+  	    nu[p][f] = freqs[fl];
+#     endif
+		}
+
+
+    // Set all frequency increments dnu
+
+#   if (GRID_SIMD)
+  	  dnu[p][0].putlane(freqs[1]-freqs[0], 0);
+#		else
+  	  dnu[p][0] = freqs[1]-freqs[0];
+#   endif
+
+	  for (long fl = 1; fl < nfreq-1; fl++)
+	  {
+#     if (GRID_SIMD)
+		    const long    f = fl / n_simd_lanes;
+		    const long lane = fl % n_simd_lanes;
+  	    dnu[p][f].putlane(0.5*(freqs[fl+1]-freqs[fl-1]), lane);
+#		  else
+  	    dnu[p][f] = 0.5*(freqs[fl+1]-freqs[fl-1]);
+#     endif
+		}
+
+#   if (GRID_SIMD)
+  	  dnu[p][nfreq_red-1].putlane(freqs[nfreq-1]-freqs[nfreq-2], n_simd_lanes-1);
+#		else
+  	  dnu[p][nfreq_red-1] = freqs[nfreq-1]-freqs[nfreq-2];
+#   endif
+
+
 		long index2 = 0;
 
 	  for (int l = 0; l < linedata.nlspec; l++)
@@ -269,15 +312,6 @@ int FREQUENCIES :: reset (const LINEDATA& linedata, const TEMPERATURE& temperatu
 			{
   	    for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
-
-#         if (GRID_SIMD)
-					  const long    f = index2 / n_simd_lanes;
-					  const long lane = index2 % n_simd_lanes;
-  	        all[p][f].putlane(freqs[index2], lane);
-#					else
-  	        all[p][index2] = freqs[index2];
-#         endif
-
 				  nr_line[p][l][k][z] = nmbrs[index2];
 					index2++;
   	    }

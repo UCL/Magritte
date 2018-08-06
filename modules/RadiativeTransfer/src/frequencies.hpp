@@ -25,7 +25,8 @@ struct FREQUENCIES
 	const long nfreq;          ///< number of frequencies
 	const long nfreq_red;      ///< number of frequencies divided by n_simd_lanes
 
-	vReal2 all;                ///< all considered frequencies at each cell (ordered in f) (p,f)
+	vReal2  nu;                ///< all considered frequencies at each cell (ordered in f) (p,f)
+	vReal2 dnu;                ///< size of the frequency intervals
 
 	Long4 nr_line;             ///< frequency number corresponing to line (p,l,k,z)
 

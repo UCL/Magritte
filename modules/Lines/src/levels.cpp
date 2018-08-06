@@ -316,7 +316,7 @@ int LEVELS ::
 
     const long index = lines.index(p,l,k);
 
-    const double hv_4pi = HH * linedata.frequency[l][k] / (4.0*PI);
+    const double hv_4pi = HH * linedata.frequency[l][k] / (4.0 * PI);
 
 	  lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 

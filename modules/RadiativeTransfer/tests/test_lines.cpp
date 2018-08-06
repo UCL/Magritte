@@ -48,25 +48,53 @@ TEST_CASE ("add_emissivity_and_opacity function")
 
   long lnotch = 0;
 
-	LINEDATA linedata;
-
-	LINES lines (ncells, linedata);
-
-  FREQUENCIES frequencies (ncells, linedata);
 
   TEMPERATURE temperature (ncells);
 
-  temperature.gas[p] = 0.0;
+  temperature.gas[p] = 10.0;
 
 
-  vReal freq_scaled = 0.0;
+	LINEDATA linedata;
+
+
+	LINES lines (ncells, linedata);
+
+
+	  for (int l = 0; l < lines.nlspec; l++)
+	  {
+  	  for (int k = 0; k < lines.nrad[l]; k++)
+  	  {
+			  const long ind = lines.index(p,l,k);
+
+  	  	lines.emissivity[ind] = 1.0;
+  	  	   lines.opacity[ind] = 1.0;
+  	  }
+	  }
+
+
+  FREQUENCIES frequencies (ncells, linedata);
+
+	frequencies.reset (linedata, temperature);
+
+  cout << "nfreq_red = " << frequencies.nfreq_red << endl;
+
+  for (long f = 0; f < frequencies.nfreq_red; f++)
+  {
+    cout << frequencies.nu[p][f] << endl;
+  }
+
+
+  vReal freq_scaled  = frequencies.nu[p][frequencies.nfreq_red-1];
+  vReal dfreq_scaled = frequencies.dnu[p][frequencies.nfreq_red-1];
 
 
   vReal eta = 0.0;
   vReal chi = 0.0;
 
   lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled,
-                                    lnotch, p, eta, chi);
+                                    dfreq_scaled, lnotch, p, eta, chi);
+
+  cout << lnotch << " " << eta << " " << chi << endl;
 
   CHECK (true);
 }

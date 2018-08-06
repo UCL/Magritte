@@ -105,16 +105,16 @@ inline int RADIATION ::
 
 		double freq = freq_scaled.getlane (lane);
 
-		search_with_notch (frequencies.all[p], notch, freq);
+		search_with_notch (frequencies.nu[p], notch, freq);
 
 		const long f1    =  notch    / n_simd_lanes;
     const  int lane1 =  notch    % n_simd_lanes;
 
-		const long f2    = (notch+1) / n_simd_lanes;
-    const  int lane2 = (notch+1) % n_simd_lanes;
+		const long f2    = (notch-1) / n_simd_lanes;
+    const  int lane2 = (notch-1) % n_simd_lanes;
 
-		//const double nu1 = frequencies.all[p][f1].getlane(lane1);
-		//const double nu2 = frequencies.all[p][f2].getlane(lane2);
+		//const double nu1 = frequencies.nu[p][f1].getlane(lane1);
+		//const double nu2 = frequencies.nu[p][f2].getlane(lane2);
 
 		//const double U1 = U[R][index(p,f1)].getlane(lane1);
 		//const double U2 = U[R][index(p,f2)].getlane(lane2);
@@ -125,8 +125,8 @@ inline int RADIATION ::
 		//U_scaled.putlane(interpolate_linear (nu1, U1, nu2, U2, freq), lane);
 		//V_scaled.putlane(interpolate_linear (nu1, V1, nu2, V2, freq), lane);
 
-		nu1.putlane (frequencies.all[p][f1].getlane (lane1), lane);
-		nu2.putlane (frequencies.all[p][f2].getlane (lane2), lane);
+		nu1.putlane (frequencies.nu[p][f1].getlane (lane1), lane);
+		nu2.putlane (frequencies.nu[p][f2].getlane (lane2), lane);
 
 		 U1.putlane (U[R][index(p,f1)].getlane (lane1), lane);
 		 U2.putlane (U[R][index(p,f2)].getlane (lane2), lane);
@@ -147,13 +147,13 @@ inline int RADIATION ::
 
 {
 
-	search_with_notch (frequencies.all[p], notch, freq_scaled);
+	search_with_notch (frequencies.nu[p], notch, freq_scaled);
 
 	const long f1    = notch;
-	const long f2    = notch+1;
+	const long f2    = notch-1;
 
-	const double nu1 = frequencies.all[p][f1];
-	const double nu2 = frequencies.all[p][f2];
+	const double nu1 = frequencies.nu[p][f1];
+	const double nu2 = frequencies.nu[p][f2];
 
 	const double U1 = U[R][index(p,f1)];
 	const double U2 = U[R][index(p,f2)];
@@ -188,16 +188,16 @@ inline int RADIATION ::
 	{
 		double freq = freq_scaled.getlane (lane);
 
-		search_with_notch (frequencies.all[p], notch, freq);
+		search_with_notch (frequencies.nu[p], notch, freq);
 
 		const long f1    =  notch    / n_simd_lanes;
     const  int lane1 =  notch    % n_simd_lanes;
 
-		const long f2    = (notch+1) / n_simd_lanes;
-    const  int lane2 = (notch+1) % n_simd_lanes;
+		const long f2    = (notch-1) / n_simd_lanes;
+    const  int lane2 = (notch-1) % n_simd_lanes;
 
-		//const double nu1 = frequencies.all[p][f1].getlane(lane1);
-		//const double nu2 = frequencies.all[p][f2].getlane(lane2);
+		//const double nu1 = frequencies.nu[p][f1].getlane(lane1);
+		//const double nu2 = frequencies.nu[p][f2].getlane(lane2);
 
 		//const double U1 = U[R][index(p,f1)].getlane(lane1);
 		//const double U2 = U[R][index(p,f2)].getlane(lane2);
@@ -212,8 +212,8 @@ inline int RADIATION ::
 		//   V_scaled.putlane (interpolate_linear (nu1, V1,    nu2, V2,    freq), lane);
 		//Ibdy_scaled.putlane (interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq), lane);
 
-		  nu1.putlane (      frequencies.all[p][f1].getlane (lane1), lane);
-		  nu2.putlane (      frequencies.all[p][f2].getlane (lane2), lane);
+		  nu1.putlane (      frequencies.nu[p][f1].getlane (lane1), lane);
+		  nu2.putlane (      frequencies.nu[p][f2].getlane (lane2), lane);
 
 		   U1.putlane (           U[R][index(p,f1)].getlane (lane1), lane);
 		   U2.putlane (           U[R][index(p,f2)].getlane (lane2), lane);

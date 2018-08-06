@@ -56,13 +56,24 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 	//	cout << "O IS NUL !!!" << endl;
 	//}
 
-  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
-	                 lnotch_r[cells.ncells], o, frequencies.all[o][f], eta_o, chi_o);
+  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation,
+	                 lnotch_r[cells.ncells], o, frequencies.nu[o][f],
+									 frequencies.dnu[o][f], eta_o, chi_o);
 
 	  chi_c =   chi_o;
 	term1_c = term2_o = (radiation.U[R][radiation.index(o,f)] + eta_o) / chi_o;
 	term2_c = term2_o =  radiation.V[R][radiation.index(o,f)]          / chi_o;
 
+	//if (f==54)
+	//{
+	//  //for (int lane = 0; lane < n_simd_lanes; lane++)
+  //  {
+  //  //	if (isnan(eta.getlane(lane)))
+  //  	{
+	//      cout << /*lane << " " <<*/ term1_c << " " << term2_c << " " << chi_c << endl;
+	//  	}
+	//  }
+	//}
 
 	if (n_ar > 0)
 	{
@@ -78,6 +89,13 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
         chi_c =   chi_n;
       term1_c = term1_n;
       term2_c = term2_n;
+
+	    //if (f==54)
+	    //{
+	    //  cout << Su[n_ar-1-q] << " " << Sv[n_ar-1-q] << " " << dtau[n_ar-1-q] << endl;
+			//	cout << "freq = " << freq_scaled << endl;
+	    //}
+
     }
 
 
@@ -97,6 +115,13 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
       chi_c =   chi_o;
 	  term1_c = term1_o;
 	  term2_c = term2_o;
+
+
+	  //if (f==54)
+	  //{
+	  //  cout << Ibdy_scaled << endl;
+	  //  cout << Su[0] << " " << Sv[0] << " " << dtau[0] << endl;
+	  //}
 	}
 
 	// For ray r
@@ -118,6 +143,11 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
         chi_c =   chi_n;
       term1_c = term1_n;
       term2_c = term2_n;
+
+	    //if (f==54)
+	    //{
+	    //  cout << Su[n_ar+q] << " " << Sv[n_ar+q] << " " << dtau[n_ar+q] << endl;
+	    //}
     }
 
 
@@ -164,14 +194,16 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& freque
 
 inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
 	                          LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-						                const long f, const long o, long& lnotch, const long cellNrs,
-														vReal freq_scaled, vReal& eta, vReal& chi)
+						                long& lnotch, const long cellNrs,
+														vReal freq_scaled, vReal dfreq_scaled,
+														vReal& eta, vReal& chi)
 {
 
 	eta = 0.0;
 	chi = 0.0;
 
-	lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled, lnotch, cellNrs, eta, chi);
+	lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled,
+		                                dfreq_scaled, lnotch, cellNrs, eta, chi);
 
 	scattering.add_opacity (freq_scaled, chi);
 
@@ -194,13 +226,13 @@ inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempera
 # endif
 
 //cout << "Start" << endl;
-	//if (o==0 && f==0)
+	//if (f==54)
 	//{
-	//  for (int lane = 0; lane < n_simd_lanes; lane++)
+	//  //for (int lane = 0; lane < n_simd_lanes; lane++)
   //  {
   //  //	if (isnan(eta.getlane(lane)))
   //  	{
-	//      cout << lane << " " << eta << " " << chi << endl;
+	//      cout << /*lane << " " <<*/ eta << " " << chi << endl;
 	//  	}
 	//  }
 	//}
@@ -219,11 +251,18 @@ inline int get_terms_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempe
 
 	vReal eta, U_scaled, V_scaled;
 
-	vReal freq_scaled = shifts * frequencies.all[o][f];
+	vReal freq_scaled  = shifts * frequencies.nu[o][f];
+	vReal dfreq_scaled = shifts * frequencies.dnu[o][f];
 
-  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
-	                 lnotch, cellNrs, freq_scaled, eta, chi);
+  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation,
+	                 lnotch, cellNrs, freq_scaled, dfreq_scaled, eta, chi);
 
+
+	//if (f==54)
+	//{
+	//  cout << eta << " " << chi << endl;
+	//	cout << "freq = " << freq_scaled << endl;
+	//}
 	// Placeholer for continuum...
 
   radiation.rescale_U_and_V (frequencies, cellNrs, R, notch, freq_scaled, U_scaled, V_scaled);
@@ -254,10 +293,11 @@ inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays>& cells, FREQUEN
 
 	vReal eta, U_scaled, V_scaled;
 
-	vReal freq_scaled = shifts * frequencies.all[o][f];
+	vReal freq_scaled  = shifts * frequencies.nu[o][f];
+	vReal dfreq_scaled = shifts * frequencies.dnu[o][f];
 
-  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation, f, o,
-	                 lnotch, cellNrs, freq_scaled, eta, chi);
+  get_eta_and_chi (frequencies, temperature, lines, scattering, radiation,
+	                 lnotch, cellNrs, freq_scaled, dfreq_scaled, eta, chi);
 
 	const long b = cells.cell_to_bdy_nr[cellNrs];
 

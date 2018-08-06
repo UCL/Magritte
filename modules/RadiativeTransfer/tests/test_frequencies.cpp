@@ -77,7 +77,7 @@ TEST_CASE ("Reset")
 //	  {
 //		  for (int lane = 0; lane < n_simd_lanes; lane++)
 // 		  {
-//        freqs[index] = frequencies.all[0][f].getlane(lane);
+//        freqs[index] = frequencies.nu[0][f].getlane(lane);
 //				index++;
 //		  }
 //	  }
@@ -104,7 +104,7 @@ TEST_CASE ("Reset")
 //				long    f = nr / n_simd_lanes;
 //				long lane = nr % n_simd_lanes;
 //
-//	  		double freq     = frequencies.all[0][f].getlane(lane);
+//	  		double freq     = frequencies.nu[0][f].getlane(lane);
 //	  		double freq_ref = linedata.frequency[l](i,j);
 //
 //	  		CHECK (relative_error(freq, freq_ref) == Approx(0.0).epsilon(EPS));

@@ -70,7 +70,7 @@ TEST_CASE ("search_with_notch function")
   {
     for (int lane = 0; lane < n_simd_lanes; lane++)
     {
-      vec[i].putlane(index, lane);
+      vec[i].putlane(index-0.3, lane);
       index++;
     }
   }
@@ -80,7 +80,7 @@ TEST_CASE ("search_with_notch function")
   {
 
     long notch = 3;
-    long reff  = 6;
+    long reff  = 7;
 
     search_with_notch (vec, notch, 6);
 
@@ -94,6 +94,19 @@ TEST_CASE ("search_with_notch function")
 
     long notch = 9;
     long reff  = 9;
+
+    search_with_notch (vec, notch, 6);
+
+    CHECK (notch == reff);
+
+  }
+
+
+  SECTION ("notch out of range")
+  {
+
+    long notch = 90;
+    long reff  = n_simd_lanes*nElem-1;
 
     search_with_notch (vec, notch, 6);
 

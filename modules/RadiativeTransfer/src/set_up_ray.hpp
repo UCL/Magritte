@@ -50,8 +50,8 @@ inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, /*const RAYTYPE ray
 
 inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
 	                          LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-						                const long f, const long o, long& lnotch, const long cellNrs,
-														vReal freq_scaled, vReal& eta, vReal& chi);
+						                long& lnotch, const long cellNrs,
+														vReal freq_scaled, vReal dfreq_scaled, vReal& eta, vReal& chi);
 
 
 inline int get_terms_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,

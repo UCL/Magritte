@@ -147,31 +147,31 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
             	        Su, Sv, dtau, ndep);
 
 
-					//if (o==0 && f==0)
-					//{
-
-					//	cout << n_r << " " << n_ar << endl;
-
-					//	for (long n = 0; n < ndep; n++)
-					//  {
-		      //    for (int lane = 0; lane < n_simd_lanes; lane++)
-		      //    {
-		      //    	if (isnan(Su[n].getlane(lane)))
-		      //    	{
-					//  	    cout << f << " " << n << " " << ndep << endl;
-					//  	    cout << Su[n] << endl;
-					//  	    cout << dtau[n] << endl;
-					//  		}
-					//  	}
-					//  }
-					//}
+				//	if (o==0 && f==54)
+				//	{
+				//		for (long n = 0; n < ndep; n++)
+				//	  {
+		     //     for (int lane = 0; lane < n_simd_lanes; lane++)
+		     //     {
+		     //     	if (isnan(Su[n].getlane(lane)))
+		     //     	{
+				//	  	    cout << f << " " << n << " " << ndep << endl;
+				//	  	    cout << Su[n] << endl;
+				//	  	    cout << dtau[n] << endl;
+				//	  		}
+				//	  	}
+				//	  }
+				//	}
 
 
           solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
 
-					//for (long n = 0; n < ndep; n++)
+					//if (f==54)
 					//{
-					//	cout << Su[n] << endl;
+					//  for (long n = 0; n < ndep; n++)
+					//  {
+					//  	cout << Su[n] << endl;
+					//  }
 					//}
 
 
@@ -196,6 +196,13 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	          v_local *= 0.5;
 	        }
 
+		      //for (int lane = 0; lane < n_simd_lanes; lane++)
+		      //{
+		      //	if (isnan(u_local.getlane(lane)))
+		      //	{
+				  //    cout << "NAN!!! "<< o << " " << f << endl;
+			  	//	}
+			  	//}
 
 			  	const long index = radiation.index(o,f);
 
