@@ -23,14 +23,14 @@ struct FREQUENCIES
 
 	const long nlines;         ///< number of lines
 	const long nfreq;          ///< number of frequencies
-	const long nfreq_red;      ///< number of frequencies divided by n_simd_lanes
+	const long nfreq_red;      ///< nfreq divided by n_simd_lanes
 
-	vReal2  nu;                ///< all considered frequencies at each cell (ordered in f) (p,f)
-	vReal2 dnu;                ///< size of the frequency intervals
+	vReal2  nu;                ///< [Hz] frequencies (ordered in f) (p,f)
+	vReal2 dnu;                ///< [Hz] size of the frequency intervals
 
 	Long4 nr_line;             ///< frequency number corresponing to line (p,l,k,z)
 
-	Double1 line;              ///< ordered line center frequencies
+	Double1 line;              ///< [Hz] ordered line center frequencies
 	Long1   line_index;        ///< (l,k) index of the corresponding frequency in line
 
 

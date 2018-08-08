@@ -40,7 +40,7 @@ inline double profile_width (const double temperature_gas, const double freq_lin
 ///    @param[in] freq: frequency at which we want evaluate the Planck function
 ///////////////////////////////////////////////////////////////////////////////
 
-inline vReal Planck (const double temperature_gas, const vReal freq);
+inline vReal planck (const double temperature_gas, const vReal freq);
 
 
 

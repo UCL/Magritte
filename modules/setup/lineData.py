@@ -6,9 +6,9 @@ from scipy.interpolate import interp1d
 
 
 # Physical constants
-c  = 2.99792458E+10   # speed of light in cgs
-h  = 6.62606896E-27   # Planck's constant in cgs
-kb = 1.38065040E-16   # Boltzmann's constant in cgs units
+c  = 2.99792458E+8    # [m/s] speed of light
+h  = 6.62607004E-34   # [J*s] Planck's constant
+kb = 1.38064852E-23   # [J/K] Boltzmann's constant
 
 
 # Defs
@@ -145,6 +145,10 @@ class LineData():
 
             index += 9 + self.ncoltran[colpar]
 
+        # Convert to SI units
+        for i in range(len(self.energy)):
+            self.energy[i] = h*c*100* self.energy[i]
+
         # Done
 
 
@@ -185,14 +189,13 @@ class LineData():
         """
         Calculate derived line data
         """
-        # Convert energies from cm^-1 to erg
-        for i in range(len(self.energy)):
-            self.energy[i] = h*c* self.energy[i]
+        ## Convert energies from cm^-1 to erg
+        #for i in range(len(self.energy)):
+        #    self.energy[i] = h*c* self.energy[i]
         # Initialize data structures to zero
         self.A         = zero2(self.nlev,self.nlev)
         self.B         = zero2(self.nlev,self.nlev)
-        self.freq      = [0.0 for _ in range(self.nrad)]
-        self.frequency = zero2(self.nlev,self.nlev)
+        self.frequency = [0.0 for _ in range(self.nrad)]
         self.C_data    = [ [zero2(self.nlev,self.nlev) for _ in range(self.ncoltemp[colpar])] for colpar in range(self.ncolpar)]
         # Shift level indices for radiative transitions such that they are in [0, nlev-1]
         for k in range(self.nrad):
@@ -207,11 +210,9 @@ class LineData():
         for k in range(self.nrad):
             i = self.irad[k]
             j = self.jrad[k]
-            self.frequency[i][j] = (self.energy[i]-self.energy[j]) / h
-            self.frequency[j][i] = self.frequency[i][j]
-            self.freq[k] = self.frequency[i][j]
+            self.frequency[k] = (self.energy[i]-self.energy[j]) / h
             self.A[i][j] = self.A_coeff[k]
-            self.B[i][j] = self.A[i][j] * c**2 / (2.0*h*self.frequency[i][j]**3)
+            self.B[i][j] = self.A[i][j] * c**2 / (2.0*h*self.frequency[k]**3)
             self.B[j][i] = self.weight[i] / self.weight[j] * self.B[i][j]
         # Setup the (collisional) Einstein C matrix
         for colpar in range(self.ncolpar):
