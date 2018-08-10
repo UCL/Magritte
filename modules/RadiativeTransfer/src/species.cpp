@@ -29,7 +29,7 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
 	ncells = num_of_cells;
   nspec  = num_of_spec;
 
-	
+
    sym.resize (nspec);
   mass.resize (nspec);
 
@@ -60,7 +60,7 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
   // Open species data file
 
   FILE *specdata = fopen (spec_datafile.c_str(), "r");
- 
+
   if (specdata == NULL)
 	{
 		cout << "ERROR: could not read " << spec_datafile << endl;
@@ -106,25 +106,23 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
   nr_CO   = SPECIES::get_species_nr ("CO");     // species nr for CO
 
 
-    density.resize (ncells);
 	abundance.resize (ncells);
 
 # pragma omp parallel   \
 	shared (cout)         \
-  default (none) 
-  { 
-  
-  int num_threads = omp_get_num_threads(); 
-  int thread_num  = omp_get_thread_num(); 
-  
-  long start = (thread_num*ncells)/num_threads; 
-  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets 
-
-  for (long p = start; p < stop; p++) 
+  default (none)
   {
-		  density[p] = 0.0;
+
+  int num_threads = omp_get_num_threads();
+  int thread_num  = omp_get_thread_num();
+
+  long start = (thread_num*ncells)/num_threads;
+  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+
+  for (long p = start; p < stop; p++)
+  {
 		abundance[p].resize (nspec);
-			
+
 		for (int s = 0; s < nspec; s++)
 		{
 			abundance[p][s] = initial_abundance[s];
@@ -149,12 +147,6 @@ int SPECIES :: read (string file_name)
 	  {
   		infile >> abundance[p][s];
 	  }
-	}
-	
-
-	for (long p = 0; p < ncells; p++)
-	{
-  	density[p] = abundance[p][nr_H2];
 	}
 
 

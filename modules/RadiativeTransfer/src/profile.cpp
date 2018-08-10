@@ -23,7 +23,7 @@ inline vReal profile (const double width, const vReal freq_diff)
 	const vReal  exponent      = sqrtExponent * sqrtExponent;
 
 
-	return inverse_width * INVERSE_SQRT_PI * vExpMinus (exponent);
+	return /*inverse_width **/ INVERSE_SQRT_PI * vExpMinus (exponent);
 
 }
 
@@ -69,7 +69,7 @@ inline vReal planck (const double temperature_gas, const vReal freq)
 inline vReal vExp (const vReal x)
 {
 
-	const int n = 9;
+	const int n = 7;
 
   vReal result = 1.0;
 
@@ -112,7 +112,7 @@ inline vReal vExpMinus (const vReal x)
 inline vReal vExpm1 (const vReal x)
 {
 
-	const int n = 9;
+	const int n = 30;
 
   vReal result = 1.0;
 

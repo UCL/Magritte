@@ -27,7 +27,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
 
-#define MAX_NITERATIONS 1
+#define MAX_NITERATIONS 10
 
 
 ///  Lines: iteratively calculates level populations
@@ -116,13 +116,13 @@ cout << "after RT" << endl;
     }
 
 
-		MPI_TIMER timer_SE ("SE");
-		timer_SE.start ();
+		//MPI_TIMER timer_SE ("SE");
+		//timer_SE.start ();
 
     levels.iteration_using_statistical_equilibrium (linedata, species, temperature,
 				                                            frequencies, radiation, lines);
-	  timer_SE.stop ();
-	  timer_SE.print_to_file ();
+	  //timer_SE.stop ();
+	  //timer_SE.print_to_file ();
 
 
 		{

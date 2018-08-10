@@ -14,7 +14,7 @@ kb = 1.38064852E-23   # [J/K] Boltzmann's constant
 # Defs
 # ----
 
-def readDataInt(fileName, start, stop, regex):
+def readDataInt (fileName, start, stop, regex):
     '''
     Read integers in 'data' from line 'start' until line 'stop' following 'regex'
     '''
@@ -26,7 +26,7 @@ def readDataInt(fileName, start, stop, regex):
     return variable
 
 
-def readDataFlt(fileName, start, stop, regex):
+def readDataFlt (fileName, start, stop, regex):
     '''
     Read floats in 'data' from line 'start' until line 'stop' following 'regex'
     '''
@@ -38,7 +38,7 @@ def readDataFlt(fileName, start, stop, regex):
     return variable
 
 
-def extractCollisionPartner(fileName, line, elem):
+def extractCollisionPartner (fileName, line, elem):
     '''
     Returns collision partner and whether it is ortho or para (for H2)
     '''
@@ -54,7 +54,7 @@ def extractCollisionPartner(fileName, line, elem):
     return [partner, orthoPara]
 
 
-def readColumn(fileName, start, nElem, columnNr, type):
+def readColumn (fileName, start, nElem, columnNr, type):
     with open(fileName) as dataFile:
         lineNr = 0
         column = []
@@ -72,11 +72,18 @@ def readColumn(fileName, start, nElem, columnNr, type):
     return column
 
 
-def zero2(rows, cols):
+def zero2 (rows, cols):
     return [[0.0 for _ in range(cols)] for _ in range(rows)]
 
-def relativeDifference(a,b):
+def relativeDifference (a,b):
     return 2.0*abs((a-b)/(a+b))
+
+
+def planck (temperature, frequency):
+    '''
+    Planck function for thermal radiation.
+    '''
+    return 2.0*h/c**2 * frequency**3 / np.expm1(h*frequency/(kb*temperature))
 
 
 
@@ -84,7 +91,7 @@ def relativeDifference(a,b):
 # LineData class
 # --------------
 
-class LineData():
+class LineData ():
     """
     Class containing atomic or molecular line data
     """
@@ -99,7 +106,7 @@ class LineData():
         self.setupMatrices()
         # Done
 
-    def readLamdaFile(self, fileName):
+    def readLamdaFile (self, fileName):
         """
         Read line data in LAMDA format
         """
@@ -185,7 +192,7 @@ class LineData():
     #    return
 
 
-    def setupMatrices(self):
+    def setupMatrices (self):
         """
         Calculate derived line data
         """
@@ -229,7 +236,7 @@ class LineData():
         # Done
 
 
-    def collisionalMatrix(self, temperature, density):
+    def collisionalMatrix (self, temperature, density):
         '''
         Calculate the collisional matrix C for a given gas temperature and density.
         '''
@@ -245,7 +252,7 @@ class LineData():
 
 
 
-    def transitionMatrix(self, Jeff, temperature, density):
+    def transitionMatrix (self, Jeff, temperature, density):
         '''
         Calculate the transition matrix R for a given gas temperature and density.
         '''
@@ -265,7 +272,7 @@ class LineData():
         return R
 
 
-    def errorStatEquil(self, pop, R):
+    def errorStatEquil (self, pop, R):
         '''
         Check whether a set of level populations satisfies
         statistical equilibrium, given transition matrix R.
@@ -284,7 +291,7 @@ class LineData():
         return error
 
 
-    def LTEpop(self, temperature):
+    def LTEpop (self, temperature):
         '''
         Return the LTE level populations give the temperature
         '''
@@ -296,7 +303,7 @@ class LineData():
         return pop
 
 
-    def nonLTE(self, pop, temperature):
+    def nonLTE (self, pop, temperature):
         '''
         Return the relative departure from the LTE level populations.
         '''
@@ -306,6 +313,33 @@ class LineData():
         return nonLTEness
 
 
-    def lineSource(self, pop):
+    def lineEmissivity (self, pop):
+        '''
+        Return the line emisivvity for each radiative transition
+        '''
+        eta = np.zeros(self.nrad)
+        for k in range(self.nrad):
+            i = self.irad[k]
+            j = self.jrad[k]
+            eta[k] = h*self.frequency[k]/(4.0*np.pi) * self.A[i][j]*pop[i]
+        # Done
+        return eta
+
+
+    def lineOpacity (self, pop):
+        '''
+        Return the line opacity for each radiative transition
+        '''
+        chi = np.zeros(self.nrad)
+        for k in range(self.nrad):
+            i = self.irad[k]
+            j = self.jrad[k]
+            chi[k] = h*self.frequency[k]/(4.0*np.pi) * (self.B[j][i]*pop[j]-self.B[i][j]*pop[i])
+        # Done
+        return chi
+
+
+    def lineSource (self, pop):
+        S = self.lineEmissivity(pop) / self.lineOpacity(pop)
         # Done
         return S

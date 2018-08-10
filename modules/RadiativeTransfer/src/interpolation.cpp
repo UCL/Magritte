@@ -6,6 +6,8 @@
 
 
 #include <math.h>
+#include <iostream>
+using namespace std;
 
 #include "interpolation.hpp"
 #include "GridTypes.hpp"
@@ -48,6 +50,10 @@ inline long search (const Double1& x, const double value)
     else if (value < x[middle])
     {
       stop  = middle;
+    }
+    else
+    {
+      return middle;
     }
   }
 

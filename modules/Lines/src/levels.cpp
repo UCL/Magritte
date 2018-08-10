@@ -159,12 +159,8 @@ int LEVELS ::
 
  	// Set population total
 
- 	population_tot[p][l] = species.density[p] * species.abundance[p][linedata.num[l]];
+ 	population_tot[p][l] = species.abundance[p][linedata.num[l]];
 
-  if (population_tot[p][l] == 0.0)
-  {
-    cout << p << " " << l << endl;
-  }
 
   // Calculate fractional LTE level populations and partition function
 
@@ -173,7 +169,7 @@ int LEVELS ::
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
     population[p][l](i) = linedata.weight[l](i)
- 	 	                    * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
+ 	 	                      * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
     partition_function += population[p][l](i);
   }
@@ -316,7 +312,7 @@ int LEVELS ::
 
     const long index = lines.index(p,l,k);
 
-    const double hv_4pi = HH * linedata.frequency[l][k] / FOUR_PI;
+    const double hv_4pi = HH_OVER_FOUR_PI * linedata.frequency[l][k];
 
 	  lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
@@ -358,7 +354,6 @@ int LEVELS ::
 
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
-
 #     if (GRID_SIMD)
 		    const long    f = freq_nrs[z] / n_simd_lanes;
 		    const long lane = freq_nrs[z] % n_simd_lanes;

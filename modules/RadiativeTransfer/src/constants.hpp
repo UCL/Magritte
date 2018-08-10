@@ -49,6 +49,8 @@ const double TWO_HH_OVER_CC_SQUARED = 2.0 * HH / C_SQUARED;
 
 const double HH_OVER_KB = HH / KB;
 
+const double HH_OVER_FOUR_PI = HH / FOUR_PI;
+
 const int N_QUADRATURE_POINTS = 11;
 
 // Only allow for odd N_QUADRATURE_POINTS to ensure the line center is taken as frequency

@@ -71,11 +71,18 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	  vReal Lambda [ncells];
 
+		#include "RadiativeTransfer/src/folders.hpp"
+	  string srcu_file = output_folder + "srcu.txt";
+	  string dtau_file = output_folder + "dtau.txt";
+
+    ofstream srcu_outputFile (srcu_file);
+    ofstream dtau_outputFile (dtau_file);
+
 
 	  // Loop over all cells
 
 #   pragma omp parallel                                                                \
-	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
+	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout, srcu_outputFile, dtau_outputFile)   \
 		private (Su, Sv, dtau, Lambda)                                                     \
 		default (none)
     {
@@ -94,6 +101,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	//timer_RT_CALC.start ();
 	    //MPI_TIMER timer_PS ("PS");
 	    //timer_PS.start ();
+
+			frequencies.write(to_string(o));
 
 			long  cellNrs_r [ncells];
 			long    notch_r [ncells];
@@ -144,8 +153,19 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 					           (cells, frequencies, temperature,lines, scattering, radiation, f, o, R,
 											lnotch_ar, notch_ar, cellNrs_ar, shifts_ar, dZs_ar, n_ar,
           						lnotch_r,  notch_r,  cellNrs_r,  shifts_r,  dZs_r,  n_r,
-            	        Su, Sv, dtau, ndep);
+            	        Su, Sv, dtau, ndep);\
 
+					for (int lane = 0; lane < n_simd_lanes; lane++)
+					{
+						for (long n = 0; n < ndep; n++)
+						{
+  	        	srcu_outputFile <<   Su[n].getlane(lane) << "\t";
+  	        	dtau_outputFile << dtau[n].getlane(lane) << "\t";
+          	}
+
+	    			srcu_outputFile << endl;
+  	    		dtau_outputFile << endl;
+					}
 
 				//	if (o==0 && f==54)
 				//	{
@@ -213,6 +233,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	  	  } // end of loop over frequencies
 
+
+
+
 	    }
 
 			else if (ndep == 1)
@@ -247,6 +270,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
     }
     } // end of pragma omp parallel
+
+	  srcu_outputFile.close ();
+	  dtau_outputFile.close ();
 
   } // end of loop over ray pairs
 

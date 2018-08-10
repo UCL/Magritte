@@ -22,27 +22,27 @@ using namespace Eigen;
 #define EPS 1.0E-4   // Note the low accuracy !!!
 
 
-TEST_CASE ("Planck function")
+TEST_CASE ("planck function")
 {
   double tmp1 = 1.0;
   vReal freq1 = 1.0;
   vReal reff1 = exp(1.0);
 
-  vReal error1 = relative_error (Planck(tmp1, freq1), reff1);
+  vReal error1 = relative_error (planck(tmp1, freq1), reff1);
 
 
   double tmp2 = 1.0;
   vReal freq2 = 2.3E5;
   vReal reff2 = exp(2.3E5);
 
-  vReal error2 = relative_error (Planck(tmp2, freq2), reff2);
+  vReal error2 = relative_error (planck(tmp2, freq2), reff2);
 
 
   double tmp3 = 1.0;
   vReal freq3 = 1.7E-2;
   vReal reff3 = exp(1.7E-2);
 
-  vReal error3 = relative_error (Planck(tmp3, freq3), reff3);
+  vReal error3 = relative_error (planck(tmp3, freq3), reff3);
 
 
 	for (int lane = 0; lane < n_simd_lanes; lane++)

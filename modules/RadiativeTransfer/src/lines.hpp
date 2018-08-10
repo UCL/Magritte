@@ -109,12 +109,11 @@ inline int LINES ::
 
   //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
 
-
 # if (GRID_SIMD)
-		while (   (freq_diff.getlane(0) > H_roots[N_QUADRATURE_POINTS-1]*width)
+		while (   (freq_diff.getlane(0) > 1.00001*H_roots[N_QUADRATURE_POINTS-1]*width)
 		       && (lnotch < nrad_tot-1) )
 # else
-		while (   (freq_diff            > H_roots[N_QUADRATURE_POINTS-1]*width)
+		while (   (freq_diff            > 1.00001*H_roots[N_QUADRATURE_POINTS-1]*width)
 		       && (lnotch < nrad_tot-1) )
 # endif
 	{
@@ -132,18 +131,18 @@ inline int LINES ::
 		vReal line_profile = profile (width, freq_diff);
 		long           ind = index   (p, frequencies.line_index[lnotch]);
 
-		eta += emissivity[ind] * line_profile * dfreq_scaled;
-		chi +=    opacity[ind] * line_profile * dfreq_scaled;
+		eta += emissivity[ind] * line_profile /** dfreq_scaled*/;
+		chi +=    opacity[ind] * line_profile /** dfreq_scaled*/;
 	}
 
 
 	long lindex = lnotch + 1;
 
 # if (GRID_SIMD)
-	  while (   (freq_diff.getlane(n_simd_lanes-1) >= H_roots[0]*width)
+	  while (   (freq_diff.getlane(n_simd_lanes-1) >= 0.99999*H_roots[0]*width)
 		       && (lindex < nrad_tot) )
 # else
-	  while (   (freq_diff                         >= H_roots[0]*width)
+	  while (   (freq_diff                         >= 0.99999*H_roots[0]*width)
 		       && (lindex < nrad_tot) )
 # endif
 	{
@@ -153,21 +152,21 @@ inline int LINES ::
 	  vReal line_profile = profile (width, freq_diff);
 	  long           ind = index   (p, frequencies.line_index[lindex]);
 
-	  eta += emissivity[ind] * line_profile * dfreq_scaled;
-	  chi +=    opacity[ind] * line_profile * dfreq_scaled;
+	  eta += emissivity[ind] * line_profile /** dfreq_scaled*/;
+	  chi +=    opacity[ind] * line_profile /** dfreq_scaled*/;
 
 		lindex++;
 
     //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
 
 
-	  //for (int lane = 0; lane < n_simd_lanes; lane++)
-	  //{
-	  //	if (isnan(chi.getlane(lane)))
-	  //	{
-	  //		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << frequencies.line[lnotch] << endl;
-	  //	}
-	  //}
+	  for (int lane = 0; lane < n_simd_lanes; lane++)
+	  {
+	  	if (chi.getlane(lane) < 1.0E-30)
+	  	{
+	  		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << frequencies.line[lnotch] << endl;
+	  	}
+	  }
 
 	}
 

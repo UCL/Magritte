@@ -210,20 +210,20 @@ inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& tempera
 
 	// Avoid zero optical depths
 
-# if (GRID_SIMD)
-		for (int lane = 0; lane < n_simd_lanes; lane++)
-		{
-	    if (fabs(chi.getlane(lane)) < 1.0E-30)
-			{
-        chi.putlane(1.0E-30, lane);
-			}
-		}
-# else
-	  if (fabs(chi) < 1.0E-30)
-		{
-      chi = 1.0E-30;
-		}
-# endif
+//# if (GRID_SIMD)
+//		for (int lane = 0; lane < n_simd_lanes; lane++)
+//		{
+//	    if (fabs(chi.getlane(lane)) < 1.0E-30)
+//			{
+//        chi.putlane(1.0E-30, lane);
+//			}
+//		}
+//# else
+//	  if (fabs(chi) < 1.0E-30)
+//		{
+//      chi = 1.0E-30;
+//		}
+//# endif
 
 //cout << "Start" << endl;
 	//if (f==54)

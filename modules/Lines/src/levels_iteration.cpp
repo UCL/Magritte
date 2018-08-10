@@ -117,6 +117,8 @@ int LEVELS ::
 
 	const long ncells_red = STOP - START;
 
+  cout << "Inside" << endl;
+
 
 # pragma omp parallel                                                      \
   shared (linedata, species, temperature, lines, frequencies, radiation)   \
@@ -169,7 +171,7 @@ int LEVELS ::
 
         // Calculate source and opacity
 
-	      //calc_line_emissivity_and_opacity (linedata, lines, p, l);
+	      calc_line_emissivity_and_opacity (linedata, lines, p, l);
 	  	}
 	  }
 

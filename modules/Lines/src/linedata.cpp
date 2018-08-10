@@ -314,9 +314,8 @@ MatrixXd LINEDATA ::
 
     const int spec = num_col_partner[l][c];
 
-    double abundance = species.density[p] * species.abundance[p][spec];
+    double abundance = species.abundance[p][spec];
 
-//		cout << "den = " << species.density[p] << endl;
 //		cout << "sab = " << species.abundance[p][spec] << endl;
 //		cout << "n col par " << spec << endl;
 //		cout << "abn = " << abundance << endl;
@@ -332,8 +331,8 @@ MatrixXd LINEDATA ::
     }
 
 
-    int t = search (temperature_col[l][c], temperature_gas);
-
+  int t = search (temperature_col[l][c], temperature_gas);
+  //int t = 0;
 
 		if      (t == 0)
 		{

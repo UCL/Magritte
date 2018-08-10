@@ -56,7 +56,6 @@ TEST_CASE ("calc_Einstein_C")
 	}
 
 
-	species.density[0] = 1.0;
 
 	// species.abundance[0] = 0.0;
 
@@ -102,8 +101,6 @@ TEST_CASE ("calc_transition_matrix")
 		cout << species.abundance[0][s] << endl;
 	}
 
-
-	species.density[0] = 1.0;
 
 	// species.abundance[0] = 0.0;
 

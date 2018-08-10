@@ -47,6 +47,16 @@ TEST_CASE ("search function")
   long index3 = search (x, 636);
 
   CHECK (index3 == reff3);
+
+  long reff4  = 1;
+  long index4 = search (x, 0.3);
+
+  CHECK (index4 == reff4);
+
+  long reff5  = 14;
+  long index5 = search (x, 14.0-0.7);
+
+  CHECK (index5 == reff5);
 }
 
 
