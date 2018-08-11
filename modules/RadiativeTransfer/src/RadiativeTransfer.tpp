@@ -71,18 +71,18 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 	  vReal Lambda [ncells];
 
-		#include "RadiativeTransfer/src/folders.hpp"
-	  string srcu_file = output_folder + "srcu.txt";
-	  string dtau_file = output_folder + "dtau.txt";
+		//#include "RadiativeTransfer/src/folders.hpp"
+	  //string srcu_file = output_folder + "srcu.txt";
+	  //string dtau_file = output_folder + "dtau.txt";
 
-    ofstream srcu_outputFile (srcu_file);
-    ofstream dtau_outputFile (dtau_file);
+    //ofstream srcu_outputFile (srcu_file);
+    //ofstream dtau_outputFile (dtau_file);
 
 
 	  // Loop over all cells
 
 #   pragma omp parallel                                                                \
-	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout, srcu_outputFile, dtau_outputFile)   \
+	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
 		private (Su, Sv, dtau, Lambda)                                                     \
 		default (none)
     {
@@ -102,7 +102,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	    //MPI_TIMER timer_PS ("PS");
 	    //timer_PS.start ();
 
-			frequencies.write(to_string(o));
+			//frequencies.write(to_string(o));
 
 			long  cellNrs_r [ncells];
 			long    notch_r [ncells];
@@ -153,19 +153,19 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 					           (cells, frequencies, temperature,lines, scattering, radiation, f, o, R,
 											lnotch_ar, notch_ar, cellNrs_ar, shifts_ar, dZs_ar, n_ar,
           						lnotch_r,  notch_r,  cellNrs_r,  shifts_r,  dZs_r,  n_r,
-            	        Su, Sv, dtau, ndep);\
+            	        Su, Sv, dtau, ndep);
 
-					for (int lane = 0; lane < n_simd_lanes; lane++)
-					{
-						for (long n = 0; n < ndep; n++)
-						{
-  	        	srcu_outputFile <<   Su[n].getlane(lane) << "\t";
-  	        	dtau_outputFile << dtau[n].getlane(lane) << "\t";
-          	}
+					//for (int lane = 0; lane < n_simd_lanes; lane++)
+					//{
+					//	for (long n = 0; n < ndep; n++)
+					//	{
+  	      //  	srcu_outputFile <<   Su[n].getlane(lane) << "\t";
+  	      //  	dtau_outputFile << dtau[n].getlane(lane) << "\t";
+          //	}
 
-	    			srcu_outputFile << endl;
-  	    		dtau_outputFile << endl;
-					}
+	    		//	srcu_outputFile << endl;
+  	    	//	dtau_outputFile << endl;
+					//}
 
 				//	if (o==0 && f==54)
 				//	{
@@ -183,58 +183,45 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 				//	  }
 				//	}
 
+					//for (long n = 0; n < ndep; n++)
+					//{
+		      //  for (int lane = 0; lane < n_simd_lanes; lane++)
+		      //  {
+		      //  	if (isnan(Su[n].getlane(lane)))
+		      //  	{
+					//	    cout << o << " " << f << " " << n << endl;
+					//		}
+					//	}
+					//}
 
           solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
 
-					//if (f==54)
-					//{
-					//  for (long n = 0; n < ndep; n++)
-					//  {
-					//  	cout << Su[n] << endl;
-					//  }
-					//}
 
 
-        	vReal u_local = 0.0;   // local value of u field in direction r/ar
-        	vReal v_local = 0.0;   // local value of v field in direction r/ar
-
-	        if (n_ar > 0)
-	        {
-	          u_local += Su[n_ar-1];   // Su now contains u
-	          v_local += Sv[n_ar-1];   // Sv now contains v
-	        }
-
-	        if (n_r > 0)
-	        {
-	          u_local += Su[n_ar];     // Su now contains u
-	          v_local += Sv[n_ar];     // Sv now contains v
-	        }
-
-	        if ( (n_ar > 0) && (n_r > 0) )
-	        {
-	          u_local *= 0.5;
-	          v_local *= 0.5;
-	        }
-
-		      //for (int lane = 0; lane < n_simd_lanes; lane++)
-		      //{
-		      //	if (isnan(u_local.getlane(lane)))
-		      //	{
-				  //    cout << "NAN!!! "<< o << " " << f << endl;
-			  	//	}
-			  	//}
 
 			  	const long index = radiation.index(o,f);
 
-	        radiation.u[R][index] = u_local;
-	        radiation.v[R][index] = v_local;
 
-					//if (o==0) cout << u_local << endl;
+	        if ( (n_ar > 0) && (n_r > 0) )
+	        {
+	          radiation.u[R][index] = 0.5 * (Su[n_ar-1] + Su[n_ar]);
+	          radiation.v[R][index] = 0.5 * (Sv[n_ar-1] + Sv[n_ar]);
+	        }
+
+					else if (n_ar > 0)   // and hence n_r == 0
+					{
+	          radiation.u[R][index] = Su[n_ar-1];
+	          radiation.v[R][index] = Sv[n_ar-1];
+					}
+
+					else if (n_r > 0)   // and hence n_ar == 0
+					{
+	          radiation.u[R][index] = Su[0];
+	          radiation.v[R][index] = Sv[0];
+					}
+
 
 	  	  } // end of loop over frequencies
-
-
-
 
 	    }
 
@@ -271,8 +258,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
     }
     } // end of pragma omp parallel
 
-	  srcu_outputFile.close ();
-	  dtau_outputFile.close ();
+	  //srcu_outputFile.close ();
+	  //dtau_outputFile.close ();
 
   } // end of loop over ray pairs
 

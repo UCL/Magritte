@@ -58,12 +58,12 @@ struct RADIATION
 
 
   inline int rescale_U_and_V (FREQUENCIES& frequencies, const long p,
-	                     const long R, long& notch, vReal& freq_scaled,
-						           vReal& U_scaled, vReal& V_scaled);
+	                            const long R, long& notch, vReal& freq_scaled,
+						                  vReal& U_scaled, vReal& V_scaled);
 
   inline int rescale_U_and_V_and_bdy_I (FREQUENCIES& frequencies, const long p, const long b,
-	                               const long R, long& notch, vReal& freq_scaled,
-															   vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled);
+	                                      const long R, long& notch, vReal& freq_scaled,
+															          vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled);
 
 	int calc_J (void);
 

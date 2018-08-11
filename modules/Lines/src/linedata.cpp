@@ -316,10 +316,6 @@ MatrixXd LINEDATA ::
 
     double abundance = species.abundance[p][spec];
 
-//		cout << "sab = " << species.abundance[p][spec] << endl;
-//		cout << "n col par " << spec << endl;
-//		cout << "abn = " << abundance << endl;
-
     if      (orth_or_para_H2[l][c] == 'o')
     {
       abundance *= frac_H2_ortho;
@@ -331,8 +327,7 @@ MatrixXd LINEDATA ::
     }
 
 
-  int t = search (temperature_col[l][c], temperature_gas);
-  //int t = 0;
+    int t = search (temperature_col[l][c], temperature_gas);
 
 		if      (t == 0)
 		{

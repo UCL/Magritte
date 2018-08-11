@@ -160,13 +160,13 @@ inline int LINES ::
     //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
 
 
-	  for (int lane = 0; lane < n_simd_lanes; lane++)
-	  {
-	  	if (chi.getlane(lane) < 1.0E-30)
-	  	{
-	  		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << frequencies.line[lnotch] << endl;
-	  	}
-	  }
+	  //for (int lane = 0; lane < n_simd_lanes; lane++)
+	  //{
+	  //	if (isnan(chi.getlane(lane)) || isnan(eta.getlane(lane)))
+	  //	{
+	  //		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << //frequencies.line[lnotch] << endl;
+	  //	}
+	  //}
 
 	}
 
