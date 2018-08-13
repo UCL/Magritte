@@ -52,16 +52,16 @@ set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
 add_library( _TEST_MAIN
   main.cpp )
 
-# Create executable to test linedata
-add_executable( test_linedata.exe
-  test_linedata.cpp )
-target_link_libraries( test_linedata.exe
-  _LINES
-  _TEST_MAIN )
-
-# Create executable to test levels
-add_executable( test_levels.exe
-  test_levels.cpp )
-target_link_libraries( test_levels.exe
-  _LINES
-  _TEST_MAIN )
+## Create executable to test linedata
+#add_executable( test_linedata.exe
+#  test_linedata.cpp )
+#target_link_libraries( test_linedata.exe
+#  _LINES
+#  _TEST_MAIN )
+#
+## Create executable to test levels
+#add_executable( test_levels.exe
+#  test_levels.cpp )
+#target_link_libraries( test_levels.exe
+#  _LINES
+#  _TEST_MAIN )
