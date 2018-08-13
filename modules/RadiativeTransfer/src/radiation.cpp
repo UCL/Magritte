@@ -14,7 +14,7 @@ using namespace std;
 #include "radiation.hpp"
 #include "constants.hpp"
 #include "GridTypes.hpp"
-#include "cells.hpp"
+#include "mpiTypes.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
 #include "profile.hpp"
@@ -25,16 +25,13 @@ using namespace std;
 //////////////////////////////
 
 RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
-		                    const long num_of_rays_red, const long num_of_freq_red,
-												const long num_of_bdycells, const long START_raypair_input)
+		                    const long num_of_freq_red, const long num_of_bdycells)
 	: ncells        (num_of_cells)
 	, nrays         (num_of_rays)
-  , nrays_red     (num_of_rays_red)
+  , nrays_red     (get_nrays_red (nrays))
   , nfreq_red     (num_of_freq_red)
 	, nboundary     (num_of_bdycells)
-	, START_raypair (START_raypair_input)
 {
-
 
 	// Size and initialize u, v, U and V
 
@@ -66,82 +63,21 @@ RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
 	J.resize (ncells*nfreq_red);
 
 
-	initialize ();
-
-
 }   // END OF CONSTRUCTOR
 
 
-
-long RADIATION ::
-     index (const long r, const long p, const long f) const
+long RADIATION :: get_nrays_red (const long nrays)
 {
-	return f + (p + (r-START_raypair)*ncells)*nfreq_red;
-}
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
-long RADIATION ::
-     index (const long p, const long f) const
-{
-	return f + p*nfreq_red;
-}
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
-int RADIATION ::
-    initialize ()
-{
+  const long START_raypair = ( world_rank   *nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
 
-	for (long r = 0; r < nrays_red; r++)
-	{
-
-#   pragma omp parallel   \
-		shared (r)            \
-    default (none)
-    {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = ( thread_num   *ncells)/num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;
-
-
-    for (long p = start; p < stop; p++)
-    {
-	    for (long f = 0; f < nfreq_red; f++)
-      {
-				u[r][index(p,f)] = 0.0;
-        v[r][index(p,f)] = 0.0;
-
-				U[r][index(p,f)] = 0.0;
-        V[r][index(p,f)] = 0.0;
-      }
-	  }
-	  } // end of pragma omp parallel
-	}
-
-
-#   pragma omp parallel   \
-    default (none)
-    {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = ( thread_num*ncells)   /num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;
-
-
-    for (long p = start; p < stop; p++)
-    {
-	    for (long f = 0; f < nfreq_red; f++)
-      {
-        J[index(p,f)] = 0.0;
-      }
-	  }
-	  } // end of pragma omp parallel
-
-
-	return (0);
-
+	return STOP_raypair - START_raypair;
 }
 
 int RADIATION ::
@@ -152,6 +88,9 @@ int RADIATION ::
 
 }
 
+///  calc_boundary_intensities: calculate the boundary intensities
+//////////////////////////////////////////////////////////////////
+
 int RADIATION ::
     calc_boundary_intensities (const Long1& bdy_to_cell_nr,
 				                       const FREQUENCIES& frequencies)
@@ -160,8 +99,8 @@ int RADIATION ::
 	for (long r = 0; r < nrays_red; r++)
 	{
 
-#   pragma omp parallel                       \
-		shared (r, bdy_to_cell_nr, frequencies)   \
+#   pragma omp parallel                             \
+		shared (r, bdy_to_cell_nr, frequencies, cout)   \
     default (none)
     {
 
@@ -178,7 +117,11 @@ int RADIATION ::
 
 	    for (long f = 0; f < nfreq_red; f++)
       {
-				boundary_intensity[r][b][f] = Planck (T_CMB, frequencies.all[p][f]);
+				boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
+				//if (f=54)
+				//{
+				//	cout << boundary_intensity[r][b][f] << " " << frequencies.nu[p][f] << endl;
+				//}
       }
 	  }
 	  } // end of pragma omp parallel
@@ -200,9 +143,76 @@ void mpi_vector_sum (vReal *in, vReal *inout, int *len, MPI_Datatype *datatype)
 }
 
 
+int initialize (vReal1& vec)
+{
+
+# pragma omp parallel   \
+	shared (vec)          \
+  default (none)
+  {
+
+  const int nthreads = omp_get_num_threads();
+  const int thread   = omp_get_thread_num();
+
+  const long start = ( thread   *vec.size())/nthreads;
+  const long stop  = ((thread+1)*vec.size())/nthreads;
+
+
+  for (long i = start; i < stop; i++)
+	{
+	  vec[i] = 0.0;
+	}
+	} // end of pragma omp parallel
+
+
+	return (0);
+
+}
+
+
+
 int RADIATION ::
     calc_J (void)
 {
+
+	initialize (J);
+
+
+	int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+
+  const long START_raypair = ( world_rank   *nrays/2)/world_size;
+  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
+
+  for (long r = START_raypair; r < STOP_raypair; r++)
+  {
+		const long R = r - START_raypair;
+
+#   pragma omp parallel   \
+    default (none)
+    {
+
+    const int nthreads = omp_get_num_threads();
+    const int thread   = omp_get_thread_num();
+
+    const long start = ( thread   *ncells)/nthreads;
+    const long stop  = ((thread+1)*ncells)/nthreads;
+
+
+    for (long p = start; p < stop; p++)
+	  {
+	    for (long f = 0; f < nfreq_red; f++)
+	    {
+	      J[index(p,f)] += (2.0/nrays) * u[R][index(p,f)];
+			}
+		}
+		} // end of pragma omp parallel
+
+	} // end of r loop over rays
+
 
   MPI_Datatype MPI_VREAL;
   MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
@@ -237,7 +247,14 @@ int RADIATION ::
 
 int RADIATION ::
     calc_U_and_V (const SCATTERING& scattering)
+
+#	if (MPI_PARALLEL)
+
 {
+
+	vReal1 U_local (ncells*nfreq_red);
+	vReal1 V_local (ncells*nfreq_red);
+
 
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
@@ -253,13 +270,12 @@ int RADIATION ::
   MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
   MPI_Type_commit (&MPI_VREAL);
 
-	MPI_Op MPI_VSUM;
-	MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
+  MPI_Op MPI_VSUM;
+  MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
 	for (int w = 0; w < world_size; w++)
 	{
-
     const long START_raypair1 = ( w   *nrays/2)/world_size;
     const long STOP_raypair1  = ((w+1)*nrays/2)/world_size;
 
@@ -267,30 +283,9 @@ int RADIATION ::
 	  {
 			const long R1 = r1 - START_raypair1;
 
-	    vReal1 U_local (ncells*nfreq_red);
-	    vReal1 V_local (ncells*nfreq_red);
+			initialize (U_local);
+			initialize (V_local);
 
-#     pragma omp parallel         \
-	    shared (U_local, V_local)   \
-      default (none)
-      {
-
-      const int nthreads = omp_get_num_threads();
-      const int thread   = omp_get_thread_num();
-
-      const long start = ( thread   *ncells)/nthreads;
-      const long stop  = ((thread+1)*ncells)/nthreads;
-
-
-      for (long p = start; p < stop; p++)
-	    {
-	      for (long f = 0; f < nfreq_red; f++)
-	  	  {
-	  	    U_local[index(p,f)] = 0.0;
-	  	    V_local[index(p,f)] = 0.0;
-	  	  }
-	  	}
-	  	}
 
     	for (long r2 = START_raypair; r2 < STOP_raypair; r2++)
 	  	{
@@ -318,7 +313,7 @@ int RADIATION ::
 	  		}
 	    	}
 
-	  	}
+	  	} // end of r2 loop over raypairs2
 
 
   	  int ierr_u = MPI_Reduce (
@@ -343,6 +338,8 @@ int RADIATION ::
   	  	           MPI_COMM_WORLD);
 
 			assert (ierr_v == 0);
+
+
 	  }
 	}
 
@@ -356,50 +353,59 @@ int RADIATION ::
 
 }
 
+#else
 
-
-
-int RADIATION :: resample_U (const FREQUENCIES& frequencies, const long p, const long r,
-	                           const vReal1& frequencies_scaled, vReal1& U_scaled) const
 {
-  long start = 0;
-	long stop  = nfreq_red;
 
-//	for (long f = 0; f < nfreq; f++)
-//	{
-//		cout << U[r][p][f] << endl;
-//		U_scaled[f] = 0.0;
-//	}
+	vReal1 U_local (ncells*nfreq_red);
+	vReal1 V_local (ncells*nfreq_red);
 
-	//resample (frequencies.all[p], U[r][p], start, stop, frequencies_scaled, U_scaled);
+  for (long r1 = 0; r1 < nrays/2; r1++)
+	{
+		initialize (U_local);
+		initialize (V_local);
 
- 	return (0);
+    for (long r2 = 0; r2 < nrays/2; r2++)
+	  {
+
+#     pragma omp parallel                             \
+	    shared (scattering, U_local, V_local, r1, r2)   \
+      default (none)
+      {
+
+      const int nthreads = omp_get_num_threads();
+      const int thread   = omp_get_thread_num();
+
+      const long start = ( thread   *ncells)/nthreads;
+      const long stop  = ((thread+1)*ncells)/nthreads;
+
+
+      for (long p = start; p < stop; p++)
+	    {
+	      for (long f = 0; f < nfreq_red; f++)
+	      {
+	  	    U_local[index(p,f)] += u[r2][index(p,f)] * scattering.phase[r1][r2][f];
+	  	    V_local[index(p,f)] += v[r2][index(p,f)] * scattering.phase[r1][r2][f];
+	  	  }
+	  	}
+	    }
+
+	  } // end of r2 loop over raypairs2
+
+	}
+
+
+	return (0);
+
 }
 
-
-
-
-int RADIATION :: resample_V (const FREQUENCIES& frequencies, const long p, const long r,
-		                         const vReal1& frequencies_scaled, vReal1& V_scaled) const
-{
-  long start = 0;
-	long stop  = nfreq_red;
-
-//	for (long f = 0; f < nfreq; f++)
-//	{
-//		V_scaled[f] = 0.0;
-//	}
-
-	//resample (frequencies.all[p], V[r][p], start, stop, frequencies_scaled, V_scaled);
-
- 	return (0);
-}
+#endif
 
 
 
 
 
-#include "configure.hpp"
+#include "folders.hpp"
 
 int RADIATION ::
     print (string OOOoutput_folder, string tag)
@@ -411,9 +417,9 @@ int RADIATION ::
 
 	if (world_rank == 0)
 	{
-		string file_name = output_folder + "J" + tag + ".txt";
+		string file_name_J = output_folder + "J" + tag + ".txt";
 
-    ofstream outputFile (file_name);
+    ofstream outputFile_J (file_name_J);
 
 	  for (long p = 0; p < ncells; p++)
 	  {
@@ -422,17 +428,45 @@ int RADIATION ::
 #       if (GRID_SIMD)
 					for (int lane = 0; lane < n_simd_lanes; lane++)
 					{
-	  		    outputFile << J[index(p,f)].getlane(lane) << "\t";
+	  		    outputFile_J << J[index(p,f)].getlane(lane) << "\t";
 					}
 #       else
-	  		  outputFile << J[index(p,f)] << "\t";
+	  		  outputFile_J << J[index(p,f)] << "\t";
 #       endif
 	  	}
 
-	  	outputFile << endl;
+	  	outputFile_J << endl;
 	  }
 
-	  outputFile.close ();
+	  outputFile_J.close ();
+
+
+		string file_name_bc = output_folder + "bc" + tag + ".txt";
+
+    ofstream outputFile_bc (file_name_bc);
+
+	  //for (long r = 0; r < nrays_red; r++)
+	  //{
+		long r = 0;
+      for (long b = 0; b < nboundary; b++)
+      {
+	      for (long f = 0; f < nfreq_red; f++)
+        {
+#       if (GRID_SIMD)
+					for (int lane = 0; lane < n_simd_lanes; lane++)
+					{
+	  			  outputFile_bc << boundary_intensity[r][b][f].getlane(lane) << "\t";
+					}
+#       else
+	  			outputFile_bc << boundary_intensity[r][b][f] << "\t";
+#       endif
+        }
+				outputFile_bc << endl;
+	    }
+	  //}
+
+	  outputFile_bc.close ();
+
 	}
 
 

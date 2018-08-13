@@ -159,7 +159,7 @@ int LEVELS ::
 
  	// Set population total
 
- 	population_tot[p][l] = species.density[p] * species.abundance[p][linedata.num[l]];
+ 	population_tot[p][l] = species.abundance[p][linedata.num[l]];
 
 
   // Calculate fractional LTE level populations and partition function
@@ -169,7 +169,7 @@ int LEVELS ::
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
     population[p][l](i) = linedata.weight[l](i)
- 	 	                    * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
+ 	 	                      * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
     partition_function += population[p][l](i);
   }
@@ -180,7 +180,13 @@ int LEVELS ::
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
     population[p][l](i) *= population_tot[p][l] / partition_function;
+
+      //if (isnan(population[p][l](i)))
+      //{
+      //  cout << population_tot[p][l] << " " << partition_function << endl;
+      //}
   }
+
 
 
   return (0);
@@ -304,17 +310,19 @@ int LEVELS ::
 	  const int i = linedata.irad[l][k];
 	  const int j = linedata.jrad[l][k];
 
-    const double hv_4pi = HH * linedata.frequency[l](i,j) / (4.0*PI);
+    const long index = lines.index(p,l,k);
 
-	  lines.emissivity[p][l][k] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+    const double hv_4pi = HH_OVER_FOUR_PI * linedata.frequency[l][k];
 
-	     lines.opacity[p][l][k] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
-  		                                    - population[p][l](i) * linedata.B[l](i,j) );
+	  lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
-	  lines.emissivity_vec[lines.index(p,l,k)] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+	     lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
+                 		                    - population[p][l](i) * linedata.B[l](i,j) );
 
-	     lines.opacity_vec[lines.index(p,l,k)] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
-                 		                                     - population[p][l](i) * linedata.B[l](i,j) );
+     //if (isnan(lines.emissivity[index]))
+     //{
+    //   cout << p << " " << l << " " << i << " " << population[p][l](i) << endl;
+     //}
   }
 
 
@@ -342,19 +350,10 @@ int LEVELS ::
 	{
     const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
-#   if (GRID_SIMD)
-		  const long    f_line = freq_nrs[NR_LINE_CENTER] / n_simd_lanes;
-		  const long lane_line = freq_nrs[NR_LINE_CENTER] % n_simd_lanes;
-      const double freq_line = frequencies.all[p][f_line].getlane(lane_line);
-#   else
-      const double freq_line = frequencies.all[p][freq_nrs[NR_LINE_CENTER]];
-#   endif
-
     J_eff[p][l][k] = 0.0;
 
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
-
 #     if (GRID_SIMD)
 		    const long    f = freq_nrs[z] / n_simd_lanes;
 		    const long lane = freq_nrs[z] % n_simd_lanes;
@@ -363,7 +362,7 @@ int LEVELS ::
 		  	const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
 #     endif
 
-      J_eff[p][l][k] += H_weights[z] / profile_width (temperature.gas[p], freq_line) * JJ;
+      J_eff[p][l][k] += H_weights[z] * JJ;
     }
   }
 

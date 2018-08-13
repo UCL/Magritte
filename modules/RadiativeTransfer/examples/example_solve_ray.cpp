@@ -6,11 +6,10 @@
 
 #include <fstream>
 #include <iostream>
-#include <vector>
 using namespace std;
 
 #include "../src/timer.hpp"
-#include "../src/solve_ray.cpp"
+#include "../src/solve_ray.hpp"
 #include "../src/GridTypes.hpp"
 
 
@@ -30,8 +29,10 @@ int main (void)
   ifstream infile ("example_data/feautrier1.txt");
 
   const long ndep      = 100;
-	const long nfreq     =  50;
+	const long nfreq     = 140;
 	const long nfreq_red = (nfreq + n_simd_lanes - 1) / n_simd_lanes;
+
+  cout << "nfreq_red = " << (nfreq + n_simd_lanes - 1) / n_simd_lanes << endl;
 
 
 
@@ -51,11 +52,6 @@ int main (void)
 	//int n_simd_lanes = vReal :: Nsimd();
 
 
-  vReal2 u      (ndep, vReal1 (nfreq_red));
-  vReal2 v      (ndep, vReal1 (nfreq_red));
-	vReal2 u_prev (ndep, vReal1 (nfreq_red));
-	vReal2 v_prev (ndep, vReal1 (nfreq_red));
-
   //vector<MatrixXd> Lambda (nfreq);
 
   //MatrixXd temp (ndep,ndep);
@@ -66,7 +62,7 @@ int main (void)
   //  Lambda[f] = temp;
 	//}
 
-  vReal2 Lambda (ndep, vReal1 (nfreq_red));
+  vReal Lambda[ndep];
 
 	long ndiag = ndep;
 
@@ -74,34 +70,28 @@ int main (void)
 	long n_r  = ndep/2;
 	long n_ar = ndep-n_r;
 
-  vReal2    Su_r (n_r, vReal1 (nfreq_red));
-  vReal2    Sv_r (n_r, vReal1 (nfreq_red));
-  vReal2  dtau_r (n_r, vReal1 (nfreq_red));
+  vReal   Su_r[n_r];
+  vReal   Sv_r[n_r];
+  vReal dtau_r[n_r];
 
-  vReal2   Su_ar (n_ar, vReal1 (nfreq_red));
-  vReal2   Sv_ar (n_ar, vReal1 (nfreq_red));
-  vReal2 dtau_ar (n_ar, vReal1 (nfreq_red));
+  vReal   Su_ar[n_ar];
+  vReal   Sv_ar[n_ar];
+  vReal dtau_ar[n_ar];
 
 
   for (long m = 0; m < n_ar; m++)
   {
-		for (long f = 0; f < nfreq_red; f++)
-		{
-        Su_ar[m][f] =    S[n_ar-1-m];
-        Sv_ar[m][f] =    S[n_ar-1-m];
-      dtau_ar[m][f] = dtau[n_ar-1-m];
-		}
+      Su_ar[m] =    S[n_ar-1-m];
+      Sv_ar[m] =    S[n_ar-1-m];
+    dtau_ar[m] = dtau[n_ar-1-m];
 	}
 
 
   for (long m = 0; m < n_r; m++)
 	{
-		for (long f = 0; f < nfreq_red; f++)
-		{
-  	    Su_r[m][f] =    S[n_ar+m];
-        Sv_r[m][f] =    S[n_ar+m];
-      dtau_r[m][f] = dtau[n_ar+m];
-		}
+      Su_r[m] =    S[n_ar+m];
+      Sv_r[m] =    S[n_ar+m];
+    dtau_r[m] = dtau[n_ar+m];
 	}
 
 
@@ -110,12 +100,30 @@ int main (void)
 	TIMER timer ("solve_ray");
 	timer.start ();
 
-	for (int n = 0; n < 500; n++)
-	{
-    solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
-		  	       n_ar, Su_ar, Sv_ar, dtau_ar,
-			  			 ndep, nfreq_red, u, v, ndiag, Lambda);
-	}
+  vReal u [ndep];
+  vReal v [ndep];
+
+  vReal A [ndep];
+  vReal C [ndep];
+  vReal F [ndep];
+  vReal G [ndep];
+
+	vReal B0       ;
+  vReal B0_min_C0;
+  vReal Bd       ;
+	vReal Bd_min_Ad;
+
+	//for (int n = 0; n < 500; n++)
+	//{
+	  for (long f = 0; f < nfreq_red; f++)
+	  {
+  //    solve_ray (n_r,  Su_r,  Sv_r,  dtau_r,
+	//  	  	       n_ar, Su_ar, Sv_ar, dtau_ar,
+  //               A, C, F, G,
+	//							 B0, B0_min_C0, Bd, Bd_min_Ad,
+	//  		  			 ndep, u, v, ndiag, Lambda);
+    }
+	//}
 
 	timer.stop ();
 	timer.print ();

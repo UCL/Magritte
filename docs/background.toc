@@ -11,7 +11,7 @@
 \contentsline {paragraph}{Lines}{6}{section*.2}
 \contentsline {paragraph}{Continuum radiation}{6}{section*.3}
 \contentsline {paragraph}{Dust scattering}{6}{section*.4}
-\contentsline {subsubsection}{\numberline {4.3.2}Feautrier solution method}{6}{subsubsection.4.3.2}
+\contentsline {subsubsection}{\numberline {4.3.2}ier solution method}{6}{subsubsection.4.3.2}
 \contentsline {subsubsection}{\numberline {4.3.3}Boundary conditions}{9}{subsubsection.4.3.3}
 \contentsline {subsubsection}{\numberline {4.3.4}Approximate Lambda Operator}{9}{subsubsection.4.3.4}
 \contentsline {subsection}{\numberline {4.4}Scattering}{11}{subsection.4.4}

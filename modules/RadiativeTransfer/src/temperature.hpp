@@ -8,22 +8,19 @@
 #define __TEMPERATURE_HPP_INCLUDED__
 
 
-#include <vector>
+#include <string>
 using namespace std;
-
 
 #include "types.hpp"
 
 
 struct TEMPERATURE
 {
-	
+
   const long ncells;
 
 	Double1 gas;        ///< gas temperature
-
 	Double1 dust;       ///< dust temparature
-
 	Double1 gas_prev;   ///< gas temperature in previous iteration
 
 

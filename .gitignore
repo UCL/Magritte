@@ -7,6 +7,17 @@ Makefile
 CMakeCache.txt
 
 
+# Grid-related
+# ------------
+
+GridInstall*
+
+# Build-related
+# -------------
+
+build*
+
+
 
 # Executables
 # -----------

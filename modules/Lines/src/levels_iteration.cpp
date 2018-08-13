@@ -68,7 +68,7 @@ int LEVELS ::
 	      calc_line_emissivity_and_opacity (linedata, lines, p, l);
 
 //				lines.emissivity[p][0][0] = p;
-//				lines.emissivity_vec[lines.index(p,0,0)] = p;
+//				lines.emissivity[lines.index(p,0,0)] = p;
 	  	}
 	  }
 
@@ -84,7 +84,7 @@ int LEVELS ::
 //  {
 //    for (long p = 0; p < ncells; p++)
 //    {
-//    	cout << "op " << p << " " << lines.opacity_vec[lines.index(p,0,0)] << endl;
+//    	cout << "op " << p << " " << lines.opacity[lines.index(p,0,0)] << endl;
 //    }
 //  }
 
@@ -116,6 +116,8 @@ int LEVELS ::
 	const long STOP  = ((world_rank+1)*ncells)/world_size;
 
 	const long ncells_red = STOP - START;
+
+  cout << "Inside" << endl;
 
 
 # pragma omp parallel                                                      \
@@ -185,7 +187,7 @@ int LEVELS ::
 //  {
 //    for (long p = 0; p < ncells; p++)
 //    {
-//    	cout << "op " << p << " " << lines.opacity_vec[lines.index(p,0,0)] << endl;
+//    	cout << "op " << p << " " << lines.opacity[lines.index(p,0,0)] << endl;
 //    }
 //  }
 

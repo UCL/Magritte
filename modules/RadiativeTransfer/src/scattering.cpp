@@ -32,7 +32,7 @@ SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat, c
 	}
 
 
-  // Size and initialize scattering phase function    
+  // Size and initialize scattering phase function
 
 	phase.resize (nrays);
 
@@ -62,7 +62,7 @@ SCATTERING :: SCATTERING (const long num_of_rays, const long num_of_freq_scat, c
 ///    @param[in/out] chi: opacity to which to add the scattering contribution
 //////////////////////////////////////////////////////////////////////////////
 
-int SCATTERING :: add_opacity (const vReal1& frequencies, vReal1& chi) const
+int SCATTERING :: add_opacity (const vReal& frequencies, vReal& chi) const
 {
-  return (0);  
+  return (0);
 }

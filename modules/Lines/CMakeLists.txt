@@ -14,7 +14,7 @@ set( MAGRITTE_VERSION_MINOR 1 )
 #SET( CMAKE_CXX_COMPILER "/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/icc" )
 
 # Set build type to Release to get optimal performance
-set( CMAKE_BUILD_TYPE Debug )
+set( CMAKE_BUILD_TYPE Release )
 
 # Add compiler flags for C++11
 set( CMAKE_CXX_FLAGS

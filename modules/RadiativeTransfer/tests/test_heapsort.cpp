@@ -9,37 +9,47 @@
 using namespace std;
 
 #include "catch.hpp"
+#include "tools.hpp"
 
-#include "../src/heapsort.hpp"
+#include "heapsort.hpp"
 
 #define EPS 1.0E-7
 
 
-///  relative_error: returns relative error between A and B
-///////////////////////////////////////////////////////////
-
-double relative_error (double A, double B)
-{
-  return 2.0 * fabs(A-B) / fabs(A+B);
-}
-
-
-TEST_CASE ("Heapsort")
+TEST_CASE ("heapsort function")
 {
 
-	vector<double> a = {3.0, 2.0, 1.0, 5.0, 4.0};
-	vector<long>   b = {1, 2, 3, 4, 5};
+  SECTION ("unsorted list")
+  {
+    const long length = 6;
 
-	heapsort (a, b, 5);
+	  vector<double> a = {3.0, 2.0, 1.0, 5.0, 4.0, 0.0};
+	  vector<long>   b = {3,   2,   1,   5,   4  , 0  };
 
-	for (int n=0; n<5; n++)
-	{
-		cout << "a = " << a[n] << endl;
-		cout << "b = " << b[n] << endl;
+	  heapsort (a, b);
 
-	  CHECK (a[n] == b[n]);
-	}
-	
+	  for (int n=0; n<length; n++)
+	  {
+	    CHECK (a[n] == n);
+	    CHECK (a[n] == b[n]);
+	  }
+  }
 
-	CHECK (true);
+
+  SECTION ("already sorted list")
+  {
+    const long length = 6;
+
+	  vector<double> a = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+	  vector<long>   b = {0,   1,   2,   3,   4  , 5  };
+
+	  heapsort (a, b);
+
+	  for (int n=0; n<length; n++)
+	  {
+	    CHECK (a[n] == n);
+	    CHECK (a[n] == b[n]);
+	  }
+  }
+
 }

@@ -168,8 +168,9 @@ int CELLS <Dimension, Nrays> ::
 /////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-long CELLS <Dimension, Nrays> ::
-     next (const long origin, const long r, const long current, double& Z, double& dZ) const
+inline long CELLS <Dimension, Nrays> ::
+            next (const long origin, const long r,
+							    const long current, double& Z, double& dZ) const
 {
 
   // Pick neighbor on "right side" closest to ray
@@ -220,6 +221,43 @@ long CELLS <Dimension, Nrays> ::
 }
 
 
+/// on_ray
+
+template <int Dimension, long Nrays>
+inline long CELLS <Dimension, Nrays> ::
+            on_ray (const long origin, const long ray, long *cellNrs, double *dZs) const
+{
+	long    n = 0;     // number of cells on the ray
+  double  Z = 0.0;   // distance from origin (o)
+	double dZ = 0.0;   // last increment in Z
+
+	long nxt = next (origin, ray, origin, Z, dZ);
+
+
+	if (nxt != ncells)   // if we are not going out of grid
+	{
+    cellNrs[n] = nxt;
+        dZs[n] = dZ;
+
+    n++;
+
+    while (!boundary[nxt])   // while we have not hit the boundary
+		{
+      nxt = next (origin, ray, nxt, Z, dZ);
+
+      cellNrs[n] = nxt;
+          dZs[n] = dZ;
+
+      n++;
+		}
+	}
+
+
+	return n;
+
+}
+
+
 
 
 ///  relative_velocity: get relative velocity of current w.r.t. origin along ray
@@ -230,12 +268,12 @@ long CELLS <Dimension, Nrays> ::
 ////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-double CELLS <Dimension, Nrays> ::
-       relative_velocity (const long origin, const long r, const long current) const
+inline double CELLS <Dimension, Nrays> ::
+              relative_velocity (const long origin, const long ray, const long current) const
 {
 
-  return   (vx[current] - vx[origin]) * rays.x[r]
-         + (vy[current] - vy[origin]) * rays.y[r]
-         + (vz[current] - vz[origin]) * rays.z[r];
+  return   (vx[current] - vx[origin]) * rays.x[ray]
+         + (vy[current] - vy[origin]) * rays.y[ray]
+         + (vz[current] - vz[origin]) * rays.z[ray];
 
 }

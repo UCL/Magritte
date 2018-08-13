@@ -1,3 +1,7 @@
+sudo: false
+virtualenv:
+  system_site_packages: true
+
 language:
   - cpp
   - python
@@ -6,23 +10,35 @@ language:
 python:
   - "3"
 
+env:
+  - WITH_MPI=ON
+
+cache:
+  directories:
+  - mpich
+  - mpich-3.2
+
 addons:
     packages:
       - cmake
 
 before_install:
-    - test -n $CC && unset CC
+  - test -n $CC && unset CC
+  - bash installMPICH.sh
+  - export LD_LIBRARY_PATH=$HOME/mpfr/lib/:$LD_LIBRARY_PATH
+  - bash installGrid.sh
 
 script:
-  - cd modules/Lines
-  - cmake .
+  - mkdir build; cd build
+  - CC=gcc CCX=g++  cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
   - make
-  - cd tests
-  - bash run_tests.sh
-  - cd ../../..
-  - cd modules/RadiativeTransfer
-  - bash run_tests.sh
-
+  #- cd tests
+  #- bash run_tests.sh
+  #- cd ../../..
+  #- cd modules/RadiativeTransfer
+  #- bash run_tests.sh
+#export
+#export MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib
 
 # language:
 #   - cpp

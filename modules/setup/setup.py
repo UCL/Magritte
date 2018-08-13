@@ -57,6 +57,10 @@ def setupLinedata(inputFolder):
     # Write Magritte_config.hpp file
     fileName = getMagritteFolder() + '../Lines/src/linedata_config.hpp'
     writeHeader(fileName)
+    with open(fileName, 'a') as config:
+        config.write('#ifndef __LINEDATA_CONFIG_HPP_INCLUDED__\n')
+        config.write('#define __LINEDATA_CONFIG_HPP_INCLUDED__\n')
+        config.write('\n')
     writeDefinition(fileName, nspec,                             'NSPEC')
     writeDefinition(fileName, nlspec,                            'NLSPEC')
     writeDefinition(fileName, [ld.nlev     for ld in lineData],  'NLEV')
@@ -72,14 +76,18 @@ def setupLinedata(inputFolder):
     writeDefinition(fileName, [ld.weight    for ld in lineData], 'WEIGHT')
     writeDefinition(fileName, [ld.irad      for ld in lineData], 'IRAD')
     writeDefinition(fileName, [ld.jrad      for ld in lineData], 'JRAD')
-    writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQUENCY')
+    #writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQUENCY')
+    writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQ')
     writeDefinition(fileName, [ld.A         for ld in lineData], 'A_COEFF')
     writeDefinition(fileName, [ld.B         for ld in lineData], 'B_COEFF')
     writeDefinition(fileName, [ld.icol      for ld in lineData], 'ICOL')
     writeDefinition(fileName, [ld.jcol      for ld in lineData], 'JCOL')
     writeDefinition(fileName, [ld.coltemp   for ld in lineData], 'COLTEMP')
     writeDefinition(fileName, [ld.C_data    for ld in lineData], 'C_DATA')
-
+    with open(fileName, 'a') as config:
+        config.write('\n')
+        config.write('#endif // __LINEDATA_CONFIG_HPP_INCLUDED__\n')
+    # Done
 
 
 def getDimensions(cellsFile):

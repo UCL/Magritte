@@ -4,9 +4,18 @@
 // _________________________________________________________________________
 
 
-int parallel_for_all_cells ()
-{
+#ifndef __MPI_TYPES_HPP_INCLUDED__
+#define __MPI_TYPES_HPP_INCLUDED__
 
 
-	return (0);
-}
+#define MPI_PARALLEL true
+
+#if (MPI_PARALLEL)
+#include <mpi.h>
+#endif
+
+extern const int world_size;
+extern const int world_rank;
+
+
+#endif // __MPI_TYPES_HPP_INCLUDED__

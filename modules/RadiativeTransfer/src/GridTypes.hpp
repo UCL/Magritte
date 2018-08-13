@@ -13,36 +13,33 @@ using namespace std;
 
 #define GRID_SIMD true
 
-#if (GRID_SIMD)
-#include <Grid.h>
-#endif
-
-// Grid aligned vector types
-
-
-// Grid vector block
-// define away the reference to double or float so it can be altered here.
 
 #if (GRID_SIMD)
+
+  // When Grid is used
+
+  #include <Grid.h>
+
   typedef Grid::vRealD vReal;
-#else
-  typedef double vReal;
-#endif
 
-// Number of SIMD (vector) lanes
-#if (GRID_SIMD)
 	const int n_simd_lanes = vReal :: Nsimd();
+
+  typedef vector<vReal, Grid::alignedAllocator<vReal>> vReal1;
+
 #else
-	const int n_simd_lanes = 1;
+
+  // When Grid is not used, use regular doubles
+
+  typedef double vReal;
+
+	const int n_simd_lanes = 1
+
+  typedef vector<vReal> vReal1;
+
 #endif
 
 
-// Full Grid vector
-#if (GRID_SIMD)
-typedef vector<vReal, Grid::alignedAllocator<vReal>> vReal1;
-#else
-typedef vector<vReal>  vReal1;
-#endif
+// Define tensors (types with more indices)
 
 typedef vector<vReal1> vReal2;
 typedef vector<vReal2> vReal3;

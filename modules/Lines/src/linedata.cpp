@@ -15,6 +15,7 @@ using namespace Eigen;
 
 #include "linedata.hpp"
 #include "linedata_config.hpp"
+#include "RadiativeTransfer/src/constants.hpp"
 #include "RadiativeTransfer/src/species.hpp"
 #include "RadiativeTransfer/src/interpolation.hpp"
 
@@ -41,7 +42,7 @@ LINEDATA :: LINEDATA ()
 	Double2 weight_buffer = WEIGHT;
 
   frequency.resize (nlspec);
-	Double3 frequency_buffer = FREQUENCY;
+  Double2 frequency_buffer = FREQ;
 
   A.resize (nlspec);
 	Double3 A_buffer = A_COEFF;
@@ -72,7 +73,7 @@ LINEDATA :: LINEDATA ()
 		energy[l].resize (nlev[l]);
 		weight[l].resize (nlev[l]);
 
-		frequency[l].resize (nlev[l],nlev[l]);
+		frequency[l].resize (nrad[l]);
 
 		A[l].resize (nlev[l],nlev[l]);
 		B[l].resize (nlev[l],nlev[l]);
@@ -84,13 +85,16 @@ LINEDATA :: LINEDATA ()
 
       for (int j = 0; j < nlev[l]; j++)
 			{
-			  frequency[l](i,j) = frequency_buffer[l][i][j];
-
 			  A[l](i,j) = A_buffer[l][i][j];
 			  B[l](i,j) = B_buffer[l][i][j];
 			}
 		}
 
+
+    for (int k = 0; k < nrad[l]; k++)
+		{
+		  frequency[l][k] = frequency_buffer[l][k];
+		}
 
  	  num_col_partner[l].resize (ncolpar[l]);
     orth_or_para_H2[l].resize (ncolpar[l]);
@@ -310,12 +314,7 @@ MatrixXd LINEDATA ::
 
     const int spec = num_col_partner[l][c];
 
-    double abundance = species.density[p] * species.abundance[p][spec];
-
-//		cout << "den = " << species.density[p] << endl;
-//		cout << "sab = " << species.abundance[p][spec] << endl;
-//		cout << "n col par " << spec << endl;
-//		cout << "abn = " << abundance << endl;
+    double abundance = species.abundance[p][spec];
 
     if      (orth_or_para_H2[l][c] == 'o')
     {
@@ -328,9 +327,7 @@ MatrixXd LINEDATA ::
     }
 
 
-
-    int t = search (temperature_col[l][c], 0, ntmp[l][c], temperature_gas);
-
+    int t = search (temperature_col[l][c], temperature_gas);
 
 		if      (t == 0)
 		{
@@ -392,8 +389,8 @@ MatrixXd LINEDATA ::
     const int i = irad[l][k];   // i index corresponding to transition k
     const int j = jrad[l][k];   // j index corresponding to transition k
 
-    R(i,j) += B[l](i,j) * J_eff[p][l][k]; // - linedata.A[l](i,j)*Lambda();
-    R(j,i) += B[l](j,i) * J_eff[p][l][k];
+    R(i,j) += FOUR_PI * J_eff[p][l][k] * B[l](i,j); // - linedata.A[l](i,j)*Lambda();
+    R(j,i) += FOUR_PI * J_eff[p][l][k] * B[l](j,i);
   }
 
   //if(p==0)

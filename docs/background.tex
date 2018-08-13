@@ -165,11 +165,11 @@ L_{\nu}(\gamma) = \frac{}{}
 
 To calculate the level populations we need the intensity integrated over all frequencies and weighted with the line profile function. As a result we often have to evaluate integrals weighted with a Gaussian. In practice this can be done efficient using Gauss-Hermite quadrature. Gauss' quadrature theorem states that for every polynomial $p_{d}(x)$ of degree $d$, one can use the integral approximation
 \begin{equation}
-\int_{-\infty}^{+\infty} \D x \ e^{-x^{2}} \ p_{d}(x) \ \approx \ \frac{2^{N-1}N!\sqrt{\pi}}{N^{2}} \ \sum_{n=1}^{N} \ \frac{p_{d}(x_{n})}{\big( H_{N-1}(x_{n}) \big)^{2}},
+\int_{-\infty}^{+\infty} \D x \ \frac{e^{-x^{2}}}{\sqrt{\pi}} \ p_{d}(x) \ \approx \ \frac{2^{N-1}N!}{N^{2}} \ \sum_{n=1}^{N} \ \frac{p_{d}(x_{n})}{\big( H_{N-1}(x_{n}) \big)^{2}},
 \end{equation}
 where $H_{N-1}(x)$ is the (physicists') Hermite polynomial of degree $N-1$ and the $x_{n}$ are the roots  the Hermite polynomial of degree $N$. The equality is exact for polynomials of degree $d\leq2N-1$. Using this we can approximate frequency integrated intensities as
 \begin{equation}
-I_{ij} \ \equiv \ \int_{0}^{\infty} \D \nu \ \phi_{\nu}^{(ij)} \ I_{\nu} \ \approx \ \frac{2^{N-1}N!}{\Delta\nu_{ij} N^{2}} \ \sum_{n=1}^{N} \ \frac{ I_{ x_{n} \Delta\nu_{ij} + \nu_{ij} } }{\big( H_{N-1}(x_{n}) \big)^{2}},
+I_{ij} \ \equiv \ \int_{0}^{\infty} \D \nu \ \phi_{\nu}^{(ij)} \ I_{\nu} \ \approx \ \frac{2^{N-1}N!}{N^{2}} \ \sum_{n=1}^{N} \ \frac{ I_{ x_{n} \Delta\nu_{ij} + \nu_{ij} } }{\big( H_{N-1}(x_{n}) \big)^{2}},
 \end{equation}
 
 

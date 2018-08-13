@@ -22,16 +22,6 @@ using namespace Eigen;
 struct LINEDATA
 {
 
-	//const int nlspec = NLSPEC;
-
-  //const Int1 nlev = NLEV;
-  //const Int1 nrad = NRAD;
-  //
-  //const Int1 ncolpar = NCOLPAR;
-
-  //const Int2 ntmp = NCOLTEMP;
-  //const Int2 ncol = NCOLTRAN;
-
 	const int nlspec = NLSPEC;
 
   const Int1 nlev = NLEV;
@@ -51,7 +41,8 @@ struct LINEDATA
   VectorXd1 energy;          // energy of level
   VectorXd1 weight;          // weight of level (statistical)
 
-  MatrixXd1 frequency;       // frequency corresponing to i <-> j transition
+	Double2 frequency;
+  //MatrixXd1 frequency;       // frequency corresponing to i <-> j transition
 
   MatrixXd1 A;               // Einstein A_ij coefficient
   MatrixXd1 B;               // Einstein B_ij coefficient

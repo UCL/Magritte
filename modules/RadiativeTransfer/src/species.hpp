@@ -25,8 +25,6 @@ struct SPECIES
 
   vector<double> initial_abundance;   ///< abundance before chemical evolution
 
-	vector<double> density;             ///< density for every cell
-
 	vector<vector<double>> abundance;   ///< abundance for every cell
 
 

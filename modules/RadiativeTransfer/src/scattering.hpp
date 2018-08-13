@@ -2,7 +2,7 @@
 //
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
- 
+
 
 #ifndef __SCATTERING_HPP_INCLUDED__
 #define __SCATTERING_HPP_INCLUDED__
@@ -32,9 +32,9 @@ struct SCATTERING
 
   SCATTERING (const long num_of_rays,
 			        const long num_of_freq_scat,
-							const long num_of_freq);       ///< Constructor   
-	
-  int add_opacity (const vReal1& frequencies, vReal1& chi) const;
+							const long num_of_freq);       ///< Constructor
+
+  int add_opacity (const vReal& frequencies, vReal& chi) const;
 
 };
 

@@ -34,7 +34,7 @@ struct CELLS
 
   Double1  x,  y,  z;                   ///< coordinates of cell center
   Double1 vx, vy, vz;                   ///< components of velocity field
- 
+
   Bool1 boundary;                       ///< true if boundary cell
   Bool1 mirror;                         ///< true if reflective boundary
 
@@ -52,17 +52,21 @@ struct CELLS
   CELLS (const long number_of_cells,
 			   const string n_neighbors_file);   ///< Constructor
 
-	
+
   int read (const string cells_file,
 			      const string neighbors_file,
 						const string boundary_file);
 
-	
-  long next (const long origin, const long ray, const long current,
-			       double& Z, double& dZ) const; 
+
+  inline long next (const long origin, const long ray, const long current,
+                    double& Z, double& dZ) const;
+
+  inline long on_ray (const long origin, const long ray,
+                      long *cellNrs, double *dZs) const;
 
 
-  double relative_velocity (const long origin, const long r, long current) const;
+  inline double relative_velocity (const long origin, const long r,
+                                   const long current) const;
 
 
 };

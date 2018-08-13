@@ -61,13 +61,13 @@ add_library( _RADIATIVE_TRANSFER
   lines.cpp
   scattering.cpp
   radiation.cpp
-  profile.cpp
+  profile.hpp
   RadiativeTransfer.hpp
   set_up_ray.hpp
-  solve_ray.cpp
+  solve_ray.hpp
   timer.hpp
   heapsort.cpp
-  interpolation.cpp )
+  interpolation.hpp )
 
 # Link libraries
 target_link_libraries( _RADIATIVE_TRANSFER

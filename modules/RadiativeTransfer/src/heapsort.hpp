@@ -15,7 +15,7 @@ long max (vector<double>& a, long n, long i, long j, long k);
 
 int downheap (vector<double>& a, vector<long>& b, long n, long i);
 
-int heapsort (vector<double>& a, vector<long>& b, long n);
+int heapsort (vector<double>& a, vector<long>& b);
 
 
 #endif // __HEAPSORT_HPP_INCLUDED__
