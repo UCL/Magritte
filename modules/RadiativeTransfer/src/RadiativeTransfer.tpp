@@ -65,11 +65,6 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
     const long ar = cells.rays.antipod[r];
 
-    vReal   Su [ncells];   // effective source for u along ray r
-	  vReal   Sv [ncells];   // effective source for v along ray r
-	  vReal dtau [ncells];   // optical depth increment along ray r
-
-	  vReal Lambda [ncells];
 
 		//#include "RadiativeTransfer/src/folders.hpp"
 	  //string srcu_file = output_folder + "srcu.txt";
@@ -83,9 +78,15 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
 #   pragma omp parallel                                                                \
 	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
-		private (Su, Sv, dtau, Lambda)                                                     \
 		default (none)
+		/*private (Su, Sv, dtau, Lambda)*/                                                     \
     {
+
+    vReal   Su [ncells];   // effective source for u along ray r
+	  vReal   Sv [ncells];   // effective source for v along ray r
+	  vReal dtau [ncells];   // optical depth increment along ray r
+
+	  vReal Lambda [ncells];
 
     const int num_threads = omp_get_num_threads();
     const int thread_num  = omp_get_thread_num();
