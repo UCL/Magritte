@@ -103,6 +103,7 @@ inline int LINES ::
 																			 long& lnotch, const long p,
 																       vReal& eta, vReal& chi) const
 {
+	lnotch = 0;
 
 	vReal  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
 	double     width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
@@ -110,10 +111,10 @@ inline int LINES ::
   //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
 
 # if (GRID_SIMD)
-		while (   (freq_diff.getlane(0) > 1.00001*H_roots[N_QUADRATURE_POINTS-1]*width)
+		while (   (freq_diff.getlane(0) > 1.01*H_roots[N_QUADRATURE_POINTS-1]*width)
 		       && (lnotch < nrad_tot-1) )
 # else
-		while (   (freq_diff            > 1.00001*H_roots[N_QUADRATURE_POINTS-1]*width)
+		while (   (freq_diff            > 1.01*H_roots[N_QUADRATURE_POINTS-1]*width)
 		       && (lnotch < nrad_tot-1) )
 # endif
 	{
@@ -139,10 +140,10 @@ inline int LINES ::
 	long lindex = lnotch + 1;
 
 # if (GRID_SIMD)
-	  while (   (freq_diff.getlane(n_simd_lanes-1) >= 0.99999*H_roots[0]*width)
+	  while (   (freq_diff.getlane(n_simd_lanes-1) >= 0.99*H_roots[0]*width)
 		       && (lindex < nrad_tot) )
 # else
-	  while (   (freq_diff                         >= 0.99999*H_roots[0]*width)
+	  while (   (freq_diff                         >= 0.99*H_roots[0]*width)
 		       && (lindex < nrad_tot) )
 # endif
 	{

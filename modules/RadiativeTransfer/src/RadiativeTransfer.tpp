@@ -196,6 +196,16 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 
           solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
 
+					for (long n = 0; n < ndep; n++)
+					{
+		        for (int lane = 0; lane < n_simd_lanes; lane++)
+		        {
+		        	if (isnan(Su[n].getlane(lane)))
+		        	{
+						    cout << o << " " << f << " " << n << endl;
+							}
+						}
+					}
 
 
 
@@ -220,6 +230,16 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	          radiation.v[R][index] = Sv[0];
 					}
 
+					//for (long n = 0; n < ndep; n++)
+					//{
+		      //  for (int lane = 0; lane < n_simd_lanes; lane++)
+		      //  {
+		      //  	if (radiation.u[R][index].getlane(lane) > 1.0E-17)
+		      //  	{
+					//	    cout << n_r << " " << n_ar << " " << R << " " << o << " " << f << " " //<< n << endl;
+					//		}
+					//	}
+					//}
 
 	  	  } // end of loop over frequencies
 
