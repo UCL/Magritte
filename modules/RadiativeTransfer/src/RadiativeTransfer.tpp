@@ -190,23 +190,23 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 		      //  {
 		      //  	if (isnan(Su[n].getlane(lane)))
 		      //  	{
-					//	    cout << o << " " << f << " " << n << endl;
+					//	    cout << "" << o << " " << f << " " << n << endl;
 					//		}
 					//	}
 					//}
 
           solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
 
-					for (long n = 0; n < ndep; n++)
-					{
-		        for (int lane = 0; lane < n_simd_lanes; lane++)
-		        {
-		        	if (isnan(Su[n].getlane(lane)))
-		        	{
-						    cout << o << " " << f << " " << n << endl;
-							}
-						}
-					}
+					//for (long n = 0; n < ndep; n++)
+					//{
+		      //  for (int lane = 0; lane < n_simd_lanes; lane++)
+		      //  {
+		      //  	if (isnan(Su[n].getlane(lane)))
+		      //  	{
+					//	    cout << o << " " << f << " " << n << endl;
+					//		}
+					//	}
+					//}
 
 
 
@@ -296,7 +296,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 	radiation.calc_U_and_V (scattering);
 
 	timer_RT_COMM.stop ();
-	timer_RT_COMM.print ();
+	timer_RT_COMM.print_to_file ();
 
 	return (0);
 
