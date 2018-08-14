@@ -73,13 +73,13 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
     //ofstream srcu_outputFile (srcu_file);
     //ofstream dtau_outputFile (dtau_file);
 
+		//private (Su, Sv, dtau, Lambda)      \
 
 	  // Loop over all cells
 
 #   pragma omp parallel                                                                \
 	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
 		default (none)
-		/*private (Su, Sv, dtau, Lambda)*/                                                     \
     {
 
     vReal   Su [ncells];   // effective source for u along ray r
