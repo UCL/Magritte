@@ -80,7 +80,7 @@ int Lines (CELLS<Dimension, Nrays>& cells, LINEDATA& linedata, SPECIES& species,
     // Perform an Ng acceleration step every 4th iteration
 
     //if (niterations%4 == 0)
-    //{
+		//{
     //  levels.update_using_Ng_acceleration ();
 
 
