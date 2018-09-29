@@ -43,16 +43,17 @@ TEST_CASE ("Constructor")
 TEST_CASE ("add_emissivity_and_opacity function")
 {
 
-	const long ncells = 1;
-  const long p      = 0;
+	const long ncells = 3;
+//  const long p      = 0;
 
-  long lnotch = 0;
 
 
   TEMPERATURE temperature (ncells);
 
-  temperature.gas[p] = 10.0;
-
+	for (long p = 0; p < ncells; p++)
+	{
+  	temperature.gas[p] = 10.0*(p+1);
+	}
 
 	LINEDATA linedata;
 
@@ -60,6 +61,8 @@ TEST_CASE ("add_emissivity_and_opacity function")
 	LINES lines (ncells, linedata);
 
 
+	for (long p = 0; p < ncells; p++)
+	{
 	  for (int l = 0; l < lines.nlspec; l++)
 	  {
   	  for (int k = 0; k < lines.nrad[l]; k++)
@@ -70,31 +73,42 @@ TEST_CASE ("add_emissivity_and_opacity function")
   	  	   lines.opacity[ind] = 1.0;
   	  }
 	  }
+	}
 
 
   FREQUENCIES frequencies (ncells, linedata);
 
 	frequencies.reset (linedata, temperature);
 
-  cout << "nfreq_red = " << frequencies.nfreq_red << endl;
 
-  for (long f = 0; f < frequencies.nfreq_red; f++)
-  {
-    cout << frequencies.nu[p][f] << endl;
-  }
+	ofstream ETA ("/home/frederik/dumpster/ETA.txt");
+	ofstream CHI ("/home/frederik/dumpster/CHI.txt");
 
+	for (long p = 0; p < ncells; p++)
+	{
+    long lnotch = 0;
+//	long p = 2;
+  	for (long f = 0; f < frequencies.nfreq_red; f++)
+  	{
+			for (int lane = 0; lane < n_simd_lanes; lane++)
+			{
+  			vReal freq_scaled  = frequencies.nu[p][f];
+  			vReal dfreq_scaled = frequencies.dnu[p][f];
 
-  vReal freq_scaled  = frequencies.nu[p][frequencies.nfreq_red-1];
-  vReal dfreq_scaled = frequencies.dnu[p][frequencies.nfreq_red-1];
+ 			  vReal eta = 0.0;
+ 			  vReal chi = 0.0;
 
+ 			  lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled,
+ 			                                    dfreq_scaled, lnotch, p, eta, chi);
 
-  vReal eta = 0.0;
-  vReal chi = 0.0;
-
-  lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled,
-                                    dfreq_scaled, lnotch, p, eta, chi);
-
-  cout << lnotch << " " << eta << " " << chi << endl;
+  			ETA << eta.getlane(lane) << endl;
+  			CHI << chi.getlane(lane) << endl;
+			}
+		}
+	}
+	
+	ETA.close();
+	CHI.close();
 
   CHECK (true);
 }

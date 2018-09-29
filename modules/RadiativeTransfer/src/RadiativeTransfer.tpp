@@ -73,13 +73,13 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
     //ofstream srcu_outputFile (srcu_file);
     //ofstream dtau_outputFile (dtau_file);
 
+		//private (Su, Sv, dtau, Lambda)      \
 
 	  // Loop over all cells
 
 #   pragma omp parallel                                                                \
 	  shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
 		default (none)
-		/*private (Su, Sv, dtau, Lambda)*/                                                     \
     {
 
     vReal   Su [ncells];   // effective source for u along ray r
@@ -91,15 +91,15 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
     const int num_threads = omp_get_num_threads();
     const int thread_num  = omp_get_thread_num();
 
-    const long start = (thread_num*ncells)/num_threads;
+    const long start = (thread_num    *ncells)/num_threads;
     const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
 
     for (long o = start; o < stop; o++)
 	  {
 
-	//MPI_TIMER timer_RT_CALC ("RT_CALC");
-	//timer_RT_CALC.start ();
+			//MPI_TIMER timer_RT_CALC ("RT_CALC");
+			//timer_RT_CALC.start ();
 	    //MPI_TIMER timer_PS ("PS");
 	    //timer_PS.start ();
 
@@ -133,6 +133,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 			  	 notch_ar[q] = 0;
 			  	lnotch_ar[q] = 0;
 		      shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
+
+					//cout << shifts_ar[q] << endl;
 			  }
 
 			  for (long q = 0; q < n_r; q++)
@@ -140,6 +142,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays>& cells, const TEMPERATURE&
 			  	 notch_r[q] = 0;
 			  	lnotch_r[q] = 0;
 		      shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
+
+					//cout << shifts_r[q] << endl;
 			  }
 
 

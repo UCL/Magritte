@@ -99,8 +99,8 @@ int RADIATION ::
 	for (long r = 0; r < nrays_red; r++)
 	{
 
-#   pragma omp parallel                             \
-		shared (r, bdy_to_cell_nr, frequencies, cout)   \
+#   pragma omp parallel                       \
+		shared (r, bdy_to_cell_nr, frequencies)   \
     default (none)
     {
 
@@ -118,10 +118,6 @@ int RADIATION ::
 	    for (long f = 0; f < nfreq_red; f++)
       {
 				boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
-				//if (f=54)
-				//{
-				//	cout << boundary_intensity[r][b][f] << " " << frequencies.nu[p][f] << endl;
-				//}
       }
 	  }
 	  } // end of pragma omp parallel

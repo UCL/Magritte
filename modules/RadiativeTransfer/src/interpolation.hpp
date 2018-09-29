@@ -20,7 +20,8 @@
 ///  @return index of x table just above value
 //////////////////////////////////////////////////////
 
-inline long search (const Double1& x, const double value);
+inline long search (const Double1 &x,
+                    const double   value);
 
 
 
@@ -31,7 +32,9 @@ inline long search (const Double1& x, const double value);
 ///    @param[in] value: the value we look for in vec
 /////////////////////////////////////////////////////////////////////////////
 
-inline int search_with_notch (vReal1& vec, long& notch, const double value);
+inline int search_with_notch (      vReal1 &vec,
+                                    long   &notch,
+                              const double  value);
 
 
 
@@ -45,11 +48,15 @@ inline int search_with_notch (vReal1& vec, long& notch, const double value);
 ///    @return interpolated function value f(x)
 //////////////////////////////////////////////////////////////////////////
 
-inline double interpolate_linear (const double x1, const double f1,
-                                  const double x2, const double f2, const double x);
+inline double interpolate_linear (const double x1,
+                                  const double f1,
+                                  const double x2,
+                                  const double f2,
+                                  const double x  );
 
 
 
+#if (GRID_SIMD)
 
 ///  interpolate_linear: linear interpolation of f(x) in interval [x1, x2]
 ///    @param[in] x1: function argument 1
@@ -60,9 +67,13 @@ inline double interpolate_linear (const double x1, const double f1,
 ///    @return interpolated function value f(x)
 //////////////////////////////////////////////////////////////////////////
 
-inline vReal interpolate_linear (const vReal x1, const vReal f1,
-                                 const vReal x2, const vReal f2, const vReal x);
+inline vReal interpolate_linear (const vReal x1,
+                                 const vReal f1,
+                                 const vReal x2,
+                                 const vReal f2,
+                                 const vReal x  );
 
+#endif
 
 #include "interpolation.cpp"
 
