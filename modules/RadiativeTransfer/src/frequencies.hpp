@@ -34,17 +34,19 @@ struct FREQUENCIES
 	Long1   line_index;        ///< (l,k) index of the corresponding frequency in line
 
 
-	FREQUENCIES (const long num_of_cells, const LINEDATA& linedata);        ///< Constructor
+	FREQUENCIES (const long      num_of_cells,
+							 const LINEDATA &linedata     );           ///< Constructor
 
-	int write (string tag);
+	static long count_nlines (const LINEDATA& linedata);   ///< count nr of lines
 
-  int reset (const LINEDATA& linedata, const TEMPERATURE& temperature);   ///< Set frequencies
+	static long count_nfreq (const long nlines);           ///< count nr of frequencies
 
-	static long count_nlines (const LINEDATA& linedata);
+	static long count_nfreq_red (const long nfreq);        ///< count reduced nr of frequencies
 
-	static long count_nfreq (const long nlines);
+	int write (string tag);                                ///< write out data
 
-	static long count_nfreq_red (const long nfreq);
+  int reset (const LINEDATA    &linedata,
+			       const TEMPERATURE &temperature);            ///< Set frequencies
 
 };
 

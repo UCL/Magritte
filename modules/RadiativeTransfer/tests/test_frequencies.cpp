@@ -27,24 +27,28 @@ using namespace Eigen;
 
 TEST_CASE ("FREQUENCIES Constructor")
 {
+
 	const long ncells = 1;
+	const long o      = 0;
 
 	LINEDATA linedata;
 
 	FREQUENCIES frequencies (ncells, linedata);
 
-	for (int l = 0; l < linedata.nlspec; l++)
+	SECTION ("Line frequencies")
 	{
-		for (int k = 0; k < linedata.nrad[l]; k++)
-		{
-      cout << linedata.frequency[l][k] << endl;
-    }
+
+	  for (int l = 0; l < linedata.nlspec; l++)
+	  {
+	  	for (int k = 0; k < linedata.nrad[l]; k++)
+	  	{
+        cout << linedata.frequency[l][k] << " " << frequencies.line[k]<< endl;
+      }
+	  }
+
+	  CHECK (true);
 	}
-
-	CHECK (true);
 }
-
-
 
 
 TEST_CASE ("Reset")

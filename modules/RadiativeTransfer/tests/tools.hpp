@@ -16,9 +16,10 @@
 ///    @return relative differencte between a and b
 ///////////////////////////////////////////////////////////////////////
 
-inline double relative_error (const double a, const double b)
+inline double relative_error (const double a,
+                              const double b )
 {
-	return fabs ((a-b) / (a+b));
+  return fabs ((a-b) / (a+b));
 }
 
 
@@ -30,21 +31,22 @@ inline double relative_error (const double a, const double b)
 ///    @return relative differencte between a and b
 ////////////////////////////////////////////////////////////////////////
 
-inline vReal relative_error (const vReal a, const vReal b)
+inline vReal relative_error (const vReal a,
+                             const vReal b )
 {
 
-	vReal error = (a-b) / (a+b);
-
-
-	// Take absolute value of individual simd lanes
-
-	for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
-		error.putlane (fabs (error.getlane (lane)), lane);
-	}
-
-
-	return error;
+  vReal error = (a-b) / (a+b);
+  
+  
+  // Take absolute value of individual simd lanes
+  
+  for (int lane = 0; lane < n_simd_lanes; lane++)
+  {
+    error.putlane (fabs (error.getlane (lane)), lane);
+  }
+  
+  
+  return error;
 
 }
 
@@ -58,14 +60,14 @@ inline vReal relative_error (const vReal a, const vReal b)
 inline int print (vReal a)
 {
 
-	for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
+  for (int lane = 0; lane < n_simd_lanes; lane++)
+  {
     cout << a.getlane(lane) << "\t";
-	}
+  }
 
-	cout << endl;
+  cout << endl;
 
 
-	return (0);
+  return (0);
 
 }

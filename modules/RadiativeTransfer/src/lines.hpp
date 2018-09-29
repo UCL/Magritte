@@ -9,6 +9,7 @@
 
 
 #include <vector>
+#include <fstream>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
@@ -43,20 +44,28 @@ struct LINES
 	static int  get_nrad_tot (const Int1 nrad);
 
 
-  LINES (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
+  LINES (const long      num_of_cells,
+			   const LINEDATA &linedata     );   ///< Constructor
 
 
-	int print (string output_folder, string tag) const;
+	int print (string output_folder,
+			       string tag           ) const;
 
-  inline long index (const long p, const int l, const int k) const;
+  inline long index (const long p,
+			               const int  l,
+										 const int  k ) const;
 
-  inline long index (const long p, const long line_index) const;
+  inline long index (const long p,
+			               const long line_index) const;
 
-  inline int add_emissivity_and_opacity (FREQUENCIES& frequencies,
-		                                     const TEMPERATURE& temperature,
-																 	       vReal& freq_scaled, vReal& dfreq_scaled,
-																				 long& lnotch, const long p,
-																	       vReal& eta, vReal& chi) const;
+  inline int add_emissivity_and_opacity (      FREQUENCIES &frequencies,
+		                                     const TEMPERATURE &temperature,
+																 	             vReal       &freq_scaled,
+																							 vReal       &dfreq_scaled,
+																				       long        &lnotch,
+																				 const long         p,
+																	             vReal       &eta,
+																							 vReal       &chi          ) const;
 
 	int mpi_allgatherv ();
 
@@ -74,7 +83,9 @@ struct LINES
 ///////////
 
 inline long LINES ::
-            index (const long p, const int l, const int k) const
+            index (const long p,
+								   const int  l,
+									 const int  k) const
 {
 	return k + nrad_cum[l] + p*nrad_tot;
 }
@@ -85,7 +96,8 @@ inline long LINES ::
 ///////////
 
 inline long LINES ::
-            index (const long p, const long line_index) const
+            index (const long p,
+								   const long line_index) const
 {
 	return line_index + p*nrad_tot;
 }
@@ -97,83 +109,99 @@ inline long LINES ::
 ///////////////////////////////
 
 inline int LINES ::
-           add_emissivity_and_opacity (FREQUENCIES& frequencies,
-						                           const TEMPERATURE& temperature,
-		                                   vReal& freq_scaled, vReal& dfreq_scaled,
-																			 long& lnotch, const long p,
-																       vReal& eta, vReal& chi) const
+    add_emissivity_and_opacity (      FREQUENCIES &frequencies,
+                                const TEMPERATURE &temperature,
+                                      vReal       &freq_scaled,
+                                      vReal       &dfreq_scaled,
+                                      long        &lnotch,
+                                const long         p,
+	  	                      vReal       &eta,
+                                      vReal       &chi          ) const
 {
-	lnotch = 0;
+  // TEMPORARY !!!
 
-	vReal  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-	double     width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+  //lnotch = 0;
 
-  //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
+  ////////////////
+
+
+
+  vReal freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
+  double    width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+
+//  cout << "1) " << frequencies.line[lnotch] << endl; 
+//  cout << "   " << width << endl; 
+
 
 # if (GRID_SIMD)
-		while (   (freq_diff.getlane(0) > 1.01*H_roots[N_QUADRATURE_POINTS-1]*width)
-		       && (lnotch < nrad_tot-1) )
+    while ( (freq_diff.getlane(0) > UPPER*width) && (lnotch < nrad_tot-1) )
 # else
-		while (   (freq_diff            > 1.01*H_roots[N_QUADRATURE_POINTS-1]*width)
-		       && (lnotch < nrad_tot-1) )
+    while ( (freq_diff            > UPPER*width) && (lnotch < nrad_tot-1) )
 # endif
-	{
-		lnotch++;
+  {
+    lnotch++;
 
-	  freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-	      width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+    freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
+        width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
 
-    //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
-	}
+//    cout << "2) " << frequencies.line[lnotch] << endl; 
+//    cout << "   " << width << endl; 
+  }
 
 
   if (lnotch < nrad_tot)
-	{
-		vReal line_profile = profile (width, freq_diff);
-		long           ind = index   (p, frequencies.line_index[lnotch]);
+  {
+    vReal line_profile = profile (width, freq_diff);
+    long           ind = index   (p, frequencies.line_index[lnotch]);
 
-		eta += emissivity[ind] * line_profile /** dfreq_scaled*/;
-		chi +=    opacity[ind] * line_profile /** dfreq_scaled*/;
-	}
+    eta += emissivity[ind] * line_profile;
+    chi +=    opacity[ind] * line_profile;
+  }
 
 
-	long lindex = lnotch + 1;
+  long lindex = lnotch + 1;
 
 # if (GRID_SIMD)
-	  while (   (freq_diff.getlane(n_simd_lanes-1) >= 0.99*H_roots[0]*width)
-		       && (lindex < nrad_tot) )
+    while ( (freq_diff.getlane(n_simd_lanes-1) >= LOWER*width) && (lindex < nrad_tot) )
 # else
-	  while (   (freq_diff                         >= 0.99*H_roots[0]*width)
-		       && (lindex < nrad_tot) )
+    while ( (freq_diff                         >= LOWER*width) && (lindex < nrad_tot) )
 # endif
-	{
-	  freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
-	     	width = profile_width (temperature.gas[p], frequencies.line[lindex]);
+  {
+    freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
+    width = profile_width (temperature.gas[p], frequencies.line[lindex]);
+				
+//    cout << "3) " << frequencies.line[lindex] << endl; 
+//    cout << "   " << width << endl; 
 
-	  vReal line_profile = profile (width, freq_diff);
-	  long           ind = index   (p, frequencies.line_index[lindex]);
+    vReal line_profile = profile (width, freq_diff);
+    long           ind = index   (p, frequencies.line_index[lindex]);
 
-	  eta += emissivity[ind] * line_profile /** dfreq_scaled*/;
-	  chi +=    opacity[ind] * line_profile /** dfreq_scaled*/;
+    eta += emissivity[ind] * line_profile;
+    chi +=    opacity[ind] * line_profile;
 
-		lindex++;
+    lindex++;
 
-    //cout << lnotch << " freq_diff = " << freq_diff << "   3x width = " << 3*width << "   nrad_tot = " << nrad_tot << endl;
+//    if (p == 1)
+//    {
+//      ofstream CHI ("/home/frederik/dumpster/CHI.txt", ofstream::app);
+//      ofstream ETA ("/home/frederik/dumpster/ETA.txt", ofstream::app);
+//#     if (GRID_SIMD)
+//        for (int lane = 0; lane < n_simd_lanes; lane++)
+//        {
+//          CHI << chi.getlane(lane) << endl;
+//          ETA << eta.getlane(lane) << endl;
+//        }
+//#     else
+//        CHI << chi << endl;
+//        ETA << eta << endl;
+//#     endif
+//      CHI.close ();
+//      ETA.close ();
+//    }
+  }
 
 
-	  //for (int lane = 0; lane < n_simd_lanes; lane++)
-	  //{
-	  //	if (isnan(chi.getlane(lane)) || isnan(eta.getlane(lane)))
-	  //	{
-	  //		cout << line_profile << " " << width << " " << temperature.gas[p] << " " << //frequencies.line[lnotch] << endl;
-	  //	}
-	  //}
-
-	}
-
-
-
-	return (0);
+  return (0);
 
 }
 

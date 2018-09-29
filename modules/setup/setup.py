@@ -181,12 +181,14 @@ def setupMagritte(projectFolder, runName=''):
 if (__name__ == '__main__'):
     # Setup Magritte if necessary
     projectFolder = str(sys.argv[1])
-    if len(sys.argv) > 2:
+    if (len(sys.argv) > 2):
         ioName    = str(sys.argv[2])
     else:
         ioName    = ''
     print('Setting up Magritte...')
     # Run setup
-    setupMagritte(projectFolder, ioName)
+    runFolder = setupMagritte(projectFolder, ioName)
     # Done
-    print('Setup done. Magritte can be compiled now.')
+    print('Setup done for :')
+    print(runFoder)
+    print('Magritte can be compiled now.')

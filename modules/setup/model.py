@@ -48,7 +48,9 @@ class model ():
         """
         Define the directions of the rays
         """
-        if   (self.dimension == 1):
+        if   (self.dimension == 0):
+            self.nrays = 0
+        elif (self.dimension == 1):
             self.nrays = 2
             self.rx = [1.0, -1.0]
             self.ry = [0.0,  0.0]
@@ -64,7 +66,9 @@ class model ():
         """
         Extract neighbor lists from cell centers assuming Voronoi tesselation
         """
-        if   (self.dimension == 1):
+        if   (self.dimension == 0):
+            self.nNeighbors = [0]
+        elif (self.dimension == 1):
             # For the middle points
             self.neighbors  = [[i-1, i+1] for i in range(1,self.ncells-1)]
             self.nNeighbors = [2          for i in range(1,self.ncells-1)]
@@ -106,7 +110,8 @@ class model ():
         with open(folder + '/neighbors.txt', 'w') as file:
             for p in range(self.ncells):
                 line = ''
-                for neighbor in self.neighbors[p]:
-                    line += '{}\t'.format(neighbor)
+                if (self.nNeighbors[p] > 0):
+                    for neighbor in self.neighbors[p]:
+                        line += '{}\t'.format(neighbor)
                 line += '\n'
                 file.write(line)

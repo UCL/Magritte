@@ -11,7 +11,7 @@
 using namespace std;
 
 
-#define GRID_SIMD true
+#define GRID_SIMD false
 
 
 #if (GRID_SIMD)
@@ -22,7 +22,7 @@ using namespace std;
 
   typedef Grid::vRealD vReal;
 
-	const int n_simd_lanes = vReal :: Nsimd();
+  const int n_simd_lanes = vReal::Nsimd();
 
   typedef vector<vReal, Grid::alignedAllocator<vReal>> vReal1;
 
@@ -32,7 +32,7 @@ using namespace std;
 
   typedef double vReal;
 
-	const int n_simd_lanes = 1
+  const int n_simd_lanes = 1;
 
   typedef vector<vReal> vReal1;
 
