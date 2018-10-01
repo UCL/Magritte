@@ -32,7 +32,7 @@ inline long search (const Double1 &x,
 ///    @param[in] value: the value we look for in vec
 /////////////////////////////////////////////////////////////////////////////
 
-inline int search_with_notch (      vReal1 &vec,
+inline int search_with_notch (const vReal1 &vec,
                                     long   &notch,
                               const double  value);
 

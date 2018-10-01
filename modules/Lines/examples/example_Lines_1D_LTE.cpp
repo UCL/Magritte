@@ -88,18 +88,18 @@ int main (void)
 
 	radiation.calc_boundary_intensities (cells.bdy_to_cell_nr, frequencies);
 
-	radiation.print ("","");
+	radiation.print ("");
 
 	Lines <Dimension, Nrays>
-		    (cells, linedata, species, temperature,
-				 frequencies, levels, radiation);
+              (cells, linedata, species, temperature,
+               frequencies, levels, radiation);
 
 
 	// Print results
 
-	levels.print (output_folder, "");
+	levels.print ("final");
 
-	radiation.print ("","final");
+	radiation.print ("final");
 
 	// Print total time
 

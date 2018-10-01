@@ -15,6 +15,7 @@ using namespace Eigen;
 
 #include "levels.hpp"
 #include "linedata.hpp"
+#include "RadiativeTransfer/src/folders.hpp"
 #include "RadiativeTransfer/src/constants.hpp"
 #include "RadiativeTransfer/src/GridTypes.hpp"
 #include "RadiativeTransfer/src/types.hpp"
@@ -24,17 +25,19 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/frequencies.hpp"
 
 
-#define POP_PREC 1.0E-4
+#define POP_PREC 1.0E-5
 
 
 ///  Constructor for LEVELS
 ///////////////////////////
 
-LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
+LEVELS ::
+LEVELS (const long      num_of_cells,
+        const LINEDATA &linedata)
   : ncells (num_of_cells)
   , nlspec (linedata.nlspec)
-  ,	nlev   (linedata.nlev)
-  ,	nrad   (linedata.nrad)
+  , nlev   (linedata.nlev)
+  , nrad   (linedata.nrad)
 {
 
   some_not_converged = true;
@@ -51,7 +54,7 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
 
 
   population.resize (ncells);
-	     J_eff.resize (ncells);
+       J_eff.resize (ncells);
 
   population_tot.resize (ncells);
 
@@ -75,7 +78,7 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
   for (long p = start; p < stop; p++)
   {
     population[p].resize (nlspec);
-		     J_eff[p].resize (nlspec);
+         J_eff[p].resize (nlspec);
 
     population_tot[p].resize (nlspec);
 
@@ -84,82 +87,91 @@ LEVELS :: LEVELS (const long num_of_cells, const LINEDATA& linedata)
     population_prev3[p].resize (nlspec);
 
 
-		for (int l = 0; l < nlspec; l++)
-		{
-			population[p][l].resize (nlev[l]);
-			     J_eff[p][l].resize (nrad[l]);
+    for (int l = 0; l < nlspec; l++)
+    {
+      population[p][l].resize (nlev[l]);
+           J_eff[p][l].resize (nrad[l]);
+      
+      population_tot[p][l] = 0.0;
+      
+      population_prev1[p][l].resize (nlev[l]);
+      population_prev2[p][l].resize (nlev[l]);
+      population_prev3[p][l].resize (nlev[l]);
+    }
 
-			population_tot[p][l] = 0.0;
-
-			population_prev1[p][l].resize (nlev[l]);
-			population_prev2[p][l].resize (nlev[l]);
-			population_prev3[p][l].resize (nlev[l]);
-		}
-
-	}
-	} // end of pragma omp parallel
+  }
+  } // end of pragma omp parallel
 
 
 }   // END OF CONSTRUCTOR
 
 
+
+
+///  print: prints level populations of all levels from process 0
+///    @param[in] tag: tag for output file
+///////////////////////////////////////////////////////////////// 
+
 int LEVELS ::
-    print (string output_folder, string tag)
+    print (const string tag) const
 {
 
-	int world_rank;
-	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
 
-	if (world_rank == 0)
-	{
-	  for (int l = 0; l < nlspec; l++)
-	  {
-			string pops_file = output_folder + "populations_" + to_string (l) + tag + ".txt";
-			string Jeff_file = output_folder + "J_eff_"       + to_string (l) + tag + ".txt";
+  if (world_rank == 0)
+  {
+    for (int l = 0; l < nlspec; l++)
+    {
+      const string pops_file = output_folder + "populations_" + to_string (l) + tag + ".txt";
+      const string Jeff_file = output_folder + "Jeff_"        + to_string (l) + tag + ".txt";
 
       ofstream pops_outputFile (pops_file);
       ofstream Jeff_outputFile (Jeff_file);
 
-	    for (long p = 0; p < ncells; p++)
-	    {
-	    	for (int i = 0; i < nlev[l]; i++)
-	    	{
-	    		pops_outputFile << population[p][l](i) << "\t";
-	    	}
+      for (long p = 0; p < ncells; p++)
+      {
+        for (int i = 0; i < nlev[l]; i++)
+        {
+          pops_outputFile << population[p][l](i) << "\t";
+        }
 
-  	    for (int k = 0; k < nrad[l]; k++)
-  	    {
-  	    	Jeff_outputFile << J_eff[p][l][k] << "\t";
-  	    }
+        for (int k = 0; k < nrad[l]; k++)
+        {
+          Jeff_outputFile << J_eff[p][l][k] << "\t";
+        }
 
-	    	pops_outputFile << endl;
-  	    Jeff_outputFile << endl;
-	    }
+        pops_outputFile << endl;
+        Jeff_outputFile << endl;
+      }
 
-	    pops_outputFile.close ();
-	    Jeff_outputFile.close ();
+      pops_outputFile.close ();
+      Jeff_outputFile.close ();
 
       cout << "Written files:" << endl;
       cout << pops_file        << endl;
       cout << Jeff_file        << endl;
-	  }
-	}
+    }
+  }
 
 
-	return (0);
+  return (0);
 
 }
 
 
 int LEVELS ::
-    update_using_LTE (const LINEDATA& linedata, const SPECIES& species,
-		                  const TEMPERATURE& temperature, const long p, const int l)
+    update_using_LTE (const LINEDATA    &linedata,
+                      const SPECIES     &species,
+	              const TEMPERATURE &temperature,
+                      const long         p,
+                      const int          l           )
 {
 
- 	// Set population total
+  // Set population total
 
- 	population_tot[p][l] = species.abundance[p][linedata.num[l]];
+  population_tot[p][l] = species.abundance[p][linedata.num[l]];
 
 
   // Calculate fractional LTE level populations and partition function
@@ -169,7 +181,7 @@ int LEVELS ::
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
     population[p][l](i) = linedata.weight[l](i)
- 	 	                      * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
+                          * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
     partition_function += population[p][l](i);
   }
@@ -197,37 +209,39 @@ int LEVELS ::
 
 
 int LEVELS ::
-    update_using_statistical_equilibrium (const MatrixXd& R, const long p, const int l)
+    update_using_statistical_equilibrium (const MatrixXd &R,
+                                          const long      p,
+                                          const int       l )
 {
 
 
   // Statitstical equilibrium requires sum_j ( n_j R_ji - n_i R_ij) = 0 for all i
 
-	MatrixXd M = R.transpose();
+  MatrixXd M = R.transpose();
   VectorXd y = VectorXd :: Zero (nlev[l]);
 
 
-	for (int i = 0; i < nlev[l]; i++)
-	{
-		double R_i = 0.0;
+  for (int i = 0; i < nlev[l]; i++)
+  {
+    double R_i = 0.0;
 
-  	for (int j = 0; j < nlev[l]; j++)
-		{
+    for (int j = 0; j < nlev[l]; j++)
+    {
       R_i += R(i,j);
-		}
+    }
 
-		M(i,i) -= R_i;
-	}
+    M(i,i) -= R_i;
+  }
 
 
-	// Replace last row with conservation equation
+  // Replace last row with conservation equation
 
-	for (int j = 0; j < nlev[l]; j++)
-	{
-		M(nlev[l]-1,j) = 1.0;
-	}
+  for (int j = 0; j < nlev[l]; j++)
+  {
+    M(nlev[l]-1,j) = 1.0;
+  }
 
-	y(nlev[l]-1) = population_tot[p][l];
+  y(nlev[l]-1) = population_tot[p][l];
 
 
   // Solve matrix equation M*x=y for x
@@ -246,7 +260,7 @@ int LEVELS ::
   }
 
 
-	return (0);
+  return (0);
 
 }
 
@@ -254,7 +268,8 @@ int LEVELS ::
 
 
 int LEVELS ::
-    check_for_convergence (const long p, const int l)
+    check_for_convergence (const long p,
+                           const int  l )
 {
 
   // Start by assuming that the populations are converged
@@ -262,10 +277,10 @@ int LEVELS ::
   not_converged[l] = false;
 
 
-	// Check whether they are indeed converged
+  // Check whether they are indeed converged
 
-	VectorXd dpop = population[p][l] - population_prev1[p][l];
-	VectorXd spop = population[p][l] + population_prev1[p][l];
+  VectorXd dpop = population[p][l] - population_prev1[p][l];
+  VectorXd spop = population[p][l] + population_prev1[p][l];
 
   double min_pop = 1.0E-10 * population_tot[p][l];
 
@@ -275,7 +290,6 @@ int LEVELS ::
     if (population[p][l](i) > min_pop)
     {
       double relative_change = 2.0 * fabs(dpop(i) / spop(i));
-			//cout << relative_change << endl;
 
       if (relative_change > POP_PREC)
       {
@@ -287,7 +301,7 @@ int LEVELS ::
   }
 
 
-	return (0);
+  return (0);
 }
 
 
@@ -299,29 +313,31 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    calc_line_emissivity_and_opacity (const LINEDATA& linedata, LINES& lines,
-		                                  const long p, const int l) const
+    calc_line_emissivity_and_opacity (const LINEDATA &linedata,
+                                            LINES    &lines,
+		                      const long      p,
+                                      const int       l        ) const
 {
 
-	// For all radiative transitions
+  // For all radiative transitions
 
   for (int k = 0; k < linedata.nrad[l]; k++)
-	{
-	  const int i = linedata.irad[l][k];
-	  const int j = linedata.jrad[l][k];
+  {
+    const int i = linedata.irad[l][k];
+    const int j = linedata.jrad[l][k];
 
     const long index = lines.index(p,l,k);
 
     const double hv_4pi = HH_OVER_FOUR_PI * linedata.frequency[l][k];
 
-	  lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
+    lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
-	     lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
-                 		                    - population[p][l](i) * linedata.B[l](i,j) );
+       lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
+                                        - population[p][l](i) * linedata.B[l](i,j) );
 
      //if (isnan(lines.emissivity[index]))
      //{
-    //   cout << p << " " << l << " " << i << " " << population[p][l](i) << endl;
+     //   cout << p << " " << l << " " << i << " " << population[p][l](i) << endl;
      //}
   }
 
@@ -342,12 +358,15 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-				        RADIATION& radiation, const long p, const int l)
+    calc_J_eff (const FREQUENCIES &frequencies,
+                const TEMPERATURE &temperature,
+	        const RADIATION   &radiation,
+                const long         p,
+                const int          l           )
 {
 
-	for (int k = 0; k < nrad[l]; k++)
-	{
+  for (int k = 0; k < nrad[l]; k++)
+  {
     const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
     J_eff[p][l][k] = 0.0;
@@ -355,11 +374,11 @@ int LEVELS ::
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
 #     if (GRID_SIMD)
-		    const long    f = freq_nrs[z] / n_simd_lanes;
-		    const long lane = freq_nrs[z] % n_simd_lanes;
-		  	const double JJ = radiation.J[radiation.index(p,f)].getlane(lane);
+        const long    f = freq_nrs[z] / n_simd_lanes;
+        const long lane = freq_nrs[z] % n_simd_lanes;
+        const double JJ = radiation.J[radiation.index(p,f)].getlane(lane);
 #     else
-		  	const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
+        const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
 #     endif
 
       J_eff[p][l][k] += H_weights[z] * JJ;

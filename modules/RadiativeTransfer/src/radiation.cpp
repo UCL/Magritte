@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "radiation.hpp"
+#include "folders.hpp"
 #include "constants.hpp"
 #include "GridTypes.hpp"
 #include "mpiTypes.hpp"
@@ -24,16 +25,19 @@ using namespace std;
 ///  Constructor for RADIATION
 //////////////////////////////
 
-RADIATION :: RADIATION (const long num_of_cells,    const long num_of_rays,
-		                    const long num_of_freq_red, const long num_of_bdycells)
-	: ncells        (num_of_cells)
-	, nrays         (num_of_rays)
+RADIATION ::
+RADIATION (const long num_of_cells,
+           const long num_of_rays,
+           const long num_of_freq_red,
+           const long num_of_bdycells )
+  : ncells        (num_of_cells)
+  , nrays         (num_of_rays)
   , nrays_red     (get_nrays_red (nrays))
   , nfreq_red     (num_of_freq_red)
-	, nboundary     (num_of_bdycells)
+  , nboundary     (num_of_bdycells)
 {
 
-	// Size and initialize u, v, U and V
+  // Size and initialize u, v, U and V
 
   u.resize (nrays_red);
   v.resize (nrays_red);
@@ -401,71 +405,70 @@ int RADIATION ::
 
 
 
-#include "folders.hpp"
 
 int RADIATION ::
-    print (string OOOoutput_folder, string tag)
+    print (const string tag) const
 {
 
-	int world_rank;
-	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
 
-	if (world_rank == 0)
-	{
-		string file_name_J = output_folder + "J" + tag + ".txt";
+  if (world_rank == 0)
+  {
+    const string file_name_J = output_folder + "J" + tag + ".txt";
 
     ofstream outputFile_J (file_name_J);
 
-	  for (long p = 0; p < ncells; p++)
-	  {
-	  	for (int f = 0; f < nfreq_red; f++)
-	  	{
+    for (long p = 0; p < ncells; p++)
+    {
+      for (int f = 0; f < nfreq_red; f++)
+      {
 #       if (GRID_SIMD)
-					for (int lane = 0; lane < n_simd_lanes; lane++)
-					{
-	  		    outputFile_J << J[index(p,f)].getlane(lane) << "\t";
-					}
+          for (int lane = 0; lane < n_simd_lanes; lane++)
+          {
+            outputFile_J << J[index(p,f)].getlane(lane) << "\t";
+          }
 #       else
-	  		  outputFile_J << J[index(p,f)] << "\t";
+          outputFile_J << J[index(p,f)] << "\t";
 #       endif
-	  	}
+      }
 
-	  	outputFile_J << endl;
-	  }
+      outputFile_J << endl;
+    }
 
-	  outputFile_J.close ();
+    outputFile_J.close ();
 
 
-		string file_name_bc = output_folder + "bc" + tag + ".txt";
+    const string file_name_bc = output_folder + "bc" + tag + ".txt";
 
     ofstream outputFile_bc (file_name_bc);
 
-	  //for (long r = 0; r < nrays_red; r++)
-	  //{
-		long r = 0;
+    //for (long r = 0; r < nrays_red; r++)
+    //{
+      long r = 0;
       for (long b = 0; b < nboundary; b++)
       {
-	      for (long f = 0; f < nfreq_red; f++)
+        for (long f = 0; f < nfreq_red; f++)
         {
-#       if (GRID_SIMD)
-					for (int lane = 0; lane < n_simd_lanes; lane++)
-					{
-	  			  outputFile_bc << boundary_intensity[r][b][f].getlane(lane) << "\t";
-					}
-#       else
-	  			outputFile_bc << boundary_intensity[r][b][f] << "\t";
-#       endif
+#         if (GRID_SIMD)
+            for (int lane = 0; lane < n_simd_lanes; lane++)
+            {
+              outputFile_bc << boundary_intensity[r][b][f].getlane(lane) << "\t";
+            }
+#         else
+            outputFile_bc << boundary_intensity[r][b][f] << "\t";
+#         endif
         }
-				outputFile_bc << endl;
-	    }
-	  //}
+          outputFile_bc << endl;
+      }
+    //}
 
-	  outputFile_bc.close ();
+    outputFile_bc.close ();
 
-	}
+  }
 
 
-	return (0);
+  return (0);
 
 }

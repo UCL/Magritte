@@ -78,48 +78,49 @@ int LINES ::
 
 
 int LINES ::
-		print (string output_folder, string tag) const
+    print (string output_folder,
+           string tag           ) const
 {
 
-	int world_rank;
-	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
 
-	if (world_rank == 0)
-	{
-	  for (int l = 0; l < nlspec; l++)
-	  {
-			string eta_file = output_folder + "eta_" + to_string (l) + tag + ".txt";
-			string chi_file = output_folder + "chi_" + to_string (l) + tag + ".txt";
+  if (world_rank == 0)
+  {
+    for (int l = 0; l < nlspec; l++)
+    {
+      string eta_file = output_folder + "eta_" + to_string (l) + tag + ".txt";
+      string chi_file = output_folder + "chi_" + to_string (l) + tag + ".txt";
 
       ofstream eta_outputFile (eta_file);
       ofstream chi_outputFile (chi_file);
 
-	    for (long p = 0; p < ncells; p++)
-	    {
-  	    for (int k = 0; k < nrad[l]; k++)
-  	    {
-					const long ind = index(p,l,k);
+      for (long p = 0; p < ncells; p++)
+      {
+        for (int k = 0; k < nrad[l]; k++)
+        {
+          const long ind = index(p,l,k);
 
-  	    	eta_outputFile << emissivity[ind] << "\t";
-  	    	chi_outputFile <<    opacity[ind] << "\t";
-  	    }
+          eta_outputFile << emissivity[ind] << "\t";
+          chi_outputFile <<    opacity[ind] << "\t";
+        }
 
-	    	eta_outputFile << endl;
-  	    chi_outputFile << endl;
-	    }
+        eta_outputFile << endl;
+        chi_outputFile << endl;
+      }
 
-	    eta_outputFile.close ();
-	    chi_outputFile.close ();
+      eta_outputFile.close ();
+      chi_outputFile.close ();
 
       cout << "Written files:" << endl;
       cout << eta_file         << endl;
       cout << chi_file         << endl;
-	  }
-	}
+    }
+  }
 
 
-	return (0);
+  return (0);
 
 }
 

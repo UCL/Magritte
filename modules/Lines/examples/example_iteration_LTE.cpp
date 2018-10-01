@@ -88,7 +88,7 @@ int main (void)
 	timer.print_to_file ();
 
 
-	levels.print (example_output_folder, "");
+	levels.print ("");
 
 
   // Finalize the MPI environment

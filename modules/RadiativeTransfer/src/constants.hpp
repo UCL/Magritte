@@ -51,7 +51,8 @@ const double HH_OVER_KB = HH / KB;
 
 const double HH_OVER_FOUR_PI = HH / FOUR_PI;
 
-const int N_QUADRATURE_POINTS = 11;
+const int N_QUADRATURE_POINTS = 1;
+//const int N_QUADRATURE_POINTS = 11;
 
 // Only allow for odd N_QUADRATURE_POINTS to ensure the line center is taken as frequency
 static_assert (N_QUADRATURE_POINTS%2 == 1, "Number of quadrature points should be odd!");
@@ -61,6 +62,8 @@ const int NR_LINE_CENTER = N_QUADRATURE_POINTS / 2;
 
 // Roots and weights for Gauss-Hermite quadrature
 
+const double H_weights[N_QUADRATURE_POINTS] = { 1.0 };
+const double   H_roots[N_QUADRATURE_POINTS] = { 0.0 };
 
 //const double H_weights[N_QUADRATURE_POINTS] = {0.0112574, 0.222076, 0.533333, 0.222076, 0.0112574};
 //const double   H_roots[N_QUADRATURE_POINTS] = {-2.0201828704560856, -0.9585724646138185, 0.0, 0.9585724646138185, 2.0201828704560856};
@@ -68,29 +71,29 @@ const int NR_LINE_CENTER = N_QUADRATURE_POINTS / 2;
 //const double H_weights[N_QUADRATURE_POINTS] = {0.0005482688559722185, 0.0307571239675865, 0.24012317860501253, 0.45714285714285724, 0.24012317860501253, 0.0307571239675865, 0.0005482688559722185};
 //const double   H_roots[N_QUADRATURE_POINTS] = {-2.6519613568352334, -1.6735516287674714, -0.8162878828589648, 0.0, 0.8162878828589648, 1.6735516287674714, 2.6519613568352334};
 
-const double H_weights[N_QUADRATURE_POINTS] = { 8.121849790214925E-7,
-                                                1.956719302712231E-4,
-                                                6.720285235537279E-3,
-                                                6.613874607105787E-2,
-                                                0.24224029987397,
-                                                0.36940836940837,
-                                                0.24224029987397,
-                                                6.613874607105787E-2,
-                                                6.720285235537279E-3,
-                                                1.956719302712231E-4,
-                                                8.121849790214925E-7 };
-
-const double   H_roots[N_QUADRATURE_POINTS] = { -3.668470846559583,
-                                                -2.783290099781652,
-                                                -2.025948015825756,
-                                                -1.326557084494933,
-                                                -0.656809566882100,
-                                                 0.0,
-                                                 0.656809566882100,
-                                                 1.326557084494933,
-                                                 2.025948015825756,
-                                                 2.783290099781652,
-                                                 3.668470846559583 };
+//const double H_weights[N_QUADRATURE_POINTS] = { 8.121849790214925E-7,
+//                                                1.956719302712231E-4,
+//                                                6.720285235537279E-3,
+//                                                6.613874607105787E-2,
+//                                                0.24224029987397,
+//                                                0.36940836940837,
+//                                                0.24224029987397,
+//                                                6.613874607105787E-2,
+//                                                6.720285235537279E-3,
+//                                                1.956719302712231E-4,
+//                                                8.121849790214925E-7 };
+//
+//const double   H_roots[N_QUADRATURE_POINTS] = { -3.668470846559583,
+//                                                -2.783290099781652,
+//                                                -2.025948015825756,
+//                                                -1.326557084494933,
+//                                                -0.656809566882100,
+//                                                 0.0,
+//                                                 0.656809566882100,
+//                                                 1.326557084494933,
+//                                                 2.025948015825756,
+//                                                 2.783290099781652,
+//                                                 3.668470846559583 };
 
 const double LOWER = 0.9999*H_roots[0];
 const double UPPER = 1.0001*H_roots[N_QUADRATURE_POINTS-1];

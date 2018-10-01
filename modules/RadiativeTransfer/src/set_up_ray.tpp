@@ -26,7 +26,7 @@ using namespace Eigen;
 ///    @param[in] radiation: reference to (previously calculated) radiation field
 ///    @param[in] o: number of the cell from which the ray originates
 ///    @param[in] r: number of the ray which is being set up
-///		 @param[in] R: local number of the ray which is being set up
+///    @param[in] R: local number of the ray which is being set up
 ///    @param[in] raytype: indicates whether we walk forward or backward along ray
 ///    @param[out] n: reference to the resulting number of points along the ray
 ///    @param[out] Su: reference to the source for u extracted along the ray
@@ -36,11 +36,11 @@ using namespace Eigen;
 
 template <int Dimension, long Nrays>
 inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
-                             FREQUENCIES             &frequencies,
+                       const FREQUENCIES             &frequencies,
                        const TEMPERATURE             &temperature,
-                             LINES                   &lines,
+                       const LINES                   &lines,
                        const SCATTERING              &scattering,
-		             RADIATION               &radiation,
+		       const RADIATION               &radiation,
                        const long                     f,
                        const long                     o,
                        const long                     R,
@@ -285,15 +285,15 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
 }
 
 
-inline int get_eta_and_chi (      FREQUENCIES &frequencies,
+inline int get_eta_and_chi (const FREQUENCIES &frequencies,
                             const TEMPERATURE &temperature,
-                                  LINES       &lines,
+                            const LINES       &lines,
                             const SCATTERING  &scattering,
-                                  RADIATION   &radiation,
+                            const RADIATION   &radiation,
 				  long        &lnotch,
                             const long         cellNrs,
-				  vReal        freq_scaled,
-                                  vReal        dfreq_scaled,
+			    const vReal        freq_scaled,
+                            const vReal        dfreq_scaled,
                                   vReal       &eta,
                                   vReal       &chi          )
 {
@@ -341,15 +341,14 @@ inline int get_eta_and_chi (      FREQUENCIES &frequencies,
 }
 
 
-inline int get_terms_and_chi (      FREQUENCIES &frequencies,
+inline int get_terms_and_chi (const FREQUENCIES &frequencies,
                               const TEMPERATURE &temperature,
-                                    LINES       &lines,
+                              const LINES       &lines,
                               const SCATTERING  &scattering,
-                                    RADIATION   &radiation,
+                              const RADIATION   &radiation,
 			      const long         f,
                               const long         o,
                               const long         R,
-
                                     long        &lnotch,
                                     long        &notch,
                               const long         cellNrs,
@@ -390,11 +389,11 @@ inline int get_terms_and_chi (      FREQUENCIES &frequencies,
 
 template <int Dimension, long Nrays>
 inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays> &cells,
-                                         FREQUENCIES             &frequencies,
+                                   const FREQUENCIES             &frequencies,
                                    const TEMPERATURE             &temperature,
-                                         LINES                   &lines,
+                                   const LINES                   &lines,
                                    const SCATTERING              &scattering,
-                                         RADIATION               &radiation,
+                                   const RADIATION               &radiation,
 				   const long                     f,
                                    const long                     o,
                                    const long                     R,

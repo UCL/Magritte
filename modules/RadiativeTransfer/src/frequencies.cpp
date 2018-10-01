@@ -113,10 +113,10 @@ FREQUENCIES (const     long  num_of_cells,
 
 
 int FREQUENCIES ::
-    write (string tag)
+    write (const string tag) const
 {
 
-  string file_name = output_folder + "frequencies_nu" + tag + ".txt";
+  const string file_name = output_folder + "frequencies_nu" + tag + ".txt";
 
   ofstream outputFile (file_name);
 

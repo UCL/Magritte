@@ -45,29 +45,29 @@ struct LINES
 
 
   LINES (const long      num_of_cells,
-			   const LINEDATA &linedata     );   ///< Constructor
+         const LINEDATA &linedata     );   ///< Constructor
 
 
-	int print (string output_folder,
-			       string tag           ) const;
-
-  inline long index (const long p,
-			               const int  l,
-										 const int  k ) const;
+  int print (string output_folder,
+             string tag           ) const;
 
   inline long index (const long p,
-			               const long line_index) const;
+                     const int  l,
+                     const int  k ) const;
 
-  inline int add_emissivity_and_opacity (      FREQUENCIES &frequencies,
-		                                     const TEMPERATURE &temperature,
-																 	             vReal       &freq_scaled,
-																							 vReal       &dfreq_scaled,
-																				       long        &lnotch,
-																				 const long         p,
-																	             vReal       &eta,
-																							 vReal       &chi          ) const;
+  inline long index (const long p,
+                     const long line_index) const;
 
-	int mpi_allgatherv ();
+  inline int add_emissivity_and_opacity (const FREQUENCIES &frequencies,
+                                         const TEMPERATURE &temperature,
+                                         const vReal       &freq_scaled,
+                                         const vReal       &dfreq_scaled,
+                                               long        &lnotch,
+                                         const long         p,
+                                               vReal       &eta,
+                                               vReal       &chi          ) const;
+
+  int mpi_allgatherv ();
 
 };
 
@@ -84,10 +84,10 @@ struct LINES
 
 inline long LINES ::
             index (const long p,
-								   const int  l,
-									 const int  k) const
+                   const int  l,
+                   const int  k) const
 {
-	return k + nrad_cum[l] + p*nrad_tot;
+  return k + nrad_cum[l] + p*nrad_tot;
 }
 
 
@@ -97,9 +97,9 @@ inline long LINES ::
 
 inline long LINES ::
             index (const long p,
-								   const long line_index) const
+                   const long line_index) const
 {
-	return line_index + p*nrad_tot;
+  return line_index + p*nrad_tot;
 }
 
 
@@ -109,14 +109,14 @@ inline long LINES ::
 ///////////////////////////////
 
 inline int LINES ::
-    add_emissivity_and_opacity (      FREQUENCIES &frequencies,
-                                const TEMPERATURE &temperature,
-                                      vReal       &freq_scaled,
-                                      vReal       &dfreq_scaled,
-                                      long        &lnotch,
-                                const long         p,
-	  	                      vReal       &eta,
-                                      vReal       &chi          ) const
+           add_emissivity_and_opacity (const FREQUENCIES &frequencies,
+                                       const TEMPERATURE &temperature,
+                                       const vReal       &freq_scaled,
+                                       const vReal       &dfreq_scaled,
+                                             long        &lnotch,
+                                       const long         p,
+                 	                     vReal       &eta,
+                                             vReal       &chi          ) const
 {
   // TEMPORARY !!!
 
@@ -168,7 +168,7 @@ inline int LINES ::
 # endif
   {
     freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
-    width = profile_width (temperature.gas[p], frequencies.line[lindex]);
+        width = profile_width (temperature.gas[p], frequencies.line[lindex]);
 				
 //    cout << "3) " << frequencies.line[lindex] << endl; 
 //    cout << "   " << width << endl; 

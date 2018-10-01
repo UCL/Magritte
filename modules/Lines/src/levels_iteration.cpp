@@ -19,21 +19,23 @@ using namespace std;
 
 
 int LEVELS ::
-    iteration_using_LTE (const LINEDATA& linedata, const SPECIES& species,
-	  	                   const TEMPERATURE& temperature, LINES& lines)
+    iteration_using_LTE (const LINEDATA    &linedata,
+                         const SPECIES     &species,
+	  	         const TEMPERATURE &temperature,
+                               LINES       &lines       )
 {
 
 
-	int world_size;
-	MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
-	int world_rank;
-	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
-	const long START = ( world_rank   *ncells)/world_size;
-	const long STOP  = ((world_rank+1)*ncells)/world_size;
+  const long START = ( world_rank   *ncells)/world_size;
+  const long STOP  = ((world_rank+1)*ncells)/world_size;
 
-	const long ncells_red = STOP - START;
+  const long ncells_red = STOP - START;
 
 
 # pragma omp parallel                              \
@@ -48,7 +50,7 @@ int LEVELS ::
     const long stop  = START + ((thread+1)*ncells_red)/nthreads;
 
 
-	  // For all cells
+    // For all cells
 
     for (long p = start; p < stop; p++)
     {
@@ -58,29 +60,29 @@ int LEVELS ::
       for (int l = 0; l < nlspec; l++)
       {
 
-	      // Initialize levels with LTE populations
+        // Initialize levels with LTE populations
 
-	      update_using_LTE (linedata, species, temperature, p, l);
+        update_using_LTE (linedata, species, temperature, p, l);
 
 
         // Calculate line source and opacity for the new levels
 
-	      calc_line_emissivity_and_opacity (linedata, lines, p, l);
+        calc_line_emissivity_and_opacity (linedata, lines, p, l);
 
-//				lines.emissivity[p][0][0] = p;
-//				lines.emissivity[lines.index(p,0,0)] = p;
-	  	}
-	  }
+//        lines.emissivity[p][0][0] = p;
+//        lines.emissivity[lines.index(p,0,0)] = p;
+      }
+    }
 
-	} // end of pragma omp parallel
-
-
-	// Gather emissivities and opacities from all processes
-
-	lines.mpi_allgatherv ();
+  } // end of pragma omp parallel
 
 
-//	if (world_rank == 0)
+  // Gather emissivities and opacities from all processes
+
+  lines.mpi_allgatherv ();
+
+
+//  if (world_rank == 0)
 //  {
 //    for (long p = 0; p < ncells; p++)
 //    {
@@ -89,7 +91,7 @@ int LEVELS ::
 //  }
 
 
-	return (0);
+  return (0);
 
 }
 
@@ -97,25 +99,25 @@ int LEVELS ::
 
 
 int LEVELS ::
-    iteration_using_statistical_equilibrium (const LINEDATA& linedata,
-				                                     const SPECIES& species,
-	  	                                       const TEMPERATURE& temperature,
-																						 FREQUENCIES& frequencies,
-																						 RADIATION& radiation,
-																						 LINES& lines)
+    iteration_using_statistical_equilibrium (const LINEDATA    &linedata,
+                                             const SPECIES     &species,
+	  	                             const TEMPERATURE &temperature,
+                                             const FREQUENCIES &frequencies,
+                                             const RADIATION   &radiation,
+                                                   LINES       &lines       )
 {
 
 
-	int world_size;
-	MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+  int world_size;
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
-	int world_rank;
-	MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
+  int world_rank;
+  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
 
-	const long START = ( world_rank   *ncells)/world_size;
-	const long STOP  = ((world_rank+1)*ncells)/world_size;
+  const long START = ( world_rank   *ncells)/world_size;
+  const long STOP  = ((world_rank+1)*ncells)/world_size;
 
-	const long ncells_red = STOP - START;
+  const long ncells_red = STOP - START;
 
   cout << "Inside" << endl;
 
@@ -132,7 +134,7 @@ int LEVELS ::
     const long stop  = START + ((thread+1)*ncells_red)/nthreads;
 
 
-	  // For all cells
+    // For all cells
 
     for (long p = start; p < stop; p++)
     {
@@ -142,47 +144,47 @@ int LEVELS ::
       for (int l = 0; l < nlspec; l++)
       {
 
-		    // Update previous populations, making memory available for the new ones
+        // Update previous populations, making memory available for the new ones
 
         population_prev3[p][l] = population_prev2[p][l];
         population_prev2[p][l] = population_prev1[p][l];
         population_prev1[p][l] = population[p][l];
 
 
-				// Extract the effective mean radiation field in each line
+        // Extract the effective mean radiation field in each line
 
         calc_J_eff (frequencies, temperature, radiation, p, l);
 
 
-				// Calculate the transition matrix (for stat. equil. eq.)
+        // Calculate the transition matrix (for stat. equil. eq.)
 
-    		MatrixXd R = linedata.calc_transition_matrix (species, temperature.gas[p], J_eff, p, l);
+        MatrixXd R = linedata.calc_transition_matrix (species, temperature.gas[p], J_eff, p, l);
 				
-				{
-	      #include "RadiativeTransfer/src/folders.hpp"
-        if (p == 0)
-        {
-	        linedata.print (R, output_folder, "R");
-        }
-				}
+        //{
+        //#include "RadiativeTransfer/src/folders.hpp"
+        //if (p == 0)
+        //{
+	//        linedata.print (R, output_folder, "R");
+        //}
+	//}
 
         update_using_statistical_equilibrium (R, p, l);
 
-    		check_for_convergence (p, l);
+        check_for_convergence (p, l);
 
 
         // Calculate source and opacity
 
-	      calc_line_emissivity_and_opacity (linedata, lines, p, l);
-	  	}
-	  }
+        calc_line_emissivity_and_opacity (linedata, lines, p, l);
+      }
+    }
 
-	} // end of pragma omp parallel
+  } // end of pragma omp parallel
 
 
-	// Gather emissivities and opacities from all processes
+  // Gather emissivities and opacities from all processes
 
-	lines.mpi_allgatherv ();
+  lines.mpi_allgatherv ();
 
 
 //	if (world_rank == 0)
@@ -194,6 +196,6 @@ int LEVELS ::
 //  }
 
 
-	return (0);
+  return (0);
 
 }

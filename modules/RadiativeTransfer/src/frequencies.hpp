@@ -19,34 +19,34 @@ using namespace std;
 struct FREQUENCIES
 {
 
-	const long ncells;   ///< number of cells
+  const long ncells;   ///< number of cells
 
-	const long nlines;         ///< number of lines
-	const long nfreq;          ///< number of frequencies
-	const long nfreq_red;      ///< nfreq divided by n_simd_lanes
+  const long nlines;         ///< number of lines
+  const long nfreq;          ///< number of frequencies
+  const long nfreq_red;      ///< nfreq divided by n_simd_lanes
 
-	vReal2  nu;                ///< [Hz] frequencies (ordered in f) (p,f)
-	vReal2 dnu;                ///< [Hz] size of the frequency intervals
+  vReal2  nu;                ///< [Hz] frequencies (ordered in f) (p,f)
+  vReal2 dnu;                ///< [Hz] size of the frequency intervals
 
-	Long4 nr_line;             ///< frequency number corresponing to line (p,l,k,z)
+  Long4 nr_line;             ///< frequency number corresponing to line (p,l,k,z)
 
-	Double1 line;              ///< [Hz] ordered line center frequencies
-	Long1   line_index;        ///< (l,k) index of the corresponding frequency in line
+  Double1 line;              ///< [Hz] ordered line center frequencies
+  Long1   line_index;        ///< (l,k) index of the corresponding frequency in line
 
 
-	FREQUENCIES (const long      num_of_cells,
-							 const LINEDATA &linedata     );           ///< Constructor
+  FREQUENCIES (const long      num_of_cells,
+               const LINEDATA &linedata     );           ///< Constructor
 
-	static long count_nlines (const LINEDATA& linedata);   ///< count nr of lines
+  static long count_nlines (const LINEDATA& linedata);   ///< count nr of lines
 
-	static long count_nfreq (const long nlines);           ///< count nr of frequencies
+  static long count_nfreq (const long nlines);           ///< count nr of frequencies
 
-	static long count_nfreq_red (const long nfreq);        ///< count reduced nr of frequencies
+  static long count_nfreq_red (const long nfreq);        ///< count reduced nr of frequencies
 
-	int write (string tag);                                ///< write out data
+  int write (const string tag) const;                                ///< write out data
 
   int reset (const LINEDATA    &linedata,
-			       const TEMPERATURE &temperature);            ///< Set frequencies
+             const TEMPERATURE &temperature);            ///< Set frequencies
 
 };
 
