@@ -95,8 +95,8 @@ const double   H_roots[N_QUADRATURE_POINTS] = { 0.0 };
 //                                                 2.783290099781652,
 //                                                 3.668470846559583 };
 
-const double LOWER = 0.9999*H_roots[0];
-const double UPPER = 1.0001*H_roots[N_QUADRATURE_POINTS-1];
+const double LOWER = 1.000001*H_roots[0];
+const double UPPER = 1.000001*H_roots[N_QUADRATURE_POINTS-1];
 
 
 #endif // __MAGRITTE_CONSTANTS_HPP_INCLUDED__

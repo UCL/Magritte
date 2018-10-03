@@ -28,7 +28,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
 
-#define MAX_NITERATIONS 100
+#define MAX_NITERATIONS 1
 
 
 ///  Lines: iteratively calculates level populations
@@ -63,6 +63,7 @@ int Lines (const CELLS<Dimension, Nrays> &cells,
 
   const string tag_0 = "_0";
 
+  lines.print (tag_0);
   levels.print (tag_0);
 
 
@@ -134,6 +135,7 @@ int Lines (const CELLS<Dimension, Nrays> &cells,
 
     const string tag_n = "_" + to_string (niterations);
 
+    lines.print (tag_n);
     levels.print (tag_n);
 
     //{

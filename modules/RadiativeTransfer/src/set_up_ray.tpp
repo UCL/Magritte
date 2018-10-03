@@ -304,6 +304,8 @@ inline int get_eta_and_chi (const FREQUENCIES &frequencies,
   lines.add_emissivity_and_opacity (frequencies, temperature, freq_scaled,
                                     dfreq_scaled, lnotch, cellNrs, eta, chi);
 
+   
+
   scattering.add_opacity (freq_scaled, chi);
 
 
@@ -313,9 +315,9 @@ inline int get_eta_and_chi (const FREQUENCIES &frequencies,
     for (int lane = 0; lane < n_simd_lanes; lane++)
     {
       if (fabs(chi.getlane(lane)) < 1.0E-30)
-			{
-      chi.putlane(1.0E-30, lane);
-			}
+      {
+        chi.putlane(1.0E-30, lane);
+      }
     }
 # else
     if (fabs(chi) < 1.0E-30)
@@ -324,17 +326,6 @@ inline int get_eta_and_chi (const FREQUENCIES &frequencies,
     }
 # endif
 
-//cout << "Start" << endl;
-	//if (f==54)
-	//{
-	//  //for (int lane = 0; lane < n_simd_lanes; lane++)
-  //  {
-  //  //	if (isnan(eta.getlane(lane)))
-  //  	{
-	//      cout << /*lane << " " <<*/ eta << " " << chi << endl;
-	//  	}
-	//  }
-	//}
 
   return (0);
 
@@ -381,6 +372,10 @@ inline int get_terms_and_chi (const FREQUENCIES &frequencies,
   term1 = (U_scaled + eta) / chi;
   term2 =  V_scaled        / chi;
 
+  if (f == frequencies.nr_line[o][0][0][0])
+  {
+    cout << "Setup : " << cellNrs <<  "    eta = " << eta << "    chi = " << chi << "    S = " << eta/chi << endl;
+  }
 
   return (0);
 
@@ -427,9 +422,14 @@ inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays> &cells,
   V_scaled = 0.0;
   //Ibdy_scaled = 0.0;
 
+
   term1 = (U_scaled + eta) / chi;
   term2 =  V_scaled        / chi;
 
+  if (f == frequencies.nr_line[o][0][0][0])
+  {
+    cout << "Setup : " << cellNrs <<  "   eta = " << eta << "    chi = " << chi << "   S = " << eta/chi << endl;
+  }
 
   return (0);
 

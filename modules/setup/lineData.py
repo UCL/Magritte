@@ -83,7 +83,7 @@ def planck (temperature, frequency):
     '''
     Planck function for thermal radiation.
     '''
-    return 2.0*h/c**2 * frequency**3 / np.expm1(h*frequency/(kb*temperature))
+    return 2.0*h/c**2 * np.power(frequency,3) / np.expm1(h*frequency/(kb*temperature))
 
 
 

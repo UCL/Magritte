@@ -14,6 +14,7 @@ using namespace std;
 using namespace Eigen;
 
 #include "lines.hpp"
+#include "folders.hpp"
 #include "types.hpp"
 #include "GridTypes.hpp"
 #include "constants.hpp"
@@ -36,25 +37,25 @@ LINES (const long num_of_cells, const LINEDATA& linedata)
 	, nrad_tot (get_nrad_tot (nrad))
 {
 
- 	emissivity.resize (ncells*nrad_tot);
- 	   opacity.resize (ncells*nrad_tot);
+  emissivity.resize (ncells*nrad_tot);
+     opacity.resize (ncells*nrad_tot);
 
 
 }   // END OF CONSTRUCTOR
 
 
 Int1 LINES ::
-		 get_nrad_cum (const Int1 nrad)
+     get_nrad_cum (const Int1 nrad)
 {
 
-	Int1 result (nrad.size(), 0);
+  Int1 result (nrad.size(), 0);
 
-	for (int l = 1; l < nrad.size(); l++)
-	{
-	  result[l] = result[l-1] + nrad[l-1];
-	}
+  for (int l = 1; l < nrad.size(); l++)
+  {
+    result[l] = result[l-1] + nrad[l-1];
+  }
 
-	return result;
+  return result;
 
 }
 
@@ -78,8 +79,7 @@ int LINES ::
 
 
 int LINES ::
-    print (string output_folder,
-           string tag           ) const
+    print (const string tag) const
 {
 
   int world_rank;
@@ -90,8 +90,8 @@ int LINES ::
   {
     for (int l = 0; l < nlspec; l++)
     {
-      string eta_file = output_folder + "eta_" + to_string (l) + tag + ".txt";
-      string chi_file = output_folder + "chi_" + to_string (l) + tag + ".txt";
+      const string eta_file = output_folder + "eta_" + to_string (l) + tag + ".txt";
+      const string chi_file = output_folder + "chi_" + to_string (l) + tag + ".txt";
 
       ofstream eta_outputFile (eta_file);
       ofstream chi_outputFile (chi_file);

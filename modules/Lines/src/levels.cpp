@@ -192,11 +192,6 @@ int LEVELS ::
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
     population[p][l](i) *= population_tot[p][l] / partition_function;
-
-      //if (isnan(population[p][l](i)))
-      //{
-      //  cout << population_tot[p][l] << " " << partition_function << endl;
-      //}
   }
 
 

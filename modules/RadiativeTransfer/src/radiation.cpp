@@ -96,15 +96,15 @@ int RADIATION ::
 //////////////////////////////////////////////////////////////////
 
 int RADIATION ::
-    calc_boundary_intensities (const Long1& bdy_to_cell_nr,
-				                       const FREQUENCIES& frequencies)
+    calc_boundary_intensities (const Long1       &bdy_to_cell_nr,
+                               const FREQUENCIES &frequencies    )
 {
 
-	for (long r = 0; r < nrays_red; r++)
-	{
+  for (long r = 0; r < nrays_red; r++)
+  {
 
 #   pragma omp parallel                       \
-		shared (r, bdy_to_cell_nr, frequencies)   \
+    shared (r, bdy_to_cell_nr, frequencies)   \
     default (none)
     {
 
@@ -117,17 +117,17 @@ int RADIATION ::
 
     for (long b = start; b < stop; b++)
     {
-		  const long p = bdy_to_cell_nr[b];
+      const long p = bdy_to_cell_nr[b];
 
-	    for (long f = 0; f < nfreq_red; f++)
+      for (long f = 0; f < nfreq_red; f++)
       {
-				boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
+        boundary_intensity[r][b][f] = 0.0;//planck (T_CMB, frequencies.nu[p][f]);
       }
-	  }
-	  } // end of pragma omp parallel
-	}
+    }
+    } // end of pragma omp parallel
+  }
 
-	return (0);
+  return (0);
 
 }
 

@@ -22,19 +22,24 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-inline int solve_ray (const long ndep, vReal *Su, vReal *Sv, const vReal* dtau,
-			        				const long ndiag, vReal *Lambda, const long ncells)
+inline int solve_ray (const long   ndep,
+                            vReal *Su,
+                            vReal *Sv,
+                      const vReal *dtau,
+                      const long   ndiag,
+                            vReal *Lambda,
+                      const long ncells   )
 {
 
-    vReal A[ncells];   // A coefficient in Feautrier recursion relation
-	  vReal C[ncells];   // C coefficient in Feautrier recursion relation
-    vReal F[ncells];   // helper variable from Rybicki & Hummer (1991)
-    vReal G[ncells];   // helper variable from Rybicki & Hummer (1991)
+  vReal A[ncells];   // A coefficient in Feautrier recursion relation
+  vReal C[ncells];   // C coefficient in Feautrier recursion relation
+  vReal F[ncells];   // helper variable from Rybicki & Hummer (1991)
+  vReal G[ncells];   // helper variable from Rybicki & Hummer (1991)
 
-	  vReal B0;          // B[0]
-    vReal B0_min_C0;   // B[0] - C[0]
-    vReal Bd;          // B[ndep-1]
-	  vReal Bd_min_Ad;   // B[ndep-1] - A[ndep-1]
+  vReal B0;          // B[0]
+  vReal B0_min_C0;   // B[0] - C[0]
+  vReal Bd;          // B[ndep-1]
+  vReal Bd_min_Ad;   // B[ndep-1] - A[ndep-1]
 
 
 
@@ -50,7 +55,7 @@ inline int solve_ray (const long ndep, vReal *Su, vReal *Sv, const vReal* dtau,
   B0_min_C0 = vOne + 2.0/dtau[0];
 
   for (long n = 0; n < ndep; n++)
-	{
+  {
     A[n] = 2.0 / ((dtau[n] + dtau[n+1]) * dtau[n]);
     C[n] = 2.0 / ((dtau[n] + dtau[n+1]) * dtau[n+1]);
   }
@@ -84,10 +89,10 @@ inline int solve_ray (const long ndep, vReal *Su, vReal *Sv, const vReal* dtau,
   }
 
   Su[ndep-1] = (Su[ndep-1] + A[ndep-1]*Su[ndep-2])
-              / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
+               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
 
   Sv[ndep-1] = (Sv[ndep-1] + A[ndep-1]*Sv[ndep-2])
-              / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
+               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
 
   G[ndep-1] = Bd_min_Ad / A[ndep-1];
 

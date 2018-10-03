@@ -197,6 +197,18 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
 					//		}
 					//	}
 					//}
+          cout << "INPUT:" << endl;
+          for (long n = 0; n < ndep; n++)
+          {
+            for (int lane = 0; lane < n_simd_lanes; lane++)
+            {
+              if (f == frequencies.nr_line[o][0][0][0])
+
+              { const long index2 = radiation.index(n,f);
+                cout << n_r + n_ar << " " << R << " " << f << " " << dtau[n] << " " << Su[n] << endl;
+              }
+            }
+          }
 
          solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
 
@@ -234,16 +246,17 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
             radiation.v[R][index] = Sv[0];
           }
 
-					//for (long n = 0; n < ndep; n++)
-					//{
-		      //  for (int lane = 0; lane < n_simd_lanes; lane++)
-		      //  {
-		      //  	if (radiation.u[R][index].getlane(lane) > 1.0E-17)
-		      //  	{
-					//	    cout << n_r << " " << n_ar << " " << R << " " << o << " " << f << " " //<< n << endl;
-					//		}
-					//	}
-					//}
+          //for (long n = 0; n < ndep; n++)
+          //{
+          //  for (int lane = 0; lane < n_simd_lanes; lane++)
+          //  {
+          //    if (f == frequencies.nr_line[o][0][0][0])
+
+          //    { const long index2 = radiation.index(n,f);
+          //      cout << n_r + n_ar << " " << R << " " << f << " " << radiation.u[R][index2] << endl;
+          //    }
+          //  }
+          //}
 
         } // end of loop over frequencies
 
@@ -272,8 +285,12 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
         }
       }
 
+      long index = radiation.index(o,frequencies.nr_line[o][0][0][0]);
+
+      cout << radiation.u[R][index] << endl;
+
   //timer_SS.stop ();
-  //timer_SS.print ();
+  //timer_SS.`rint ();
 
   //timer_RT_CALC.stop ();
   //timer_RT_CALC.print_to_file ();

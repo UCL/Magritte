@@ -34,14 +34,14 @@ FREQUENCIES (const     long  num_of_cells,
 
 {
 
-	// Size and initialize all, order and deorder
+  // Size and initialize all, order and deorder
 
-   	   nu.resize (ncells);
-      dnu.resize (ncells);
-	nr_line.resize (ncells);
+  nu.resize (ncells);
+  dnu.resize (ncells);
+  nr_line.resize (ncells);
 
 # pragma omp parallel   \
-	shared (linedata)     \
+  shared (linedata)     \
   default (none)
   {
 
@@ -54,19 +54,19 @@ FREQUENCIES (const     long  num_of_cells,
 
   for (long p = start; p < stop; p++)
   {
-   	     nu[p].resize (nfreq_red);
-   	    dnu[p].resize (nfreq_red);
-	  nr_line[p].resize (linedata.nlspec);
+         nu[p].resize (nfreq_red);
+        dnu[p].resize (nfreq_red);
+    nr_line[p].resize (linedata.nlspec);
 
-	  for (int l = 0; l < linedata.nlspec; l++)
-	  {
-	  	nr_line[p][l].resize (linedata.nrad[l]);
+    for (int l = 0; l < linedata.nlspec; l++)
+    {
+      nr_line[p][l].resize (linedata.nrad[l]);
 
-	  	for (int k = 0; k < linedata.nrad[l]; k++)
-	  	{
-	  		nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
-	  	}
-	  }
+      for (int k = 0; k < linedata.nrad[l]; k++)
+      {
+        nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
+      }
+    }
 
 
     // frequencies.nu has to be initialized (for unused entries)
@@ -78,7 +78,7 @@ FREQUENCIES (const     long  num_of_cells,
     }
 
   }
-	} // end of pragma omp parallel
+  } // end of pragma omp parallel
 
 
 
@@ -89,17 +89,18 @@ FREQUENCIES (const     long  num_of_cells,
 
   long index = 0;
 
-	 for (int l = 0; l < linedata.nlspec; l++)
-	 {
-		for (int k = 0; k < linedata.nrad[l]; k++)
-		{
-		  line      [index] = linedata.frequency[l][k];
+  for (int l = 0; l < linedata.nlspec; l++)
+  {
+    for (int k = 0; k < linedata.nrad[l]; k++)
+    {
+      line      [index] = linedata.frequency[l][k];
       line_index[index] = index;
       index++;
     }
-	}
+  }
 
-	// Sort frequencies
+
+  // Sort frequencies
 
   heapsort (line, line_index);
 
@@ -153,21 +154,21 @@ long FREQUENCIES ::
      count_nlines (const LINEDATA& linedata)
 {
 
-	long index = 0;
+  long index = 0;
 
 
   // Count line frequencies
 
   for (int l = 0; l < linedata.nlspec; l++)
   {
-  	for (int k = 0; k < linedata.nrad[l]; k++)
-  	{
-			index++;
-  	}
+    for (int k = 0; k < linedata.nrad[l]; k++)
+    {
+      index++;
+    }
   }
 
 
-	return index;
+  return index;
 
 }
 
@@ -189,16 +190,20 @@ long FREQUENCIES ::
 
   index += nlines * N_QUADRATURE_POINTS;
 
-	/*
-	 *  Count other frequencies...
-	 */
+  /*
+   *  Count other frequencies...
+   */
+
+  // Add one test frequency
+
+  index += 1;
 
 
-	// Ensure that nfreq is a multiple of n_simd_lanes
+  // Ensure that nfreq is a multiple of n_simd_lanes
 
   long nfreq_red_tmp = (index + n_simd_lanes - 1) / n_simd_lanes;
 
-	return nfreq_red_tmp * n_simd_lanes;
+  return nfreq_red_tmp * n_simd_lanes;
 
 }
 
@@ -237,7 +242,7 @@ int FREQUENCIES ::
   const int num_threads = omp_get_num_threads();
   const int thread_num  = omp_get_thread_num();
 
-  const long start = (thread_num*ncells)/num_threads;
+  const long start = ( thread_num   *ncells)/num_threads;
   const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
   for (long p = start; p < stop; p++)
@@ -268,6 +273,14 @@ int FREQUENCIES ::
     /*
      *  Set other frequencies...
      */
+
+    // Add extra test frequency
+
+    freqs[index1] = 1.0E-10;
+    nmbrs[index1] = index1;
+
+    index1++;
+
 
 
     // Sort frequencies
