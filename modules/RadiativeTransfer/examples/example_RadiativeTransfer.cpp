@@ -26,73 +26,60 @@ int main (void)
 {
 
 
-	MPI_Init (NULL, NULL);
+  MPI_Init (NULL, NULL);
 
-	//const int  Dimension = 3;
-	//const long ncells    = 5;
-	//const long Nrays     = 12;
-	//const long nspec     = 5;
-
-
-	//const string project_folder = "/home/frederik/Dropbox/Astro/Magritte/modules/RadiativeTransfer/tests/test_data";
-
-	//const string       cells_file = project_folder + "cells.txt";
-	//const string n_neighbors_file = project_folder + "n_neighbors.txt";
-	//const string   neighbors_file = project_folder + "neighbors.txt";
-	//const string    boundary_file = project_folder + "boundary.txt";
-	//const string     species_file = project_folder + "species.txt";
-  //const string   abundance_file = project_folder + "abundance.txt";
-  //const string temperature_file = project_folder + "temperature.txt";
-
-	const string       cells_file = input_folder + "cells.txt";
-	const string n_neighbors_file = input_folder + "n_neighbors.txt";
-	const string   neighbors_file = input_folder + "neighbors.txt";
-	const string    boundary_file = input_folder + "boundary.txt";
-	const string     species_file = input_folder + "species.txt";
+  const string       cells_file = input_folder + "cells.txt";
+  const string n_neighbors_file = input_folder + "n_neighbors.txt";
+  const string   neighbors_file = input_folder + "neighbors.txt";
+  const string    boundary_file = input_folder + "boundary.txt";
+  const string     species_file = input_folder + "species.txt";
   const string   abundance_file = input_folder + "abundance.txt";
   const string temperature_file = input_folder + "temperature.txt";
 
-	CELLS<Dimension, Nrays> cells (Ncells, n_neighbors_file);
+  CELLS<DIMENSION, NRAYS> cells (NCELLS, n_neighbors_file);
 
-	cells.read (cells_file, neighbors_file, boundary_file);
+  cells.read (cells_file, neighbors_file, boundary_file);
 
-	long nboundary = cells.nboundary;
-
-
-	LINEDATA linedata;   // object containing line data
+  long nboundary = cells.nboundary;
 
 
-	TEMPERATURE temperature (Ncells);
-
-	temperature.read (temperature_file);
+  LINEDATA linedata (input_folder + "linedata/");   // object containing line data
 
 
-  FREQUENCIES frequencies (Ncells, linedata);
+  TEMPERATURE temperature (NCELLS);
 
-	frequencies.reset (linedata, temperature);
-
-	const long nfreq_red = frequencies.nfreq_red;
+  temperature.read (temperature_file);
 
 
-	RADIATION radiation (Ncells, Nrays, nfreq_red, nboundary);
+  FREQUENCIES frequencies (NCELLS, linedata);
+
+  frequencies.reset (linedata, temperature);
+
+  const long nfreq_red = frequencies.nfreq_red;
 
 
-	LINES lines (Ncells, linedata);
+  RADIATION radiation (NCELLS, NRAYS, nfreq_red, nboundary);
 
 
-	const long nfreq_scat = 1;
-	SCATTERING scattering (Nrays, nfreq_scat, nfreq_red);
+  LINES lines (NCELLS, linedata);
 
 
-	MPI_TIMER timer_RT ("RT");
-	timer_RT.start ();
+  const long nfreq_scat = 1;
+  SCATTERING scattering (NRAYS, nfreq_scat, nfreq_red);
 
-	RadiativeTransfer <Dimension,Nrays>
-		                (cells, temperature, frequencies,
-										 lines, scattering, radiation);
 
-	timer_RT.stop ();
-	timer_RT.print ();
+  MPI_TIMER timer_RT ("RT");
+  timer_RT.start ();
+
+  RadiativeTransfer <DIMENSION,NRAYS>(cells,
+                                      temperature,
+                                      frequencies,
+                                      lines,
+                                      scattering,
+                                      radiation   );
+
+  timer_RT.stop ();
+  timer_RT.print ();
 
 
   MPI_Finalize ();

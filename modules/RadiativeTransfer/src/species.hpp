@@ -46,7 +46,9 @@ struct SPECIES
   // Constructor: reads species data file
   // ------------------------------------
 
-  SPECIES (long num_of_cells, int num_of_spec, string spec_datafile);
+  SPECIES (const long   num_of_cells,
+           const int    num_of_spec,
+           const string spec_datafile);
 
 
   int read (string file_name);

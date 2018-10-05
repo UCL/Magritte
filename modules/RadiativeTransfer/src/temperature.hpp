@@ -19,9 +19,9 @@ struct TEMPERATURE
 
   const long ncells;
 
-	Double1 gas;        ///< gas temperature
-	Double1 dust;       ///< dust temparature
-	Double1 gas_prev;   ///< gas temperature in previous iteration
+  Double1 gas;        ///< gas temperature
+  Double1 dust;       ///< dust temparature
+  Double1 gas_prev;   ///< gas temperature in previous iteration
 
 
   TEMPERATURE (const long num_of_cells);      ///< Constructor

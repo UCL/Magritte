@@ -65,13 +65,6 @@ set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
 #target_link_libraries( example_linedata.exe
 #_LEVELS )
 
-add_executable( example_Lines_1D_LTE.exe
-	example_Lines_1D_LTE.cpp )
-target_link_libraries( example_Lines_1D_LTE.exe
-  _LINES
-  _RADIATIVE_TRANSFER
-  ${MPI_LIBRARIES} )
-
 add_executable( example_Lines_Lime1.exe
 	example_Lines_Lime1.cpp )
 target_link_libraries( example_Lines_Lime1.exe

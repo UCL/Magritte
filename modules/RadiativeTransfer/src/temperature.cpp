@@ -16,13 +16,14 @@ using namespace std;
 ///    @param[in] num_of_cells: number of cells
 ///////////////////////////////////////////////
 
-TEMPERATURE :: TEMPERATURE (const long num_of_cells)
-	: ncells (num_of_cells)
+TEMPERATURE ::
+TEMPERATURE (const long num_of_cells)
+  : ncells (num_of_cells)
 {
 
-	gas.resize (ncells);
-	dust.resize (ncells);
-	gas_prev.resize (ncells);
+       gas.resize (ncells);
+      dust.resize (ncells);
+  gas_prev.resize (ncells);
 
 
 }   // END OF CONSTRUCTOR
@@ -41,11 +42,13 @@ int TEMPERATURE ::
   ifstream infile (temperature_file);
 
   for (long p = 0; p < ncells; p++)
-	{
-		infile >> gas[p];
-	}
+  {
+    infile >> gas[p];
+  }
+
+  infile.close();
 
 
-	return (0);
+  return (0);
 
 }

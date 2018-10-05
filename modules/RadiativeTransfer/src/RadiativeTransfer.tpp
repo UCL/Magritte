@@ -318,6 +318,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
 //  timer_RT_COMM.stop ();
 //  timer_RT_COMM.print_to_file ();
 
+
   return (0);
 
 }

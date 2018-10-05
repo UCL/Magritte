@@ -5,9 +5,9 @@
 using namespace std;
 #include "folders.hpp"
 
-const int  Dimension = 1;
-const long     Nrays = 2;
-const long    Ncells = 25;
-const int      Nspec = 5;
+const int  DIMENSION = 1;
+const long     NRAYS = 2;
+const long    NCELLS = 25;
+const int      NSPEC = 5;
 
 #endif // __CONFIGURE_HPP_INCLUDED__

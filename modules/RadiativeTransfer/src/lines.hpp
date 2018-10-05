@@ -110,12 +110,12 @@ inline long LINES ::
 inline int LINES ::
            add_emissivity_and_opacity (const FREQUENCIES &frequencies,
                                        const TEMPERATURE &temperature,
-                                       const vReal       &freq_scaled,
-                                       const vReal       &dfreq_scaled,
-                                             long        &lnotch,
-                                       const long         p,
-                 	                     vReal       &eta,
-                                             vReal       &chi          ) const
+                                       const vReal &freq_scaled,
+                                       const vReal &dfreq_scaled,
+                                             long  &lnotch,
+                                       const long   p,
+                 	                     vReal &eta,
+                                             vReal &chi          ) const
 {
   // TEMPORARY !!!
 

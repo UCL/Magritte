@@ -47,36 +47,36 @@ int main (void)
   const string temperature_file = input_folder + "temperature.txt";
 
 
-  CELLS <Dimension, Nrays> cells (Ncells, n_neighbors_file);
+  CELLS <DIMENSION, NRAYS> cells (NCELLS, n_neighbors_file);
 
   cells.read (cells_file, neighbors_file, boundary_file);
 
-  long nboundary = cells.nboundary;
+  const long nboundary = cells.nboundary;
 
 
-  LINEDATA linedata;
+  LINEDATA linedata (input_folder + "linedata/");
 
 
-  SPECIES species (Ncells, Nspec, species_file);
+  SPECIES species (NCELLS, NSPEC, species_file);
   species.read (abundance_file);
 
 
-  TEMPERATURE temperature (Ncells);
+  TEMPERATURE temperature (NCELLS);
   temperature.read (temperature_file);
 
 
-  FREQUENCIES frequencies (Ncells, linedata);
+  FREQUENCIES frequencies (NCELLS, linedata);
   frequencies.reset (linedata, temperature);
 
   //frequencies.write("");
   const long nfreq_red = frequencies.nfreq_red;
 
   
-  LEVELS levels (Ncells, linedata);
+  LEVELS levels (NCELLS, linedata);
   
   
-  RADIATION radiation (Ncells,
-                       Nrays,
+  RADIATION radiation (NCELLS,
+                       NRAYS,
                        nfreq_red,
                        nboundary );
   
@@ -85,7 +85,7 @@ int main (void)
   
   //radiation.print ("","");
   
-  Lines <Dimension, Nrays>(cells,
+  Lines <DIMENSION, NRAYS>(cells,
                            linedata,
                            species,
                            temperature,

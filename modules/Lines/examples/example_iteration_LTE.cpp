@@ -55,7 +55,7 @@ int main (void)
   const string temperature_file = example_input_folder + "temperature.txt";
 
 
-	LINEDATA linedata;
+	LINEDATA linedata (input_folder + "linedata/");
 
 
 	SPECIES species (ncells, nspec, species_file);

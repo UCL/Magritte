@@ -46,13 +46,13 @@ def setupLinedata(inputFolder):
     # Read line data files
     lineData   = [LineData(fileName) for fileName in lineDataFiles]
     # Get species numbers of line producing species
-    name   = [ld.name for ld in lineData]
-    number = getSpeciesNumber(speciesNames, name)
+    name    = [ld.name for ld in lineData]
+    numbers = getSpeciesNumber(speciesNames, name)
     # Get species numbers of collision partners
     partner   = [ld.partner   for ld in lineData]
     partnerNr = getSpeciesNumber(speciesNames, partner)
     # Format as C strings
-    name      = ['\"' + ld.name + '\"' for ld in lineData]
+    #name      = ['\"' + ld.name + '\"' for ld in lineData]
     orthoPara = [['\'' + op + '\'' for op in ld.orthoPara] for ld in lineData]
     # Write Magritte_config.hpp file
     fileName = getMagritteFolder() + '../Lines/src/linedata_config.hpp'
@@ -61,29 +61,113 @@ def setupLinedata(inputFolder):
         config.write('#ifndef __LINEDATA_CONFIG_HPP_INCLUDED__\n')
         config.write('#define __LINEDATA_CONFIG_HPP_INCLUDED__\n')
         config.write('\n')
-    writeDefinition(fileName, nspec,                             'NSPEC')
-    writeDefinition(fileName, nlspec,                            'NLSPEC')
-    writeDefinition(fileName, [ld.nlev     for ld in lineData],  'NLEV')
-    writeDefinition(fileName, [ld.nrad     for ld in lineData],  'NRAD')
-    writeDefinition(fileName, [ld.ncolpar  for ld in lineData],  'NCOLPAR')
-    writeDefinition(fileName, [ld.ncoltemp for ld in lineData],  'NCOLTEMP')
-    writeDefinition(fileName, [ld.ncoltran for ld in lineData],  'NCOLTRAN')
-    writeDefinition(fileName, number,                            'NUMBER')
-    writeDefinition(fileName, name,                              'NAME')
-    writeDefinition(fileName, partnerNr,                         'PARTNER_NR')
-    writeDefinition(fileName, orthoPara,                         'ORTHO_PARA')
-    writeDefinition(fileName, [ld.energy    for ld in lineData], 'ENERGY')
-    writeDefinition(fileName, [ld.weight    for ld in lineData], 'WEIGHT')
-    writeDefinition(fileName, [ld.irad      for ld in lineData], 'IRAD')
-    writeDefinition(fileName, [ld.jrad      for ld in lineData], 'JRAD')
-    #writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQUENCY')
-    writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQ')
-    writeDefinition(fileName, [ld.A         for ld in lineData], 'A_COEFF')
-    writeDefinition(fileName, [ld.B         for ld in lineData], 'B_COEFF')
-    writeDefinition(fileName, [ld.icol      for ld in lineData], 'ICOL')
-    writeDefinition(fileName, [ld.jcol      for ld in lineData], 'JCOL')
-    writeDefinition(fileName, [ld.coltemp   for ld in lineData], 'COLTEMP')
-    writeDefinition(fileName, [ld.C_data    for ld in lineData], 'C_DATA')
+    with open(lineDataFolder + 'nlspec.txt'    , 'w') as dataFile:
+        dataFile.write(str(nlspec))
+    with open(lineDataFolder + 'nlev.txt'      , 'w') as dataFile:
+        for ld in lineData:
+            dataFile.write(str(ld.nlev)     + '\t')
+    with open(lineDataFolder + 'nrad.txt'      , 'w') as dataFile:
+        for ld in lineData:
+            dataFile.write(str(ld.nrad)     + '\t')
+    with open(lineDataFolder + 'ncolpar.txt'   , 'w') as dataFile:
+        for ld in lineData:
+            dataFile.write(str(ld.ncolpar)  + '\t')
+    with open(lineDataFolder + 'ntmp.txt'      , 'w') as dataFile:
+        for ld in lineData:
+            for ntmps in ld.ncoltemp:
+                dataFile.write(str(ntmps)   + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'ncol.txt'      , 'w') as dataFile:
+        for ld in lineData:
+            for ncols in ld.ncoltran:
+                dataFile.write(str(ncols)   + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'num.txt'       , 'w') as dataFile:
+        for number in numbers:
+            dataFile.write(str(number)      + '\t')
+    with open(lineDataFolder + 'sym.txt'       , 'w') as dataFile:
+        for ld in lineData:
+            dataFile.write(ld.name          + '\t')
+    with open(lineDataFolder + 'irad.txt'      , 'w') as dataFile:
+        for ld in lineData:
+            for i in ld.irad:
+                dataFile.write(str(i)       + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'jrad.txt'      , 'w') as dataFile:
+        for ld in lineData:
+            for j in ld.jrad:
+                dataFile.write(str(j)       + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'energy.txt'    , 'w') as dataFile:
+        for ld in lineData:
+            for E in ld.energy:
+                dataFile.write(str(E)       + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'weight.txt'    , 'w') as dataFile:
+        for ld in lineData:
+            for W in ld.weight:
+                dataFile.write(str(W)       + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'frequency.txt' , 'w') as dataFile:
+        for ld in lineData:
+            for F in ld.frequency:
+                dataFile.write(str(F)       + '\t')
+            dataFile.write('\n')
+    for l in range(nlspec):
+        with open(lineDataFolder + f'A_{l}.txt', 'w') as dataFile:
+            for i in range(lineData[l].nlev):
+                for j in range(lineData[l].nlev):
+                    dataFile.write(str(lineData[l].A[i][j]) + '\t')
+                dataFile.write('\n')
+    for l in range(nlspec):
+        with open(lineDataFolder + f'B_{l}.txt', 'w') as dataFile:
+            for i in range(lineData[l].nlev):
+                for j in range(lineData[l].nlev):
+                    dataFile.write(str(lineData[l].B[i][j]) + '\t')
+                dataFile.write('\n')
+    with open(lineDataFolder + 'num_col_partner.txt', 'w') as dataFile:
+        for l in range(nlspec):
+            for num in partnerNr[l]:
+                dataFile.write(str(num) + '\t')
+            dataFile.write('\n')
+    with open(lineDataFolder + 'orth_or_para_H2.txt', 'w') as dataFile:
+        for ld in lineData:
+            for op in ld.orthoPara:
+                dataFile.write(str(op) + '\t')
+            dataFile.write('\n')
+    for l in range(nlspec):
+        with open(lineDataFolder + f'temperature_col_{l}.txt', 'w') as dataFile:
+            for c in range(lineData[l].ncolpar):
+                for temp in lineData[l].coltemp[c]:
+                    dataFile.write(str(temp) + '\t')
+                dataFile.write('\n')
+    for l in range(nlspec):
+        for c in range(lineData[l].ncolpar):
+            for t in range(lineData[l].ncoltemp[c]):
+                with open(lineDataFolder + f'C_data_{l}_{c}_{t}.txt', 'w') as dataFile:
+                    for i in range(lineData[l].nlev):
+                        for j in range(lineData[l].nlev):
+                            dataFile.write(str(lineData[l].C_data[c][t][i][j]) + '\t')
+                        dataFile.write('\n')
+    #writeDefinition(fileName, nlspec,                            'NLSPEC')
+    #writeDefinition(fileName, [ld.nlev     for ld in lineData],  'NLEV')
+    #writeDefinition(fileName, [ld.nrad     for ld in lineData],  'NRAD')
+    #writeDefinition(fileName, [ld.ncolpar  for ld in lineData],  'NCOLPAR')
+    #writeDefinition(fileName, [ld.ncoltemp for ld in lineData],  'NCOLTEMP')
+    #writeDefinition(fileName, [ld.ncoltran for ld in lineData],  'NCOLTRAN')
+    #writeDefinition(fileName, number,                            'NUMBER')
+    #writeDefinition(fileName, name,                              'NAME')
+    #writeDefinition(fileName, partnerNr,                         'PARTNER_NR')
+    #writeDefinition(fileName, orthoPara,                         'ORTHO_PARA')
+    #writeDefinition(fileName, [ld.energy    for ld in lineData], 'ENERGY')
+    #writeDefinition(fileName, [ld.weight    for ld in lineData], 'WEIGHT')
+    #writeDefinition(fileName, [ld.irad      for ld in lineData], 'IRAD')
+    #writeDefinition(fileName, [ld.jrad      for ld in lineData], 'JRAD')
+    #writeDefinition(fileName, [ld.frequency for ld in lineData], 'FREQ')
+    #writeDefinition(fileName, [ld.A         for ld in lineData], 'A_COEFF')
+    #writeDefinition(fileName, [ld.B         for ld in lineData], 'B_COEFF')
+    #writeDefinition(fileName, [ld.coltemp   for ld in lineData], 'COLTEMP')
+    #writeDefinition(fileName, [ld.C_data    for ld in lineData], 'C_DATA')
     with open(fileName, 'a') as config:
         config.write('\n')
         config.write('#endif // __LINEDATA_CONFIG_HPP_INCLUDED__\n')
@@ -151,10 +235,10 @@ def setupMagritte(projectFolder, runName=''):
         config.write('using namespace std;\n')
         config.write('#include "folders.hpp"\n')
         config.write('\n')
-        config.write('const int  Dimension = {};\n'.format(dimension))
-        config.write('const long     Nrays = {};\n'.format(nrays))
-        config.write('const long    Ncells = {};\n'.format(ncells))
-        config.write('const int      Nspec = {};\n'.format(nspec))
+        config.write('const int  DIMENSION = {};\n'.format(dimension))
+        config.write('const long     NRAYS = {};\n'.format(nrays))
+        config.write('const long    NCELLS = {};\n'.format(ncells))
+        config.write('const int      NSPEC = {};\n'.format(nspec))
         config.write('\n')
         config.write('#endif // __CONFIGURE_HPP_INCLUDED__\n')
     # Write folders.hpp file
