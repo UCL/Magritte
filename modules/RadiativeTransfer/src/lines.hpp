@@ -60,7 +60,6 @@ struct LINES
   inline int add_emissivity_and_opacity (const FREQUENCIES &frequencies,
                                          const TEMPERATURE &temperature,
                                          const vReal       &freq_scaled,
-                                         const vReal       &dfreq_scaled,
                                                long        &lnotch,
                                          const long         p,
                                                vReal       &eta,
@@ -111,7 +110,6 @@ inline int LINES ::
            add_emissivity_and_opacity (const FREQUENCIES &frequencies,
                                        const TEMPERATURE &temperature,
                                        const vReal &freq_scaled,
-                                       const vReal &dfreq_scaled,
                                              long  &lnotch,
                                        const long   p,
                  	                     vReal &eta,
@@ -155,11 +153,6 @@ inline int LINES ::
 
     eta += emissivity[ind] /* * line_profile*/;
     chi +=    opacity[ind] /* * line_profile*/;
-
-    //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
-    //cout << "line profile = " << line_profile << endl;
-    //
-    //cout << eta << " " << chi << endl;
 
     lindex++;
     

@@ -72,7 +72,6 @@ inline int get_eta_and_chi (const FREQUENCIES &frequencies,
 				  long        &lnotch,
                             const long         cellNrs,
 			    const vReal        freq_scaled,
-                            const vReal        dfreq_scaled,
                                   vReal       &eta,
                                   vReal       &chi          );
 

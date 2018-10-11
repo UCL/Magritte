@@ -36,8 +36,7 @@ FREQUENCIES (const     long  num_of_cells,
 
   // Size and initialize all, order and deorder
 
-  nu.resize (ncells);
-  dnu.resize (ncells);
+      nu.resize (ncells);
   nr_line.resize (ncells);
 
 # pragma omp parallel   \
@@ -55,7 +54,6 @@ FREQUENCIES (const     long  num_of_cells,
   for (long p = start; p < stop; p++)
   {
          nu[p].resize (nfreq_red);
-        dnu[p].resize (nfreq_red);
     nr_line[p].resize (linedata.nlspec);
 
     for (int l = 0; l < linedata.nlspec; l++)
@@ -74,7 +72,6 @@ FREQUENCIES (const     long  num_of_cells,
     for (long f = 0; f < nfreq_red; f++)
     {
        nu[p][f] = 0.0;
-      dnu[p][f] = 0.0;
     }
 
   }
@@ -86,6 +83,8 @@ FREQUENCIES (const     long  num_of_cells,
 
   line      .resize (nlines);
   line_index.resize (nlines);
+
+//  Long1 lindex (nlines);
 
   long index = 0;
 
@@ -100,9 +99,15 @@ FREQUENCIES (const     long  num_of_cells,
   }
 
 
-  // Sort frequencies
+  // Sort line frequencies
 
   heapsort (line, line_index);
+
+
+  //for (int d = 0; d < nlines; d++)
+  //{
+  //  line_index[lindex[d]] == d;
+  //}
 
 
 }   // END OF CONSTRUCTOR
@@ -183,7 +188,7 @@ long FREQUENCIES ::
      count_nfreq (const long nlines)
 {
 
-	long index = 0;
+  long index = 0;
 
 
   // Count line frequencies
@@ -196,7 +201,7 @@ long FREQUENCIES ::
 
   // Add one test frequency
 
-  index += 1;
+  //index += 1;
 
 
   // Ensure that nfreq is a multiple of n_simd_lanes
@@ -276,10 +281,10 @@ int FREQUENCIES ::
 
     // Add extra test frequency
 
-    freqs[index1] = 1.0E-10;
-    nmbrs[index1] = index1;
+    //freqs[index1] = 1.0E-10;
+    //nmbrs[index1] = index1;
 
-    index1++;
+    //index1++;
 
 
 
@@ -302,30 +307,12 @@ int FREQUENCIES ::
     }
 
 
-    // Set all frequency increments dnu
-//
-//#   if (GRID_SIMD)
-//  	  dnu[p][0].putlane(freqs[1]-freqs[0], 0);
-//#		else
-//  	  dnu[p][0] = freqs[1]-freqs[0];
-//#   endif
-//
-//	  for (long fl = 1; fl < nfreq-1; fl++)
-//	  {
-//#     if (GRID_SIMD)
-//		    const long    f = fl / n_simd_lanes;
-//		    const long lane = fl % n_simd_lanes;
-//  	    dnu[p][f].putlane(0.5*(freqs[fl+1]-freqs[fl-1]), lane);
-//#		  else
-//  	    dnu[p][f] = 0.5*(freqs[fl+1]-freqs[fl-1]);
-//#     endif
-//		}
-//
-//#   if (GRID_SIMD)
-//  	  dnu[p][nfreq_red-1].putlane(freqs[nfreq-1]-freqs[nfreq-2], n_simd_lanes-1);
-//#		else
-//  	  dnu[p][nfreq_red-1] = freqs[nfreq-1]-freqs[nfreq-2];
-//#   endif
+    Long1 nmbrs_inverted (nfreq);
+
+    for (long fl = 0; fl < nfreq; fl++)
+    {
+      nmbrs_inverted[nmbrs[fl]] = fl;
+    }
 
 
     long index2 = 0;
@@ -336,7 +323,7 @@ int FREQUENCIES ::
       {
         for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
-           nr_line[p][l][k][z] = nmbrs[index2];
+           nr_line[p][l][k][z] = nmbrs_inverted[index2];
            index2++;
         }
       }

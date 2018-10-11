@@ -107,6 +107,7 @@ int main (void)
   //timer_TOTAL.stop ();
   //timer_TOTAL.print_to_file ();
 
+  //cout << linedata.A[0] << endl;
 
   // Finalize the MPI environment
 

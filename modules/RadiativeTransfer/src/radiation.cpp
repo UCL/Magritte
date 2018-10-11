@@ -48,23 +48,23 @@ RADIATION (const long num_of_cells,
   boundary_intensity.resize (nrays_red);
 
 
-	for (long r = 0; r < nrays_red; r++)
-	{
-	  u[r].resize (ncells*nfreq_red);
-	  v[r].resize (ncells*nfreq_red);
+  for (long r = 0; r < nrays_red; r++)
+  {
+    u[r].resize (ncells*nfreq_red);
+    v[r].resize (ncells*nfreq_red);
 
-	  U[r].resize (ncells*nfreq_red);
-	  V[r].resize (ncells*nfreq_red);
+    U[r].resize (ncells*nfreq_red);
+    V[r].resize (ncells*nfreq_red);
 
-	  boundary_intensity[r].resize (ncells);
+    boundary_intensity[r].resize (ncells);
 
-		for (long p = 0; p < nboundary; p++)
-		{
-			boundary_intensity[r][p].resize (nfreq_red);
-		}
-	}
+    for (long p = 0; p < nboundary; p++)
+    {
+      boundary_intensity[r][p].resize (nfreq_red);
+    }
+  }
 
-	J.resize (ncells*nfreq_red);
+  J.resize (ncells*nfreq_red);
 
 
 }   // END OF CONSTRUCTOR
@@ -136,10 +136,10 @@ int RADIATION ::
 
 void mpi_vector_sum (vReal *in, vReal *inout, int *len, MPI_Datatype *datatype)
 {
-	for (int i = 0; i < *len; i++)
-	{
-		inout[i] = in[i] + inout[i];
-	}
+  for (int i = 0; i < *len; i++)
+  {
+    inout[i] = in[i] + inout[i];
+  }
 }
 
 
@@ -147,7 +147,7 @@ int initialize (vReal1& vec)
 {
 
 # pragma omp parallel   \
-	shared (vec)          \
+	shared (vec)    \
   default (none)
   {
 
@@ -159,13 +159,13 @@ int initialize (vReal1& vec)
 
 
   for (long i = start; i < stop; i++)
-	{
-	  vec[i] = 0.0;
-	}
-	} // end of pragma omp parallel
+  {
+    vec[i] = 0.0;
+  }
+  } // end of pragma omp parallel
 
 
-	return (0);
+  return (0);
 
 }
 

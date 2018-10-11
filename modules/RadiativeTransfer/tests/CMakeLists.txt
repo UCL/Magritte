@@ -81,19 +81,19 @@ target_link_libraries( test_rays.exe
 #_LINES
 #_TEST_RT_MAIN )
 #
-# Create executable to test feautrier solver
-add_executable( test_solve_ray.exe
-  test_solve_ray.cpp )
-target_link_libraries( test_solve_ray.exe
-  _RADIATIVE_TRANSFER
-  _TEST_RT_MAIN )
-
-# Create executable to test radiation field
-add_executable( test_radiation.exe
-  test_radiation.cpp )
-target_link_libraries( test_radiation.exe
-  _RADIATIVE_TRANSFER
-  _TEST_RT_MAIN )
+## Create executable to test feautrier solver
+#add_executable( test_solve_ray.exe
+#  test_solve_ray.cpp )
+#target_link_libraries( test_solve_ray.exe
+#  _RADIATIVE_TRANSFER
+#  _TEST_RT_MAIN )
+#
+## Create executable to test radiation field
+#add_executable( test_radiation.exe
+#  test_radiation.cpp )
+#target_link_libraries( test_radiation.exe
+#  _RADIATIVE_TRANSFER
+#  _TEST_RT_MAIN )
 
 # Create executable to test interpolation
 add_executable( test_interpolation.exe
@@ -123,12 +123,12 @@ target_link_libraries( test_profile.exe
   _RADIATIVE_TRANSFER
   _TEST_RT_MAIN )
 
-# Create executable to test frequencies
-add_executable( test_lines.exe
-  test_lines.cpp )
-target_link_libraries( test_lines.exe
-  _RADIATIVE_TRANSFER
-  _TEST_RT_MAIN )
+## Create executable to test frequencies
+#add_executable( test_lines.exe
+#  test_lines.cpp )
+#target_link_libraries( test_lines.exe
+#  _RADIATIVE_TRANSFER
+#  _TEST_RT_MAIN )
 
 ## Create executable to test species
 #add_executable( test_species.exe

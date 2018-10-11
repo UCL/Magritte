@@ -54,13 +54,7 @@ def setupLinedata(inputFolder):
     # Format as C strings
     #name      = ['\"' + ld.name + '\"' for ld in lineData]
     orthoPara = [['\'' + op + '\'' for op in ld.orthoPara] for ld in lineData]
-    # Write Magritte_config.hpp file
-    fileName = getMagritteFolder() + '../Lines/src/linedata_config.hpp'
-    writeHeader(fileName)
-    with open(fileName, 'a') as config:
-        config.write('#ifndef __LINEDATA_CONFIG_HPP_INCLUDED__\n')
-        config.write('#define __LINEDATA_CONFIG_HPP_INCLUDED__\n')
-        config.write('\n')
+    # Write linedata files
     with open(lineDataFolder + 'nlspec.txt'    , 'w') as dataFile:
         dataFile.write(str(nlspec))
     with open(lineDataFolder + 'nlev.txt'      , 'w') as dataFile:
@@ -149,6 +143,13 @@ def setupLinedata(inputFolder):
                         for j in range(lineData[l].nlev):
                             dataFile.write(str(lineData[l].C_data[c][t][i][j]) + '\t')
                         dataFile.write('\n')
+    # Write Magritte_config.hpp file
+    #fileName = getMagritteFolder() + '../Lines/src/linedata_config.hpp'
+    #writeHeader(fileName)
+    #with open(fileName, 'a') as config:
+    #    config.write('#ifndef __LINEDATA_CONFIG_HPP_INCLUDED__\n')
+    #    config.write('#define __LINEDATA_CONFIG_HPP_INCLUDED__\n')
+    #    config.write('\n')
     #writeDefinition(fileName, nlspec,                            'NLSPEC')
     #writeDefinition(fileName, [ld.nlev     for ld in lineData],  'NLEV')
     #writeDefinition(fileName, [ld.nrad     for ld in lineData],  'NRAD')
@@ -168,9 +169,9 @@ def setupLinedata(inputFolder):
     #writeDefinition(fileName, [ld.B         for ld in lineData], 'B_COEFF')
     #writeDefinition(fileName, [ld.coltemp   for ld in lineData], 'COLTEMP')
     #writeDefinition(fileName, [ld.C_data    for ld in lineData], 'C_DATA')
-    with open(fileName, 'a') as config:
-        config.write('\n')
-        config.write('#endif // __LINEDATA_CONFIG_HPP_INCLUDED__\n')
+    #with open(fileName, 'a') as config:
+    #    config.write('\n')
+    #    config.write('#endif // __LINEDATA_CONFIG_HPP_INCLUDED__\n')
     # Done
 
 

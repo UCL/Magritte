@@ -32,7 +32,6 @@ TEST_CASE ("Constructor")
   const long ncells = 1;
 
   LINEDATA linedata;
-
   LINES lines (ncells, linedata);
 
 }

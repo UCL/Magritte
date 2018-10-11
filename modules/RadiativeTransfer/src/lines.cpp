@@ -29,12 +29,13 @@ using namespace Eigen;
 //////////////////////////
 
 LINES ::
-LINES (const long num_of_cells, const LINEDATA& linedata)
-	: ncells   (num_of_cells)
-	, nlspec   (linedata.nlspec)
-	, nrad     (linedata.nrad)
-	, nrad_cum (get_nrad_cum (nrad))
-	, nrad_tot (get_nrad_tot (nrad))
+LINES (const long      num_of_cells,
+       const LINEDATA &linedata)
+  : ncells   (num_of_cells)
+  , nlspec   (linedata.nlspec)
+  , nrad     (linedata.nrad)
+  , nrad_cum (get_nrad_cum (nrad))
+  , nrad_tot (get_nrad_tot (nrad))
 {
 
   emissivity.resize (ncells*nrad_tot);
@@ -60,17 +61,17 @@ Int1 LINES ::
 }
 
 int LINES ::
-		get_nrad_tot (const Int1 nrad)
+    get_nrad_tot (const Int1 nrad)
 {
 
-	int result = 0;
+  int result = 0;
 
-	for (int l = 0; l < nrad.size(); l++)
-	{
-	  result += nrad[l];
-	}
+  for (int l = 0; l < nrad.size(); l++)
+  {
+    result += nrad[l];
+  }
 
-	return result;
+  return result;
 
 }
 
@@ -133,70 +134,70 @@ int LINES ::
     mpi_allgatherv ()
 {
 
-	// Get number of processes
+  // Get number of processes
 
   int world_size;
-	MPI_Comm_size (MPI_COMM_WORLD, &world_size);
+  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
 
-	// Extract the buffer lengths and displacements
+  // Extract the buffer lengths and displacements
 
-	int *buffer_lengths = new int[world_size];
-	int *displacements  = new int[world_size];
-
-
-	for (int w = 0; w < world_size; w++)
-	{
-	  long START_w = ( w   *ncells)/world_size;
-	  long STOP_w  = ((w+1)*ncells)/world_size;
-
-		long ncells_red_w = STOP_w - START_w;
-
-		buffer_lengths[w] = ncells_red_w * nrad_tot;
-	}
-
-	displacements[0] = 0;
-
-	for (int w = 1; w < world_size; w++)
-	{
-		displacements[w] = buffer_lengths[w-1];
-	}
+  int *buffer_lengths = new int[world_size];
+  int *displacements  = new int[world_size];
 
 
-	// Call MPI to gather the emissivity data
+  for (int w = 0; w < world_size; w++)
+  {
+    long START_w = ( w   *ncells)/world_size;
+    long STOP_w  = ((w+1)*ncells)/world_size;
+
+    long ncells_red_w = STOP_w - START_w;
+
+    buffer_lengths[w] = ncells_red_w * nrad_tot;
+  }
+
+  displacements[0] = 0;
+
+  for (int w = 1; w < world_size; w++)
+  {
+    displacements[w] = buffer_lengths[w-1];
+  }
+
+
+  // Call MPI to gather the emissivity data
 
   int ierr_em =	MPI_Allgatherv (
-	                MPI_IN_PLACE,            // pointer to data to be send (here in place)
-		              0,                       // number of elements in the send buffer
-		              MPI_DATATYPE_NULL,       // type of the send data
-		              emissivity.data(),       // pointer to the data to be received
-		              buffer_lengths,          // number of elements in receive buffer
+                  MPI_IN_PLACE,            // pointer to data to be send (here in place)
+                  0,                       // number of elements in the send buffer
+                  MPI_DATATYPE_NULL,       // type of the send data
+                  emissivity.data(),       // pointer to the data to be received
+                  buffer_lengths,          // number of elements in receive buffer
                   displacements,           // displacements between data blocks
-	                MPI_DOUBLE,              // type of the received data
-		              MPI_COMM_WORLD);
+	          MPI_DOUBLE,              // type of the received data
+                  MPI_COMM_WORLD);
 
-	assert (ierr_em == 0);
+  assert (ierr_em == 0);
 
 
-	// Call MPI to gather the opacity data
+  // Call MPI to gather the opacity data
 
-	int ierr_op = MPI_Allgatherv (
-              	  MPI_IN_PLACE,            // pointer to data to be send (here in place)
-              		0,                       // number of elements in the send buffer
-              		MPI_DATATYPE_NULL,       // type of the send data
-              		opacity.data(),          // pointer to the data to be received
-              		buffer_lengths,          // number of elements in receive buffer
+  int ierr_op = MPI_Allgatherv (
+                  MPI_IN_PLACE,            // pointer to data to be send (here in place)
+                  0,                       // number of elements in the send buffer
+                  MPI_DATATYPE_NULL,       // type of the send data
+              	  opacity.data(),          // pointer to the data to be received
+              	  buffer_lengths,          // number of elements in receive buffer
                   displacements,           // displacements between data blocks
               	  MPI_DOUBLE,              // type of the received data
-              		MPI_COMM_WORLD);
+                  MPI_COMM_WORLD);
 
-	assert (ierr_op == 0);
-
-
-	delete [] buffer_lengths;
-	delete [] displacements;
+  assert (ierr_op == 0);
 
 
-	return (0);
+  delete [] buffer_lengths;
+  delete [] displacements;
+
+
+  return (0);
 
 }

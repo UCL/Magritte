@@ -449,8 +449,6 @@ VectorXd1 LINEDATA ::
     {
       infile >> x;
 
-      cout << x << endl;
-
       energy_local[l](i) = x; 
     }
   }
@@ -685,7 +683,6 @@ Double3 LINEDATA ::
 
   Double3 temperature_col_local (nlspec_local);
   
-  ifstream infile (linedata_folder + "orth_or_para.txt");
 
   double x;
 
@@ -693,6 +690,8 @@ Double3 LINEDATA ::
   for (int l = 0; l < nlspec_local; l++)
   {
     temperature_col_local[l].resize (ncolpar_local[l]);
+
+    ifstream infile (linedata_folder + "temperature_col_" + to_string(l) + ".txt");
 
     for (int c = 0; c < ncolpar_local[l]; c++)
     {
@@ -705,9 +704,9 @@ Double3 LINEDATA ::
         temperature_col_local[l][c][t] = x; 
       }
     }
+    
+    infile.close();
   }
-
-  infile.close();
 
 
   return temperature_col_local;
@@ -819,7 +818,6 @@ MatrixXd LINEDATA ::
   double frac_H2_para  = 0.0;   // fraction of para-H2
   double frac_H2_ortho = 0.0;   // fraction of ortho-H2
 
-//	cout << "abn H2 = " << species.abundance[p][species.nr_H2] << endl;
 
   if (species.abundance[p][species.nr_H2] > 0.0)
   {
@@ -941,6 +939,10 @@ MatrixXd LINEDATA ::
   //  }
   //}
 
+  //cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : " << endl;
+  //cout << A[l] << endl;
+  //cout << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB : " << endl;
+  //cout << B[l] << endl;
 
   return R;
 

@@ -78,12 +78,19 @@ TEST_CASE ("vExp function")
   vReal error3 = relative_error (vExp(x3), reff3);
 
 
-	for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
-		CHECK (error1.getlane(lane) == Approx(0.0).epsilon(EPS));
-		CHECK (error2.getlane(lane) == Approx(0.0).epsilon(EPS));
-		CHECK (error3.getlane(lane) == Approx(0.0).epsilon(EPS));
-	}
+# if (GRID_SIMD)
+    for (int lane = 0; lane < n_simd_lanes; lane++)
+    {
+      CHECK (error1.getlane(lane) == Approx(0.0).epsilon(EPS));
+      CHECK (error2.getlane(lane) == Approx(0.0).epsilon(EPS));
+      CHECK (error3.getlane(lane) == Approx(0.0).epsilon(EPS));
+    }
+# else
+    CHECK (error1 == Approx(0.0).epsilon(EPS));
+    CHECK (error2 == Approx(0.0).epsilon(EPS));
+    CHECK (error3 == Approx(0.0).epsilon(EPS));
+# endif
+
 }
 
 
@@ -111,12 +118,19 @@ TEST_CASE ("vExpMinus function")
   vReal error3 = relative_error (vExpMinus(x3), reff3);
 
 
-	for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
-		CHECK (error1.getlane(lane) == Approx(0.0).epsilon(EPS));
-		CHECK (error2.getlane(lane) == Approx(0.0).epsilon(EPS));
-		CHECK (error3.getlane(lane) == Approx(0.0).epsilon(EPS));
-	}
+# if (GRID_SIMD)
+    for (int lane = 0; lane < n_simd_lanes; lane++)
+    {
+      CHECK (error1.getlane(lane) == Approx(0.0).epsilon(EPS));
+      CHECK (error2.getlane(lane) == Approx(0.0).epsilon(EPS));
+      CHECK (error3.getlane(lane) == Approx(0.0).epsilon(EPS));
+    }
+# else
+    CHECK (error1 == Approx(0.0).epsilon(EPS));
+    CHECK (error2 == Approx(0.0).epsilon(EPS));
+    CHECK (error3 == Approx(0.0).epsilon(EPS));
+# endif
+
 }
 
 
@@ -144,10 +158,17 @@ TEST_CASE ("vExpm1 function")
   vReal error3 = relative_error (vExpm1(x3), reff3);
 
 
-	for (int lane = 0; lane < n_simd_lanes; lane++)
-	{
-		CHECK (error1.getlane(lane) == Approx(0.0).epsilon(EPS));
-		CHECK (error2.getlane(lane) == Approx(0.0).epsilon(EPS));
-		CHECK (error3.getlane(lane) == Approx(0.0).epsilon(EPS));
-	}
+# if (GRID_SIMD)
+    for (int lane = 0; lane < n_simd_lanes; lane++)
+    {
+      CHECK (error1.getlane(lane) == Approx(0.0).epsilon(EPS));
+      CHECK (error2.getlane(lane) == Approx(0.0).epsilon(EPS));
+      CHECK (error3.getlane(lane) == Approx(0.0).epsilon(EPS));
+    }
+# else
+    CHECK (error1 == Approx(0.0).epsilon(EPS));
+    CHECK (error2 == Approx(0.0).epsilon(EPS));
+    CHECK (error3 == Approx(0.0).epsilon(EPS));
+# endif
+
 }
