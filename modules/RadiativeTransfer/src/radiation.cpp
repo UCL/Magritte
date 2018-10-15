@@ -175,10 +175,10 @@ int RADIATION ::
     calc_J (void)
 {
 
-	initialize (J);
+  initialize (J);
 
 
-	int world_size;
+  int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
   int world_rank;
@@ -189,7 +189,7 @@ int RADIATION ::
 
   for (long r = START_raypair; r < STOP_raypair; r++)
   {
-		const long R = r - START_raypair;
+    const long R = r - START_raypair;
 
 #   pragma omp parallel   \
     default (none)
@@ -203,42 +203,42 @@ int RADIATION ::
 
 
     for (long p = start; p < stop; p++)
-	  {
-	    for (long f = 0; f < nfreq_red; f++)
-	    {
-	      J[index(p,f)] += (2.0/nrays) * u[R][index(p,f)];
-			}
-		}
-		} // end of pragma omp parallel
+    {
+      for (long f = 0; f < nfreq_red; f++)
+      {
+        J[index(p,f)] += (2.0/nrays) * u[R][index(p,f)];
+      }
+    }
+    } // end of pragma omp parallel
 
-	} // end of r loop over rays
+  } // end of r loop over rays
 
 
   MPI_Datatype MPI_VREAL;
   MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
   MPI_Type_commit (&MPI_VREAL);
 
-	MPI_Op MPI_VSUM;
-	MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
+  MPI_Op MPI_VSUM;
+  MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
-	int ierr = MPI_Allreduce (
-	             MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
-	           	 J.data(),          // pointer to data to be received
-	           	 J.size(),          // size of data to be received
-	             MPI_VREAL,         // type of reduced data
-	           	 MPI_VSUM,          // reduction operation
-	           	 MPI_COMM_WORLD);
+  int ierr = MPI_Allreduce (
+               MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
+               J.data(),          // pointer to data to be received
+               J.size(),          // size of data to be received
+               MPI_VREAL,         // type of reduced data
+               MPI_VSUM,          // reduction operation
+               MPI_COMM_WORLD);
 
-	assert (ierr == 0);
-
-
-	MPI_Type_free (&MPI_VREAL);
-
-	MPI_Op_free (&MPI_VSUM);
+  assert (ierr == 0);
 
 
-	return (0);
+  MPI_Type_free (&MPI_VREAL);
+
+  MPI_Op_free (&MPI_VSUM);
+
+
+  return (0);
 
 }
 
@@ -252,8 +252,8 @@ int RADIATION ::
 
 {
 
-	vReal1 U_local (ncells*nfreq_red);
-	vReal1 V_local (ncells*nfreq_red);
+  vReal1 U_local (ncells*nfreq_red);
+  vReal1 V_local (ncells*nfreq_red);
 
 
   int world_size;
@@ -274,25 +274,25 @@ int RADIATION ::
   MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
-	for (int w = 0; w < world_size; w++)
-	{
+  for (int w = 0; w < world_size; w++)
+  {
     const long START_raypair1 = ( w   *nrays/2)/world_size;
     const long STOP_raypair1  = ((w+1)*nrays/2)/world_size;
 
     for (long r1 = START_raypair1; r1 < STOP_raypair1; r1++)
-	  {
-			const long R1 = r1 - START_raypair1;
+    {
+      const long R1 = r1 - START_raypair1;
 
-			initialize (U_local);
-			initialize (V_local);
+      initialize (U_local);
+      initialize (V_local);
 
 
-    	for (long r2 = START_raypair; r2 < STOP_raypair; r2++)
-	  	{
-			 	const long R2 = r2 - START_raypair;
+      for (long r2 = START_raypair; r2 < STOP_raypair; r2++)
+      {
+        const long R2 = r2 - START_raypair;
 
 #       pragma omp parallel                             \
-	      shared (scattering, U_local, V_local, r1, r2)   \
+        shared (scattering, U_local, V_local, r1, r2)   \
         default (none)
         {
 
@@ -304,52 +304,53 @@ int RADIATION ::
 
 
         for (long p = start; p < stop; p++)
-	      {
-	        for (long f = 0; f < nfreq_red; f++)
-	    	  {
-	  		    U_local[index(p,f)] += u[R2][index(p,f)] * scattering.phase[r1][r2][f];
-	  		    V_local[index(p,f)] += v[R2][index(p,f)] * scattering.phase[r1][r2][f];
-	  		  }
-	  		}
-	    	}
-
-	  	} // end of r2 loop over raypairs2
-
-
-  	  int ierr_u = MPI_Reduce (
-				           U_local.data(),    // pointer to the data to be reduced
-  	  	           U[R1].data(),      // pointer to the data to be received
-  	  	           ncells*nfreq_red,  // size of the data to be received
-  	               MPI_VREAL,         // type of the reduced data
-  	  	           MPI_VSUM,          // reduction operation
-  			           w,                 // rank of root to which we reduce
-  	  	           MPI_COMM_WORLD);
-
-			assert (ierr_u == 0);
+        {
+          for (long f = 0; f < nfreq_red; f++)
+      	  {
+            U_local[index(p,f)] += u[R2][index(p,f)] * scattering.phase[r1][r2][f];
+            V_local[index(p,f)] += v[R2][index(p,f)] * scattering.phase[r1][r2][f];
+          }
+        }
+  
+        }
+  
+      } // end of r2 loop over raypairs2
 
 
-  	  int ierr_v = MPI_Reduce (
-				           V_local.data(),    // pointer to the data to be reduced
-  	  	           V[R1].data(),      // pointer to the data to be received
-  	  	           ncells*nfreq_red,  // size of the data to be received
-  	               MPI_VREAL,         // type of the reduced data
-  	  	           MPI_VSUM,          // reduction operation
-  			           w,                 // rank of root to which we reduce
-  	  	           MPI_COMM_WORLD);
+      int ierr_u = MPI_Reduce (
+                     U_local.data(),    // pointer to the data to be reduced
+                     U[R1].data(),      // pointer to the data to be received
+                     ncells*nfreq_red,  // size of the data to be received
+                     MPI_VREAL,         // type of the reduced data
+                     MPI_VSUM,          // reduction operation
+                     w,                 // rank of root to which we reduce
+                     MPI_COMM_WORLD);
 
-			assert (ierr_v == 0);
-
-
-	  }
-	}
+      assert (ierr_u == 0);
 
 
-	MPI_Type_free (&MPI_VREAL);
+      int ierr_v = MPI_Reduce (
+                     V_local.data(),    // pointer to the data to be reduced
+                     V[R1].data(),      // pointer to the data to be received
+                     ncells*nfreq_red,  // size of the data to be received
+                     MPI_VREAL,         // type of the reduced data
+                     MPI_VSUM,          // reduction operation
+                     w,                 // rank of root to which we reduce
+                     MPI_COMM_WORLD);
 
-	MPI_Op_free (&MPI_VSUM);
+      assert (ierr_v == 0);
 
 
-	return (0);
+    }
+  }
+
+
+  MPI_Type_free (&MPI_VREAL);
+
+  MPI_Op_free (&MPI_VSUM);
+
+
+  return (0);
 
 }
 
@@ -357,19 +358,19 @@ int RADIATION ::
 
 {
 
-	vReal1 U_local (ncells*nfreq_red);
-	vReal1 V_local (ncells*nfreq_red);
+  vReal1 U_local (ncells*nfreq_red);
+  vReal1 V_local (ncells*nfreq_red);
 
   for (long r1 = 0; r1 < nrays/2; r1++)
-	{
-		initialize (U_local);
-		initialize (V_local);
+  {
+    initialize (U_local);
+    initialize (V_local);
 
     for (long r2 = 0; r2 < nrays/2; r2++)
-	  {
+    {
 
 #     pragma omp parallel                             \
-	    shared (scattering, U_local, V_local, r1, r2)   \
+      shared (scattering, U_local, V_local, r1, r2)   \
       default (none)
       {
 
@@ -381,21 +382,21 @@ int RADIATION ::
 
 
       for (long p = start; p < stop; p++)
-	    {
-	      for (long f = 0; f < nfreq_red; f++)
-	      {
-	  	    U_local[index(p,f)] += u[r2][index(p,f)] * scattering.phase[r1][r2][f];
-	  	    V_local[index(p,f)] += v[r2][index(p,f)] * scattering.phase[r1][r2][f];
-	  	  }
-	  	}
-	    }
+      {
+        for (long f = 0; f < nfreq_red; f++)
+        {
+          U_local[index(p,f)] += u[r2][index(p,f)] * scattering.phase[r1][r2][f];
+          V_local[index(p,f)] += v[r2][index(p,f)] * scattering.phase[r1][r2][f];
+        }
+      }
+      }
 
-	  } // end of r2 loop over raypairs2
+    } // end of r2 loop over raypairs2
 
-	}
+  }
 
 
-	return (0);
+  return (0);
 
 }
 

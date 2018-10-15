@@ -6,7 +6,7 @@ using namespace std;
 
 const string Magritte_folder = "/home/frederik/Dropbox/Astro/Magritte/modules/setup/../RadiativeTransfer/";
 
-const string  input_folder = "/home/frederik/MagritteProjects/Lines_1D_LTE/io/18-10-11_18:46:37/input/";
-const string output_folder = "/home/frederik/MagritteProjects/Lines_1D_LTE/io/18-10-11_18:46:37/output/";
+const string  input_folder = "/home/frederik/MagritteProjects/Lines_1D_LTE/io/18-10-15_21:50:31/input/";
+const string output_folder = "/home/frederik/MagritteProjects/Lines_1D_LTE/io/18-10-15_21:50:31/output/";
 
 #endif // __FOLDERS_HPP_INCLUDED__

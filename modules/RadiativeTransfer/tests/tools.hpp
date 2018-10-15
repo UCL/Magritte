@@ -19,6 +19,8 @@
 inline double relative_error (const double a,
                               const double b )
 {
+  //cout << a << " " << b << endl;
+
   return fabs ((a-b) / (a+b));
 }
 

@@ -109,11 +109,11 @@ inline long LINES ::
 inline int LINES ::
            add_emissivity_and_opacity (const FREQUENCIES &frequencies,
                                        const TEMPERATURE &temperature,
-                                       const vReal &freq_scaled,
-                                             long  &lnotch,
-                                       const long   p,
-                 	                     vReal &eta,
-                                             vReal &chi          ) const
+                                       const vReal       &freq_scaled,
+                                             long        &lnotch,
+                                       const long         p,
+                 	                           vReal       &eta,
+                                             vReal       &chi          ) const
 {
   // TEMPORARY !!!
 
@@ -154,8 +154,13 @@ inline int LINES ::
     eta += emissivity[ind] /* * line_profile*/;
     chi +=    opacity[ind] /* * line_profile*/;
 
+    //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
+    //cout << "line profile = " << line_profile << endl;
+    //
+    //cout << eta << " " << chi << endl;
+
     lindex++;
-    
+
     freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
         width = profile_width (temperature.gas[p], frequencies.line[lindex]);
   }
