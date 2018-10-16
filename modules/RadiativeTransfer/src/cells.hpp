@@ -38,9 +38,9 @@ struct CELLS
   Bool1 boundary;                       ///< true if boundary cell
   Bool1 mirror;                         ///< true if reflective boundary
 
-	long nboundary;                       ///< number of boundary cells
-	Long1 bdy_to_cell_nr;                 ///< boundary number of cell
-	Long1 cell_to_bdy_nr;                 ///< cell number of boundary
+  long nboundary;                       ///< number of boundary cells
+  Long1 bdy_to_cell_nr;                 ///< boundary number of cell
+  Long1 cell_to_bdy_nr;                 ///< cell number of boundary
 
   Long1 n_neighbors;                    ///< number of neighbors
   Long2   neighbors;                    ///< cell numbers of neighors
@@ -49,23 +49,29 @@ struct CELLS
   Bool1 removed;                        ///< true when cell is removed
 
 
-  CELLS (const long number_of_cells,
-			   const string n_neighbors_file);   ///< Constructor
+  CELLS (const long   number_of_cells,
+         const string n_neighbors_file);   ///< Constructor
 
 
   int read (const string cells_file,
-			      const string neighbors_file,
-						const string boundary_file);
+            const string neighbors_file,
+            const string boundary_file  );
 
 
-  inline long next (const long origin, const long ray, const long current,
-                    double& Z, double& dZ) const;
+  inline long next (const long    origin,
+                    const long    ray,
+                    const long    current,
+                          double &Z,
+                          double &dZ      ) const;
 
-  inline long on_ray (const long origin, const long ray,
-                      long *cellNrs, double *dZs) const;
+  inline long on_ray (const long    origin,
+                      const long    ray,
+                            long   *cellNrs,
+                            double *dZs     ) const;
 
 
-  inline double relative_velocity (const long origin, const long r,
+  inline double relative_velocity (const long origin,
+                                   const long r,
                                    const long current) const;
 
 

@@ -87,7 +87,7 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
       get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
                          lnotch_ar[q], notch_ar[q], cellNrs_ar[q], shifts_ar[q], term1_n, term2_n, chi_n);
 
-      dtau[n_ar-1-q] = 0.5 * (chi_c + chi_n) * dZs_ar[q];
+      dtau[n_ar-1-q] = 0.5 * (chi_n + chi_c) * dZs_ar[q];
         Su[n_ar-1-q] = 0.5 * (term1_n + term1_c) + (term2_n - term2_c) / dtau[n_ar-1-q];
        	Sv[n_ar-1-q] = 0.5 * (term2_n + term2_c) + (term1_n - term1_c) / dtau[n_ar-1-q];
 
@@ -115,7 +115,7 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
        get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
                           lnotch_r[q], notch_r[q], cellNrs_r[q], shifts_r[q], term1_n, term2_n, chi_n);
 
-      dtau[n_ar+q] = 0.5 * (chi_c + chi_n) * dZs_r[q];
+      dtau[n_ar+q] = 0.5 * (chi_n + chi_c) * dZs_r[q];
         Su[n_ar+q] = 0.5 * (term1_n + term1_c) + (term2_n - term2_c) / dtau[n_ar+q];
        	Sv[n_ar+q] = 0.5 * (term2_n + term2_c) + (term1_n - term1_c) / dtau[n_ar+q];
 
@@ -140,25 +140,14 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
   else if (n_ar > 0)   // and hence n_r == 0
   {
 
-    const long b = cells.cell_to_bdy_nr[o];
-
-    get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
-                       lnotch_ar[0], notch_ar[0], cellNrs_ar[0], shifts_ar[0], term1_n, term2_n, chi_n);
-
-    dtau[n_ar-1] = 0.5 * (chi_c + chi_n) * dZs_ar[0];
-      Su[n_ar-1] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[n_ar-1] * (radiation.boundary_intensity[R][b][f] - term2_n);
-      Sv[n_ar-1] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[n_ar-1] * (radiation.boundary_intensity[R][b][f] - term1_n);
-
-
-    for (long q = 1; q < n_ar-1; q++)
+    for (long q = 0; q < n_ar; q++)
     {
       get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
                          lnotch_ar[q], notch_ar[q], cellNrs_ar[q], shifts_ar[q], term1_n, term2_n, chi_n);
 
-      dtau[n_ar-1-q] = 0.5 * (chi_c + chi_n) * dZs_ar[q];
+      dtau[n_ar-1-q] = 0.5 * (chi_n + chi_c) * dZs_ar[q];
         Su[n_ar-1-q] = 0.5 * (term1_n + term1_c) - (term2_n - term2_c) / dtau[n_ar-1-q];
         Sv[n_ar-1-q] = 0.5 * (term2_n + term2_c) - (term1_n - term1_c) / dtau[n_ar-1-q];
-
 
         chi_c =   chi_n;
       term1_c = term1_n;
@@ -170,9 +159,17 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
                             lnotch_ar[n_ar-1], notch_ar[n_ar-1], cellNrs_ar[n_ar-1], shifts_ar[n_ar-1],
                             term1_n, term2_n, chi_n, Ibdy_scaled);
 
-    dtau[0] = 0.5 * (chi_c + chi_n) * dZs_ar[n_ar-1];
-      Su[0] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[0] * (Ibdy_scaled + term2_c);
-      Sv[0] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[0] * (Ibdy_scaled + term1_c);
+    Su[0] += 2.0 / dtau[0] * (Ibdy_scaled + 0.5 * (term2_c + term2_n));
+    Sv[0] += 2.0 / dtau[0] * (Ibdy_scaled + 0.5 * (term1_c + term1_n));
+
+
+    const long b = cells.cell_to_bdy_nr[o];
+
+    get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
+                       lnotch_ar[0], notch_ar[0], cellNrs_ar[0], shifts_ar[0], term1_n, term2_n, chi_n);
+
+    Su[n_ar-1] += 2.0 / dtau[n_ar-1] * (radiation.boundary_intensity[R][b][f] - 0.5 * (term2_o + term2_n));
+    Sv[n_ar-1] += 2.0 / dtau[n_ar-1] * (radiation.boundary_intensity[R][b][f] - 0.5 * (term1_o + term1_n));
 
   }
 
@@ -182,22 +179,12 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
   else if (n_r > 0)   // and hence n_ar == 0
   {
 
-    const long b = cells.cell_to_bdy_nr[o];
-
-    get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
-                       lnotch_r[0], notch_r[0], cellNrs_r[0], shifts_r[0], term1_n, term2_n, chi_n);
-
-    dtau[0] = 0.5 * (chi_c + chi_n) * dZs_r[0];
-      Su[0] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[0] * (radiation.boundary_intensity[R][b][f] - term2_n);
-      Sv[0] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[0] * (radiation.boundary_intensity[R][b][f] - term1_n);
-
-
-    for (long q = 1; q < n_r-1; q++)
+    for (long q = 0; q < n_r; q++)
     {
       get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
                          lnotch_r[q], notch_r[q], cellNrs_r[q], shifts_r[q], term1_n, term2_n, chi_n);
 
-      dtau[q] = 0.5 * (chi_c + chi_n) * dZs_r[q];
+      dtau[q] = 0.5 * (chi_n + chi_c) * dZs_r[q];
         Su[q] = 0.5 * (term1_n + term1_c) + (term2_n - term2_c) / dtau[q];
        	Sv[q] = 0.5 * (term2_n + term2_c) + (term1_n - term1_c) / dtau[q];
 
@@ -211,10 +198,16 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
                             lnotch_r[n_r-1], notch_r[n_r-1], cellNrs_r[n_r-1], shifts_r[n_r-1],
                             term1_n, term2_n, chi_n, Ibdy_scaled);
 
-    dtau[n_r-1] = 0.5 * (chi_c + chi_n) * dZs_r[n_r-1];
-      Su[n_r-1] = 0.5 * (term1_n + term1_c) + 2.0 / dtau[n_r-1] * (Ibdy_scaled - term2_c);
-      Sv[n_r-1] = 0.5 * (term2_n + term2_c) + 2.0 / dtau[n_r-1] * (Ibdy_scaled - term1_c);
+    Su[n_r-1] += 2.0 / dtau[n_r-1] * (Ibdy_scaled - 0.5 * (term2_c + term2_n));
+    Sv[n_r-1] += 2.0 / dtau[n_r-1] * (Ibdy_scaled - 0.5 * (term1_c + term1_n));
 
+    const long b = cells.cell_to_bdy_nr[o];
+
+    get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
+                       lnotch_r[0], notch_r[0], cellNrs_r[0], shifts_r[0], term1_n, term2_n, chi_n);
+
+    Su[0] += 2.0 / dtau[0] * (radiation.boundary_intensity[R][b][f] - 0.5 * (term2_o + term2_n));
+    Sv[0] += 2.0 / dtau[0] * (radiation.boundary_intensity[R][b][f] - 0.5 * (term1_o + term1_n));
   }
 
 

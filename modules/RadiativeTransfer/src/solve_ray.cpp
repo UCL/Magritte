@@ -76,7 +76,7 @@ inline int solve_ray (const long   ndep,
   // Elimination step
 
   Su[0] = Su[0] / B0;
-//  Sv[0] = Sv[0] / B0;
+  Sv[0] = Sv[0] / B0;
 
   F[0] = B0_min_C0 / C[0];
 
@@ -85,16 +85,16 @@ inline int solve_ray (const long   ndep,
     F[n] = (vOne + A[n]*F[n-1]/(vOne + F[n-1])) / C[n];
 
     Su[n] = (Su[n] + A[n]*Su[n-1]) / ((vOne + F[n]) * C[n]);
-//    Sv[n] = (Sv[n] + A[n]*Sv[n-1]) / ((vOne + F[n]) * C[n]);
+    Sv[n] = (Sv[n] + A[n]*Sv[n-1]) / ((vOne + F[n]) * C[n]);
   }
 
   Su[ndep-1] = (Su[ndep-1] + A[ndep-1]*Su[ndep-2]) * (vOne + F[ndep-2])
                / (Bd_min_Ad + Bd*F[ndep-2]);
 
-//  Sv[ndep-1] = (Sv[ndep-1] + A[ndep-1]*Sv[ndep-2])
-//               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
+  Sv[ndep-1] = (Sv[ndep-1] + A[ndep-1]*Sv[ndep-2])
+               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
 
-//  G[ndep-1] = Bd_min_Ad / A[ndep-1];
+  G[ndep-1] = Bd_min_Ad / A[ndep-1];
 
 
   // Back substitution
@@ -102,13 +102,13 @@ inline int solve_ray (const long   ndep,
   for (long n = ndep-2; n > 0; n--)
   {
     Su[n] = Su[n] + Su[n+1] / (vOne + F[n]);
-//    Sv[n] = Sv[n] + Sv[n+1] / (vOne + F[n]);
+    Sv[n] = Sv[n] + Sv[n+1] / (vOne + F[n]);
 
-  //  G[n] = (vOne + C[n]*G[n+1]/(vOne+G[n+1])) / A[n];
+    G[n] = (vOne + C[n] * G[n+1] / (vOne+G[n+1])) / A[n];
   }
 
   Su[0] = Su[0] + Su[1] / (vOne + F[0]);
-//  Sv[0] = Sv[0] + Sv[1]/(vOne+F[0]);
+  Sv[0] = Sv[0] + Sv[1] / (vOne+F[0]);
 
 
 

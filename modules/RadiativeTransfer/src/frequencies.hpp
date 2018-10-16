@@ -42,7 +42,7 @@ struct FREQUENCIES
 
   static long count_nfreq_red (const long nfreq);        ///< count reduced nr of frequencies
 
-  int write (const string tag) const;                    ///< write out data
+  int print (const string tag) const;                    ///< write out data
 
   int reset (const LINEDATA    &linedata,
              const TEMPERATURE &temperature);            ///< Set frequencies

@@ -119,7 +119,7 @@ FREQUENCIES (const     long  num_of_cells,
 
 
 int FREQUENCIES ::
-    write (const string tag) const
+    print (const string tag) const
 {
 
   const string file_name = output_folder + "frequencies_nu" + tag + ".txt";

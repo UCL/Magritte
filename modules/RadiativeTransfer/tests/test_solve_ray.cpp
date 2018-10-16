@@ -17,7 +17,7 @@ using namespace Eigen;
 #include "GridTypes.hpp"
 #include "folders.hpp"
 
-#define EPS 1.0E-6
+#define EPS 1.0E-5
 
 
 ///  feautrier_error: returns difference between the two sides of the Feautrier eq.
@@ -91,16 +91,16 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
       vReal error_v = feautrier_error (S, dtau, v, m);
 
 
-      for (int lane = 0; lane < n_simd_lanes; lane++)
-      {
-#       if (GRID_SIMD)
+#     if (GRID_SIMD)
+        for (int lane = 0; lane < n_simd_lanes; lane++)
+        {
           CHECK (error_u.getlane(lane) == Approx(0.0).epsilon(EPS));
           CHECK (error_v.getlane(lane) == Approx(0.0).epsilon(EPS));
-#       else
-          CHECK (error_u == Approx(0.0).epsilon(EPS));
-          CHECK (error_v == Approx(0.0).epsilon(EPS));
-#       endif
-      }
+        }
+#     else
+        CHECK (error_u == Approx(0.0).epsilon(EPS));
+        CHECK (error_v == Approx(0.0).epsilon(EPS));
+#     endif
     }
   }
 
@@ -140,8 +140,8 @@ TEST_CASE ("Analytic model")
 
   // Set up test data
 
-  double DT = 0.01;//0.01984687161267688;
-  double SS = 1.0;//1.1704086088847389e-16;  
+  double DT = 0.01984687161267688;
+  double SS = 1.1704086088847389e-16;  
 
   for (long i = 0; i < ndep; i++)
   {
@@ -150,6 +150,7 @@ TEST_CASE ("Analytic model")
     dtau[i] = DT;
      tau[i] = 0.0;
   }
+
 
   v[0]      = - 2.0 / dtau[0]      * SS;
   v[ndep-1] = + 2.0 / dtau[ndep-1] * SS;
@@ -165,21 +166,17 @@ TEST_CASE ("Analytic model")
 
   SECTION ("Check with analytic solution")
   {
-    cout << "Analytic tests" << endl;
-    // Check if result satisfies the Feautrier equation (d^2u/dtau^2=u-S)
 
-    for (long m = 1; m < ndep-1; m++)
+    for (long m = 0; m < ndep; m++)
     {
       vReal u_analytic =   SS*(1.0 - 0.5*(exp(-tau[m]) + exp(tau[m]-tau[ndep-1])));
       vReal v_analytic = - SS*       0.5*(exp(-tau[m]) - exp(tau[m]-tau[ndep-1]));
-      //u[m-1] = 0.5 * (u[m]+u[m-1]);
-      //v[m-1] = 0.5 * (v[m]+v[m-1]);
 
 
       vReal error_u = relative_error(u_analytic, u[m]);
       vReal error_v = relative_error(v_analytic, v[m]);
 
-      cout << u_analytic << "\t" << u[m] << "\t" << error_u << endl;
+      cout << u_analytic << "\t" << u[m] << "\t" << error_u << "\t" << tau[m] << "\t" << tau[m]-tau[ndep-1] << endl;
     //  cout << relative_error(u[m], u[ndep-m]) << endl;
     //  cout << v_analytic << "\t" << v[m] << "\t" << error_v << endl;
 

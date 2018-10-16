@@ -42,6 +42,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
                        const SCATTERING               &scattering,
 	                     RADIATION                &radiation   )
 {
+  cout << "In RT..." << endl;
 
   const long ndiag = 0;
 
@@ -123,6 +124,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
 
       // Extract the cell on ray r and antipodal ar
 
+
       long n_r  = cells.on_ray (o, r,  cellNrs_r,  dZs_r);
       long n_ar = cells.on_ray (o, ar, cellNrs_ar, dZs_ar);
 
@@ -152,30 +154,29 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
 
         for (long f = 0; f < nfreq_red; f++)
         {
-
           set_up_ray <Dimension, Nrays>
                      (cells, frequencies, temperature,lines, scattering, radiation, f, o, R,
                       lnotch_ar, notch_ar, cellNrs_ar, shifts_ar, dZs_ar, n_ar,
                       lnotch_r,  notch_r,  cellNrs_r,  shifts_r,  dZs_r,  n_r,
                       Su, Sv, dtau, ndep);
 
-          for (long n = 0; n < ndep; n++)
-          {
-            if (f == frequencies.nr_line[o][0][0][0])
-            { const long index2 = radiation.index(n,f);
-            //  cout << "INPUT : f = " << f << "   dtau = " << dtau[n] << "   S = " << Su[n] << endl;
-            }
-          }
+          //for (long n = 0; n < ndep; n++)
+          //{
+          //  if (f == frequencies.nr_line[o][0][0][0])
+          //  { const long index2 = radiation.index(n,f);
+          //    cout << "INPUT : f = " << f << "   dtau = " << dtau[n] << "   S = " << Su[n] << endl;
+          //  }
+          //}
 
          solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
 
-          for (long n = 0; n < ndep; n++)
-          {
-            if (f == frequencies.nr_line[o][0][0][0])
-            { const long index2 = radiation.index(n,f);
-              cout << "OUTPUT : n = " << n << "   Su = " << Su[n] << endl;
-            }
-          }
+          //for (long n = 0; n < ndep; n++)
+          //{
+          //  if (f == frequencies.nr_line[o][0][0][0])
+          //  { const long index2 = radiation.index(n,f);
+          //    cout << "OUTPUT : n = " << n << "   Su = " << Su[n] << endl;
+          //  }
+          //}
 
           const long index = radiation.index(o,f);
 
@@ -198,15 +199,15 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
             radiation.v[R][index] = Sv[0];
           }
 
-          for (long n = 0; n < ndep; n++)
-          {
-            if (f == frequencies.nr_line[o][0][0][0])
-            {
-              const long index2 = radiation.index(n,f);
-             // cout << n << " " << radiation.u[R][index2] << endl;
-              //cout << n << " " << Su[n] << endl;
-            }
-          }
+          //for (long n = 0; n < ndep; n++)
+          //{
+          //  if (f == frequencies.nr_line[o][0][0][0])
+          //  {
+          //    const long index2 = radiation.index(n,f);
+          //    cout << n << " " << radiation.u[R][index2] << endl;
+          //    cout << n << " " << Su[n] << endl;
+          //  }
+          //}
 
         } // end of loop over frequencies
 

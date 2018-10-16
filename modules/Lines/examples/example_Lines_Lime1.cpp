@@ -49,6 +49,12 @@ int main (void)
 
   CELLS <DIMENSION, NRAYS> cells (NCELLS, n_neighbors_file);
 
+  //for (int r = 0; r < NRAYS; r++)
+  //{
+  //  cout << cells.rays.antipod[r] << endl;
+  //  cout << cells.rays.x[r] << "\t" << cells.rays.y[r] << "\t" << cells.rays.z[r] << endl;
+  //}
+
   cells.read (cells_file, neighbors_file, boundary_file);
 
   const long nboundary = cells.nboundary;
@@ -101,7 +107,10 @@ int main (void)
   levels.print (tag);
   
   radiation.print (tag);
-  
+
+  frequencies.print (tag);
+
+
   //// Print total time
   //
   //timer_TOTAL.stop ();

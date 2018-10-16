@@ -4,10 +4,13 @@
 // _________________________________________________________________________
 
 #include <math.h>
+#include <fstream>
 #include <iostream>
+using namespace std;
 
 #include "rays.hpp"
 #include "constants.hpp"
+#include "folders.hpp"
 #include "HEALPix/chealpix.h"
 
 
@@ -28,49 +31,61 @@ RAYS ()
 //  static_assert ( (Dimension != 3) || (sqrt(Nrays/12.0) - long(sqrt(Nrays/12.0)) == 0),
 //                  "Nrays should be of the form 12*n*n for an integer n.");
 
+  // Read rays file
 
-  // Create (unit) HEALPix vectors
+  ifstream raysFile (input_folder + "rays.txt");
 
-  if (Dimension == 1)
+  for (long r = 0; r < Nrays; r++)
   {
-    x[0] = +1.0;
-    y[0] =  0.0;
-    z[0] =  0.0;
-
-    x[1] = -1.0;
-    y[1] =  0.0;
-    z[1] =  0.0;
+    raysFile >> x[r] >> y[r] >> z[r];
   }
 
-
-  if (Dimension == 2)
-  {
-    for (long r = 0; r < Nrays; r++)
-    {
-      double theta = (2.0*PI*r) / Nrays;
-
-      x[r] = cos(theta);
-      y[r] = sin(theta);
-      z[r] = 0.0;
-    }
-  }
-
-
-  if (Dimension == 3)
-  {
-    long nsides = (long) sqrt(Nrays/12);
-
-    for (long r = 0; r < Nrays; r++)
-    {
-      double vector[3];   // unit vector in direction of HEALPix ray
-
-      pix2vec_nest (nsides, r, vector);
-
-      x[r] = vector[0];
-      y[r] = vector[1];
-      z[r] = vector[2];
-    }
-  }
+//  // Create (unit) HEALPix vectors
+//
+//  if (Dimension == 1)
+//  {
+//    x[0] = +1.0;
+//    y[0] =  0.0;
+//    z[0] =  0.0;
+//
+//    x[1] = -1.0;
+//    y[1] =  0.0;
+//    z[1] =  0.0;
+//  }
+//
+//
+//  if (Dimension == 2)
+//  {
+//    for (long r = 0; r < Nrays; r++)
+//    {
+//      double theta = (2.0*PI*r) / Nrays;
+//
+//      x[r] = cos(theta);
+//      y[r] = sin(theta);
+//      z[r] = 0.0;
+//    }
+//  }
+//
+//
+//  if (Dimension == 3)
+//  {
+//    long nsides = (long) sqrt(Nrays/12);
+//
+//    cout << "------------------------------------->" << nsides << endl;
+//
+//    for (long r = 0; r < Nrays; r++)
+//    {
+//      double vector[3];   // unit vector in direction of HEALPix ray
+//
+//      pix2vec_nest (nsides, r, vector);
+//
+//      x[r] = vector[0];
+//      y[r] = vector[1];
+//      z[r] = vector[2];
+//
+//      cout << x[r] << "\t" << y[r] << "\t" << z[r] << endl;
+//    }
+//  }
 
 
   // Find antipodal pairs
