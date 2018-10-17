@@ -151,8 +151,8 @@ inline int LINES ::
     const vReal line_profile = profile (width, freq_diff);
     const long           ind = index   (p, frequencies.line_index[lindex]);
 
-    eta += emissivity[ind] /* * line_profile*/;
-    chi +=    opacity[ind] /* * line_profile*/;
+    eta += emissivity[ind] * line_profile;
+    chi +=    opacity[ind] * line_profile;
 
     //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
     //cout << "line profile = " << line_profile << endl;
