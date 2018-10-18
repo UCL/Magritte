@@ -59,13 +59,13 @@ target_link_libraries( test_rays.exe
   _RADIATIVE_TRANSFER
   _TEST_RT_MAIN )
 
-## Create executable to test cells
-#add_executable( test_cells.exe
-#test_cells.cpp )
-#target_link_libraries( test_cells.exe
-#_RADIATIVE_TRANSFER
-#_TEST_RT_MAIN )
-#
+# Create executable to test cells
+add_executable( test_cells.exe
+test_cells.cpp )
+target_link_libraries( test_cells.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
 ### Create executable to test ray_tracing
 ##add_executable( test_ray_tracing.exe
 ##test_ray_tracing.cpp )
@@ -123,12 +123,12 @@ target_link_libraries( test_profile.exe
   _RADIATIVE_TRANSFER
   _TEST_RT_MAIN )
 
-## Create executable to test frequencies
-#add_executable( test_lines.exe
-#  test_lines.cpp )
-#target_link_libraries( test_lines.exe
-#  _RADIATIVE_TRANSFER
-#  _TEST_RT_MAIN )
+# Create executable to test frequencies
+add_executable( test_lines.exe
+  test_lines.cpp )
+target_link_libraries( test_lines.exe
+  _RADIATIVE_TRANSFER
+  _TEST_RT_MAIN )
 
 ## Create executable to test species
 #add_executable( test_species.exe

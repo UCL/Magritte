@@ -138,6 +138,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
            notch_ar[q] = 0;
           lnotch_ar[q] = 0;
           shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
+
+          //cout << shifts_ar[q] << endl;
         }
 
         for (long q = 0; q < n_r; q++)
@@ -145,6 +147,8 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
            notch_r[q] = 0;
           lnotch_r[q] = 0;
           shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
+
+          //cout << shifts_r[q] << endl;
         }
 
 

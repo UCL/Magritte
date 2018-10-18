@@ -280,8 +280,12 @@ inline int get_terms_and_chi (const FREQUENCIES &frequencies,
 {
 
   vReal eta, U_scaled, V_scaled;
-
+  
   vReal freq_scaled  = shifts * frequencies.nu[o][f];
+
+  //cout.precision(16);
+  //cout << "shifts = " << shifts << fixed << endl;
+  //cout << "freq scaled " << freq_scaled - frequencies.nu[o][f] << endl;
 
   get_eta_and_chi (frequencies, temperature, lines, scattering, radiation,
                    lnotch, cellNrs, freq_scaled, eta, chi);
@@ -342,7 +346,6 @@ inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays> &cells,
 
   radiation.rescale_U_and_V_and_bdy_I (frequencies, cellNrs, b, R, notch, freq_scaled,
                                        U_scaled, V_scaled, Ibdy_scaled);
-
 
   // temporary !!!
 

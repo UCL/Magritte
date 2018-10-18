@@ -17,11 +17,13 @@ using namespace std;
 
 
 struct FREQUENCIES
-{
+{ 
 
   const long ncells;      ///< number of cells
 
   const long nlines;      ///< number of lines
+  const long ncont = 50;  ///< number of background bins
+
   const long nfreq;       ///< number of frequencies
   const long nfreq_red;   ///< nfreq divided by n_simd_lanes
 
@@ -38,7 +40,8 @@ struct FREQUENCIES
 
   static long count_nlines (const LINEDATA &linedata);   ///< count nr of lines
 
-  static long count_nfreq (const long nlines);           ///< count nr of frequencies
+  static long count_nfreq (const long nlines,
+                           const long ncont  );          ///< count nr of frequencies
 
   static long count_nfreq_red (const long nfreq);        ///< count reduced nr of frequencies
 

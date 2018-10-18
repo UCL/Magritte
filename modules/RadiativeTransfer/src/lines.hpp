@@ -112,16 +112,17 @@ inline int LINES ::
                                        const vReal       &freq_scaled,
                                              long        &lnotch,
                                        const long         p,
-                 	                           vReal       &eta,
+                 	                     vReal       &eta,
                                              vReal       &chi          ) const
 {
   // TEMPORARY !!!
 
-  //lnotch = 0;
+  lnotch = 0;
 
   ////////////////
 
 
+  // Move notch just before first line to include
 
   vReal freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
   double    width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
@@ -137,8 +138,11 @@ inline int LINES ::
 
     freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
         width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+        
+       // cout << "LOWER*width = " << LOWER*width << endl;
   }
 
+  // Include lines unt
 
   long lindex = lnotch;
 
@@ -154,6 +158,8 @@ inline int LINES ::
     eta += emissivity[ind] * line_profile;
     chi +=    opacity[ind] * line_profile;
 
+    cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+
     //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
     //cout << "line profile = " << line_profile << endl;
     //
@@ -165,6 +171,12 @@ inline int LINES ::
         width = profile_width (temperature.gas[p], frequencies.line[lindex]);
   }
 
+  int lmn = lindex - lnotch;
+
+  //if (lmn < 1)
+  {
+    cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+  }
 
   return (0);
 

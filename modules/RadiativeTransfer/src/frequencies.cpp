@@ -29,14 +29,14 @@ FREQUENCIES (const     long  num_of_cells,
              const LINEDATA &linedata)
   : ncells    (num_of_cells)
   , nlines    (count_nlines (linedata))
-  , nfreq     (count_nfreq (nlines))
+  , nfreq     (count_nfreq (nlines, ncont))
   , nfreq_red (count_nfreq_red (nfreq))
 
 {
 
   // Size and initialize all, order and deorder
 
-      nu.resize (ncells);
+       nu.resize (ncells);
   nr_line.resize (ncells);
 
 # pragma omp parallel   \
@@ -104,12 +104,6 @@ FREQUENCIES (const     long  num_of_cells,
   heapsort (line, line_index);
 
 
-  //for (int d = 0; d < nlines; d++)
-  //{
-  //  line_index[lindex[d]] == d;
-  //}
-
-
 }   // END OF CONSTRUCTOR
 
 
@@ -151,7 +145,7 @@ int FREQUENCIES ::
 }
 
 
-///  count_nfreq: count the number of frequencies
+///  count_nlines: count the number of lines
 ///    @param[in] linedata: data structure containing the line data
 ///////////////////////////////////////////////////////////////////
 
@@ -185,7 +179,8 @@ long FREQUENCIES ::
 ///////////////////////////////////////////////////////////////////
 
 long FREQUENCIES ::
-     count_nfreq (const long nlines)
+     count_nfreq (const long nlines,
+                  const long ncont )
 {
 
   long index = 0;
@@ -199,9 +194,9 @@ long FREQUENCIES ::
    *  Count other frequencies...
    */
 
-  // Add one test frequency
+  // Add ncont bins background
 
-  //index += 1;
+  index += ncont;
 
 
   // Ensure that nfreq is a multiple of n_simd_lanes
@@ -279,12 +274,39 @@ int FREQUENCIES ::
      *  Set other frequencies...
      */
 
-    // Add extra test frequency
+    // Add linspace for background
 
-    //freqs[index1] = 1.0E-10;
-    //nmbrs[index1] = index1;
+    // Find freqmax and freqmin
 
-    //index1++;
+    long freqmax = 0;
+
+    for (long f = 0; f < nfreq; f++)
+    {
+      if (freqs[f] > freqmax)
+      {
+        freqmax = freqs[f];
+      }
+    }
+
+
+    long freqmin = freqmax;
+
+    for (long f = 0; f < nfreq; f++)
+    {
+      if ( (freqs[f] < freqmin) && (freqs[f] != 0.0) )
+      {
+        freqmin = freqs[f];
+      }
+    }
+
+
+    for (int i = 0; i < ncont; i++)
+    {
+      freqs[index1] = (freqmax-freqmin) / ncont * i + freqmin;
+      nmbrs[index1] = index1;
+
+      index1++;
+    }
 
 
 
