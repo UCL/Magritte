@@ -135,4 +135,47 @@ def mapTo1D (model3D, model1D, cellsInShell):
     """
     return  
     
+#def mapTo3D_interpolate (model1D, nEdgeCells, dEdgeLength)
+#    """
+#    Maps a 1D model to the spherically symmetric 3D equivalent
+#    """
+#    # Create a 3D model object
+#    model3D = setCubeGrid (nEdgeCells, dEdgeLength)
+#    for n in range(model3D.ncells):
+#        r = np.sqrt (model3D.x[n]**2 + model3D.y[n]**2 + model3D.z[n]**2)
+#        if r
+#
+#
+#    return model3D
+
+
+def setCubeGrid (nEdgeCells, dEdgeLength):
+    """
+    Create a 3D cubic Cartesian grid
+    """
+    # Create a 3D model object
+    model3D = model (dim=3)
+    # Add geometry to grid
+    for i in range(nEdgeCells):
+        for j in range(nEdgeCells):
+            for k in range(nEdgeCells):
+                model3D.x = i * edgeLength;
+                model3D.y = j * edgeLength;
+                model3D.z = k * edgeLength;
+    # Done
+    return model3D
+
+
+
+
+def makeShelly (model1D, model3D):
+    for n in range(model3D.ncells):
+        r = np.sqrt (model3D.x[n]**2 + model3D.y[n]**2 + model3D.z[n]**2)
+        for m in range(-model1D.ncells):
+            if (model.x[m] < r):
+                ratio = model.x[m] / r
+                model3D.x[n] *= ratio
+                model3D.y[n] *= ratio
+                model3D.z[n] *= ratio
+                break
 

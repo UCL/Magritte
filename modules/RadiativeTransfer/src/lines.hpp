@@ -158,7 +158,7 @@ inline int LINES ::
     eta += emissivity[ind] * line_profile;
     chi +=    opacity[ind] * line_profile;
 
-    cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+  //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
 
     //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
     //cout << "line profile = " << line_profile << endl;
@@ -175,7 +175,7 @@ inline int LINES ::
 
   //if (lmn < 1)
   {
-    cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+ //   cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
   }
 
   return (0);

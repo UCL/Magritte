@@ -24,7 +24,7 @@ inline vReal profile (const double width,
   const vReal  exponent      = sqrtExponent * sqrtExponent;
 
 
-  return /*inverse_width **/ INVERSE_SQRT_PI * vExpMinus (exponent);
+  return inverse_width * INVERSE_SQRT_PI * vExpMinus (exponent);
 
 }
 

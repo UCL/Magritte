@@ -9,6 +9,7 @@
 #include <omp.h>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 using namespace std;
 #include <Eigen/QR>
 using namespace Eigen;
@@ -20,7 +21,6 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/GridTypes.hpp"
 #include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/lines.hpp"
-#include "RadiativeTransfer/src/profile.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
 #include "RadiativeTransfer/src/frequencies.hpp"
 
@@ -42,15 +42,15 @@ LEVELS (const long      num_of_cells,
 
   some_not_converged = true;
 
-	         not_converged.resize (nlspec);
+           not_converged.resize (nlspec);
   fraction_not_converged.resize (nlspec);
 
 
   for (int l = 0; l < nlspec; l++)
-	{
+  {
              not_converged[l] = true;
     fraction_not_converged[l] = 0.0;
-	}
+  }
 
 
   population.resize (ncells);
@@ -64,7 +64,7 @@ LEVELS (const long      num_of_cells,
 
 
 # pragma omp parallel   \
-	shared (linedata)     \
+  shared (linedata)     \
   default (none)
   {
 
@@ -91,9 +91,9 @@ LEVELS (const long      num_of_cells,
     {
       population[p][l].resize (nlev[l]);
            J_eff[p][l].resize (nrad[l]);
-      
+
       population_tot[p][l] = 0.0;
-      
+
       population_prev1[p][l].resize (nlev[l]);
       population_prev2[p][l].resize (nlev[l]);
       population_prev3[p][l].resize (nlev[l]);
@@ -110,7 +110,7 @@ LEVELS (const long      num_of_cells,
 
 ///  print: prints level populations of all levels from process 0
 ///    @param[in] tag: tag for output file
-///////////////////////////////////////////////////////////////// 
+/////////////////////////////////////////////////////////////////
 
 int LEVELS ::
     print (const string tag) const
@@ -134,11 +134,13 @@ int LEVELS ::
       {
         for (int i = 0; i < nlev[l]; i++)
         {
+          pops_outputFile << scientific << setprecision(16);
           pops_outputFile << population[p][l](i) << "\t";
         }
 
         for (int k = 0; k < nrad[l]; k++)
         {
+          Jeff_outputFile << scientific << setprecision(16);
           Jeff_outputFile << J_eff[p][l][k] << "\t";
         }
 
@@ -164,7 +166,7 @@ int LEVELS ::
 int LEVELS ::
     update_using_LTE (const LINEDATA    &linedata,
                       const SPECIES     &species,
-	              const TEMPERATURE &temperature,
+                      const TEMPERATURE &temperature,
                       const long         p,
                       const int          l           )
 {
@@ -355,7 +357,7 @@ int LEVELS ::
 int LEVELS ::
     calc_J_eff (const FREQUENCIES &frequencies,
                 const TEMPERATURE &temperature,
-	        const RADIATION   &radiation,
+                const RADIATION   &radiation,
                 const long         p,
                 const int          l           )
 {

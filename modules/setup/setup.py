@@ -14,6 +14,8 @@ writeDefinition  = setupFunctions.writeDefinition
 readSpeciesNames = setupFunctions.readSpeciesNames
 getSpeciesNumber = setupFunctions.getSpeciesNumber
 getNcells        = setupFunctions.getNcells
+import quadrature
+write_quadrature_file = quadrature.write_quadrature_file
 import lineData
 LineData  = lineData.LineData
 import os
@@ -256,6 +258,9 @@ def setupMagritte(projectFolder, runName=''):
         folder.write('const string output_folder = \"{}\";\n'.format(outputFolder))
         folder.write('\n')
         folder.write('#endif // __FOLDERS_HPP_INCLUDED__\n')
+    # Write quadrature file
+    n_quadrature_points = 39
+    write_quadrature_file(MagritteFolder + 'src/quadrature.hpp', n_quadrature_points)
     # Done
     return runFolder
 

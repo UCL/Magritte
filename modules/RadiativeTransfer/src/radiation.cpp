@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 using namespace std;
 
 #include "radiation.hpp"
@@ -81,14 +82,14 @@ long RADIATION :: get_nrays_red (const long nrays)
   const long START_raypair = ( world_rank   *nrays/2)/world_size;
   const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
 
-	return STOP_raypair - START_raypair;
+  return STOP_raypair - START_raypair;
 }
 
 int RADIATION ::
     read (const string boundary_intensity_file)
 {
 
-	return (0);
+  return (0);
 
 }
 
@@ -121,7 +122,7 @@ int RADIATION ::
 
       for (long f = 0; f < nfreq_red; f++)
       {
-        boundary_intensity[r][b][f] = 0.0;//planck (T_CMB, frequencies.nu[p][f]);
+        boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
       }
     }
     } // end of pragma omp parallel
@@ -147,7 +148,7 @@ int initialize (vReal1& vec)
 {
 
 # pragma omp parallel   \
-	shared (vec)    \
+  shared (vec)          \
   default (none)
   {
 
@@ -248,7 +249,7 @@ int RADIATION ::
 int RADIATION ::
     calc_U_and_V (const SCATTERING& scattering)
 
-#	if (MPI_PARALLEL)
+#if (MPI_PARALLEL)
 
 {
 
@@ -428,9 +429,11 @@ int RADIATION ::
 #       if (GRID_SIMD)
           for (int lane = 0; lane < n_simd_lanes; lane++)
           {
+            outputFile_J << scientific << setprecision(16);
             outputFile_J << J[index(p,f)].getlane(lane) << "\t";
           }
 #       else
+          outputFile_J << scientific << setprecision(16);
           outputFile_J << J[index(p,f)] << "\t";
 #       endif
       }

@@ -22,7 +22,7 @@ struct FREQUENCIES
   const long ncells;      ///< number of cells
 
   const long nlines;      ///< number of lines
-  const long ncont = 50;  ///< number of background bins
+  const long ncont = 0;   ///< number of background bins
 
   const long nfreq;       ///< number of frequencies
   const long nfreq_red;   ///< nfreq divided by n_simd_lanes

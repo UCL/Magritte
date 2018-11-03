@@ -7,10 +7,12 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 using namespace std;
 
 #include "frequencies.hpp"
+#include "folders.hpp"
 #include "GridTypes.hpp"
 #include "constants.hpp"
 #include "temperature.hpp"
@@ -109,12 +111,11 @@ FREQUENCIES (const     long  num_of_cells,
 
 
 
-#include "folders.hpp"
-
-
 int FREQUENCIES ::
     print (const string tag) const
 {
+
+  // Print all frequencies (nu)
 
   const string file_name = output_folder + "frequencies_nu" + tag + ".txt";
 
@@ -127,9 +128,11 @@ int FREQUENCIES ::
 #     if (GRID_SIMD)
         for (int lane = 0; lane < n_simd_lanes; lane++)
         {
+          outputFile << scientific << setprecision(16);
           outputFile << nu[p][f].getlane(lane) << "\t";
         }
 #     else
+        outputFile << scientific << setprecision(16);
         outputFile << nu[p][f] << "\t";
 #     endif
     }
@@ -139,6 +142,29 @@ int FREQUENCIES ::
   }
 
   outputFile.close ();
+
+
+  // Print line frequency numbers
+
+  const string file_name_lnr = output_folder + "frequencies_line_nr" + tag + ".txt";
+
+  ofstream outputFile_lnr (file_name_lnr);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    for (int l = 0; l < nr_line[p].size(); l++)
+    {
+      for (int k = 0; k < nr_line[p][l].size(); k++)
+      {
+        outputFile_lnr << nr_line[p][l][k][NR_LINE_CENTER] << "\t";
+      }
+    }
+
+    outputFile_lnr << endl;
+  }
+
+  outputFile_lnr.close ();
+
 
   return (0);
 
