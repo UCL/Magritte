@@ -31,7 +31,7 @@ FREQUENCIES (const     long  num_of_cells,
              const LINEDATA &linedata)
   : ncells    (num_of_cells)
   , nlines    (count_nlines (linedata))
-  , nfreq     (count_nfreq (nlines, ncont))
+  , nfreq     (count_nfreq (nlines, nbins, ncont))
   , nfreq_red (count_nfreq_red (nfreq))
 
 {
@@ -206,6 +206,7 @@ long FREQUENCIES ::
 
 long FREQUENCIES ::
      count_nfreq (const long nlines,
+                  const long nbins,
                   const long ncont )
 {
 
@@ -215,6 +216,11 @@ long FREQUENCIES ::
   // Count line frequencies
 
   index += nlines * N_QUADRATURE_POINTS;
+
+  // Add extra frequency bins around lines to get nicer spectrum
+  
+  index += nlines * 2 * nbins;
+
 
   /*
    *  Count other frequencies...
@@ -299,6 +305,36 @@ int FREQUENCIES ::
     /*
      *  Set other frequencies...
      */
+
+
+    // Add extra frequency bins around line to improve spectrum
+
+    for (int l = 0; l < linedata.nlspec; l++)
+    {
+      for (int k = 0; k < linedata.nrad[l]; k++)
+      {
+        const double freq_line = linedata.frequency[l][k];
+        const double width     = profile_width (temperature.gas[p], freq_line);
+
+        double factor = 1.0;
+
+        for (long e = 0; e < nbins; e++)
+        {
+          freqs[index1] = freq_line + width*LOWER * factor;
+          nmbrs[index1] = index1;
+
+          index1++;
+
+          freqs[index1] = freq_line + width*UPPER * factor;
+          nmbrs[index1] = index1;
+
+          index1++;
+
+          factor += 0.7;
+        }
+      }
+    }
+
 
     // Add linspace for background
 

@@ -22,6 +22,7 @@ struct FREQUENCIES
   const long ncells;      ///< number of cells
 
   const long nlines;      ///< number of lines
+  const long nbins = 0;  ///< number of extra bins per line
   const long ncont = 0;   ///< number of background bins
 
   const long nfreq;       ///< number of frequencies
@@ -41,6 +42,7 @@ struct FREQUENCIES
   static long count_nlines (const LINEDATA &linedata);   ///< count nr of lines
 
   static long count_nfreq (const long nlines,
+                           const long nbins,
                            const long ncont  );          ///< count nr of frequencies
 
   static long count_nfreq_red (const long nfreq);        ///< count reduced nr of frequencies

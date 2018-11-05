@@ -259,7 +259,7 @@ def setupMagritte(projectFolder, runName=''):
         folder.write('\n')
         folder.write('#endif // __FOLDERS_HPP_INCLUDED__\n')
     # Write quadrature file
-    n_quadrature_points = 39
+    n_quadrature_points = 17
     write_quadrature_file(MagritteFolder + 'src/quadrature.hpp', n_quadrature_points)
     # Done
     return runFolder

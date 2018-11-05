@@ -19,6 +19,7 @@ def write_quadrature_file(fileName, n):
     roots   = CArray(H_roots(n).tolist())
     weights = CArray(H_weights(n).tolist())
     with open(fileName, 'w') as file:
+        file.write(f'// Written by quadrature.py                              \n\n')
         file.write(f'const int    N_QUADRATURE_POINTS = {n};                  \n\n')
         file.write(f'const double H_roots   [N_QUADRATURE_POINTS] = {roots};  \n\n')
         file.write(f'const double H_weights [N_QUADRATURE_POINTS] = {weights};    ')
