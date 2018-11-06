@@ -19,10 +19,13 @@
 inline double relative_error (const double a,
                               const double b )
 {
+  //cout << a << " " << b << endl;
+
   return fabs ((a-b) / (a+b));
 }
 
 
+# if (GRID_SIMD)
 
 
 ///  relative_error: compute the relative difference between two vectors
@@ -40,15 +43,20 @@ inline vReal relative_error (const vReal a,
   
   // Take absolute value of individual simd lanes
   
-  for (int lane = 0; lane < n_simd_lanes; lane++)
-  {
-    error.putlane (fabs (error.getlane (lane)), lane);
-  }
+    for (int lane = 0; lane < n_simd_lanes; lane++)
+    {
+      error.putlane (fabs (error.getlane (lane)), lane);
+    }
+
+    error = fabs (error);
   
   
   return error;
 
 }
+
+
+# endif
 
 
 
@@ -60,13 +68,16 @@ inline vReal relative_error (const vReal a,
 inline int print (vReal a)
 {
 
-  for (int lane = 0; lane < n_simd_lanes; lane++)
-  {
-    cout << a.getlane(lane) << "\t";
-  }
+# if (GRID_SIMD)
+    for (int lane = 0; lane < n_simd_lanes; lane++)
+    {
+      cout << a.getlane(lane) << "\t";
+    }
+# else
+    cout << a;
+# endif
 
   cout << endl;
-
 
   return (0);
 

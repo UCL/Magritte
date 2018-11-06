@@ -26,69 +26,83 @@ struct LEVELS
 	
   const long ncells;                ///< number of cells
 	
-	const int nlspec;                 ///< number of species producing lines
+  const int nlspec;                 ///< number of species producing lines
 
-	const Int1 nlev;                  ///< number of levels per species
-	const Int1 nrad;                  ///< number of radiative transitions per species
+  const Int1 nlev;                  ///< number of levels per species
+  const Int1 nrad;                  ///< number of radiative transitions per species
 
 
   bool some_not_converged;          ///< true when there are unconverged species
 
-	Bool1            not_converged;   ///< true when species is not converged
+  Bool1            not_converged;   ///< true when species is not converged
   Double1 fraction_not_converged;   ///< fraction of levels that is not converged
 
-	VectorXd2 population;             ///< level population (most recent)
+  VectorXd2 population;             ///< level population (most recent)
 
-	Double3 J_eff;                    ///< effective mean intensity
+  Double3 J_eff;                    ///< effective mean intensity
 
   Double2   population_tot;         ///< total level population (sum over levels)
 
-	VectorXd2 population_prev1;       ///< level populations 1 iteration back
-	VectorXd2 population_prev2;       ///< level populations 2 iterations back
-	VectorXd2 population_prev3;       ///< level populations 3 iterations back
+  VectorXd2 population_prev1;       ///< level populations 1 iteration back
+  VectorXd2 population_prev2;       ///< level populations 2 iterations back
+  VectorXd2 population_prev3;       ///< level populations 3 iterations back
 
 
-  LEVELS (const long num_of_cells, const LINEDATA& linedata);   ///< Constructor
+  LEVELS (const long      num_of_cells,
+          const LINEDATA &linedata     );   ///< Constructor
 
 
-	int iteration_using_LTE (const LINEDATA& linedata, const SPECIES& species,
-	  	                     const TEMPERATURE& temperature, LINES& lines);
+  int iteration_using_LTE (const LINEDATA    &linedata,
+                           const SPECIES     &species,
+	  	           const TEMPERATURE &temperature,
+                                 LINES       &lines       );
 
 
-	int update_using_LTE (const LINEDATA& linedata, const SPECIES& species,
-			                  const TEMPERATURE& temperature, const long p, const int l);
+  int update_using_LTE (const LINEDATA    &linedata,
+                        const SPECIES     &species,
+                        const TEMPERATURE &temperature,
+                        const long         p,
+                        const int          l           );
 
 
-	int update_using_Ng_acceleration ();
+  int update_using_Ng_acceleration ();
 
 
-	int iteration_using_statistical_equilibrium (const LINEDATA& linedata,
-			                                         const SPECIES& species,
-	  	                                         const TEMPERATURE& temperature,
-																						   FREQUENCIES& frequencies,
-																						   RADIATION& radiation,
-																							 LINES& lines);
+  int iteration_using_statistical_equilibrium (const LINEDATA    &linedata,
+                                               const SPECIES     &species,
+                                               const TEMPERATURE &temperature,
+                                               const FREQUENCIES &frequencies,
+                                               const RADIATION   &radiation,
+                                                     LINES       &lines       );
 
 
-	int update_using_statistical_equilibrium (const MatrixXd& R, const long p, const int l);
+  int update_using_statistical_equilibrium (const MatrixXd &R,
+                                            const long      p,
+                                            const int       l );
 
 
-	// Communication with Radiative Transfer module
+  // Communication with Radiative Transfer module
 	
-	int calc_line_emissivity_and_opacity (const LINEDATA& linedata, LINES& lines,
-			                                  const long p, const int l) const;
+  int calc_line_emissivity_and_opacity (const LINEDATA &linedata,
+                                              LINES    &lines,
+			                const long      p,
+                                        const int       l        ) const;
 
-  int calc_J_eff (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-			            RADIATION& radiation, const long p, const int l);
+  int calc_J_eff (const FREQUENCIES &frequencies,
+                  const TEMPERATURE &temperature,
+	          const RADIATION   &radiation,
+                  const long         p,
+                  const int          l           );
 
-	// Convergence
+  // Convergence
 
-	int check_for_convergence (const long p, const int l);
+  int check_for_convergence (const long p,
+                             const int  l );
 
 
-	// Print
+  // Print
 	
-	int print (string output_folder, string tag);
+  int print (const string tag) const;
 
 };
 

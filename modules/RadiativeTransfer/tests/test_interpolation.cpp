@@ -78,11 +78,16 @@ TEST_CASE ("search_with_notch function")
 
   for (int i = 0; i < nElem; i++)
   {
-    for (int lane = 0; lane < n_simd_lanes; lane++)
-    {
-      vec[i].putlane(index-0.3, lane);
+#   if (GRID_SIMD)
+      for (int lane = 0; lane < n_simd_lanes; lane++)
+      {
+        vec[i].putlane(index-0.3, lane);
+        index++;
+      }
+#   else
+      vec[i] = index-0.3;
       index++;
-    }
+#   endif
   }
 
 
@@ -150,6 +155,8 @@ TEST_CASE ("interpolate_linear function (double)")
 
 
 
+#if (GRID_SIMD)
+
 /////////////////////////////////////////////////
 
 TEST_CASE ("interpolate_linear function (vReal)")
@@ -170,3 +177,5 @@ TEST_CASE ("interpolate_linear function (vReal)")
   }
 
 }
+
+#endif

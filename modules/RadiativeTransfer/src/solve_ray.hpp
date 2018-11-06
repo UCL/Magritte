@@ -24,8 +24,13 @@ using namespace Eigen;
 ///    @param[out] Lambda: approximate Lambda operator (ALO) for this ray pair
 //////////////////////////////////////////////////////////////////////////////////
 
-inline int solve_ray (const long ndep, vReal* Su, vReal* Sv, const vReal* dtau,
-			        				const long ndiag, vReal* Lambda, const long ncells);
+inline int solve_ray (const long   ndep,
+                            vReal *Su,
+                            vReal *Sv,
+                      const vReal *dtau,
+                      const long   ndiag,
+                            vReal *Lambda,
+                      const long   ncells );
 
 
 #include "solve_ray.cpp"

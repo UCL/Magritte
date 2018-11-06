@@ -29,89 +29,100 @@ int main (void)
 
   // Initialize MPI environment
 
-	MPI_Init (NULL, NULL);
+  MPI_Init (NULL, NULL);
 
 
-	// Set timer
+  //// Set timer
 
-	MPI_TIMER timer_TOTAL ("TOTAL");
-	timer_TOTAL.start ();
+  //MPI_TIMER timer_TOTAL ("TOTAL");
+  //timer_TOTAL.start ();
 
 
-	const string       cells_file = input_folder + "cells.txt";
-	const string n_neighbors_file = input_folder + "n_neighbors.txt";
-	const string   neighbors_file = input_folder + "neighbors.txt";
-	const string    boundary_file = input_folder + "boundary.txt";
-	const string     species_file = input_folder + "species.txt";
+  const string       cells_file = input_folder + "cells.txt";
+  const string n_neighbors_file = input_folder + "n_neighbors.txt";
+  const string   neighbors_file = input_folder + "neighbors.txt";
+  const string    boundary_file = input_folder + "boundary.txt";
+  const string     species_file = input_folder + "species.txt";
   const string   abundance_file = input_folder + "abundance.txt";
   const string temperature_file = input_folder + "temperature.txt";
 
 
-	CELLS <Dimension, Nrays> cells (Ncells, n_neighbors_file);
+  CELLS <DIMENSION, NRAYS> cells (NCELLS, n_neighbors_file);
 
-	cells.read (cells_file, neighbors_file, boundary_file);
+  //for (int r = 0; r < NRAYS; r++)
+  //{
+  //  cout << cells.rays.antipod[r] << endl;
+  //  cout << cells.rays.x[r] << "\t" << cells.rays.y[r] << "\t" << cells.rays.z[r] << endl;
+  //}
 
-	long nboundary = cells.nboundary;
+  cells.read (cells_file, neighbors_file, boundary_file);
 
-
-	LINEDATA linedata;
-
-
-	SPECIES species (Ncells, Nspec, species_file);
-
-	species.read (abundance_file);
+  const long nboundary = cells.nboundary;
 
 
-	TEMPERATURE temperature (Ncells);
-
-	temperature.read (temperature_file);
+  LINEDATA linedata (input_folder + "linedata/");
 
 
-	FREQUENCIES frequencies (Ncells, linedata);
-
-	frequencies.reset (linedata, temperature);
-
-	const long nfreq_red = frequencies.nfreq_red;
-
-	frequencies.write("");
-
-	//for (int i = 0; i < frequencies.line.size(); i++)
-	//{
-	//	cout << frequencies.line[i] << endl;
-	//}
+  SPECIES species (NCELLS, NSPEC, species_file);
+  species.read (abundance_file);
 
 
-	LEVELS levels (Ncells, linedata);
+  TEMPERATURE temperature (NCELLS);
+  temperature.read (temperature_file);
 
 
-	RADIATION radiation (Ncells, Nrays, nfreq_red, nboundary);
+  FREQUENCIES frequencies (NCELLS, linedata);
+  frequencies.reset (linedata, temperature);
 
-	radiation.calc_boundary_intensities (cells.bdy_to_cell_nr, frequencies);
+  //frequencies.write("");
+  const long nfreq_red = frequencies.nfreq_red;
 
-	radiation.print ("","");
+  
+  LEVELS levels (NCELLS, linedata);
+  
+  
+  RADIATION radiation (NCELLS,
+                       NRAYS,
+                       nfreq_red,
+                       nboundary );
+  
+  radiation.calc_boundary_intensities (cells.bdy_to_cell_nr,
+                                       frequencies          );
+  
+  //radiation.print ("","");
+  
+  Lines <DIMENSION, NRAYS>(cells,
+                           linedata,
+                           species,
+                           temperature,
+                           frequencies,
+                           levels,
+                           radiation   );
+ 
+  
+  // Print results
+ 
+  string tag = "_final";  
 
-	Lines <Dimension, Nrays>
-		    (cells, linedata, species, temperature,
-				 frequencies, levels, radiation);
+  levels.print (tag);
+  
+  radiation.print (tag);
+
+  frequencies.print (tag);
 
 
-	// Print results
+  //// Print total time
+  //
+  //timer_TOTAL.stop ();
+  //timer_TOTAL.print_to_file ();
 
-	levels.print (output_folder, "");
-
-	radiation.print ("","final");
-
-	// Print total time
-
-	timer_TOTAL.stop ();
-	timer_TOTAL.print_to_file ();
-
+  //cout << linedata.A[0] << endl;
 
   // Finalize the MPI environment
 
   MPI_Finalize ();
 
 
-	return (0);
+  return (0);
 
 }

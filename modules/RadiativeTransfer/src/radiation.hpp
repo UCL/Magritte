@@ -20,58 +20,71 @@
 struct RADIATION
 {
 
-	const long ncells;          ///< number of cells
-	const long nrays;           ///< number of rays
-	const long nrays_red;       ///< reduced number of rays
-	const long nfreq_red;       ///< reduced number of frequencies
-	const long nboundary;       ///< number of boundary cells
-
-
-	vReal2 u;                   ///< u intensity           (r, index(p,f))
-	vReal2 v;                   ///< v intensity           (r, index(p,f))
-
-	vReal2 U;                   ///< U scattered intensity (r, index(p,f))
-	vReal2 V;                   ///< V scattered intensity (r, index(p,f))
-
-	vReal1 J;                   ///< (angular) mean intensity (index(p,f))
-
-	vReal3 boundary_intensity;   ///< intensity at the boundary (b,r,f)
-
-
-	RADIATION (const long num_of_cells,    const long num_of_rays,
-			       const long num_of_freq_red, const long num_of_bdycells);
+  const long ncells;          ///< number of cells
+  const long nrays;           ///< number of rays
+  const long nrays_red;       ///< reduced number of rays
+  const long nfreq_red;       ///< reduced number of frequencies
+  const long nboundary;       ///< number of boundary cells
+  
+  
+  vReal2 u;                   ///< u intensity           (r, index(p,f))
+  vReal2 v;                   ///< v intensity           (r, index(p,f))
+  
+  vReal2 U;                   ///< U scattered intensity (r, index(p,f))
+  vReal2 V;                   ///< V scattered intensity (r, index(p,f))
+  
+  vReal1 J;                   ///< (angular) mean intensity (index(p,f))
+  
+  vReal3 boundary_intensity;   ///< intensity at the boundary (b,r,f)
+  
+  
+  RADIATION (const long num_of_cells,
+             const long num_of_rays,
+             const long num_of_freq_red,
+             const long num_of_bdycells );
 
   static long get_nrays_red (const long nrays);
 
 
-	//int initialize ();
+  //int initialize ();
 
   int read (const string boundary_intensity_file);
 
-	int write (const string boundary_intensity_file) const;
+  int write (const string boundary_intensity_file) const;
 
-  inline long index (const long p, const long f) const;
-
-
-  int calc_boundary_intensities (const Long1& bdy_to_cell_nr,
-			                           const FREQUENCIES& frequencies);
+  inline long index (const long p,
+                     const long f ) const;
 
 
-  inline int rescale_U_and_V (FREQUENCIES& frequencies, const long p,
-	                            const long R, long& notch, vReal& freq_scaled,
-						                  vReal& U_scaled, vReal& V_scaled);
+  int calc_boundary_intensities (const Long1       &bdy_to_cell_nr,
+                                 const FREQUENCIES &frequencies    );
 
-  inline int rescale_U_and_V_and_bdy_I (FREQUENCIES& frequencies, const long p, const long b,
-	                                      const long R, long& notch, vReal& freq_scaled,
-															          vReal& U_scaled, vReal& V_scaled, vReal& Ibdy_scaled);
 
-	int calc_J (void);
+  inline int rescale_U_and_V (const FREQUENCIES &frequencies,
+                              const long         p,
+                              const long         R,
+                                    long        &notch,
+                              const vReal       &freq_scaled,
+                                    vReal       &U_scaled,
+                                    vReal       &V_scaled    ) const;
 
-	int calc_U_and_V (const SCATTERING& scattering);
+  inline int rescale_U_and_V_and_bdy_I (const FREQUENCIES &frequencies,
+                                        const long         p,
+                                        const long         b,
+	                                const long         R,
+                                              long        &notch,
+                                        const vReal       &freq_scaled,
+                                              vReal       &U_scaled,
+                                              vReal       &V_scaled,
+                                              vReal       &Ibdy_scaled ) const;
 
-	// Print
+  int calc_J (void);
 
-	int print (string output_folder, string tag);
+  int calc_U_and_V (const SCATTERING& scattering);
+
+  // Print
+
+  int print (const string tag) const;
 
 
 };
@@ -90,13 +103,13 @@ inline long RADIATION ::
 #include "interpolation.hpp"
 
 inline int RADIATION ::
-           rescale_U_and_V (      FREQUENCIES &frequencies,
+           rescale_U_and_V (const FREQUENCIES &frequencies,
                             const long         p,
                             const long         R,
                                   long        &notch,
-                                  vReal       &freq_scaled,
+                            const vReal       &freq_scaled,
                                   vReal       &U_scaled,
-                                  vReal       &V_scaled    )
+                                  vReal       &V_scaled    ) const
 
 #if (GRID_SIMD)
 
@@ -179,15 +192,15 @@ inline int RADIATION ::
 
 
 inline int RADIATION ::
-           rescale_U_and_V_and_bdy_I (      FREQUENCIES &frequencies,
+           rescale_U_and_V_and_bdy_I (const FREQUENCIES &frequencies,
 		                      const long         p,
                                       const long         b,
                                       const long         R,
                                             long        &notch,
-                                            vReal       &freq_scaled,
+                                      const vReal       &freq_scaled,
                                             vReal       &U_scaled,
                                             vReal       &V_scaled,
-                                            vReal       &Ibdy_scaled )
+                                            vReal       &Ibdy_scaled ) const
    
 #if (GRID_SIMD)
 

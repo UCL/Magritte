@@ -59,13 +59,13 @@ target_link_libraries( test_rays.exe
   _RADIATIVE_TRANSFER
   _TEST_RT_MAIN )
 
-## Create executable to test cells
-#add_executable( test_cells.exe
-#test_cells.cpp )
-#target_link_libraries( test_cells.exe
-#_RADIATIVE_TRANSFER
-#_TEST_RT_MAIN )
-#
+# Create executable to test cells
+add_executable( test_cells.exe
+test_cells.cpp )
+target_link_libraries( test_cells.exe
+_RADIATIVE_TRANSFER
+_TEST_RT_MAIN )
+
 ### Create executable to test ray_tracing
 ##add_executable( test_ray_tracing.exe
 ##test_ray_tracing.cpp )
@@ -88,12 +88,12 @@ target_link_libraries( test_solve_ray.exe
   _RADIATIVE_TRANSFER
   _TEST_RT_MAIN )
 
-# Create executable to test radiation field
-add_executable( test_radiation.exe
-  test_radiation.cpp )
-target_link_libraries( test_radiation.exe
-  _RADIATIVE_TRANSFER
-  _TEST_RT_MAIN )
+## Create executable to test radiation field
+#add_executable( test_radiation.exe
+#  test_radiation.cpp )
+#target_link_libraries( test_radiation.exe
+#  _RADIATIVE_TRANSFER
+#  _TEST_RT_MAIN )
 
 # Create executable to test interpolation
 add_executable( test_interpolation.exe

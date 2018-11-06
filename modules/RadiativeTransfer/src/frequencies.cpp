@@ -7,10 +7,12 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 using namespace std;
 
 #include "frequencies.hpp"
+#include "folders.hpp"
 #include "GridTypes.hpp"
 #include "constants.hpp"
 #include "temperature.hpp"
@@ -29,19 +31,18 @@ FREQUENCIES (const     long  num_of_cells,
              const LINEDATA &linedata)
   : ncells    (num_of_cells)
   , nlines    (count_nlines (linedata))
-  , nfreq     (count_nfreq (nlines))
+  , nfreq     (count_nfreq (nlines, nbins, ncont))
   , nfreq_red (count_nfreq_red (nfreq))
 
 {
 
-	// Size and initialize all, order and deorder
+  // Size and initialize all, order and deorder
 
-   	   nu.resize (ncells);
-      dnu.resize (ncells);
-	nr_line.resize (ncells);
+       nu.resize (ncells);
+  nr_line.resize (ncells);
 
 # pragma omp parallel   \
-	shared (linedata)     \
+  shared (linedata)     \
   default (none)
   {
 
@@ -54,19 +55,18 @@ FREQUENCIES (const     long  num_of_cells,
 
   for (long p = start; p < stop; p++)
   {
-   	     nu[p].resize (nfreq_red);
-   	    dnu[p].resize (nfreq_red);
-	  nr_line[p].resize (linedata.nlspec);
+         nu[p].resize (nfreq_red);
+    nr_line[p].resize (linedata.nlspec);
 
-	  for (int l = 0; l < linedata.nlspec; l++)
-	  {
-	  	nr_line[p][l].resize (linedata.nrad[l]);
+    for (int l = 0; l < linedata.nlspec; l++)
+    {
+      nr_line[p][l].resize (linedata.nrad[l]);
 
-	  	for (int k = 0; k < linedata.nrad[l]; k++)
-	  	{
-	  		nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
-	  	}
-	  }
+      for (int k = 0; k < linedata.nrad[l]; k++)
+      {
+        nr_line[p][l][k].resize (N_QUADRATURE_POINTS);
+      }
+    }
 
 
     // frequencies.nu has to be initialized (for unused entries)
@@ -74,11 +74,10 @@ FREQUENCIES (const     long  num_of_cells,
     for (long f = 0; f < nfreq_red; f++)
     {
        nu[p][f] = 0.0;
-      dnu[p][f] = 0.0;
     }
 
   }
-	} // end of pragma omp parallel
+  } // end of pragma omp parallel
 
 
 
@@ -87,19 +86,22 @@ FREQUENCIES (const     long  num_of_cells,
   line      .resize (nlines);
   line_index.resize (nlines);
 
+//  Long1 lindex (nlines);
+
   long index = 0;
 
-	 for (int l = 0; l < linedata.nlspec; l++)
-	 {
-		for (int k = 0; k < linedata.nrad[l]; k++)
-		{
-		  line      [index] = linedata.frequency[l][k];
+  for (int l = 0; l < linedata.nlspec; l++)
+  {
+    for (int k = 0; k < linedata.nrad[l]; k++)
+    {
+      line      [index] = linedata.frequency[l][k];
       line_index[index] = index;
       index++;
     }
-	}
+  }
 
-	// Sort frequencies
+
+  // Sort line frequencies
 
   heapsort (line, line_index);
 
@@ -109,14 +111,13 @@ FREQUENCIES (const     long  num_of_cells,
 
 
 
-#include "folders.hpp"
-
-
 int FREQUENCIES ::
-    write (string tag)
+    print (const string tag) const
 {
 
-  string file_name = output_folder + "frequencies_nu" + tag + ".txt";
+  // Print all frequencies (nu)
+
+  const string file_name = output_folder + "frequencies_nu" + tag + ".txt";
 
   ofstream outputFile (file_name);
 
@@ -127,9 +128,11 @@ int FREQUENCIES ::
 #     if (GRID_SIMD)
         for (int lane = 0; lane < n_simd_lanes; lane++)
         {
+          outputFile << scientific << setprecision(16);
           outputFile << nu[p][f].getlane(lane) << "\t";
         }
 #     else
+        outputFile << scientific << setprecision(16);
         outputFile << nu[p][f] << "\t";
 #     endif
     }
@@ -140,12 +143,35 @@ int FREQUENCIES ::
 
   outputFile.close ();
 
+
+  // Print line frequency numbers
+
+  const string file_name_lnr = output_folder + "frequencies_line_nr" + tag + ".txt";
+
+  ofstream outputFile_lnr (file_name_lnr);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    for (int l = 0; l < nr_line[p].size(); l++)
+    {
+      for (int k = 0; k < nr_line[p][l].size(); k++)
+      {
+        outputFile_lnr << nr_line[p][l][k][NR_LINE_CENTER] << "\t";
+      }
+    }
+
+    outputFile_lnr << endl;
+  }
+
+  outputFile_lnr.close ();
+
+
   return (0);
 
 }
 
 
-///  count_nfreq: count the number of frequencies
+///  count_nlines: count the number of lines
 ///    @param[in] linedata: data structure containing the line data
 ///////////////////////////////////////////////////////////////////
 
@@ -153,21 +179,21 @@ long FREQUENCIES ::
      count_nlines (const LINEDATA& linedata)
 {
 
-	long index = 0;
+  long index = 0;
 
 
   // Count line frequencies
 
   for (int l = 0; l < linedata.nlspec; l++)
   {
-  	for (int k = 0; k < linedata.nrad[l]; k++)
-  	{
-			index++;
-  	}
+    for (int k = 0; k < linedata.nrad[l]; k++)
+    {
+      index++;
+    }
   }
 
 
-	return index;
+  return index;
 
 }
 
@@ -179,26 +205,37 @@ long FREQUENCIES ::
 ///////////////////////////////////////////////////////////////////
 
 long FREQUENCIES ::
-     count_nfreq (const long nlines)
+     count_nfreq (const long nlines,
+                  const long nbins,
+                  const long ncont )
 {
 
-	long index = 0;
+  long index = 0;
 
 
   // Count line frequencies
 
   index += nlines * N_QUADRATURE_POINTS;
 
-	/*
-	 *  Count other frequencies...
-	 */
+  // Add extra frequency bins around lines to get nicer spectrum
+  
+  index += nlines * 2 * nbins;
 
 
-	// Ensure that nfreq is a multiple of n_simd_lanes
+  /*
+   *  Count other frequencies...
+   */
+
+  // Add ncont bins background
+
+  index += ncont;
+
+
+  // Ensure that nfreq is a multiple of n_simd_lanes
 
   long nfreq_red_tmp = (index + n_simd_lanes - 1) / n_simd_lanes;
 
-	return nfreq_red_tmp * n_simd_lanes;
+  return nfreq_red_tmp * n_simd_lanes;
 
 }
 
@@ -237,7 +274,7 @@ int FREQUENCIES ::
   const int num_threads = omp_get_num_threads();
   const int thread_num  = omp_get_thread_num();
 
-  const long start = (thread_num*ncells)/num_threads;
+  const long start = ( thread_num   *ncells)/num_threads;
   const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
 
   for (long p = start; p < stop; p++)
@@ -270,6 +307,71 @@ int FREQUENCIES ::
      */
 
 
+    // Add extra frequency bins around line to improve spectrum
+
+    for (int l = 0; l < linedata.nlspec; l++)
+    {
+      for (int k = 0; k < linedata.nrad[l]; k++)
+      {
+        const double freq_line = linedata.frequency[l][k];
+        const double width     = profile_width (temperature.gas[p], freq_line);
+
+        double factor = 1.0;
+
+        for (long e = 0; e < nbins; e++)
+        {
+          freqs[index1] = freq_line + width*LOWER * factor;
+          nmbrs[index1] = index1;
+
+          index1++;
+
+          freqs[index1] = freq_line + width*UPPER * factor;
+          nmbrs[index1] = index1;
+
+          index1++;
+
+          factor += 0.7;
+        }
+      }
+    }
+
+
+    // Add linspace for background
+
+    // Find freqmax and freqmin
+
+    long freqmax = 0;
+
+    for (long f = 0; f < nfreq; f++)
+    {
+      if (freqs[f] > freqmax)
+      {
+        freqmax = freqs[f];
+      }
+    }
+
+
+    long freqmin = freqmax;
+
+    for (long f = 0; f < nfreq; f++)
+    {
+      if ( (freqs[f] < freqmin) && (freqs[f] != 0.0) )
+      {
+        freqmin = freqs[f];
+      }
+    }
+
+
+    for (int i = 0; i < ncont; i++)
+    {
+      freqs[index1] = (freqmax-freqmin) / ncont * i + freqmin;
+      nmbrs[index1] = index1;
+
+      index1++;
+    }
+
+
+
     // Sort frequencies
 
     heapsort (freqs, nmbrs);
@@ -289,30 +391,12 @@ int FREQUENCIES ::
     }
 
 
-    // Set all frequency increments dnu
-//
-//#   if (GRID_SIMD)
-//  	  dnu[p][0].putlane(freqs[1]-freqs[0], 0);
-//#		else
-//  	  dnu[p][0] = freqs[1]-freqs[0];
-//#   endif
-//
-//	  for (long fl = 1; fl < nfreq-1; fl++)
-//	  {
-//#     if (GRID_SIMD)
-//		    const long    f = fl / n_simd_lanes;
-//		    const long lane = fl % n_simd_lanes;
-//  	    dnu[p][f].putlane(0.5*(freqs[fl+1]-freqs[fl-1]), lane);
-//#		  else
-//  	    dnu[p][f] = 0.5*(freqs[fl+1]-freqs[fl-1]);
-//#     endif
-//		}
-//
-//#   if (GRID_SIMD)
-//  	  dnu[p][nfreq_red-1].putlane(freqs[nfreq-1]-freqs[nfreq-2], n_simd_lanes-1);
-//#		else
-//  	  dnu[p][nfreq_red-1] = freqs[nfreq-1]-freqs[nfreq-2];
-//#   endif
+    Long1 nmbrs_inverted (nfreq);
+
+    for (long fl = 0; fl < nfreq; fl++)
+    {
+      nmbrs_inverted[nmbrs[fl]] = fl;
+    }
 
 
     long index2 = 0;
@@ -323,7 +407,7 @@ int FREQUENCIES ::
       {
         for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
-           nr_line[p][l][k][z] = nmbrs[index2];
+           nr_line[p][l][k][z] = nmbrs_inverted[index2];
            index2++;
         }
       }

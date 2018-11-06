@@ -15,9 +15,9 @@ using namespace std;
 struct SPECIES
 {
 
-	long ncells;                        ///< total number of cells
+  long ncells;                        ///< total number of cells
 
-	int nspec;                          ///< total number of chemical species
+  int nspec;                          ///< total number of chemical species
 
   vector<string> sym;                 ///< symbol of chemical species
 
@@ -25,7 +25,7 @@ struct SPECIES
 
   vector<double> initial_abundance;   ///< abundance before chemical evolution
 
-	vector<vector<double>> abundance;   ///< abundance for every cell
+  vector<vector<double>> abundance;   ///< abundance for every cell
 
 
   // species numbers of some inportant species
@@ -46,7 +46,9 @@ struct SPECIES
   // Constructor: reads species data file
   // ------------------------------------
 
-  SPECIES (long num_of_cells, int num_of_spec, string spec_datafile);
+  SPECIES (const long   num_of_cells,
+           const int    num_of_spec,
+           const string spec_datafile);
 
 
   int read (string file_name);

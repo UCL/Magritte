@@ -20,8 +20,9 @@ using namespace std;
 
 template <int Dimension, long Nrays>
 CELLS <Dimension, Nrays> ::
-CELLS (const long num_of_cells, const string n_neighbors_file)
-	: ncells (num_of_cells)
+CELLS (const long   num_of_cells,
+       const string n_neighbors_file)
+  : ncells (num_of_cells)
 {
 
   x.resize (ncells);
@@ -41,18 +42,18 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
   boundary.resize (ncells);
     mirror.resize (ncells);
 
-	bdy_to_cell_nr.resize (ncells);
-	cell_to_bdy_nr.resize (ncells);
+  bdy_to_cell_nr.resize (ncells);
+  cell_to_bdy_nr.resize (ncells);
 
 
-	// Read number of neighbors
+  // Read number of neighbors
 
   ifstream nNeighborsFile (n_neighbors_file);
 
   for (long p = 0; p < ncells; p++)
-	{
+  {
     nNeighborsFile >> n_neighbors[p];
-	}
+  }
 
 
 # pragma omp parallel   \
@@ -70,13 +71,13 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
   {
     neighbors[p].resize (n_neighbors[p]);
 
-		x[p] = 0.0;
-		y[p] = 0.0;
-		z[p] = 0.0;
+    x[p] = 0.0;
+    y[p] = 0.0;
+    z[p] = 0.0;
 
-		vx[p] = 0.0;
-		vy[p] = 0.0;
-		vz[p] = 0.0;
+    vx[p] = 0.0;
+    vy[p] = 0.0;
+    vz[p] = 0.0;
 
     for (long n = 0; n < n_neighbors[p]; n++)
     {
@@ -89,8 +90,8 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
     boundary[p] = false;
     mirror[p]   = false;
 
-		cell_to_bdy_nr[p] = ncells;
-		bdy_to_cell_nr[p] = ncells;
+    cell_to_bdy_nr[p] = ncells;
+    bdy_to_cell_nr[p] = ncells;
 
   }
   } // end of OpenMP parallel region
@@ -105,50 +106,52 @@ CELLS (const long num_of_cells, const string n_neighbors_file)
 
 template <int Dimension, long Nrays>
 int CELLS <Dimension, Nrays> ::
-    read (const string cells_file, const string neighbors_file, const string boundary_file)
+    read (const string cells_file,
+          const string neighbors_file,
+          const string boundary_file  )
 {
 
-	// Read cell centers and velocities
+  // Read cell centers and velocities
 
   ifstream cellsFile (cells_file);
 
   for (long p = 0; p < ncells; p++)
-	{
+  {
     cellsFile >> x[p] >> y[p] >> z[p] >> vx[p] >> vy[p] >> vz[p];
-	}
+  }
 
 
-	// Read nearest neighbors lists
+  // Read nearest neighbors lists
 
   ifstream neighborsFile (neighbors_file);
 
   for (long p = 0; p < ncells; p++)
-	{
-		for (long n = 0; n < n_neighbors[p]; n++)
-		{
+  {
+    for (long n = 0; n < n_neighbors[p]; n++)
+    {
       neighborsFile >> neighbors[p][n];
-		}
-	}
+    }
+  }
 
 
-	// Read boundary list
+  // Read boundary list
 
   ifstream boundaryFile (boundary_file);
 
-	long index = 0;
-	long cell_nr;
+  long index = 0;
+  long cell_nr;
 
-	while (boundaryFile >> cell_nr)
-	{
-		bdy_to_cell_nr[index]   = cell_nr;
-		cell_to_bdy_nr[cell_nr] = index;
+  while (boundaryFile >> cell_nr)
+  {
+    bdy_to_cell_nr[index]   = cell_nr;
+    cell_to_bdy_nr[cell_nr] = index;
 
     boundary[cell_nr] = true;
 
-		index++;
-	}
+    index++;
+  }
 
-	nboundary = index;
+  nboundary = index;
 
 
   return (0);
@@ -169,8 +172,11 @@ int CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 inline long CELLS <Dimension, Nrays> ::
-            next (const long origin, const long r,
-							    const long current, double& Z, double& dZ) const
+            next (const long    origin,
+                  const long    r,
+                  const long    current,
+                        double &Z,
+                        double &dZ      ) const
 {
 
   // Pick neighbor on "right side" closest to ray
@@ -225,35 +231,38 @@ inline long CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 inline long CELLS <Dimension, Nrays> ::
-            on_ray (const long origin, const long ray, long *cellNrs, double *dZs) const
+            on_ray (const long    origin,
+                    const long    ray,
+                          long   *cellNrs,
+                          double *dZs     ) const
 {
-	long    n = 0;     // number of cells on the ray
+  long    n = 0;     // number of cells on the ray
   double  Z = 0.0;   // distance from origin (o)
-	double dZ = 0.0;   // last increment in Z
+  double dZ = 0.0;   // last increment in Z
 
-	long nxt = next (origin, ray, origin, Z, dZ);
+  long nxt = next (origin, ray, origin, Z, dZ);
 
 
-	if (nxt != ncells)   // if we are not going out of grid
-	{
+  if (nxt != ncells)   // if we are not going out of grid
+  {
     cellNrs[n] = nxt;
         dZs[n] = dZ;
 
     n++;
 
     while (!boundary[nxt])   // while we have not hit the boundary
-		{
+    {
       nxt = next (origin, ray, nxt, Z, dZ);
 
       cellNrs[n] = nxt;
           dZs[n] = dZ;
 
       n++;
-		}
-	}
+    }
+  }
 
 
-	return n;
+  return n;
 
 }
 
@@ -269,7 +278,9 @@ inline long CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 inline double CELLS <Dimension, Nrays> ::
-              relative_velocity (const long origin, const long ray, const long current) const
+              relative_velocity (const long origin,
+                                 const long ray,
+                                 const long current) const
 {
 
   return   (vx[current] - vx[origin]) * rays.x[ray]

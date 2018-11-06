@@ -1,7 +1,7 @@
 import numpy as np
-import healpy
 
-import scipy.spatial 
+from healpy        import pixelfunc
+from scipy.spatial import Delaunay
 
 
 class model ():
@@ -57,7 +57,7 @@ class model ():
             self.rz = [0.0,  0.0]
         elif (self.dimension == 3):
             self.nrays = 12*nsides**2
-            (self.rx, self.ry, self.rz) = healpy.pixelfunc.pix2vec(nsides, range(self.nrays))
+            (self.rx, self.ry, self.rz) = pixelfunc.pix2vec(nsides, range(self.nrays))
         else:
             print ('ERROR: dimension not set!')
 
@@ -78,7 +78,7 @@ class model ():
         elif (self.dimension == 3):
             points  = [[self.x[i], self.y[i], self.z[i]] for i in range(self.ncells)]
             # Make a Delaulay triangulation
-            delaunay = scipy.spatial.Delaunay(points)
+            delaunay = Delaunay(points)
             # Extract Delaunay vertices (= Voronoi neighbors)
             (indptr,indices) = delaunay.vertex_neighbor_vertices
             self.neighbors   = [indices[indptr[k]:indptr[k+1]] for k in range(self.ncells)]
@@ -115,3 +115,20 @@ class model ():
                         line += '{}\t'.format(neighbor)
                 line += '\n'
                 file.write(line)
+                
+                
+    def readInput (self, folder):
+        """
+        Read Magritte input files from folder
+        """
+        (self.x, self.y, self.z, self.vx, self.vy, self.vz)  = np.loadtxt(folder + '/cells.txt',     unpack=True)
+        (self.rx, self.ry, self.rz)                          = np.loadtxt(folder + '/rays.txt',      unpack=True)
+        self.nNeighbors                                      = np.loadtxt(folder + '/n_neighbors.txt'           )
+        (z, self.abundance, self.density, self.abundance, o) = np.loadtxt(folder + '/abundance.txt', unpack=True)
+        self.temperature                                     = np.loadtxt(folder + '/temperature.txt'           )
+        self.boundary                                        = np.loadtxt(folder + '/boundary.txt'              )
+        # Different format for neighbors which was variable line lengths
+        with open(folder + '/neighbors.txt', 'w') as file:
+            for line in file:
+                sline = line.split()
+                self.neighbors = [int(n) for n in sline]

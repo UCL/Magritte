@@ -23,10 +23,13 @@ using namespace std;
 // Constructor for SPECIES: reads species data file
 // ------------------------------------------------
 
-SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
+SPECIES ::
+SPECIES (const long   num_of_cells,
+         const int    num_of_spec,
+         const string spec_datafile)
 {
 
-	ncells = num_of_cells;
+  ncells = num_of_cells;
   nspec  = num_of_spec;
 
 
@@ -62,9 +65,9 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
   FILE *specdata = fopen (spec_datafile.c_str(), "r");
 
   if (specdata == NULL)
-	{
-		cout << "ERROR: could not read " << spec_datafile << endl;
-	}
+  {
+    cout << "ERROR: could not read " << spec_datafile << endl;
+  }
 
 
   for (int l = 1; l < nspec-1; l++)
@@ -121,14 +124,14 @@ SPECIES :: SPECIES (long num_of_cells, int num_of_spec, string spec_datafile)
 
   for (long p = start; p < stop; p++)
   {
-		abundance[p].resize (nspec);
+    abundance[p].resize (nspec);
 
-		for (int s = 0; s < nspec; s++)
-		{
-			abundance[p][s] = initial_abundance[s];
-		}
-	}
-	} // end of pragma omp parallel
+    for (int s = 0; s < nspec; s++)
+    {
+      abundance[p][s] = initial_abundance[s];
+    }
+  }
+  } // end of pragma omp parallel
 
 
 }   // END OF CONSTRUCTOR
@@ -141,16 +144,18 @@ int SPECIES :: read (string file_name)
   ifstream infile (file_name);
 
 
-	for (long p = 0; p < ncells; p++)
-	{
-		for (int s = 0; s < nspec; s++)
-	  {
-  		infile >> abundance[p][s];
-	  }
-	}
+  for (long p = 0; p < ncells; p++)
+  {
+    for (int s = 0; s < nspec; s++)
+    {
+      infile >> abundance[p][s];
+    }
+  }
+
+  infile.close ();
 
 
-	return (0);
+  return (0);
 
 }
 

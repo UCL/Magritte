@@ -37,37 +37,81 @@ enum RAYTYPE {ray, antipod};
 //////////////////////////////////////////////////////////////////////////////////
 
 template <int Dimension, long Nrays>
-inline int set_up_ray (const CELLS<Dimension, Nrays>& cells, /*const RAYTYPE raytype,*/
-	                     FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-								       LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-								       const long f, const long o, const long R,
-								       long *lnotch_ar, long *notch_ar, const long *cellNrs_ar,
-								       const double *shifts_ar, const double *dZs_ar, const long n_ar,
-								       long *lnotch_r, long *notch_r, const long *cellNrs_r,
-								       const double *shifts_r, const double *dZs_r, const long n_r,
-	                     vReal* Su, vReal* Sv, vReal* dtau, const long ndep);
+inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
+	               const FREQUENCIES             &frequencies,
+                       const TEMPERATURE             &temperature,
+                       const LINES                   &lines,
+                       const SCATTERING              &scattering,
+                       const RADIATION               &radiation,
+                       const long                     f,
+                       const long                     o,
+                       const long                     R,
+                             long                     *lnotch_ar,
+                             long                     *notch_ar,
+                       const long                     *cellNrs_ar,
+                       const double                   *shifts_ar,
+                       const double                   *dZs_ar,
+                       const long                      n_ar,
+                             long                     *lnotch_r,
+                             long                     *notch_r,
+                       const long                     *cellNrs_r,
+                       const double                   *shifts_r,
+                       const double                   *dZs_r,
+                       const long                      n_r,
+	                     vReal                    *Su,
+                             vReal                    *Sv,
+                             vReal                    *dtau,
+                       const long                      ndep);
 
 
-inline int get_eta_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-	                          LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-						                long& lnotch, const long cellNrs,
-														vReal freq_scaled, vReal dfreq_scaled, vReal& eta, vReal& chi);
+inline int get_eta_and_chi (const FREQUENCIES &frequencies,
+                            const TEMPERATURE &temperature,
+	                    const LINES       &lines,
+                            const SCATTERING  &scattering,
+                            const RADIATION   &radiation,
+				  long        &lnotch,
+                            const long         cellNrs,
+			    const vReal        freq_scaled,
+                                  vReal       &eta,
+                                  vReal       &chi          );
 
 
-inline int get_terms_and_chi (FREQUENCIES& frequencies, const TEMPERATURE& temperature,
-	                            LINES& lines, const SCATTERING& scattering, RADIATION& radiation,
-						                  const long f, const long o, const long R,
-								              long& lnotch, long& notch, const long cellNrs, const double shifts,
-	                            vReal& term1, vReal& term2, vReal& chi);
+inline int get_terms_and_chi (const FREQUENCIES &frequencies,
+                              const TEMPERATURE &temperature,
+                              const LINES       &lines,
+                              const SCATTERING  &scattering,
+                              const RADIATION   &radiation,
+			      const long         f,
+                              const long         o,
+                              const long         R,
+                                    long        &lnotch,
+                                    long        &notch,
+                              const long         cellNrs,
+                              const double       shifts,
+	                            vReal       &term1,
+                                    vReal       &term2,
+                                    vReal       &chi         );
 
 
 template <int Dimension, long Nrays>
-inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays>& cells, FREQUENCIES& frequencies,
-	                                 const TEMPERATURE& temperature, LINES& lines,
-																	 const SCATTERING& scattering, RADIATION& radiation,
-						                       const long f, const long o, const long R,
-								                   long& lnotch, long& notch, const long cellNrs, const double shifts,
-	                                 vReal& term1, vReal& term2, vReal& chi, vReal& Ibdy_scaled);
+inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays> &cells,
+                                   const FREQUENCIES             &frequencies,
+                                   const TEMPERATURE             &temperature,
+                                         LINES                   &lines,
+				   const SCATTERING              &scattering,
+                                         RADIATION               &radiation,
+				   const long                     f,
+                                   const long                     o,
+                                   const long                     R,
+                                         long                    &lnotch,
+                                         long                    &notch,
+                                   const long                     cellNrs,
+                                   const double                   shifts,
+	                                 vReal                   &term1,
+                                         vReal                   &term2,
+                                         vReal                   &chi,
+                                         vReal                   &Ibdy_scaled  );
+
 
 #include "set_up_ray.tpp"
 
