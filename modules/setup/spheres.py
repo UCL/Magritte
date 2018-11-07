@@ -36,7 +36,7 @@ def spherical3Dvector(Vr, nsides, Vx, Vy, Vz):
         Vz += [Vr]
     else:
         nrays = nRays(nsides)
-        (Rx, Ry, Rz) = healpy.pixelfunc.pix2vec(nsides, range(nrays))
+        (Rx, Ry, Rz) = pixelfunc.pix2vec(nsides, range(nrays))
         Vx += [Vr*rx for rx in Rx]
         Vy += [Vr*ry for ry in Ry]
         Vz += [Vr*rz for rz in Rz]
