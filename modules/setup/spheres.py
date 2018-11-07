@@ -1,6 +1,5 @@
 import numpy as np
-import healpy
-
+from healpy        import pixelfunc
 from scipy.spatial import Delaunay
 
 from model import model
