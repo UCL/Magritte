@@ -1,5 +1,5 @@
 from subprocess import call, check_output
-from os         import path
+from os         import path, getcwd, rename
 from re         import search, MULTILINE
 from time       import time
 
@@ -21,16 +21,14 @@ class SlurmJob:
     '''
     def __init__(self):
         self.template   = '/slurm_templates/template_slurm_submit_CSD3_Peta4-Skylake.txt'
-        self.jobName    = 'Magritte_test'
+        self.jobName    = 'default_job_name'
         self.slurmName  = 'slurm_submit'
-        self.id         = 0
         self.nNodes     = 1
         self.nTasks     = 1
         self.nThrds     = 1
-        self.totalTime  = '00:00:02'
+        self.totalTime  = '00:00:01'
         self.executable = '/home/dc-dece1/MagritteProjects/Lines_3D_LTE/build/examples/example_Lines_Lime1'
         self.workDir    = '/home/dc-dece1/MagritteProjects/Lines_3D_LTE/'
-        self.submitTime = 0
 
     def create(self):
         # Read in the slurm_submit template
@@ -49,6 +47,10 @@ class SlurmJob:
             file.writelines(fullText)
 
     def submit(self):
+        # Check if it is not already submitted...
+        if self.id:
+          print('STOP: This job was already submitted...')
+          return
         # Make sure slurm job is created
         self.create()
         # Submit slurm job and catch output
@@ -61,6 +63,8 @@ class SlurmJob:
         self.id = output.decode("utf-8")
         # Set submitTime
         self.submitTime = time()
+        # Store the folder from where submission is done
+        self.submissionFolder = f'{getcwd()}/'
 
     def cancel(self):
 	# Cancel the slurm job
@@ -87,6 +91,19 @@ class SlurmJob:
             print(f'Submitted {elapsedTime} seconds ago: {output}', end='\r')
         # Done
         return output
+
+    def getOutput(self):
+        # Get output filename
+        fileName = f'{self.submissionFolder}slurm-{self.id}.out'
+        # Extract contents of output file
+        with open(fileName, 'r') as file:
+            self.jobOutput = file.readlines()
+        # Show output
+        for line in self.jobOutput:
+            print(line)
+        # Move file to workDir
+        newFilename = f'{self.workDir}slurm-{self.id}.out'
+        rename(fileName, newFilename)
 
     def status_cont(self):
         # Continuously write status until job is out of queue

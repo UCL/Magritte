@@ -28,7 +28,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
 
-#define MAX_NITERATIONS 1
+#define MAX_NITERATIONS 100
 
 
 ///  Lines: iteratively calculates level populations
