@@ -92,3 +92,5 @@ class SlurmJob:
         # Continuously write status until job is out of queue
         while self.status():
             pass 
+        # Done
+        return
