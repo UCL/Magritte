@@ -12,19 +12,12 @@ CMakeCache.txt
 
 GridInstall*
 
-# Build-related
-# -------------
-
-build*
-
-
 
 # Executables
 # -----------
 
 *.o
 *.exe
-
 
 
 # compiled libraries
