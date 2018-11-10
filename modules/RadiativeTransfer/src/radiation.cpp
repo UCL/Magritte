@@ -71,8 +71,15 @@ RADIATION (const long num_of_cells,
 }   // END OF CONSTRUCTOR
 
 
+
+
+///  get_nrays_red: get reduced number of rays
+///    @param[in] nrays: total number or rays
+//////////////////////////////////////////////
+
 long RADIATION :: get_nrays_red (const long nrays)
 {
+
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
@@ -82,8 +89,16 @@ long RADIATION :: get_nrays_red (const long nrays)
   const long START_raypair = ( world_rank   *nrays/2)/world_size;
   const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
 
+
   return STOP_raypair - START_raypair;
+  
 }
+
+
+
+
+///  read: read radiation field from file
+/////////////////////////////////////////
 
 int RADIATION ::
     read (const string boundary_intensity_file)
@@ -92,6 +107,9 @@ int RADIATION ::
   return (0);
 
 }
+
+
+
 
 ///  calc_boundary_intensities: calculate the boundary intensities
 //////////////////////////////////////////////////////////////////

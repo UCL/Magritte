@@ -1,4 +1,5 @@
 import numpy as np
+
 from healpy        import pixelfunc
 from scipy.spatial import Delaunay
 
@@ -15,6 +16,46 @@ def nRays (nsides):
     return 12*nsides**2
 
 
+def nSides (nrays):
+    '''
+    Number of HEALPix's nsides corresponding to nrays
+    '''
+    # Try computing nsides assuming it works
+    nsides = np.sqrt(float(nrays)/12.0)
+    # Chack if nrays was HEALPix compatible
+    if (nRays(nsides) != nrays):
+        print('ERROR : no HEALPix compatible number of rays (nrays = 12*nsides**2)')
+        return
+    # Done
+    return nsides
+
+
+def rayVectors (dimension, nrays):
+    '''
+    Devide circle into nrays rays
+    '''
+    if   (dimension == 1):
+        if (nrays != 2):
+            print('ERROR : in 1D, nrays should be 2')
+            return
+        Rx = [-1.0, 1.0]
+        Ry = [ 0.0, 0.0]
+        Rz = [ 0.0, 0.0]
+    elif (dimension == 2):
+        Rx = [np.cos((2.0*np.pi*r)/nrays) for r in range(nrays)]
+        Ry = [np.sin((2.0*np.pi*r)/nrays) for r in range(nrays)]
+        Rz = [0.0                         for _ in range(nrays)]
+    elif (dimension == 3):
+        Rx = pixelfunc.pix2vec(nsides, range(nrays))[0]
+        Ry = pixelfunc.pix2vec(nsides, range(nrays))[1]
+        Rz = pixelfunc.pix2vec(nsides, range(nrays))[2]
+    else:
+        print('ERROR non-valid dimension given')
+        return
+    # Done
+    return (Rx, Ry, Rz)
+
+
 def spherical3Dscalar (fr, nsides, f):
     '''
     Copy 1D model scalar data over shell in 3D model 
@@ -23,6 +64,16 @@ def spherical3Dscalar (fr, nsides, f):
         f += [fr]
     else:
         nrays = nRays(nsides)
+        f += [fr for _ in range(nrays)]
+
+
+def sphericalXDscalar (fr, nrays, f):
+    '''
+    Copy 1D model scalar data over shell in 2D model 
+    '''
+    if (nrays == 0):
+        f += [fr]
+    else:
         f += [fr for _ in range(nrays)]
 
 
@@ -41,16 +92,32 @@ def spherical3Dvector(Vr, nsides, Vx, Vy, Vz):
         Vy += [Vr*ry for ry in Ry]
         Vz += [Vr*rz for rz in Rz]
 
-def neighborLists_assumingVoronoiTesselation(x,y,z):
-    npoints = len(x)
-    points = [[x[i], y[i], z[i]] for i in range(npoints)]
-    # Make a Delaulay triangulation
-    delaunay = Delaunay(points)
-    # Extract Delaunay vertices (= Voronoi neighbors)
-    (indptr,indices) = delaunay.vertex_neighbor_vertices
-    neighborLists = [indices[indptr[k]:indptr[k+1]] for k in range(npoints)]
-    # Done
-    return neighborLists
+
+def sphericalXDvector(Vr, dimension, nrays, Vx, Vy, Vz):
+    '''
+    Copy 1D model scalar data over shell in 2D model 
+    '''
+    if (nrays == 0):
+        Vx += [Vr]
+        Vy += [Vr]
+        Vz += [Vr]
+    else:
+        (Rx, Ry, Rz) = rayVectors(dimension, nrays)
+        Vx += [Vr*rx for rx in Rx]
+        Vy += [Vr*ry for ry in Ry]
+        Vz += [Vr*rz for rz in Rz]
+
+
+#def neighborLists_assumingVoronoiTesselation(x,y,z):
+#    npoints = len(x)
+#    points = [[x[i], y[i], z[i]] for i in range(npoints)]
+#    # Make a Delaulay triangulation
+#    delaunay = Delaunay(points)
+#    # Extract Delaunay vertices (= Voronoi neighbors)
+#    (indptr,indices) = delaunay.vertex_neighbor_vertices
+#    neighborLists = [indices[indptr[k]:indptr[k+1]] for k in range(npoints)]
+#    # Done
+#    return neighborLists
 
 def relDiff(a,b):
     if (a+b == 0.0):
@@ -126,6 +193,40 @@ def mapTo3D (model1D, nsidesList):
     model3D.getNeighborLists()
     # Done
     return (model3D, cellsInShell)
+
+
+def mapToXD (model1D, dimension, nraysList):
+    """
+    Maps a 1D model to the spherically symmetric XD equivalent
+    """
+    # Create a 3D model object
+    modelXD = model (dim=dimension)
+    # Store cells number of cells in each cell
+    cellsInShell = [[] for _ in range(model1D.ncells)]
+    # Add shells
+    index  = 0
+    for s in range(model1D.ncells):
+        nrays = nraysList[s]
+        sphericalXDvector(model1D.x[s],  dimension, nraysList[s], modelXD.x,  modelXD.y,  modelXD.z)
+        sphericalXDvector(model1D.vx[s], dimension, nraysList[s], modelXD.vx, modelXD.vy, modelXD.vz)
+        sphericalXDscalar(model1D.density[s],       nraysList[s], modelXD.density)
+        sphericalXDscalar(model1D.abundance[s],     nraysList[s], modelXD.abundance)
+        sphericalXDscalar(model1D.temperature[s],   nraysList[s], modelXD.temperature)
+        if (nrays == 0):
+            cellsInShell[s].append(index)
+            index += 1
+        else:
+            for _ in range(nrays):
+                cellsInShell[s].append(index)
+                index += 1
+    # Extract boundary 
+    modelXD.boundary = cellsInShell[-1]
+    # Extract number of cells
+    modelXD.ncells   = index
+    # Extract neighbors
+    modelXD.getNeighborLists()
+    # Done
+    return (modelXD, cellsInShell)
 
 
 def mapTo1D (model3D, model1D, cellsInShell):

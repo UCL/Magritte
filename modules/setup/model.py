@@ -1,4 +1,5 @@
 import numpy as np
+import spheres
 
 from healpy        import pixelfunc
 from scipy.spatial import Delaunay
@@ -44,22 +45,14 @@ class model ():
         self.boundary = []
 
 
-    def defineRays (self, nsides):
+    def defineRays (self, nrays):
         """
         Define the directions of the rays
         """
-        if   (self.dimension == 0):
-            self.nrays = 0
-        elif (self.dimension == 1):
-            self.nrays = 2
-            self.rx = [1.0, -1.0]
-            self.ry = [0.0,  0.0]
-            self.rz = [0.0,  0.0]
-        elif (self.dimension == 3):
-            self.nrays = 12*nsides**2
-            (self.rx, self.ry, self.rz) = pixelfunc.pix2vec(nsides, range(self.nrays))
-        else:
-            print ('ERROR: dimension not set!')
+        # Set number of rays
+        self.nrays = nrays
+        # Define directions of rays
+        (self.rx, self.ry, self.rz) = spheres.rayVectors(self.dimension, nrays)
 
 
     def getNeighborLists (self):
@@ -75,6 +68,15 @@ class model ():
             # For the end points
             self.neighbors  = [[1]] +  self.neighbors + [[self.ncells-2]]
             self.nNeighbors =  [1]  + self.nNeighbors +  [1]
+        elif (self.dimension == 2):
+            points  = [[self.x[i], self.y[i]] for i in range(self.ncells)]
+            # Make a Delaulay triangulation
+            delaunay = Delaunay(points)
+            # Extract Delaunay vertices (= Voronoi neighbors)
+            (indptr,indices) = delaunay.vertex_neighbor_vertices
+            self.neighbors   = [indices[indptr[k]:indptr[k+1]] for k in range(self.ncells)]
+            # Extract the number of neighbors for each point
+            self.nNeighbors  = [len(neighborList) for neighborList in self.neighbors]
         elif (self.dimension == 3):
             points  = [[self.x[i], self.y[i], self.z[i]] for i in range(self.ncells)]
             # Make a Delaulay triangulation
@@ -132,3 +134,28 @@ class model ():
             for line in file:
                 sline = line.split()
                 self.neighbors = [int(n) for n in sline]
+
+
+    def imageRay (rayNumber):
+        # Define ray
+        Rx = self.rx[rayNumber]
+        Ry = self.ry[rayNumber]
+        Rz = self.rz[rayNumber]
+        # Define help quantity
+        sRx2pRy2 = np.sqrt(Rx**2 + Ry**2)
+        if (sRx2pRy2 != 0.0):
+            # Define unit vector along horizontal image axis 
+            Ix =  Ry / sRx2pRy2
+            Iy = -Rx / sRx2pRy2
+            Iz =  0.0  
+            # Define unit vector alonng vertical image axis 
+            Jx = Rx * Rz / sRx2pRy2
+            Jy = Ry * Rz / sRx2pRy2
+            Jz = -sRx2pRy2
+            # Define image coordinates 
+            self.imageX = [self.x[p]*Ix + self.y[p]*Iy                for p in range(self.ncells)] 
+            self.imageY = [self.x[p]*Jx + self.y[p]*Jy + self.z[p]*Jz for p in range(self.ncells)] 
+        else:
+            # Define image coordinates 
+            self.imageX = self.x[p] 
+            self.imageY = self.y[p] 

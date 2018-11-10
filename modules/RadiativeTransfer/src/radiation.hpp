@@ -34,7 +34,7 @@ struct RADIATION
   vReal2 V;                   ///< V scattered intensity (r, index(p,f))
   
   vReal1 J;                   ///< (angular) mean intensity (index(p,f))
-  
+
   vReal3 boundary_intensity;   ///< intensity at the boundary (b,r,f)
   
   
@@ -95,7 +95,7 @@ struct RADIATION
 inline long RADIATION ::
             index (const long p, const long f) const
 {
-	return f + p*nfreq_red;
+  return f + p*nfreq_red;
 }
 
 
