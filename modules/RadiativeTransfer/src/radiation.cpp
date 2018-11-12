@@ -16,7 +16,8 @@ using namespace std;
 #include "folders.hpp"
 #include "constants.hpp"
 #include "GridTypes.hpp"
-#include "mpiTypes.hpp"
+#include "mpiTools.hpp"
+#include "ompTools.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
 #include "profile.hpp"
@@ -440,6 +441,9 @@ int RADIATION ::
 
     ofstream outputFile_J (file_name_J);
 
+    outputFile_J << scientific << setprecision(16);
+
+
     for (long p = 0; p < ncells; p++)
     {
       for (int f = 0; f < nfreq_red; f++)
@@ -447,11 +451,9 @@ int RADIATION ::
 #       if (GRID_SIMD)
           for (int lane = 0; lane < n_simd_lanes; lane++)
           {
-            outputFile_J << scientific << setprecision(16);
             outputFile_J << J[index(p,f)].getlane(lane) << "\t";
           }
 #       else
-          outputFile_J << scientific << setprecision(16);
           outputFile_J << J[index(p,f)] << "\t";
 #       endif
       }

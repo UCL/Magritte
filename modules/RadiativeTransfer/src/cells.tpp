@@ -12,6 +12,7 @@
 using namespace std;
 
 #include "cells.hpp"
+#include "ompTools.hpp"
 
 
 ///  Constructor for CELLS: Allocates memory for cell data
@@ -60,14 +61,7 @@ CELLS (const long   num_of_cells,
   default (none)
   {
 
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
-
-  long start = (thread_num*ncells)/num_threads;
-  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-
-
-  for (long p = start; p < stop; p++)
+  for (long p = OMP_start(ncells); p < OMP_stop(ncells); p++)
   {
     neighbors[p].resize (n_neighbors[p]);
 

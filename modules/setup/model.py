@@ -136,7 +136,7 @@ class model ():
                 self.neighbors = [int(n) for n in sline]
 
 
-    def imageRay (rayNumber):
+    def imageRay (self, rayNumber):
         # Define ray
         Rx = self.rx[rayNumber]
         Ry = self.ry[rayNumber]

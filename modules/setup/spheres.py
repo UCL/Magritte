@@ -26,6 +26,8 @@ def nSides (nrays):
     if (nRays(nsides) != nrays):
         print('ERROR : no HEALPix compatible number of rays (nrays = 12*nsides**2)')
         return
+    # Cast to int now we know it is safe
+    nsides = int(nsides)
     # Done
     return nsides
 
@@ -46,9 +48,9 @@ def rayVectors (dimension, nrays):
         Ry = [np.sin((2.0*np.pi*r)/nrays) for r in range(nrays)]
         Rz = [0.0                         for _ in range(nrays)]
     elif (dimension == 3):
-        Rx = pixelfunc.pix2vec(nsides, range(nrays))[0]
-        Ry = pixelfunc.pix2vec(nsides, range(nrays))[1]
-        Rz = pixelfunc.pix2vec(nsides, range(nrays))[2]
+        Rx = pixelfunc.pix2vec(nSides(nrays), range(nrays))[0]
+        Ry = pixelfunc.pix2vec(nSides(nrays), range(nrays))[1]
+        Rz = pixelfunc.pix2vec(nSides(nrays), range(nrays))[2]
     else:
         print('ERROR non-valid dimension given')
         return

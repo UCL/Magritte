@@ -16,7 +16,7 @@ using namespace std;
 #include "folders.hpp"
 #include "constants.hpp"
 #include "GridTypes.hpp"
-#include "mpiTypes.hpp"
+#include "mpiTools.hpp"
 
 
 ///  Constructor for IMAGE
@@ -26,21 +26,27 @@ IMAGE ::
 IMAGE (const long num_of_cells,
        const long num_of_rays,
        const long num_of_freq_red)
-  : ncells        (num_of_cells)
-  , nrays         (num_of_rays)
-  , nrays_red     (get_nrays_red (nrays))
-  , nfreq_red     (num_of_freq_red)
+  : ncells    (num_of_cells)
+  , nrays     (num_of_rays)
+  , nrays_red (MPI_length(nrays/2))
+  , nfreq_red (num_of_freq_red)
 {
 
   // Size and initialize Ip_out and Im_out
 
-  Ip_out.resize (nrays_red);
-  Im_out.resize (nrays_red);
+  I_p.resize (nrays_red);
+  I_m.resize (nrays_red);
 
   for (long r = 0; r < nrays_red; r++)
   {
-    Ip_out[r].resize (ncells*nfreq_red);
-    Im_out[r].resize (ncells*nfreq_red);
+    I_p[r].resize (ncells);
+    I_m[r].resize (ncells);
+
+    for (long p = 0; p < ncells; p++)
+    {
+      I_p[r][p].resize (nfreq_red);
+      I_m[r][p].resize (nfreq_red);
+    }
   }
 
 
@@ -49,45 +55,27 @@ IMAGE (const long num_of_cells,
 
 
 
-///  get_nrays_red: get reduced number of rays
-///    @param[in] nrays: total number or rays
-//////////////////////////////////////////////
-
-long IMAGE ::
-     get_nrays_red (const long nrays)
-{
-
-  int world_size;
-  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-  const long START_raypair = ( world_rank   *nrays/2)/world_size;
-  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
-
-
-  return STOP_raypair - START_raypair;
-  
-}
-
-
-
+///  print: write out the images
+///    @param[in] tag: tag for output file
+//////////////////////////////////////////
 
 int IMAGE ::
     print (const string tag) const
 {
 
-  for (long R = 0; R < nrays_red; R++)
+  for (long r = MPI_start(nrays/2); r < MPI_stop(nrays/2); r++)
   {
-    const long START_raypair = ( world_rank*nrays/2)/world_size;
-    const long             r = R + START_raypair;
+    const long R = r - MPI_start(nrays/2);
 
     const string file_name_p = output_folder + "image_p_" + to_string(r) + tag + ".txt";
     const string file_name_m = output_folder + "image_m_" + to_string(r) + tag + ".txt";
 
     ofstream outputFile_p (file_name_p);
     ofstream outputFile_m (file_name_m);
+
+    outputFile_p << scientific << setprecision(16);
+    outputFile_m << scientific << setprecision(16);
+
 
     for (long p = 0; p < ncells; p++)
     {
@@ -96,18 +84,12 @@ int IMAGE ::
 #       if (GRID_SIMD)
           for (int lane = 0; lane < n_simd_lanes; lane++)
           {
-            outputFile_p << scientific << setprecision(16);
-            outputFile_m << scientific << setprecision(16);
-
-            outputFile_p << Ip_out[R][index(p,f)].getlane(lane) << "\t";
-            outputFile_m << Im_out[R][index(p,f)].getlane(lane) << "\t";
+            outputFile_p << I_p[R][p][f].getlane(lane) << "\t";
+            outputFile_m << I_m[R][p][f].getlane(lane) << "\t";
           }
 #       else
-          outputFile_p << scientific << setprecision(16);
-          outputFile_m << scientific << setprecision(16);
-
-          outputFile_p << Ip_out[R][index(p,f)] << "\t";
-          outputFile_m << Im_out[R][index(p,f)] << "\t";
+          outputFile_p << I_p[R][p][f] << "\t";
+          outputFile_m << I_m[R][p][f] << "\t";
 #       endif
       }
 
@@ -117,7 +99,6 @@ int IMAGE ::
 
     outputFile_p.close ();
     outputFile_m.close ();
-
   }
 
 

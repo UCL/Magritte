@@ -121,6 +121,9 @@ int FREQUENCIES ::
 
   ofstream outputFile (file_name);
 
+  outputFile << scientific << setprecision(16);
+
+
   for (long p = 0; p < ncells; p++)
   {
     for (long f = 0; f < nfreq_red; f++)
@@ -128,17 +131,14 @@ int FREQUENCIES ::
 #     if (GRID_SIMD)
         for (int lane = 0; lane < n_simd_lanes; lane++)
         {
-          outputFile << scientific << setprecision(16);
           outputFile << nu[p][f].getlane(lane) << "\t";
         }
 #     else
-        outputFile << scientific << setprecision(16);
         outputFile << nu[p][f] << "\t";
 #     endif
     }
 
     outputFile << endl;
-
   }
 
   outputFile.close ();
