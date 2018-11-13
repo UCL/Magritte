@@ -8,7 +8,6 @@
 #define __RAYDATA_HPP_INCLUDED
 
 
-#include "GridTypes.hpp"
 
 
 ///  RAYDATA: data structure for the data along a ray
@@ -18,6 +17,9 @@ struct RAYDATA
 {
 
   const long ncells;      ///< number of cells
+  const long origin;      ///< cell nr of origin
+  const long ray;         ///< (global) index of ray
+  const long Ray;         ///< (local) index of ray
   
   Long1  cellNrs [ncells];
   Long1    notch [ncells];
@@ -25,73 +27,36 @@ struct RAYDATA
   Double1 shifts [ncells];   // indicates where we are in frequency space
   Double1    dZs [ncells];
 
+  vReal   chi_c;
+  vReal term1_c;
+  vReal term2_c;
 
-  // Extract the cell on ray r and antipodal ar
-
-  long n = 0;
+  long n = 0;                // Number of (projected) cells on this ray
   
 
-  RAYDATA (const long num_of_cells);
+  RAYDATA (const long num_of_cells,
+           const long origin_cell,
+           const long origin_ray,
+           const long origin_Ray   );
 
-  int initialize (CELLS<Dimension, Nrays> &cells);
+  int initialize (const CELLS<Dimension, Nrays> &cells);
 
+  int get_dtau_Su_Sv (const FREQUENCIES &frequencies,
+                      const TEMPERATURE &temperature,
+                      const LINES       &lines,
+                      const SCATTERING  &scattering,
+                      const RADIATION   &radiation,
+                      const long         f,
+                      const long         q,
+                            double      &dtau,
+                            double      &Su,
+                            double      &Sv         );
 
 
 };
 
 
-
-template <int Dimension, long Nrays>
-inline int initialize (CELLS<Dimension,Nrays> &cells)
-{
-
-  // Reset number of cells on the ray
-
-  n = 0;     
-
-
-  // Find projected cells on ray
-
-  double  Z = 0.0;   // distance from origin (o)
-  double dZ = 0.0;   // last increment in Z
-
-  long nxt = cells.next (origin, ray, origin, Z, dZ);
-
-
-  if (nxt != ncells)   // if we are not going out of grid
-  {
-    cellNrs[n] = nxt;
-        dZs[n] = dZ;
-
-    n++;
-
-    while (!cells.boundary[nxt])   // while we have not hit the boundary
-    {
-      nxt = cells.next (origin, ray, nxt, Z, dZ);
-
-      cellNrs[n] = nxt;
-          dZs[n] = dZ;
-
-      n++;
-    }
-  }
-
-
-  // Initialize notches and shitfs
-
-  for (long q = 0; q < n; q++)
-  {
-     notch[q] = 0;
-    lnotch[q] = 0;
-    shifts[q] = 1.0 - cells.relative_velocity (o, r, cellNrs[q]) / CC;
-  }
-  
-  lnotch_r[ncells] = 0;
-
-
-  return (0);
-    
-}
+#include "raydata.tpp"
 
 
 #endif // __RAYDATA_HPP_INCLUDED

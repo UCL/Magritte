@@ -104,12 +104,13 @@ int Lines (const CELLS<Dimension, Nrays> &cells,
     //MPI_TIMER timer_RT ("RT");
     //timer_RT.start ();
 
-    RadiativeTransfer<Dimension, Nrays>(cells,
-                                        temperature,
-                                        frequencies,
-                                        lines,
-                                        scattering,
-                                        radiation   );
+    RadiativeTransfer<Dimension, Nrays>(
+        cells,
+        temperature,
+        frequencies,
+        lines,
+        scattering,
+        radiation   );
 
     //timer_RT.stop ();
     //timer_RT.print_to_file ();
@@ -124,12 +125,13 @@ int Lines (const CELLS<Dimension, Nrays> &cells,
     //MPI_TIMER timer_SE ("SE");
     //timer_SE.start ();
 
-    levels.iteration_using_statistical_equilibrium (linedata,
-                                                    species,
-                                                    temperature,
-                                                    frequencies,
-                                                    radiation,
-                                                    lines       );
+    levels.iteration_using_statistical_equilibrium (
+        linedata,
+        species,
+        temperature,
+        frequencies,
+        radiation,
+        lines       );
     //timer_SE.stop ();
     //timer_SE.print_to_file ();
 
