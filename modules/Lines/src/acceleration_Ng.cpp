@@ -12,18 +12,19 @@ using namespace std;
 using namespace Eigen;
 
 #include "levels.hpp"
-#include "linedata.hpp"
+#include "RadiativeTransfer/src/ompTools.hpp"
 
 
 ///  acceleration_Ng: perform a Ng accelerated iteration for level populations
 ///  - All variable names are based on lecture notes by C.P. Dullemond
 //////////////////////////////////////////////////////////////////////////////
 
-int LEVELS :: update_using_Ng_acceleration ()
+int LEVELS ::
+    update_using_Ng_acceleration ()
 {
 
   for (int l = 0; l < nlspec; l++)
-	{
+  {
 
     vector<VectorXd> Q1 (ncells, VectorXd (nlev[l]));
     vector<VectorXd> Q2 (ncells, VectorXd (nlev[l]));
@@ -37,14 +38,7 @@ int LEVELS :: update_using_Ng_acceleration ()
     default (none)
     {
 
-    int num_threads = omp_get_num_threads();
-    int thread_num  = omp_get_thread_num();
-
-    long start = (thread_num*ncells)/num_threads;
-    long stop  = ((thread_num+1)*ncells)/num_threads;  // Note brackets
-
-
-    for (long p = start; p < stop; p++)
+    for (long p = OMP_start (ncells); p < OMP_stop (ncells); p++)
     {
       Q1[p] = population[p][l] - 2.0*population_prev1[p][l] + population_prev2[p][l];
       Q2[p] = population[p][l] -     population_prev1[p][l] - population_prev2[p][l] + population_prev3[p][l];
@@ -106,29 +100,21 @@ int LEVELS :: update_using_Ng_acceleration ()
       shared (l)            \
       default (none)
       {
+        for (long p = OMP_start (ncells); p < OMP_stop (ncells); p++)
+        {
 
-      int num_threads = omp_get_num_threads();
-      int thread_num  = omp_get_thread_num();
+          const VectorXd pop_tmp = population[p][l];
 
-      long start = (thread_num*ncells)/num_threads;
-      long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
+          population[p][l] = (1.0 - a - b)*population[p][l]
+                                       + a*population_prev1[p][l]
+                                       + b*population_prev2[p][l];
 
+          population_prev3[p][l] = population_prev2[p][l];
+          population_prev2[p][l] = population_prev1[p][l];
+          population_prev1[p][l] = pop_tmp;
 
-      for (long p = start; p < stop; p++)
-      {
-
-        const VectorXd pop_tmp = population[p][l];
-
-        population[p][l] = (1.0 - a - b)*population[p][l]
-                                     + a*population_prev1[p][l]
-	  	   											 			 + b*population_prev2[p][l];
-
-        population_prev3[p][l] = population_prev2[p][l];
-        population_prev2[p][l] = population_prev1[p][l];
-        population_prev1[p][l] = pop_tmp;
-
-      } // end of o loop over grid points
-      } // end of OpenMP parallel region
+        } // end of o loop over grid points
+      }
 
     }
 

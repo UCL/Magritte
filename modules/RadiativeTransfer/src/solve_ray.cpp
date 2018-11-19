@@ -91,8 +91,8 @@ inline int solve_ray (const long   ndep,
   Su[ndep-1] = (Su[ndep-1] + A[ndep-1]*Su[ndep-2]) * (vOne + F[ndep-2])
                / (Bd_min_Ad + Bd*F[ndep-2]);
 
-  Sv[ndep-1] = (Sv[ndep-1] + A[ndep-1]*Sv[ndep-2])
-               / (Bd_min_Ad + Bd*F[ndep-2]) * (vOne + F[ndep-2]);
+  Sv[ndep-1] = (Sv[ndep-1] + A[ndep-1]*Sv[ndep-2]) * (vOne + F[ndep-2])
+               / (Bd_min_Ad + Bd*F[ndep-2]);
 
   G[ndep-1] = Bd_min_Ad / A[ndep-1];
 
@@ -108,7 +108,7 @@ inline int solve_ray (const long   ndep,
   }
 
   Su[0] = Su[0] + Su[1] / (vOne + F[0]);
-  Sv[0] = Sv[0] + Sv[1] / (vOne+F[0]);
+  Sv[0] = Sv[0] + Sv[1] / (vOne + F[0]);
 
 
 

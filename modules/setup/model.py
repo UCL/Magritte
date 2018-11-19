@@ -159,3 +159,69 @@ class model ():
             # Define image coordinates 
             self.imageX = self.x[p] 
             self.imageY = self.y[p] 
+
+
+#
+
+def mapToXD (model1D, dimension, nraysList):
+    """
+    Maps a 1D model to the spherically symmetric XD equivalent
+    """
+    # Create a 3D model object
+    modelXD = model (dim=dimension)
+    # Store cells number of cells in each cell
+    cellsInShell = [[] for _ in range(model1D.ncells)]
+    # Add shells
+    index  = 0
+    for s in range(model1D.ncells):
+        nrays = nraysList[s]
+        spheres.sphericalXDvector(model1D.x[s],  dimension, nrays, modelXD.x,  modelXD.y,  modelXD.z)
+        spheres.sphericalXDvector(model1D.vx[s], dimension, nrays, modelXD.vx, modelXD.vy, modelXD.vz)
+        spheres.sphericalXDscalar(model1D.density[s],       nrays, modelXD.density)
+        spheres.sphericalXDscalar(model1D.abundance[s],     nrays, modelXD.abundance)
+        spheres.sphericalXDscalar(model1D.temperature[s],   nrays, modelXD.temperature)
+        if (nrays == 0):
+            cellsInShell[s].append(index)
+            index += 1
+        else:
+            for _ in range(nrays):
+                cellsInShell[s].append(index)
+                index += 1
+    # Extract boundary 
+    modelXD.boundary = cellsInShell[-1]
+    # Extract number of cells
+    modelXD.ncells   = index
+    # Extract neighbors
+    modelXD.getNeighborLists()
+    # Done
+    return (modelXD, cellsInShell)
+
+
+def setCubeGrid (nEdgeCells, dEdgeLength):
+    """
+    Create a 3D cubic Cartesian grid
+    """
+    # Create a 3D model object
+    model3D = model (dim=3)
+    # Add geometry to grid
+    for i in range(nEdgeCells):
+        for j in range(nEdgeCells):
+            for k in range(nEdgeCells):
+                model3D.x = i * edgeLength;
+                model3D.y = j * edgeLength;
+                model3D.z = k * edgeLength;
+    # Done
+    return model3D
+
+
+def makeShelly (model1D, model3D):
+    for n in range(model3D.ncells):
+        r = np.sqrt (model3D.x[n]**2 + model3D.y[n]**2 + model3D.z[n]**2)
+        for m in range(-model1D.ncells):
+            if (model.x[m] < r):
+                ratio = model.x[m] / r
+                model3D.x[n] *= ratio
+                model3D.y[n] *= ratio
+                model3D.z[n] *= ratio
+                break
+

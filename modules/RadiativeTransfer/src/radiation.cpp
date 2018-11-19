@@ -18,10 +18,10 @@ using namespace std;
 #include "GridTypes.hpp"
 #include "mpiTools.hpp"
 #include "ompTools.hpp"
+#include "lines.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
 #include "profile.hpp"
-#include "interpolation.hpp"
 
 
 ///  Constructor for RADIATION
@@ -49,7 +49,6 @@ RADIATION (const long num_of_cells,
 
   boundary_intensity.resize (nrays_red);
 
-
   for (long r = 0; r < nrays_red; r++)
   {
     u[r].resize (ncells*nfreq_red);
@@ -67,6 +66,8 @@ RADIATION (const long num_of_cells,
   }
 
   J.resize (ncells*nfreq_red);
+
+  cell2boundary_nr.resize (ncells);
 
 
 }   // END OF CONSTRUCTOR
@@ -116,36 +117,33 @@ int RADIATION ::
 //////////////////////////////////////////////////////////////////
 
 int RADIATION ::
-    calc_boundary_intensities (const Long1       &bdy_to_cell_nr,
-                               const FREQUENCIES &frequencies    )
+    calc_boundary_intensities             (
+        const Long1       &Boundary2cell_nr,
+        const Long1       &Cell2boundary_nr,
+        const FREQUENCIES &frequencies    )
 {
+
+  cell2boundary_nr = Cell2boundary_nr;
 
   for (long r = 0; r < nrays_red; r++)
   {
 
-#   pragma omp parallel                       \
-    shared (r, bdy_to_cell_nr, frequencies)   \
+#   pragma omp parallel                                           \
+    shared (r, Boundary2cell_nr, Cell2boundary_nr, frequencies)   \
     default (none)
     {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = ( thread_num   *nboundary)/num_threads;
-    const long stop  = ((thread_num+1)*nboundary)/num_threads;
-
-
-    for (long b = start; b < stop; b++)
-    {
-      const long p = bdy_to_cell_nr[b];
-
-      for (long f = 0; f < nfreq_red; f++)
+      for (long b = OMP_start (nboundary); b < OMP_stop (nboundary); b++)
       {
-        boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
+        const long p = Boundary2cell_nr[b];
+
+        for (long f = 0; f < nfreq_red; f++)
+        {
+          boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
+        }
       }
-    }
-    } // end of pragma omp parallel
+    } 
   }
+
 
   return (0);
 
@@ -170,19 +168,11 @@ int initialize (vReal1& vec)
   shared (vec)          \
   default (none)
   {
-
-  const int nthreads = omp_get_num_threads();
-  const int thread   = omp_get_thread_num();
-
-  const long start = ( thread   *vec.size())/nthreads;
-  const long stop  = ((thread+1)*vec.size())/nthreads;
-
-
-  for (long i = start; i < stop; i++)
-  {
-    vec[i] = 0.0;
+    for (long i = OMP_start (vec.size()); i < OMP_stop (vec.size()); i++)
+    {
+      vec[i] = 0.0;
+    }
   }
-  } // end of pragma omp parallel
 
 
   return (0);

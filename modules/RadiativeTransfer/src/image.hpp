@@ -21,8 +21,7 @@ struct IMAGE
   const long nrays;       ///< number of rays
   const long nrays_red;   ///< reduced number of rays
   const long nfreq_red;   ///< reduced number of frequencies
-  
-  
+    
   vReal3 I_p;             ///< intensity out along ray r  (r, index(p,f))
   vReal3 I_m;             ///< intensity out along ray ar (r, index(p,f))
   

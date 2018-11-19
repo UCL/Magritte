@@ -15,25 +15,21 @@
 #endif
 
 
-inline int comm_size (void)
+inline int MPI_comm_size (void)
 {
-
   int comm_size;
   MPI_Comm_size (MPI_COMM_WORLD, &comm_size);
 
   return comm_size;
-
 }
 
 
-inline int comm_rank (void)
+inline int MPI_comm_rank (void)
 {
-
   int comm_rank;
   MPI_Comm_rank (MPI_COMM_WORLD, &comm_rank);
 
   return comm_rank;
-
 }
 
 
@@ -41,25 +37,19 @@ inline int comm_rank (void)
 
 inline long MPI_start (const long total)
 {
-
-  return (comm_rank() * total) / comm_size();
-
+  return (MPI_comm_rank() * total) / MPI_comm_size();
 }
 
 
 inline long MPI_stop (const long total)
 {
-
-  return ((comm_rank()+1) * total) / comm_size();
-
+  return ((MPI_comm_rank()+1) * total) / MPI_comm_size();
 }
 
 
 inline long MPI_length (const long total)
 {
-
   return MPI_stop (total) - MPI_start (total);
-
 }
 
 

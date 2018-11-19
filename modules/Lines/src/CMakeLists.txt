@@ -16,7 +16,7 @@ endif()
 add_subdirectory( ../../RadiativeTransfer
   RadiativeTransfer )
 
-#Include directories for Common and RadiativeTransfer library
+#Include directories for RadiativeTransfer library
 include_directories( ../.. )
 
 # Include directories for Eigen library
@@ -27,13 +27,13 @@ include_directories( . )
 
 # Extract compiler flags for Grid
 execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --cxxflags
-	OUTPUT_VARIABLE GRID_CPP_FLAGS
+  OUTPUT_VARIABLE GRID_CPP_FLAGS
   OUTPUT_STRIP_TRAILING_WHITESPACE )
 execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --ldflags
-	OUTPUT_VARIABLE GRID_LD_FLAGS
+  OUTPUT_VARIABLE GRID_LD_FLAGS
   OUTPUT_STRIP_TRAILING_WHITESPACE )
 execute_process( COMMAND ${GRID_INSTALL_FOLDER}bin/grid-config --libs
-	OUTPUT_VARIABLE GRID_LIB_FLAGS
+  OUTPUT_VARIABLE GRID_LIB_FLAGS
   OUTPUT_STRIP_TRAILING_WHITESPACE )
 
 # Include directories for Grid

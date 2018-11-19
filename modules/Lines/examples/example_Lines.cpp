@@ -47,23 +47,24 @@ int main (void)
   const string temperature_file = input_folder + "temperature.txt";
 
 
-  CELLS <DIMENSION, NRAYS> cells (NCELLS, n_neighbors_file);
+  CELLS <DIMENSION, NRAYS> cells (
+      NCELLS,
+      n_neighbors_file           );
 
-  //for (int r = 0; r < NRAYS; r++)
-  //{
-  //  cout << cells.rays.antipod[r] << endl;
-  //  cout << cells.rays.x[r] << "\t" << cells.rays.y[r] << "\t" << cells.rays.z[r] << endl;
-  //}
-
-  cells.read (cells_file, neighbors_file, boundary_file);
-
-  const long nboundary = cells.nboundary;
+  cells.read         (
+      cells_file,
+      neighbors_file,
+      boundary_file  );
 
 
   LINEDATA linedata (input_folder + "linedata/");
 
 
-  SPECIES species (NCELLS, NSPEC, species_file);
+  SPECIES species (
+      NCELLS,
+      NSPEC,
+      species_file);
+
   species.read (abundance_file);
 
 
@@ -74,33 +75,33 @@ int main (void)
   FREQUENCIES frequencies (NCELLS, linedata);
   frequencies.reset (linedata, temperature);
 
-  //frequencies.write("");
-  const long nfreq_red = frequencies.nfreq_red;
+  
+  LEVELS levels (
+      NCELLS,
+      linedata  );
+  
+  
+  RADIATION radiation (
+      NCELLS,
+      NRAYS,
+      frequencies.nfreq_red,
+      cells.nboundary );
+  
 
-  
-  LEVELS levels (NCELLS, linedata);
-  
-  
-  RADIATION radiation (NCELLS,
-                       NRAYS,
-                       nfreq_red,
-                       nboundary );
-  
   radiation.calc_boundary_intensities (
       cells.boundary2cell_nr,
       cells.cell2boundary_nr,
       frequencies                     );
   
-  //radiation.print ("","");
+
+  levels.compute_all <DIMENSION, NRAYS>(
+      cells,
+      linedata,
+      species,
+      temperature,
+      frequencies,
+      radiation                        );
   
-  Lines <DIMENSION, NRAYS>(cells,
-                           linedata,
-                           species,
-                           temperature,
-                           frequencies,
-                           levels,
-                           radiation   );
- 
   
   // Print results
  
@@ -119,6 +120,7 @@ int main (void)
   //timer_TOTAL.print_to_file ();
 
   //cout << linedata.A[0] << endl;
+
 
   // Finalize the MPI environment
 

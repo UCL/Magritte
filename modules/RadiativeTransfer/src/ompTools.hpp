@@ -15,21 +15,17 @@
 #endif
 
 
-// Loops over raypairs
+// OMP loops
 
 inline long OMP_start (const long total)
 {
-
   return (omp_get_thread_num() * total) / omp_get_num_threads();
-
 }
 
 
 inline long OMP_stop (const long total)
 {
-
   return ((omp_get_thread_num()+1) * total) / omp_get_num_threads();
-
 }
 
 

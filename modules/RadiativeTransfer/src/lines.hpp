@@ -16,7 +16,6 @@ using namespace Eigen;
 
 #include "types.hpp"
 #include "GridTypes.hpp"
-#include "radiation.hpp"
 #include "frequencies.hpp"
 #include "temperature.hpp"
 #include "Lines/src/linedata.hpp"
@@ -94,8 +93,9 @@ inline long LINES ::
 ///////////
 
 inline long LINES ::
-            index (const long p,
-                   const long line_index) const
+            index                    (
+                const long p,
+                const long line_index) const
 {
   return line_index + p*nrad_tot;
 }
@@ -107,13 +107,14 @@ inline long LINES ::
 ///////////////////////////////
 
 inline int LINES ::
-           add_emissivity_and_opacity (const FREQUENCIES &frequencies,
-                                       const TEMPERATURE &temperature,
-                                       const vReal       &freq_scaled,
-                                             long        &lnotch,
-                                       const long         p,
-                 	                     vReal       &eta,
-                                             vReal       &chi          ) const
+           add_emissivity_and_opacity         (
+               const FREQUENCIES &frequencies,
+               const TEMPERATURE &temperature,
+               const vReal       &freq_scaled,
+                     long        &lnotch,
+               const long         p,
+                     vReal       &eta,
+                     vReal       &chi          ) const
 {
   // TEMPORARY !!!
 

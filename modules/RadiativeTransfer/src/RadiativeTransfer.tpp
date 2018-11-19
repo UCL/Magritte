@@ -175,7 +175,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
 
       else
       {
-        const long b = cells.cell_to_bdy_nr[o];
+        const long b = cells.cell2boundary_nr[o];
 
         for (long f = 0; f < frequencies.nfreq_red; f++)
         {
