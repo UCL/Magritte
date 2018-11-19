@@ -21,6 +21,13 @@ struct RAYS
   double y[Nrays];         ///< y component of direction vector
   double z[Nrays];         ///< z component of direction vector
 
+  double Ix[Nrays];        ///< x component of horizontal image axis
+  double Iy[Nrays];        ///< y component of horizontal image axis
+
+  double Jx[Nrays];        ///< x component of vertical image axis
+  double Jy[Nrays];        ///< y component of vertical image axis
+  double Jz[Nrays];        ///< z component of vertical image axis
+
   long antipod[Nrays];     ///< ray number of antipodal ray
 
   long mirror_xz[Nrays];   ///< ray mirrored along xz plane

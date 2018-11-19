@@ -163,7 +163,7 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
     Sv[0] += 2.0 / dtau[0] * (Ibdy_scaled + 0.5 * (term1_c + term1_n));
 
 
-    const long b = cells.cell_to_bdy_nr[o];
+    const long b = cells.cell2boundary_nr[o];
 
     get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
                        lnotch_ar[0], notch_ar[0], cellNrs_ar[0], shifts_ar[0], term1_n, term2_n, chi_n);
@@ -201,7 +201,7 @@ inline int set_up_ray (const CELLS<Dimension, Nrays> &cells,
     Su[n_r-1] += 2.0 / dtau[n_r-1] * (Ibdy_scaled - 0.5 * (term2_c + term2_n));
     Sv[n_r-1] += 2.0 / dtau[n_r-1] * (Ibdy_scaled - 0.5 * (term1_c + term1_n));
 
-    const long b = cells.cell_to_bdy_nr[o];
+    const long b = cells.cell2boundary_nr[o];
 
     get_terms_and_chi (frequencies, temperature, lines, scattering, radiation, f, o, R,
                        lnotch_r[0], notch_r[0], cellNrs_r[0], shifts_r[0], term1_n, term2_n, chi_n);
@@ -342,9 +342,9 @@ inline int get_terms_chi_and_Ibdy (const CELLS<Dimension, Nrays> &cells,
   get_eta_and_chi (frequencies, temperature, lines, scattering, radiation,
                    lnotch, cellNrs, freq_scaled, eta, chi);
 
-  const long b = cells.cell_to_bdy_nr[cellNrs];
+  const long b = cells.cell2boundary_nr[cellNrs];
 
-  radiation.rescale_U_and_V_and_bdy_I (frequencies, cellNrs, b, R, notch, freq_scaled,
+  radiation.rescale_U_and_V_and_bdy_I (frequencies, cellNrs, R, notch, freq_scaled,
                                        U_scaled, V_scaled, Ibdy_scaled);
 
   // temporary !!!

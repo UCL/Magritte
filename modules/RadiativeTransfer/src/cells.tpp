@@ -11,7 +11,7 @@
 #include <limits>
 using namespace std;
 
-#include "cells.hpp"
+#include "ompTools.hpp"
 
 
 ///  Constructor for CELLS: Allocates memory for cell data
@@ -42,8 +42,8 @@ CELLS (const long   num_of_cells,
   boundary.resize (ncells);
     mirror.resize (ncells);
 
-  bdy_to_cell_nr.resize (ncells);
-  cell_to_bdy_nr.resize (ncells);
+  boundary2cell_nr.resize (ncells);
+  cell2boundary_nr.resize (ncells);
 
 
   // Read number of neighbors
@@ -60,14 +60,7 @@ CELLS (const long   num_of_cells,
   default (none)
   {
 
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
-
-  long start = (thread_num*ncells)/num_threads;
-  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-
-
-  for (long p = start; p < stop; p++)
+  for (long p = OMP_start(ncells); p < OMP_stop(ncells); p++)
   {
     neighbors[p].resize (n_neighbors[p]);
 
@@ -90,8 +83,8 @@ CELLS (const long   num_of_cells,
     boundary[p] = false;
     mirror[p]   = false;
 
-    cell_to_bdy_nr[p] = ncells;
-    bdy_to_cell_nr[p] = ncells;
+    cell2boundary_nr[p] = ncells;
+    boundary2cell_nr[p] = ncells;
 
   }
   } // end of OpenMP parallel region
@@ -143,8 +136,8 @@ int CELLS <Dimension, Nrays> ::
 
   while (boundaryFile >> cell_nr)
   {
-    bdy_to_cell_nr[index]   = cell_nr;
-    cell_to_bdy_nr[cell_nr] = index;
+    boundary2cell_nr[index]   = cell_nr;
+    cell2boundary_nr[cell_nr] = index;
 
     boundary[cell_nr] = true;
 
@@ -287,4 +280,24 @@ inline double CELLS <Dimension, Nrays> ::
          + (vy[current] - vy[origin]) * rays.y[ray]
          + (vz[current] - vz[origin]) * rays.z[ray];
 
+}
+
+
+
+template <int Dimension, long Nrays>
+inline double CELLS <Dimension, Nrays> ::
+    x_projected       (
+        const long p,
+        const long r  ) const
+{
+  return x[p]*rays.Ix[r] + y[p]*rays.Iy[r];
+}
+
+template <int Dimension, long Nrays>
+inline double CELLS <Dimension, Nrays> ::
+    y_projected       (
+        const long p,
+        const long r  ) const
+{
+  return x[p]*rays.Jx[r] + y[p]*rays.Jy[r] + z[p]*rays.Jz[r];
 }

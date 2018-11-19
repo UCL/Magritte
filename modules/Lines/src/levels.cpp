@@ -17,10 +17,13 @@ using namespace Eigen;
 #include "levels.hpp"
 #include "linedata.hpp"
 #include "RadiativeTransfer/src/folders.hpp"
+#include "RadiativeTransfer/src/ompTools.hpp"
+#include "RadiativeTransfer/src/mpiTools.hpp"
 #include "RadiativeTransfer/src/constants.hpp"
 #include "RadiativeTransfer/src/GridTypes.hpp"
 #include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/lines.hpp"
+#include "RadiativeTransfer/src/radiation.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
 #include "RadiativeTransfer/src/frequencies.hpp"
 
@@ -32,8 +35,9 @@ using namespace Eigen;
 ///////////////////////////
 
 LEVELS ::
-LEVELS (const long      num_of_cells,
-        const LINEDATA &linedata)
+LEVELS                           (
+    const long      num_of_cells,
+    const LINEDATA &linedata     )
   : ncells (num_of_cells)
   , nlspec (linedata.nlspec)
   , nlev   (linedata.nlev)
@@ -42,14 +46,14 @@ LEVELS (const long      num_of_cells,
 
   some_not_converged = true;
 
-           not_converged.resize (nlspec);
   fraction_not_converged.resize (nlspec);
+           not_converged.resize (nlspec);
 
 
   for (int l = 0; l < nlspec; l++)
   {
-             not_converged[l] = true;
     fraction_not_converged[l] = 0.0;
+             not_converged[l] = true;
   }
 
 
@@ -68,14 +72,7 @@ LEVELS (const long      num_of_cells,
   default (none)
   {
 
-  int num_threads = omp_get_num_threads();
-  int thread_num  = omp_get_thread_num();
-
-  long start = (thread_num*ncells)/num_threads;
-  long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-
-
-  for (long p = start; p < stop; p++)
+  for (long p = OMP_start (ncells); p < OMP_stop (ncells); p++)
   {
     population[p].resize (nlspec);
          J_eff[p].resize (nlspec);
@@ -113,14 +110,11 @@ LEVELS (const long      num_of_cells,
 /////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    print (const string tag) const
+    print (
+        const string tag) const
 {
 
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-
-  if (world_rank == 0)
+  if (MPI_comm_rank() == 0)
   {
     for (int l = 0; l < nlspec; l++)
     {
@@ -129,18 +123,19 @@ int LEVELS ::
 
       ofstream pops_outputFile (pops_file);
       ofstream Jeff_outputFile (Jeff_file);
+      
+      pops_outputFile << scientific << setprecision(16);
+      Jeff_outputFile << scientific << setprecision(16);
 
       for (long p = 0; p < ncells; p++)
       {
         for (int i = 0; i < nlev[l]; i++)
         {
-          pops_outputFile << scientific << setprecision(16);
           pops_outputFile << population[p][l](i) << "\t";
         }
 
         for (int k = 0; k < nrad[l]; k++)
         {
-          Jeff_outputFile << scientific << setprecision(16);
           Jeff_outputFile << J_eff[p][l][k] << "\t";
         }
 
@@ -164,11 +159,12 @@ int LEVELS ::
 
 
 int LEVELS ::
-    update_using_LTE (const LINEDATA    &linedata,
-                      const SPECIES     &species,
-                      const TEMPERATURE &temperature,
-                      const long         p,
-                      const int          l           )
+    update_using_LTE (
+        const LINEDATA    &linedata,
+        const SPECIES     &species,
+        const TEMPERATURE &temperature,
+        const long         p,
+        const int          l           )
 {
 
   // Set population total
@@ -197,7 +193,6 @@ int LEVELS ::
   }
 
 
-
   return (0);
 
 }
@@ -206,9 +201,10 @@ int LEVELS ::
 
 
 int LEVELS ::
-    update_using_statistical_equilibrium (const MatrixXd &R,
-                                          const long      p,
-                                          const int       l )
+    update_using_statistical_equilibrium (
+        const MatrixXd &R,
+        const long      p,
+        const int       l )
 {
 
 
@@ -265,8 +261,9 @@ int LEVELS ::
 
 
 int LEVELS ::
-    check_for_convergence (const long p,
-                           const int  l )
+    check_for_convergence (
+        const long p,
+        const int  l      )
 {
 
   // Start by assuming that the populations are converged
@@ -310,15 +307,16 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    calc_line_emissivity_and_opacity (const LINEDATA &linedata,
-                                            LINES    &lines,
-		                      const long      p,
-                                      const int       l        ) const
+    calc_line_emissivity_and_opacity (
+        const LINEDATA &linedata,
+              LINES    &lines,
+	const long      p,
+        const int       l            ) const
 {
 
   // For all radiative transitions
 
-  for (int k = 0; k < linedata.nrad[l]; k++)
+  for (int k = 0; k < nrad[l]; k++)
   {
     const int i = linedata.irad[l][k];
     const int j = linedata.jrad[l][k];
@@ -331,11 +329,6 @@ int LEVELS ::
 
        lines.opacity[index] = hv_4pi * (  population[p][l](j) * linedata.B[l](j,i)
                                         - population[p][l](i) * linedata.B[l](i,j) );
-
-     //if (isnan(lines.emissivity[index]))
-     //{
-     //   cout << p << " " << l << " " << i << " " << population[p][l](i) << endl;
-     //}
   }
 
 
@@ -355,11 +348,12 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    calc_J_eff (const FREQUENCIES &frequencies,
-                const TEMPERATURE &temperature,
-                const RADIATION   &radiation,
-                const long         p,
-                const int          l           )
+    calc_J_eff (
+        const FREQUENCIES &frequencies,
+        const TEMPERATURE &temperature,
+        const RADIATION   &radiation,
+        const long         p,
+        const int          l           )
 {
 
   for (int k = 0; k < nrad[l]; k++)
@@ -385,4 +379,4 @@ int LEVELS ::
 
   return (0);
 
- }
+}

@@ -61,6 +61,9 @@ add_library( _RADIATIVE_TRANSFER
   lines.cpp
   scattering.cpp
   radiation.cpp
+  raypair.cpp
+  raydata.cpp
+  image.cpp
   profile.hpp
   RadiativeTransfer.hpp
   set_up_ray.hpp

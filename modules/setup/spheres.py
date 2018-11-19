@@ -1,8 +1,7 @@
 import numpy as np
+
 from healpy        import pixelfunc
 from scipy.spatial import Delaunay
-
-from model import model
 
 
 # Helper functions
@@ -15,6 +14,47 @@ def nRays (nsides):
     return 12*nsides**2
 
 
+def nSides (nrays):
+    '''
+    Number of HEALPix's nsides corresponding to nrays
+    '''
+    # Try computing nsides assuming it works
+    nsides = np.sqrt(float(nrays)/12.0)
+    # Chack if nrays was HEALPix compatible
+    if (nRays(nsides) != nrays):
+        print('ERROR : no HEALPix compatible number of rays (nrays = 12*nsides**2)')
+        return
+    # Cast to int now we know it is safe
+    nsides = int(nsides)
+    # Done
+    return nsides
+
+
+def rayVectors (dimension, nrays):
+    '''
+    Devide circle into nrays rays
+    '''
+    if   (dimension == 1):
+        if (nrays != 2):
+            print('WARNING : in 1D, nrays is set to 2')
+        Rx = [-1.0, 1.0]
+        Ry = [ 0.0, 0.0]
+        Rz = [ 0.0, 0.0]
+    elif (dimension == 2):
+        Rx = [np.cos((2.0*np.pi*r)/nrays) for r in range(nrays)]
+        Ry = [np.sin((2.0*np.pi*r)/nrays) for r in range(nrays)]
+        Rz = [0.0                         for _ in range(nrays)]
+    elif (dimension == 3):
+        Rx = pixelfunc.pix2vec(nSides(nrays), range(nrays))[0]
+        Ry = pixelfunc.pix2vec(nSides(nrays), range(nrays))[1]
+        Rz = pixelfunc.pix2vec(nSides(nrays), range(nrays))[2]
+    else:
+        print('ERROR non-valid dimension given')
+        return
+    # Done
+    return (Rx, Ry, Rz)
+
+
 def spherical3Dscalar (fr, nsides, f):
     '''
     Copy 1D model scalar data over shell in 3D model 
@@ -23,6 +63,16 @@ def spherical3Dscalar (fr, nsides, f):
         f += [fr]
     else:
         nrays = nRays(nsides)
+        f += [fr for _ in range(nrays)]
+
+
+def sphericalXDscalar (fr, nrays, f):
+    '''
+    Copy 1D model scalar data over shell in 2D model 
+    '''
+    if (nrays == 0):
+        f += [fr]
+    else:
         f += [fr for _ in range(nrays)]
 
 
@@ -41,16 +91,32 @@ def spherical3Dvector(Vr, nsides, Vx, Vy, Vz):
         Vy += [Vr*ry for ry in Ry]
         Vz += [Vr*rz for rz in Rz]
 
-def neighborLists_assumingVoronoiTesselation(x,y,z):
-    npoints = len(x)
-    points = [[x[i], y[i], z[i]] for i in range(npoints)]
-    # Make a Delaulay triangulation
-    delaunay = Delaunay(points)
-    # Extract Delaunay vertices (= Voronoi neighbors)
-    (indptr,indices) = delaunay.vertex_neighbor_vertices
-    neighborLists = [indices[indptr[k]:indptr[k+1]] for k in range(npoints)]
-    # Done
-    return neighborLists
+
+def sphericalXDvector(Vr, dimension, nrays, Vx, Vy, Vz):
+    '''
+    Copy 1D model scalar data over shell in 2D model 
+    '''
+    if (nrays == 0):
+        Vx += [Vr]
+        Vy += [Vr]
+        Vz += [Vr]
+    else:
+        (Rx, Ry, Rz) = rayVectors(dimension, nrays)
+        Vx += [Vr*rx for rx in Rx]
+        Vy += [Vr*ry for ry in Ry]
+        Vz += [Vr*rz for rz in Rz]
+
+
+#def neighborLists_assumingVoronoiTesselation(x,y,z):
+#    npoints = len(x)
+#    points = [[x[i], y[i], z[i]] for i in range(npoints)]
+#    # Make a Delaulay triangulation
+#    delaunay = Delaunay(points)
+#    # Extract Delaunay vertices (= Voronoi neighbors)
+#    (indptr,indices) = delaunay.vertex_neighbor_vertices
+#    neighborLists = [indices[indptr[k]:indptr[k+1]] for k in range(npoints)]
+#    # Done
+#    return neighborLists
 
 def relDiff(a,b):
     if (a+b == 0.0):
@@ -94,38 +160,40 @@ def sphereVar(cellsInShell, f):
     return fVar
 
 
-def mapTo3D (model1D, nsidesList):
-    """
-    Maps a 1D model to the spherically symmetric 3D equivalent
-    """
-    # Create a 3D model object
-    model3D = model (dim=3)
-    # Store cells number of cells in each cell
-    cellsInShell = [[] for _ in range(model1D.ncells)]
-    # Add shells
-    index  = 0
-    for s in range(model1D.ncells):
-        nrays = nRays(nsidesList[s])
-        spherical3Dvector(model1D.x[s],           nsidesList[s], model3D.x,  model3D.y,  model3D.z)
-        spherical3Dvector(model1D.vx[s],          nsidesList[s], model3D.vx, model3D.vy, model3D.vz)
-        spherical3Dscalar(model1D.density[s],     nsidesList[s], model3D.density)
-        spherical3Dscalar(model1D.abundance[s],   nsidesList[s], model3D.abundance)
-        spherical3Dscalar(model1D.temperature[s], nsidesList[s], model3D.temperature)
-        if (nrays == 0):
-            cellsInShell[s].append(index)
-            index += 1
-        else:
-            for _ in range(nrays):
-                cellsInShell[s].append(index)
-                index += 1
-    # Extract boundary 
-    model3D.boundary = cellsInShell[-1]
-    # Extract number of cells
-    model3D.ncells   = index
-    # Extract neighbors
-    model3D.getNeighborLists()
-    # Done
-    return (model3D, cellsInShell)
+#def mapTo3D (model1D, nsidesList):
+#    """
+#    Maps a 1D model to the spherically symmetric 3D equivalent
+#    """
+#    # Create a 3D model object
+#    model3D = model (dim=3)
+#    # Store cells number of cells in each cell
+#    cellsInShell = [[] for _ in range(model1D.ncells)]
+#    # Add shells
+#    index  = 0
+#    for s in range(model1D.ncells):
+#        nrays = nRays(nsidesList[s])
+#        spherical3Dvector(model1D.x[s],           nsidesList[s], model3D.x,  model3D.y,  model3D.z)
+#        spherical3Dvector(model1D.vx[s],          nsidesList[s], model3D.vx, model3D.vy, model3D.vz)
+#        spherical3Dscalar(model1D.density[s],     nsidesList[s], model3D.density)
+#        spherical3Dscalar(model1D.abundance[s],   nsidesList[s], model3D.abundance)
+#        spherical3Dscalar(model1D.temperature[s], nsidesList[s], model3D.temperature)
+#        if (nrays == 0):
+#            cellsInShell[s].append(index)
+#            index += 1
+#        else:
+#            for _ in range(nrays):
+#                cellsInShell[s].append(index)
+#                index += 1
+#    # Extract boundary 
+#    model3D.boundary = cellsInShell[-1]
+#    # Extract number of cells
+#    model3D.ncells   = index
+#    # Extract neighbors
+#    model3D.getNeighborLists()
+#    # Done
+#    return (model3D, cellsInShell)
+
+
 
 
 def mapTo1D (model3D, model1D, cellsInShell):
@@ -147,34 +215,4 @@ def mapTo1D (model3D, model1D, cellsInShell):
 #
 #    return model3D
 
-
-def setCubeGrid (nEdgeCells, dEdgeLength):
-    """
-    Create a 3D cubic Cartesian grid
-    """
-    # Create a 3D model object
-    model3D = model (dim=3)
-    # Add geometry to grid
-    for i in range(nEdgeCells):
-        for j in range(nEdgeCells):
-            for k in range(nEdgeCells):
-                model3D.x = i * edgeLength;
-                model3D.y = j * edgeLength;
-                model3D.z = k * edgeLength;
-    # Done
-    return model3D
-
-
-
-
-def makeShelly (model1D, model3D):
-    for n in range(model3D.ncells):
-        r = np.sqrt (model3D.x[n]**2 + model3D.y[n]**2 + model3D.z[n]**2)
-        for m in range(-model1D.ncells):
-            if (model.x[m] < r):
-                ratio = model.x[m] / r
-                model3D.x[n] *= ratio
-                model3D.y[n] *= ratio
-                model3D.z[n] *= ratio
-                break
 

@@ -16,11 +16,12 @@ using namespace std;
 #include "folders.hpp"
 #include "constants.hpp"
 #include "GridTypes.hpp"
-#include "mpiTypes.hpp"
+#include "mpiTools.hpp"
+#include "ompTools.hpp"
+#include "lines.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
 #include "profile.hpp"
-#include "interpolation.hpp"
 
 
 ///  Constructor for RADIATION
@@ -48,7 +49,6 @@ RADIATION (const long num_of_cells,
 
   boundary_intensity.resize (nrays_red);
 
-
   for (long r = 0; r < nrays_red; r++)
   {
     u[r].resize (ncells*nfreq_red);
@@ -67,12 +67,21 @@ RADIATION (const long num_of_cells,
 
   J.resize (ncells*nfreq_red);
 
+  cell2boundary_nr.resize (ncells);
+
 
 }   // END OF CONSTRUCTOR
 
 
+
+
+///  get_nrays_red: get reduced number of rays
+///    @param[in] nrays: total number or rays
+//////////////////////////////////////////////
+
 long RADIATION :: get_nrays_red (const long nrays)
 {
+
   int world_size;
   MPI_Comm_size (MPI_COMM_WORLD, &world_size);
 
@@ -82,8 +91,16 @@ long RADIATION :: get_nrays_red (const long nrays)
   const long START_raypair = ( world_rank   *nrays/2)/world_size;
   const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
 
+
   return STOP_raypair - START_raypair;
+  
 }
+
+
+
+
+///  read: read radiation field from file
+/////////////////////////////////////////
 
 int RADIATION ::
     read (const string boundary_intensity_file)
@@ -93,40 +110,40 @@ int RADIATION ::
 
 }
 
+
+
+
 ///  calc_boundary_intensities: calculate the boundary intensities
 //////////////////////////////////////////////////////////////////
 
 int RADIATION ::
-    calc_boundary_intensities (const Long1       &bdy_to_cell_nr,
-                               const FREQUENCIES &frequencies    )
+    calc_boundary_intensities             (
+        const Long1       &Boundary2cell_nr,
+        const Long1       &Cell2boundary_nr,
+        const FREQUENCIES &frequencies    )
 {
+
+  cell2boundary_nr = Cell2boundary_nr;
 
   for (long r = 0; r < nrays_red; r++)
   {
 
-#   pragma omp parallel                       \
-    shared (r, bdy_to_cell_nr, frequencies)   \
+#   pragma omp parallel                                           \
+    shared (r, Boundary2cell_nr, Cell2boundary_nr, frequencies)   \
     default (none)
     {
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = ( thread_num   *nboundary)/num_threads;
-    const long stop  = ((thread_num+1)*nboundary)/num_threads;
-
-
-    for (long b = start; b < stop; b++)
-    {
-      const long p = bdy_to_cell_nr[b];
-
-      for (long f = 0; f < nfreq_red; f++)
+      for (long b = OMP_start (nboundary); b < OMP_stop (nboundary); b++)
       {
-        boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
+        const long p = Boundary2cell_nr[b];
+
+        for (long f = 0; f < nfreq_red; f++)
+        {
+          boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
+        }
       }
-    }
-    } // end of pragma omp parallel
+    } 
   }
+
 
   return (0);
 
@@ -151,19 +168,11 @@ int initialize (vReal1& vec)
   shared (vec)          \
   default (none)
   {
-
-  const int nthreads = omp_get_num_threads();
-  const int thread   = omp_get_thread_num();
-
-  const long start = ( thread   *vec.size())/nthreads;
-  const long stop  = ((thread+1)*vec.size())/nthreads;
-
-
-  for (long i = start; i < stop; i++)
-  {
-    vec[i] = 0.0;
+    for (long i = OMP_start (vec.size()); i < OMP_stop (vec.size()); i++)
+    {
+      vec[i] = 0.0;
+    }
   }
-  } // end of pragma omp parallel
 
 
   return (0);
@@ -422,6 +431,9 @@ int RADIATION ::
 
     ofstream outputFile_J (file_name_J);
 
+    outputFile_J << scientific << setprecision(16);
+
+
     for (long p = 0; p < ncells; p++)
     {
       for (int f = 0; f < nfreq_red; f++)
@@ -429,11 +441,9 @@ int RADIATION ::
 #       if (GRID_SIMD)
           for (int lane = 0; lane < n_simd_lanes; lane++)
           {
-            outputFile_J << scientific << setprecision(16);
             outputFile_J << J[index(p,f)].getlane(lane) << "\t";
           }
 #       else
-          outputFile_J << scientific << setprecision(16);
           outputFile_J << J[index(p,f)] << "\t";
 #       endif
       }

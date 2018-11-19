@@ -31,8 +31,8 @@ struct SCATTERING
 
 
   SCATTERING (const long num_of_rays,
-			        const long num_of_freq_scat,
-							const long num_of_freq);       ///< Constructor
+              const long num_of_freq_scat,
+              const long num_of_freq);       ///< Constructor
 
   int add_opacity (const vReal& frequencies, vReal& chi) const;
 

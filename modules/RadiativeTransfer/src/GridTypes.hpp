@@ -56,5 +56,15 @@ const vReal vOne  = 1.0;
 // Define corresponding MPI type
 
 
+inline int laneNr (const long index)
+{
+  return index % n_simd_lanes;
+}
+
+inline long newIndex(const long index)
+{
+  return index / n_simd_lanes;
+}
+
 
 #endif // __GRID_TYPES_HPP_INCLUDED__

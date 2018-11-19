@@ -16,10 +16,13 @@ using namespace Eigen;
 #include "timer.hpp"
 #include "types.hpp"
 #include "GridTypes.hpp"
+#include "mpiTools.hpp"
+#include "ompTools.hpp"
 #include "cells.hpp"
 #include "lines.hpp"
 #include "scattering.hpp"
 #include "radiation.hpp"
+#include "image.hpp"
 #include "set_up_ray.hpp"
 #include "solve_ray.hpp"
 
@@ -42,145 +45,96 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
                        const SCATTERING               &scattering,
 	                     RADIATION                &radiation   )
 {
-  cout << "In RT..." << endl;
-
-  const long ndiag = 0;
-
-  const long ncells    = cells.ncells;
-  const long nfreq     = frequencies.nfreq;
-  const long nfreq_red = frequencies.nfreq_red;
 
 
-  int world_size;
-  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-  const long START_raypair = ( world_rank   *Nrays/2)/world_size;
-  const long STOP_raypair  = ((world_rank+1)*Nrays/2)/world_size;
+  IMAGE image(cells.ncells, Nrays, frequencies.nfreq_red);
 
 
   // For all ray pairs
 
-  for (long r = START_raypair; r < STOP_raypair; r++)
+  for (long r = MPI_start (Nrays/2); r < MPI_stop (Nrays/2); r++)
   {
-    const long R  = r - START_raypair;
+    const long R  = r - MPI_start (Nrays/2);
 
     const long ar = cells.rays.antipod[r];
 
 
-    //#include "RadiativeTransfer/src/folders.hpp"
-    //string srcu_file = output_folder + "srcu.txt";
-    //string dtau_file = output_folder + "dtau.txt";
-
-    //ofstream srcu_outputFile (srcu_file);
-    //ofstream dtau_outputFile (dtau_file);
-
-    //private (Su, Sv, dtau, Lambda)      \
-
     // Loop over all cells
 
 #   pragma omp parallel                                                                \
-    shared  (cells, temperature, frequencies, lines, scattering, radiation, r, cout)   \
+    shared  (cells, temperature, frequencies, lines, scattering, radiation, r, image, cout)   \
     default (none)
     {
 
-    vReal   Su [ncells];   // effective source for u along ray r
-    vReal   Sv [ncells];   // effective source for v along ray r
-    vReal dtau [ncells];   // optical depth increment along ray r
-
-    vReal Lambda [ncells];
-
-    const int num_threads = omp_get_num_threads();
-    const int thread_num  = omp_get_thread_num();
-
-    const long start = (thread_num    *ncells)/num_threads;
-    const long stop  = ((thread_num+1)*ncells)/num_threads;   // Note brackets
-
-
-    for (long o = start; o < stop; o++)
+    for (long o = OMP_start (cells.ncells); o < OMP_stop (cells.ncells); o++)
     {
+      vReal   Su [cells.ncells];   // effective source for u along ray r
+      vReal   Sv [cells.ncells];   // effective source for v along ray r
+      vReal dtau [cells.ncells];   // optical depth increment along ray r
+  
+      vReal Lambda [cells.ncells];
 
-      //MPI_TIMER timer_RT_CALC ("RT_CALC");
-      //timer_RT_CALC.start ();
-      //MPI_TIMER timer_PS ("PS");
-      //timer_PS.start ();
+      long  cellNrs_r [cells.ncells];
+      long    notch_r [cells.ncells];
+      long   lnotch_r [cells.ncells];
+      double shifts_r [cells.ncells];   // indicates where we are in frequency space
+      double    dZs_r [cells.ncells];
 
-      //frequencies.write(to_string(o));
-
-      long  cellNrs_r [ncells];
-      long    notch_r [ncells];
-      long   lnotch_r [ncells];
-      double shifts_r [ncells];   // indicates where we are in frequency space
-      double    dZs_r [ncells];
-
-      long  cellNrs_ar [ncells];
-      long    notch_ar [ncells];
-      long   lnotch_ar [ncells];
-      double shifts_ar [ncells];   // indicates where we are in frequency space
-      double    dZs_ar [ncells];
+      long  cellNrs_ar [cells.ncells];
+      long    notch_ar [cells.ncells];
+      long   lnotch_ar [cells.ncells];
+      double shifts_ar [cells.ncells];   // indicates where we are in frequency space
+      double    dZs_ar [cells.ncells];
 
 
       // Extract the cell on ray r and antipodal ar
-
 
       long n_r  = cells.on_ray (o, r,  cellNrs_r,  dZs_r);
       long n_ar = cells.on_ray (o, ar, cellNrs_ar, dZs_ar);
 
       const long ndep = n_r + n_ar;
 
+      for (long q = 0; q < n_ar; q++)
+      {
+         notch_ar[q] = 0;
+        lnotch_ar[q] = 0;
+        shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
+      }
+
+      for (long q = 0; q < n_r; q++)
+      {
+         notch_r[q] = 0;
+        lnotch_r[q] = 0;
+        shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
+      }
+
+
+      lnotch_r[cells.ncells]  = 0;
+      lnotch_ar[cells.ncells] = 0;
+
+
       if (ndep > 1)
       {
 
-        for (long q = 0; q < n_ar; q++)
+
+
+        for (long f = 0; f < frequencies.nfreq_red; f++)
         {
-           notch_ar[q] = 0;
-          lnotch_ar[q] = 0;
-          shifts_ar[q] = 1.0 - cells.relative_velocity (o, ar, cellNrs_ar[q]) / CC;
+          // Setup and solve the ray equations
 
-          //cout << shifts_ar[q] << endl;
-        }
-
-        for (long q = 0; q < n_r; q++)
-        {
-           notch_r[q] = 0;
-          lnotch_r[q] = 0;
-          shifts_r[q] = 1.0 - cells.relative_velocity (o, r, cellNrs_r[q]) / CC;
-
-          //cout << shifts_r[q] << endl;
-        }
-
-
-        lnotch_r[ncells]  = 0;
-        lnotch_ar[ncells] = 0;
-
-
-        for (long f = 0; f < nfreq_red; f++)
-        {
           set_up_ray <Dimension, Nrays>
                      (cells, frequencies, temperature,lines, scattering, radiation, f, o, R,
                       lnotch_ar, notch_ar, cellNrs_ar, shifts_ar, dZs_ar, n_ar,
                       lnotch_r,  notch_r,  cellNrs_r,  shifts_r,  dZs_r,  n_r,
                       Su, Sv, dtau, ndep);
 
-          //for (long n = 0; n < ndep; n++)
-          //{
-          //  if (f == frequencies.nr_line[o][0][0][0])
-          //  { const long index2 = radiation.index(n,f);
-          //    cout << "INPUT : f = " << f << "   dtau = " << dtau[n] << "   S = " << Su[n] << endl;
-          //  }
-          //}
 
-         solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, ncells);
+          const long ndiag = 0;
 
-          //for (long n = 0; n < ndep; n++)
-          //{
-          //  if (f == frequencies.nr_line[o][0][0][0])
-          //  { const long index2 = radiation.index(n,f);
-          //    cout << "OUTPUT : n = " << n << "   Su = " << Su[n] << endl;
-          //  }
-          //}
+          solve_ray (ndep, Su, Sv, dtau, ndiag, Lambda, cells.ncells);
+
+          
+          // Store solution of the radiation field
 
           const long index = radiation.index(o,f);
 
@@ -191,27 +145,21 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
             radiation.v[R][index] = 0.5 * (Sv[n_ar-1] + Sv[n_ar]);
           }
 
-          else if (n_ar > 0)   // and hence n_r == 0
+          else if (n_ar > 0)   // and hence n_r  == 0
           {
             radiation.u[R][index] = Su[n_ar-1];
             radiation.v[R][index] = Sv[n_ar-1];
           }
 
-          else if (n_r > 0)   // and hence n_ar == 0
+          else if (n_r  > 0)   // and hence n_ar == 0
           {
             radiation.u[R][index] = Su[0];
             radiation.v[R][index] = Sv[0];
           }
 
-          //for (long n = 0; n < ndep; n++)
-          //{
-          //  if (f == frequencies.nr_line[o][0][0][0])
-          //  {
-          //    const long index2 = radiation.index(n,f);
-          //    cout << n << " " << radiation.u[R][index2] << endl;
-          //    cout << n << " " << Su[n] << endl;
-          //  }
-          //}
+          image.I_p[R][o][f] = Su[ndep-1] + Sv[ndep-1];
+          image.I_m[R][o][f] = Su[ndep-1] - Sv[ndep-1];
+
 
         } // end of loop over frequencies
 
@@ -227,9 +175,9 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
 
       else
       {
-        const long b = cells.cell_to_bdy_nr[o];
+        const long b = cells.cell2boundary_nr[o];
 
-        for (long f = 0; f < nfreq_red; f++)
+        for (long f = 0; f < frequencies.nfreq_red; f++)
         {
             const long index = radiation.index(o,f);
 
@@ -240,7 +188,7 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
         }
       }
 
-      long index = radiation.index(o,frequencies.nr_line[o][0][0][0]);
+      //long index = radiation.index(o,frequencies.nr_line[o][0][0][0]);
 
       //cout << radiation.u[R][index] << endl;
 
@@ -254,12 +202,11 @@ int RadiativeTransfer (const CELLS <Dimension, Nrays> &cells,
     }
     } // end of pragma omp parallel
 
-    //srcu_outputFile.close ();
-    //dtau_outputFile.close ();
 
   } // end of loop over ray pairs
 
 
+  image.print("");
 
   // Reduce results of all MPI processes to get J, U and V
   

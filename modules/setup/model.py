@@ -1,4 +1,5 @@
 import numpy as np
+import spheres
 
 from healpy        import pixelfunc
 from scipy.spatial import Delaunay
@@ -44,22 +45,14 @@ class model ():
         self.boundary = []
 
 
-    def defineRays (self, nsides):
+    def defineRays (self, nrays):
         """
         Define the directions of the rays
         """
-        if   (self.dimension == 0):
-            self.nrays = 0
-        elif (self.dimension == 1):
-            self.nrays = 2
-            self.rx = [1.0, -1.0]
-            self.ry = [0.0,  0.0]
-            self.rz = [0.0,  0.0]
-        elif (self.dimension == 3):
-            self.nrays = 12*nsides**2
-            (self.rx, self.ry, self.rz) = pixelfunc.pix2vec(nsides, range(self.nrays))
-        else:
-            print ('ERROR: dimension not set!')
+        # Set number of rays
+        self.nrays = nrays
+        # Define directions of rays
+        (self.rx, self.ry, self.rz) = spheres.rayVectors(self.dimension, nrays)
 
 
     def getNeighborLists (self):
@@ -75,6 +68,15 @@ class model ():
             # For the end points
             self.neighbors  = [[1]] +  self.neighbors + [[self.ncells-2]]
             self.nNeighbors =  [1]  + self.nNeighbors +  [1]
+        elif (self.dimension == 2):
+            points  = [[self.x[i], self.y[i]] for i in range(self.ncells)]
+            # Make a Delaulay triangulation
+            delaunay = Delaunay(points)
+            # Extract Delaunay vertices (= Voronoi neighbors)
+            (indptr,indices) = delaunay.vertex_neighbor_vertices
+            self.neighbors   = [indices[indptr[k]:indptr[k+1]] for k in range(self.ncells)]
+            # Extract the number of neighbors for each point
+            self.nNeighbors  = [len(neighborList) for neighborList in self.neighbors]
         elif (self.dimension == 3):
             points  = [[self.x[i], self.y[i], self.z[i]] for i in range(self.ncells)]
             # Make a Delaulay triangulation
@@ -132,3 +134,94 @@ class model ():
             for line in file:
                 sline = line.split()
                 self.neighbors = [int(n) for n in sline]
+
+
+    def imageRay (self, rayNumber):
+        # Define ray
+        Rx = self.rx[rayNumber]
+        Ry = self.ry[rayNumber]
+        Rz = self.rz[rayNumber]
+        # Define help quantity
+        sRx2pRy2 = np.sqrt(Rx**2 + Ry**2)
+        if (sRx2pRy2 != 0.0):
+            # Define unit vector along horizontal image axis 
+            Ix =  Ry / sRx2pRy2
+            Iy = -Rx / sRx2pRy2
+            Iz =  0.0  
+            # Define unit vector alonng vertical image axis 
+            Jx = Rx * Rz / sRx2pRy2
+            Jy = Ry * Rz / sRx2pRy2
+            Jz = -sRx2pRy2
+            # Define image coordinates 
+            self.imageX = [self.x[p]*Ix + self.y[p]*Iy                for p in range(self.ncells)] 
+            self.imageY = [self.x[p]*Jx + self.y[p]*Jy + self.z[p]*Jz for p in range(self.ncells)] 
+        else:
+            # Define image coordinates 
+            self.imageX = self.x[p] 
+            self.imageY = self.y[p] 
+
+
+#
+
+def mapToXD (model1D, dimension, nraysList):
+    """
+    Maps a 1D model to the spherically symmetric XD equivalent
+    """
+    # Create a 3D model object
+    modelXD = model (dim=dimension)
+    # Store cells number of cells in each cell
+    cellsInShell = [[] for _ in range(model1D.ncells)]
+    # Add shells
+    index  = 0
+    for s in range(model1D.ncells):
+        nrays = nraysList[s]
+        spheres.sphericalXDvector(model1D.x[s],  dimension, nrays, modelXD.x,  modelXD.y,  modelXD.z)
+        spheres.sphericalXDvector(model1D.vx[s], dimension, nrays, modelXD.vx, modelXD.vy, modelXD.vz)
+        spheres.sphericalXDscalar(model1D.density[s],       nrays, modelXD.density)
+        spheres.sphericalXDscalar(model1D.abundance[s],     nrays, modelXD.abundance)
+        spheres.sphericalXDscalar(model1D.temperature[s],   nrays, modelXD.temperature)
+        if (nrays == 0):
+            cellsInShell[s].append(index)
+            index += 1
+        else:
+            for _ in range(nrays):
+                cellsInShell[s].append(index)
+                index += 1
+    # Extract boundary 
+    modelXD.boundary = cellsInShell[-1]
+    # Extract number of cells
+    modelXD.ncells   = index
+    # Extract neighbors
+    modelXD.getNeighborLists()
+    # Done
+    return (modelXD, cellsInShell)
+
+
+def setCubeGrid (nEdgeCells, dEdgeLength):
+    """
+    Create a 3D cubic Cartesian grid
+    """
+    # Create a 3D model object
+    model3D = model (dim=3)
+    # Add geometry to grid
+    for i in range(nEdgeCells):
+        for j in range(nEdgeCells):
+            for k in range(nEdgeCells):
+                model3D.x = i * edgeLength;
+                model3D.y = j * edgeLength;
+                model3D.z = k * edgeLength;
+    # Done
+    return model3D
+
+
+def makeShelly (model1D, model3D):
+    for n in range(model3D.ncells):
+        r = np.sqrt (model3D.x[n]**2 + model3D.y[n]**2 + model3D.z[n]**2)
+        for m in range(-model1D.ncells):
+            if (model.x[m] < r):
+                ratio = model.x[m] / r
+                model3D.x[n] *= ratio
+                model3D.y[n] *= ratio
+                model3D.z[n] *= ratio
+                break
+
