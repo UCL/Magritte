@@ -46,12 +46,12 @@ inline void RAYPAIR ::
 //////////////////////////////////////////////////////////////////////////////////
 
 inline void RAYPAIR ::
-    setup                                          (
-        const FREQUENCIES             &frequencies,
-        const TEMPERATURE             &temperature,
-        const LINES                   &lines,
-        const SCATTERING              &scattering,
-        const long                     f           )
+    setup                              (
+        const FREQUENCIES &frequencies,
+        const TEMPERATURE &temperature,
+        const LINES       &lines,
+        const SCATTERING  &scattering,
+        const long         f           )
 {
 
 
@@ -71,8 +71,8 @@ inline void RAYPAIR ::
     raydata_ar.set_current_to_origin_bdy (frequencies, temperature, lines, scattering, f);
     raydata_ar.compute_next (frequencies, temperature, lines, scattering, f, 0);
 
-    Su[ndep-1] += raydata_ar.get_boundary_term_Su_ar();
-    Sv[ndep-1] += raydata_ar.get_boundary_term_Sv_ar();
+    Su[ndep-1] += raydata_ar.get_boundary_term_Su_r();
+    Sv[ndep-1] += raydata_ar.get_boundary_term_Sv_r();
   }
 
   else if (raydata_r.n > 0) // and hence raydata_ar.n == 0
@@ -85,8 +85,8 @@ inline void RAYPAIR ::
     raydata_r.set_current_to_origin_bdy (frequencies, temperature, lines, scattering, f);
     raydata_r.compute_next (frequencies, temperature, lines, scattering, f, 0);
 
-    Su[0] += raydata_r.get_boundary_term_Su_r();
-    Sv[0] += raydata_r.get_boundary_term_Sv_r();
+    Su[0] += raydata_r.get_boundary_term_Su_ar();
+    Sv[0] += raydata_r.get_boundary_term_Sv_ar();
   }
 
 
@@ -115,11 +115,11 @@ inline void RAYPAIR ::
       Sv[raydata_ar.n-1-q] = raydata_ar.get_Sv_ar();
 
     raydata_ar.set_current_to_next();
-
-//    if (f == frequencies.nr_line[raydata_ar.origin][0][19][20])
-//    {
-//      cout << "dtau " << dtau[raydata_ar.n-1-q] << "   " << "Su " << Su[raydata_ar.n-1-q] << endl;  
-//    }
+    
+    //if (f == frequencies.nr_line[raydata_ar.origin][0][15][20])
+    //{
+    //  cout << "dtau " << dtau[raydata_ar.n-1-q] << "   " << "Sv " << Sv[raydata_ar.n-1-q] << endl;  
+    //}
   }
 
   raydata_ar.compute_next_bdy (frequencies, temperature, lines, scattering, f);
@@ -150,6 +150,10 @@ inline void RAYPAIR ::
       Su[raydata_ar.n+q] = raydata_r.get_Su_r();
       Sv[raydata_ar.n+q] = raydata_r.get_Sv_r();
 
+    //if (f == frequencies.nr_line[raydata_ar.origin][0][15][20])
+    //{
+    //  cout << "dtau " << dtau[raydata_ar.n+q] << "   " << "Sv " << Sv[raydata_ar.n+q] << endl;  
+    //}
     raydata_r.set_current_to_next();
   }
 
@@ -420,11 +424,50 @@ inline void RAYPAIR ::
 inline vReal RAYPAIR ::
     get_I_p (void)
 {
-  return Su[ndep-1] + Sv[ndep-1];
+//  if ( (raydata_ar.n > 0) && (raydata_r.n > 0) )
+//  {
+//    u_at_origin = 0.5 * (Su[raydata_ar.n-1] + Su[raydata_ar.n]);
+//    v_at_origin = 0.5 * (Sv[raydata_ar.n-1] + Sv[raydata_ar.n]);
+//  }
+//
+//  else if (raydata_r.n == 0)   // and hence n_ar > 0
+//  {
+//    u_at_origin = Su[ndep-1];
+//    v_at_origin = Sv[ndep-1];
+//  }
+//
+//  else if (raydata_ar.n == 0)   // and hence n_r > 0
+//  {
+//    u_at_origin = Su[0];
+//    v_at_origin = Sv[0];
+//  }
+//
+//  return  u_at_origin + v_at_origin;
+  return Su[ndep-1] ;//+ Sv[ndep-1];
 }
 
 inline vReal RAYPAIR ::
     get_I_m (void)
 {
-  return Su[ndep-1] - Sv[ndep-1];
+//  if ( (raydata_ar.n > 0) && (raydata_r.n > 0) )
+//  {
+//    u_at_origin = 0.5 * (Su[raydata_ar.n-1] + Su[raydata_ar.n]);
+//    v_at_origin = 0.5 * (Sv[raydata_ar.n-1] + Sv[raydata_ar.n]);
+//
+//  }
+//
+//  else if (raydata_r.n == 0)   // and hence n_ar > 0
+//  {
+//    u_at_origin = Su[ndep-1];
+//    v_at_origin = Sv[ndep-1];
+//  }
+//
+//  else if (raydata_ar.n == 0)   // and hence n_r > 0
+//  {
+//    u_at_origin = Su[0];
+//    v_at_origin = Sv[0];
+//  }
+//
+//  return  u_at_origin - v_at_origin;
+  return Su[0] ;// - Sv[0];
 }

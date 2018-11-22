@@ -179,8 +179,8 @@ const int NR_LINE_CENTER = N_QUADRATURE_POINTS / 2;
 //                                                 7.292633670865721,
 //                                                 7.983034772719781 };
 
-const double LOWER = 1.01*H_roots[0];
-const double UPPER = 1.01*H_roots[N_QUADRATURE_POINTS-1];
+const double LOWER = 1.00001*H_roots[0];
+const double UPPER = 1.00001*H_roots[N_QUADRATURE_POINTS-1];
 
 
 #endif // __MAGRITTE_CONSTANTS_HPP_INCLUDED__

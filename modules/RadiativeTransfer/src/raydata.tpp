@@ -3,6 +3,7 @@
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
 
+#include <iomanip>
 
 #include "GridTypes.hpp"
 #include "mpiTools.hpp"
@@ -66,9 +67,9 @@ inline void RAYDATA ::
 
   // Put origin informartion at ncells
 
-  cellNrs[ncells] = origin;
-   lnotch[ncells] = 0;
-    notch[ncells] = 0;
+  cellNrs[ncells-1] = origin;
+   lnotch[ncells-1] = 0;
+    notch[ncells-1] = 0;
 
 }
 
@@ -90,7 +91,7 @@ inline void RAYDATA ::
       lines,
       scattering,
       frequencies.nu[origin][f],
-      ncells               );
+      ncells-1             );
 
 
   // Define auxiliary term
@@ -100,20 +101,20 @@ inline void RAYDATA ::
 
   // Compute (current) terms
 
-  term1_c = (U[Ray][index(origin,f)] + eta_n) * inverse_chi_n;
-  term2_c =  V[Ray][index(origin,f)]          * inverse_chi_n;
+  term1_c = (U[Ray][index(origin,f)]*0.0 + eta_n) * inverse_chi_n;
+  term2_c =  V[Ray][index(origin,f)]*0.0          * inverse_chi_n;
 
   chi_c = chi_n;
 
 }
 
 inline void RAYDATA ::
-            set_current_to_origin_bdy          (
-                const FREQUENCIES &frequencies,
-                const TEMPERATURE &temperature,
-                const LINES       &lines,
-                const SCATTERING  &scattering,
-                const long         f           )
+    set_current_to_origin_bdy          (
+        const FREQUENCIES &frequencies,
+        const TEMPERATURE &temperature,
+        const LINES       &lines,
+        const SCATTERING  &scattering,
+        const long         f           )
 {
 
   // Gather all contributions to the emissivity and opacity
@@ -124,7 +125,7 @@ inline void RAYDATA ::
       lines,
       scattering,
       frequencies.nu[origin][f],
-      ncells              );
+      ncells-1             );
 
   // Define I_bdy_scaled (which is not scaled in this case)
   
@@ -140,26 +141,27 @@ inline void RAYDATA ::
 
   // Compute (current) terms
 
-  term1_c = (U[Ray][index(origin,f)] + eta_n) * inverse_chi_n;
-  term2_c =  V[Ray][index(origin,f)]          * inverse_chi_n;
+  term1_c = (U[Ray][index(origin,f)]*0.0 + eta_n) * inverse_chi_n;
+  term2_c =  V[Ray][index(origin,f)]*0.0          * inverse_chi_n;
 
   chi_c = chi_n;
 
 }
 
 inline void RAYDATA ::
-            compute_next                       (
-                const FREQUENCIES &frequencies,
-                const TEMPERATURE &temperature,
-                const LINES       &lines,
-                const SCATTERING  &scattering,
-                const long         f,
-                const long         q           )
+    compute_next                       (
+        const FREQUENCIES &frequencies,
+        const TEMPERATURE &temperature,
+        const LINES       &lines,
+        const SCATTERING  &scattering,
+        const long         f,
+        const long         q           )
 {
 
   // Compute new frequency due to Doppler shift
   
   vReal freq_scaled = shifts[q] * frequencies.nu[origin][f];
+  //vReal freq_scaled = frequencies.nu[origin][f];
 
 
   // Gather all contributions to the emissivity and opacity
@@ -172,20 +174,21 @@ inline void RAYDATA ::
       freq_scaled,
       q                    );
 
+  //freq_scaled = shifts[q] * frequencies.nu[origin][f];
 
   // Rescale scatterd radiation field U and V
 
   vReal U_scaled, V_scaled;
 
   // !!! What to do with antipodal ray ???
-  rescale_U_and_V           (
+  rescale_U_and_V (
       frequencies,
       cellNrs[q],
       Ray,
       notch[q],
       freq_scaled,
       U_scaled,
-      V_scaled              );
+      V_scaled    );
 
 
   U_scaled = 0.0;
@@ -193,6 +196,9 @@ inline void RAYDATA ::
 
 
   compute_next_terms_and_dtau (U_scaled, V_scaled, q);
+
+  //cout << scientific << setprecision(16);
+  //cout << "term 1       " << term1_n << "   " << chi_n << endl;
 
 //  if (f == frequencies.nr_line[origin][0][19][20])
 //  {
@@ -217,6 +223,7 @@ inline void RAYDATA ::
   // Compute new frequency due to Doppler shift
   
   vReal freq_scaled = shifts[q] * frequencies.nu[origin][f];
+  //vReal freq_scaled = frequencies.nu[origin][f];
 
 
   // Gather all contributions to the emissivity and opacity
@@ -228,7 +235,8 @@ inline void RAYDATA ::
       scattering,
       freq_scaled,
       q                    );
-
+   
+  //freq_scaled = shifts[q] * frequencies.nu[origin][f];
 
   // Rescale scatterd radiation field U and V
 
@@ -250,6 +258,8 @@ inline void RAYDATA ::
 
 
   compute_next_terms_and_dtau (U_scaled, V_scaled, q);
+  //cout << scientific << setprecision(16);
+  //cout << "term 1       " << term1_n << "   " << chi_n << endl;
 
 }
 
@@ -296,15 +306,21 @@ inline void RAYDATA ::
 # if (GRID_SIMD)
     for (int lane = 0; lane < n_simd_lanes; lane++)
     {
-      if (fabs(chi_n.getlane(lane)) < 1.0E-30)
+      if (fabs(chi_n.getlane(lane)) < 1.0E-99)
       {
-        chi_n.putlane(1.0E-30, lane);
+        chi_n.putlane(1.0E-99, lane);
+        eta_n.putlane((eta_n / (chi_n * 1.0E+99)).getlane(lane), lane);
+
+        cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
       }
     }
 # else
-    if (fabs(chi_n) < 1.0E-30)
+    if (fabs(chi_n) < 1.0E-99)
     {
-      chi_n = 1.0E-30;
+      chi_n = 1.0E-99;
+      eta_n = eta_n / (chi_n * 1.0E+99);
+
+      cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
     }
 # endif
 
@@ -327,8 +343,8 @@ inline void RAYDATA ::
 
   // Compute new terms
 
-  term1_n = (U_scaled + eta_n) * inverse_chi_n;
-  term2_n =  V_scaled          * inverse_chi_n;
+  term1_n = (U_scaled*0.0 + eta_n) * inverse_chi_n;
+  term2_n =  V_scaled*0.0          * inverse_chi_n;
 
 
   // Compute dtau and its inverse
@@ -336,6 +352,31 @@ inline void RAYDATA ::
   dtau = 0.5 * (chi_n + chi_c) * dZs[q];
 
   inverse_dtau = 1.0 / dtau;
+  
+
+//  // Set minimal optical depth increment to avoid overflow 
+//
+//# if (GRID_SIMD)
+//    for (int lane = 0; lane < n_simd_lanes; lane++)
+//    {
+//      if (dtau.getlane(lane) < 1.0E-99)
+//      {
+//                dtau.putlane(1.0E-99, lane);
+//        inverse_dtau.putlane(1.0E+99, lane);
+//
+//        cout << "WARNING : optical depth increment reached lower bound (1.0E-99)" << endl;
+//      }
+//    }
+//# else
+//    if (dtau < 1.0E-99)
+//    {
+//              dtau = 1.0E-99;
+//      inverse_dtau = 1.0E+99;
+//
+//      cout << "WARNING : optical depth increment reached lower bound (1.0E-99)" << endl;
+//    }
+//# endif
+
 
 }
 
@@ -354,7 +395,8 @@ inline vReal RAYDATA ::
 inline vReal RAYDATA ::
     get_Sv_r  (void) const
 {
-  return 0.5 * (term2_n + term2_c) - (term1_n - term1_c) * inverse_dtau;
+  //cout << (term1_n - term1_c)  << "    " << term1_n << " " << term1_c << endl;
+  return 0.5 * (term2_n + term2_c) ;//- (term1_n - term1_c) * inverse_dtau;
 }
 
 inline vReal RAYDATA ::
@@ -366,7 +408,8 @@ inline vReal RAYDATA ::
 inline vReal RAYDATA ::
     get_Sv_ar (void) const
 {
-  return 0.5 * (term2_n + term2_c) + (term1_n - term1_c) * inverse_dtau;
+  //cout << (term1_n - term1_c)  << "    " << term1_n << " " << term1_c << endl;
+  return 0.5 * (term2_n + term2_c) ;//+ (term1_n - term1_c) * inverse_dtau;
 }
 
 
@@ -375,25 +418,25 @@ inline vReal RAYDATA ::
 inline vReal RAYDATA ::
     get_boundary_term_Su_r  (void) const
 {
-  return 2.0 * inverse_dtau * (Ibdy_scaled - 0.5 * (term2_c + term2_n));
+  return 2.0 * inverse_dtau * (+Ibdy_scaled + 0.5 * (term2_c + term2_n));
 }
 
 inline vReal RAYDATA ::
     get_boundary_term_Sv_r  (void) const
 {
-  return 2.0 * inverse_dtau * (Ibdy_scaled - 0.5 * (term1_c + term1_n));
+  return 2.0 * inverse_dtau * (-Ibdy_scaled + 0.5 * (term1_c + term1_n));
 }
 
 inline vReal RAYDATA ::
     get_boundary_term_Su_ar (void) const
 {
-  return 2.0 * inverse_dtau * (Ibdy_scaled + 0.5 * (term2_c + term2_n));
+  return 2.0 * inverse_dtau * (+Ibdy_scaled - 0.5 * (term2_c + term2_n));
 }
 
 inline vReal RAYDATA ::
     get_boundary_term_Sv_ar (void) const
 {
-  return 2.0 * inverse_dtau * (Ibdy_scaled + 0.5 * (term1_c + term1_n));
+  return 2.0 * inverse_dtau * (+Ibdy_scaled - 0.5 * (term1_c + term1_n));
 }
 
 
@@ -527,6 +570,7 @@ inline void RAYDATA ::
     
      U_scaled = interpolate_linear (nu1, U1,    nu2,    U2, freq_scaled);
      V_scaled = interpolate_linear (nu1, V1,    nu2,    V2, freq_scaled);
+  //Ibdy_scaled = planck (T_CMB, freq_scaled); //interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
   Ibdy_scaled = interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
 
 
@@ -556,8 +600,8 @@ inline void RAYDATA ::
   
      U_scaled = interpolate_linear (nu1, U1,    nu2, U2,    freq_scaled);
      V_scaled = interpolate_linear (nu1, V1,    nu2, V2,    freq_scaled);
+  //Ibdy_scaled = planck (T_CMB, freq_scaled); //interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
   Ibdy_scaled = interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
-
 
 }
 

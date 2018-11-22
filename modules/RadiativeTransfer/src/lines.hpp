@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <fstream>
+#include <iomanip>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
@@ -159,7 +160,14 @@ inline int LINES ::
     eta += emissivity[ind] * line_profile;
     chi +=    opacity[ind] * line_profile;
 
-  //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+    //cout << scientific << setprecision(16);
+    //cout << "e   over o   " << emissivity[ind] / opacity[ind] << endl;
+    //cout << "eta over chi " << eta             / chi          << "   " << chi << endl;
+
+    //if (lindex != lnotch)
+    //{
+    //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+    //}
 
     //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
     //cout << "line profile = " << line_profile << endl;
@@ -172,12 +180,12 @@ inline int LINES ::
         width = profile_width (temperature.gas[p], frequencies.line[lindex]);
   }
 
-  int lmn = lindex - lnotch;
+  //int lmn = lindex - lnotch;
 
-  //if (lmn < 1)
-  {
- //   cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
-  }
+  //if (lmn != 1)
+  //{
+  //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+  //}
 
   return (0);
 

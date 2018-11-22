@@ -24,7 +24,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/scattering.hpp"
 //#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
-#define MAX_NITERATIONS 100
+#define MAX_NITERATIONS 1
 
 
 struct LEVELS
@@ -192,7 +192,7 @@ int LEVELS ::
     //MPI_TIMER timer_RT ("RT");
     //timer_RT.start ();
 
-    radiation.compute_mean_intensity (cells, temperature, frequencies, lines, scattering);
+    radiation.compute_mean_intensity_and_images(cells, temperature, frequencies, lines, scattering);
 
     //RadiativeTransfer<Dimension, Nrays>(
     //    cells,

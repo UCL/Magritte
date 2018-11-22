@@ -107,9 +107,9 @@ int main (void)
  
   string tag = "_final";  
 
-  levels.print (tag);
-  
-  radiation.print (tag);
+//  levels.print (tag);
+//  
+//  radiation.print (tag);
 
   frequencies.print (tag);
 

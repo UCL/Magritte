@@ -359,7 +359,6 @@ int RADIATION ::
 
   IMAGE image (cells.ncells, Nrays, frequencies.nfreq_red);
 
-
   // For all ray pairs
 
   for (long r = MPI_start (Nrays/2); r < MPI_stop (Nrays/2); r++)
@@ -370,12 +369,13 @@ int RADIATION ::
 
     // Loop over all cells
 
-#   pragma omp parallel                                                     \
-    shared  (cells, temperature, frequencies, lines, scattering, r, cout)   \
+#   pragma omp parallel                                                            \
+    shared  (cells, temperature, frequencies, lines, scattering, r, image, cout)   \
     default (none)
     {
 
     RAYPAIR raypair (cells.ncells, frequencies.nfreq_red, r, ar, R, U, V, boundary_intensity, cell2boundary_nr);
+
 
     for (long o = OMP_start (cells.ncells); o < OMP_stop (cells.ncells); o++)
     {
@@ -390,6 +390,7 @@ int RADIATION ::
         {
           // Setup and solve the ray equations
 
+
           raypair.setup    (
                frequencies,
                temperature,
@@ -402,8 +403,8 @@ int RADIATION ::
 
           // Store intensity on the ray ends
 
-          image.I_p[R][o][f] = raypair.get_I_p;
-          image.I_m[R][o][f] = raypair.get_I_m;
+          image.I_p[R][o][f] = raypair.get_I_p();
+          image.I_m[R][o][f] = raypair.get_I_m();
 
         } // end of loop over frequencies
 
@@ -416,6 +417,7 @@ int RADIATION ::
         {
           // Setup and solve the ray equations
 
+
           raypair.setup    (
                frequencies,
                temperature,
@@ -423,13 +425,14 @@ int RADIATION ::
                scattering,
                f           );
 
+
           raypair.solve_ndep_is_1 ();
 
 
           // Store intensity on the ray ends
 
-          image.I_p[R][o][f] = raypair.get_I_p;
-          image.I_m[R][o][f] = raypair.get_I_m;
+          image.I_p[R][o][f] = raypair.get_I_p();
+          image.I_m[R][o][f] = raypair.get_I_m();
 
         } // end of loop over frequencies
 
@@ -457,10 +460,160 @@ int RADIATION ::
 
 
   // Print images
-  
+
   image.print("");
 
 
   return (0);
 
 }
+
+
+
+
+template <int Dimension, long Nrays>
+int RADIATION ::
+    compute_mean_intensity_and_images               (
+        const CELLS <Dimension, Nrays> &cells,
+        const TEMPERATURE              &temperature,
+        const FREQUENCIES              &frequencies,
+        const LINES                    &lines,
+        const SCATTERING               &scattering  )
+{
+
+  IMAGE image (cells.ncells, Nrays, frequencies.nfreq_red);
+
+
+  // For all ray pairs
+
+  for (long r = MPI_start (Nrays/2); r < MPI_stop (Nrays/2); r++)
+  {
+    const long R  = r - MPI_start (Nrays/2);   // (local) ray index
+    const long ar = cells.rays.antipod[r];     // (global) antipodal ray index
+
+
+    // Loop over all cells
+
+#   pragma omp parallel                                                     \
+    shared  (cells, temperature, frequencies, lines, scattering, r, image, cout)   \
+    default (none)
+    {
+
+    RAYPAIR raypair (cells.ncells, frequencies.nfreq_red, r, ar, R, U, V, boundary_intensity, cell2boundary_nr);
+
+    for (long o = OMP_start (cells.ncells); o < OMP_stop (cells.ncells); o++)
+    {
+
+      raypair.initialize <Dimension, Nrays> (cells, o);
+
+
+      if (raypair.ndep > 1)
+      {
+
+        for (long f = 0; f < frequencies.nfreq_red; f++)
+        {
+          // Setup and solve the ray equations
+
+          raypair.setup    (
+               frequencies,
+               temperature,
+               lines,
+               scattering,
+               f           );
+
+          raypair.solve ();
+
+          raypair.compute_u_and_v_at_origin ();
+          
+
+          // Store solution of the radiation field
+
+          const long ind = index(o,f);
+
+          u[R][ind] = raypair.u_at_origin;
+          v[R][ind] = raypair.v_at_origin;
+
+          image.I_p[R][o][f] = raypair.get_I_p();
+          image.I_m[R][o][f] = raypair.get_I_m();
+
+        } // end of loop over frequencies
+
+      }
+
+      else if (raypair.ndep == 1)
+      {
+
+        for (long f = 0; f < frequencies.nfreq_red; f++)
+        {
+          // Setup and solve the ray equations
+
+          raypair.setup    (
+               frequencies,
+               temperature,
+               lines,
+               scattering,
+               f           );
+
+          raypair.solve_ndep_is_1 ();
+
+          raypair.compute_u_and_v_at_origin ();
+          
+
+          // Store solution of the radiation field
+
+          const long ind = index(o,f);
+
+          u[R][ind] = raypair.u_at_origin;
+          v[R][ind] = raypair.v_at_origin;
+
+          image.I_p[R][o][f] = raypair.get_I_p();
+          image.I_m[R][o][f] = raypair.get_I_m();
+
+        } // end of loop over frequencies
+
+      }
+
+      else
+      {
+      
+        const long b = cells.cell2boundary_nr[o];
+
+        for (long f = 0; f < frequencies.nfreq_red; f++)
+        {
+          const long ind = index(o,f);
+
+          u[R][ind] = 0.5 * (boundary_intensity[r][b][f] + boundary_intensity[ar][b][f]);
+          v[R][ind] = 0.5 * (boundary_intensity[r][b][f] - boundary_intensity[ar][b][f]);
+
+          image.I_p[R][o][f] = boundary_intensity[ar][b][f];
+          image.I_m[R][o][f] = boundary_intensity[r][b][f];
+        }
+
+      }
+
+
+    }
+    } // end of pragma omp parallel
+
+
+  } // end of loop over ray pairs
+
+
+
+  // Reduce results of all MPI processes to get J, U and V
+  
+  calc_J ();
+  
+  calc_U_and_V (scattering);
+  
+  
+  // Print images
+
+  image.print("");
+
+
+  return (0);
+
+}
+
+

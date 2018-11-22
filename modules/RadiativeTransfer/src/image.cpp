@@ -37,15 +37,15 @@ IMAGE (const long num_of_cells,
   I_p.resize (nrays_red);
   I_m.resize (nrays_red);
 
-  for (long r = 0; r < nrays_red; r++)
+  for (long R = 0; R < nrays_red; R++)
   {
-    I_p[r].resize (ncells);
-    I_m[r].resize (ncells);
+    I_p[R].resize (ncells);
+    I_m[R].resize (ncells);
 
     for (long p = 0; p < ncells; p++)
     {
-      I_p[r][p].resize (nfreq_red);
-      I_m[r][p].resize (nfreq_red);
+      I_p[R][p].resize (nfreq_red);
+      I_m[R][p].resize (nfreq_red);
     }
   }
 

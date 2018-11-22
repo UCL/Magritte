@@ -30,6 +30,12 @@ struct RAYPAIR
     vReal u_at_origin;
     vReal v_at_origin;
 
+    vReal1   Su;   // effective source for u along the ray
+    vReal1   Sv;   // effective source for v along the ray
+    vReal1 dtau;   // optical depth increment along the ray
+
+    vReal1 Lambda;
+
 
     RAYPAIR                           (
         const long num_of_cells,
@@ -79,12 +85,6 @@ struct RAYPAIR
 
     RAYDATA raydata_r;
     RAYDATA raydata_ar;
-
-    vReal1   Su;   // effective source for u along the ray
-    vReal1   Sv;   // effective source for v along the ray
-    vReal1 dtau;   // optical depth increment along the ray
-
-    vReal1 Lambda;
 
 
     inline void fill_ar                (
