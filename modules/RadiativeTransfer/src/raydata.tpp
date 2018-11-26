@@ -75,12 +75,12 @@ inline void RAYDATA ::
 
 
 inline void RAYDATA ::
-            set_current_to_origin              (
-                const FREQUENCIES &frequencies,
-                const TEMPERATURE &temperature,
-                const LINES       &lines,
-                const SCATTERING  &scattering,
-                const long         f           )
+    set_current_to_origin              (
+        const FREQUENCIES &frequencies,
+        const TEMPERATURE &temperature,
+        const LINES       &lines,
+        const SCATTERING  &scattering,
+        const long         f           )
 {
 
   // Gather all contributions to the emissivity and opacity
@@ -207,12 +207,12 @@ inline void RAYDATA ::
 }
 
 inline void RAYDATA ::
-            compute_next_bdy                   (
-                const FREQUENCIES &frequencies,
-                const TEMPERATURE &temperature,
-                const LINES       &lines,
-                const SCATTERING  &scattering,
-                const long         f           )
+    compute_next_bdy                   (
+        const FREQUENCIES &frequencies,
+        const TEMPERATURE &temperature,
+        const LINES       &lines,
+        const SCATTERING  &scattering,
+        const long         f           )
 {
 
   // We know q is a boundary point

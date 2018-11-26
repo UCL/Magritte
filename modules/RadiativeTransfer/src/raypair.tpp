@@ -114,6 +114,9 @@ inline void RAYPAIR ::
       Su[raydata_ar.n-1-q] = raydata_ar.get_Su_ar();
       Sv[raydata_ar.n-1-q] = raydata_ar.get_Sv_ar();
 
+    term1[raydata_ar.n-1-q] = raydata_ar.term1_n; 
+    term2[raydata_ar.n-1-q] = raydata_ar.term2_n; 
+
     raydata_ar.set_current_to_next();
     
     //if (f == frequencies.nr_line[raydata_ar.origin][0][15][20])
@@ -150,6 +153,8 @@ inline void RAYPAIR ::
       Su[raydata_ar.n+q] = raydata_r.get_Su_r();
       Sv[raydata_ar.n+q] = raydata_r.get_Sv_r();
 
+    term1[raydata_ar.n+q] = raydata_r.term1_n; 
+    term2[raydata_ar.n+q] = raydata_r.term2_n; 
     //if (f == frequencies.nr_line[raydata_ar.origin][0][15][20])
     //{
     //  cout << "dtau " << dtau[raydata_ar.n+q] << "   " << "Sv " << Sv[raydata_ar.n+q] << endl;  
@@ -190,6 +195,12 @@ inline void RAYPAIR ::
   // __________________________________
 
 
+  //vReal T0 = 3.0 / (dtau[0]      + dtau[1]      + dtau[2]     );
+  //vReal Td = 3.0 / (dtau[ndep-1] + dtau[ndep-2] + dtau[ndep-3]);
+
+
+
+
   A[0] = 0.0;
   C[0] = 2.0/(dtau[0]*dtau[0]);
 
@@ -198,8 +209,8 @@ inline void RAYPAIR ::
 
   for (long n = 1; n < ndep-1; n++)
   {
-    A[n] = 2.0 / ((dtau[n] + dtau[n+1]) * dtau[n]);
-    C[n] = 2.0 / ((dtau[n] + dtau[n+1]) * dtau[n+1]);
+    A[n] = 2.0 / ((dtau[n-1] + dtau[n]) * dtau[n-1]);
+    C[n] = 2.0 / ((dtau[n-1] + dtau[n]) * dtau[n]);
   }
 
   A[ndep-1] = 2.0/(dtau[ndep-1]*dtau[ndep-1]);
@@ -403,19 +414,22 @@ inline void RAYPAIR ::
   if ( (raydata_ar.n > 0) && (raydata_r.n > 0) )
   {
     u_at_origin = 0.5 * (Su[raydata_ar.n-1] + Su[raydata_ar.n]);
-    v_at_origin = 0.5 * (Sv[raydata_ar.n-1] + Sv[raydata_ar.n]);
+    //v_at_origin = 0.5 * (Sv[raydata_ar.n-1] + Sv[raydata_ar.n]);
+    v_at_origin = -2.0 * (Su[raydata_ar.n] - Su[raydata_ar.n-1]) / (dtau[raydata_ar.n] + dtau[raydata_ar.n]-1);
   }
 
   else if (raydata_r.n == 0)   // and hence n_ar > 0
   {
     u_at_origin = Su[ndep-1];
-    v_at_origin = Sv[ndep-1];
+    //v_at_origin = Sv[ndep-1];
+    v_at_origin = -2.0 * (Su[ndep-1] - Su[ndep-2]) / (dtau[ndep-1] + dtau[ndep-2]);
   }
 
   else if (raydata_ar.n == 0)   // and hence n_r > 0
   {
     u_at_origin = Su[0];
-    v_at_origin = Sv[0];
+    //v_at_origin = Sv[0];
+    v_at_origin = -2.0 * (Su[1] - Su[0]) / (dtau[1] + dtau[0]);
   }
 
 }

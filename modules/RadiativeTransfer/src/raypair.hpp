@@ -86,20 +86,23 @@ struct RAYPAIR
     RAYDATA raydata_r;
     RAYDATA raydata_ar;
 
+    vReal1  term1;   // effective source for u along the ray
+    vReal1  term2;   // effective source for v along the ray
+    
 
     inline void fill_ar                (
         const FREQUENCIES &frequencies,
         const TEMPERATURE &temperature,
         const LINES       &lines,
         const SCATTERING  &scattering,
-        const long         f           );  
+        const long         f           );
   
     inline void fill_r                 (
         const FREQUENCIES &frequencies,
         const TEMPERATURE &temperature,
         const LINES       &lines,
         const SCATTERING  &scattering,
-        const long         f           );  
+        const long         f           );
 
 };
 
