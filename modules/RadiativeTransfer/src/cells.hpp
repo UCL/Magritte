@@ -33,7 +33,7 @@ struct CELLS
 
 
   Double1  x,  y,  z;                   ///< coordinates of cell center
-  Double1 vx, vy, vz;                   ///< components of velocity field
+  Double1 vx, vy, vz;                   ///< components of velocity field (as fraction of C)
 
   Bool1 boundary;                       ///< true if boundary cell
   Bool1 mirror;                         ///< true if reflective boundary
@@ -74,10 +74,10 @@ struct CELLS
             double *dZs     ) const;
 
 
-  inline double relative_velocity (
+  inline double doppler_shift (
       const long origin,
       const long r,
-      const long current          ) const;
+      const long current      ) const;
 
 
   inline double x_projected (

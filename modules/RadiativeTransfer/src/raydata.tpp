@@ -17,9 +17,10 @@
 
 template <int Dimension, long Nrays>
 inline void RAYDATA ::
-    initialize                              (
+    initialize                                    (
         const CELLS<Dimension,Nrays> &cells,
-        const long                    o     )
+        const TEMPERATURE            &temperature,
+        const long                    o           )
 {
 
   // Reset origin and number of cells on the ray
@@ -35,23 +36,41 @@ inline void RAYDATA ::
 
   long nxt = cells.next (origin, ray, origin, Z, dZ);
 
+  
+  // Clear the three vectors that will dynamically grow
+
+  cellNrs.clear ();
+   shifts.clear ();
+      dZs.clear ();
+
 
   if (nxt != ncells)   // if we are not going out of grid
   {
-    cellNrs[n] = nxt;
-        dZs[n] = dZ;
 
-    n++;
+    const double shift_max = 0.5 * profile_width (temperature.gas[o]);
+
+    double shift_crt = 1.0;
+    long   crt       = origin;
+    double shift_nxt = cells.doppler_shift (origin, ray, nxt);
+
+    set_projected_cell_data (crt, nxt, dZ, shift_crt, shift_nxt, shift_max);
+
 
     while (!cells.boundary[nxt])   // while we have not hit the boundary
     {
-      nxt = cells.next (origin, ray, nxt, Z, dZ);
+      shift_crt = shift_nxt;
+      nxt       = cells.next          (origin, ray, nxt, Z, dZ);
+      shift_nxt = cells.doppler_shift (origin, ray, nxt);
 
-      cellNrs[n] = nxt;
-          dZs[n] = dZ;
-
-      n++;
+      set_projected_cell_data (crt, nxt, dZ, shift_crt, shift_nxt, shift_max);
     }
+  }
+
+
+  if (n+1 > notch.size())
+  {
+    lnotch.resize (n+10);
+     notch.resize (n+10);
   }
 
 
@@ -59,19 +78,85 @@ inline void RAYDATA ::
 
   for (long q = 0; q < n; q++)
   {
-     notch[q] = 0;
     lnotch[q] = 0;
-    shifts[q] = 1.0 - cells.relative_velocity (origin, ray, cellNrs[q]) / CC;
+     notch[q] = 0;
   }
   
 
-  // Put origin informartion at ncells
+  // Put origin informartion at n
 
-  cellNrs[ncells-1] = origin;
-   lnotch[ncells-1] = 0;
-    notch[ncells-1] = 0;
+  cellNrs.push_back (origin);
+
+  lnotch[n] = 0;
+   notch[n] = 0;
 
 }
+
+
+inline void RAYDATA ::
+    set_projected_cell_data    (
+        const long   crt,
+        const long   nxt,
+        const double dZ,
+        const double shift_crt, 
+        const double shift_nxt, 
+        const double shift_max )
+{
+
+  // If velocity gradient is not well-sampled enough
+
+  if (fabs(shift_nxt - shift_crt) > shift_max) 
+  {
+
+    // Interpolate velocity gradient field
+    
+    const int         n_interpl = fabs(shift_nxt - shift_crt) / shift_max + 1;
+    const int    half_n_interpl = n_interpl / 2;
+    const double     dZ_interpl =                      dZ / n_interpl;
+    const double dshift_interpl = (shift_nxt - shift_crt) / n_interpl;
+
+
+    // Assign current cell to first half of interpolation points
+    
+    for (int m = 1; m < half_n_interpl; m++)
+    {
+      cellNrs.push_back (crt);
+    }
+
+
+    // Assign next cell to second half of interpolation points
+
+    for (int m = half_n_interpl; m <= n_interpl; m++)
+    {
+      cellNrs.push_back (nxt);
+    }
+
+
+    // Add interpolated shifts and distance increments 
+
+    for (int m = 1; m <= n_interpl; m++)
+    {
+      shifts.push_back (shift_crt + m * dshift_interpl);
+         dZs.push_back (dZ_interpl                    );
+    }
+
+
+    // Increment the number of cells on the ray
+
+    n += n_interpl;
+  }
+
+  else
+  {
+    cellNrs.push_back (nxt      );
+     shifts.push_back (shift_nxt);
+        dZs.push_back (dZ       );
+   
+    n++;
+  }
+
+}
+
 
 
 inline void RAYDATA ::
@@ -85,13 +170,18 @@ inline void RAYDATA ::
 
   // Gather all contributions to the emissivity and opacity
 
-  compute_next_eta_and_chi (
+  compute_next_eta_and_chi      (
       frequencies,
       temperature,
       lines,
       scattering,
       frequencies.nu[origin][f],
-      ncells-1             );
+      n                         );
+
+
+  // Set chi at origin 
+
+  chi_o = chi_n;
 
 
   // Define auxiliary term
@@ -101,10 +191,8 @@ inline void RAYDATA ::
 
   // Compute (current) terms
 
-  term1_c = (U[Ray][index(origin,f)]*0.0 + eta_n) * inverse_chi_n;
-  term2_c =  V[Ray][index(origin,f)]*0.0          * inverse_chi_n;
-
-  chi_c = chi_n;
+  term1 = (U[Ray][index(origin,f)]*0.0 + eta) * inverse_chi_n;
+  term2 =  V[Ray][index(origin,f)]*0.0        * inverse_chi_n;
 
 }
 
@@ -119,13 +207,14 @@ inline void RAYDATA ::
 
   // Gather all contributions to the emissivity and opacity
 
-  compute_next_eta_and_chi (
+  compute_next_eta_and_chi      (
       frequencies,
       temperature,
       lines,
       scattering,
       frequencies.nu[origin][f],
-      ncells-1             );
+      n                         );
+
 
   // Define I_bdy_scaled (which is not scaled in this case)
   
@@ -141,10 +230,8 @@ inline void RAYDATA ::
 
   // Compute (current) terms
 
-  term1_c = (U[Ray][index(origin,f)]*0.0 + eta_n) * inverse_chi_n;
-  term2_c =  V[Ray][index(origin,f)]*0.0          * inverse_chi_n;
-
-  chi_c = chi_n;
+  term1 = (U[Ray][index(origin,f)]*0.0 + eta) * inverse_chi_n;
+  term2 =  V[Ray][index(origin,f)]*0.0        * inverse_chi_n;
 
 }
 
@@ -161,7 +248,6 @@ inline void RAYDATA ::
   // Compute new frequency due to Doppler shift
   
   vReal freq_scaled = shifts[q] * frequencies.nu[origin][f];
-  //vReal freq_scaled = frequencies.nu[origin][f];
 
 
   // Gather all contributions to the emissivity and opacity
@@ -174,7 +260,6 @@ inline void RAYDATA ::
       freq_scaled,
       q                    );
 
-  //freq_scaled = shifts[q] * frequencies.nu[origin][f];
 
   // Rescale scatterd radiation field U and V
 
@@ -197,14 +282,8 @@ inline void RAYDATA ::
 
   compute_next_terms_and_dtau (U_scaled, V_scaled, q);
 
-  //cout << scientific << setprecision(16);
-  //cout << "term 1       " << term1_n << "   " << chi_n << endl;
-
-//  if (f == frequencies.nr_line[origin][0][19][20])
-//  {
-//    cout << "chi " << chi_c + chi_n << "    chi_c " << chi_c << "    chi_n " << chi_n << "    dZ " << dZs[q] << endl;  
-//  }
 }
+
 
 inline void RAYDATA ::
     compute_next_bdy                   (
@@ -223,7 +302,6 @@ inline void RAYDATA ::
   // Compute new frequency due to Doppler shift
   
   vReal freq_scaled = shifts[q] * frequencies.nu[origin][f];
-  //vReal freq_scaled = frequencies.nu[origin][f];
 
 
   // Gather all contributions to the emissivity and opacity
@@ -236,7 +314,6 @@ inline void RAYDATA ::
       freq_scaled,
       q                    );
    
-  //freq_scaled = shifts[q] * frequencies.nu[origin][f];
 
   // Rescale scatterd radiation field U and V
 
@@ -258,8 +335,6 @@ inline void RAYDATA ::
 
 
   compute_next_terms_and_dtau (U_scaled, V_scaled, q);
-  //cout << scientific << setprecision(16);
-  //cout << "term 1       " << term1_n << "   " << chi_n << endl;
 
 }
 
@@ -276,9 +351,14 @@ inline void RAYDATA ::
                 const long         q           )
 {
 
+  // Save old chi_n in chi_c
+
+  chi_c = chi_n;
+
+
   // Reset eta and chi (next)
 
-  eta_n = 0.0;
+  eta   = 0.0;
   chi_n = 0.0;
 
 
@@ -290,7 +370,7 @@ inline void RAYDATA ::
       freq_scaled,
       lnotch[q],
       cellNrs[q],
-      eta_n,
+      eta,
       chi_n                        );
 
 
@@ -309,18 +389,18 @@ inline void RAYDATA ::
       if (fabs(chi_n.getlane(lane)) < 1.0E-99)
       {
         chi_n.putlane(1.0E-99, lane);
-        eta_n.putlane((eta_n / (chi_n * 1.0E+99)).getlane(lane), lane);
+          eta.putlane((eta / (chi_n * 1.0E+99)).getlane(lane), lane);
 
-        cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
+        //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
       }
     }
 # else
     if (fabs(chi_n) < 1.0E-99)
     {
       chi_n = 1.0E-99;
-      eta_n = eta_n / (chi_n * 1.0E+99);
+      eta   = eta / (chi_n * 1.0E+99);
 
-      cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
+      //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
     }
 # endif
 
@@ -343,110 +423,16 @@ inline void RAYDATA ::
 
   // Compute new terms
 
-  term1_n = (U_scaled*0.0 + eta_n) * inverse_chi_n;
-  term2_n =  V_scaled*0.0          * inverse_chi_n;
+  term1 = (U_scaled*0.0 + eta) * inverse_chi_n;
+  term2 =  V_scaled*0.0        * inverse_chi_n;
 
 
   // Compute dtau and its inverse
 
   dtau = 0.5 * (chi_n + chi_c) * dZs[q];
 
-  inverse_dtau = 1.0 / dtau;
-  
-
-//  // Set minimal optical depth increment to avoid overflow 
-//
-//# if (GRID_SIMD)
-//    for (int lane = 0; lane < n_simd_lanes; lane++)
-//    {
-//      if (dtau.getlane(lane) < 1.0E-99)
-//      {
-//                dtau.putlane(1.0E-99, lane);
-//        inverse_dtau.putlane(1.0E+99, lane);
-//
-//        cout << "WARNING : optical depth increment reached lower bound (1.0E-99)" << endl;
-//      }
-//    }
-//# else
-//    if (dtau < 1.0E-99)
-//    {
-//              dtau = 1.0E-99;
-//      inverse_dtau = 1.0E+99;
-//
-//      cout << "WARNING : optical depth increment reached lower bound (1.0E-99)" << endl;
-//    }
-//# endif
-
-
 }
 
-
-
-
-
-// Getters for source functions
-
-inline vReal RAYDATA ::
-    get_Su_r  (void) const
-{
-  return 0.5 * (term1_n + term1_c) - (term2_n - term2_c) * inverse_dtau;
-}
-
-inline vReal RAYDATA ::
-    get_Sv_r  (void) const
-{
-  //cout << (term1_n - term1_c)  << "    " << term1_n << " " << term1_c << endl;
-  return 0.5 * (term2_n + term2_c) ;//- (term1_n - term1_c) * inverse_dtau;
-}
-
-inline vReal RAYDATA ::
-    get_Su_ar (void) const
-{
-  return 0.5 * (term1_n + term1_c) + (term2_n - term2_c) * inverse_dtau;
-}
-
-inline vReal RAYDATA ::
-    get_Sv_ar (void) const
-{
-  //cout << (term1_n - term1_c)  << "    " << term1_n << " " << term1_c << endl;
-  return 0.5 * (term2_n + term2_c) ;//+ (term1_n - term1_c) * inverse_dtau;
-}
-
-
-// Getters for boundary term
-
-inline vReal RAYDATA ::
-    get_boundary_term_Su_r  (void) const
-{
-  return 2.0 * inverse_dtau * (+Ibdy_scaled + 0.5 * (term2_c + term2_n));
-}
-
-inline vReal RAYDATA ::
-    get_boundary_term_Sv_r  (void) const
-{
-  return 2.0 * inverse_dtau * (-Ibdy_scaled + 0.5 * (term1_c + term1_n));
-}
-
-inline vReal RAYDATA ::
-    get_boundary_term_Su_ar (void) const
-{
-  return 2.0 * inverse_dtau * (+Ibdy_scaled - 0.5 * (term2_c + term2_n));
-}
-
-inline vReal RAYDATA ::
-    get_boundary_term_Sv_ar (void) const
-{
-  return 2.0 * inverse_dtau * (+Ibdy_scaled - 0.5 * (term1_c + term1_n));
-}
-
-
-inline void RAYDATA ::
-    set_current_to_next (void)
-{
-  term1_c = term1_n;
-  term2_c = term2_n;
-    chi_c = chi_n;
-}
 
 
 inline void RAYDATA ::

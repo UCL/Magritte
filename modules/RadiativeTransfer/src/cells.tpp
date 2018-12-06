@@ -112,6 +112,16 @@ int CELLS <Dimension, Nrays> ::
   {
     cellsFile >> x[p] >> y[p] >> z[p] >> vx[p] >> vy[p] >> vz[p];
   }
+  
+
+  // Convert velocities in m/s to fractions for C
+
+  for (long p = 0; p < ncells; p++)
+  {
+    vx[p] = vx[p] / CC;
+    vy[p] = vy[p] / CC;
+    vz[p] = vz[p] / CC;
+  }
 
 
   // Read nearest neighbors lists
@@ -271,14 +281,15 @@ inline long CELLS <Dimension, Nrays> ::
 
 template <int Dimension, long Nrays>
 inline double CELLS <Dimension, Nrays> ::
-              relative_velocity (const long origin,
-                                 const long ray,
-                                 const long current) const
+    doppler_shift         (
+        const long origin,
+        const long ray,
+        const long current) const
 {
 
-  return   (vx[current] - vx[origin]) * rays.x[ray]
-         + (vy[current] - vy[origin]) * rays.y[ray]
-         + (vz[current] - vz[origin]) * rays.z[ray];
+  return 1.0 - (  (vx[current] - vx[origin]) * rays.x[ray]
+                + (vy[current] - vy[origin]) * rays.y[ray]
+                + (vz[current] - vz[origin]) * rays.z[ray]);
 
 }
 

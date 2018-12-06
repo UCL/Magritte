@@ -60,18 +60,6 @@ set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
 # ${CMAKE_CURRENT_BINARY_DIR}/RADIATIVE_TRANSFER )
 
 
-#add_executable( example_linedata.exe
-#example_linedata.cpp )
-#target_link_libraries( example_linedata.exe
-#_LEVELS )
-
-#add_executable( example_Lines_Lime1.exe
-#  example_Lines_Lime1.cpp )
-#target_link_libraries( example_Lines_Lime1.exe
-#  _LINES
-#  _RADIATIVE_TRANSFER
-#  ${MPI_LIBRARIES} )
-
 add_executable( example_Lines.exe
   example_Lines.cpp )
 target_link_libraries( example_Lines.exe

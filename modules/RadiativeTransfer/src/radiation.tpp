@@ -246,7 +246,7 @@ int RADIATION ::
     for (long o = OMP_start (cells.ncells); o < OMP_stop (cells.ncells); o++)
     {
 
-      raypair.initialize <Dimension, Nrays> (cells, o);
+      raypair.initialize <Dimension, Nrays> (cells, temperature, o);
 
 
       if (raypair.ndep > 1)
@@ -265,15 +265,14 @@ int RADIATION ::
 
           raypair.solve ();
 
-          raypair.compute_u_and_v_at_origin ();
-          
 
           // Store solution of the radiation field
 
           const long ind = index(o,f);
 
-          u[R][ind] = raypair.u_at_origin;
-          v[R][ind] = raypair.v_at_origin;
+          u[R][ind] = raypair.get_u_at_origin();
+          v[R][ind] = raypair.get_v_at_origin();
+          
 
         } // end of loop over frequencies
 
@@ -295,15 +294,13 @@ int RADIATION ::
 
           raypair.solve_ndep_is_1 ();
 
-          raypair.compute_u_and_v_at_origin ();
-          
 
           // Store solution of the radiation field
 
           const long ind = index(o,f);
 
-          u[R][ind] = raypair.u_at_origin;
-          v[R][ind] = raypair.v_at_origin;
+          u[R][ind] = raypair.get_u_at_origin();
+          v[R][ind] = raypair.get_v_at_origin();
 
         } // end of loop over frequencies
 
@@ -380,10 +377,10 @@ int RADIATION ::
     for (long o = OMP_start (cells.ncells); o < OMP_stop (cells.ncells); o++)
     {
 
-      raypair.initialize <Dimension, Nrays> (cells, o);
+      raypair.initialize <Dimension, Nrays> (cells, temperature, o);
 
 
-      if (raypair.ndep > 1)
+      if (raypair.ndep > 2)
       {
 
         for (long f = 0; f < frequencies.nfreq_red; f++)
@@ -410,7 +407,7 @@ int RADIATION ::
 
       }
 
-      else if (raypair.ndep == 1)
+      else if (raypair.ndep == 2)
       {
 
         for (long f = 0; f < frequencies.nfreq_red; f++)
@@ -494,7 +491,7 @@ int RADIATION ::
 
     // Loop over all cells
 
-#   pragma omp parallel                                                     \
+#   pragma omp parallel                                                            \
     shared  (cells, temperature, frequencies, lines, scattering, r, image, cout)   \
     default (none)
     {
@@ -504,14 +501,14 @@ int RADIATION ::
     for (long o = OMP_start (cells.ncells); o < OMP_stop (cells.ncells); o++)
     {
 
-      raypair.initialize <Dimension, Nrays> (cells, o);
-
+      raypair.initialize <Dimension, Nrays> (cells, temperature, o);
 
       if (raypair.ndep > 1)
       {
 
         for (long f = 0; f < frequencies.nfreq_red; f++)
         {
+
           // Setup and solve the ray equations
 
           raypair.setup    (
@@ -522,16 +519,14 @@ int RADIATION ::
                f           );
 
           raypair.solve ();
-
-          raypair.compute_u_and_v_at_origin ();
           
 
           // Store solution of the radiation field
 
           const long ind = index(o,f);
 
-          u[R][ind] = raypair.u_at_origin;
-          v[R][ind] = raypair.v_at_origin;
+          u[R][ind] = raypair.get_u_at_origin();
+          v[R][ind] = raypair.get_v_at_origin();
 
           image.I_p[R][o][f] = raypair.get_I_p();
           image.I_m[R][o][f] = raypair.get_I_m();
@@ -556,15 +551,13 @@ int RADIATION ::
 
           raypair.solve_ndep_is_1 ();
 
-          raypair.compute_u_and_v_at_origin ();
-          
 
           // Store solution of the radiation field
 
           const long ind = index(o,f);
 
-          u[R][ind] = raypair.u_at_origin;
-          v[R][ind] = raypair.v_at_origin;
+          u[R][ind] = raypair.get_u_at_origin();
+          v[R][ind] = raypair.get_v_at_origin();
 
           image.I_p[R][o][f] = raypair.get_I_p();
           image.I_m[R][o][f] = raypair.get_I_m();

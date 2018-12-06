@@ -27,9 +27,6 @@ struct RAYPAIR
 
     long ndep;
 
-    vReal u_at_origin;
-    vReal v_at_origin;
-
     vReal1   Su;   // effective source for u along the ray
     vReal1   Sv;   // effective source for v along the ray
     vReal1 dtau;   // optical depth increment along the ray
@@ -50,9 +47,10 @@ struct RAYPAIR
   
 
     template <int Dimension, long Nrays>
-    inline void initialize                  (
+    inline void initialize                        (
         const CELLS<Dimension,Nrays> &cells,
-        const long                    o     );
+        const TEMPERATURE            &temperature,
+        const long                    o           );
 
 
     inline void setup                  (
@@ -68,7 +66,8 @@ struct RAYPAIR
     inline void solve_ndep_is_1 (void);
 
 
-    inline void compute_u_and_v_at_origin (void);
+    inline vReal get_u_at_origin (void);
+    inline vReal get_v_at_origin (void);
 
     inline vReal get_I_p (void);
     inline vReal get_I_m (void);
@@ -86,8 +85,16 @@ struct RAYPAIR
     RAYDATA raydata_r;
     RAYDATA raydata_ar;
 
-    vReal1  term1;   // effective source for u along the ray
-    vReal1  term2;   // effective source for v along the ray
+    vReal1 term1;   // effective source for u along the ray
+    vReal1 term2;   // effective source for v along the ray
+
+    vReal1 A;       // A coefficient in Feautrier recursion relation
+    vReal1 C;       // C coefficient in Feautrier recursion relation
+    vReal1 F;       // helper variable from Rybicki & Hummer (1991)
+    vReal1 G;       // helper variable from Rybicki & Hummer (1991)
+
+    vReal Ibdy_0;
+    vReal Ibdy_n;
     
 
     inline void fill_ar                (

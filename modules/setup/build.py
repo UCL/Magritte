@@ -37,6 +37,15 @@ def compile(MagritteSetupFolder, ProjectFolder):
     run(command)
 
 
+def execute(MagritteSetupFolder, ProjectFolder):
+    # Prepare command
+    command  =  'bash '
+    command += f'{MagritteSetupFolder}run.sh '
+    command += ProjectFolder
+    # Run command
+    run(command)
+
+
 if __name__ == '__main__':
     # Run compile with provided arguments  
     if (len(argv) != 3):

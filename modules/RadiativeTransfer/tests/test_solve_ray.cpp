@@ -14,7 +14,6 @@ using namespace Eigen;
 #include "tools.hpp"
 
 #include "raypair.hpp"
-#include "solve_ray.hpp"
 #include "GridTypes.hpp"
 #include "folders.hpp"
 
@@ -90,8 +89,6 @@ TEST_CASE ("Feautrier solver on feautrier1.txt")
   raypair.ndep = ndep;
 
   raypair.solve ();
-
-  solve_ray (ndep, u, v, dtau, ndiag, Lambda, ndep);
 
 
   SECTION ("Feautrier equation")
@@ -196,8 +193,6 @@ TEST_CASE ("Analytic model")
 
   raypair.solve ();
 
-  solve_ray (ndep, u, v, dtau, ndiag, Lambda, ndep);
-
 
   SECTION ("Check with analytic solution")
   {
@@ -210,10 +205,6 @@ TEST_CASE ("Analytic model")
 
       vReal error_u = relative_error(u_analytic, raypair.Su[m]);
       vReal error_v = relative_error(v_analytic, raypair.Sv[m]);
-
-      cout << v_analytic << "\t" << raypair.Sv[m] << "\t" << error_v << endl;
-    //  cout << relative_error(u[m], u[ndep-m]) << endl;
-    //  cout << v_analytic << "\t" << v[m] << "\t" << error_v << endl;
 
 #     if (GRID_SIMD)
         for (int lane = 0; lane < n_simd_lanes; lane++)

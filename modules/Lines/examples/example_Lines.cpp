@@ -10,13 +10,11 @@ using namespace std;
 #include <mpi.h>
 
 
-#include "Lines.hpp"
 #include "levels.hpp"
 #include "linedata.hpp"
 #include "RadiativeTransfer/src/configure.hpp"
 #include "RadiativeTransfer/src/species.hpp"
 #include "RadiativeTransfer/src/temperature.hpp"
-#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 #include "RadiativeTransfer/src/cells.hpp"
 #include "RadiativeTransfer/src/lines.hpp"
 #include "RadiativeTransfer/src/radiation.hpp"
