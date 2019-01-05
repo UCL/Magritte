@@ -18,7 +18,7 @@ inline void RAYPAIR ::
         const TEMPERATURE            &temperature,
         const long                    o           )
 {
-  
+
   // initialize the ray and its antipodal
 
   raydata_r.initialize <Dimension, Nrays> (cells, temperature, o);
@@ -76,7 +76,7 @@ inline void RAYPAIR ::
     raydata_ar.set_current_to_origin (frequencies, temperature, lines, scattering, f);
 
     term1[raydata_ar.n] = raydata_ar.term1;
-    term2[raydata_ar.n] = raydata_ar.term2; 
+    term2[raydata_ar.n] = raydata_ar.term2;
 
     fill_ar (frequencies, temperature, lines, scattering, f);
 
@@ -88,11 +88,11 @@ inline void RAYPAIR ::
   else if (raydata_ar.n > 0) // and hence raydata_r.n == 0
   {
     // Get boundary condition at origin
-    
+
     raydata_ar.set_current_to_origin_bdy (frequencies, temperature, lines, scattering, f);
 
     term1[ndep-1] = raydata_ar.term1;
-    term2[ndep-1] = raydata_ar.term2; 
+    term2[ndep-1] = raydata_ar.term2;
 
     Ibdy_n = raydata_ar.Ibdy_scaled;
 
@@ -103,11 +103,11 @@ inline void RAYPAIR ::
   else if (raydata_r.n > 0) // and hence raydata_ar.n == 0
   {
     // Get boundary condition at origin
-    
+
     raydata_r.set_current_to_origin_bdy (frequencies, temperature, lines, scattering, f);
 
     term1[0] = raydata_r.term1;
-    term2[0] = raydata_r.term2; 
+    term2[0] = raydata_r.term2;
 
     Ibdy_0 = raydata_r.Ibdy_scaled;
 
@@ -134,16 +134,16 @@ inline void RAYPAIR ::
   {
     raydata_ar.compute_next (frequencies, temperature, lines, scattering, f, q);
 
-     dtau[raydata_ar.n-1-q] = raydata_ar.dtau; 
-    term1[raydata_ar.n-1-q] = raydata_ar.term1; 
-    term2[raydata_ar.n-1-q] = raydata_ar.term2; 
+     dtau[raydata_ar.n-1-q] = raydata_ar.dtau;
+    term1[raydata_ar.n-1-q] = raydata_ar.term1;
+    term2[raydata_ar.n-1-q] = raydata_ar.term2;
   }
 
   raydata_ar.compute_next_bdy (frequencies, temperature, lines, scattering, f);
 
-   dtau[0] = raydata_ar.dtau; 
-  term1[0] = raydata_ar.term1; 
-  term2[0] = raydata_ar.term2; 
+   dtau[0] = raydata_ar.dtau;
+  term1[0] = raydata_ar.term1;
+  term2[0] = raydata_ar.term2;
 
   Ibdy_0 = raydata_ar.Ibdy_scaled;
 
@@ -163,16 +163,16 @@ inline void RAYPAIR ::
   {
     raydata_r.compute_next (frequencies, temperature, lines, scattering, f, q);
 
-     dtau[raydata_ar.n  +q] = raydata_r.dtau; 
-    term1[raydata_ar.n+1+q] = raydata_r.term1; 
-    term2[raydata_ar.n+1+q] = raydata_r.term2; 
+     dtau[raydata_ar.n  +q] = raydata_r.dtau;
+    term1[raydata_ar.n+1+q] = raydata_r.term1;
+    term2[raydata_ar.n+1+q] = raydata_r.term2;
   }
 
   raydata_r.compute_next_bdy (frequencies, temperature, lines, scattering, f);
 
-   dtau[ndep-2] = raydata_r.dtau; 
-  term1[ndep-1] = raydata_r.term1; 
-  term2[ndep-1] = raydata_r.term2; 
+   dtau[ndep-2] = raydata_r.dtau;
+  term1[ndep-1] = raydata_r.term1;
+  term2[ndep-1] = raydata_r.term2;
 
   Ibdy_n = raydata_r.Ibdy_scaled;
 
@@ -185,6 +185,11 @@ inline void RAYPAIR ::
     solve (void)
 
 {
+
+  //cout << "Normal solver..." << endl;
+  //cout << "BBBBBBBBBBBBBBBB" << endl;
+  //cout << "BBBBBBBBBBBBBBBB" << endl;
+  //cout << "BBBBBBBBBBBBBBBB" << endl;
 
   vReal B0;          // B[0]
   vReal B0_min_C0;   // B[0] - C[0]
@@ -238,13 +243,13 @@ inline void RAYPAIR ::
 //  Su[ndep-1] += (term1[ndep-1] - term1[ndep-2] + (Ibdy_n - term2[ndep-1] - C[ndep-2]*term2[ndep-1] + (C[ndep-2]+A[ndep-2])*term2[ndep-2] - A[ndep-2]*term2[ndep-3]) * dtau[ndep-2]) / 3.0;
 //  Sv[ndep-1] += (term2[ndep-1] - term2[ndep-2] + (Ibdy_n - term1[ndep-1] - C[ndep-2]*term1[ndep-1] + (C[ndep-2]+A[ndep-2])*term1[ndep-2] - A[ndep-2]*term1[ndep-3]) * dtau[ndep-2]) / 3.0;
 
-  
+
   // Add fourth order terms of the boundary condition
 
   //vReal T0 = 3.0 / (dtau[0]      + dtau[1]      + dtau[2]     );
   //vReal Td = 3.0 / (dtau[ndep-2] + dtau[ndep-3] + dtau[ndep-4]);
 
-  
+
 
 
   // SOLVE FEAUTRIER RECURSION RELATION
@@ -342,96 +347,101 @@ inline void RAYPAIR ::
 
 }
 
-inline void RAYPAIR ::
-    solve_ndep_is_1 (void)
-
-{
-
-
-  // SETUP FEAUTRIER RECURSION RELATION
-  // __________________________________
-
-  vReal inverse_dtau = 1.0 / dtau[0];
-
-  vReal A0 = 2.0 * inverse_dtau * inverse_dtau;
-
-  vReal        B0 = vOne + 2.0*inverse_dtau + 2.0*inverse_dtau*inverse_dtau;
-  vReal B0_min_A0 = vOne + 2.0*inverse_dtau;
-  vReal B0_pls_A0 = vOne + 2.0*inverse_dtau + 4.0*inverse_dtau*inverse_dtau;
-
-  vReal inverse_denominator = 1.0 / (B0_min_A0 * B0_pls_A0);
-
-
-
-
-  // SOLVE FEAUTRIER RECURSION RELATION
-  // __________________________________
-
-
-  vReal u0 = (B0*Su[0] + A0*Su[1]) * inverse_denominator;
-  vReal u1 = (B0*Su[1] + A0*Su[0]) * inverse_denominator;
-
-  Su[0] = u0;
-  Su[1] = u1;
-
-  vReal v0 = (B0*Sv[0] + A0*Sv[1]) * inverse_denominator;
-  vReal v1 = (B0*Sv[1] + A0*Sv[0]) * inverse_denominator;
-  
-  Sv[0] = v0;
-  Sv[1] = v1;
-
-
-  // CALCULATE LAMBDA OPERATOR
-  // _________________________
-
-
-  // Calculate diagonal elements
-
-  ////Lambda[f](0,0) = (1.0 + G[1][f]) / (B0_min_C0[f] + B0[f]*G[1][f]);
-  //Lambda[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
-
-  //for (long n = 1; n < ndep-1; n++)
-  //{
-  //  //Lambda[f](n,n) = (1.0 + G[n+1][f]) / ((F[n][f] + G[n+1][f] + F[n][f]*G[n+1][f]) * C[n][f]);
-  //  Lambda[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
-  //}
-
-  ////Lambda[f](ndep-1,ndep-1) = (1.0 + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
-  //Lambda[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
-
-
-  //// Set number of off-diagonals to add
-  //
-  //const long ndiag = 0;
-
-  //// Add upper-diagonal elements
-
-  //for (long m = 1; m < ndiag; m++)
-  //{
-  //  for (long n = 0; n < ndep-m; n++)
-  //  {
-  //    for (long f = 0; f < nfreq_red; f++)
-	//		{
-  //      Lambda[f](n,n+m) = Lambda[f](n+1,n+m) / (1.0 + F[n][f]);
-	//		}
-  //  }
-  //}
-
-
-  //// Add lower-diagonal elements
-
-  //for (long m = 1; m < ndiag; m++)
-  //{
-  //  for (long n = m; n < ndep; n++)
-  //  {
-  //    for (long f = 0; f < nfreq_red; f++)
-  //    {
-  //      Lambda[f](n,n-m) = Lambda[f](n-1,n-m) / (1.0 + G[n][f]);
-	//	  }
-  //  }
-  //}
-
-}
+//inline void RAYPAIR ::
+//    solve_ndep_is_1 (void)
+//
+//{
+//
+//  cout << "Solve ndep = 1" << endl;
+//  cout << "AAAAAAAAAAAAAA" << endl;
+//  cout << "AAAAAAAAAAAAAA" << endl;
+//  cout << "AAAAAAAAAAAAAA" << endl;
+//  cout << "AAAAAAAAAAAAAA" << endl;
+//
+//  // SETUP FEAUTRIER RECURSION RELATION
+//  // __________________________________
+//
+//  vReal inverse_dtau = 1.0 / dtau[0];
+//
+//  vReal A0 = 2.0 * inverse_dtau * inverse_dtau;
+//
+//  vReal        B0 = vOne + 2.0*inverse_dtau + 2.0*inverse_dtau*inverse_dtau;
+//  vReal B0_min_A0 = vOne + 2.0*inverse_dtau;
+//  vReal B0_pls_A0 = vOne + 2.0*inverse_dtau + 4.0*inverse_dtau*inverse_dtau;
+//
+//  vReal inverse_denominator = 1.0 / (B0_min_A0 * B0_pls_A0);
+//
+//
+//
+//
+//  // SOLVE FEAUTRIER RECURSION RELATION
+//  // __________________________________
+//
+//
+//  vReal u0 = (B0*Su[0] + A0*Su[1]) * inverse_denominator;
+//  vReal u1 = (B0*Su[1] + A0*Su[0]) * inverse_denominator;
+//
+//  Su[0] = u0;
+//  Su[1] = u1;
+//
+//  vReal v0 = (B0*Sv[0] + A0*Sv[1]) * inverse_denominator;
+//  vReal v1 = (B0*Sv[1] + A0*Sv[0]) * inverse_denominator;
+//
+//  Sv[0] = v0;
+//  Sv[1] = v1;
+//
+//
+//  // CALCULATE LAMBDA OPERATOR
+//  // _________________________
+//
+//
+//  // Calculate diagonal elements
+//
+//  ////Lambda[f](0,0) = (1.0 + G[1][f]) / (B0_min_C0[f] + B0[f]*G[1][f]);
+//  //Lambda[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
+//
+//  //for (long n = 1; n < ndep-1; n++)
+//  //{
+//  //  //Lambda[f](n,n) = (1.0 + G[n+1][f]) / ((F[n][f] + G[n+1][f] + F[n][f]*G[n+1][f]) * C[n][f]);
+//  //  Lambda[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
+//  //}
+//
+//  ////Lambda[f](ndep-1,ndep-1) = (1.0 + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
+//  //Lambda[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
+//
+//
+//  //// Set number of off-diagonals to add
+//  //
+//  //const long ndiag = 0;
+//
+//  //// Add upper-diagonal elements
+//
+//  //for (long m = 1; m < ndiag; m++)
+//  //{
+//  //  for (long n = 0; n < ndep-m; n++)
+//  //  {
+//  //    for (long f = 0; f < nfreq_red; f++)
+//	//		{
+//  //      Lambda[f](n,n+m) = Lambda[f](n+1,n+m) / (1.0 + F[n][f]);
+//	//		}
+//  //  }
+//  //}
+//
+//
+//  //// Add lower-diagonal elements
+//
+//  //for (long m = 1; m < ndiag; m++)
+//  //{
+//  //  for (long n = m; n < ndep; n++)
+//  //  {
+//  //    for (long f = 0; f < nfreq_red; f++)
+//  //    {
+//  //      Lambda[f](n,n-m) = Lambda[f](n-1,n-m) / (1.0 + G[n][f]);
+//	//	  }
+//  //  }
+//  //}
+//
+//}
 
 inline vReal RAYPAIR ::
     get_u_at_origin (void)

@@ -26,7 +26,7 @@ inline void RAYDATA ::
   // Reset origin and number of cells on the ray
 
   origin = o;
-  n      = 0;     
+  n      = 0;
 
 
   // Find projected cells on ray
@@ -36,7 +36,7 @@ inline void RAYDATA ::
 
   long nxt = cells.next (origin, ray, origin, Z, dZ);
 
-  
+
   // Clear the three vectors that will dynamically grow
 
   cellNrs.clear ();
@@ -47,7 +47,8 @@ inline void RAYDATA ::
   if (nxt != ncells)   // if we are not going out of grid
   {
 
-    const double shift_max = 0.5 * profile_width (temperature.gas[o]);
+    const double shift_max = 0.5 * profile_width (temperature.gas[o],
+                                                  temperature.vturb2[o]);
 
     double shift_crt = 1.0;
     long   crt       = origin;
@@ -81,7 +82,7 @@ inline void RAYDATA ::
     lnotch[q] = 0;
      notch[q] = 0;
   }
-  
+
 
   // Put origin informartion at n
 
@@ -98,18 +99,18 @@ inline void RAYDATA ::
         const long   crt,
         const long   nxt,
         const double dZ,
-        const double shift_crt, 
-        const double shift_nxt, 
+        const double shift_crt,
+        const double shift_nxt,
         const double shift_max )
 {
 
   // If velocity gradient is not well-sampled enough
 
-  if (fabs(shift_nxt - shift_crt) > shift_max) 
+  if (fabs(shift_nxt - shift_crt) > shift_max)
   {
 
     // Interpolate velocity gradient field
-    
+
     const int         n_interpl = fabs(shift_nxt - shift_crt) / shift_max + 1;
     const int    half_n_interpl = n_interpl / 2;
     const double     dZ_interpl =                      dZ / n_interpl;
@@ -117,7 +118,7 @@ inline void RAYDATA ::
 
 
     // Assign current cell to first half of interpolation points
-    
+
     for (int m = 1; m < half_n_interpl; m++)
     {
       cellNrs.push_back (crt);
@@ -132,7 +133,7 @@ inline void RAYDATA ::
     }
 
 
-    // Add interpolated shifts and distance increments 
+    // Add interpolated shifts and distance increments
 
     for (int m = 1; m <= n_interpl; m++)
     {
@@ -151,7 +152,7 @@ inline void RAYDATA ::
     cellNrs.push_back (nxt      );
      shifts.push_back (shift_nxt);
         dZs.push_back (dZ       );
-   
+
     n++;
   }
 
@@ -179,7 +180,7 @@ inline void RAYDATA ::
       n                         );
 
 
-  // Set chi at origin 
+  // Set chi at origin
 
   chi_o = chi_n;
 
@@ -217,7 +218,7 @@ inline void RAYDATA ::
 
 
   // Define I_bdy_scaled (which is not scaled in this case)
-  
+
   const long b = cell2boundary_nr[origin];
 
   Ibdy_scaled = boundary_intensity[Ray][b][f];
@@ -246,7 +247,7 @@ inline void RAYDATA ::
 {
 
   // Compute new frequency due to Doppler shift
-  
+
   vReal freq_scaled = shifts[q] * frequencies.nu[origin][f];
 
 
@@ -300,7 +301,7 @@ inline void RAYDATA ::
 
 
   // Compute new frequency due to Doppler shift
-  
+
   vReal freq_scaled = shifts[q] * frequencies.nu[origin][f];
 
 
@@ -313,7 +314,7 @@ inline void RAYDATA ::
       scattering,
       freq_scaled,
       q                    );
-   
+
 
   // Rescale scatterd radiation field U and V
 
@@ -466,10 +467,10 @@ inline void RAYDATA ::
 
     nu1.putlane (frequencies.nu[p][f1].getlane (lane1), lane);
     nu2.putlane (frequencies.nu[p][f2].getlane (lane2), lane);
-    
+
      U1.putlane (U[R][index(p,f1)].getlane (lane1), lane);
      U2.putlane (U[R][index(p,f2)].getlane (lane2), lane);
-    
+
      V1.putlane (V[R][index(p,f1)].getlane (lane1), lane);
      V2.putlane (V[R][index(p,f2)].getlane (lane2), lane);
   }
@@ -519,7 +520,7 @@ inline void RAYDATA ::
               vReal       &U_scaled,
               vReal       &V_scaled,
               vReal       &Ibdy_scaled )
-   
+
 #if (GRID_SIMD)
 
 {
@@ -543,17 +544,17 @@ inline void RAYDATA ::
 
       nu1.putlane (      frequencies.nu[p][f1].getlane (lane1), lane);
       nu2.putlane (      frequencies.nu[p][f2].getlane (lane2), lane);
-    
+
        U1.putlane (           U[R][index(p,f1)].getlane (lane1), lane);
        U2.putlane (           U[R][index(p,f2)].getlane (lane2), lane);
-    
+
        V1.putlane (           V[R][index(p,f1)].getlane (lane1), lane);
        V2.putlane (           V[R][index(p,f2)].getlane (lane2), lane);
-    
+
     Ibdy1.putlane (boundary_intensity[R][b][f1].getlane (lane1), lane);
     Ibdy2.putlane (boundary_intensity[R][b][f2].getlane (lane2), lane);
   }
-    
+
      U_scaled = interpolate_linear (nu1, U1,    nu2,    U2, freq_scaled);
      V_scaled = interpolate_linear (nu1, V1,    nu2,    V2, freq_scaled);
   //Ibdy_scaled = planck (T_CMB, freq_scaled); //interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);
@@ -568,22 +569,22 @@ inline void RAYDATA ::
   const long b = cell2boundary_nr[p];
 
   search_with_notch (frequencies.nu[p], notch, freq_scaled);
-  
+
   const long f1    = notch;
   const long f2    = notch-1;
 
   const double nu1 = frequencies.nu[p][f1];
   const double nu2 = frequencies.nu[p][f2];
-  
+
   const double U1 = U[R][index(p,f1)];
   const double U2 = U[R][index(p,f2)];
-  
+
   const double V1 = V[R][index(p,f1)];
   const double V2 = V[R][index(p,f2)];
-  
+
   const double Ibdy1 = boundary_intensity[R][b][f1];
   const double Ibdy2 = boundary_intensity[R][b][f2];
-  
+
      U_scaled = interpolate_linear (nu1, U1,    nu2, U2,    freq_scaled);
      V_scaled = interpolate_linear (nu1, V1,    nu2, V2,    freq_scaled);
   //Ibdy_scaled = planck (T_CMB, freq_scaled); //interpolate_linear (nu1, Ibdy1, nu2, Ibdy2, freq_scaled);

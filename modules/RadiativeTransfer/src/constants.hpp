@@ -34,9 +34,7 @@ const double SECONDS_IN_YEAR = 3.1556926E+7;    // number of seconds in one year
 
 const double C_SQUARED = 8.98755179E+16;   // [m^2/s^2] speed of light squared
 
-
-const double v_turb = 0.12012E3;
-const double V_TURB_OVER_C_ALL_SQUARED = v_turb * v_turb / C_SQUARED;   // (v_turb / c)^2
+const double V_TURB_OVER_C_ALL_SQUARED = 0.15E3 * 0.15E3 / C_SQUARED;   // (v_turb / c)^2
 
 //extern const double v_turb;
 //extern const double V_TURB_OVER_C_ALL_SQUARED;

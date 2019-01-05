@@ -43,6 +43,7 @@ int main (void)
   const string     species_file = input_folder + "species.txt";
   const string   abundance_file = input_folder + "abundance.txt";
   const string temperature_file = input_folder + "temperature.txt";
+  const string vturbulence_file = input_folder + "vturbulence.txt";
 
 
   CELLS <DIMENSION, NRAYS> cells (
@@ -67,11 +68,17 @@ int main (void)
 
 
   TEMPERATURE temperature (NCELLS);
-  temperature.read (temperature_file);
+  temperature.read     (
+      temperature_file,
+      vturbulence_file );
 
 
-  FREQUENCIES frequencies (NCELLS, linedata);
-  frequencies.reset (linedata, temperature);
+  FREQUENCIES frequencies (
+      NCELLS,
+      linedata            );
+  frequencies.reset (
+      linedata,
+      temperature   );
 
   
   LEVELS levels (

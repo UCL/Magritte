@@ -24,14 +24,14 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/scattering.hpp"
 //#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
-#define MAX_NITERATIONS 1
+#define MAX_NITERATIONS 100
 
 
 struct LEVELS
 {
-	
+
   const long ncells;                ///< number of cells
-	
+
   const int nlspec;                 ///< number of species producing lines
 
   const Int1 nlev;                  ///< number of levels per species
@@ -93,7 +93,7 @@ struct LEVELS
 
 
   // Communication with Radiative Transfer module
-	
+
   int calc_line_emissivity_and_opacity (
       const LINEDATA &linedata,
             LINES    &lines,
@@ -115,7 +115,7 @@ struct LEVELS
 
 
   // Print
-	
+
   int print (
       const string tag) const;
 
@@ -163,7 +163,7 @@ int LEVELS ::
 
   // Initialize the number of iterations
 
-  int niterations = 0;   
+  int niterations = 0;
 
 
   // Iterate as long as some levels are not converged

@@ -41,6 +41,8 @@ class model ():
         self.abundance = []
         # Temperature [K]
         self.temperature = []
+        # vturbulence [m/s]
+        self.vturbulence = []
         # Boundary
         self.boundary = []
 
@@ -107,6 +109,7 @@ class model ():
         np.savetxt(folder + '/n_neighbors.txt', self.nNeighbors,   fmt='%ld')
         np.savetxt(folder + '/abundance.txt',   txtabun,           fmt=nspec*'%lE\t')
         np.savetxt(folder + '/temperature.txt', self.temperature,  fmt='%lE')
+        np.savetxt(folder + '/vturbulence.txt', self.vturbulence,  fmt='%lE')
         np.savetxt(folder + '/boundary.txt',    self.boundary,     fmt='%ld')
         # Different format for neighbors which was variable line lengths
         with open(folder + '/neighbors.txt', 'w') as file:
@@ -128,6 +131,7 @@ class model ():
         self.nNeighbors                                      = np.loadtxt(folder + '/n_neighbors.txt'           )
         (z, self.abundance, self.density, self.abundance, o) = np.loadtxt(folder + '/abundance.txt', unpack=True)
         self.temperature                                     = np.loadtxt(folder + '/temperature.txt'           )
+        self.vturbulence                                     = np.loadtxt(folder + '/vturbulence.txt'           )
         self.boundary                                        = np.loadtxt(folder + '/boundary.txt'              )
         # Different format for neighbors which was variable line lengths
         with open(folder + '/neighbors.txt', 'w') as file:
@@ -180,6 +184,7 @@ def mapToXD (model1D, dimension, nraysList):
         spheres.sphericalXDscalar(model1D.density[s],       nrays, modelXD.density)
         spheres.sphericalXDscalar(model1D.abundance[s],     nrays, modelXD.abundance)
         spheres.sphericalXDscalar(model1D.temperature[s],   nrays, modelXD.temperature)
+        spheres.sphericalXDscalar(model1D.vturbulence[s],   nrays, modelXD.vturbulence)
         if (nrays == 0):
             cellsInShell[s].append(index)
             index += 1

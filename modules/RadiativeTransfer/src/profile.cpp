@@ -40,16 +40,18 @@ inline vReal profile      (
 
 inline double profile_width      (
     const double temperature_gas,
+    const double vturb2,
     const double freq_line       )
 {
-  return freq_line * profile_width (temperature_gas);
+  return freq_line * profile_width (temperature_gas, vturb2);
 }
 
 
-inline double profile_width     (
-    const double temperature_gas)
+inline double profile_width      (
+    const double temperature_gas,
+    const double vturb2          )
 {
-  return sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature_gas + V_TURB_OVER_C_ALL_SQUARED);
+  return sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature_gas + vturb2);
 }
 
 

@@ -754,9 +754,9 @@ MatrixXd3 LINEDATA ::
     
             C_data_local[l][c][t](i,j) = x; 
           }
-    
-          infile.close();
         }
+
+        infile.close();
       }
     }
   }
@@ -769,7 +769,7 @@ MatrixXd3 LINEDATA ::
 
 int LINEDATA ::
     print (const MatrixXd& M,
-           const string tag           ) const
+           const string tag  ) const
 {
 
 //	int world_rank;
@@ -804,10 +804,11 @@ int LINEDATA ::
 /////////////////////////////////////////////////////////////////////////////
 
 MatrixXd LINEDATA ::
-         calc_Einstein_C (const SPECIES &species,
-                          const double   temperature_gas,
-                          const long     p,
-                          const int      l               ) const
+    calc_Einstein_C                    (
+        const SPECIES &species,
+        const double   temperature_gas,
+        const long     p,
+        const int      l               ) const
 {
 
   MatrixXd C = MatrixXd::Zero (nlev[l],nlev[l]);   // Einstein C_ij coefficient
@@ -868,7 +869,6 @@ MatrixXd LINEDATA ::
       C += ( C_data[l][c][t-1] + (C_data[l][c][t] - C_data[l][c][t-1])*step ) * abundance;
     }
 
-
   } // end of par loop over collision partners
 
 
@@ -913,8 +913,13 @@ MatrixXd LINEDATA ::
     const int i = irad[l][k];   // i index corresponding to transition k
     const int j = jrad[l][k];   // j index corresponding to transition k
 
-    R(i,j) += FOUR_PI * J_eff[p][l][k] * B[l](i,j); // - linedata.A[l](i,j)*Lambda();
-    R(j,i) += FOUR_PI * J_eff[p][l][k] * B[l](j,i);
+    R(i,j) += /*FOUR_PI */ J_eff[p][l][k] * B[l](i,j); // - linedata.A[l](i,j)*Lambda();
+    R(j,i) += /*FOUR_PI */ J_eff[p][l][k] * B[l](j,i);
+
+  cout << endl;
+  cout << p << endl;
+  cout << J_eff[p][l][k] << endl;
+  cout << endl;
   }
 
   //if(p==0)
@@ -943,6 +948,11 @@ MatrixXd LINEDATA ::
   //cout << A[l] << endl;
   //cout << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB : " << endl;
   //cout << B[l] << endl;
+
+  //cout << endl;
+  //cout << R << endl;
+  //cout << endl;
+
 
   return R;
 

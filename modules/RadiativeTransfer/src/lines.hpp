@@ -127,7 +127,9 @@ inline int LINES ::
   // Move notch just before first line to include
 
   vReal freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-  double    width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+  double    width = profile_width (temperature.gas[p],
+                                   temperature.vturb2[p],
+                                   frequencies.line[lnotch]);
 
 
 # if (GRID_SIMD)
@@ -139,8 +141,10 @@ inline int LINES ::
     lnotch++;
 
     freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-        width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
-        
+        width = profile_width (temperature.gas[p],
+                               temperature.vturb2[p],
+                               frequencies.line[lnotch]);
+
        // cout << "LOWER*width = " << LOWER*width << endl;
   }
 
@@ -177,7 +181,9 @@ inline int LINES ::
     lindex++;
 
     freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
-        width = profile_width (temperature.gas[p], frequencies.line[lindex]);
+        width = profile_width (temperature.gas[p],
+                               temperature.vturb2[p],
+                               frequencies.line[lindex]);
   }
 
   //int lmn = lindex - lnotch;

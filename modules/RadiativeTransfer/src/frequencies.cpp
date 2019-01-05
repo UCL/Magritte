@@ -218,7 +218,7 @@ long FREQUENCIES ::
   index += nlines * N_QUADRATURE_POINTS;
 
   // Add extra frequency bins around lines to get nicer spectrum
-  
+
   index += nlines * 2 * nbins;
 
 
@@ -289,7 +289,9 @@ int FREQUENCIES ::
       for (int k = 0; k < linedata.nrad[l]; k++)
       {
         const double freq_line = linedata.frequency[l][k];
-        const double width     = profile_width (temperature.gas[p], freq_line);
+        const double width     = profile_width (temperature.gas[p],
+                                                temperature.vturb2[p],
+                                                freq_line);
 
         for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
@@ -314,7 +316,9 @@ int FREQUENCIES ::
       for (int k = 0; k < linedata.nrad[l]; k++)
       {
         const double freq_line = linedata.frequency[l][k];
-        const double width     = profile_width (temperature.gas[p], freq_line);
+        const double width     = profile_width (temperature.gas[p],
+                                                temperature.vturb2[p],
+                                                freq_line);
 
         double factor = 1.0;
 

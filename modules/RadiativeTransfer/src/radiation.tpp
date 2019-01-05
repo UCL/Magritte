@@ -278,34 +278,6 @@ int RADIATION ::
 
       }
 
-      else if (raypair.ndep == 1)
-      {
-
-        for (long f = 0; f < frequencies.nfreq_red; f++)
-        {
-          // Setup and solve the ray equations
-
-          raypair.setup    (
-               frequencies,
-               temperature,
-               lines,
-               scattering,
-               f           );
-
-          raypair.solve_ndep_is_1 ();
-
-
-          // Store solution of the radiation field
-
-          const long ind = index(o,f);
-
-          u[R][ind] = raypair.get_u_at_origin();
-          v[R][ind] = raypair.get_v_at_origin();
-
-        } // end of loop over frequencies
-
-      }
-
       else
       {
       
@@ -380,7 +352,7 @@ int RADIATION ::
       raypair.initialize <Dimension, Nrays> (cells, temperature, o);
 
 
-      if (raypair.ndep > 2)
+      if (raypair.ndep > 1)
       {
 
         for (long f = 0; f < frequencies.nfreq_red; f++)
@@ -396,34 +368,6 @@ int RADIATION ::
                f           );
 
           raypair.solve ();
-
-
-          // Store intensity on the ray ends
-
-          image.I_p[R][o][f] = raypair.get_I_p();
-          image.I_m[R][o][f] = raypair.get_I_m();
-
-        } // end of loop over frequencies
-
-      }
-
-      else if (raypair.ndep == 2)
-      {
-
-        for (long f = 0; f < frequencies.nfreq_red; f++)
-        {
-          // Setup and solve the ray equations
-
-
-          raypair.setup    (
-               frequencies,
-               temperature,
-               lines,
-               scattering,
-               f           );
-
-
-          raypair.solve_ndep_is_1 ();
 
 
           // Store intensity on the ray ends
@@ -520,37 +464,6 @@ int RADIATION ::
 
           raypair.solve ();
           
-
-          // Store solution of the radiation field
-
-          const long ind = index(o,f);
-
-          u[R][ind] = raypair.get_u_at_origin();
-          v[R][ind] = raypair.get_v_at_origin();
-
-          image.I_p[R][o][f] = raypair.get_I_p();
-          image.I_m[R][o][f] = raypair.get_I_m();
-
-        } // end of loop over frequencies
-
-      }
-
-      else if (raypair.ndep == 1)
-      {
-
-        for (long f = 0; f < frequencies.nfreq_red; f++)
-        {
-          // Setup and solve the ray equations
-
-          raypair.setup    (
-               frequencies,
-               temperature,
-               lines,
-               scattering,
-               f           );
-
-          raypair.solve_ndep_is_1 ();
-
 
           // Store solution of the radiation field
 

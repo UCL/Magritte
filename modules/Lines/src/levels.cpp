@@ -28,7 +28,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/frequencies.hpp"
 
 
-#define POP_PREC 1.0E-5
+#define POP_PREC 1.0E-7
 
 
 ///  Constructor for LEVELS
@@ -235,6 +235,21 @@ int LEVELS ::
   }
 
   y(nlev[l]-1) = population_tot[p][l];
+ 
+
+
+
+
+  //string file_name = output_folder + "M_" + to_string(p) + ".txt";
+
+  //ofstream outputFile (file_name);
+
+  //outputFile << M << endl;
+
+  //outputFile.close ();
+
+  //
+  //cout << M << endl;
 
 
   // Solve matrix equation M*x=y for x

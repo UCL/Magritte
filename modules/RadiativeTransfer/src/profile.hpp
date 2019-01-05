@@ -34,8 +34,8 @@ inline vReal profile      (
 
 inline double profile_width      (
     const double temperature_gas,
+    const double vturb2,
     const double freq_line       );
-
 
 
 
@@ -44,8 +44,9 @@ inline double profile_width      (
 ///    @return width of the correpsonding line profile
 //////////////////////////////////////////////////////////////////////////////////
 
-inline double profile_width     (
-    const double temperature_gas);
+inline double profile_width      (
+    const double temperature_gas,
+    const double vturb2          );
 
 
 
