@@ -44,6 +44,7 @@ RADIATION (const long num_of_cells,
 
   u.resize (nrays_red);
   v.resize (nrays_red);
+  Lambda.resize (nrays_red);
 
   U.resize (nrays_red);
   V.resize (nrays_red);
@@ -54,6 +55,7 @@ RADIATION (const long num_of_cells,
   {
     u[r].resize (ncells*nfreq_red);
     v[r].resize (ncells*nfreq_red);
+    Lambda[r].resize (ncells*nfreq_red);
 
     U[r].resize (ncells*nfreq_red);
     V[r].resize (ncells*nfreq_red);
@@ -68,6 +70,7 @@ RADIATION (const long num_of_cells,
 
   J.resize (ncells*nfreq_red);
   G.resize (ncells*nfreq_red);
+  L.resize (ncells*nfreq_red);
 
   cell2boundary_nr.resize (ncells);
 
@@ -119,7 +122,7 @@ int RADIATION ::
           boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
         }
       }
-    } 
+    }
   }
 
 
@@ -162,9 +165,12 @@ int initialize (vReal1& vec)
 int RADIATION ::
     calc_J (void)
 {
+  const double two_over_nrays = 2.0/nrays;
+  const double one_over_nrays = 1.0/nrays;
 
   initialize (J);
   initialize (G);
+  initialize (L);
 
 
   for (long r = MPI_start (nrays/2); r < MPI_stop (nrays/2); r++)
@@ -179,8 +185,9 @@ int RADIATION ::
     {
       for (long f = 0; f < nfreq_red; f++)
       {
-        J[index(p,f)] += (2.0/nrays) * u[R][index(p,f)];
-        G[index(p,f)] += (2.0/nrays) * v[R][index(p,f)];
+        J[index(p,f)] += two_over_nrays *      u[R][index(p,f)];
+        G[index(p,f)] += two_over_nrays *      v[R][index(p,f)];
+        L[index(p,f)] += one_over_nrays * Lambda[R][index(p,f)];
       }
     }
     } // end of pragma omp parallel
@@ -296,9 +303,9 @@ int RADIATION ::
             V_local[index(p,f)] += v[R2][index(p,f)] * scattering.phase[r1][r2][f];
           }
         }
-  
+
         }
-  
+
       } // end of r2 loop over raypairs2
 
 

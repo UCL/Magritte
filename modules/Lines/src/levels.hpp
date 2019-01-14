@@ -46,6 +46,7 @@ struct LEVELS
   VectorXd2 population;             ///< level population (most recent)
 
   Double3 J_eff;                    ///< effective mean intensity
+  Double3 L_eff;                    ///< effective Lambda operator
 
   Double2   population_tot;         ///< total level population (sum over levels)
 
@@ -100,7 +101,7 @@ struct LEVELS
       const long      p,
       const int       l                ) const;
 
-  int calc_J_eff                     (
+  int calc_J_and_L_eff               (
       const FREQUENCIES &frequencies,
       const TEMPERATURE &temperature,
       const RADIATION   &radiation,

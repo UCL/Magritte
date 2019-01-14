@@ -44,7 +44,7 @@ struct RAYPAIR
         const vReal2 &V_local,
         const vReal3 &Ibdy_local,
         const Long1  &Cell2boundary_nr);
-  
+
 
     template <int Dimension, long Nrays>
     inline void initialize                        (
@@ -69,6 +69,8 @@ struct RAYPAIR
     inline vReal get_u_at_origin (void);
     inline vReal get_v_at_origin (void);
 
+    inline vReal get_Lambda_at_origin (void);
+
     inline vReal get_I_p (void);
     inline vReal get_I_m (void);
 
@@ -76,7 +78,7 @@ struct RAYPAIR
   private:
 
     const long ncells;      ///< number of cells
-    const long ray;   
+    const long ray;
     const long aray;
     const long Ray;
 
@@ -95,7 +97,9 @@ struct RAYPAIR
 
     vReal Ibdy_0;
     vReal Ibdy_n;
-    
+
+    vReal chi_at_origin;
+
 
     inline void fill_ar                (
         const FREQUENCIES &frequencies,
@@ -103,7 +107,7 @@ struct RAYPAIR
         const LINES       &lines,
         const SCATTERING  &scattering,
         const long         f           );
-  
+
     inline void fill_r                 (
         const FREQUENCIES &frequencies,
         const TEMPERATURE &temperature,

@@ -163,7 +163,7 @@ int LINEDATA ::
 {
 
   int nlspec_local;
-  
+
   ifstream infile (linedata_folder + "nlspec.txt");
 
   infile >> nlspec_local;
@@ -181,7 +181,7 @@ Int1 LINEDATA ::
 {
 
   Int1 nlev_local;
-  
+
   ifstream infile (linedata_folder + "nlev.txt");
 
   int n;
@@ -204,7 +204,7 @@ Int1 LINEDATA ::
 {
 
   Int1 nrad_local;
-  
+
   ifstream infile (linedata_folder + "nrad.txt");
 
   int n;
@@ -227,7 +227,7 @@ Int1 LINEDATA ::
 {
 
   Int1 ncolpar_local;
-  
+
   ifstream infile (linedata_folder + "ncolpar.txt");
 
   int n;
@@ -249,7 +249,7 @@ Int2 LINEDATA ::
 {
 
   Int2 ntmp_local;
-  
+
   ifstream infile (linedata_folder + "ntmp.txt");
 
   int n;
@@ -265,7 +265,7 @@ Int2 LINEDATA ::
     {
       infile >> n;
 
-      ntmp_local_local.push_back (n); 
+      ntmp_local_local.push_back (n);
     }
 
     ntmp_local.push_back (ntmp_local_local);
@@ -283,7 +283,7 @@ Int2 LINEDATA ::
 {
 
   Int2 ncol_local;
-  
+
   ifstream infile (linedata_folder + "ncol.txt");
 
   int n;
@@ -299,7 +299,7 @@ Int2 LINEDATA ::
     {
       infile >> n;
 
-      ncol_local_local.push_back (n); 
+      ncol_local_local.push_back (n);
     }
 
     ncol_local.push_back (ncol_local_local);
@@ -317,7 +317,7 @@ Int1 LINEDATA ::
 {
 
   Int1 num_local;
-  
+
   ifstream infile (linedata_folder + "num.txt");
 
   int n;
@@ -339,7 +339,7 @@ String1 LINEDATA ::
 {
 
   String1 sym_local;
-  
+
   ifstream infile (linedata_folder + "num.txt");
 
   string n;
@@ -362,7 +362,7 @@ Int2 LINEDATA ::
 {
 
   Int2 irad_local;
-  
+
   ifstream infile (linedata_folder + "irad.txt");
 
   int n;
@@ -378,7 +378,7 @@ Int2 LINEDATA ::
     {
       infile >> n;
 
-      irad_local_local.push_back (n); 
+      irad_local_local.push_back (n);
     }
 
     irad_local.push_back (irad_local_local);
@@ -397,7 +397,7 @@ Int2 LINEDATA ::
 {
 
   Int2 jrad_local;
-  
+
   ifstream infile (linedata_folder + "jrad.txt");
 
   int n;
@@ -413,7 +413,7 @@ Int2 LINEDATA ::
     {
       infile >> n;
 
-      jrad_local_local.push_back (n); 
+      jrad_local_local.push_back (n);
     }
 
     jrad_local.push_back (jrad_local_local);
@@ -435,7 +435,7 @@ VectorXd1 LINEDATA ::
   const Int1  nlev_local = get_nlev   (linedata_folder);
 
   VectorXd1 energy_local (nlspec_local);
-  
+
   ifstream infile (linedata_folder + "energy.txt");
 
   double x;
@@ -449,7 +449,7 @@ VectorXd1 LINEDATA ::
     {
       infile >> x;
 
-      energy_local[l](i) = x; 
+      energy_local[l](i) = x;
     }
   }
 
@@ -469,7 +469,7 @@ VectorXd1 LINEDATA ::
   const Int1  nlev_local = get_nlev   (linedata_folder);
 
   VectorXd1 weight_local (nlspec_local);
-  
+
   ifstream infile (linedata_folder + "weight.txt");
 
   double x;
@@ -483,7 +483,7 @@ VectorXd1 LINEDATA ::
     {
       infile >> x;
 
-      weight_local[l](i) = x; 
+      weight_local[l](i) = x;
     }
   }
 
@@ -503,7 +503,7 @@ Double2 LINEDATA ::
   const Int1  nrad_local = get_nrad   (linedata_folder);
 
   Double2 frequency_local (nlspec_local);
-  
+
   ifstream infile (linedata_folder + "frequency.txt");
 
   double x;
@@ -517,7 +517,7 @@ Double2 LINEDATA ::
     {
       infile >> x;
 
-      frequency_local[l][k] = x; 
+      frequency_local[l][k] = x;
     }
   }
 
@@ -536,7 +536,7 @@ MatrixXd1 LINEDATA ::
   const Int1  nlev_local = get_nlev   (linedata_folder);
 
   MatrixXd1 A_local (nlspec_local);
-  
+
 
   double x;
 
@@ -553,7 +553,7 @@ MatrixXd1 LINEDATA ::
       {
         infile >> x;
 
-        A_local[l](i,j) = x; 
+        A_local[l](i,j) = x;
       }
     }
 
@@ -575,7 +575,7 @@ MatrixXd1 LINEDATA ::
   const Int1  nlev_local = get_nlev   (linedata_folder);
 
   MatrixXd1 B_local (nlspec_local);
-  
+
 
   double x;
 
@@ -592,7 +592,7 @@ MatrixXd1 LINEDATA ::
       {
         infile >> x;
 
-        B_local[l](i,j) = x; 
+        B_local[l](i,j) = x;
       }
     }
 
@@ -613,7 +613,7 @@ Int2 LINEDATA ::
   const Int1 ncolpar_local = get_ncolpar (linedata_folder);
 
   Int2 num_col_partner_local (nlspec_local);
-  
+
   ifstream infile (linedata_folder + "num_col_partner.txt");
 
   int n;
@@ -627,7 +627,7 @@ Int2 LINEDATA ::
     {
       infile >> n;
 
-      num_col_partner_local[l][c] = n; 
+      num_col_partner_local[l][c] = n;
     }
   }
 
@@ -647,7 +647,7 @@ Char2 LINEDATA ::
   const Int1 ncolpar_local = get_ncolpar (linedata_folder);
 
   Char2 orth_or_para_H2_local (nlspec_local);
-  
+
   ifstream infile (linedata_folder + "orth_or_para_H2.txt");
 
   char n;
@@ -661,7 +661,7 @@ Char2 LINEDATA ::
     {
       infile >> n;
 
-      orth_or_para_H2_local[l][c] = n; 
+      orth_or_para_H2_local[l][c] = n;
     }
   }
 
@@ -682,7 +682,7 @@ Double3 LINEDATA ::
   const Int2    ntmp_local = get_ntmp    (linedata_folder);
 
   Double3 temperature_col_local (nlspec_local);
-  
+
 
   double x;
 
@@ -701,10 +701,10 @@ Double3 LINEDATA ::
       {
         infile >> x;
 
-        temperature_col_local[l][c][t] = x; 
+        temperature_col_local[l][c][t] = x;
       }
     }
-    
+
     infile.close();
   }
 
@@ -723,7 +723,7 @@ MatrixXd3 LINEDATA ::
   const Int1    nlev_local = get_nlev    (linedata_folder);
 
   MatrixXd3 C_data_local (nlspec_local);
-  
+
 
   double x;
 
@@ -731,7 +731,7 @@ MatrixXd3 LINEDATA ::
   for (int l = 0; l < nlspec_local; l++)
   {
     C_data_local[l].resize (ncolpar_local[l]);
-    
+
     for (int c = 0; c < ncolpar_local[l]; c++)
     {
       C_data_local[l][c].resize (ntmp_local[l][c]);
@@ -745,14 +745,14 @@ MatrixXd3 LINEDATA ::
                              + to_string (t) + ".txt";
 
         ifstream infile (fname);
-    
+
         for (int i = 0; i < nlev_local[l]; i++)
         {
           for (int j = 0; j < nlev_local[l]; j++)
           {
             infile >> x;
-    
-            C_data_local[l][c][t](i,j) = x; 
+
+            C_data_local[l][c][t](i,j) = x;
           }
         }
 
@@ -890,6 +890,7 @@ MatrixXd LINEDATA ::
 
 MatrixXd LINEDATA ::
          calc_transition_matrix (const SPECIES &species,
+//                                 const LINES   &lines,
                                  const double   temperature_gas,
                                  const Double3 &J_eff,
                                  const long     p,
@@ -913,13 +914,12 @@ MatrixXd LINEDATA ::
     const int i = irad[l][k];   // i index corresponding to transition k
     const int j = jrad[l][k];   // j index corresponding to transition k
 
-    R(i,j) += /*FOUR_PI */ J_eff[p][l][k] * B[l](i,j); // - linedata.A[l](i,j)*Lambda();
-    R(j,i) += /*FOUR_PI */ J_eff[p][l][k] * B[l](j,i);
+//    const long ind = lines.index(p,l,k);
 
-  cout << endl;
-  cout << p << endl;
-  cout << J_eff[p][l][k] << endl;
-  cout << endl;
+    const double Jeff = J_eff[p][l][k];// - lines.emissivity[ind] * L_eff[p][l][k];
+
+    R(i,j) += /*FOUR_PI */ Jeff * B[l](i,j);// - linedata.A[l](i,j) * lines.opacity[ind] * L_eff[p][l][k];
+    R(j,i) += /*FOUR_PI */ Jeff * B[l](j,i);
   }
 
   //if(p==0)

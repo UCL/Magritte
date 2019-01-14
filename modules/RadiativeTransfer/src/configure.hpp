@@ -7,7 +7,7 @@ using namespace std;
 
 const int  DIMENSION = 2;
 const long     NRAYS = 50;
-const long    NCELLS = 467;
+const long    NCELLS = 429;
 const int      NSPEC = 5;
 
 #endif // __CONFIGURE_HPP_INCLUDED__

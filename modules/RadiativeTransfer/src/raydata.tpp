@@ -197,6 +197,12 @@ inline void RAYDATA ::
 
 }
 
+
+
+
+
+
+
 inline void RAYDATA ::
     set_current_to_origin_bdy          (
         const FREQUENCIES &frequencies,
@@ -217,6 +223,11 @@ inline void RAYDATA ::
       n                         );
 
 
+  // Set chi at origin
+
+  chi_o = chi_n;
+
+
   // Define I_bdy_scaled (which is not scaled in this case)
 
   const long b = cell2boundary_nr[origin];
@@ -235,6 +246,9 @@ inline void RAYDATA ::
   term2 =  V[Ray][index(origin,f)]*0.0        * inverse_chi_n;
 
 }
+
+
+
 
 inline void RAYDATA ::
     compute_next                       (

@@ -59,6 +59,7 @@ LEVELS                           (
 
   population.resize (ncells);
        J_eff.resize (ncells);
+       L_eff.resize (ncells);
 
   population_tot.resize (ncells);
 
@@ -76,6 +77,7 @@ LEVELS                           (
   {
     population[p].resize (nlspec);
          J_eff[p].resize (nlspec);
+         L_eff[p].resize (nlspec);
 
     population_tot[p].resize (nlspec);
 
@@ -88,6 +90,7 @@ LEVELS                           (
     {
       population[p][l].resize (nlev[l]);
            J_eff[p][l].resize (nrad[l]);
+           L_eff[p][l].resize (nrad[l]);
 
       population_tot[p][l] = 0.0;
 
@@ -123,7 +126,7 @@ int LEVELS ::
 
       ofstream pops_outputFile (pops_file);
       ofstream Jeff_outputFile (Jeff_file);
-      
+
       pops_outputFile << scientific << setprecision(16);
       Jeff_outputFile << scientific << setprecision(16);
 
@@ -235,7 +238,7 @@ int LEVELS ::
   }
 
   y(nlev[l]-1) = population_tot[p][l];
- 
+
 
 
 
@@ -363,7 +366,7 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    calc_J_eff (
+    calc_J_and_L_eff                   (
         const FREQUENCIES &frequencies,
         const TEMPERATURE &temperature,
         const RADIATION   &radiation,
@@ -376,6 +379,7 @@ int LEVELS ::
     const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
     J_eff[p][l][k] = 0.0;
+    L_eff[p][l][k] = 0.0;
 
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
@@ -383,10 +387,13 @@ int LEVELS ::
         const long    f = freq_nrs[z] / n_simd_lanes;
         const long lane = freq_nrs[z] % n_simd_lanes;
         const double JJ = radiation.J[radiation.index(p,f)].getlane(lane);
+        const double LL = radiation.L[radiation.index(p,f)].getlane(lane);
 #     else
         const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
+        const double LL = radiation.L[radiation.index(p,freq_nrs[z])];
 #     endif
 
+      L_eff[p][l][k] += H_weights[z] * LL;
       J_eff[p][l][k] += H_weights[z] * JJ;
     }
   }

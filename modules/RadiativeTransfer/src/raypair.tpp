@@ -75,6 +75,9 @@ inline void RAYPAIR ::
   {
     raydata_ar.set_current_to_origin (frequencies, temperature, lines, scattering, f);
 
+    // Store chi effective at origin for use in the Lambda operator
+    chi_at_origin = raydata_ar.chi_o;
+
     term1[raydata_ar.n] = raydata_ar.term1;
     term2[raydata_ar.n] = raydata_ar.term2;
 
@@ -87,9 +90,10 @@ inline void RAYPAIR ::
 
   else if (raydata_ar.n > 0) // and hence raydata_r.n == 0
   {
-    // Get boundary condition at origin
-
     raydata_ar.set_current_to_origin_bdy (frequencies, temperature, lines, scattering, f);
+
+    // Store chi effective at origin for use in the Lambda operator
+    chi_at_origin = raydata_ar.chi_o;
 
     term1[ndep-1] = raydata_ar.term1;
     term2[ndep-1] = raydata_ar.term2;
@@ -102,9 +106,10 @@ inline void RAYPAIR ::
 
   else if (raydata_r.n > 0) // and hence raydata_ar.n == 0
   {
-    // Get boundary condition at origin
-
     raydata_r.set_current_to_origin_bdy (frequencies, temperature, lines, scattering, f);
+
+    // Store chi effective at origin for use in the Lambda operator
+    chi_at_origin = raydata_r.chi_o;
 
     term1[0] = raydata_r.term1;
     term2[0] = raydata_r.term2;
@@ -301,17 +306,17 @@ inline void RAYPAIR ::
 
   // Calculate diagonal elements
 
-  ////Lambda[f](0,0) = (1.0 + G[1][f]) / (B0_min_C0[f] + B0[f]*G[1][f]);
-  //Lambda[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
+  //Lambda[f](0,0) = (1.0 + G[1][f]) / (B0_min_C0[f] + B0[f]*G[1][f]);
+  Lambda[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
 
-  //for (long n = 1; n < ndep-1; n++)
-  //{
-  //  //Lambda[f](n,n) = (1.0 + G[n+1][f]) / ((F[n][f] + G[n+1][f] + F[n][f]*G[n+1][f]) * C[n][f]);
-  //  Lambda[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
-  //}
+  for (long n = 1; n < ndep-1; n++)
+  {
+   //Lambda[f](n,n) = (1.0 + G[n+1][f]) / ((F[n][f] + G[n+1][f] + F[n][f]*G[n+1][f]) * C[n][f]);
+   Lambda[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
+  }
 
-  ////Lambda[f](ndep-1,ndep-1) = (1.0 + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
-  //Lambda[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
+  //Lambda[f](ndep-1,ndep-1) = (1.0 + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
+  Lambda[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
 
 
   //// Set number of off-diagonals to add
@@ -455,6 +460,11 @@ inline vReal RAYPAIR ::
   return Sv[raydata_ar.n];
 }
 
+inline vReal RAYPAIR ::
+    get_Lambda_at_origin (void)
+{
+  return Lambda[raydata_ar.n] / chi_at_origin;
+}
 
 inline vReal RAYPAIR ::
     get_I_p (void)

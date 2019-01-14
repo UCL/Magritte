@@ -37,7 +37,7 @@ struct LINES
   const int  nrad_tot;
 
   Double1 emissivity;   ///< line emissivity (p,l,k)
-  Double1 opacity;      ///< line opacity (p,l,k)
+  Double1 opacity;      ///< line opacity    (p,l,k)
 
 
   static Int1 get_nrad_cum (const Int1 nrad);
@@ -48,22 +48,26 @@ struct LINES
          const LINEDATA &linedata     );   ///< Constructor
 
 
-  int print (const string tag) const;
+  int print         (
+    const string tag) const;
 
-  inline long index (const long p,
-                     const int  l,
-                     const int  k ) const;
+  inline long index (
+    const long p,
+    const int  l,
+    const int  k    ) const;
 
-  inline long index (const long p,
-                     const long line_index) const;
+  inline long index      (
+    const long p,
+    const long line_index) const;
 
-  inline int add_emissivity_and_opacity (const FREQUENCIES &frequencies,
-                                         const TEMPERATURE &temperature,
-                                         const vReal       &freq_scaled,
-                                               long        &lnotch,
-                                         const long         p,
-                                               vReal       &eta,
-                                               vReal       &chi          ) const;
+  inline int add_emissivity_and_opacity (
+    const FREQUENCIES &frequencies,
+    const TEMPERATURE &temperature,
+    const vReal       &freq_scaled,
+          long        &lnotch,
+    const long         p,
+          vReal       &eta,
+          vReal       &chi               ) const;
 
   int mpi_allgatherv ();
 
