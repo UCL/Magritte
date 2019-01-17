@@ -38,7 +38,11 @@ long max (
 
 
 
-int downheap (vector<double>& a, vector<long>& b, long n, long i)
+int downheap (
+    const Double1 &a,
+    const Long1   &b,
+    const long     n,
+          long     i )
 {
 
   while (1)
@@ -70,7 +74,9 @@ int downheap (vector<double>& a, vector<long>& b, long n, long i)
 
 
 
-int heapsort (vector<double>& a, vector<long>& b)
+int heapsort (
+    Double1 &a,
+    Long1   &b )
 {
 
   // Get vector length

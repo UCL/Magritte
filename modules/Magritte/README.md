@@ -1,0 +1,10 @@
+# Magritte
+----------
+
+## Install
+----------
+
+### Dependencies
+----------------
+
+- CMake

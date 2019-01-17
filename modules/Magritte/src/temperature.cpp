@@ -18,8 +18,9 @@ using namespace std;
 ///////////////////////////////////////////////
 
 Temperature ::
-Temperature (const long num_of_cells)
-  : ncells (num_of_cells)
+    Temperature (
+        const long num_of_cells)
+    : ncells (num_of_cells)
 {
 
        gas.resize (ncells);
@@ -39,14 +40,13 @@ Temperature (const long num_of_cells)
 ////////////////////////////////////////////////////////////////////////////
 
 int Temperature ::
-    read                               (
-        const string temperature_file,
-        const string vturbulence_file  )
+    read (
+        const string input_folder)
 {
 
   // Read gas temperature file
 
-  ifstream file_temp (temperature_file);
+  ifstream file_temp (input_folder + "temperature.txt");
 
   for (long p = 0; p < ncells; p++)
   {
@@ -58,7 +58,7 @@ int Temperature ::
 
  // Read gas turbulence file
 
-  ifstream file_turb (vturbulence_file);
+  ifstream file_turb (input_folder + "vturbulence.txt");
 
   for (long p = 0; p < ncells; p++)
   {

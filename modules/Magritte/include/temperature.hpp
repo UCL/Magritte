@@ -15,8 +15,9 @@ using namespace std;
 #include "types.hpp"
 
 
-struct Temperature : public Model
+struct Temperature
 {
+  const long ncells;
 
   Double1 gas;        ///< gas temperature
   Double1 dust;       ///< dust temparature
@@ -25,11 +26,11 @@ struct Temperature : public Model
   Double1 vturb2;     ///< microturbulence over c all squared
 
 
-  Temperature (const long num_of_cells);      ///< Constructor
+  Temperature (
+      const long num_of_cells);     ///< Constructor
 
   int read (
-      const string temperature_file,
-      const string vturbulence_file );   ///< read initial temperature field
+      const string input_folder);   ///< read initial temperature field
 
 };
 

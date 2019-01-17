@@ -8,13 +8,14 @@
 #define __TYPES_HPP_INCLUDED__
 
 #include <vector>
+#include <string>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
 
 
 // Definitions for short notation of vector of vectors of...
-// The number in the type name indicates the number of indices 
+// The number in the type name indicates the number of indices
 
 
 // Vectors of bool
