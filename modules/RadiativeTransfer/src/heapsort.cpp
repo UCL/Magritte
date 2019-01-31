@@ -9,12 +9,7 @@
 #include "heapsort.hpp"
 
 
-long max (
-    const Double1 &a,
-    const long     n,
-    const long     i,
-    const long     j,
-    const long     k )
+long max (vector<double> &a, long n, long i, long j, long k)
 {
 
   long m = i;

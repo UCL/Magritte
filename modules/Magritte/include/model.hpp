@@ -11,10 +11,11 @@
 #include <string>
 using namespace std;
 
+#include "io.hpp"
 #include "cells.hpp"
 #include "species.hpp"
 #include "linedata.hpp"
-#include "frequencies.hpp"
+//#include "frequencies.hpp"
 #include "temperature.hpp"
 
 
@@ -24,36 +25,35 @@ using namespace std;
 struct Model
 {
 
-//  // Size (memory)
-//  const long ncells;      ///< number of cells
-//  const long nrays;       ///< number of rays (originating from each cell)
-//  const long nfreqs;      ///< number of frequency bins
-//  const long nspecs;      ///< number of chemical species
-//  const long nlspecs;     ///< number of line producing species
+  public:
+      // Size (memory)
+      long ncells;      ///< number of cells
+      long nrays;       ///< number of rays (originating from each cell)
+//      const long nfreqs;      ///< number of frequency bins
+      long nspecs;      ///< number of chemical species
+      long nlspecs;     ///< number of line producing species
 
-  // Geometry
-  Cells       cells;
+      // Geometry
+      Cells       cells;
 
-  // Physical state
-  Linedata    linedata;
-  Frequencies frequencies;
-  Temperature temperature;
-  Species     species;
-
-  // Constructor
-  Model (
-      const string input_folder);
+      // Physical state
+      Linedata    linedata;
+      //Frequencies frequencies;
+      Temperature temperature;
+      Species     species;
 
 
-  // Setup and I/O
-  int read (
-      const string input_folder);
+      // Constructor
+      Model (
+          const Io &io);
 
-  int write (
-      const string output_folder,
-      const string tag           ) const;
 
-  int setup ();
+      // Writer for output
+      int write (
+          const Io &io) const;
+
+
+
 
 };
 

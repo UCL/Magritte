@@ -4,7 +4,7 @@
 // _________________________________________________________________________
 
 
-#include <fstream>
+#include <iostream>
 #include <limits>
 using namespace std;
 
@@ -12,17 +12,41 @@ using namespace std;
 #include "constants.hpp"
 
 
-///  Constructor for Cells: Allocates memory for cell data
-///    @param number_of_cells: number of cells in grid
-///    @param number_of_rays: number of rays from each cell
-///////////////////////////////////////////////////////////
+///  Constructor for Cells:
+///    @param[in] io: io object
+/////////////////////////////////////
 
 Cells ::
     Cells (
-        const string input_folder)
-  : ncells (get_ncells(number_of_cells)),
-    nrays  (get_nrays (number_of_rays)),
-    rays   (input_folder)
+        const Io &io)
+  : ncells    (io.get_length ("cells")),
+    nrays     (io.get_length ("rays")),
+    nboundary (io.get_length ("boundary")),
+    rays      (io)
+{
+
+  cout << "ncells!!!!!!!!!!!" << endl;
+  cout << ncells << endl;
+
+  allocate ();
+
+  initialise ();
+
+  read (io);
+
+  setup ();
+
+
+}   // END OF CONSTRUCTOR
+
+
+
+
+///  allocate: resize all data structures
+/////////////////////////////////////////
+
+int Cells ::
+    allocate ()
 {
 
   x.resize (ncells);
@@ -43,6 +67,20 @@ Cells ::
   cell2boundary_nr.resize (ncells);
 
 
+  return (0);
+
+}
+
+
+
+
+///  initialise: initialise all data structures
+///////////////////////////////////////////////
+
+int Cells ::
+    initialise ()
+{
+
   for (long p = 0; p < ncells; p++)
   {
     boundary[p] = false;
@@ -53,50 +91,32 @@ Cells ::
   }
 
 
-}   // END OF CONSTRUCTOR
+  return (0);
+
+}
 
 
 
-///  read: read the cells, neighbors and boundary files
-///////////////////////////////////////////////////////
+
+///  read: read the input into the data structure
+///  @paran[in] io: io object
+/////////////////////////////////////////////////
 
 int Cells ::
     read (
-        const string input_folder)
+        const Io &io)
 {
 
   // Read cell centers and velocities
 
-  ifstream cellsFile (input_folder + "cells.txt");
+  io.read_3_vector ("cells", x, y, z);
 
-  for (long p = 0; p < ncells; p++)
-  {
-    cellsFile >> x[p] >> y[p] >> z[p] >> vx[p] >> vy[p] >> vz[p];
-  }
-
-  cellsFile.close();
-
-
-  // Convert velocities in m/s to fractions for C
-
-  for (long p = 0; p < ncells; p++)
-  {
-    vx[p] = vx[p] / CC;
-    vy[p] = vy[p] / CC;
-    vz[p] = vz[p] / CC;
-  }
+  io.read_3_vector ("velocities", vx, vy, vz);
 
 
   // Read number of neighbors
 
-  ifstream nNeighborsFile (input_folder + "n_neighbors.txt");
-
-  for (long p = 0; p < ncells; p++)
-  {
-    nNeighborsFile >> n_neighbors[p];
-  }
-
-  nNeighborsFile.close();
+  io.read_list ("n_neighbors", n_neighbors);
 
 
   // Resize the neighbors to appropriate sizes
@@ -109,39 +129,12 @@ int Cells ::
 
   // Read nearest neighbors lists
 
-  ifstream neighborsFile (input_folder + "neighbors.txt");
-
-  for (long p = 0; p < ncells; p++)
-  {
-    for (long n = 0; n < n_neighbors[p]; n++)
-    {
-      neighborsFile >> neighbors[p][n];
-    }
-  }
-
-  neighborsFile.close ();
+  io.read_array ("neighbors", neighbors);
 
 
   // Read boundary list
 
-  ifstream boundaryFile (input_folder + "boundary.txt");
-
-  long index = 0;
-  long cell_nr;
-
-  while (boundaryFile >> cell_nr)
-  {
-    boundary2cell_nr[index]   = cell_nr;
-    cell2boundary_nr[cell_nr] = index;
-
-    boundary[cell_nr] = true;
-
-    index++;
-  }
-
-  nboundary = index;
-
-  boundaryFile.close();
+  io.read_list ("boundary", boundary2cell_nr);
 
 
   return (0);
@@ -151,14 +144,67 @@ int Cells ::
 
 
 
-///  setup: setup the cells and their rays
-//////////////////////////////////////////
+///  setup: setup data structure
+////////////////////////////////
 
 int Cells ::
     setup ()
 {
 
-  rays.setup ();
+  // Convert velocities in m/s to fractions for C
+
+  for (long p = 0; p < ncells; p++)
+  {
+    vx[p] /= CC;
+    vy[p] /= CC;
+    vz[p] /= CC;
+  }
+
+
+  // Set helper variables to identify the boundary
+
+  for (long b = 0; b < nboundary; b++)
+  {
+    const long cell_nr = boundary2cell_nr[b];
+
+    cell2boundary_nr[cell_nr] = b;
+            boundary[cell_nr] = true;
+  }
+
+
+  return (0);
+
+}
+
+
+
+
+///  write: write the dat astructure
+///  @paran[in] io: io object
+////////////////////////////////////////////////
+
+int Cells ::
+    write (
+        const Io &io) const
+{
+
+  // Write cell centers and velocities
+
+  io.write_3_vector ("cells", x, y, z);
+
+  io.write_3_vector ("velocities", vx, vy, vz);
+
+
+  // Write number of neighbors and neighbors lists
+
+  io.write_list ("n_neighbors", n_neighbors);
+
+  io.write_array ("neighbors", neighbors);
+
+
+  // Write boundary list
+
+  io.write_list ("boundary", boundary2cell_nr);
 
 
   return (0);

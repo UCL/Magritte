@@ -4,7 +4,6 @@
 // _________________________________________________________________________
 
 
-#include <fstream>
 #include <limits>
 using namespace std;
 
@@ -32,7 +31,7 @@ inline long Cells ::
 
   double D_min = numeric_limits<double> :: max();   // Initialize to "infinity"
 
-  long next = ncells;   // return ncells when there is no next cell
+  long next = -1;   // return -1 when there is no next cell
 
 
   for (long n = 0; n < n_neighbors[current]; n++)
@@ -76,46 +75,6 @@ inline long Cells ::
 }
 
 
-// /// on_ray
-//
-// template <int Dimension, long Nrays>
-// inline long Cells <Dimension, Nrays> ::
-//             on_ray (const long    origin,
-//                     const long    ray,
-//                           long   *cellNrs,
-//                           double *dZs     ) const
-// {
-//   long    n = 0;     // number of cells on the ray
-//   double  Z = 0.0;   // distance from origin (o)
-//   double dZ = 0.0;   // last increment in Z
-//
-//   long nxt = next (origin, ray, origin, Z, dZ);
-//
-//
-//   if (nxt != ncells)   // if we are not going out of grid
-//   {
-//     cellNrs[n] = nxt;
-//         dZs[n] = dZ;
-//
-//     n++;
-//
-//     while (!boundary[nxt])   // while we have not hit the boundary
-//     {
-//       nxt = next (origin, ray, nxt, Z, dZ);
-//
-//       cellNrs[n] = nxt;
-//           dZs[n] = dZ;
-//
-//       n++;
-//     }
-//   }
-//
-//
-//   return n;
-//
-// }
-
-
 
 
 ///  relative_velocity: get relative velocity of current w.r.t. origin along ray
@@ -128,31 +87,50 @@ inline long Cells ::
 inline double Cells ::
     doppler_shift         (
         const long origin,
-        const long ray,
+        const long r,
         const long current) const
 {
 
-  return 1.0 - (  (vx[current] - vx[origin]) * rays.x[ray]
-                + (vy[current] - vy[origin]) * rays.y[ray]
-                + (vz[current] - vz[origin]) * rays.z[ray]);
+  return 1.0 - (  (vx[current] - vx[origin]) * rays.x[r]
+                + (vy[current] - vy[origin]) * rays.y[r]
+                + (vz[current] - vz[origin]) * rays.z[r]);
 
 }
 
 
+
+
+///  x_projected: x coordinate of the point p on the image in direction r
+///    @param[in] p: number of cell to be projected on the image
+///    @param[in] r: number of the ray orthogonal to the image
+///    @return: x coordinate on the image
+/////////////////////////////////////////////////////////////////////////
 
 inline double Cells ::
     x_projected       (
         const long p,
         const long r  ) const
 {
+
   return x[p]*rays.Ix[r] + y[p]*rays.Iy[r];
+
 }
 
+
+
+
+///  y_projected: y coordinate of the point p on the image in direction r
+///    @param[in] p: number of cell to be projected on the image
+///    @param[in] r: number of the ray orthogonal to the image
+///    @return: y coordinate on the image
+/////////////////////////////////////////////////////////////////////////
 
 inline double Cells ::
     y_projected       (
         const long p,
         const long r  ) const
 {
+
   return x[p]*rays.Jx[r] + y[p]*rays.Jy[r] + z[p]*rays.Jz[r];
+
 }

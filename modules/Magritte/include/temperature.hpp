@@ -12,25 +12,40 @@
 using namespace std;
 
 #include "types.hpp"
-#include "types.hpp"
+#include "io.hpp"
 
 
 struct Temperature
 {
-  const long ncells;
 
-  Double1 gas;        ///< gas temperature
-  Double1 dust;       ///< dust temparature
-  Double1 gas_prev;   ///< gas temperature in previous iteration
+  public:
 
-  Double1 vturb2;     ///< microturbulence over c all squared
+      long ncells;
+
+      Double1 gas;        ///< [K] gas temperature
+      Double1 dust;       ///< [K] dust temparature
+      Double1 gas_prev;   ///< [K] gas temperature in previous iteration
+
+      Double1 vturb2;     ///< [.] microturbulence over c all squared
+
+      // Construvtor
+      Temperature (
+          const Io &io);
+
+      // Writer or output
+      int write (
+          const Io &io) const;
 
 
-  Temperature (
-      const long num_of_cells);     ///< Constructor
+  private:
 
-  int read (
-      const string input_folder);   ///< read initial temperature field
+      int allocate ();
+
+      int read (
+          const Io &io);
+
+      int setup ();
+
 
 };
 

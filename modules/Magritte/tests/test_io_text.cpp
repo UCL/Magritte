@@ -9,13 +9,13 @@
 
 #include "catch.hpp"
 
-#include "input.hpp"
+#include "io_text.hpp"
 
 
 TEST_CASE ("Reading .txt input")
 {
 
-  Input input ("");
+  IoText io ("testData/cells.txt");
 
 
   SECTION ("Vector components of rays")

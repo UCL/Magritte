@@ -8,62 +8,61 @@
 #define __SPECIES_HPP_INCLUDED__
 
 #include "types.hpp"
+#include "io.hpp"
 
 
 struct Species
 {
 
-  const long ncells;           ///< number of cells
-  const long nspecs;           ///< number of chemical species
+  public:
 
-  String1 sym;                 ///< chemical symbol of species
-  Double1 mass;                ///< molecular mass of species
-  Double1 initial_abundance;   ///< abundance before chemical evolution
+      long ncells;                 ///< number of cells
+      long nspecs;                 ///< number of chemical species
 
-  Double2 abundance;           ///< (current) abundance in every cell
+      String1 sym;                 ///< chemical symbol of species
+      Double1 mass;                ///< molecular mass of species
+      Double1 initial_abundance;   ///< abundance before chemical evolution
 
-
-  // species numbers of some inportant species
-
-  int nr_e;      // nr for electrons
-  int nr_H2;     // nr for H2
-  int nr_HD;     // nr for HD
-  int nr_C;      // nr for C
-  int nr_H;      // nr for H
-  int nr_H2x;    // nr for H2+
-  int nr_HCOx;   // nr for HCO+
-  int nr_H3x;    // nr for H3+
-  int nr_H3Ox;   // nr for H3O+
-  int nr_Hex;    // nr for He+
-  int nr_CO;     // nr for CO
+      Double2 abundance;           ///< (current) abundance in every cell
 
 
-  // Constructor
-  Species (
-      const string input_folder);
+      // species numbers of some inportant species
+
+      int nr_e;      // nr for electrons
+      int nr_H2;     // nr for H2
+      int nr_HD;     // nr for HD
+      int nr_C;      // nr for C
+      int nr_H;      // nr for H
+      int nr_H2x;    // nr for H2+
+      int nr_HCOx;   // nr for HCO+
+      int nr_H3x;    // nr for H3+
+      int nr_H3Ox;   // nr for H3O+
+      int nr_Hex;    // nr for He+
+      int nr_CO;     // nr for CO
 
 
-  // Static reader for input data
-  static long get_ncells (
-      const string input_folder);
+      // Constructor
+      Species (
+          const Io &);
 
-  static long get_nspecs (
-      const string input_folder);
-
-
-  // Setup and I/O
-  int read (
-      const string input_folder);
-
-  int write (
-      const string output_folder,
-      const string tag           );
-
-  int setup ();
+      // Writer for output
+      int write (
+          const Io &) const;
 
 
-  int get_species_nr (
-      const string name);
+  private:
+
+      // Setup and I/O
+      int allocate ();
+
+      int read (
+          const Io &io);
+
+      int setup ();
+
+      // Helper functions
+      int get_species_nr (
+          const string name);
 
 
 };

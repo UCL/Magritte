@@ -24,6 +24,7 @@ GridInstall*
 # ------------------
 
 *.a
+*.so
 
 
 # editor generated files

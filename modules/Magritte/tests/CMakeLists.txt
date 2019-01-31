@@ -8,13 +8,41 @@ include_directories (../include)
 add_library (TestMain
   main.cpp)
 
-# Create executable to test input
-add_executable (test_input.exe
-  test_input.cpp)
-target_link_libraries (test_input.exe
+# Create executable to test io
+add_executable (test_io_text.exe
+  test_io_text.cpp)
+target_link_libraries (test_io_text.exe
   Magritte
   TestMain)
 
+# Create executable to test io
+add_executable (test_io_Python.exe
+  test_io_Python.cpp)
+target_link_libraries (test_io_Python.exe
+  Magritte
+  PyIo
+  TestMain)
+
+# Create executable to test model
+add_executable (test_model.exe
+  test_model.cpp)
+target_link_libraries (test_model.exe
+  Magritte
+  TestMain)
+
+# Create executable to test model
+add_executable (test_rays.exe
+  test_rays.cpp)
+target_link_libraries (test_rays.exe
+  Magritte
+  TestMain)
+
+# Create executable to test model
+add_executable (test_cells.exe
+  test_cells.cpp)
+target_link_libraries (test_cells.exe
+  Magritte
+  TestMain)
 #
 ## Create executable to test cells
 #add_executable( test_cells.exe

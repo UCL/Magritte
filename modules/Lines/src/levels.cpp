@@ -28,7 +28,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/frequencies.hpp"
 
 
-#define POP_PREC 1.0E-7
+#define POP_PREC 1.0E-8
 
 
 ///  Constructor for LEVELS

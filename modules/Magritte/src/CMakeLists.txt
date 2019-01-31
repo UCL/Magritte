@@ -7,11 +7,13 @@ include_directories (../include)
 
 # Create Magritte library
 add_library (Magritte
-  input.cpp)
-#  model.cpp
-#  cells.cpp
-#  rays.cpp
-#  species.cpp
+  io.cpp
+  io_text.cpp
+  model.cpp
+  cells.cpp
+  rays.cpp
+  species.cpp
+  linedata.cpp
 #  frequencies.cpp
-#  temperature.cpp
+  temperature.cpp)
 #  heapsort.cpp)

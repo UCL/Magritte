@@ -4,63 +4,71 @@
 // _________________________________________________________________________
 
 
+#include <iostream>
 #include <string>
 using namespace std;
 
 #include "model.hpp"
-#include "input.hpp"
+#include "io.hpp"
 
 
 ///  Constructor for Model
-///    @param[in] input_folder: folder containing input data
-////////////////////////////////////////////////////////////
+///    @param[in] input: input data object
+///////////////////////////////////////////
 
 Model ::
     Model (
-        const Input input)
-  : ncells      (input.get_ncells()),
-    nrays       (input.get_nrays ()),
-    nfreqs      (input.get_nfreqs()),
-    nspecs      (input.get_nspecs()),
-    cells       (input),
-    temperature (input),
-    species     (input)
+        const Io &io)
+  : ncells      (io.get_length ("cells")),
+    nrays       (io.get_length ("rays")),
+    nspecs      (io.get_length ("species")),
+    cells       (io),
+    temperature (io),
+    species     (io),
+    linedata    (io)
 {
 
+//cout << input.get_length("cells") << endl;
 
 }   // END OF CONSTRUCTOR
 
 
 
-/// setup: set up the necesary sub data structures
+///// setup: set up the necesary sub data structures
+//
+//int Model ::
+//    setup ()
+//{
+//
+//    cells.setup ();
+//
+//  species.setup ();
+//
+//
+//  return (0);
+//
+//}
+//
+//
+//
+//
+
+
+/// write: write out model data
+///////////////////////////////
 
 int Model ::
-    setup ()
+   write (
+      const Io &io) const
 {
 
-    cells.setup ();
+        cells.write (io);
 
-  species.setup ();
+  temperature.write (io);
 
-
-  return (0);
-
-}
+      species.write (io);
 
 
-
-
-/// read: read in the data
-
-int Model ::
-    read (const Input input)
-{
-
-        cells.read (input);
-
-  temperature.read (input);
-
-
-  return (0);
+ return (0);
 
 }

@@ -3,21 +3,40 @@
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
 
+
 #include <math.h>
-#include <fstream>
-#include <iostream>
 using namespace std;
 
 #include "rays.hpp"
-#include "constants.hpp"
 
 
-///  Constructor for RAYS
-/////////////////////////
+///  Constructor for Rays
+///    @param[in] io: io object
+/////////////////////////////////////
 
 Rays ::
-  Rays (const string input_folder)
-  : nrays (get_nrays(inpt_folder))
+    Rays (
+        const Io &io)
+  : nrays (io.get_length ("rays"))
+{
+
+  allocate ();
+
+  read (io);
+
+  setup ();
+
+
+}   // END OF CONSTRUCTOR
+
+
+
+
+///  allocate: resize all data structures
+/////////////////////////////////////////
+
+int Rays ::
+    allocate ()
 {
 
   x.resize (nrays);
@@ -34,21 +53,23 @@ Rays ::
   antipod.resize (nrays);
 
 
-}   // END OF CONSTRUCTOR
+  return (0);
 
+}
+
+
+
+
+///  read: read the input into the data structure
+///  @paran[in] io: io object
+/////////////////////////////////////////////////
 
 int Rays ::
-    read (const string input_folder)
+    read (
+        const Io &io)
 {
 
-  ifstream raysFile (input_folder + "rays.txt");
-
-  for (long r = 0; r < nrays; r++)
-  {
-    raysFile >> x[r] >> y[r] >> z[r];
-  }
-
-  raysFile.close();
+  io.read_3_vector ("rays", x, y, z);
 
 
   return (0);
@@ -57,6 +78,9 @@ int Rays ::
 
 
 
+
+///  setup: setup data structure
+////////////////////////////////
 
 int Rays ::
     setup ()
@@ -68,33 +92,14 @@ int Rays ::
 
 
   return (0);
-}
-
-
-
-int Rays ::
-    setup_image_axis ()
-{
-
-  for (long r = 0; r < nrays; r++)
-  {
-    double inverse_denominator = 1.0 / sqrt(x[r]*x[r] + y[r]*y[r]);
-
-    Ix[r] =  y[r] * inverse_denominator;
-    Iy[r] = -x[r] * inverse_denominator;
-
-    Jx[r] =  x[r] * z[r] * inverse_denominator;
-    Jy[r] =  y[r] * z[r] * inverse_denominator;
-    Jz[r] =              - inverse_denominator;
-  }
-
-
-  return (0);
 
 }
 
 
 
+
+///  setup_antipodal_rays: identify which rays are each others antipodes
+////////////////////////////////////////////////////////////////////////
 
 int Rays ::
     setup_antipodal_rays ()
@@ -122,6 +127,50 @@ int Rays ::
 }
 
 
+
+
+///  setup_image_axis: define the axis for the (2D) image frame
+///////////////////////////////////////////////////////////////
+
+int Rays ::
+    setup_image_axis ()
+{
+
+  for (long r = 0; r < nrays; r++)
+  {
+    double inverse_denominator = 1.0 / sqrt(x[r]*x[r] + y[r]*y[r]);
+
+    Ix[r] =  y[r] * inverse_denominator;
+    Iy[r] = -x[r] * inverse_denominator;
+
+    Jx[r] =  x[r] * z[r] * inverse_denominator;
+    Jy[r] =  y[r] * z[r] * inverse_denominator;
+    Jz[r] =              - inverse_denominator;
+  }
+
+
+  return (0);
+
+}
+
+
+
+
+///  write: write out the data structure
+///  @paran[in] io: io object
+/////////////////////////////////////////////////
+
+int Rays ::
+    write (
+        const Io &io) const
+{
+
+  io.write_3_vector ("rays", x, y, z);
+
+
+  return (0);
+
+}
 
 
 // int Rays ::

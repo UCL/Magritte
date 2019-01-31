@@ -22,7 +22,7 @@ using namespace Eigen;
 
 Linedata ::
     Linedata (
-        const string linedata_folder)
+        const Io &io)
  : nlspec          (get_nlspec          (linedata_folder))
  , nlev            (get_nlev            (linedata_folder))
  , nrad            (get_nrad            (linedata_folder))

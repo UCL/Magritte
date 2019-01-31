@@ -10,14 +10,34 @@ using namespace std;
 #include "species.hpp"
 
 
-// Constructor for SPECIES: reads species data file
-// ------------------------------------------------
+///  Constructor for Species
+///    @param[in] io: io object
+/////////////////////////////////////
 
 Species ::
-    Species (const long number_of_cells,
-             const long number_of_species)
- : ncells (number_of_cells),
-   nspecs (number_of_species)
+    Species (
+        const Io &io)
+ : ncells (io.get_length("abundances")),
+   nspecs (io.get_length("species")+2)
+{
+
+  allocate ();
+
+  read (io);
+
+  setup ();
+
+
+}   // END OF CONSTRUCTOR
+
+
+
+
+///  allocate: resize all data structures
+/////////////////////////////////////////
+
+int Species ::
+    allocate ()
 {
 
    sym.resize (nspecs);
@@ -32,98 +52,45 @@ Species ::
     abundance[p].resize (nspecs);
   }
 
-
-}   // END OF CONSTRUCTOR
-
-
-
-
-///  get_ncells: reads in the number of cells
-///  @param[in] inpt_folder: path to folder containing all input data
-/////////////////////////////////////////////////////////////////////
-
-static long get_ncells (
-    const string input_folder)
-{
-
-  long ncells_local;
-
-  ifstream ncellsFile (input_folder + "ncells.txt");
-
-  ncellsFile >> ncells_local;
-
-  cellsFile.close();
-
-
-  return ncells_local;
-
 }
 
 
 
 
-///  get_nspecs: reads in the number of cells
-///  @param[in] inpt_folder: path to folder containing all input data
-/////////////////////////////////////////////////////////////////////
-
-static long get_nspecs (
-    const string input_folder)
-{
-
-  long nspecs_local;
-
-  ifstream nspecsFile (input_folder + "nspecs.txt");
-
-  nspecsFile >> nspecs_local;
-
-  specsFile.close();
-
-
-  return nspecs_local;
-
-}
-
-
-
+///  read: read the input into the data structure
+///  @paran[in] io: io object
+/////////////////////////////////////////////////
 
 int Species ::
     read (
-        const string input_folder)
+        const Io &io)
 {
 
   // Read the species
 
-  // First species is a dummy for when a species is not found
-  sym[0]               = "dummy0";
-  initial_abundance[0] = 0.0;
-
-  ifstream speciesFile (input_folder + "species.txt");
-
-  for (long s = 1; s < nspecs-1; s++)
-  {
-    speciesFile >> sym[s] >> mass[s] >> initial_abundance[s];
-  }
-
-  speciesFile.close ();
-
-  // Last species is a dummy with abundance 1.0 everywhere
-  sym[nspecs-1]               = "dummy1";
-  initial_abundance[nspecs-1] = 1.0;
-
+//  // First species is a dummy for when a species is not found
+//  sym[0]               = "dummy0";
+//  initial_abundance[0] = 0.0;
+//
+//  ifstream speciesFile (input_folder + "species.txt");
+//
+//  for (long s = 1; s < nspecs-1; s++)
+//  {
+//    speciesFile >> sym[s] >> mass[s] >> initial_abundance[s];
+//  }
+//
+//  speciesFile.close ();
+//
+//  // Last species is a dummy with abundance 1.0 everywhere
+//  sym[nspecs-1]               = "dummy1";
+//  initial_abundance[nspecs-1] = 1.0;
+//
+//
+//  io.read_list ("species", )
 
   // Read the abundaces of each species in each cell
 
-  ifstream abundanceFile (input_folder + "abundance.txt");
-
-  for (long p = 0; p < ncells; p++)
-  {
-    for (long s = 0; s < nspecs; s++)
-    {
-      abundanceFile >> abundance[p][s];
-    }
-  }
-
-  abundanceFile.close ();
+  io.read_array ("abundance", abundance);
 
 
   return (0);
@@ -132,6 +99,9 @@ int Species ::
 
 
 
+
+///  setup: setup data structure
+////////////////////////////////
 
 int Species ::
     setup ()
@@ -153,6 +123,7 @@ int Species ::
 
 
   return (0);
+
 }
 
 
@@ -178,5 +149,24 @@ int Species ::
 
 
   return (-1);
+
+}
+
+
+
+
+///  write: write out the data structure
+///  @paran[in] io: io object
+/////////////////////////////////////////////////
+
+int Species ::
+    write (
+        const Io &io) const
+{
+
+  io.write_array ("abundance", abundance);
+
+
+  return (0);
 
 }

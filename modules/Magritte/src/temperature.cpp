@@ -4,23 +4,38 @@
 // _________________________________________________________________________
 
 
-#include <string>
-#include <fstream>
-using namespace std;
-
 #include "temperature.hpp"
 #include "constants.hpp"
 #include "types.hpp"
 
 
-///  Constructor for TEMPERATURE
-///    @param[in] num_of_cells: number of cells
-///////////////////////////////////////////////
+///  Constructor for Temperature
+///    @param[in] io: io object
+////////////////////////////////
 
 Temperature ::
     Temperature (
-        const long num_of_cells)
-    : ncells (num_of_cells)
+        const Io &io)
+    : ncells (io.get_length ("temperature"))
+{
+
+    allocate ();
+
+    read (io);
+
+    setup ();
+
+
+}   // END OF CONSTRUCTOR
+
+
+
+
+///  allocate: resize data structure
+////////////////////////////////////
+
+int Temperature ::
+    allocate ()
 {
 
        gas.resize (ncells);
@@ -30,45 +45,79 @@ Temperature ::
     vturb2.resize (ncells);
 
 
-}   // END OF CONSTRUCTOR
+  return (0);
+
+}
 
 
 
 
-///  read: read initial temperatures
-///    @param[in] temperature_file: name of file containing temperature data
-////////////////////////////////////////////////////////////////////////////
+///  read: read in data structure
+///    @param[in] io: io object
+/////////////////////////////////
 
 int Temperature ::
     read (
-        const string input_folder)
+        const Io &io)
 {
 
   // Read gas temperature file
 
-  ifstream file_temp (input_folder + "temperature.txt");
-
-  for (long p = 0; p < ncells; p++)
-  {
-    file_temp >> gas[p];
-  }
-
-  file_temp.close();
+  io.read_list ("temperature", gas);
 
 
  // Read gas turbulence file
 
-  ifstream file_turb (input_folder + "vturbulence.txt");
+  io.read_list ("vturbulence", vturb2);
+
+
+  return (0);
+
+}
+
+
+
+
+///  setup: set up data structure
+/////////////////////////////////
+
+int Temperature ::
+    setup ()
+{
+
+  // Convert to square of turbulent velocity w.r.t. c
 
   for (long p = 0; p < ncells; p++)
   {
-    file_turb >> vturb2[p];
-
     vturb2[p] /= CC;          // devide by speed of light
     vturb2[p] *= vturb2[p];   // square
   }
 
-  file_turb.close();
+
+  return (0);
+
+}
+
+
+
+
+///  write: write out data structure
+///    @param[in] io: io object
+/////////////////////////////////
+
+int Temperature ::
+    write (
+        const Io &io) const
+{
+
+  // Read gas temperature file
+
+  io.write_list ("temperature", gas);
+
+
+ // Read gas turbulence file
+
+  io.write_list ("vturbulence", vturb2);
 
 
   return (0);
