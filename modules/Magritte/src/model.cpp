@@ -13,22 +13,13 @@ using namespace std;
 
 
 ///  Constructor for Model
-///    @param[in] input: input data object
-///////////////////////////////////////////
+///    @param[in] io: io data object
+////////////////////////////////////
 
 Model ::
-    Model (
-        const Io &io)
-  : ncells      (io.get_length ("cells")),
-    nrays       (io.get_length ("rays")),
-    nspecs      (io.get_length ("species")),
-    cells       (io),
-    temperature (io),
-    species     (io),
-    linedata    (io)
+    Model ()
 {
 
-//cout << input.get_length("cells") << endl;
 
 }   // END OF CONSTRUCTOR
 
@@ -54,8 +45,43 @@ Model ::
 //
 
 
-/// write: write out model data
-///////////////////////////////
+
+
+///  read: read model data
+///    @param[in] io: io data object
+////////////////////////////////////
+
+int Model ::
+   read (
+      const Io &io)
+{
+
+        cells.read (io);
+
+  temperature.read (io);
+
+      species.read (io);
+
+
+  // Get nlespecs
+  io.read_length ("linedata", nlspecs);
+
+  for (int l = 0; l < nlspecs; l++)
+  {
+    linedata[l].read (io, l);
+  }
+
+
+ return (0);
+
+}
+
+
+
+
+///  write: write out model data
+///    @param[in] io: io data object
+////////////////////////////////////
 
 int Model ::
    write (
@@ -67,6 +93,12 @@ int Model ::
   temperature.write (io);
 
       species.write (io);
+
+
+  for (int l = 0; l < nlspecs; l++)
+  {
+    linedata[l].write (io, l);
+  }
 
 
  return (0);

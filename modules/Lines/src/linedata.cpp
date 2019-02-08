@@ -918,8 +918,8 @@ MatrixXd LINEDATA ::
 
     const double Jeff = J_eff[p][l][k];// - lines.emissivity[ind] * L_eff[p][l][k];
 
-    R(i,j) += /*FOUR_PI */ Jeff * B[l](i,j);// - linedata.A[l](i,j) * lines.opacity[ind] * L_eff[p][l][k];
-    R(j,i) += /*FOUR_PI */ Jeff * B[l](j,i);
+    R(i,j) += Jeff * B[l](i,j);// - linedata.A[l](i,j) * lines.opacity[ind] * L_eff[p][l][k];
+    R(j,i) += Jeff * B[l](j,i);
   }
 
   //if(p==0)

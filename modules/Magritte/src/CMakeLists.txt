@@ -14,6 +14,7 @@ add_library (Magritte
   rays.cpp
   species.cpp
   linedata.cpp
-#  frequencies.cpp
-  temperature.cpp)
-#  heapsort.cpp)
+  collisionPartner.cpp
+  frequencies.cpp
+  temperature.cpp
+  heapsort.cpp)

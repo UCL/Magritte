@@ -25,7 +25,8 @@ TEST_CASE ("Rays")
   // Create the io object (for txt based io)
   IoText io (io_file);
 
-  Rays rays (io);
+  Rays rays;
+  rays.read (io);
 
   for (long r = 0; r < rays.nrays; r++)
   {

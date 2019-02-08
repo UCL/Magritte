@@ -15,25 +15,38 @@
 TEST_CASE ("Reading input with Python")
 {
 
-  IoPython io ("/home/frederik/Desktop/Magritte/modules/Magritte/tests/testData/");
+  string input = "/home/frederik/Desktop/Magritte/modules/Magritte/tests/testData/model.hdf5";
+
+  IoPython io ("io_hdf5", input);
+  //IoPython io ("/home/frederik/Desktop/Magritte/modules/Magritte/setup/");
 
 
   SECTION ("Vector components of rays")
   {
     cout << "Fine" << endl;
 
-    long nboundary = io.get_length ("boundary");
+    //long ntest;
+    //io.read_length ("test", ntest);
 
-    cout << "Stil fine" << endl;
-    cout << nboundary << endl;
+    //cout << "Stil fine" << endl;
+    //cout << nboundary << endl;
 
-    Long1 boundary (nboundary);
+    Double1 test1 (3);
+    Double1 test2 (3);
 
-    io.read_list("boundary", boundary);
+    io.read_list("test", test1);
 
-    for (long n = 0; n < boundary.size(); n++)
+    for (long n = 0; n < test1.size(); n++)
     {
-      cout << boundary[n] << endl;
+      cout << test1[n] << endl;
+    }
+
+
+    io.read_list("test", test2);
+
+    for (long n = 0; n < test2.size(); n++)
+    {
+      cout << test2[n] << endl;
     }
 
     CHECK (true);

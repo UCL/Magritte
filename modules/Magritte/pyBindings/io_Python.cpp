@@ -9,20 +9,24 @@
 using namespace std;
 
 #include <pybind11/embed.h> // everything needed for embedding
-#include <pybind11/stl.h>
+//#include <pybind11/stl.h>
 namespace py = pybind11;
 
 #include "io_Python.hpp"
 
 
+
 ///  Constructor for IoPython
+///    @param[in] implementation: python module containing the implementaion
 ///    @param[in] io_file: file to read from and write to
-/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
 IoPython ::
     IoPython (
-        const string io_file)
-  : Io (io_file)
+        const string implementation,
+        const string io_file        )
+  : Io             (io_file),
+    implementation (implementation)
 {
 
 
@@ -31,50 +35,105 @@ IoPython ::
 
 
 
-///  get_number:
-///  @param[in] file_name: file containing the number
-/////////////////////////////////////////////////////
+///  read_length:
+///  @param[in] file_name: path to file containing the data
+///  @param[out] length: length to be read
+///////////////////////////////////////////////////////////
 
-long IoPython ::
-    get_number (
-        const string file_name) const
+int IoPython ::
+    read_length (
+        const string file_name,
+              long  &length    ) const
 {
 
-  py::scoped_interpreter guard{};
-  py::module sys = py::module::import("sys");
-
-  py::module io_Python = py::module::import("io_Python");
-  py::object result    = io_Python.attr("get_number")(io_file + file_name + ".txt");
-
-  long number = result.cast<long>();
+  read_in_python <long> ("read_length", file_name, length);
 
 
-  return number;
+  return (0);
 
 }
 
 
 
 
-///  get_length:
-///  @param[in] file_name: path to file containing the data
-///////////////////////////////////////////////////////////
+///  read_number:
+///  @param[in] file_name: file containing the number
+///  @param[out] number: number to be read
+/////////////////////////////////////////////////////
 
-long IoPython ::
-    get_length (
-        const string file_name) const
+int IoPython ::
+    read_number (
+        const string file_name,
+              long  &number    ) const
 {
 
-  py::scoped_interpreter guard{};
-  py::module sys = py::module::import("sys");
-
-  py::module io_Python = py::module::import("io_Python");
-  py::object result    = io_Python.attr("get_length")(io_file + file_name + ".txt");
-
-  long number = result.cast<long>();
+  read_in_python <long> ("read_number", file_name, number);
 
 
-  return number;
+  return (0);
+
+}
+
+
+
+
+///  write_number:
+///  @param[in] file_name: file containing the number
+///  @param[in] number: number to be written
+/////////////////////////////////////////////////////
+
+int IoPython ::
+    write_number (
+        const string file_name,
+        const long  &number    ) const
+{
+
+  write_in_python <long> ("write_number", file_name, number);
+
+
+  return (0);
+
+}
+
+
+
+
+///  read_word:
+///  @param[in] file_name: file containing the number
+///  @param[out] word: word to be written
+/////////////////////////////////////////////////////
+
+int IoPython ::
+    read_word  (
+        const string  file_name,
+              string &word      ) const
+{
+
+  read_in_python <string> ("read_word", file_name, word);
+
+
+  return (0);
+
+}
+
+
+
+
+///  write_word:
+///  @param[in] file_name: file containing the number
+///  @param[in] word: word to be written
+/////////////////////////////////////////////////////
+
+int IoPython ::
+    write_word  (
+        const string  file_name,
+        const string &word      ) const
+{
+
+  write_in_python <string> ("write_word", file_name, word);
+
+
+  return (0);
 
 }
 
@@ -92,14 +151,7 @@ int IoPython ::
               Long1 &list      ) const
 {
 
-  py::scoped_interpreter guard{};
-  py::module sys = py::module::import("sys");
-  py::object os  = py::module::import("os");
-
-  py::module io_Python = py::module::import("io_Python");
-  py::object result    = io_Python.attr("read_list")(io_file + file_name + ".txt");
-
-  list = result.cast<Long1>();
+  read_in_python <Long1> ("read_array", file_name, list);
 
 
   return (0);
@@ -120,14 +172,7 @@ int IoPython ::
         const Long1 &list      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
-
-  for (long n = 0; n < list.size(); n++)
-  {
-    file << list[n] << endl;
-  }
-
-  file.close();
+  write_in_python <Long1> ("write_array", file_name, list);
 
 
   return (0);
@@ -148,18 +193,7 @@ int IoPython ::
               Long2   &array     ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
-
-
-  for (long n1 = 0; n1 < array.size(); n1++)
-  {
-    for (long n2 = 0; n2 < array[n1].size(); n2++)
-    {
-      file >> array[n1][n2];
-    }
-  }
-
-  file.close();
+  read_in_python <Long2> ("read_array", file_name, array);
 
 
   return (0);
@@ -176,24 +210,11 @@ int IoPython ::
 
 int IoPython ::
     write_array (
-        const string   file_name,
-        const  Long2   &array     ) const
+        const string  file_name,
+        const Long2  &array     ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
-
-
-  for (long n1 = 0; n1 < array.size(); n1++)
-  {
-    for (long n2 = 0; n2 < array[n1].size(); n2++)
-    {
-      file << array[n1][n2];
-    }
-
-    file << endl;
-  }
-
-  file.close();
+  write_in_python <Long2> ("write_array", file_name, array);
 
 
   return (0);
@@ -214,16 +235,7 @@ int IoPython ::
               Double1 &list      ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
-
-  long   n = 0;
-
-  while (file >> list[n])
-  {
-    n++;
-  }
-
-  file.close();
+  read_in_python <Double1> ("read_array", file_name, list);
 
 
   return (0);
@@ -244,14 +256,7 @@ int IoPython ::
         const Double1 &list      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
-
-  for (long n = 0; n < list.size(); n++)
-  {
-    file << list[n] << endl;
-  }
-
-  file.close();
+  write_in_python <Double1> ("write_array", file_name, list);
 
 
   return (0);
@@ -272,18 +277,7 @@ int IoPython ::
               Double2 &array     ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
-
-
-  for (long n1 = 0; n1 < array.size(); n1++)
-  {
-    for (long n2 = 0; n2 < array[n1].size(); n2++)
-    {
-      file >> array[n1][n2];
-    }
-  }
-
-  file.close();
+  read_in_python <Double2> ("read_array", file_name, array);
 
 
   return (0);
@@ -301,23 +295,10 @@ int IoPython ::
 int IoPython ::
     write_array (
         const string   file_name,
-        const Double2 &array     ) const
+        const Double2 &array      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
-
-
-  for (long n1 = 0; n1 < array.size(); n1++)
-  {
-    for (long n2 = 0; n2 < array[n1].size(); n2++)
-    {
-      file << array[n1][n2];
-    }
-
-    file << endl;
-  }
-
-  file.close();
+  write_in_python <Double2> ("write_array", file_name, array);
 
 
   return (0);
@@ -342,16 +323,24 @@ int IoPython ::
               Double1 &z         ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  const long length = x.size();
 
-  long   n = 0;
+  // Check if all 3 vectors are the same size
 
-  while (file >> x[n] >> y[n] >> z[n])
+  if (   (length != y.size())
+      || (length != z.size()) )
   {
-    n++;
+    return (-1);
   }
 
-  file.close();
+
+  Double2 array (3, Double1 (length));
+
+  read_in_python <Double2> ("read_array", file_name, array);
+
+  x = array[0];
+  y = array[1];
+  z = array[2];
 
 
   return (0);
@@ -388,16 +377,94 @@ int IoPython ::
   }
 
 
-  ofstream file (io_file + file_name + ".txt");
+  Double2 array (3, Double1 (length));
 
-  for (long n = 0; n < length; n++)
-  {
-    file << x[n] << y[n] << z[n] << endl;
-  }
+  array[0] = x;
+  array[1] = y;
+  array[2] = z;
 
-  file.close();
+
+  write_in_python <Double2> ("write_array", file_name, array);
 
 
   return (0);
+
+}
+
+
+
+
+///  execute_io_function_in_python: executes io function in python
+///    @param[in] function: name of io function to execute
+///    @param[in] file_name: name of the file from which to read
+///    @param[out] data: the data read from the file
+//////////////////////////////////////////////////////////////////
+
+template <typename type>
+void IoPython ::
+    read_in_python (
+        const string  function,
+        const string  file_name,
+              type   &data      ) const
+{
+
+  try
+  {
+    py::initialize_interpreter ();
+  }
+  catch (...)
+  {
+    cout << "No need to initialise..." << endl;
+  }
+
+  // Add /pyBindings folder to Python path
+  py::module::import("sys").attr("path").attr("insert")(0, "../pyBindings");
+
+  // Import function defined in
+  py::object ioFunction = py::module::import(implementation.c_str()).attr(function.c_str());
+
+  // Execute io function
+  py::object result = ioFunction (io_file, file_name);
+
+  // Cast result to appropriate type
+  data = result.cast<type>();
+
+}
+
+
+
+
+///  execute_io_function_in_python: executes io function in python
+///    @param[in] function: name of io function to execute
+///    @param[in] file_name: name of the file from which to read
+///    @param[out] data: the data read from the file
+//////////////////////////////////////////////////////////////////
+
+template <typename type>
+void IoPython ::
+    write_in_python (
+        const string  function,
+        const string  file_name,
+        const type   &data      ) const
+{
+
+  try
+  {
+    py::initialize_interpreter ();
+  }
+  catch (...)
+  {
+    cout << "No need to initialise..." << endl;
+  }
+
+  // Add /pyBindings folder to Python path
+  py::module::import("sys").attr("path").attr("insert")(0, "../pyBindings");
+
+  // Import function defined in implementation file
+  py::object ioFunction = py::module::import(implementation.c_str()).attr(function.c_str());
+
+  // Execute io function
+  ioFunction (io_file, file_name, data);
+
 
 }

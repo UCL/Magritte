@@ -24,7 +24,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/scattering.hpp"
 //#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
-#define MAX_NITERATIONS 100
+#define MAX_NITERATIONS 500
 
 
 struct LEVELS
@@ -233,7 +233,7 @@ int LEVELS ::
 
     for (int l = 0; l < nlspec; l++)
     {
-      if (fraction_not_converged[l] < 0.01)
+      if (fraction_not_converged[l] < 0.005)
       {
         not_converged[l] = false;
       }

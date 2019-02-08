@@ -23,7 +23,8 @@ TEST_CASE ("Text input")
   IoText io (io_file);
 
   // Create the model object
-  Model model (io);
+  Model model;
+  model.read (io);
 
 //  SECTION ("Vector components of rays")
   //{

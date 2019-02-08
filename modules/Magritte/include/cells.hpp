@@ -41,12 +41,10 @@ struct Cells
       Long2   neighbors;        ///< cell numbers of neighors
 
 
-      // Constructor
-      Cells (
+      // Io
+      int read (
           const Io &io);
 
-
-      // Writer for output
       int write (
           const Io &io) const;
 
@@ -72,17 +70,6 @@ struct Cells
           const long p,
           const long r          ) const;
 
-
-  private:
-
-      int allocate ();
-
-      int initialise ();
-
-      int read (
-          const Io &io);
-
-      int setup ();
 
 };
 

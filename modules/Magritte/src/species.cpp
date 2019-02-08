@@ -10,53 +10,6 @@ using namespace std;
 #include "species.hpp"
 
 
-///  Constructor for Species
-///    @param[in] io: io object
-/////////////////////////////////////
-
-Species ::
-    Species (
-        const Io &io)
- : ncells (io.get_length("abundances")),
-   nspecs (io.get_length("species")+2)
-{
-
-  allocate ();
-
-  read (io);
-
-  setup ();
-
-
-}   // END OF CONSTRUCTOR
-
-
-
-
-///  allocate: resize all data structures
-/////////////////////////////////////////
-
-int Species ::
-    allocate ()
-{
-
-   sym.resize (nspecs);
-  mass.resize (nspecs);
-
-  initial_abundance.resize (nspecs);
-
-  abundance.resize (ncells);
-
-  for (long p = 0; p < ncells; p++)
-  {
-    abundance[p].resize (nspecs);
-  }
-
-}
-
-
-
-
 ///  read: read the input into the data structure
 ///  @paran[in] io: io object
 /////////////////////////////////////////////////
@@ -66,6 +19,20 @@ int Species ::
         const Io &io)
 {
 
+  io.read_length ("species/abundance", ncells);
+  io.read_length ("species/species",   nspecs);
+
+   sym.resize (nspecs);
+  mass.resize (nspecs);
+
+  //initial_abundance.resize (nspecs);
+
+  abundance.resize (ncells);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    abundance[p].resize (nspecs);
+  }
   // Read the species
 
 //  // First species is a dummy for when a species is not found
@@ -90,22 +57,8 @@ int Species ::
 
   // Read the abundaces of each species in each cell
 
-  io.read_array ("abundance", abundance);
+  io.read_array ("species/abundance", abundance);
 
-
-  return (0);
-
-}
-
-
-
-
-///  setup: setup data structure
-////////////////////////////////
-
-int Species ::
-    setup ()
-{
 
   // Get and store species numbers of some inportant species
 
@@ -164,7 +117,7 @@ int Species ::
         const Io &io) const
 {
 
-  io.write_array ("abundance", abundance);
+  io.write_array ("species/abundance", abundance);
 
 
   return (0);

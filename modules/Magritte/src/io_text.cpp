@@ -27,54 +27,130 @@ IoText ::
 
 
 
-///  get_number:
-///  @param[in] file_name: file containing the number
-/////////////////////////////////////////////////////
+///  get_length:
+///  @param[in] file_name: path to file containing the data
+///  @param[out] length: length to be read
+///////////////////////////////////////////////////////////
 
-long IoText ::
-    get_number (
-        const string file_name) const
+int IoText ::
+    read_length (
+        const string file_name,
+              long  &length) const
 {
+
+  length = 0;
 
   ifstream file (io_file + file_name + ".txt");
 
-  long number;
+  string line;
 
-  file >> number;
+  while (getline (file, line))
+  {
+    length++;
+  }
 
   file.close();
 
 
-  return number;
+  return (0);
 
 }
 
 
 
 
-///  get_length:
-///  @param[in] file_name: path to file containing the data
-///////////////////////////////////////////////////////////
+///  read_number:
+///  @param[in] file_name: file containing the number
+///  @param[out] number: number to be read
+/////////////////////////////////////////////////////
 
-long IoText ::
-    get_length (
-        const string file_name) const
+int IoText ::
+    read_number (
+        const string file_name,
+              long  &number    ) const
 {
 
   ifstream file (io_file + file_name + ".txt");
 
-  long   number = 0;
-  string line;
-
-  while (getline (file, line))
-  {
-    number++;
-  }
+  file >> number;
 
   file.close();
 
 
-  return number;
+  return (0);
+
+}
+
+
+
+
+///  write_number:
+///  @param[in] file_name: file containing the number
+///  @param[out] number: number to be written
+/////////////////////////////////////////////////////
+
+int IoText ::
+    write_number (
+        const string file_name,
+        const long  &number    ) const
+{
+
+  ofstream file (io_file + file_name + ".txt");
+
+  file << number;
+
+  file.close();
+
+
+  return (0);
+
+}
+
+
+
+
+///  read_word:
+///  @param[in] file_name: file containing the number
+/////////////////////////////////////////////////////
+
+int IoText ::
+    read_word  (
+        const string  file_name,
+              string &word      ) const
+{
+
+  ifstream file (io_file + file_name + ".txt");
+
+  file >> word;
+
+  file.close();
+
+
+  return (0);
+
+}
+
+
+
+
+///  write_word:
+///  @param[in] file_name: file containing the number
+/////////////////////////////////////////////////////
+
+int IoText ::
+    write_word  (
+        const string  file_name,
+        const string &word      ) const
+{
+
+  ofstream file (io_file + file_name + ".txt");
+
+  file << word;
+
+  file.close();
+
+
+  return (0);
 
 }
 
@@ -179,7 +255,7 @@ int IoText ::
 int IoText ::
     write_array (
         const string   file_name,
-        const  Long2   &array     ) const
+        const Long2   &array     ) const
 {
 
   ofstream file (io_file + file_name + ".txt");

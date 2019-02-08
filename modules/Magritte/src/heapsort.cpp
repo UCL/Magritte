@@ -39,10 +39,10 @@ long max (
 
 
 int downheap (
-    const Double1 &a,
-    const Long1   &b,
-    const long     n,
-          long     i )
+    Double1 &a,
+    Long1   &b,
+    long     n,
+    long     i )
 {
 
   while (1)
@@ -80,12 +80,10 @@ int heapsort (
 {
 
   // Get vector length
-
   const long n = a.size();
 
 
-  // Assert that both vectors are equally long
-
+  // Assert that both vectors have the same size
   assert (n == b.size());
 
 

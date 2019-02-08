@@ -1,139 +1,16 @@
-# Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
-#
-# Developed by: Frederik De Ceuster - University College London & KU Leuven
-# _________________________________________________________________________
-
-# General import
 import numpy as np
-import time
 import re
 
-from healpy        import pixelfunc
-from scipy.spatial import Delaunay
-
-# Magritte specific imports
 from pyMagritte import Linedata, CollisionPartner
-from pyMagritte import Rays
 from pyMagritte import Long1,   Long2,   Long3
 from pyMagritte import Double1, Double2, Double3
 from pyMagritte import vLinedata, vCollisionPartner
-
 
 # Physical constants
 CC = 2.99792458E+8    # [m/s] speed of light
 HH = 6.62607004E-34   # [J*s] Planck's constant
 KB = 1.38064852E-23   # [J/K] Boltzmann's constant
 
-
-# Helper functions
-
-def nRays (nsides):
-    '''
-    Number of rays corresponding to HEALPix's nsides
-    '''
-    return 12*nsides**2
-
-
-def nSides (nrays):
-    '''
-    Number of HEALPix's nsides corresponding to nrays
-    '''
-    # Try computing nsides assuming it works
-    nsides = int (np.sqrt (float(nrays) / 12.0))
-    # Chack if nrays was HEALPix compatible
-    if (nRays (nsides) != nrays):
-        raise ValueError ('No HEALPix compatible nrays was given (nrays = 12*nsides**2).')
-    # Done
-    return nsides
-
-
-def check_model_consistency (model):
-    assert (True)
-
-
-class Setup ():
-    """
-    Setup class for Magritte.
-    """
-    def __init__ (self, dimension):
-        """
-        Constructor setting dimension.
-        """
-        self.dimension = dimension
-        # Check validity of dimension
-        if not self.dimension in [1, 2, 3]:
-            raise ValueError ('Dimension should be 1, 2, or 3.')
-
-    def rays (self, nrays):
-        """
-        Setup input for the Rays class.
-        """
-        # Check if nrays is a strictly positive integer
-        if not (nrays > 0):
-            raise ValueError ('nrays should be strictly positive.')
-        if not isinstance (nrays, int):
-            raise ValueError ('nrays should be an integer.')
-        # Create rays object
-        rays = Rays ()
-        # Set nrays
-        rays.nrays = nrays
-        # Define ray directions
-        if   (self.dimension == 1):
-            if (nrays != 2):
-                raise ValueError ('In 1D, nrays should always be 2.')
-            rays.x = Double1 ([-1.0, 1.0])
-            rays.y = Double1 ([ 0.0, 0.0])
-            rays.z = Double1 ([ 0.0, 0.0])
-        elif (self.dimension == 2):
-            rays.x = Double1 ([np.cos((2.0*np.pi*r)/nrays) for r in range(nrays)])
-            rays.y = Double1 ([np.sin((2.0*np.pi*r)/nrays) for r in range(nrays)])
-            rays.z = Double1 ([0.0                         for _ in range(nrays)])
-        elif (self.dimension == 3):
-            rays.x = Double1 (pixelfunc.pix2vec (nSides(nrays), range(nrays))[0])
-            rays.y = Double1 (pixelfunc.pix2vec (nSides(nrays), range(nrays))[1])
-            rays.z = Double1 (pixelfunc.pix2vec (nSides(nrays), range(nrays))[2])
-        # Done
-        return rays
-
-    def neighborLists (self, cells):
-        """
-        Extract neighbor lists from cell centers assuming Voronoi tesselation
-        """
-        if   (self.dimension == 1):
-            # For the middle points
-            cells.neighbors   = Long2 ([Long1 ([p-1, p+1]) for p in range(1,cells.ncells-1)])
-            cells.n_neighbors = Long1 ([2                 for p in range(1,cells.ncells-1)])
-            # For the first point
-            cells.neighbors.insert   (0, Long1 ([1]))
-            cells.n_neighbors.insert (0, 1)
-            # For the last point
-            cells.neighbors.append   (Long1 ([cells.ncells-2]))
-            cells.n_neighbors.append (1)
-        elif (self.dimension == 2):
-            points  = [[cells.x[p], cells.y[p]] for p in range(cells.ncells)]
-            # Make a Delaulay triangulation
-            delaunay = Delaunay (points)
-            # Extract Delaunay vertices (= Voronoi neighbors)
-            (indptr, indices) = delaunay.vertex_neighbor_vertices
-            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(cells.ncells)])
-            # Extract the number of neighbors for each point
-            cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
-        elif (self.dimension == 3):
-            points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(cells.ncells)]
-            # Make a Delaulay triangulation
-            delaunay = Delaunay (points)
-            # Extract Delaunay vertices (= Voronoi neighbors)
-            (indptr, indices) = delaunay.vertex_neighbor_vertices
-            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(self.ncells)])
-            # Extract the number of neighbors for each point
-            cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
-        # Done
-        return cells
-
-def model_name ():
-    # Get a date stamp to name the model
-    dateStamp = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-    return f'model_{dateStamp}'
 
 
 def getProperName(name):

@@ -177,7 +177,8 @@ inline void RAYDATA ::
       lines,
       scattering,
       frequencies.nu[origin][f],
-      n                         );
+      n,
+      f                         );
 
 
   // Set chi at origin
@@ -192,7 +193,7 @@ inline void RAYDATA ::
 
   // Compute (current) terms
 
-  term1 = (U[Ray][index(origin,f)]*0.0 + eta) * inverse_chi_n;
+  term1 = (U[Ray][index(origin,f)]*0.0 + eta_n) * inverse_chi_n;
   term2 =  V[Ray][index(origin,f)]*0.0        * inverse_chi_n;
 
 }
@@ -220,7 +221,8 @@ inline void RAYDATA ::
       lines,
       scattering,
       frequencies.nu[origin][f],
-      n                         );
+      n,
+      f                         );
 
 
   // Set chi at origin
@@ -242,8 +244,8 @@ inline void RAYDATA ::
 
   // Compute (current) terms
 
-  term1 = (U[Ray][index(origin,f)]*0.0 + eta) * inverse_chi_n;
-  term2 =  V[Ray][index(origin,f)]*0.0        * inverse_chi_n;
+  term1 = (U[Ray][index(origin,f)]*0.0 + eta_n) * inverse_chi_n;
+  term2 =  V[Ray][index(origin,f)]*0.0          * inverse_chi_n;
 
 }
 
@@ -273,7 +275,8 @@ inline void RAYDATA ::
       lines,
       scattering,
       freq_scaled,
-      q                    );
+      q,
+      f                    );
 
 
   // Rescale scatterd radiation field U and V
@@ -327,7 +330,8 @@ inline void RAYDATA ::
       lines,
       scattering,
       freq_scaled,
-      q                    );
+      q,
+      f                    );
 
 
   // Rescale scatterd radiation field U and V
@@ -363,7 +367,8 @@ inline void RAYDATA ::
                 const LINES       &lines,
                 const SCATTERING  &scattering,
                 const vReal        freq_scaled,
-                const long         q           )
+                const long         q,
+                const long         f           )
 {
 
   // Save old chi_n in chi_c
@@ -373,7 +378,7 @@ inline void RAYDATA ::
 
   // Reset eta and chi (next)
 
-  eta   = 0.0;
+  eta_n = 0.0;
   chi_n = 0.0;
 
 
@@ -385,8 +390,12 @@ inline void RAYDATA ::
       freq_scaled,
       lnotch[q],
       cellNrs[q],
-      eta,
+      eta_n,
       chi_n                        );
+
+
+  //eta_n *= frequencies.dnu[origin][f];
+  //chi_n *= frequencies.dnu[origin][f];
 
 
   // Add scattering contributions
@@ -404,7 +413,7 @@ inline void RAYDATA ::
       if (fabs(chi_n.getlane(lane)) < 1.0E-99)
       {
         chi_n.putlane(1.0E-99, lane);
-          eta.putlane((eta / (chi_n * 1.0E+99)).getlane(lane), lane);
+          eta_n.putlane((eta_n / (chi_n * 1.0E+99)).getlane(lane), lane);
 
         //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
       }
@@ -413,7 +422,7 @@ inline void RAYDATA ::
     if (fabs(chi_n) < 1.0E-99)
     {
       chi_n = 1.0E-99;
-      eta   = eta / (chi_n * 1.0E+99);
+      eta_n   = eta_n / (chi_n * 1.0E+99);
 
       //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
     }
@@ -438,7 +447,7 @@ inline void RAYDATA ::
 
   // Compute new terms
 
-  term1 = (U_scaled*0.0 + eta) * inverse_chi_n;
+  term1 = (U_scaled*0.0 + eta_n) * inverse_chi_n;
   term2 =  V_scaled*0.0        * inverse_chi_n;
 
 

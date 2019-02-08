@@ -23,15 +23,26 @@ struct IoText : public Io
       const string io_file);
 
 
-  // Getters (directly returning)
-  long get_number (
-      const string file_name) const;
+  int read_length (
+      const string file_name,
+            long  &lenght    ) const;
 
-  long get_length (
-      const string file_name) const;
+  int read_number (
+      const string file_name,
+            long  &number    ) const;
 
+  int write_number (
+      const string file_name,
+      const long  &number    ) const;
 
-  // Readers (implicitly returning) and writers
+  int read_word (
+      const string  file_name,
+            string &word     ) const;
+
+  int write_word (
+      const string  file_name,
+      const string &word     ) const;
+
   int read_list (
       const string file_name,
             Long1 &list      ) const;

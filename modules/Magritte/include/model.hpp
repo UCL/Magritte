@@ -8,14 +8,12 @@
 #define __MODEL_HPP_INCLUDED__
 
 
-#include <string>
-using namespace std;
-
+#include "types.hpp"
 #include "io.hpp"
 #include "cells.hpp"
 #include "species.hpp"
 #include "linedata.hpp"
-//#include "frequencies.hpp"
+#include "frequencies.hpp"
 #include "temperature.hpp"
 
 
@@ -29,7 +27,7 @@ struct Model
       // Size (memory)
       long ncells;      ///< number of cells
       long nrays;       ///< number of rays (originating from each cell)
-//      const long nfreqs;      ///< number of frequency bins
+      long nfreqs;      ///< number of frequency bins
       long nspecs;      ///< number of chemical species
       long nlspecs;     ///< number of line producing species
 
@@ -37,22 +35,22 @@ struct Model
       Cells       cells;
 
       // Physical state
-      Linedata    linedata;
-      //Frequencies frequencies;
+      vector <Linedata> linedata;
+      Frequencies frequencies;
       Temperature temperature;
       Species     species;
 
 
       // Constructor
-      Model (
+      Model ();
+
+
+      // Io
+      int read (
           const Io &io);
 
-
-      // Writer for output
       int write (
           const Io &io) const;
-
-
 
 
 };

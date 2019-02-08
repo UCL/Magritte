@@ -165,8 +165,8 @@ inline int LINES ::
     const vReal line_profile = profile (width, freq_diff);
     const long           ind = index   (p, frequencies.line_index[lindex]);
 
-    eta += emissivity[ind] * line_profile;
-    chi +=    opacity[ind] * line_profile;
+    eta += emissivity[ind] * freq_scaled * line_profile;
+    chi +=    opacity[ind] * freq_scaled * line_profile;
 
     //cout << scientific << setprecision(16);
     //cout << "e   over o   " << emissivity[ind] / opacity[ind] << endl;

@@ -51,7 +51,7 @@ inline double profile_width      (
     const double temperature_gas,
     const double vturb2          )
 {
-  return 150/CC; //sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature_gas + vturb2);
+  return 150/CC;//sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature_gas + 150*150/CC/CC);//vturb2);
 }
 
 

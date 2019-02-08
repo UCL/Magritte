@@ -36,22 +36,15 @@ struct Rays
       Long1 antipod;     ///< ray number of antipodal ray
 
 
-      // Constructor
-      Rays (
+      // Io
+      int read (
           const Io &io);
 
-
-      // Writer for output
       int write (
           const Io &io) const;
 
 
   private:
-
-      int allocate ();
-
-      int read (
-          const Io &io);
 
       int setup ();
 

@@ -26,7 +26,7 @@ struct RAYDATA
   const long nfreq_red;
   const long ray;         ///< (global) index of ray
   const long Ray;         ///< (local) index of ray
-  
+
   Long1  cellNrs;
   Long1    notch;
   Long1   lnotch;
@@ -37,7 +37,8 @@ struct RAYDATA
   vReal3 boundary_intensity;
   Long1  cell2boundary_nr;
 
-  vReal term1, term2, eta;
+  vReal term1, term2;
+  vReal        eta_n;
   vReal chi_c, chi_n, chi_o;
 
   vReal Ibdy_scaled;
@@ -47,7 +48,7 @@ struct RAYDATA
 
   long origin;               ///< cell nr of origin
   long n = 0;                ///< Number of (projected) cells on this ray
-  
+
 
   RAYDATA                           (
       const long num_of_cells,
@@ -104,22 +105,23 @@ struct RAYDATA
         const long   nxt,
         const double dZ,
         const double shift_crt,
-        const double shift_nxt, 
+        const double shift_nxt,
         const double shift_max          );
-  
+
     inline void compute_next_eta_and_chi (
         const FREQUENCIES &frequencies,
         const TEMPERATURE &temperature,
         const LINES       &lines,
         const SCATTERING  &scattering,
         const vReal        freq_scaled,
-        const long         q             );
+        const long         q,
+        const long         f             );
 
     inline void compute_next_terms_and_dtau (
         const vReal U_scaled,
         const vReal V_scaled,
         const long  q                       );
-  
+
     inline void rescale_U_and_V        (
         const FREQUENCIES &frequencies,
         const long         p,
@@ -138,7 +140,7 @@ struct RAYDATA
               vReal       &U_scaled,
               vReal       &V_scaled,
               vReal       &Ibdy_scaled    );
-      
+
     inline long index (
         const long p,
         const long f  ) const;

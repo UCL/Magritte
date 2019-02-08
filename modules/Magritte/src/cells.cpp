@@ -12,92 +12,6 @@ using namespace std;
 #include "constants.hpp"
 
 
-///  Constructor for Cells:
-///    @param[in] io: io object
-/////////////////////////////////////
-
-Cells ::
-    Cells (
-        const Io &io)
-  : ncells    (io.get_length ("cells")),
-    nrays     (io.get_length ("rays")),
-    nboundary (io.get_length ("boundary")),
-    rays      (io)
-{
-
-  cout << "ncells!!!!!!!!!!!" << endl;
-  cout << ncells << endl;
-
-  allocate ();
-
-  initialise ();
-
-  read (io);
-
-  setup ();
-
-
-}   // END OF CONSTRUCTOR
-
-
-
-
-///  allocate: resize all data structures
-/////////////////////////////////////////
-
-int Cells ::
-    allocate ()
-{
-
-  x.resize (ncells);
-  y.resize (ncells);
-  z.resize (ncells);
-
-  vx.resize (ncells);
-  vy.resize (ncells);
-  vz.resize (ncells);
-
-  n_neighbors.resize (ncells);
-    neighbors.resize (ncells);
-
-  boundary.resize (ncells);
-  // mirror.resize (ncells);
-
-  boundary2cell_nr.resize (ncells);
-  cell2boundary_nr.resize (ncells);
-
-
-  return (0);
-
-}
-
-
-
-
-///  initialise: initialise all data structures
-///////////////////////////////////////////////
-
-int Cells ::
-    initialise ()
-{
-
-  for (long p = 0; p < ncells; p++)
-  {
-    boundary[p] = false;
-    //mirror[p]   = false;
-
-    cell2boundary_nr[p] = ncells;
-    boundary2cell_nr[p] = ncells;
-  }
-
-
-  return (0);
-
-}
-
-
-
-
 ///  read: read the input into the data structure
 ///  @paran[in] io: io object
 /////////////////////////////////////////////////
@@ -107,52 +21,24 @@ int Cells ::
         const Io &io)
 {
 
+  io.read_length ("cells/cells", ncells);
+
+
   // Read cell centers and velocities
+  x.resize (ncells);
+  y.resize (ncells);
+  z.resize (ncells);
 
-  io.read_3_vector ("cells", x, y, z);
+  io.read_3_vector ("cells/cells", x, y, z);
 
-  io.read_3_vector ("velocities", vx, vy, vz);
+  vx.resize (ncells);
+  vy.resize (ncells);
+  vz.resize (ncells);
 
+  io.read_3_vector ("cells/velocities", vx, vy, vz);
 
-  // Read number of neighbors
-
-  io.read_list ("n_neighbors", n_neighbors);
-
-
-  // Resize the neighbors to appropriate sizes
-
-  for (long p = 0; p < ncells; p++)
-  {
-    neighbors[p].resize (n_neighbors[p]);
-  }
-
-
-  // Read nearest neighbors lists
-
-  io.read_array ("neighbors", neighbors);
-
-
-  // Read boundary list
-
-  io.read_list ("boundary", boundary2cell_nr);
-
-
-  return (0);
-
-}
-
-
-
-
-///  setup: setup data structure
-////////////////////////////////
-
-int Cells ::
-    setup ()
-{
 
   // Convert velocities in m/s to fractions for C
-
   for (long p = 0; p < ncells; p++)
   {
     vx[p] /= CC;
@@ -161,8 +47,45 @@ int Cells ::
   }
 
 
-  // Set helper variables to identify the boundary
+  // Read number of neighbors
+  n_neighbors.resize (ncells);
 
+  io.read_list ("cells/n_neighbors", n_neighbors);
+
+
+  // Resize the neighbors to appropriate sizes
+  neighbors.resize (ncells);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    neighbors[p].resize (n_neighbors[p]);
+  }
+
+
+  // Read nearest neighbors lists
+  io.read_array ("cells/neighbors", neighbors);
+
+
+  // Resize boundary
+          boundary.resize (ncells);
+  boundary2cell_nr.resize (ncells);
+  cell2boundary_nr.resize (ncells);
+
+
+  // Initialise
+  for (long p = 0; p < ncells; p++)
+  {
+            boundary[p] = false;
+    cell2boundary_nr[p] = ncells;
+    boundary2cell_nr[p] = ncells;
+  }
+
+
+  // Read boundary list
+  io.read_list ("cells/boundary", boundary2cell_nr);
+
+
+  // Set helper variables to identify the boundary
   for (long b = 0; b < nboundary; b++)
   {
     const long cell_nr = boundary2cell_nr[b];
@@ -190,21 +113,21 @@ int Cells ::
 
   // Write cell centers and velocities
 
-  io.write_3_vector ("cells", x, y, z);
+  io.write_3_vector ("cells/cells", x, y, z);
 
-  io.write_3_vector ("velocities", vx, vy, vz);
+  io.write_3_vector ("cells/velocities", vx, vy, vz);
 
 
   // Write number of neighbors and neighbors lists
 
-  io.write_list ("n_neighbors", n_neighbors);
+  io.write_list ("cells/n_neighbors", n_neighbors);
 
-  io.write_array ("neighbors", neighbors);
+  io.write_array ("cells/neighbors", neighbors);
 
 
   // Write boundary list
 
-  io.write_list ("boundary", boundary2cell_nr);
+  io.write_list ("cells/boundary", boundary2cell_nr);
 
 
   return (0);

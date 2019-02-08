@@ -28,7 +28,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/frequencies.hpp"
 
 
-#define POP_PREC 1.0E-8
+#define POP_PREC 1.0E-6
 
 
 ///  Constructor for LEVELS
@@ -181,8 +181,8 @@ int LEVELS ::
 
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
-    population[p][l](i) = linedata.weight[l](i)
-                          * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
+    population[p][l](i) = 1/(i+1)/(i+1);//linedata.weight[l](i)
+                          //* exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
     partition_function += population[p][l](i);
   }
@@ -307,7 +307,7 @@ int LEVELS ::
       {
         not_converged[l] = true;
 
-        fraction_not_converged[l] += 1.0/(ncells*nlev[l]);
+        fraction_not_converged[l] += 1.0 / (ncells*nlev[l]);
       }
     }
   }
@@ -328,7 +328,7 @@ int LEVELS ::
     calc_line_emissivity_and_opacity (
         const LINEDATA &linedata,
               LINES    &lines,
-	const long      p,
+	      const long      p,
         const int       l            ) const
 {
 
@@ -341,7 +341,7 @@ int LEVELS ::
 
     const long index = lines.index(p,l,k);
 
-    const double hv_4pi = HH_OVER_FOUR_PI * linedata.frequency[l][k];
+    const double hv_4pi = HH_OVER_FOUR_PI;// * linedata.frequency[l][k];
 
     lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 

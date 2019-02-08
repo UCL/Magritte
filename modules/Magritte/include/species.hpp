@@ -41,24 +41,15 @@ struct Species
       int nr_CO;     // nr for CO
 
 
-      // Constructor
-      Species (
+      // Io
+      int read (
           const Io &);
 
-      // Writer for output
       int write (
           const Io &) const;
 
 
   private:
-
-      // Setup and I/O
-      int allocate ();
-
-      int read (
-          const Io &io);
-
-      int setup ();
 
       // Helper functions
       int get_species_nr (

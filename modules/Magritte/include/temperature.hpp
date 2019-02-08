@@ -28,23 +28,13 @@ struct Temperature
 
       Double1 vturb2;     ///< [.] microturbulence over c all squared
 
-      // Construvtor
-      Temperature (
-          const Io &io);
-
-      // Writer or output
-      int write (
-          const Io &io) const;
-
-
-  private:
-
-      int allocate ();
-
+      
+      // Io
       int read (
           const Io &io);
 
-      int setup ();
+      int write (
+          const Io &io) const;
 
 
 };

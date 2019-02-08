@@ -10,34 +10,19 @@ using namespace std;
 #include "rays.hpp"
 
 
-///  Constructor for Rays
-///    @param[in] io: io object
-/////////////////////////////////////
-
-Rays ::
-    Rays (
-        const Io &io)
-  : nrays (io.get_length ("rays"))
-{
-
-  allocate ();
-
-  read (io);
-
-  setup ();
-
-
-}   // END OF CONSTRUCTOR
-
-
-
-
-///  allocate: resize all data structures
-/////////////////////////////////////////
+///  read: read the input into the data structure
+///  @paran[in] io: io object
+/////////////////////////////////////////////////
 
 int Rays ::
-    allocate ()
+    read (
+        const Io &io)
 {
+
+  io.read_length ("rays", nrays);
+
+
+  // Resize all containers
 
   x.resize (nrays);
   y.resize (nrays);
@@ -53,6 +38,16 @@ int Rays ::
   antipod.resize (nrays);
 
 
+  // Read rays
+
+  io.read_3_vector ("rays", x, y, z);
+
+
+  // Setup rays
+
+  setup ();
+
+
   return (0);
 
 }
@@ -60,16 +55,16 @@ int Rays ::
 
 
 
-///  read: read the input into the data structure
+///  write: write out the data structure
 ///  @paran[in] io: io object
 /////////////////////////////////////////////////
 
 int Rays ::
-    read (
-        const Io &io)
+    write (
+        const Io &io) const
 {
 
-  io.read_3_vector ("rays", x, y, z);
+  io.write_3_vector ("rays", x, y, z);
 
 
   return (0);
@@ -152,26 +147,6 @@ int Rays ::
   return (0);
 
 }
-
-
-
-
-///  write: write out the data structure
-///  @paran[in] io: io object
-/////////////////////////////////////////////////
-
-int Rays ::
-    write (
-        const Io &io) const
-{
-
-  io.write_3_vector ("rays", x, y, z);
-
-
-  return (0);
-
-}
-
 
 // int Rays ::
 //     setup_mirror_rays ()

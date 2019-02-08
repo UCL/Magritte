@@ -12,21 +12,19 @@ pybind11_add_module (pyMagritte
   bindings.cpp
   ../src/io.cpp
   ../src/io_text.cpp
+  io_Python.cpp
   ../src/model.cpp
   ../src/cells.cpp
   ../src/rays.cpp
-#  ../src/species.cpp
-#  ../src/frequencies.cpp
-  ../src/temperature.cpp)
-#  ../src/heapsort.cpp)
+  ../src/species.cpp
+  ../src/linedata.cpp
+  ../src/collisionPartner.cpp
+  ../src/frequencies.cpp
+  ../src/temperature.cpp
+  ../src/heapsort.cpp)
 
 add_library (PyIo
   ../src/io.cpp
   io_Python.cpp)
 target_link_libraries (PyIo PRIVATE
   pybind11::embed)
-
-add_executable (example
-  main.cpp)
-target_link_libraries (example
-  PyIo)
