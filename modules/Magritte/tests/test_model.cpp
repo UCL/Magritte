@@ -9,8 +9,8 @@
 
 #include "catch.hpp"
 
-#include "model.hpp"
-#include "io_text.hpp"
+#include "Model/model.hpp"
+#include "Io/io_text.hpp"
 
 
 TEST_CASE ("Text input")

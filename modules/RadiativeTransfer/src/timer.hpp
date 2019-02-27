@@ -9,14 +9,12 @@
 using namespace std;
 #include <mpi.h>
 
-#include "folders.hpp"
-
 
 
 /// TIMER: class for precise process timing
 ///////////////////////////////////////////
 
-class TIMER
+class Timer
 {
 
   private:

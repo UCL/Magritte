@@ -1,48 +1,67 @@
 # CMakeLists.txt for test
 #########################
 
+# Write all binary files to the bin directory
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  ${CMAKE_SOURCE_DIR}/bin/tests)
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+  ${CMAKE_SOURCE_DIR}/bin/tests)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+  ${CMAKE_SOURCE_DIR}/bin/tests)
+
 # Include directory containing source
-include_directories (../include)
+include_directories (../src)
+
+# Include directory containing the catch header
+include_directories (.)
 
 # Create main lib (as advised in Catch docs, to speed up compilation)
 add_library (TestMain
   main.cpp)
 
-# Create executable to test io
-add_executable (test_io_text.exe
-  test_io_text.cpp)
-target_link_libraries (test_io_text.exe
-  Magritte
-  TestMain)
 
+
+## Create executable to test io
+#add_executable (test_io_text.exe
+#  test_io_text.cpp)
+#target_link_libraries (test_io_text.exe
+#  Magritte
+#  TestMain)
+#
 # Create executable to test io
 add_executable (test_io_Python.exe
   test_io_Python.cpp)
 target_link_libraries (test_io_Python.exe
-  Magritte
   PyIo
   TestMain)
 
-# Create executable to test model
-add_executable (test_model.exe
-  test_model.cpp)
-target_link_libraries (test_model.exe
+add_executable (test_raypair.exe
+  Simulation/Raypair/test_raypair.cpp)
+target_link_libraries (test_raypair.exe
+  PyIo
   Magritte
   TestMain)
 
-# Create executable to test model
-add_executable (test_rays.exe
-  test_rays.cpp)
-target_link_libraries (test_rays.exe
-  Magritte
-  TestMain)
-
-# Create executable to test model
-add_executable (test_cells.exe
-  test_cells.cpp)
-target_link_libraries (test_cells.exe
-  Magritte
-  TestMain)
+## Create executable to test model
+#add_executable (test_model.exe
+#  test_model.cpp)
+#target_link_libraries (test_model.exe
+#  Magritte
+#  TestMain)
+#
+## Create executable to test model
+#add_executable (test_rays.exe
+#  test_rays.cpp)
+#target_link_libraries (test_rays.exe
+#  Magritte
+#  TestMain)
+#
+## Create executable to test model
+#add_executable (test_cells.exe
+#  test_cells.cpp)
+#target_link_libraries (test_cells.exe
+#  Magritte
+#  TestMain)
 #
 ## Create executable to test cells
 #add_executable( test_cells.exe

@@ -9,7 +9,7 @@
 
 #include "catch.hpp"
 
-#include "cells.hpp"
+#include "Model/Cells/cells.hpp"
 
 
 #define EPS 1.0E-5

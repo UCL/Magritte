@@ -6,11 +6,12 @@
 
 #include <iostream>
 #include <string>
+using namespace std;
 
 #include "catch.hpp"
 
-#include "rays.hpp"
-#include "io_text.hpp"
+#include "Model/Cells/Rays/rays.hpp"
+#include "Io/io_text.hpp"
 
 
 #define EPS 1.0E-9   // error bar for checking doubles

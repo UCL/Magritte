@@ -8,36 +8,58 @@
 #define __SIMULATION_HPP_INCLUDED__
 
 
-#include "types.hpp"
-#include "io.hpp"
-#include "model.hpp"
+#include "Io/io.hpp"
+#include "Tools/types.hpp"
+#include "Model/model.hpp"
+#include "Raypair/raypair.hpp"
 
 
-///  Model: a distributed data structure for Magritte's model data
+///  Simulation:
 //////////////////////////////////////////////////////////////////
 
-struct Simulation
+struct Simulation : public Model
 {
 
-    Model model;
-
-    // Constructor
-    Simulation (
-        Model &model );
+  Double1 error_max;
+  Double1 error_mean;
 
 
-    int compute_radiation_field () const;
+  int compute_spectral_discretisation ();
 
-    int compute_level_populations ();
+  int compute_boundary_intensities ();
+
+  int compute_LTE_level_populations ();
+
+  int compute_radiation_field ();
+
+  int compute_level_populations ();
 
 
-    // Io
-    int read (
-        const Io &io);
+  inline void setup (
+      const long     R,
+      const long     origin,
+      const long     f,
+            RayData &rayData_ar,
+            RayData &rayData_r,
+            RayPair &rayPair    ) const;
 
-    int write (
-        const Io &io) const;
+  inline void get_eta_and_chi (
+      const vReal &freq_scaled,
+      const long   p,
+            long  &lnotch,
+            vReal &eta,
+            vReal &chi         ) const;
 
+int update_using_statistical_equilibrium ();
+
+void calc_J_and_L_eff (
+      const long p,
+      const int  l,
+      const long k    );
+
+Eigen::MatrixXd get_transition_matrix (
+      const long p,
+      const long l                    );
 
 };
 

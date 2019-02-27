@@ -8,8 +8,8 @@ import numpy as np
 import time
 import re
 
-from healpy        import pixelfunc
 from scipy.spatial import Delaunay
+from rays          import rayVectors
 
 # Magritte specific imports
 from pyMagritte import Linedata, CollisionPartner
@@ -25,30 +25,14 @@ HH = 6.62607004E-34   # [J*s] Planck's constant
 KB = 1.38064852E-23   # [J/K] Boltzmann's constant
 
 
-# Helper functions
-
-def nRays (nsides):
-    '''
-    Number of rays corresponding to HEALPix's nsides
-    '''
-    return 12*nsides**2
-
-
-def nSides (nrays):
-    '''
-    Number of HEALPix's nsides corresponding to nrays
-    '''
-    # Try computing nsides assuming it works
-    nsides = int (np.sqrt (float(nrays) / 12.0))
-    # Chack if nrays was HEALPix compatible
-    if (nRays (nsides) != nrays):
-        raise ValueError ('No HEALPix compatible nrays was given (nrays = 12*nsides**2).')
+def model_name ():
+    """
+    Get a date stamp to name the model
+    """
+    # Get a datestamp for the name
+    dateStamp = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
     # Done
-    return nsides
-
-
-def check_model_consistency (model):
-    assert (True)
+    return f'model_{dateStamp}'
 
 
 class Setup ():
@@ -75,23 +59,12 @@ class Setup ():
             raise ValueError ('nrays should be an integer.')
         # Create rays object
         rays = Rays ()
-        # Set nrays
-        rays.nrays = nrays
         # Define ray directions
-        if   (self.dimension == 1):
-            if (nrays != 2):
-                raise ValueError ('In 1D, nrays should always be 2.')
-            rays.x = Double1 ([-1.0, 1.0])
-            rays.y = Double1 ([ 0.0, 0.0])
-            rays.z = Double1 ([ 0.0, 0.0])
-        elif (self.dimension == 2):
-            rays.x = Double1 ([np.cos((2.0*np.pi*r)/nrays) for r in range(nrays)])
-            rays.y = Double1 ([np.sin((2.0*np.pi*r)/nrays) for r in range(nrays)])
-            rays.z = Double1 ([0.0                         for _ in range(nrays)])
-        elif (self.dimension == 3):
-            rays.x = Double1 (pixelfunc.pix2vec (nSides(nrays), range(nrays))[0])
-            rays.y = Double1 (pixelfunc.pix2vec (nSides(nrays), range(nrays))[1])
-            rays.z = Double1 (pixelfunc.pix2vec (nSides(nrays), range(nrays))[2])
+        (Rx, Ry, Rz) = rayVectors (dimension=self.dimension, nrays=nrays)
+        # Assign ray vectors
+        rays.x = Double1 (Rx)
+        rays.y = Double1 (Ry)
+        rays.z = Double1 (Rz)
         # Done
         return rays
 
@@ -99,41 +72,49 @@ class Setup ():
         """
         Extract neighbor lists from cell centers assuming Voronoi tesselation
         """
+        # Check lengths
+        ncells = len (cells.x)
+        assert (ncells == len(cells.y))
+        assert (ncells == len(cells.z))
+        assert (ncells == len(cells.vx))
+        assert (ncells == len(cells.vy))
+        assert (ncells == len(cells.vz))
+        # Find neighbors
         if   (self.dimension == 1):
             # For the middle points
-            cells.neighbors   = Long2 ([Long1 ([p-1, p+1]) for p in range(1,cells.ncells-1)])
-            cells.n_neighbors = Long1 ([2                 for p in range(1,cells.ncells-1)])
+            cells.neighbors   = Long2 ([Long1 ([p-1, p+1]) for p in range(1,ncells-1)])
+            cells.n_neighbors = Long1 ([2                  for p in range(1,ncells-1)])
             # For the first point
             cells.neighbors.insert   (0, Long1 ([1]))
             cells.n_neighbors.insert (0, 1)
             # For the last point
-            cells.neighbors.append   (Long1 ([cells.ncells-2]))
+            cells.neighbors.append   (Long1 ([ncells-2]))
             cells.n_neighbors.append (1)
         elif (self.dimension == 2):
-            points  = [[cells.x[p], cells.y[p]] for p in range(cells.ncells)]
+            points  = [[cells.x[p], cells.y[p]] for p in range(ncells)]
             # Make a Delaulay triangulation
             delaunay = Delaunay (points)
             # Extract Delaunay vertices (= Voronoi neighbors)
             (indptr, indices) = delaunay.vertex_neighbor_vertices
-            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(cells.ncells)])
+            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(ncells)])
             # Extract the number of neighbors for each point
             cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
         elif (self.dimension == 3):
-            points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(cells.ncells)]
+            points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(ncells)]
             # Make a Delaulay triangulation
             delaunay = Delaunay (points)
             # Extract Delaunay vertices (= Voronoi neighbors)
             (indptr, indices) = delaunay.vertex_neighbor_vertices
-            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(self.ncells)])
+            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(ncells)])
             # Extract the number of neighbors for each point
             cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
+        # Change neighbors into a rectangular array (necessary for hdf5)
+        for p in range(ncells):
+            n_missing_entries = max(cells.n_neighbors) - cells.n_neighbors[p]
+            for w in range(n_missing_entries):
+                cells.neighbors[p].append (0)
         # Done
         return cells
-
-def model_name ():
-    # Get a date stamp to name the model
-    dateStamp = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-    return f'model_{dateStamp}'
 
 
 def getProperName(name):
@@ -156,7 +137,7 @@ def getSpeciesNumber (species, name):
     else:
         for i in range (len (species.sym)):
             if (species.sym[i] == getProperName (name)):
-                return i+1
+                return i
         return 0
 
 
@@ -228,6 +209,7 @@ def linedata_from_LAMDA_file (fileName, species):
     rd = Reader (fileName)
     # Read radiative data
     ld.sym    = rd.readColumn(start= 1,         nElem=1,       columnNr=0, type='str')[0]
+    ld.num    = getSpeciesNumber (species, ld.sym)
     #ld.mass   = rd.readColumn(start= 3,         nElem=1,       columnNr=0, type='float')[0]
     ld.nlev   = rd.readColumn(start= 5,         nElem=1,       columnNr=0, type='int')[0]
     ld.energy = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=1, type='float')
