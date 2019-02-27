@@ -34,9 +34,7 @@ const double SECONDS_IN_YEAR = 3.1556926E+7;    // number of seconds in one year
 
 const double C_SQUARED = 8.98755179E+16;   // [m^2/s^2] speed of light squared
 
-
-const double v_turb = 0.12012E3;
-const double V_TURB_OVER_C_ALL_SQUARED = v_turb * v_turb / C_SQUARED;   // (v_turb / c)^2
+const double V_TURB_OVER_C_ALL_SQUARED = 0.15E3 * 0.15E3 / C_SQUARED;   // (v_turb / c)^2
 
 //extern const double v_turb;
 //extern const double V_TURB_OVER_C_ALL_SQUARED;
@@ -179,8 +177,8 @@ const int NR_LINE_CENTER = N_QUADRATURE_POINTS / 2;
 //                                                 7.292633670865721,
 //                                                 7.983034772719781 };
 
-const double LOWER = 1.01*H_roots[0];
-const double UPPER = 1.01*H_roots[N_QUADRATURE_POINTS-1];
+const double LOWER = 1.00001*H_roots[0];
+const double UPPER = 1.00001*H_roots[N_QUADRATURE_POINTS-1];
 
 
 #endif // __MAGRITTE_CONSTANTS_HPP_INCLUDED__

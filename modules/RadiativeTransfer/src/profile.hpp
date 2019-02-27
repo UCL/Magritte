@@ -19,7 +19,9 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////////
 
-inline vReal profile (const double width, const vReal freq_diff);
+inline vReal profile      (
+    const double width,
+    const vReal  freq_diff);
 
 
 
@@ -30,7 +32,21 @@ inline vReal profile (const double width, const vReal freq_diff);
 ///    @return width of the correpsonding line profile
 //////////////////////////////////////////////////////////////////////////////////
 
-inline double profile_width (const double temperature_gas, const double freq_line);
+inline double profile_width      (
+    const double temperature_gas,
+    const double vturb2,
+    const double freq_line       );
+
+
+
+///  profile_width: line profile width due to thermal and turbulent Doppler shifts
+///    @param[in] temperature_gas: temperature of the gas at this cell
+///    @return width of the correpsonding line profile
+//////////////////////////////////////////////////////////////////////////////////
+
+inline double profile_width      (
+    const double temperature_gas,
+    const double vturb2          );
 
 
 
@@ -40,7 +56,9 @@ inline double profile_width (const double temperature_gas, const double freq_lin
 ///    @param[in] freq: frequency at which we want evaluate the Planck function
 ///////////////////////////////////////////////////////////////////////////////
 
-inline vReal planck (const double temperature_gas, const vReal freq);
+inline vReal planck (
+    const double temperature_gas,
+    const vReal  freq);
 
 
 
@@ -51,7 +69,8 @@ inline vReal planck (const double temperature_gas, const vReal freq);
 ///    @return exponential of x
 /////////////////////////////////////////////////
 
-inline vReal vExp (const vReal);
+inline vReal vExp (
+    const vReal   );
 
 
 
@@ -61,7 +80,8 @@ inline vReal vExp (const vReal);
 ///    @return exponential of minus x
 /////////////////////////////////////////////////
 
-inline vReal vExpMinus (const vReal x);
+inline vReal vExpMinus (
+    const vReal x      );
 
 
 
@@ -71,7 +91,8 @@ inline vReal vExpMinus (const vReal x);
 ///    @return exponential minus 1.0 of x
 ///////////////////////////////////////////////////////////
 
-inline vReal vExpm1 (const vReal x);
+inline vReal vExpm1 (
+    const vReal x   );
 
 
 #include "profile.cpp"

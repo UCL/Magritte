@@ -24,14 +24,14 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/scattering.hpp"
 //#include "RadiativeTransfer/src/RadiativeTransfer.hpp"
 
-#define MAX_NITERATIONS 100
+#define MAX_NITERATIONS 500
 
 
 struct LEVELS
 {
-	
+
   const long ncells;                ///< number of cells
-	
+
   const int nlspec;                 ///< number of species producing lines
 
   const Int1 nlev;                  ///< number of levels per species
@@ -46,6 +46,7 @@ struct LEVELS
   VectorXd2 population;             ///< level population (most recent)
 
   Double3 J_eff;                    ///< effective mean intensity
+  Double3 L_eff;                    ///< effective Lambda operator
 
   Double2   population_tot;         ///< total level population (sum over levels)
 
@@ -93,14 +94,14 @@ struct LEVELS
 
 
   // Communication with Radiative Transfer module
-	
+
   int calc_line_emissivity_and_opacity (
       const LINEDATA &linedata,
             LINES    &lines,
       const long      p,
       const int       l                ) const;
 
-  int calc_J_eff                     (
+  int calc_J_and_L_eff               (
       const FREQUENCIES &frequencies,
       const TEMPERATURE &temperature,
       const RADIATION   &radiation,
@@ -115,7 +116,7 @@ struct LEVELS
 
 
   // Print
-	
+
   int print (
       const string tag) const;
 
@@ -163,7 +164,7 @@ int LEVELS ::
 
   // Initialize the number of iterations
 
-  int niterations = 0;   
+  int niterations = 0;
 
 
   // Iterate as long as some levels are not converged
@@ -192,7 +193,7 @@ int LEVELS ::
     //MPI_TIMER timer_RT ("RT");
     //timer_RT.start ();
 
-    radiation.compute_mean_intensity (cells, temperature, frequencies, lines, scattering);
+    radiation.compute_mean_intensity_and_images(cells, temperature, frequencies, lines, scattering);
 
     //RadiativeTransfer<Dimension, Nrays>(
     //    cells,
@@ -232,7 +233,7 @@ int LEVELS ::
 
     for (int l = 0; l < nlspec; l++)
     {
-      if (fraction_not_converged[l] < 0.01)
+      if (fraction_not_converged[l] < 0.005)
       {
         not_converged[l] = false;
       }

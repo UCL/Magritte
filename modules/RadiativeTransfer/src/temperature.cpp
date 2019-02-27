@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "temperature.hpp"
+#include "constants.hpp"
 #include "types.hpp"
 
 
@@ -25,6 +26,8 @@ TEMPERATURE (const long num_of_cells)
       dust.resize (ncells);
   gas_prev.resize (ncells);
 
+    vturb2.resize (ncells);
+
 
 }   // END OF CONSTRUCTOR
 
@@ -36,17 +39,36 @@ TEMPERATURE (const long num_of_cells)
 ////////////////////////////////////////////////////////////////////////////
 
 int TEMPERATURE ::
-    read (const string temperature_file)
+    read                               (
+        const string temperature_file,
+        const string vturbulence_file  )
 {
 
-  ifstream infile (temperature_file);
+  // Read gas temperature file
+
+  ifstream file_temp (temperature_file);
 
   for (long p = 0; p < ncells; p++)
   {
-    infile >> gas[p];
+    file_temp >> gas[p];
   }
 
-  infile.close();
+  file_temp.close();
+
+
+ // Read gas turbulence file
+
+  ifstream file_turb (vturbulence_file);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    file_turb >> vturb2[p];
+
+    vturb2[p] /= CC;          // devide by speed of light
+    vturb2[p] *= vturb2[p];   // square
+  }
+
+  file_turb.close();
 
 
   return (0);

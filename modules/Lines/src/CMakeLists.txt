@@ -52,8 +52,7 @@ add_library( _LINES
   linedata.cpp
   levels.cpp
   levels_iteration.cpp
-  acceleration_Ng.cpp
-  Lines.hpp )
+  acceleration_Ng.cpp )
 
 target_link_libraries( _LINES
   _RADIATIVE_TRANSFER

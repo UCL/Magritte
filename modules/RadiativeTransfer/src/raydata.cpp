@@ -31,11 +31,4 @@ RAYDATA (const long num_of_cells,
   , cell2boundary_nr   (Cell2boundary_nr)
 {
 
-  cellNrs.resize(ncells);
-    notch.resize(ncells);
-   lnotch.resize(ncells);
-   shifts.resize(ncells);
-      dZs.resize(ncells);
-
-
 }   // END OF CONSTRUCTOR

@@ -102,17 +102,20 @@ int LEVELS ::
 
         // Extract the effective mean radiation field in each line
 
-        calc_J_eff (frequencies, temperature, radiation, p, l);
+        calc_J_and_L_eff (frequencies, temperature, radiation, p, l);
 
 
         // Calculate the transition matrix (for stat. equil. eq.)
 
-        MatrixXd R = linedata.calc_transition_matrix (species, temperature.gas[p], J_eff, p, l);
-				
+        MatrixXd R = linedata.calc_transition_matrix (species, /*lines,*/ temperature.gas[p], J_eff, p, l);
+
 
         // Update levels
 
         update_using_statistical_equilibrium (R, p, l);
+
+
+        // Check for convergence
 
         check_for_convergence (p, l);
 

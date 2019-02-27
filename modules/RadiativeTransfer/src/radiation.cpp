@@ -18,6 +18,7 @@ using namespace std;
 #include "GridTypes.hpp"
 #include "mpiTools.hpp"
 #include "ompTools.hpp"
+#include "ompTools.hpp"
 #include "lines.hpp"
 #include "frequencies.hpp"
 #include "scattering.hpp"
@@ -34,7 +35,7 @@ RADIATION (const long num_of_cells,
            const long num_of_bdycells )
   : ncells        (num_of_cells)
   , nrays         (num_of_rays)
-  , nrays_red     (get_nrays_red (nrays))
+  , nrays_red     (MPI_length (nrays/2))
   , nfreq_red     (num_of_freq_red)
   , nboundary     (num_of_bdycells)
 {
@@ -43,6 +44,7 @@ RADIATION (const long num_of_cells,
 
   u.resize (nrays_red);
   v.resize (nrays_red);
+  Lambda.resize (nrays_red);
 
   U.resize (nrays_red);
   V.resize (nrays_red);
@@ -53,6 +55,7 @@ RADIATION (const long num_of_cells,
   {
     u[r].resize (ncells*nfreq_red);
     v[r].resize (ncells*nfreq_red);
+    Lambda[r].resize (ncells*nfreq_red);
 
     U[r].resize (ncells*nfreq_red);
     V[r].resize (ncells*nfreq_red);
@@ -66,35 +69,13 @@ RADIATION (const long num_of_cells,
   }
 
   J.resize (ncells*nfreq_red);
+  G.resize (ncells*nfreq_red);
+  L.resize (ncells*nfreq_red);
 
   cell2boundary_nr.resize (ncells);
 
 
 }   // END OF CONSTRUCTOR
-
-
-
-
-///  get_nrays_red: get reduced number of rays
-///    @param[in] nrays: total number or rays
-//////////////////////////////////////////////
-
-long RADIATION :: get_nrays_red (const long nrays)
-{
-
-  int world_size;
-  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-  const long START_raypair = ( world_rank   *nrays/2)/world_size;
-  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
-
-
-  return STOP_raypair - START_raypair;
-  
-}
 
 
 
@@ -141,14 +122,13 @@ int RADIATION ::
           boundary_intensity[r][b][f] = planck (T_CMB, frequencies.nu[p][f]);
         }
       }
-    } 
+    }
   }
 
 
   return (0);
 
 }
-
 
 
 
@@ -159,6 +139,7 @@ void mpi_vector_sum (vReal *in, vReal *inout, int *len, MPI_Datatype *datatype)
     inout[i] = in[i] + inout[i];
   }
 }
+
 
 
 int initialize (vReal1& vec)
@@ -184,39 +165,29 @@ int initialize (vReal1& vec)
 int RADIATION ::
     calc_J (void)
 {
+  const double two_over_nrays = 2.0/nrays;
+  const double one_over_nrays = 1.0/nrays;
 
   initialize (J);
+  initialize (G);
+  initialize (L);
 
 
-  int world_size;
-  MPI_Comm_size (MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-  const long START_raypair = ( world_rank   *nrays/2)/world_size;
-  const long STOP_raypair  = ((world_rank+1)*nrays/2)/world_size;
-
-  for (long r = START_raypair; r < STOP_raypair; r++)
+  for (long r = MPI_start (nrays/2); r < MPI_stop (nrays/2); r++)
   {
-    const long R = r - START_raypair;
+    const long R = r - MPI_start (nrays/2);
 
 #   pragma omp parallel   \
     default (none)
     {
 
-    const int nthreads = omp_get_num_threads();
-    const int thread   = omp_get_thread_num();
-
-    const long start = ( thread   *ncells)/nthreads;
-    const long stop  = ((thread+1)*ncells)/nthreads;
-
-
-    for (long p = start; p < stop; p++)
+    for (long p = OMP_start (ncells); p < OMP_stop (ncells); p++)
     {
       for (long f = 0; f < nfreq_red; f++)
       {
-        J[index(p,f)] += (2.0/nrays) * u[R][index(p,f)];
+        J[index(p,f)] += two_over_nrays *      u[R][index(p,f)];
+        G[index(p,f)] += two_over_nrays *      v[R][index(p,f)];
+        L[index(p,f)] += one_over_nrays * Lambda[R][index(p,f)];
       }
     }
     } // end of pragma omp parallel
@@ -232,15 +203,26 @@ int RADIATION ::
   MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
-  int ierr = MPI_Allreduce (
-               MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
-               J.data(),          // pointer to data to be received
-               J.size(),          // size of data to be received
-               MPI_VREAL,         // type of reduced data
-               MPI_VSUM,          // reduction operation
-               MPI_COMM_WORLD);
+  int ierr1 = MPI_Allreduce (
+                MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
+                J.data(),          // pointer to data to be received
+                J.size(),          // size of data to be received
+                MPI_VREAL,         // type of reduced data
+                MPI_VSUM,          // reduction operation
+                MPI_COMM_WORLD);
 
-  assert (ierr == 0);
+  assert (ierr1 == 0);
+
+
+  int ierr2 = MPI_Allreduce (
+                MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
+                G.data(),          // pointer to data to be received
+                G.size(),          // size of data to be received
+                MPI_VREAL,         // type of reduced data
+                MPI_VSUM,          // reduction operation
+                MPI_COMM_WORLD);
+
+  assert (ierr2 == 0);
 
 
   MPI_Type_free (&MPI_VREAL);
@@ -321,9 +303,9 @@ int RADIATION ::
             V_local[index(p,f)] += v[R2][index(p,f)] * scattering.phase[r1][r2][f];
           }
         }
-  
+
         }
-  
+
       } // end of r2 loop over raypairs2
 
 
@@ -421,17 +403,16 @@ int RADIATION ::
     print (const string tag) const
 {
 
-  int world_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &world_rank);
-
-
-  if (world_rank == 0)
+  if (MPI_comm_rank () == 0)
   {
     const string file_name_J = output_folder + "J" + tag + ".txt";
+    const string file_name_G = output_folder + "G" + tag + ".txt";
 
     ofstream outputFile_J (file_name_J);
+    ofstream outputFile_G (file_name_G);
 
     outputFile_J << scientific << setprecision(16);
+    outputFile_G << scientific << setprecision(16);
 
 
     for (long p = 0; p < ncells; p++)
@@ -442,16 +423,20 @@ int RADIATION ::
           for (int lane = 0; lane < n_simd_lanes; lane++)
           {
             outputFile_J << J[index(p,f)].getlane(lane) << "\t";
+            outputFile_G << G[index(p,f)].getlane(lane) << "\t";
           }
 #       else
           outputFile_J << J[index(p,f)] << "\t";
+          outputFile_G << G[index(p,f)] << "\t";
 #       endif
       }
 
       outputFile_J << endl;
+      outputFile_G << endl;
     }
 
     outputFile_J.close ();
+    outputFile_G.close ();
 
 
     const string file_name_bc = output_folder + "bc" + tag + ".txt";

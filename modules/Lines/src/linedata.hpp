@@ -17,6 +17,7 @@ using namespace Eigen;
 //#include "linedata_config.hpp"
 #include "RadiativeTransfer/src/types.hpp"
 #include "RadiativeTransfer/src/species.hpp"
+//#include "RadiativeTransfer/src/lines.hpp"
 
 
 struct LINEDATA
@@ -94,6 +95,7 @@ struct LINEDATA
 
 
   MatrixXd calc_transition_matrix (const SPECIES &species,
+//                                   const LINES   &lines,
                                    const double   temperature_gas,
                                    const Double3 &J_eff,
                                    const long     p,

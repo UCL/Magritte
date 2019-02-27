@@ -39,6 +39,7 @@ FREQUENCIES (const     long  num_of_cells,
   // Size and initialize all, order and deorder
 
        nu.resize (ncells);
+      dnu.resize (ncells);
   nr_line.resize (ncells);
 
 # pragma omp parallel   \
@@ -56,6 +57,7 @@ FREQUENCIES (const     long  num_of_cells,
   for (long p = start; p < stop; p++)
   {
          nu[p].resize (nfreq_red);
+        dnu[p].resize (nfreq_red);
     nr_line[p].resize (linedata.nlspec);
 
     for (int l = 0; l < linedata.nlspec; l++)
@@ -74,6 +76,7 @@ FREQUENCIES (const     long  num_of_cells,
     for (long f = 0; f < nfreq_red; f++)
     {
        nu[p][f] = 0.0;
+      dnu[p][f] = 0.0;
     }
 
   }
@@ -218,7 +221,7 @@ long FREQUENCIES ::
   index += nlines * N_QUADRATURE_POINTS;
 
   // Add extra frequency bins around lines to get nicer spectrum
-  
+
   index += nlines * 2 * nbins;
 
 
@@ -289,7 +292,9 @@ int FREQUENCIES ::
       for (int k = 0; k < linedata.nrad[l]; k++)
       {
         const double freq_line = linedata.frequency[l][k];
-        const double width     = profile_width (temperature.gas[p], freq_line);
+        const double width     = profile_width (temperature.gas[p],
+                                                temperature.vturb2[p],
+                                                freq_line);
 
         for (long z = 0; z < N_QUADRATURE_POINTS; z++)
         {
@@ -314,7 +319,9 @@ int FREQUENCIES ::
       for (int k = 0; k < linedata.nrad[l]; k++)
       {
         const double freq_line = linedata.frequency[l][k];
-        const double width     = profile_width (temperature.gas[p], freq_line);
+        const double width     = profile_width (temperature.gas[p],
+                                                temperature.vturb2[p],
+                                                freq_line);
 
         double factor = 1.0;
 
@@ -384,9 +391,24 @@ int FREQUENCIES ::
 #     if (GRID_SIMD)
         const long    f = fl / n_simd_lanes;
         const long lane = fl % n_simd_lanes;
-        nu[p][f].putlane(freqs[fl], lane);
+         nu[p][f].putlane(freqs[fl], lane);
 #     else
-        nu[p][fl] = freqs[fl];
+         nu[p][fl] = freqs[fl];
+#     endif
+    }
+
+
+    // Set all frequency differences dnu
+
+    for (long fl = nfreq-1; fl > 0; fl--)
+    {
+#     if (GRID_SIMD)
+        const long    f = fl / n_simd_lanes;
+        const long lane = fl % n_simd_lanes;
+        dnu[p][f].putlane(freqs[fl] - freqs[fl-1], lane);
+#     else
+        dnu[p][fl] = freqs[fl] - freqs[fl-1];
+        //cout << dnu[p][fl] << endl;
 #     endif
     }
 

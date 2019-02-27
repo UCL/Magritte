@@ -53,4 +53,5 @@ inline long MPI_length (const long total)
 }
 
 
+
 #endif // __MPI_TOOLS_HPP_INCLUDED__

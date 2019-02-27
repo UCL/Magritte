@@ -30,11 +30,4 @@ RAYPAIR                     (
   , raydata_ar (ncells, num_of_freq_red, aray, Ray, U_local, V_local, Ibdy_local, Cell2boundary_nr)
 {
 
-      Su.resize (ncells);
-      Sv.resize (ncells);
-    dtau.resize (ncells);
-
-  Lambda.resize (ncells);
-
-
 }   // END OF CONSTRUCTOR

@@ -17,7 +17,7 @@ using namespace std;
 
 
 struct FREQUENCIES
-{ 
+{
 
   const long ncells;      ///< number of cells
 
@@ -29,6 +29,7 @@ struct FREQUENCIES
   const long nfreq_red;   ///< nfreq divided by n_simd_lanes
 
   vReal2 nu;              ///< [Hz] frequencies (ordered in f) (p,f)
+  vReal2 dnu;             ///< [Hz] frequencies (ordered in f) (p,f)
 
   Long4 nr_line;          ///< frequency number corresponing to line (p,l,k,z)
 

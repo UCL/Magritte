@@ -1,5 +1,0 @@
-#define NCELLS_RED1 147
-#define NCELLS_RED2 73
-#define NCELLS_RED3 36
-#define NCELLS_RED4 18
-#define NCELLS_RED5 9

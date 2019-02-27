@@ -23,10 +23,13 @@ struct TEMPERATURE
   Double1 dust;       ///< dust temparature
   Double1 gas_prev;   ///< gas temperature in previous iteration
 
+  Double1 vturb2;     ///< microturbulence over c all squared
 
   TEMPERATURE (const long num_of_cells);      ///< Constructor
 
-  int read (const string temperature_file);   ///< read initial temperature field
+  int read                          (
+      const string temperature_file,
+      const string vturbulence_file );   ///< read initial temperature field
 
 };
 

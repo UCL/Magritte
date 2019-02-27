@@ -7,6 +7,7 @@
 #ifndef __HEAPSORT_HPP_INCLUDED__
 #define __HEAPSORT_HPP_INCLUDED__
 
+#include "types.hpp"
 #include <vector>
 using namespace std;
 

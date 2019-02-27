@@ -49,15 +49,11 @@ link_directories( "${GRID_INSTALL_FOLDER}lib/" )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_CPP_FLAGS}" )
 set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GRID_LD_FLAGS}" )
 
-add_executable( example_solve_ray.exe
-  example_solve_ray.cpp )
-target_link_libraries( example_solve_ray.exe
-  _RADIATIVE_TRANSFER )
+#add_executable( example_solve_ray.exe
+#  example_solve_ray.cpp )
+#target_link_libraries( example_solve_ray.exe
+#  _RADIATIVE_TRANSFER )
 
-add_executable( example_RadiativeTransfer.exe
-  example_RadiativeTransfer.cpp )
-target_link_libraries( example_RadiativeTransfer.exe
-  _RADIATIVE_TRANSFER )
 
 
 # Add MPI flags

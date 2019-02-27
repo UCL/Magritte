@@ -27,14 +27,14 @@ class SlurmJob:
         self.nTasks     = 1
         self.nThrds     = 1
         self.totalTime  = '00:00:01'
-        self.executable = '/home/dc-dece1/MagritteProjects/Lines_3D_LTE/build/examples/example_Lines_Lime1'
+        self.executable = '/home/dc-dece1/MagritteProjects/Lines_3D_LTE/build/examples/example_Lines.exe'
         self.workDir    = '/home/dc-dece1/MagritteProjects/Lines_3D_LTE/'
 
     def create(self):
         # Read in the slurm_submit template
         with open(dir_path + self.template, 'r') as file:
             fullText = [line for line in file]
-        # Fill out the required fields    
+        # Fill out the required fields
         fullText[12] = appendToLine(fullText[12], self.jobName)
         fullText[16] = appendToLine(fullText[16], self.nNodes)
         fullText[19] = appendToLine(fullText[19], self.nTasks)
@@ -108,6 +108,6 @@ class SlurmJob:
     def status_cont(self):
         # Continuously write status until job is out of queue
         while self.status():
-            pass 
+            pass
         # Done
         return

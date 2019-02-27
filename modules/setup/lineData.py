@@ -228,6 +228,8 @@ class LineData ():
                     i = self.icol[colpar][tran]
                     j = self.jcol[colpar][tran]
                     self.C_data[colpar][temp][i][j] = self.C_coeff[colpar][temp][tran]
+                    # Convert from cm^3 s^-1 to m^3 s^-1
+                    self.C_data[colpar][temp][i][j] *= 1.0E-6
                 for tran in range(self.ncoltran[colpar]):
                     i = self.icol[colpar][tran]
                     j = self.jcol[colpar][tran]

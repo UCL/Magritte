@@ -27,26 +27,28 @@ struct RADIATION
   const long nrays_red;       ///< reduced number of rays
   const long nfreq_red;       ///< reduced number of frequencies
   const long nboundary;       ///< number of boundary cells
-  
+
   vReal2 u;                   ///< u intensity           (r, index(p,f))
   vReal2 v;                   ///< v intensity           (r, index(p,f))
-  
+  vReal2 Lambda;              ///< Lambda operator       (r, index(p,f))
+
+
   vReal2 U;                   ///< U scattered intensity (r, index(p,f))
   vReal2 V;                   ///< V scattered intensity (r, index(p,f))
-  
-  vReal1 J;                   ///< (angular) mean intensity (index(p,f))
+
+  vReal1 J;                   ///< (angular) mean intensity       (index(p,f))
+  vReal1 G;                   ///< (angular) mean intensity       (index(p,f))
+  vReal1 L;                   ///< (angular) mean Lambda operator (index(p,f))
 
   vReal3 boundary_intensity;   ///< intensity at the boundary (r,b,f)
-  
+
   Long1 cell2boundary_nr;
-  
+
   RADIATION                      (
       const long num_of_cells,
       const long num_of_rays,
       const long num_of_freq_red,
       const long num_of_bdycells );
-
-  static long get_nrays_red (const long nrays);
 
 
   //int initialize ();
@@ -107,6 +109,14 @@ struct RADIATION
 
   template <int Dimension, long Nrays>
   int compute_images                              (
+      const CELLS <Dimension, Nrays> &cells,
+      const TEMPERATURE              &temperature,
+      const FREQUENCIES              &frequencies,
+      const LINES                    &lines,
+      const SCATTERING               &scattering  );
+
+  template <int Dimension, long Nrays>
+  int compute_mean_intensity_and_images           (
       const CELLS <Dimension, Nrays> &cells,
       const TEMPERATURE              &temperature,
       const FREQUENCIES              &frequencies,

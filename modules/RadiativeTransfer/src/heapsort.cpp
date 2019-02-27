@@ -5,13 +5,11 @@
 
 
 #include <assert.h>
-#include <vector>
-using namespace std;
 
 #include "heapsort.hpp"
 
 
-long max (vector<double>& a, long n, long i, long j, long k)
+long max (vector<double> &a, long n, long i, long j, long k)
 {
 
   long m = i;

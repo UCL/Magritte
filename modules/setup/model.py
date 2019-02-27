@@ -41,6 +41,8 @@ class model ():
         self.abundance = []
         # Temperature [K]
         self.temperature = []
+        # vturbulence [m/s]
+        self.vturbulence = []
         # Boundary
         self.boundary = []
 
@@ -66,7 +68,7 @@ class model ():
             self.neighbors  = [[i-1, i+1] for i in range(1,self.ncells-1)]
             self.nNeighbors = [2          for i in range(1,self.ncells-1)]
             # For the end points
-            self.neighbors  = [[1]] +  self.neighbors + [[self.ncells-2]]
+            self.neighbors  = [[1]] + self.neighbors  + [[self.ncells-2]]
             self.nNeighbors =  [1]  + self.nNeighbors +  [1]
         elif (self.dimension == 2):
             points  = [[self.x[i], self.y[i]] for i in range(self.ncells)]
@@ -107,6 +109,7 @@ class model ():
         np.savetxt(folder + '/n_neighbors.txt', self.nNeighbors,   fmt='%ld')
         np.savetxt(folder + '/abundance.txt',   txtabun,           fmt=nspec*'%lE\t')
         np.savetxt(folder + '/temperature.txt', self.temperature,  fmt='%lE')
+        np.savetxt(folder + '/vturbulence.txt', self.vturbulence,  fmt='%lE')
         np.savetxt(folder + '/boundary.txt',    self.boundary,     fmt='%ld')
         # Different format for neighbors which was variable line lengths
         with open(folder + '/neighbors.txt', 'w') as file:
@@ -117,8 +120,8 @@ class model ():
                         line += '{}\t'.format(neighbor)
                 line += '\n'
                 file.write(line)
-                
-                
+
+
     def readInput (self, folder):
         """
         Read Magritte input files from folder
@@ -128,6 +131,7 @@ class model ():
         self.nNeighbors                                      = np.loadtxt(folder + '/n_neighbors.txt'           )
         (z, self.abundance, self.density, self.abundance, o) = np.loadtxt(folder + '/abundance.txt', unpack=True)
         self.temperature                                     = np.loadtxt(folder + '/temperature.txt'           )
+        self.vturbulence                                     = np.loadtxt(folder + '/vturbulence.txt'           )
         self.boundary                                        = np.loadtxt(folder + '/boundary.txt'              )
         # Different format for neighbors which was variable line lengths
         with open(folder + '/neighbors.txt', 'w') as file:
@@ -144,21 +148,21 @@ class model ():
         # Define help quantity
         sRx2pRy2 = np.sqrt(Rx**2 + Ry**2)
         if (sRx2pRy2 != 0.0):
-            # Define unit vector along horizontal image axis 
+            # Define unit vector along horizontal image axis
             Ix =  Ry / sRx2pRy2
             Iy = -Rx / sRx2pRy2
-            Iz =  0.0  
-            # Define unit vector alonng vertical image axis 
+            Iz =  0.0
+            # Define unit vector alonng vertical image axis
             Jx = Rx * Rz / sRx2pRy2
             Jy = Ry * Rz / sRx2pRy2
             Jz = -sRx2pRy2
-            # Define image coordinates 
-            self.imageX = [self.x[p]*Ix + self.y[p]*Iy                for p in range(self.ncells)] 
-            self.imageY = [self.x[p]*Jx + self.y[p]*Jy + self.z[p]*Jz for p in range(self.ncells)] 
+            # Define image coordinates
+            self.imageX = [self.x[p]*Ix + self.y[p]*Iy                for p in range(self.ncells)]
+            self.imageY = [self.x[p]*Jx + self.y[p]*Jy + self.z[p]*Jz for p in range(self.ncells)]
         else:
-            # Define image coordinates 
-            self.imageX = self.x[p] 
-            self.imageY = self.y[p] 
+            # Define image coordinates
+            self.imageX = self.x[p]
+            self.imageY = self.y[p]
 
 
 #
@@ -180,6 +184,7 @@ def mapToXD (model1D, dimension, nraysList):
         spheres.sphericalXDscalar(model1D.density[s],       nrays, modelXD.density)
         spheres.sphericalXDscalar(model1D.abundance[s],     nrays, modelXD.abundance)
         spheres.sphericalXDscalar(model1D.temperature[s],   nrays, modelXD.temperature)
+        spheres.sphericalXDscalar(model1D.vturbulence[s],   nrays, modelXD.vturbulence)
         if (nrays == 0):
             cellsInShell[s].append(index)
             index += 1
@@ -187,7 +192,7 @@ def mapToXD (model1D, dimension, nraysList):
             for _ in range(nrays):
                 cellsInShell[s].append(index)
                 index += 1
-    # Extract boundary 
+    # Extract boundary
     modelXD.boundary = cellsInShell[-1]
     # Extract number of cells
     modelXD.ncells   = index
@@ -224,4 +229,3 @@ def makeShelly (model1D, model3D):
                 model3D.y[n] *= ratio
                 model3D.z[n] *= ratio
                 break
-

@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <fstream>
+#include <iomanip>
 using namespace std;
 #include <Eigen/Core>
 using namespace Eigen;
@@ -36,7 +37,7 @@ struct LINES
   const int  nrad_tot;
 
   Double1 emissivity;   ///< line emissivity (p,l,k)
-  Double1 opacity;      ///< line opacity (p,l,k)
+  Double1 opacity;      ///< line opacity    (p,l,k)
 
 
   static Int1 get_nrad_cum (const Int1 nrad);
@@ -47,22 +48,26 @@ struct LINES
          const LINEDATA &linedata     );   ///< Constructor
 
 
-  int print (const string tag) const;
+  int print         (
+    const string tag) const;
 
-  inline long index (const long p,
-                     const int  l,
-                     const int  k ) const;
+  inline long index (
+    const long p,
+    const int  l,
+    const int  k    ) const;
 
-  inline long index (const long p,
-                     const long line_index) const;
+  inline long index      (
+    const long p,
+    const long line_index) const;
 
-  inline int add_emissivity_and_opacity (const FREQUENCIES &frequencies,
-                                         const TEMPERATURE &temperature,
-                                         const vReal       &freq_scaled,
-                                               long        &lnotch,
-                                         const long         p,
-                                               vReal       &eta,
-                                               vReal       &chi          ) const;
+  inline int add_emissivity_and_opacity (
+    const FREQUENCIES &frequencies,
+    const TEMPERATURE &temperature,
+    const vReal       &freq_scaled,
+          long        &lnotch,
+    const long         p,
+          vReal       &eta,
+          vReal       &chi               ) const;
 
   int mpi_allgatherv ();
 
@@ -126,7 +131,9 @@ inline int LINES ::
   // Move notch just before first line to include
 
   vReal freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-  double    width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
+  double    width = profile_width (temperature.gas[p],
+                                   temperature.vturb2[p],
+                                   frequencies.line[lnotch]);
 
 
 # if (GRID_SIMD)
@@ -138,8 +145,10 @@ inline int LINES ::
     lnotch++;
 
     freq_diff = freq_scaled - (vReal) frequencies.line[lnotch];
-        width = profile_width (temperature.gas[p], frequencies.line[lnotch]);
-        
+        width = profile_width (temperature.gas[p],
+                               temperature.vturb2[p],
+                               frequencies.line[lnotch]);
+
        // cout << "LOWER*width = " << LOWER*width << endl;
   }
 
@@ -156,10 +165,17 @@ inline int LINES ::
     const vReal line_profile = profile (width, freq_diff);
     const long           ind = index   (p, frequencies.line_index[lindex]);
 
-    eta += emissivity[ind] * line_profile;
-    chi +=    opacity[ind] * line_profile;
+    eta += emissivity[ind] * freq_scaled * line_profile;
+    chi +=    opacity[ind] * freq_scaled * line_profile;
 
-  //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+    //cout << scientific << setprecision(16);
+    //cout << "e   over o   " << emissivity[ind] / opacity[ind] << endl;
+    //cout << "eta over chi " << eta             / chi          << "   " << chi << endl;
+
+    //if (lindex != lnotch)
+    //{
+    //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+    //}
 
     //cout << "FREQ DIFF = " << freq_diff << "    freq_scaled = " << freq_scaled << "   freq_line = " << frequencies.line[lindex]  << endl;
     //cout << "line profile = " << line_profile << endl;
@@ -169,15 +185,17 @@ inline int LINES ::
     lindex++;
 
     freq_diff = freq_scaled - (vReal) frequencies.line[lindex];
-        width = profile_width (temperature.gas[p], frequencies.line[lindex]);
+        width = profile_width (temperature.gas[p],
+                               temperature.vturb2[p],
+                               frequencies.line[lindex]);
   }
 
-  int lmn = lindex - lnotch;
+  //int lmn = lindex - lnotch;
 
-  //if (lmn < 1)
-  {
- //   cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
-  }
+  //if (lmn != 1)
+  //{
+  //  cout  << "l-n = " << lindex - lnotch << "   freq_diff " << freq_diff << "   LW " << LOWER*width << scientific << endl;
+  //}
 
   return (0);
 

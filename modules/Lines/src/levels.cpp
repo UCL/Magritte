@@ -28,7 +28,7 @@ using namespace Eigen;
 #include "RadiativeTransfer/src/frequencies.hpp"
 
 
-#define POP_PREC 1.0E-5
+#define POP_PREC 1.0E-6
 
 
 ///  Constructor for LEVELS
@@ -59,6 +59,7 @@ LEVELS                           (
 
   population.resize (ncells);
        J_eff.resize (ncells);
+       L_eff.resize (ncells);
 
   population_tot.resize (ncells);
 
@@ -76,6 +77,7 @@ LEVELS                           (
   {
     population[p].resize (nlspec);
          J_eff[p].resize (nlspec);
+         L_eff[p].resize (nlspec);
 
     population_tot[p].resize (nlspec);
 
@@ -88,6 +90,7 @@ LEVELS                           (
     {
       population[p][l].resize (nlev[l]);
            J_eff[p][l].resize (nrad[l]);
+           L_eff[p][l].resize (nrad[l]);
 
       population_tot[p][l] = 0.0;
 
@@ -123,7 +126,7 @@ int LEVELS ::
 
       ofstream pops_outputFile (pops_file);
       ofstream Jeff_outputFile (Jeff_file);
-      
+
       pops_outputFile << scientific << setprecision(16);
       Jeff_outputFile << scientific << setprecision(16);
 
@@ -178,8 +181,8 @@ int LEVELS ::
 
   for (int i = 0; i < linedata.nlev[l]; i++)
   {
-    population[p][l](i) = linedata.weight[l](i)
-                          * exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
+    population[p][l](i) = 1/(i+1)/(i+1);//linedata.weight[l](i)
+                          //* exp( -linedata.energy[l](i) / (KB*temperature.gas[p]) );
 
     partition_function += population[p][l](i);
   }
@@ -237,6 +240,21 @@ int LEVELS ::
   y(nlev[l]-1) = population_tot[p][l];
 
 
+
+
+
+  //string file_name = output_folder + "M_" + to_string(p) + ".txt";
+
+  //ofstream outputFile (file_name);
+
+  //outputFile << M << endl;
+
+  //outputFile.close ();
+
+  //
+  //cout << M << endl;
+
+
   // Solve matrix equation M*x=y for x
 
   population[p][l] = M.householderQr().solve(y);
@@ -289,7 +307,7 @@ int LEVELS ::
       {
         not_converged[l] = true;
 
-        fraction_not_converged[l] += 1.0/(ncells*nlev[l]);
+        fraction_not_converged[l] += 1.0 / (ncells*nlev[l]);
       }
     }
   }
@@ -310,7 +328,7 @@ int LEVELS ::
     calc_line_emissivity_and_opacity (
         const LINEDATA &linedata,
               LINES    &lines,
-	const long      p,
+	      const long      p,
         const int       l            ) const
 {
 
@@ -323,7 +341,7 @@ int LEVELS ::
 
     const long index = lines.index(p,l,k);
 
-    const double hv_4pi = HH_OVER_FOUR_PI * linedata.frequency[l][k];
+    const double hv_4pi = HH_OVER_FOUR_PI;// * linedata.frequency[l][k];
 
     lines.emissivity[index] = hv_4pi * linedata.A[l](i,j) * population[p][l](i);
 
@@ -348,7 +366,7 @@ int LEVELS ::
 /////////////////////////////////////////////////////////////////////////////
 
 int LEVELS ::
-    calc_J_eff (
+    calc_J_and_L_eff                   (
         const FREQUENCIES &frequencies,
         const TEMPERATURE &temperature,
         const RADIATION   &radiation,
@@ -361,6 +379,7 @@ int LEVELS ::
     const Long1 freq_nrs = frequencies.nr_line[p][l][k];
 
     J_eff[p][l][k] = 0.0;
+    L_eff[p][l][k] = 0.0;
 
     for (long z = 0; z < N_QUADRATURE_POINTS; z++)
     {
@@ -368,10 +387,13 @@ int LEVELS ::
         const long    f = freq_nrs[z] / n_simd_lanes;
         const long lane = freq_nrs[z] % n_simd_lanes;
         const double JJ = radiation.J[radiation.index(p,f)].getlane(lane);
+        const double LL = radiation.L[radiation.index(p,f)].getlane(lane);
 #     else
         const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
+        const double LL = radiation.L[radiation.index(p,freq_nrs[z])];
 #     endif
 
+      L_eff[p][l][k] += H_weights[z] * LL;
       J_eff[p][l][k] += H_weights[z] * JJ;
     }
   }

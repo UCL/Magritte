@@ -15,8 +15,9 @@
 ///    @return profile function evaluated at frequency freq
 ////////////////////////////////////////////////////////////////////////////
 
-inline vReal profile (const double width,
-                      const vReal  freq_diff)
+inline vReal profile      (
+    const double width,
+    const vReal  freq_diff)
 {
 
   const double inverse_width = 1.0 / width;
@@ -37,13 +38,21 @@ inline vReal profile (const double width,
 ///    @return width of the correpsonding line profile
 //////////////////////////////////////////////////////////////////////////////////
 
-inline double profile_width (const double temperature_gas,
-		                         const double freq_line)
+inline double profile_width      (
+    const double temperature_gas,
+    const double vturb2,
+    const double freq_line       )
 {
-  return freq_line * sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature_gas
-                           + V_TURB_OVER_C_ALL_SQUARED);
+  return freq_line * profile_width (temperature_gas, vturb2);
 }
 
+
+inline double profile_width      (
+    const double temperature_gas,
+    const double vturb2          )
+{
+  return 150/CC;//sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature_gas + 150*150/CC/CC);//vturb2);
+}
 
 
 

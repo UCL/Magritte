@@ -53,19 +53,20 @@ int main (void)
 	const string     species_file = example_input_folder + "species.txt";
   const string   abundance_file = example_input_folder + "abundance.txt";
   const string temperature_file = example_input_folder + "temperature.txt";
+  const string vturbulence_file = example_input_folder + "vturbulence.txt";
 
 
 	LINEDATA linedata (input_folder + "linedata/");
 
 
 	SPECIES species (ncells, nspec, species_file);
-
 	species.read (abundance_file);
 
 
-	TEMPERATURE temperature (ncells);
-
-	temperature.read (temperature_file);
+  TEMPERATURE temperature (NCELLS);
+  temperature.read     (
+      temperature_file,
+      vturbulence_file );
 
 
 	LINES lines (ncells, linedata);

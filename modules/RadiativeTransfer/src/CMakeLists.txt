@@ -65,9 +65,6 @@ add_library( _RADIATIVE_TRANSFER
   raydata.cpp
   image.cpp
   profile.hpp
-  RadiativeTransfer.hpp
-  set_up_ray.hpp
-  solve_ray.hpp
   timer.hpp
   heapsort.cpp
   interpolation.hpp )
