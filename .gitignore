@@ -7,54 +7,57 @@ Makefile
 CMakeCache.txt
 
 
-# Grid-related
-# ------------
+# build folder
+##############
 
-GridInstall*
+build*
+
+# binary folder
+###############
+
+bin*
 
 
-# Executables
-# -----------
+# Configuration
+###############
 
-*.o
+configure.hpp
+
+
+# Eigen folder
+##############
+
+Eigen*
+
+
+# Grid-SIMD folder
+##################
+
+Grid-SIMD*
+
+
+# executables
+#############
+
 *.exe
 
 
 # compiled libraries
-# ------------------
+####################
 
 *.a
 *.so
 
 
 # editor generated files
-# ----------------------
+########################
 
 *~
 *.swp
 
-# input
-# -----
-
-*input/files/*.txt
-*input/files/*.vtu
-*input/files/*.dat
-
-
-# output
-# ------
-
-*-*-*_*:*_output*
-*-*-*_*:*:*
-
-
-# Text files containting old large files
-# --------------------------------------
-
-#*.txt
 
 # .pyc files
-# ----------
+############
 
 *.pyc
 *__pycache__*

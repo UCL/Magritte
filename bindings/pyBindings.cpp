@@ -26,7 +26,7 @@ PYBIND11_MAKE_OPAQUE (Double3);
 
 PYBIND11_MAKE_OPAQUE (String1);
 
-PYBIND11_MAKE_OPAQUE (std::vector<Linedata>);
+PYBIND11_MAKE_OPAQUE (std::vector<LineProducingSpecies>);
 PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 
 
@@ -49,8 +49,8 @@ PYBIND11_MODULE (pyMagritte, module)
 
   py::bind_vector<String1> (module, "String1");
 
-  py::bind_vector<std::vector<Linedata>>         (module, "vLinedata");
-  py::bind_vector<std::vector<CollisionPartner>> (module, "vCollisionPartner");
+  py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
+  py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
 
 
   // Model
@@ -216,23 +216,45 @@ PYBIND11_MODULE (pyMagritte, module)
   // Lines
   py::class_<Lines> (module, "Lines")
       // attributes
-      .def_readwrite ("linedata",           &Lines::linedata)
-      .def_readwrite ("quadrature_roots",   &Lines::quadrature_roots)
-      .def_readwrite ("quadrature_weights", &Lines::quadrature_weights)
-      .def_readwrite ("population",         &Lines::population)
-      .def_readwrite ("population_prev1",   &Lines::population_prev1)
-      .def_readwrite ("population_prev2",   &Lines::population_prev2)
-      .def_readwrite ("population_prev3",   &Lines::population_prev3)
-      .def_readwrite ("nr_line",            &Lines::nr_line)
-      .def_readwrite ("emissivity",         &Lines::emissivity)
-      .def_readwrite ("opacity",            &Lines::opacity)
-      .def_readwrite ("J_line",             &Lines::J_line)
-      .def_readwrite ("J_star",             &Lines::J_star)
+      .def_readwrite ("lineProducingSpecies", &Lines::lineProducingSpecies)
+      .def_readwrite ("quadrature",           &Lines::quadrature)
+      .def_readwrite ("nr_line",              &Lines::nr_line)
+      .def_readwrite ("emissivity",           &Lines::emissivity)
+      .def_readwrite ("opacity",              &Lines::opacity)
       // constructor
       .def (py::init<>())
       // functions
-      .def ("read",                         &Lines::read)
-      .def ("write",                        &Lines::write);
+      .def ("read",                           &Lines::read)
+      .def ("write",                          &Lines::write);
+
+
+  // LineProducingSpecies
+  py::class_<LineProducingSpecies> (module, "LineProducingSpecies")
+      // attributes
+      .def_readwrite ("linedata",         &LineProducingSpecies::linedata)
+      .def_readwrite ("population",       &LineProducingSpecies::population)
+      .def_readwrite ("population_prev1", &LineProducingSpecies::population_prev1)
+      .def_readwrite ("population_prev2", &LineProducingSpecies::population_prev2)
+      .def_readwrite ("population_prev3", &LineProducingSpecies::population_prev3)
+      .def_readwrite ("J_line",           &LineProducingSpecies::J_line)
+      .def_readwrite ("J_star",           &LineProducingSpecies::J_star)
+      // constructor
+      .def (py::init<>())
+      // functions
+      .def ("read",                       &LineProducingSpecies::read)
+      .def ("write",                      &LineProducingSpecies::write);
+
+
+  // Quadrature
+  py::class_<Quadrature> (module, "Quadrature")
+      // attributes
+      .def_readwrite ("roots",   &Quadrature::roots)
+      .def_readwrite ("weights", &Quadrature::weights)
+      // constructor
+      .def (py::init<>())
+      // functions
+      .def ("read",              &Quadrature::read)
+      .def ("write",             &Quadrature::write);
 
 
   // Linedata

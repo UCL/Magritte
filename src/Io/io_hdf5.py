@@ -13,16 +13,25 @@ def read_length (io_file, file_name):
     Return the number of lines in the input file.
     """
     with hp.File (io_file, 'r') as file:
-        if isinstance (file[file_name], hp.Group):
+        try:
+            # Try to open the object
+            object = file [file_name]
+            # Check if it is a Dataset
+            if isinstance (object, hp.Dataset):
+                return object.len()
+        except:
+            # Get name of object we need to count
+            object_name = file_name.split('/')[-1]
+            # Get containing group
+            group_name = file_name[:-len(object_name)]
+            # Count occurences
             length = 0
-            for k in file[file_name].keys():
-                if isinstance (file[f'{file_name}/{k}'], hp.Group):
+            for key in file[group_name].keys():
+                if (object_name in key):
                     length += 1
             return length
-        if isinstance (file[file_name], hp.Dataset):
-            return file[file_name].len()
     # Error if not yet returned
-    raise ValueError ('file_name is no Group nor Dataset.')
+    raise ValueError ('file_name is no Group or Dataset.')
 
 
 def read_attribute (io_file, file_name):

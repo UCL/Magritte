@@ -34,7 +34,7 @@ int main (int argc, char **argv)
     simulation.read (io);
 
     simulation.parameters.set_max_iter (100);
-    simulation.parameters.set_pop_prec (1.0E-6);
+    simulation.parameters.set_pop_prec (1.0E-4);
 
 
     simulation.compute_spectral_discretisation ();
@@ -46,10 +46,10 @@ int main (int argc, char **argv)
 
     simulation.write (io);
 
-    for (long p = 0; p < simulation.parameters.ncells(); p++)
-    {
-      std::cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << std::endl;
-    }
+    //for (long p = 0; p < simulation.parameters.ncells(); p++)
+    //{
+    //  std::cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << std::endl;
+    //}
 
     std::cout << "Done." << std::endl;
   }

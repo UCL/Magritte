@@ -21,8 +21,10 @@ add_library (Magritte
   Model/Chemistry/chemistry.cpp
   Model/Chemistry/Species/species.cpp
   Model/Lines/lines.cpp
-  Model/Lines/Linedata/linedata.cpp
-  Model/Lines/Linedata/CollisionPartner/collisionPartner.cpp
+  Model/Lines/Quadrature/quadrature.cpp
+  Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp
+  Model/Lines/LineProducingSpecies/Linedata/linedata.cpp
+  Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp
   Model/Radiation/radiation.cpp
   Model/Radiation/Frequencies/frequencies.cpp
   Model/Thermodynamics/thermodynamics.cpp

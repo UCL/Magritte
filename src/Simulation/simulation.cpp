@@ -34,7 +34,7 @@ int Simulation ::
 
       for (long z = 0; z < parameters.nquads(); z++)
       {
-        freqs[index1] = freqs_line + width*lines.quadrature_roots[z];
+        freqs[index1] = freqs_line + width*lines.quadrature.roots[z];
         nmbrs[index1] = index1;
         index1++;
       }
@@ -405,8 +405,8 @@ inline void Simulation ::
   chi = 0.0;
 
 
-  const double lower = 1.00001*lines.quadrature_roots[0];
-  const double upper = 1.00001*lines.quadrature_roots[parameters.nquads()-1];
+  const double lower = 1.00001*lines.quadrature.roots[0];
+  const double upper = 1.00001*lines.quadrature.roots[parameters.nquads()-1];
 
 
   // Move notch up to first line to include
@@ -485,13 +485,14 @@ int Simulation ::
 
   OMP_PARALLEL_FOR (p, parameters.ncells())
   {
-    const double temperature = thermodynamics.temperature.gas[p];
+    const double tmp = thermodynamics.temperature.gas[p];
 
     for (int l = 0; l < parameters.nlspecs(); l++)
     {
-      const double abundance_lspec = chemistry.species.abundance[p][lines.linedata[l].num];
+      const long   lspec = lines.lineProducingSpecies[l].linedata.num;
+      const double abn   = chemistry.species.abundance[p][lspec];
 
-      lines.set_LTE_level_populations (abundance_lspec, temperature, p, l);
+      lines.lineProducingSpecies[l].set_LTE_level_populations (abn, tmp, p);
 
       lines.set_emissivity_and_opacity (p, l);
     }
@@ -516,21 +517,31 @@ int Simulation ::
   compute_LTE_level_populations ();
 
   // Initialize the number of iterations
-  int iteration = 1;
+  int iteration = 0;
 
   // Initialize some_not_converged
   bool some_not_converged = true;
 
 
   // Iterate as long as some levels are not converged
-  while (some_not_converged && (iteration <= parameters.max_iter()))
+  while (some_not_converged && (iteration < parameters.max_iter()))
   {
+
+    iteration++;
+
     std::cout << "Starting iteration " << iteration << std::endl;
+
+
+    // Start assuming convergence
+    some_not_converged = false;
 
 
     if (iteration % 4 == 0)
     {
-      lines.update_using_Ng_acceleration ();
+      for (int l = 0; l < parameters.nlspecs(); l++)
+      {
+        lines.lineProducingSpecies[l].update_using_Ng_acceleration ();
+      }
     }
 
 
@@ -539,29 +550,26 @@ int Simulation ::
 
     for (int l = 0; l < parameters.nlspecs(); l++)
     {
-      lines.         not_converged[l] = true;
-      lines.fraction_not_converged[l] = 0.0;
-    }
+      update_using_statistical_equilibrium (l);
+
+      lines.lineProducingSpecies[l].check_for_convergence (parameters.pop_prec());
+
+      error_mean.push_back (lines.lineProducingSpecies[l].relative_change_mean);
+      error_max.push_back  (lines.lineProducingSpecies[l].relative_change_max);
 
 
-    update_using_statistical_equilibrium ();
-
-
-    some_not_converged = false;
-
-    for (int l = 0; l < parameters.nlspecs(); l++)
-    {
-      if (lines.fraction_not_converged[l] > 0.005)
+      if (lines.lineProducingSpecies[l].fraction_not_converged > 0.005)
       {
         some_not_converged = true;
       }
 
-      std::cout << 100*lines.fraction_not_converged[l];
+      std::cout << 100*lines.lineProducingSpecies[l].fraction_not_converged;
       std::cout << " % not (yet) converged..." << endl;
     }
 
 
-    iteration++;
+    lines.gather_emissivities_and_opacities ();
+
 
   } // end of while loop of iterations
 
@@ -578,80 +586,74 @@ int Simulation ::
 
 
 int Simulation ::
-    update_using_statistical_equilibrium ()
+    update_using_statistical_equilibrium (
+        const long l                     )
 {
 
   double error_max_  = 0.0;
   double error_mean_ = 0.0;
 
+  lines.lineProducingSpecies[l].population_prev3 = lines.lineProducingSpecies[l].population_prev2;
+  lines.lineProducingSpecies[l].population_prev2 = lines.lineProducingSpecies[l].population_prev1;
+  lines.lineProducingSpecies[l].population_prev1 = lines.lineProducingSpecies[l].population;
+
+
   HYBRID_PARALLEL_FOR (p, parameters.ncells())
   {
-    for (int l = 0; l < parameters.nlspecs(); l++)
+
+    const long nlev = lines.lineProducingSpecies[l].linedata.nlev;
+
+
+    MatrixXd R = get_transition_matrix (p, l);
+    MatrixXd M = R.transpose();
+    VectorXd y = Eigen::VectorXd::Zero (nlev);
+
+
+    for (long i = 0; i < nlev; i++)
     {
-      const long nlev = lines.linedata[l].nlev;
-
-      lines.population_prev3[p][l] = lines.population_prev2[p][l];
-      lines.population_prev2[p][l] = lines.population_prev1[p][l];
-      lines.population_prev1[p][l] = lines.population[p][l];
-
-
-      Eigen::MatrixXd R = get_transition_matrix (p, l);
-      Eigen::MatrixXd M = R.transpose();
-      Eigen::VectorXd y = Eigen::VectorXd::Zero (nlev);
-
-
-      for (long i = 0; i < nlev; i++)
-      {
-        double R_i = 0.0;
-
-        for (long j = 0; j < nlev; j++)
-        {
-          R_i += R(i,j);
-        }
-
-        M(i,i) -= R_i;
-      }
-
-
-      // Replace last row with conservation equation
+      double R_i = 0.0;
 
       for (long j = 0; j < nlev; j++)
       {
-        M(nlev-1,j) = 1.0;
+        R_i += R(i,j);
       }
 
-      y(nlev-1) = lines.population_tot[p][l];
-
-
-      // Solve matrix equation M*x=y for x
-      lines.population[p][l] = M.householderQr().solve(y);
-
-
-      // Avoid too small (or negative) populations
-
-      for (int i = 0; i < nlev; i++)
-      {
-        if (lines.population[p][l](i)*lines.population_tot[p][l] < 1.0E-20)
-        {
-          lines.population[p][l](i) = 0.0;
-        }
-      }
-
-
-      lines.set_emissivity_and_opacity (p, l);
-
-
-      lines.check_for_convergence (p, l, parameters.pop_prec(), error_max_, error_mean_);
+      M(i,i) -= R_i;
     }
+
+
+    // Replace last row with conservation equation
+
+    for (long j = 0; j < nlev; j++)
+    {
+      M(nlev-1,j) = 1.0;
+    }
+
+    y(nlev-1) = lines.lineProducingSpecies[l].population_tot[p];
+
+
+    // Solve matrix equation M*x=y for x
+    VectorXd sol = M.householderQr().solve(y);
+
+
+    //// Avoid too small (or negative) populations
+
+    for (long i = 0; i < nlev; i++)
+    {
+      if (sol(i)*lines.lineProducingSpecies[l].population_tot[p] < 1.0E-20)
+      {
+        sol(i) = 0.0;
+      }
+
+      const long ind = lines.lineProducingSpecies[l].index (p, i);
+
+      lines.lineProducingSpecies[l].population (ind) = sol (i);
+    }
+
+
+    lines.set_emissivity_and_opacity (p, l);
+
   }
-
-  error_max.push_back (error_max_);
-  error_mean.push_back (error_mean_);
-
-
-  // Gather emissivities and opacities from all processes
-
-  lines.gather_emissivities_and_opacities ();
 
 
   return (0);
@@ -675,14 +677,16 @@ void Simulation ::
 
   const Long1 freq_nrs = lines.nr_line[p][l][k];
 
-  lines.J_line[p][l][k] = 0.0;
-  lines.J_star[p][l][k] = 0.0;
+
+  lines.lineProducingSpecies[l].J_line[p][k] = 0.0;
+  lines.lineProducingSpecies[l].J_star[p][k] = 0.0;
+
 
   for (long z = 0; z < parameters.nquads(); z++)
   {
 #   if (GRID_SIMD)
-      const long    f = newIndex(freq_nrs[z]);
-      const long lane =   laneNr(freq_nrs[z]);
+      const long    f = newIndex (freq_nrs[z]);
+      const long lane =   laneNr (freq_nrs[z]);
 
       const double J  = radiation.J      [radiation.index(p,f)].getlane(lane);
       const double JL = radiation.J_local[radiation.index(p,f)].getlane(lane);
@@ -691,8 +695,8 @@ void Simulation ::
       const double JL = radiation.J_local[radiation.index(p,freq_nrs[z])];
 #   endif
 
-    lines.J_line[p][l][k] += lines.quadrature_weights[z] * J;
-    lines.J_star[p][l][k] += lines.quadrature_weights[z] * JL;
+    lines.lineProducingSpecies[l].J_line[p][k] += lines.quadrature.weights[z] * J;
+    lines.lineProducingSpecies[l].J_star[p][k] += lines.quadrature.weights[z] * JL;
   }
 
 
@@ -706,7 +710,7 @@ Eigen::MatrixXd Simulation ::
         const long l      )
 {
 
-  Linedata linedata = lines.linedata[l];
+  Linedata linedata = lines.lineProducingSpecies[l].linedata;
 
   Eigen::MatrixXd R = Eigen::MatrixXd::Zero (linedata.nlev, linedata.nlev);
 
@@ -723,12 +727,14 @@ Eigen::MatrixXd Simulation ::
     calc_J_and_L_eff (p, l, k);
 
     const double inverse_S_line = lines.opacity[ind] / lines.emissivity[ind];
-    const double Jeff = lines.J_line[p][l][k] - lines.J_star[p][l][k];
+    const double Jeff =   lines.lineProducingSpecies[l].J_line[p][k];
+                        - lines.lineProducingSpecies[l].J_star[p][k];
 
-    cout << lines.J_line[p][l][k] / lines.J_star[p][l][k] << endl;
+    //cout <<   lines.lineProducingSpecies[l].J_line[p][k]
+    //        / lines.lineProducingSpecies[l].J_star[p][k] << endl;
 
 
-    R(i,j) += linedata.A[k] * (1.0 - lines.J_star[p][l][k] * inverse_S_line);
+    R(i,j) += linedata.A[k]* (1.0 - lines.lineProducingSpecies[l].J_star[p][k] * inverse_S_line);
 
     R(i,j) += linedata.Bs[k] * Jeff;
     R(j,i) += linedata.Ba[k] * Jeff;

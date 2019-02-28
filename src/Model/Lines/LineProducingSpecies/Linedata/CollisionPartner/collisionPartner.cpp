@@ -9,7 +9,7 @@
 #include "collisionPartner.hpp"
 
 
-const string CollisionPartner::prefix = "Lines/Linedata/";
+const string CollisionPartner::prefix = "Lines/LineProducingSpecies_";
 
 
 ///  read: read in collision partner data
@@ -23,8 +23,8 @@ int CollisionPartner ::
         const int c  )
 {
 
-  const string prefix_lc = prefix + "/lspec_" + std::to_string (l) + "/"
-                 + "CollisionPartner/colpar_" + std::to_string (c) + "/";
+  const string prefix_lc = prefix                 + std::to_string (l)
+                           + "/CollisionPartner_" + std::to_string (c) + "/";
 
 
   io.read_number (prefix_lc+".num_col_partner", num_col_partner);
@@ -73,8 +73,8 @@ int CollisionPartner ::
         const int c  ) const
 {
 
-  const string prefix_lc = prefix + "/lspec_" + std::to_string (l) + "/"
-                 + "CollisionPartner/colpar_" + std::to_string (c) + "/";
+  const string prefix_lc = prefix                 + std::to_string (l)
+                           + "/CollisionPartner_" + std::to_string (c) + "/";
 
 
   io.write_number (prefix_lc+".num_col_partner", num_col_partner);

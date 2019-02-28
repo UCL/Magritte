@@ -12,11 +12,11 @@ from scipy.spatial import Delaunay
 from rays          import rayVectors
 
 # Magritte specific imports
-from pyMagritte import Linedata, CollisionPartner
+from pyMagritte import Linedata, CollisionPartner, LineProducingSpecies
 from pyMagritte import Rays
 from pyMagritte import Long1,   Long2,   Long3
 from pyMagritte import Double1, Double2, Double3
-from pyMagritte import vLinedata, vCollisionPartner
+from pyMagritte import vCollisionPartner
 
 
 # Physical constants
@@ -281,5 +281,8 @@ def linedata_from_LAMDA_file (fileName, species):
                 i = colpar.icol[k]
                 j = colpar.jcol[k]
                 ld.colpar[c].Ce[t][k] = colpar.Cd[t][k] * ld.weight[i] / ld.weight[j] * np.exp(-(ld.energy[i]-ld.energy[j])/(KB * colpar.tmp[t]))
+    # Create LineProducingSpecies object
+    lspec          = LineProducingSpecies ()
+    lspec.linedata = ld
     # Done
-    return ld
+    return lspec

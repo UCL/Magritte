@@ -50,7 +50,8 @@ struct Simulation : public Model
             vReal &eta,
             vReal &chi         ) const;
 
-int update_using_statistical_equilibrium ();
+int update_using_statistical_equilibrium (
+    const long l                         );
 
 void calc_J_and_L_eff (
       const long p,

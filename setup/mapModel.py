@@ -80,9 +80,8 @@ def mapToXD (model1D, dimension, nrays, cellsInShell):
     # Extract neighbors
     model.geometry.cells = setup.neighborLists (model.geometry.cells)
     # Add linedata
-    model.lines.linedata = model1D.lines.linedata
+    model.lines.lineProducingSpecies = model1D.lines.lineProducingSpecies
     # Add quadrature info
-    model.lines.quadrature_roots   = model1D.lines.quadrature_roots
-    model.lines.quadrature_weights = model1D.lines.quadrature_weights
+    model.lines.quadrature = model1D.lines.quadrature
     # Done
     return model
