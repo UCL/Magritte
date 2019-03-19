@@ -45,6 +45,8 @@ struct Linedata
       // Collision partners
       std::vector <CollisionPartner> colpar;   ///< Vector containing collision partner data
 
+      long ncol_tot;
+
 
       // Io
       int read (

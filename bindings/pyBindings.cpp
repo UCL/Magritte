@@ -30,7 +30,7 @@ PYBIND11_MAKE_OPAQUE (std::vector<LineProducingSpecies>);
 PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 
 
-PYBIND11_MODULE (pyMagritte, module)
+PYBIND11_MODULE (magritte, module)
 {
 
   // Module docstring
@@ -48,6 +48,9 @@ PYBIND11_MODULE (pyMagritte, module)
   py::bind_vector<Double3> (module, "Double3");
 
   py::bind_vector<String1> (module, "String1");
+
+  py::bind_vector<Lambda1> (module, "Lambda1");
+  py::bind_vector<Lambda2> (module, "Lambda2");
 
   py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
   py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
@@ -73,7 +76,7 @@ PYBIND11_MODULE (pyMagritte, module)
   py::class_<Parameters> (module, "Parameters")
       // constructor
       .def (py::init())
-      // Setters
+      // setters
       .def ("set_ncells",     &Parameters::set_ncells    )
       .def ("set_nrays",      &Parameters::set_nrays     )
       .def ("set_nboundary",  &Parameters::set_nboundary )
@@ -85,7 +88,7 @@ PYBIND11_MODULE (pyMagritte, module)
       .def ("set_nquads",     &Parameters::set_nquads    )
       .def ("set_max_iter",   &Parameters::set_max_iter  )
       .def ("set_pop_prec",   &Parameters::set_pop_prec  )
-      // Getters
+      // getters
       .def ("ncells",         &Parameters::ncells    )
       .def ("nrays" ,         &Parameters::nrays     )
       .def ("nboundary",      &Parameters::nboundary )
@@ -96,7 +99,11 @@ PYBIND11_MODULE (pyMagritte, module)
       .def ("nlines",         &Parameters::nlines    )
       .def ("nquads",         &Parameters::nquads    )
       .def ("max_iter",       &Parameters::max_iter  )
-      .def ("pop_prec",       &Parameters::pop_prec  );
+      .def ("pop_prec",       &Parameters::pop_prec  )
+      // functions
+      .def ("read",           &Parameters::read      )
+      .def ("write",          &Parameters::write     );
+
 
 
   // Geometry
@@ -217,10 +224,10 @@ PYBIND11_MODULE (pyMagritte, module)
   py::class_<Lines> (module, "Lines")
       // attributes
       .def_readwrite ("lineProducingSpecies", &Lines::lineProducingSpecies)
-      .def_readwrite ("quadrature",           &Lines::quadrature)
-      .def_readwrite ("nr_line",              &Lines::nr_line)
       .def_readwrite ("emissivity",           &Lines::emissivity)
       .def_readwrite ("opacity",              &Lines::opacity)
+      .def_readwrite ("line",                 &Lines::line)
+      .def_readwrite ("line_index",           &Lines::line_index)
       // constructor
       .def (py::init<>())
       // functions
@@ -232,17 +239,33 @@ PYBIND11_MODULE (pyMagritte, module)
   py::class_<LineProducingSpecies> (module, "LineProducingSpecies")
       // attributes
       .def_readwrite ("linedata",         &LineProducingSpecies::linedata)
+      .def_readwrite ("quadrature",       &LineProducingSpecies::quadrature)
+      .def_readwrite ("Lambda",           &LineProducingSpecies::lambda)
+      .def_readwrite ("Jeff",             &LineProducingSpecies::Jeff)
+      .def_readwrite ("Jlin",             &LineProducingSpecies::Jlin)
+      .def_readwrite ("nr_line",          &LineProducingSpecies::nr_line)
       .def_readwrite ("population",       &LineProducingSpecies::population)
+      .def_readwrite ("population_tot",   &LineProducingSpecies::population_tot)
       .def_readwrite ("population_prev1", &LineProducingSpecies::population_prev1)
       .def_readwrite ("population_prev2", &LineProducingSpecies::population_prev2)
       .def_readwrite ("population_prev3", &LineProducingSpecies::population_prev3)
-      .def_readwrite ("J_line",           &LineProducingSpecies::J_line)
-      .def_readwrite ("J_star",           &LineProducingSpecies::J_star)
+      .def_readwrite ("ncells",           &LineProducingSpecies::ncells)
       // constructor
       .def (py::init<>())
       // functions
       .def ("read",                       &LineProducingSpecies::read)
       .def ("write",                      &LineProducingSpecies::write);
+
+
+  // Lambda
+  py::class_<Lambda> (module, "Lambda")
+      // attributes
+      .def_readwrite ("Ls", &Lambda::Ls)
+      .def_readwrite ("nr", &Lambda::nr)
+      // constructor
+      .def (py::init<>())
+      // functions
+      .def ("add_entry",    &Lambda::add_entry);
 
 
   // Quadrature
@@ -312,8 +335,7 @@ PYBIND11_MODULE (pyMagritte, module)
       .def (py::init())
       // functions
       .def ("read",                  &Radiation::read)
-      .def ("write",                 &Radiation::write)
-      .def ("index",                 &Radiation::index);
+      .def ("write",                 &Radiation::write);
 
 
   // Frequencies

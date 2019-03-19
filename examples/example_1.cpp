@@ -27,7 +27,7 @@ int main (int argc, char **argv)
     std::cout << "Running model: " << modelName << std::endl;
 
 
-    IoPython io ("io_hdf5", modelName);
+    IoPython io ("hdf5", modelName);
 
 
     Simulation simulation;

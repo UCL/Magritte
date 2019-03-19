@@ -5,9 +5,10 @@
 
 
 #include "quadrature.hpp"
+#include "Tools/logger.hpp"
 
 
-const string Quadrature::prefix = "Lines/Quadrature/";
+const string Quadrature::prefix = "Lines/LineProducingSpecies_";
 
 
 ///  read: read in data structure
@@ -18,11 +19,17 @@ const string Quadrature::prefix = "Lines/Quadrature/";
 int Quadrature ::
     read (
         const Io         &io,
+        const int         l,
               Parameters &parameters)
 {
 
+  write_to_log ("Reading quadrature");
 
-  io.read_length (prefix+"weights", nquads);
+
+  const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
+
+
+  io.read_length (prefix_l+"weights", nquads);
 
 
   parameters.set_nquads (nquads);
@@ -31,8 +38,8 @@ int Quadrature ::
   weights.resize (nquads);
   roots.resize   (nquads);
 
-  io.read_list (prefix+"weights", weights);
-  io.read_list (prefix+"roots",   roots  );
+  io.read_list (prefix_l+"weights", weights);
+  io.read_list (prefix_l+"roots",   roots  );
 
 
   return (0);
@@ -48,11 +55,18 @@ int Quadrature ::
 
 int Quadrature ::
     write (
-        const Io &io) const
+        const Io  &io,
+        const int  l  ) const
 {
 
-  io.write_list (prefix+"weights", weights);
-  io.write_list (prefix+"roots",   roots  );
+  write_to_log ("Writing quadrature");
+
+
+  const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
+
+
+  io.write_list (prefix_l+"weights", weights);
+  io.write_list (prefix_l+"roots",   roots  );
 
 
   return (0);

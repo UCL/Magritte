@@ -44,9 +44,13 @@ struct CollisionPartner
       const int l,
       const int c  ) const;
 
+  // Inlined functions
+  inline void adjust_abundance_for_ortho_or_para (
+      const double  temperature_gas,
+            double &abundance                    ) const;
 
-inline void interpolate_collision_coefficients (
-      const double temperature_gas             );
+  inline void interpolate_collision_coefficients (
+        const double temperature_gas             );
 
 
   private:

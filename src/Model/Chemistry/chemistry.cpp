@@ -5,6 +5,7 @@
 
 
 #include "chemistry.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  read: read model data
@@ -17,6 +18,9 @@ int Chemistry ::
       const Io         &io,
             Parameters &parameters)
 {
+
+  write_to_log ("Reading chemistry");
+
 
   species.read (io, parameters);
 
@@ -36,6 +40,9 @@ int Chemistry ::
    write (
       const Io &io) const
 {
+
+  write_to_log ("Writing chemistry");
+
 
   species.write (io);
 

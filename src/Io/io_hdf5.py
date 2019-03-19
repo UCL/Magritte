@@ -41,7 +41,10 @@ def read_attribute (io_file, file_name):
     with hp.File (io_file, 'r') as file:
         object    = file_name.split('.')[0]
         attribute = file_name.split('.')[1]
-        return file[object].attrs[attribute]
+        if object != '':
+            return file[object].attrs[attribute]
+        else:
+            return file.attrs[attribute]
 
 
 def write_attribute (io_file, file_name, data):
@@ -57,7 +60,10 @@ def write_attribute (io_file, file_name, data):
         for g in object.split('/'):
             group += f'/{g}'
             file.require_group (group)
-        file[object].attrs[attribute] = data
+        if object != '':
+            file[object].attrs[attribute] = data
+        else:
+            file.attrs[attribute] = data
 
 
 def read_number (io_file, file_name):
@@ -79,7 +85,9 @@ def read_array (io_file, file_name):
     Return the contents of the data array.
     """
     with hp.File (io_file, 'r') as file:
-        return np.array (file.get (file_name))
+        if (file_name in file):
+            return np.array (file.get (file_name))
+
 
 
 def write_array (io_file, file_name, data):
@@ -87,16 +95,22 @@ def write_array (io_file, file_name, data):
     Write the contents to the data array.
     """
     with hp.File (io_file) as file:
+        #print (io_file, file_name)
         # Delete if dataset already exists
         try:
+            #print("deleting ", file_name)
             del file[file_name]
         except:
             pass
         # Make sure all groups exists, if not create them
-        # NOTE: ASSUMES THAT NUMBER IS WRITTEN TO A DATASET !
+        # NOTE: ASSUMES THAT DATA IS WRITTEN TO A DATASET
         group = ''
         for g in file_name.split('/')[:-1]:
             group += f'/{g}'
             file.require_group (group)
+            #print("required ", group)
         # Write dataset
-        file.create_dataset (name=file_name, data=data)
+        try:
+            file.create_dataset (name=file_name, data=data)
+        except:
+            print ("failed to write ", file_name)

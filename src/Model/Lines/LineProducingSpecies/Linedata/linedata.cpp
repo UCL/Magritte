@@ -10,6 +10,7 @@ using std::string;
 
 #include "linedata.hpp"
 #include "Tools/constants.hpp"
+#include "Tools/logger.hpp"
 #include "Functions/interpolation.hpp"
 
 
@@ -27,14 +28,17 @@ int Linedata ::
         const int l  )
 {
 
+  write_to_log ("Reading linedata");
+
+
   const string prefix_l = prefix + std::to_string (l) + "/Linedata/";
 
 
   io.read_number (prefix_l+".num", num);
   io.read_word   (prefix_l+".sym", sym);
 
-  io.read_length (prefix_l+"energy",    nlev);
-  io.read_length (prefix_l+"frequency", nrad);
+  io.read_number (prefix_l+".nlev", nlev);
+  io.read_number (prefix_l+".nrad", nrad);
 
   irad.resize (nrad);
   jrad.resize (nrad);
@@ -73,6 +77,14 @@ int Linedata ::
   }
 
 
+  ncol_tot = 0;
+
+  for (int c = 0; c < ncolpar; c++)
+  {
+    ncol_tot += colpar[c].ncol;
+  }
+
+
   return (0);
 
 }
@@ -91,11 +103,17 @@ int Linedata ::
         const int l  ) const
 {
 
+  write_to_log ("Writing linedata");
+
+
   const string prefix_l = prefix + std::to_string (l) + "/Linedata/";
 
 
   io.write_number (prefix_l+".num", num);
   io.write_word   (prefix_l+".sym", sym);
+
+  io.write_number (prefix_l+".nlev", nlev);
+  io.write_number (prefix_l+".nrad", nrad);
 
   io.write_list (prefix_l+"irad", irad);
   io.write_list (prefix_l+"jrad", jrad);

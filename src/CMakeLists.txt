@@ -10,10 +10,11 @@ configure_file (configure.hpp.in
 include_directories (.)
 
 # Create Magritte library
-add_library (Magritte
+add_library (_Magritte
   Io/io.cpp
   Io/io_text.cpp
   Model/model.cpp
+  Model/parameters.cpp
   Model/Geometry/geometry.cpp
   Model/Geometry/Cells/cells.cpp
   Model/Geometry/Rays/rays.cpp
@@ -21,8 +22,8 @@ add_library (Magritte
   Model/Chemistry/chemistry.cpp
   Model/Chemistry/Species/species.cpp
   Model/Lines/lines.cpp
-  Model/Lines/Quadrature/quadrature.cpp
   Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp
+  Model/Lines/LineProducingSpecies/Quadrature/quadrature.cpp
   Model/Lines/LineProducingSpecies/Linedata/linedata.cpp
   Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp
   Model/Radiation/radiation.cpp

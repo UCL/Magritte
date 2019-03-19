@@ -27,13 +27,13 @@ int main (int argc, char **argv)
     std::cout << "Running model: " << modelName << std::endl;
 
 
-    IoPython io ("io_hdf5", modelName);
+    IoPython io ("hdf5", modelName);
 
 
     Simulation simulation;
     simulation.read (io);
 
-    simulation.parameters.set_max_iter (100);
+    simulation.parameters.set_max_iter (10);
     simulation.parameters.set_pop_prec (1.0E-4);
 
 

@@ -5,6 +5,7 @@
 
 
 #include "geometry.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  read: read the input into the data structure
@@ -17,6 +18,9 @@ int Geometry ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading geometry");
+
 
   cells.read    (io, parameters);
 
@@ -40,6 +44,9 @@ int Geometry ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing geometry");
+
 
   cells.write    (io);
 

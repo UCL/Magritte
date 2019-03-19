@@ -6,6 +6,7 @@
 
 #include "cells.hpp"
 #include "Tools/constants.hpp"
+#include "Tools/logger.hpp"
 
 
 const string Cells::prefix = "Geometry/Cells/";
@@ -21,6 +22,9 @@ int Cells ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading cells");
+
 
   io.read_length (prefix+"cells", ncells);
 
@@ -86,18 +90,26 @@ int Cells ::
         const Io &io) const
 {
 
+  write_to_log ("Writing cells");
+
+
   // Write cell centers and velocities
 
   io.write_3_vector (prefix+"cells", x, y, z);
 
+  write_to_log ("Succes in writing coordinates");
+
   io.write_3_vector (prefix+"velocities", vx, vy, vz);
 
+  write_to_log ("Succes in writing velocities");
 
   // Write number of neighbors and neighbors lists
 
   io.write_list  (prefix+"n_neighbors", n_neighbors);
 
   io.write_array (prefix+"neighbors", neighbors);
+
+  write_to_log ("Succes in writing cells");
 
 
   return (0);

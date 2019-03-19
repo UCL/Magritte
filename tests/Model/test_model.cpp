@@ -6,29 +6,28 @@
 
 #include <iostream>
 #include <string>
+using namespace std;
 
 #include "catch.hpp"
 
+#include "configure.hpp"
 #include "Model/model.hpp"
-#include "Io/io_text.hpp"
+#include "Io/io_Python.hpp"
 
 
-TEST_CASE ("Text input")
+TEST_CASE ("Model", "[read]")
 {
 
-  // Input file (in this case a folder)
-  string io_file = "/home/frederik/Dropbox/Astro/Magritte/modules/Magritte/tests/testData/";
+  // Setup
 
-  // Create the input object (for txt based input)
-  IoText io (io_file);
+  const string model_folder = string (MAGRITTE_FOLDER)
+                              + "/data/testdata/model_test_model.hdf5";
 
-  // Create the model object
+  IoPython io ("hdf5", model_folder);
+
   Model model;
   model.read (io);
 
-//  SECTION ("Vector components of rays")
-  //{
-    //CHECK (true);
-  //}
+  CHECK (true);
 
 }

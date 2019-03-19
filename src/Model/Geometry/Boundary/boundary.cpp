@@ -5,6 +5,7 @@
 
 
 #include "boundary.hpp"
+#include "Tools/logger.hpp"
 
 
 const string Boundary::prefix = "Geometry/Boundary/";
@@ -20,6 +21,9 @@ int Boundary ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading boundary");
+
 
   ncells = parameters.ncells();
 
@@ -73,6 +77,9 @@ int Boundary ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing boundary");
+
 
   io.write_list (prefix+"boundary2cell_nr", boundary2cell_nr);
 

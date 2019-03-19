@@ -63,13 +63,13 @@ struct IoPython : public Io
   private:
 
       template <class type>
-      void read_in_python (
+       int read_in_python (
           const string  function,
           const string  file_name,
                 type   &data      ) const;
 
       template <class type>
-      void write_in_python (
+       int write_in_python (
           const string  function,
           const string  file_name,
           const type   &data      ) const;

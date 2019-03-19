@@ -6,6 +6,7 @@
 
 #include "turbulence.hpp"
 #include "Tools/constants.hpp"
+#include "Tools/logger.hpp"
 
 
 const string Turbulence::prefix = "Thermodynamics/Turbulence/";
@@ -21,6 +22,9 @@ int Turbulence ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading turbulence");
+
 
   // Get number of cells from length of temperature/gas file
   io.read_length (prefix+"vturbulence", ncells);
@@ -56,6 +60,9 @@ int Turbulence ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing turbulence");
+
 
   // Read gas turbulence file
   io.write_list (prefix+"vturbulence", vturb2);

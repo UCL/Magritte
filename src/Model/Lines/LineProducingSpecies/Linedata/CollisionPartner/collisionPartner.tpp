@@ -44,3 +44,28 @@ inline void CollisionPartner ::
 
 
 }
+
+
+inline void CollisionPartner ::
+    adjust_abundance_for_ortho_or_para (
+        const double  temperature_gas,
+              double &abundance        ) const
+{
+
+  if (orth_or_para_H2 != "n")
+  {
+    const double frac_H2_para = 1.0 / (1.0 + 9.0*exp (-170.5/temperature_gas));
+
+    if (orth_or_para_H2 == "o")
+    {
+      abundance *= (1.0 - frac_H2_para);
+    }
+
+    if (orth_or_para_H2 == "p")
+    {
+      abundance *= frac_H2_para;
+    }
+  }
+
+
+}

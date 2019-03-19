@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include "rays.hpp"
+#include "Tools/logger.hpp"
 
 
 const string Rays::prefix = "Geometry/Rays/";
@@ -22,6 +23,9 @@ int Rays ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading rays");
+
 
   io.read_length (prefix+"rays", nrays);
 
@@ -70,6 +74,9 @@ int Rays ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing rays");
+
 
   io.write_3_vector (prefix+"rays", x, y, z);
 

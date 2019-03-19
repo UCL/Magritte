@@ -5,9 +5,10 @@
 include_directories (../src)
 
 # pybind11 command to create the python module in bin directory
-pybind11_add_module (pyMagritte
+pybind11_add_module (magritte
   pyBindings.cpp
   ../src/Model/model.cpp
+  ../src/Model/parameters.cpp
   ../src/Model/Geometry/geometry.cpp
   ../src/Model/Geometry/Cells/cells.cpp
   ../src/Model/Geometry/Rays/rays.cpp
@@ -15,8 +16,8 @@ pybind11_add_module (pyMagritte
   ../src/Model/Chemistry/chemistry.cpp
   ../src/Model/Chemistry/Species/species.cpp
   ../src/Model/Lines/lines.cpp
-  ../src/Model/Lines/Quadrature/quadrature.cpp
   ../src/Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp
+  ../src/Model/Lines/LineProducingSpecies/Quadrature/quadrature.cpp
   ../src/Model/Lines/LineProducingSpecies/Linedata/linedata.cpp
   ../src/Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp
   ../src/Model/Radiation/radiation.cpp

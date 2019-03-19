@@ -12,7 +12,6 @@
 #include "Tools/types.hpp"
 #include "Model/parameters.hpp"
 #include "Model/Lines/LineProducingSpecies/lineProducingSpecies.hpp"
-#include "Model/Lines/Quadrature/quadrature.hpp"
 
 
 struct Lines
@@ -22,16 +21,8 @@ struct Lines
 
       std::vector <LineProducingSpecies> lineProducingSpecies;
 
-
-      Quadrature quadrature;
-
-
       Double1 line;         ///< [Hz] line center frequencies orderd
       Long1   line_index;   ///< index of the corresponding frequency in line
-
-      Long4 nr_line;        ///< frequency number corresponing to line (p,l,k,z)
-
-
 
       Double1 emissivity;   ///< line emissivity (p,l,k)
       Double1 opacity;      ///< line opacity    (p,l,k)
@@ -46,7 +37,17 @@ struct Lines
           const Io &io) const;
 
 
-      int gather_emissivities_and_opacities ();
+      int iteration_using_LTE (
+          const Double2 &abundance,
+          const Double1 &temperature);
+
+      int iteration_using_statistical_equilibrium (
+          const Double2 &abundance,
+          const Double1 &temperature,
+          const double   pop_prec                 );
+
+      int iteration_using_Ng_acceleration (
+          const double   pop_prec         );
 
 
       // Inline functions
@@ -59,9 +60,12 @@ struct Lines
           const long p,
           const long line_index) const;
 
-      inline void set_emissivity_and_opacity (
-      	  const long p,
-          const int  l                       );
+      inline void set_emissivity_and_opacity ();
+
+
+      int initialize_Lambda ();
+
+      int gather_emissivities_and_opacities ();
 
 
   private:
@@ -69,7 +73,6 @@ struct Lines
       long ncells;
       long nlines;
       long nlspecs;
-      long nquads;
 
       Long1 nrad_cum;
 

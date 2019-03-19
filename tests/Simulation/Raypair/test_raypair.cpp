@@ -5,21 +5,216 @@
 
 
 #include <iostream>
-#include <string>
-using namespace std;
+
+#include <Eigen/Core>
+#include <Eigen/Dense>
+
 
 #include "catch.hpp"
 
 #include "Simulation/Raypair/raypair.hpp"
+#include "Model/Thermodynamics/thermodynamics.hpp"
+
+#define EPS 1.0E-15
+
+// Allow access to private variables
+#define private public
 
 
-TEST_CASE ("Test RayPair::solver")
+TEST_CASE ("RayPair::solve")
 {
 
+  // Setup
 
-  SECTION ("OMP_PARALLEL_FOR macro")
+  RayPair rayPair;
+
+
+  const long n_r  = 5;
+  const long n_ar = 5;
+
+  rayPair.initialize (n_ar, n_r);
+
+  const long ndep       = rayPair.ndep;
+  const long n_off_diag = rayPair.n_off_diag;
+
+  const vReal  eta      = 1.0;
+  const vReal  chi      = 0.3;
+  const vReal  U_scaled = 0.0;
+  const vReal  V_scaled = 0.0;
+  const double dZ       = 0.1;
+
+  for (long d = 0; d < ndep; d++)
   {
-    CHECK (true);
+    rayPair.set_term1_and_term2 ((d+1)*eta, (d*d)*chi,       U_scaled, V_scaled, d);
+    rayPair.set_dtau            ((d*d)*chi, (d-1)*(d-1)*chi, dZ,                 d);
+  }
+
+
+  rayPair.solve ();
+
+  SECTION ("Lambda operator")
+  {
+    Eigen::MatrixXd M (ndep, ndep);
+
+    for (long d = 0; d < ndep-1; d++)
+    {
+      M(d,d+1) = -rayPair.C[d];
+    }
+
+    for (long d = 1; d < ndep; d++)
+    {
+      M(d,d-1) = -rayPair.A[d];
+    }
+
+    for (long d = 1; d < ndep-1; d++)
+    {
+      M(d,d) = 1.0 + rayPair.A[d] + rayPair.C[d];
+    }
+
+    M(0     ,0      ) = vOne + 2.0/rayPair.dtau[0]
+                        + 2.0/(rayPair.dtau[0]     *rayPair.dtau[0]     );
+    M(ndep-1, ndep-1) = vOne + 2.0/rayPair.dtau[ndep-2]
+                        + 2.0/(rayPair.dtau[ndep-2]*rayPair.dtau[ndep-2]);
+
+
+    MatrixXd M_inverse = M.inverse();
+
+
+    SECTION ("L diagonal")
+    {
+      for (long d = 0; d < ndep; d++)
+      {
+        CHECK (rayPair.L_diag[d] == Approx(M_inverse(d,d)).epsilon(EPS));
+      }
+    }
+
+    SECTION ("L upper")
+    {
+      for (long m = 0; m < n_off_diag; m++)
+      {
+        for (long d = 0; d < ndep-m-1; d++)
+        {
+          std::cout << "m = " << m << "   d = " << d << std::endl;
+
+          CHECK (rayPair.L_upper[m][d] == Approx(M_inverse(d,d+m+1)).epsilon(EPS));
+        }
+      }
+    }
+
+    SECTION ("L lower")
+    {
+      for (long m = 0; m < n_off_diag; m++)
+      {
+        for (long d = 0; d < ndep-m-1; d++)
+        {
+          std::cout << "m = " << m << "   d = " << d << std::endl;
+
+          CHECK (rayPair.L_lower[m][d] == Approx(M_inverse(d+m+1,d)).epsilon(EPS));
+        }
+      }
+    }
+  }
+
+}
+
+
+
+
+TEST_CASE ("RayPair::get_L_diag")
+{
+
+  // Setup
+
+  RayPair rayPair;
+
+
+  const long n_r  = 5;
+  const long n_ar = 5;
+
+  rayPair.initialize (n_ar, n_r);
+
+  const long ndep       = rayPair.ndep;
+  const long n_off_diag = rayPair.n_off_diag;
+
+  const vReal  eta      = 1.0E+0;
+  const vReal  chi      = 1.0E+9;
+  const vReal  U_scaled = 0.0;
+  const vReal  V_scaled = 0.0;
+  const double dZ       = 1.0E+0;
+
+  for (long d = 0; d < ndep; d++)
+  {
+    rayPair.set_term1_and_term2 ((d+1)*eta, (d*d)*chi,       U_scaled, V_scaled, d);
+    rayPair.set_dtau            ((d*d)*chi, (d-1)*(d-1)*chi, dZ,                 d);
+  }
+
+
+  rayPair.solve ();
+
+  SECTION ("Lambda operator")
+  {
+    Eigen::MatrixXd M (ndep, ndep);
+
+    for (long d = 0; d < ndep-1; d++)
+    {
+      M(d,d+1) = -rayPair.C[d];
+    }
+
+    for (long d = 1; d < ndep; d++)
+    {
+      M(d,d-1) = -rayPair.A[d];
+    }
+
+    for (long d = 1; d < ndep-1; d++)
+    {
+      M(d,d) = 1.0 + rayPair.A[d] + rayPair.C[d];
+    }
+
+    M(0     ,0      ) = vOne + 2.0/rayPair.dtau[0]
+                        + 2.0/(rayPair.dtau[0]     *rayPair.dtau[0]     );
+    M(ndep-1, ndep-1) = vOne + 2.0/rayPair.dtau[ndep-2]
+                        + 2.0/(rayPair.dtau[ndep-2]*rayPair.dtau[ndep-2]);
+
+
+    MatrixXd M_inverse = M.inverse();
+
+
+    std::cout << M_inverse << std::endl;
+
+
+    SECTION ("L diagonal")
+    {
+      for (long d = 0; d < ndep; d++)
+      {
+        CHECK (rayPair.L_diag[d] == Approx(M_inverse(d,d)).epsilon(EPS));
+      }
+    }
+
+    SECTION ("L upper")
+    {
+      for (long m = 0; m < n_off_diag; m++)
+      {
+        for (long d = 0; d < ndep-m-1; d++)
+        {
+          std::cout << "m = " << m << "   d = " << d << std::endl;
+
+          CHECK (rayPair.L_upper[m][d] == Approx(M_inverse(d,d+m+1)).epsilon(EPS));
+        }
+      }
+    }
+
+    SECTION ("L lower")
+    {
+      for (long m = 0; m < n_off_diag; m++)
+      {
+        for (long d = 0; d < ndep-m-1; d++)
+        {
+          std::cout << "m = " << m << "   d = " << d << std::endl;
+
+          CHECK (rayPair.L_lower[m][d] == Approx(M_inverse(d+m+1,d)).epsilon(EPS));
+        }
+      }
+    }
   }
 
 }

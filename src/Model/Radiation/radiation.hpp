@@ -32,15 +32,13 @@ struct Radiation
       vReal2 u;         ///< u intensity              (r, index(p,f))
       vReal2 v;         ///< v intensity              (r, index(p,f))
 
-      vReal2 u_local;   ///< local approximation to u (r, index(p,f))
-
       vReal2 U;         ///< U scattered intensity   (r, index(p,f))
       vReal2 V;         ///< V scattered intensity   (r, index(p,f))
 
       vReal1 J;         ///< (angular) mean intensity (index(p,f))
       vReal1 G;         ///< (angular) mean intensity (index(p,f))
 
-      vReal1 J_local;   ///< local approximation to J (index(p,f))
+      //vReal1 J_local;   ///< local approximation to J (index(p,f))
 
       vReal3 I_bdy;     ///< intensity at the boundary (r,b,f)
 
@@ -58,6 +56,11 @@ struct Radiation
     inline long index (
         const long p,
         const long f  ) const;
+
+    inline long index (
+        const long p,
+        const long f,
+        const long m  ) const;
 
     inline vReal get_U (
         const long R,
@@ -115,7 +118,7 @@ struct Radiation
               vReal &Ibdy_scaled) const;
 
 
-  int calc_J_and_J_local ();
+  int calc_J_and_G ();
 
   int calc_U_and_V ();
 
@@ -127,6 +130,7 @@ struct Radiation
       long nrays_red;             ///< reduced number of rays
       long nfreqs_red;             ///< reduced number of frequencies
       long nboundary;             ///< number of boundary cells
+      long n_off_diag;             ///< number of boundary cells
 
   //template <int Dimension, long Nrays>
   //int compute_mean_intensity                      (

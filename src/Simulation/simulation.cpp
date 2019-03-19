@@ -8,6 +8,8 @@
 
 #include "simulation.hpp"
 #include "Tools/debug.hpp"
+#include "Tools/logger.hpp"
+#include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
 #include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/Parallel/hybrid.hpp"
@@ -23,20 +25,29 @@ int Simulation ::
   {
     Double1 freqs (parameters.nfreqs());
     Long1   nmbrs (parameters.nfreqs());
+    long    index0 = 0;
     long    index1 = 0;
 
 
     // Add the line frequencies (over the profile)
-    for (int t = 0; t < parameters.nlines(); t++)
+    for (int l = 0; l < parameters.nlspecs(); l++)
     {
-      const double freqs_line = lines.line[t];
-      const double width      = freqs_line * thermodynamics.profile_width (p);
-
-      for (long z = 0; z < parameters.nquads(); z++)
+      for (int k = 0; k < lines.lineProducingSpecies[l].linedata.nrad; k++)
       {
-        freqs[index1] = freqs_line + width*lines.quadrature.roots[z];
-        nmbrs[index1] = index1;
-        index1++;
+        const double freqs_line = lines.line[index0];
+        const double width      = freqs_line * thermodynamics.profile_width (p);
+
+        for (long z = 0; z < parameters.nquads(); z++)
+        {
+          const double root = lines.lineProducingSpecies[l].quadrature.roots[z];
+
+          freqs[index1] = freqs_line + width * root;
+          nmbrs[index1] = index1;
+
+          index1++;
+        }
+
+        index0++;
       }
     }
     /*
@@ -130,21 +141,37 @@ int Simulation ::
     for (long fl = 0; fl < parameters.nfreqs(); fl++)
     {
       nmbrs_inverted[nmbrs[fl]] = fl;
+
+      radiation.frequencies.appears_in_line_integral[fl] = false;;
+      radiation.frequencies.corresponding_l_for_spec[fl] = parameters.nfreqs();
+      radiation.frequencies.corresponding_k_for_tran[fl] = parameters.nfreqs();
+      radiation.frequencies.corresponding_z_for_line[fl] = parameters.nfreqs();
     }
 
     long index2 = 0;
 
-    for (int l = 0; l < lines.nr_line[p].size(); l++)
+    for (int l = 0; l < parameters.nlspecs(); l++)
     {
-      for (int k = 0; k < lines.nr_line[p][l].size(); k++)
+      for (int k = 0; k < lines.lineProducingSpecies[l].nr_line[p].size(); k++)
       {
-        for (long z = 0; z < lines.nr_line[p][l][k].size(); z++)
+        for (long z = 0; z < lines.lineProducingSpecies[l].nr_line[p][k].size(); z++)
         {
-          lines.nr_line[p][l][k][z] = nmbrs_inverted[index2];
+          lines.lineProducingSpecies[l].nr_line[p][k][z] = nmbrs_inverted[index2];
+
+          radiation.frequencies.appears_in_line_integral[index2] = true;
+          radiation.frequencies.corresponding_l_for_spec[index2] = l;
+          radiation.frequencies.corresponding_k_for_tran[index2] = k;
+          radiation.frequencies.corresponding_z_for_line[index2] = z;
+
           index2++;
         }
       }
     }
+
+
+    // Create lookup table for the transition corresponding to each frequency
+
+
 
   } // end of OMP_PARALLEL_FOR (p, parameters.ncells())
 
@@ -188,6 +215,15 @@ int Simulation ::
     compute_radiation_field ()
 {
 
+  const double inverse_nrays_over_two = 2.0 / parameters.nrays();
+
+
+  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  {
+    lspec.initialize_Lambda ();
+  }
+
+
   RayPair rayPair;
 
 
@@ -196,7 +232,7 @@ int Simulation ::
     const long R  = r - MPI_start (parameters.nrays()/2);
     const long ar = geometry.rays.antipod[r];
 
-    std::cout << "ray = " << r << "   with antipodal = " << ar << std::endl;
+    write_to_log ("ray = ", r, " with antipodal = ", ar);
 
 //#   pragma omp parallel default (shared) private (rayPair)
 //    for (long o = OMP_start (parameters.ncells()); o < OMP_stop (parameters.ncells()); o++)
@@ -227,10 +263,21 @@ int Simulation ::
 
           const long ind = radiation.index (o,f);
 
-          radiation.u      [R][ind] = rayPair.get_u_at_origin ();
-          radiation.v      [R][ind] = rayPair.get_v_at_origin ();
+          radiation.u[R][ind] = rayPair.get_u_at_origin ();
+          radiation.v[R][ind] = rayPair.get_v_at_origin ();
 
-          radiation.u_local[R][ind] = rayPair.get_u_local_at_origin ();
+
+          // Extract the Lambda operator
+
+          rayPair.update_Lambda (
+              radiation.frequencies,
+              thermodynamics,
+              o,
+              f,
+              inverse_nrays_over_two,
+              lines.lineProducingSpecies);
+
+
         }
       }
 
@@ -242,10 +289,8 @@ int Simulation ::
         {
           const long ind = radiation.index (o,f);
 
-          radiation.u      [R][ind] = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
-          radiation.v      [R][ind] = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
-
-          radiation.u_local[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+          radiation.u[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+          radiation.v[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
         }
       }
 
@@ -257,8 +302,10 @@ int Simulation ::
 
   // Reduce results of all MPI processes to get J, J_local, U and V
 
-  radiation.calc_J_and_J_local ();
-  radiation.calc_U_and_V       ();
+  radiation.calc_J_and_G ();
+  radiation.calc_U_and_V ();
+
+  //lines.reduce_Lambdas ();
 
 
   return (0);
@@ -298,6 +345,10 @@ inline void Simulation ::
 
   rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index);
 
+  rayPair.chi[index] = chi;
+  rayPair.nrs[index] = cellNr;
+  rayPair.frs[index] = freq_scaled;
+
   vReal chi_prev = chi;
   vReal chi_o    = chi;
 
@@ -306,7 +357,6 @@ inline void Simulation ::
 
   if (rayData_ar.size() > 0)
   {
-
     index = rayData_ar.size() - 1;
 
     for (ProjectedCellData data : rayData_ar)
@@ -318,6 +368,10 @@ inline void Simulation ::
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index);
+
+      rayPair.chi[index] = chi;
+      rayPair.nrs[index] = data.cellNr;
+      rayPair.frs[index] = freq_scaled;
 
       chi_prev = chi;
       index--;
@@ -355,6 +409,10 @@ inline void Simulation ::
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index-1);
+
+      rayPair.chi[index] = chi;
+      rayPair.nrs[index] = data.cellNr;
+      rayPair.frs[index] = freq_scaled;
 
       chi_prev = chi;
       index++;
@@ -405,8 +463,8 @@ inline void Simulation ::
   chi = 0.0;
 
 
-  const double lower = 1.00001*lines.quadrature.roots[0];
-  const double upper = 1.00001*lines.quadrature.roots[parameters.nquads()-1];
+  const double lower = 1.00001*lines.lineProducingSpecies[0].quadrature.roots[0];
+  const double upper = 1.00001*lines.lineProducingSpecies[0].quadrature.roots[parameters.nquads()-1];
 
 
   // Move notch up to first line to include
@@ -476,34 +534,19 @@ inline void Simulation ::
 
 
 
-///  compute_LTE_level_populations
-//////////////////////////////////
-
 int Simulation ::
     compute_LTE_level_populations ()
 {
 
-  OMP_PARALLEL_FOR (p, parameters.ncells())
-  {
-    const double tmp = thermodynamics.temperature.gas[p];
-
-    for (int l = 0; l < parameters.nlspecs(); l++)
-    {
-      const long   lspec = lines.lineProducingSpecies[l].linedata.num;
-      const double abn   = chemistry.species.abundance[p][lspec];
-
-      lines.lineProducingSpecies[l].set_LTE_level_populations (abn, tmp, p);
-
-      lines.set_emissivity_and_opacity (p, l);
-    }
-  }
+  // Initialize levels, emissivities and opacities with LTE values
+  lines.iteration_using_LTE (
+      chemistry.species.abundance,
+      thermodynamics.temperature.gas);
 
 
   return (0);
 
 }
-
-
 
 
 ///  compute_level_populations
@@ -517,7 +560,12 @@ int Simulation ::
   compute_LTE_level_populations ();
 
   // Initialize the number of iterations
-  int iteration = 0;
+  int iteration        = 0;
+  int iteration_normal = 0;
+
+  // Initialize errors
+  error_mean.clear ();
+  error_max.clear ();
 
   // Initialize some_not_converged
   bool some_not_converged = true;
@@ -529,53 +577,61 @@ int Simulation ::
 
     iteration++;
 
-    std::cout << "Starting iteration " << iteration << std::endl;
+    write_to_log ("Starting iteration ", iteration);
 
 
     // Start assuming convergence
     some_not_converged = false;
 
 
-    if (iteration % 4 == 0)
+    if (iteration_normal == 4)
     {
-      for (int l = 0; l < parameters.nlspecs(); l++)
-      {
-        lines.lineProducingSpecies[l].update_using_Ng_acceleration ();
-      }
+      lines.iteration_using_Ng_acceleration (
+          parameters.pop_prec()             );
+
+      iteration_normal = 0;
+    }
+
+    else
+    {
+      compute_radiation_field ();
+
+      write_to_log ("Calc_Jeff the issue?");
+      calc_Jeff ();
+      write_to_log ("No...");
+
+
+      write_to_log ("iteration_using_statistical_equilibrium the issue?");
+      lines.iteration_using_statistical_equilibrium (
+          chemistry.species.abundance,
+          thermodynamics.temperature.gas,
+          parameters.pop_prec()                     );
+      write_to_log ("No...");
+
+      iteration_normal++;
     }
 
 
-    compute_radiation_field ();
-
-
-    for (int l = 0; l < parameters.nlspecs(); l++)
+    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
-      update_using_statistical_equilibrium (l);
+      error_mean.push_back (lspec.relative_change_mean);
+      error_max.push_back  (lspec.relative_change_max);
 
-      lines.lineProducingSpecies[l].check_for_convergence (parameters.pop_prec());
-
-      error_mean.push_back (lines.lineProducingSpecies[l].relative_change_mean);
-      error_max.push_back  (lines.lineProducingSpecies[l].relative_change_max);
-
-
-      if (lines.lineProducingSpecies[l].fraction_not_converged > 0.005)
+      if (lspec.fraction_not_converged > 0.005)
       {
         some_not_converged = true;
       }
 
-      std::cout << 100*lines.lineProducingSpecies[l].fraction_not_converged;
-      std::cout << " % not (yet) converged..." << endl;
+      write_to_log (100*lspec.fraction_not_converged, " % not (yet) converged");
     }
 
-
-    lines.gather_emissivities_and_opacities ();
-
+    write_to_log("Even got to end of iteration!");
 
   } // end of while loop of iterations
 
 
   // Print convergence stats
-  std::cout << "Converged after " << iteration << " iterations" << std::endl;
+  write_to_log ("Converged after ", iteration, " iterations");
 
 
   return (0);
@@ -585,199 +641,58 @@ int Simulation ::
 
 
 
-int Simulation ::
-    update_using_statistical_equilibrium (
-        const long l                     )
-{
-
-  double error_max_  = 0.0;
-  double error_mean_ = 0.0;
-
-  lines.lineProducingSpecies[l].population_prev3 = lines.lineProducingSpecies[l].population_prev2;
-  lines.lineProducingSpecies[l].population_prev2 = lines.lineProducingSpecies[l].population_prev1;
-  lines.lineProducingSpecies[l].population_prev1 = lines.lineProducingSpecies[l].population;
 
 
-  HYBRID_PARALLEL_FOR (p, parameters.ncells())
-  {
-
-    const long nlev = lines.lineProducingSpecies[l].linedata.nlev;
-
-
-    MatrixXd R = get_transition_matrix (p, l);
-    MatrixXd M = R.transpose();
-    VectorXd y = Eigen::VectorXd::Zero (nlev);
-
-
-    for (long i = 0; i < nlev; i++)
-    {
-      double R_i = 0.0;
-
-      for (long j = 0; j < nlev; j++)
-      {
-        R_i += R(i,j);
-      }
-
-      M(i,i) -= R_i;
-    }
-
-
-    // Replace last row with conservation equation
-
-    for (long j = 0; j < nlev; j++)
-    {
-      M(nlev-1,j) = 1.0;
-    }
-
-    y(nlev-1) = lines.lineProducingSpecies[l].population_tot[p];
-
-
-    // Solve matrix equation M*x=y for x
-    VectorXd sol = M.householderQr().solve(y);
-
-
-    //// Avoid too small (or negative) populations
-
-    for (long i = 0; i < nlev; i++)
-    {
-      if (sol(i)*lines.lineProducingSpecies[l].population_tot[p] < 1.0E-20)
-      {
-        sol(i) = 0.0;
-      }
-
-      const long ind = lines.lineProducingSpecies[l].index (p, i);
-
-      lines.lineProducingSpecies[l].population (ind) = sol (i);
-    }
-
-
-    lines.set_emissivity_and_opacity (p, l);
-
-  }
-
-
-  return (0);
-
-}
-
-
-
-
-///  calc_J_and_L_eff: calculate the effective mean intensity in a line
+///  calc_J_eff: calculate the effective mean intensity in a line
 ///    @param[in] p: number of the cell under consideration
 ///    @param[in] l: number of the line producing species under consideration
 /////////////////////////////////////////////////////////////////////////////
 
 void Simulation ::
-    calc_J_and_L_eff (
-        const long p,
-        const int  l,
-        const long k )
+    calc_Jeff ()
 {
 
-  const Long1 freq_nrs = lines.nr_line[p][l][k];
-
-
-  lines.lineProducingSpecies[l].J_line[p][k] = 0.0;
-  lines.lineProducingSpecies[l].J_star[p][k] = 0.0;
-
-
-  for (long z = 0; z < parameters.nquads(); z++)
+  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
-#   if (GRID_SIMD)
-      const long    f = newIndex (freq_nrs[z]);
-      const long lane =   laneNr (freq_nrs[z]);
-
-      const double J  = radiation.J      [radiation.index(p,f)].getlane(lane);
-      const double JL = radiation.J_local[radiation.index(p,f)].getlane(lane);
-#   else
-      const double J  = radiation.J      [radiation.index(p,freq_nrs[z])];
-      const double JL = radiation.J_local[radiation.index(p,freq_nrs[z])];
-#   endif
-
-    lines.lineProducingSpecies[l].J_line[p][k] += lines.quadrature.weights[z] * J;
-    lines.lineProducingSpecies[l].J_star[p][k] += lines.quadrature.weights[z] * JL;
-  }
-
-
-}
-
-
-
-Eigen::MatrixXd Simulation ::
-    get_transition_matrix (
-        const long p,
-        const long l      )
-{
-
-  Linedata linedata = lines.lineProducingSpecies[l].linedata;
-
-  Eigen::MatrixXd R = Eigen::MatrixXd::Zero (linedata.nlev, linedata.nlev);
-
-
-  // Radiative transitions
-
-  for (int k = 0; k < linedata.nrad; k++)
-  {
-    const long i = linedata.irad[k];
-    const long j = linedata.jrad[k];
-
-    const long ind = lines.index (p, l, k);
-
-    calc_J_and_L_eff (p, l, k);
-
-    const double inverse_S_line = lines.opacity[ind] / lines.emissivity[ind];
-    const double Jeff =   lines.lineProducingSpecies[l].J_line[p][k];
-                        - lines.lineProducingSpecies[l].J_star[p][k];
-
-    //cout <<   lines.lineProducingSpecies[l].J_line[p][k]
-    //        / lines.lineProducingSpecies[l].J_star[p][k] << endl;
-
-
-    R(i,j) += linedata.A[k]* (1.0 - lines.lineProducingSpecies[l].J_star[p][k] * inverse_S_line);
-
-    R(i,j) += linedata.Bs[k] * Jeff;
-    R(j,i) += linedata.Ba[k] * Jeff;
-  }
-
-
-  // Collisional transitions
-
-  for (CollisionPartner colpar : linedata.colpar)
-  {
-    double abn = chemistry.species.abundance[p][colpar.num_col_partner];
-    double tmp = thermodynamics.temperature.gas[p];
-
-    if (colpar.orth_or_para_H2 != "n")
+    OMP_PARALLEL_FOR (p, parameters.ncells())
     {
-      const double frac_H2_para = 1.0 / (1.0 + 9.0*exp (-170.5/tmp));
-
-      if (colpar.orth_or_para_H2 == "o")
+      for (int k = 0; k < lspec.linedata.nrad; k++)
       {
-        abn *= (1.0 - frac_H2_para);
-      }
+        const Long1 freq_nrs = lspec.nr_line[p][k];
 
-      if (colpar.orth_or_para_H2 == "p")
-      {
-        abn *= frac_H2_para;
+        lspec.Jeff[p][k] = 0.0;
+        lspec.Jlin[p][k] = 0.0;
+
+
+        // Integrate over the line
+
+        for (long z = 0; z < parameters.nquads(); z++)
+        {
+#         if (GRID_SIMD)
+            const long    f = newIndex (freq_nrs[z]);
+            const long lane =   laneNr (freq_nrs[z]);
+
+            const double JJ = radiation.J[radiation.index(p,f)].getlane(lane);
+#         else
+            const double JJ = radiation.J[radiation.index(p,freq_nrs[z])];
+#         endif
+
+          lspec.Jeff[p][k] += lspec.quadrature.weights[z] * JJ;
+          lspec.Jlin[p][k] += lspec.quadrature.weights[z] * JJ;
+        }
+
+
+        // Subtract the approximated part
+
+        for (long m = 0; m < lspec.lambda[p][k].nr.size(); m++)
+        {
+          const long I = lspec.index (lspec.lambda[p][k].nr[m], lspec.linedata.irad[k]);
+
+          lspec.Jeff[p][k] -= HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
+        }
       }
     }
-
-
-    colpar.interpolate_collision_coefficients (tmp);
-
-
-    for (int k = 0; k < colpar.ncol; k++)
-    {
-      const int i = colpar.icol[k];
-      const int j = colpar.jcol[k];
-
-      R(i,j) += colpar.Cd_intpld[k] * abn;
-      R(j,i) += colpar.Ce_intpld[k] * abn;
-    }
   }
 
-
-  return R;
 
 }

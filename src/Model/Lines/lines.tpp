@@ -44,27 +44,22 @@ inline long Lines ::
 /////////////////////////////////////////////////////
 
 inline void Lines ::
-    set_emissivity_and_opacity (
-	      const long p,
-        const int  l           )
+    set_emissivity_and_opacity ()
 {
 
-  const LineProducingSpecies lspec = lineProducingSpecies[l];
 
-
-  for (int k = 0; k < lspec.linedata.nrad; k++)
+  OMP_PARALLEL_FOR (p, ncells)
   {
-    const long i = lspec.linedata.irad[k];
-    const long j = lspec.linedata.jrad[k];
-
-    const long ind   = index (p,l,k);
-    const long ind_i = lspec.index (p,i);
-    const long ind_j = lspec.index (p,j);
-
-    emissivity[ind] = HH_OVER_FOUR_PI * lspec.linedata.A[k] * lspec.population(ind_i);
-
-       opacity[ind] = HH_OVER_FOUR_PI * (  lspec.population(ind_j) * lspec.linedata.Ba[k]
-                                          - lspec.population(ind_i) * lspec.linedata.Bs[k] );
+    for (int l = 0; l < nlspecs; l++)
+    {
+      for (int k = 0; k < lineProducingSpecies[l].linedata.nrad; k++)
+      {
+        const long ind = index (p,l,k);
+        
+        emissivity[ind] = lineProducingSpecies[l].get_emissivity (p, k);
+           opacity[ind] = lineProducingSpecies[l].get_opacity    (p, k);
+      }
+    }
   }
 
 

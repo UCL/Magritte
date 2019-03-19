@@ -25,10 +25,12 @@ struct Quadrature
       // Io
       int read (
           const Io         &io,
+          const int         l,
                 Parameters &parameters);
 
       int write (
-          const Io &io) const;
+          const Io &io,
+          const int l  ) const;
 
 
   private:

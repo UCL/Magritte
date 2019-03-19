@@ -5,6 +5,8 @@
 
 
 #include "lineProducingSpecies.hpp"
+#include "Tools/logger.hpp"
+#include "Tools/debug.hpp"
 
 
 const string LineProducingSpecies::prefix = "Lines/LineProducingSpecies_";
@@ -23,14 +25,41 @@ int LineProducingSpecies ::
               Parameters &parameters)
 {
 
+  write_to_log ("Reading lineProducingSpecies");
+
+
   linedata.read (io, l);
 
-
-  fraction_not_converged = 0.0;
-           not_converged = true;
+  quadrature.read (io, l, parameters);
 
 
   ncells = parameters.ncells ();
+  nquads = parameters.nquads();
+
+
+  lambda.resize (ncells);
+    Jeff.resize (ncells);
+    Jlin.resize (ncells);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    lambda[p].resize (linedata.nrad);
+      Jeff[p].resize (linedata.nrad);
+      Jlin[p].resize (linedata.nrad);
+  }
+
+
+  nr_line.resize (ncells);
+
+  for (long p = 0; p < ncells; p++)
+  {
+    nr_line[p].resize (linedata.nrad);
+
+    for (int k = 0; k < linedata.nrad; k++)
+    {
+      nr_line[p][k].resize (nquads);
+    }
+  }
 
 
   population_prev1.resize (ncells*linedata.nlev);
@@ -40,13 +69,32 @@ int LineProducingSpecies ::
         population.resize (ncells*linedata.nlev);
 
 
-  J_line.resize (ncells);
-  J_star.resize (ncells);
+  const string prefix_l = prefix + std::to_string (l) + "/";
 
-  for (long p = 0; p < ncells; p++)
+
+  io.read_list (prefix_l+"population_tot", population_tot);
+
+
+  Double2 pops       (ncells, Double1 (linedata.nlev));
+  Double2 pops_prev1 (ncells, Double1 (linedata.nlev));
+  Double2 pops_prev2 (ncells, Double1 (linedata.nlev));
+  Double2 pops_prev3 (ncells, Double1 (linedata.nlev));
+
+  int err       = io.read_array (prefix_l+"population",       pops      );
+  int err_prev1 = io.read_array (prefix_l+"population_prev1", pops_prev1);
+  int err_prev2 = io.read_array (prefix_l+"population_prev2", pops_prev2);
+  int err_prev3 = io.read_array (prefix_l+"population_prev3", pops_prev3);
+
+
+  OMP_PARALLEL_FOR (p, ncells)
   {
-    J_line[p].resize (linedata.nrad);
-    J_star[p].resize (linedata.nrad);
+    for (long i = 0; i < linedata.nlev; i++)
+    {
+      if (err       == 0) {population       (index (p, i)) = pops      [p][i];}
+      if (err_prev1 == 0) {population_prev1 (index (p, i)) = pops_prev1[p][i];}
+      if (err_prev2 == 0) {population_prev2 (index (p, i)) = pops_prev2[p][i];}
+      if (err_prev3 == 0) {population_prev3 (index (p, i)) = pops_prev3[p][i];}
+    }
   }
 
 
@@ -68,24 +116,62 @@ int LineProducingSpecies ::
         const long l  ) const
 {
 
+  write_to_log ("Writing lineProducingSpecies");
+
+
   linedata.write (io, l);
+
+  quadrature.write (io, l);
 
 
   const string prefix_l = prefix + std::to_string (l) + "/";
 
 
-  Double2 pops (ncells, Double1 (linedata.nlev));
+  Double2 pops       (ncells, Double1 (linedata.nlev));
+  Double2 pops_prev1 (ncells, Double1 (linedata.nlev));
+  Double2 pops_prev2 (ncells, Double1 (linedata.nlev));
+  Double2 pops_prev3 (ncells, Double1 (linedata.nlev));
+
 
   OMP_PARALLEL_FOR (p, ncells)
   {
     for (long i = 0; i < linedata.nlev; i++)
     {
-      pops[p][i] = population (index (p, i));
+      pops      [p][i] = population       (index (p, i));
+      pops_prev1[p][i] = population_prev1 (index (p, i));
+      pops_prev2[p][i] = population_prev2 (index (p, i));
+      pops_prev3[p][i] = population_prev3 (index (p, i));
     }
   }
 
-  io.write_array (prefix_l+"population", pops);
+  io.write_array (prefix_l+"population",       pops      );
+  io.write_array (prefix_l+"population_prev1", pops_prev1);
+  io.write_array (prefix_l+"population_prev2", pops_prev2);
+  io.write_array (prefix_l+"population_prev3", pops_prev3);
 
+
+  io.write_list (prefix_l+"population_tot", population_tot);
+
+
+  return (0);
+
+}
+
+
+
+
+int LineProducingSpecies ::
+    initialize_Lambda ()
+{
+
+  OMP_PARALLEL_FOR (p, ncells)
+  {
+    for (long k = 0; k < linedata.nrad; k++)
+    {
+      lambda[p][k].Ls.clear();
+      lambda[p][k].nr.clear();
+    }
+  }
 
 
   return (0);

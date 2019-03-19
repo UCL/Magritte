@@ -16,31 +16,50 @@ include_directories (../src)
 include_directories (.)
 
 # Create main lib (as advised in Catch docs, to speed up compilation)
-add_library (TestMain
+add_library (_TestMain
   main.cpp)
 
 
-
-## Create executable to test io
-#add_executable (test_io_text.exe
-#  test_io_text.cpp)
-#target_link_libraries (test_io_text.exe
-#  Magritte
-#  TestMain)
-#
 # Create executable to test io
 add_executable (test_io_Python.exe
-  test_io_Python.cpp)
+  Io/test_io_Python.cpp)
 target_link_libraries (test_io_Python.exe
   PyIo
-  TestMain)
+  _TestMain)
+
+add_executable (test_model.exe
+  Model/test_model.cpp)
+target_link_libraries (test_model.exe
+  PyIo
+  _Magritte
+  _TestMain)
+
+add_executable (test_parameters.exe
+  Model/test_parameters.cpp)
+target_link_libraries (test_parameters.exe
+  PyIo
+  _Magritte
+  _TestMain)
 
 add_executable (test_raypair.exe
   Simulation/Raypair/test_raypair.cpp)
 target_link_libraries (test_raypair.exe
   PyIo
-  Magritte
-  TestMain)
+  _Magritte
+  _TestMain)
+
+add_executable (test_lineProducingSpecies.exe
+  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
+target_link_libraries (test_lineProducingSpecies.exe
+  PyIo
+  _Magritte
+  _TestMain)
+
+add_executable (test_lambda.exe
+  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
+target_link_libraries (test_lambda.exe
+  _Magritte
+  _TestMain)
 
 ## Create executable to test model
 #add_executable (test_model.exe

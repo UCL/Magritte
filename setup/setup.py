@@ -12,11 +12,11 @@ from scipy.spatial import Delaunay
 from rays          import rayVectors
 
 # Magritte specific imports
-from pyMagritte import Linedata, CollisionPartner, LineProducingSpecies
-from pyMagritte import Rays
-from pyMagritte import Long1,   Long2,   Long3
-from pyMagritte import Double1, Double2, Double3
-from pyMagritte import vCollisionPartner
+from magritte import Linedata, CollisionPartner, LineProducingSpecies
+from magritte import Rays
+from magritte import Long1,   Long2,   Long3
+from magritte import Double1, Double2, Double3
+from magritte import vCollisionPartner
 
 
 # Physical constants

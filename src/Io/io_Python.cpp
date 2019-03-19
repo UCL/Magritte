@@ -16,6 +16,7 @@ namespace py = pybind11;
 
 #include "configure.hpp"
 #include "Io/io_Python.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  Constructor for IoPython
@@ -25,10 +26,10 @@ namespace py = pybind11;
 
 IoPython ::
     IoPython (
-        const string implementation,
-        const string io_file        )
+        const string imp,
+        const string io_file)
   : Io             (io_file),
-    implementation (implementation)
+    implementation ("io_" + imp)
 {
 
 
@@ -48,10 +49,10 @@ int IoPython ::
               long  &length    ) const
 {
 
-  read_in_python <long> ("read_length", file_name, length);
+  int err = read_in_python <long> ("read_length", file_name, length);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -69,10 +70,10 @@ int IoPython ::
               long  &number    ) const
 {
 
-  read_in_python <long> ("read_number", file_name, number);
+  int err = read_in_python <long> ("read_number", file_name, number);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -90,10 +91,10 @@ int IoPython ::
         const long  &number    ) const
 {
 
-  write_in_python <long> ("write_number", file_name, number);
+  int err = write_in_python <long> ("write_number", file_name, number);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -111,10 +112,10 @@ int IoPython ::
               string &word      ) const
 {
 
-  read_in_python <string> ("read_attribute", file_name, word);
+  int err = read_in_python <string> ("read_attribute", file_name, word);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -132,10 +133,10 @@ int IoPython ::
         const string &word      ) const
 {
 
-  write_in_python <string> ("write_attribute", file_name, word);
+  int err = write_in_python <string> ("write_attribute", file_name, word);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -153,10 +154,10 @@ int IoPython ::
               Long1 &list      ) const
 {
 
-  read_in_python <Long1> ("read_array", file_name, list);
+  int err = read_in_python <Long1> ("read_array", file_name, list);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -174,10 +175,16 @@ int IoPython ::
         const Long1 &list      ) const
 {
 
-  write_in_python <Long1> ("write_array", file_name, list);
+  int err = 0;
 
 
-  return (0);
+  if (list.size() > 0)
+  {
+    err = write_in_python <Long1> ("write_array", file_name, list);
+  }
+
+
+  return err;
 
 }
 
@@ -195,10 +202,10 @@ int IoPython ::
               Double1 &list      ) const
 {
 
-  read_in_python <Double1> ("read_array", file_name, list);
+  int err = read_in_python <Double1> ("read_array", file_name, list);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -216,10 +223,16 @@ int IoPython ::
         const Double1 &list      ) const
 {
 
-  write_in_python <Double1> ("write_array", file_name, list);
+  int err = 0;
 
 
-  return (0);
+  if (list.size() > 0)
+  {
+    err = write_in_python <Double1> ("write_array", file_name, list);
+  }
+
+
+  return err;
 
 }
 
@@ -237,10 +250,10 @@ int IoPython ::
               String1 &list      ) const
 {
 
-  read_in_python <String1> ("read_array", file_name, list);
+  int err = read_in_python <String1> ("read_array", file_name, list);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -258,10 +271,16 @@ int IoPython ::
         const String1 &list      ) const
 {
 
-  write_in_python <String1> ("write_array", file_name, list);
+  int err = 0;
 
 
-  return (0);
+  if (list.size() > 0)
+  {
+    err = write_in_python <String1> ("write_array", file_name, list);
+  }
+
+
+  return err;
 
 }
 
@@ -279,10 +298,10 @@ int IoPython ::
               Long2   &array     ) const
 {
 
-  read_in_python <Long2> ("read_array", file_name, array);
+  int err = read_in_python <Long2> ("read_array", file_name, array);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -300,10 +319,16 @@ int IoPython ::
         const Long2  &array     ) const
 {
 
-  write_in_python <Long2> ("write_array", file_name, array);
+  int err = 0;
 
 
-  return (0);
+  if (array.size() > 0)
+  {
+    err = write_in_python <Long2> ("write_array", file_name, array);
+  }
+
+
+  return err;
 
 }
 
@@ -321,10 +346,10 @@ int IoPython ::
               Double2 &array     ) const
 {
 
-  read_in_python <Double2> ("read_array", file_name, array);
+  int err = read_in_python <Double2> ("read_array", file_name, array);
 
 
-  return (0);
+  return err;
 
 }
 
@@ -342,10 +367,16 @@ int IoPython ::
         const Double2 &array      ) const
 {
 
-  write_in_python <Double2> ("write_array", file_name, array);
+  int err = 0;
 
 
-  return (0);
+  if (array.size() > 0)
+  {
+    err = write_in_python <Double2> ("write_array", file_name, array);
+  }
+
+
+  return err;
 
 }
 
@@ -381,7 +412,7 @@ int IoPython ::
   Double2 array (3, Double1 (length));
 
 
-  read_in_python <Double2> ("read_array", file_name, array);
+  int err = read_in_python <Double2> ("read_array", file_name, array);
 
 
   for (long p = 0; p < length; p++)
@@ -392,7 +423,7 @@ int IoPython ::
   }
 
 
-  return (0);
+  return err;
 
 }
 
@@ -428,6 +459,7 @@ int IoPython ::
 
   Double2 array (length, Double1 (3));
 
+
   for (long p = 0; p < length; p++)
   {
     array[p][0] = x[p];
@@ -436,7 +468,68 @@ int IoPython ::
   }
 
 
-  write_in_python <Double2> ("write_array", file_name, array);
+  int err = 0;
+
+  if (length > 0)
+  {
+    err = write_in_python <Double2> ("write_array", file_name, array);
+  }
+
+
+  return err;
+
+}
+
+
+
+
+///  execute_io_function_in_python: executes io function in python
+///    @param[in] function: name of io function to execute
+///    @param[in] file_name: name of the file from which to read
+///    @param[out] data: the data read from the file
+//////////////////////////////////////////////////////////////////
+
+template <class type>
+int IoPython ::
+    read_in_python (
+        const string  function,
+        const string  file_name,
+              type   &data      ) const
+{
+
+  try
+  {
+    py::initialize_interpreter ();
+  }
+  catch (...) { }
+
+
+  const string io_folder = string (MAGRITTE_FOLDER) + "/src/Io";
+
+  // Add /Io folder to Python path
+  py::module::import("sys").attr("path").attr("insert")(0, io_folder);
+
+  // Import function defined in
+  py::object ioFunction = py::module::import(implementation.c_str()).attr(function.c_str());
+
+  // Make a copy of data
+  type data_copy = data;
+
+  try
+  {
+    // Execute io function
+    py::object result = ioFunction (io_file, file_name);
+
+    // Cast result to appropriate type
+    data = result.cast<type>();
+  }
+  catch (...)
+  {
+    // Recover previous state of data
+    data = data_copy;
+
+    return (-1);
+  }
 
 
   return (0);
@@ -453,47 +546,7 @@ int IoPython ::
 //////////////////////////////////////////////////////////////////
 
 template <class type>
-void IoPython ::
-    read_in_python (
-        const string  function,
-        const string  file_name,
-              type   &data      ) const
-{
-
-  try
-  {
-    py::initialize_interpreter ();
-  }
-  catch (...) { }
-
-
-  const string io_folder = string(MAGRITTE_FOLDER) + "/src/Io";
-
-  // Add /Io folder to Python path
-  py::module::import("sys").attr("path").attr("insert")(0, io_folder);
-
-  // Import function defined in
-  py::object ioFunction = py::module::import(implementation.c_str()).attr(function.c_str());
-
-  // Execute io function
-  py::object result = ioFunction (io_file, file_name);
-
-  // Cast result to appropriate type
-  data = result.cast<type>();
-
-}
-
-
-
-
-///  execute_io_function_in_python: executes io function in python
-///    @param[in] function: name of io function to execute
-///    @param[in] file_name: name of the file from which to read
-///    @param[out] data: the data read from the file
-//////////////////////////////////////////////////////////////////
-
-template <class type>
-void IoPython ::
+int IoPython ::
     write_in_python (
         const string  function,
         const string  file_name,
@@ -507,7 +560,7 @@ void IoPython ::
   catch (...) { }
 
 
-  const string io_folder = string(MAGRITTE_FOLDER) + "/src/Io";
+  const string io_folder = string (MAGRITTE_FOLDER) + "/src/Io";
 
   // Add /Io folder to Python path
   py::module::import("sys").attr("path").attr("insert")(0, io_folder.c_str());
@@ -516,7 +569,16 @@ void IoPython ::
   py::object ioFunction = py::module::import(implementation.c_str()).attr(function.c_str());
 
   // Execute io function
-  ioFunction (io_file, file_name, data);
+  try
+  {
+    ioFunction (io_file, file_name, data);
+
+    return (0);
+  }
+  catch (...)
+  {
+    return (-1);
+  }
 
 
 }

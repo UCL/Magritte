@@ -5,6 +5,7 @@
 
 
 #include "temperature.hpp"
+#include "Tools/logger.hpp"
 
 
 const string Temperature::prefix = "Thermodynamics/Temperature/";
@@ -20,6 +21,9 @@ int Temperature ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading temperature");
+
 
   // Get number of cells from length of temperature/gas file
   io.read_length (prefix+"gas", ncells);
@@ -52,6 +56,9 @@ int Temperature ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing temperature");
+
 
   // Read gas temperature file
   io.write_list (prefix+"gas", gas);

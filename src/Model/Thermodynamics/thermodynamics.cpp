@@ -5,6 +5,7 @@
 
 
 #include "thermodynamics.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  read: read in data structure
@@ -17,6 +18,9 @@ int Thermodynamics ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading thermodynamics");
+
 
   temperature.read (io, parameters);
 
@@ -39,6 +43,9 @@ int Thermodynamics ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing thermodynamics");
+
 
   temperature.write (io);
 

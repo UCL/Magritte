@@ -8,6 +8,7 @@
 #define __PARAMETERS_HPP_INCLUDED__
 
 
+#include "Io/io.hpp"
 #include "Tools/setOnce.hpp"
 
 
@@ -63,6 +64,14 @@ class Parameters
     inline long max_iter   (void) const {return   max_iter_.get ();}
 
     inline double pop_prec (void) const {return   pop_prec_.get ();}
+
+
+    // Io
+    int read (
+        const Io &io);
+
+    int write (
+        const Io &io) const;
 
 };
 

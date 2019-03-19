@@ -5,17 +5,45 @@
 
 
 #include <iostream>
-using namespace std;
 #include <string>
+using namespace std;
 
 #include "catch.hpp"
 
+#include "configure.hpp"
 #include "Io/io_Python.hpp"
 
 
-TEST_CASE ("Reading input with Python")
+TEST_CASE ("IoPython", "[read_array]")
 {
 
+  // Setup
+
+  const string model_folder = string (MAGRITTE_FOLDER)
+                              + "/data/testdata/model_test_model.hdf5";
+
+  IoPython io ("hdf5", model_folder);
+
+  string name = model_folder + "Lines/LineProducingSpecies_0/population";
+
+  Double2 pop (1, Double1 (1));
+
+  cout << &pop << endl;
+
+
+  int err = io.read_array (name, pop);
+
+  cout << err << endl;
+
+
+  //cout << endl;
+  //cout << endl;
+  //cout << endl;
+  //cout << endl;
+  //cout << endl;
+
+
+  //cout << pop[0][0] << endl;
   //string input = "/home/frederik/Desktop/Magritte/modules/Magritte/tests/testData/test1.hdf5";
 
   //IoPython io ("io_hdf5", input);
@@ -53,27 +81,27 @@ TEST_CASE ("Reading input with Python")
   //  CHECK (true);
   //}
 
-  string name = "/home/frederik/MagritteProjects/Lines_1D_LTE/model_2019-02-18_20:21:05.hdf5";
+  //string name = "/home/frederik/MagritteProjects/Lines_1D_LTE/model_2019-02-//18_20:21:05.hdf5";
 
-  IoPython io2 ("io_hdf5", name);
+  //IoPython io2 ("io_hdf5", name);
 
-  string datname = "Geometry/Cells/n_neighbors";
+  //string datname = "Geometry/Cells/n_neighbors";
 
-  long n;
+  //long n;
 
-  io2.read_length (datname, n);
+  //io2.read_length (datname, n);
 
-  Long1 nn;
+  //Long1 nn;
 
-  nn.resize (n);
+  //nn.resize (n);
 
 
-  io2.read_list  (datname, nn);
+  //io2.read_list  (datname, nn);
 
-  for (int i = 0 ; i < nn.size(); i++)
-  {
-    cout << nn[i] << endl;
-  }
+  //for (int i = 0 ; i < nn.size(); i++)
+  //{
+  //  cout << nn[i] << endl;
+  //}
 
 
 

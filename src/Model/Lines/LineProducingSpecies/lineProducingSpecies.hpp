@@ -7,11 +7,14 @@
 #ifndef __LINEPRODUCINGSPECIES_HPP_INCLUDED__
 #define __LINEPRODUCINGSPECIES_HPP_INCLUDED__
 
+#include <vector>
 
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
 #include "Model/parameters.hpp"
 #include "Model/Lines/LineProducingSpecies/Linedata/linedata.hpp"
+#include "Model/Lines/LineProducingSpecies/Quadrature/quadrature.hpp"
+#include "Model/Lines/LineProducingSpecies/Lambda/lambda.hpp"
 
 
 struct LineProducingSpecies
@@ -19,16 +22,20 @@ struct LineProducingSpecies
 
   public:
 
-      Linedata linedata;               ///< data for line producing species
+      Linedata   linedata;             ///< data for line producing species
 
-      Double2 J_line;                  ///< mean intensity in the line
-      Double2 J_star;                  ///< approximated mean intensity
+      Quadrature quadrature;           ///< data for integral over line
+
+      std::vector<std::vector<Lambda>> lambda;
+      Double2 Jeff;
+      Double2 Jlin;
+
+      Long3 nr_line;                   ///< frequency number corresponing to line (p,k,z)
 
       double relative_change_mean;     ///< mean    relative change
       double relative_change_max;      ///< maximum relative change
 
       double fraction_not_converged;   ///< fraction of levels that is not converged
-      bool            not_converged;   ///< true when species is not converged
 
       VectorXd population;             ///< level population (most recent)
       Double1  population_tot;         ///< total level population (sum over levels)
@@ -54,20 +61,37 @@ struct LineProducingSpecies
           const long p,
           const long i  ) const;
 
-      inline void set_LTE_level_populations (
-          const double abundance_lspec,
-          const double temperature,
-	        const long   p                    );
+      inline double get_emissivity (
+          const long p,
+          const long k             ) const;
+
+      inline double get_opacity (
+          const long p,
+          const long k             ) const;
 
       inline void check_for_convergence (
           const double pop_prec         );
 
+      inline void update_using_LTE (
+          const Double2 &abundance,
+          const Double1 &temperature);
+
+      inline void update_using_statistical_equilibrium (
+          const Double2 &abundance,
+          const Double1 &temperature                   );
+
       inline void update_using_Ng_acceleration ();
+
+
+      int initialize_Lambda ();
+
+
+      long ncells;
 
 
   private:
 
-      long ncells;
+      long nquads;
 
       static const string prefix;
 

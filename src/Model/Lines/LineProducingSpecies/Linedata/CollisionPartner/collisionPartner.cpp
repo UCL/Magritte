@@ -7,6 +7,7 @@
 #include <string>
 
 #include "collisionPartner.hpp"
+#include "Tools/logger.hpp"
 
 
 const string CollisionPartner::prefix = "Lines/LineProducingSpecies_";
@@ -23,7 +24,10 @@ int CollisionPartner ::
         const int c  )
 {
 
-  const string prefix_lc = prefix                 + std::to_string (l)
+  write_to_log ("Reading collisionPartner");
+
+
+  const string prefix_lc = prefix + std::to_string (l) + "/Linedata"
                            + "/CollisionPartner_" + std::to_string (c) + "/";
 
 
@@ -73,7 +77,10 @@ int CollisionPartner ::
         const int c  ) const
 {
 
-  const string prefix_lc = prefix                 + std::to_string (l)
+  write_to_log ("Writing collisionPartner");
+
+
+  const string prefix_lc = prefix + std::to_string (l) + "/Linedata"
                            + "/CollisionPartner_" + std::to_string (c) + "/";
 
 

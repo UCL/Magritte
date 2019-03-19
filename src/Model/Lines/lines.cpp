@@ -4,10 +4,9 @@
 // _________________________________________________________________________
 
 
-#include <iostream>
-
 #include "lines.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/logger.hpp"
 #include "Functions/heapsort.hpp"
 
 
@@ -24,6 +23,9 @@ int Lines ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading lines");
+
 
   // Data
 
@@ -49,7 +51,6 @@ int Lines ::
   }
 
 
-  quadrature.read (io, parameters);
 
 
   // Lines
@@ -87,27 +88,6 @@ int Lines ::
 
 
   ncells = parameters.ncells();
-  nquads = parameters.nquads();
-
-
-  nr_line.resize (ncells);
-
-  for (long p = 0; p < ncells; p++)
-  {
-    nr_line[p].resize (nlspecs);
-
-    for (int l = 0; l < nlspecs; l++)
-    {
-      const Linedata linedata = lineProducingSpecies[l].linedata;
-
-      nr_line[p][l].resize (linedata.nrad);
-
-      for (int k = 0; k < linedata.nrad; k++)
-      {
-        nr_line[p][l][k].resize (nquads);
-      }
-    }
-  }
 
 
   emissivity.resize (ncells*nlines);
@@ -130,12 +110,111 @@ int Lines ::
         const Io &io) const
 {
 
+  write_to_log ("Writing lines");
+
+
   for (int l = 0; l < lineProducingSpecies.size(); l++)
   {
     lineProducingSpecies[l].write (io, l);
   }
 
-  quadrature.write (io);
+
+  return (0);
+
+}
+
+
+
+
+///  initialize_Lambda: clear all entries in the Lambda operators
+/////////////////////////////////////////////////////////////////
+
+int Lines ::
+    initialize_Lambda ()
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.initialize_Lambda ();
+  }
+
+
+  return (0);
+
+}
+
+
+
+
+int Lines ::
+    iteration_using_LTE (
+        const Double2 &abundance,
+        const Double1 &temperature)
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.update_using_LTE (abundance, temperature);
+  }
+
+
+  set_emissivity_and_opacity ();
+
+  //gather_emissivities_and_opacities ();
+
+
+  return (0);
+
+}
+
+
+
+int Lines ::
+    iteration_using_Ng_acceleration (
+        const double pop_prec       )
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.update_using_Ng_acceleration ();
+
+    lspec.check_for_convergence (pop_prec);
+  }
+
+
+  set_emissivity_and_opacity ();
+
+  //gather_emissivities_and_opacities ();
+
+
+  return (0);
+
+}
+
+
+
+
+int Lines ::
+    iteration_using_statistical_equilibrium (
+        const Double2 &abundance,
+        const Double1 &temperature,
+        const double   pop_prec             )
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.update_using_statistical_equilibrium (abundance, temperature);
+write_to_log("HERE?");
+    lspec.check_for_convergence (pop_prec);
+write_to_log("Nope!");
+  }
+
+
+write_to_log("HERE?");
+  set_emissivity_and_opacity ();
+write_to_log("Nope!");
+
+  //gather_emissivities_and_opacities ();
 
 
   return (0);
