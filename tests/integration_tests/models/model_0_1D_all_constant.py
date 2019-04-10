@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # 0) Analytical Model: 1D all constant
@@ -35,7 +35,7 @@ from setup    import Setup, linedata_from_LAMDA_file
 
 
 dimension = 1
-ncells    = 20
+ncells    = 30
 nrays     = 2
 nspecs    = 5
 nlspecs   = 1
@@ -47,12 +47,9 @@ nquads    = 39
 
 dens = 1.0E+12   # [m^-3]
 abun = 1.0E+4    # [m^-3]
-temp = 1.0E+02   # [K]
+temp = 2.0E+01   # [K]
 turb = 0.0E+00   # [m/s]
 dx   = 1.0E4     # [m]
-bx   = 1.3E0
-dT   = 0.0E0     # [K]
-dv   = 0.0E0     # [m/s]
 
 
 # In[5]:
@@ -185,5 +182,17 @@ io = IoPython ("hdf5", modelName)
 # In[19]:
 
 
+get_ipython().system('rm $modelName')
+
+
+# In[20]:
+
+
 model.write (io)
+
+
+# In[ ]:
+
+
+
 
