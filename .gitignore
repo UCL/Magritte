@@ -61,3 +61,8 @@ Grid-SIMD*
 
 *.pyc
 *__pycache__*
+
+# data files
+############
+
+*.hdf5
