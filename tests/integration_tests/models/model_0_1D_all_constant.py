@@ -134,7 +134,7 @@ model.chemistry.species.sym       = String1 (['dummy0', 'test', 'H2', 'e-', 'dum
 
 # Define the folder containing the linedata.
 
-# In[15]:
+# In[13]:
 
 
 linedataFolder = 'data/Linedata/test.txt'
@@ -142,7 +142,7 @@ linedataFolder = 'data/Linedata/test.txt'
 
 # Define the linedata.
 
-# In[16]:
+# In[14]:
 
 
 model.lines.lineProducingSpecies.append (linedata_from_LAMDA_file (linedataFolder, model.chemistry.species))
@@ -150,7 +150,7 @@ model.lines.lineProducingSpecies.append (linedata_from_LAMDA_file (linedataFolde
 
 # Define the quadrature roots and weights.
 
-# In[17]:
+# In[15]:
 
 
 import quadrature
@@ -162,13 +162,13 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # ## 2) Write input file
 # ---
 
-# In[18]:
+# In[16]:
 
 
 from ioMagritte import IoPython
 
 
-# In[19]:
+# In[17]:
 
 
 modelName = 'model_0_1D_all_constant.hdf5'
@@ -176,13 +176,13 @@ modelName = 'model_0_1D_all_constant.hdf5'
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
 
-# In[20]:
+# In[18]:
 
 
 io = IoPython ("hdf5", modelName)
 
 
-# In[21]:
+# In[19]:
 
 
 model.write (io)
