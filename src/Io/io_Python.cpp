@@ -59,6 +59,27 @@ int IoPython ::
 
 
 
+///  read_width:
+///  @param[in] file_name: path to file containing the data
+///  @param[out] length: length to be read
+///////////////////////////////////////////////////////////
+
+int IoPython ::
+    read_width (
+        const string file_name,
+              long  &length    ) const
+{
+
+  int err = read_in_python <long> ("read_width", file_name, length);
+
+
+  return err;
+
+}
+
+
+
+
 ///  read_number:
 ///  @param[in] file_name: file containing the number
 ///  @param[out] number: number to be read

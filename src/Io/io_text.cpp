@@ -58,6 +58,38 @@ int IoText ::
 
 
 
+///  get_length:
+///  @param[in] file_name: path to file containing the data
+///  @param[out] length: length to be read
+///////////////////////////////////////////////////////////
+
+int IoText ::
+    read_width (
+        const string file_name,
+              long  &width     ) const
+{
+
+  //length = 0;
+
+  //ifstream file (io_file + file_name + ".txt");
+
+  //string line;
+
+  //while (getline (file, line))
+  //{
+  //  length++;
+  //}
+
+  //file.close();
+
+
+  return (0);
+
+}
+
+
+
+
 ///  read_number:
 ///  @param[in] file_name: file containing the number
 ///  @param[out] number: number to be read

@@ -28,6 +28,8 @@ int Cells ::
 
   io.read_length (prefix+"cells", ncells);
 
+  write_to_log("ncells = ", ncells);
+
 
   parameters.set_ncells (ncells);
 

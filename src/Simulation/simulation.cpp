@@ -215,8 +215,6 @@ int Simulation ::
     compute_radiation_field ()
 {
 
-  const double inverse_nrays_over_two = 2.0 / parameters.nrays();
-
 
   for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
@@ -224,21 +222,17 @@ int Simulation ::
   }
 
 
-  RayPair rayPair;
-
-
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
     const long R  = r - MPI_start (parameters.nrays()/2);
-    const long ar = geometry.rays.antipod[r];
 
-    write_to_log ("ray = ", r, " with antipodal = ", ar);
+    write_to_log ("ray = ", r);
 
 //#   pragma omp parallel default (shared) private (rayPair)
 //    for (long o = OMP_start (parameters.ncells()); o < OMP_stop (parameters.ncells()); o++)
     for (long o = 0; o < parameters.ncells(); o++)
     {
-
+      const long ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);
 
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
@@ -255,7 +249,6 @@ int Simulation ::
 
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
 
-
           rayPair.solve ();
 
 
@@ -268,16 +261,23 @@ int Simulation ::
 
 
           // Extract the Lambda operator
-
+          //write_to_log ("Lambda");
           rayPair.update_Lambda (
               radiation.frequencies,
               thermodynamics,
               o,
               f,
-              inverse_nrays_over_two,
+              2.0*geometry.rays.weights[o][r],
               lines.lineProducingSpecies);
 
+          if (   (parameters.r == r)
+              && (parameters.o == o)
+              && (parameters.f == f))
+          {
+            return (-1);
+          }
 
+          //write_to_log ("Got through...");
         }
       }
 
@@ -299,11 +299,17 @@ int Simulation ::
 
   } // end of loop over ray pairs
 
+  write_to_log ("Fine here");
 
   // Reduce results of all MPI processes to get J, J_local, U and V
 
-  radiation.calc_J_and_G ();
+  radiation.calc_J_and_G (geometry.rays.weights);
+
+  write_to_log ("Fine in J and G");
+
   radiation.calc_U_and_V ();
+
+  write_to_log ("Fine in U and V");
 
   //lines.reduce_Lambdas ();
 
@@ -509,8 +515,8 @@ inline void Simulation ::
     {
       if (fabs (chi.getlane(lane)) < 1.0E-99)
       {
-        chi.putlane(1.0E-99, lane);
         eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
+        chi.putlane(1.0E-99, lane);
 
         //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
       }
@@ -518,10 +524,10 @@ inline void Simulation ::
 
 # else
 
-    if (fabs (chi) < 1.0E-99)
+    if (fabs (chi) < 1.0E-26)
     {
-      chi = 1.0E-99;
-      eta = eta / (chi * 1.0E+99);
+      eta = eta / (chi * 1.0E+26);
+      chi = 1.0E-26;
 
       //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
     }
@@ -556,9 +562,6 @@ int Simulation ::
     compute_level_populations ()
 {
 
-  // Initialize levels, emissivities and opacities with LTE values
-  compute_LTE_level_populations ();
-
   // Initialize the number of iterations
   int iteration        = 0;
   int iteration_normal = 0;
@@ -572,7 +575,7 @@ int Simulation ::
 
 
   // Iterate as long as some levels are not converged
-  while (some_not_converged && (iteration < parameters.max_iter()))
+  //while (some_not_converged && (iteration < parameters.max_iter()))
   {
 
     iteration++;

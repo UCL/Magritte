@@ -34,6 +34,32 @@ def read_length (io_file, file_name):
     raise ValueError ('file_name is no Group or Dataset.')
 
 
+def read_width (io_file, file_name):
+    """
+    Return the number of columns in the input file.
+    """
+    with hp.File (io_file, 'r') as file:
+        try:
+            # Try to open the object
+            object = file [file_name]
+            # Check if it is a Dataset
+            if isinstance (object, hp.Dataset):
+                return object.shape[1]
+        except:
+            # Get name of object we need to count
+            object_name = file_name.split('/')[-1]
+            # Get containing group
+            group_name = file_name[:-len(object_name)]
+            # Count occurences
+            length = 0
+            for key in file[group_name].keys():
+                if (object_name in key):
+                    length += 1
+            return length
+    # Error if not yet returned
+    raise ValueError ('file_name is no Group or Dataset.')
+
+
 def read_attribute (io_file, file_name):
     """
     Return the contents of the attribute

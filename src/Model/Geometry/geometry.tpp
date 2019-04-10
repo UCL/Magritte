@@ -6,8 +6,8 @@
 
 #include <limits>
 
-#include <iostream>
-using namespace std;
+#include "Tools/logger.hpp"
+
 
 inline RayData Geometry ::
     trace_ray (
@@ -50,11 +50,6 @@ inline RayData Geometry ::
   return rayData;
 
 }
-
-
-
-
-
 
 
 
@@ -133,25 +128,6 @@ inline void Geometry ::
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///  next: find number of next cell on ray and its distance along ray
 ///    @param[in] origin: number of cell from which the ray originates
 ///    @param[in] r: number of the ray along which we are looking
@@ -186,9 +162,9 @@ inline long Geometry ::
     position[1] = cells.y[neighbor] - cells.y[origin];
     position[2] = cells.z[neighbor] - cells.z[origin];
 
-    double Z_new =   position[0]*rays.x[ray]
-                   + position[1]*rays.y[ray]
-                   + position[2]*rays.z[ray];
+    double Z_new =   position[0]*rays.x[origin][ray]
+                   + position[1]*rays.y[origin][ray]
+                   + position[2]*rays.z[origin][ray];
 
     if (Z_new > Z)
     {
@@ -235,9 +211,9 @@ inline double Geometry ::
         const long current) const
 {
 
-  return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[ray]
-                + (cells.vy[current] - cells.vy[origin]) * rays.y[ray]
-                + (cells.vz[current] - cells.vz[origin]) * rays.z[ray]);
+  return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[origin][ray]
+                + (cells.vy[current] - cells.vy[origin]) * rays.y[origin][ray]
+                + (cells.vz[current] - cells.vz[origin]) * rays.z[origin][ray]);
 
 }
 

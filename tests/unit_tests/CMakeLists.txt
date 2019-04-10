@@ -10,7 +10,7 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
   ${CMAKE_SOURCE_DIR}/bin/tests)
 
 # Include directory containing source
-include_directories (../src)
+include_directories (../../src)
 
 # Include directory containing the catch header
 include_directories (.)

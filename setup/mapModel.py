@@ -71,7 +71,7 @@ def mapToXD (model1D, dimension, nrays, cellsInShell):
     # Extract boundary
     model.geometry.boundary.boundary2cell_nr = Long1 (cellsInShell[-1])
     # Add rays
-    model.geometry.rays = setup.rays (nrays=nrays)
+    model.geometry.rays = setup.rays (nrays=nrays, cells=model.geometry.cells)
     # Extract number of cells
     ncells = 0
     for shell in cellsInShell:

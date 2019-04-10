@@ -35,43 +35,48 @@ class Parameters
       SetOnce <double> pop_prec_;     ///< required precision for populations
 
 
+
   public:
 
-    inline void set_ncells     (const long value) {    ncells_.set (value);}
-    inline void set_nrays      (const long value) {     nrays_.set (value);}
-    inline void set_nrays_red  (const long value) { nrays_red_.set (value);}
-    inline void set_nboundary  (const long value) { nboundary_.set (value);}
-    inline void set_nfreqs     (const long value) {    nfreqs_.set (value);}
-    inline void set_nfreqs_red (const long value) {nfreqs_red_.set (value);}
-    inline void set_nspecs     (const long value) {    nspecs_.set (value);}
-    inline void set_nlspecs    (const long value) {   nlspecs_.set (value);}
-    inline void set_nlines     (const long value) {    nlines_.set (value);}
-    inline void set_nquads     (const long value) {    nquads_.set (value);}
-    inline void set_max_iter   (const long value) {  max_iter_.set (value);}
+      inline void set_ncells     (const long value) {    ncells_.set (value);}
+      inline void set_nrays      (const long value) {     nrays_.set (value);}
+      inline void set_nrays_red  (const long value) { nrays_red_.set (value);}
+      inline void set_nboundary  (const long value) { nboundary_.set (value);}
+      inline void set_nfreqs     (const long value) {    nfreqs_.set (value);}
+      inline void set_nfreqs_red (const long value) {nfreqs_red_.set (value);}
+      inline void set_nspecs     (const long value) {    nspecs_.set (value);}
+      inline void set_nlspecs    (const long value) {   nlspecs_.set (value);}
+      inline void set_nlines     (const long value) {    nlines_.set (value);}
+      inline void set_nquads     (const long value) {    nquads_.set (value);}
+      inline void set_max_iter   (const long value) {  max_iter_.set (value);}
 
-    inline void set_pop_prec   (const double value) {pop_prec_.set (value);}
+      inline void set_pop_prec   (const double value) {pop_prec_.set (value);}
 
-    inline long ncells     (void) const {return     ncells_.get ();}
-    inline long nrays      (void) const {return      nrays_.get ();}
-    inline long nrays_red  (void) const {return  nrays_red_.get ();}
-    inline long nboundary  (void) const {return  nboundary_.get ();}
-    inline long nfreqs     (void) const {return     nfreqs_.get ();}
-    inline long nfreqs_red (void) const {return nfreqs_red_.get ();}
-    inline long nspecs     (void) const {return     nspecs_.get ();}
-    inline long nlspecs    (void) const {return    nlspecs_.get ();}
-    inline long nlines     (void) const {return     nlines_.get ();}
-    inline long nquads     (void) const {return     nquads_.get ();}
-    inline long max_iter   (void) const {return   max_iter_.get ();}
+      inline long ncells     (void) const {return     ncells_.get ();}
+      inline long nrays      (void) const {return      nrays_.get ();}
+      inline long nrays_red  (void) const {return  nrays_red_.get ();}
+      inline long nboundary  (void) const {return  nboundary_.get ();}
+      inline long nfreqs     (void) const {return     nfreqs_.get ();}
+      inline long nfreqs_red (void) const {return nfreqs_red_.get ();}
+      inline long nspecs     (void) const {return     nspecs_.get ();}
+      inline long nlspecs    (void) const {return    nlspecs_.get ();}
+      inline long nlines     (void) const {return     nlines_.get ();}
+      inline long nquads     (void) const {return     nquads_.get ();}
+      inline long max_iter   (void) const {return   max_iter_.get ();}
 
-    inline double pop_prec (void) const {return   pop_prec_.get ();}
+      inline double pop_prec (void) const {return   pop_prec_.get ();}
+
+      long r;
+      long o;
+      long f;
 
 
-    // Io
-    int read (
-        const Io &io);
+      // Io
+      int read (
+          const Io &io);
 
-    int write (
-        const Io &io) const;
+      int write (
+          const Io &io) const;
 
 };
 

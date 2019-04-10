@@ -90,8 +90,8 @@ struct RayPair
           const Thermodynamics                    &thermodynamics,
           const long                               p,
           const long                               f,
-          const double                             inverse_nrays_over_two,
-                std::vector<LineProducingSpecies> &lineProducingSpecies   ) const;
+          const double                             weight_angular,
+                std::vector<LineProducingSpecies> &lineProducingSpecies) const;
 
 
   //private:

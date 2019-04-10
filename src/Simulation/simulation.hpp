@@ -24,6 +24,7 @@ struct Simulation : public Model
   Double1 error_max;
   Double1 error_mean;
 
+  RayPair rayPair;
 
   int compute_spectral_discretisation ();
 

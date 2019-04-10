@@ -118,9 +118,10 @@ struct Radiation
               vReal &Ibdy_scaled) const;
 
 
-  int calc_J_and_G ();
+    int calc_J_and_G (
+        const Double2 weights);
 
-  int calc_U_and_V ();
+    int calc_U_and_V ();
 
 
   private:

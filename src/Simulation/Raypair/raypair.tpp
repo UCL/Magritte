@@ -422,7 +422,7 @@ inline void RayPair ::
         const Thermodynamics                    &thermodynamics,
         const long                               p,
         const long                               f,
-        const double                             inverse_nrays_over_two,
+        const double                             weight_angular,
               std::vector<LineProducingSpecies> &lineProducingSpecies   ) const
 {
 
@@ -442,7 +442,7 @@ inline void RayPair ::
       //write_to_log ("z = ", z);
 
       const double freq_line = lineProducingSpecies[l].linedata.frequency[k];
-      const double weight    = lineProducingSpecies[l].quadrature.weights[z] * inverse_nrays_over_two;
+      const double weight    = lineProducingSpecies[l].quadrature.weights[z] * 2.0 * weight_angular;
       const double factor    = lineProducingSpecies[l].linedata.A[k] * weight;
 
 
@@ -457,30 +457,30 @@ inline void RayPair ::
       //       "       calc = ", L_diag[n_ar] * term1[n_ar],
       //       "       Jeff = ", Su[n_ar]);
 
-      lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
+      //lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
 
       //write_to_log ("L diag = ", L);
 
-      for (long m = 1; m < n_off_diag; m++)
-      {
-        if (n_ar-m >= 0)
-        {
-          L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
+      //for (long m = 1; m < n_off_diag; m++)
+      //{
+      //  if (n_ar-m >= 0)
+      //  {
+      //    L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
 
-          //write_to_log ("L lower = ", L);
+      //    //write_to_log ("L lower = ", L);
 
-          lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
-        }
+      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
+      //  }
 
-        if (n_ar+m < ndep-m)
-        {
-          L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
+      //  if (n_ar+m < ndep-m)
+      //  {
+      //    L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
 
-          //write_to_log ("L upper = ", L);
+      //    //write_to_log ("L upper = ", L);
 
-          lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
-        }
-      }
+      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
+      //  }
+      //}
     }
   }
 

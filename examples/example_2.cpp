@@ -41,6 +41,8 @@ int main (int argc, char **argv)
 
     simulation.compute_boundary_intensities ();
 
+    simulation.compute_LTE_level_populations ();
+
     simulation.compute_level_populations ();
 
 

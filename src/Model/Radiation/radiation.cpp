@@ -206,12 +206,12 @@ int initialize (
 
 
 int Radiation ::
-    calc_J_and_G ()
+    calc_J_and_G (
+        const Double2 weights)
 
 #if (MPI_PARALLEL)
 
 {
-  const double two_over_nrays = 2.0/nrays;
 
   initialize (J);
   initialize (G);
@@ -224,8 +224,8 @@ int Radiation ::
     {
       for (long f = 0; f < nfreqs_red; f++)
       {
-        J[index(p,f)] += two_over_nrays * u[R][index(p,f)];
-        G[index(p,f)] += two_over_nrays * v[R][index(p,f)];
+        J[index(p,f)] += 2.0 * weights[p][r] * u[R][index(p,f)];
+        G[index(p,f)] += 2.0 * weights[p][r] * v[R][index(p,f)];
       }
     }
   }
@@ -272,7 +272,6 @@ int Radiation ::
 #else
 
 {
-  const double two_over_nrays = 2.0/nrays;
 
   initialize (J);
   initialize (G);
@@ -285,8 +284,8 @@ int Radiation ::
     {
       for (long f = 0; f < nfreqs_red; f++)
       {
-        J[index(p,f)] += two_over_nrays * u[R][index(p,f)];
-        G[index(p,f)] += two_over_nrays * v[R][index(p,f)];
+        J[index(p,f)] += 2.0 * weights[p][r] * u[R][index(p,f)];
+        G[index(p,f)] += 2.0 * weights[p][r] * v[R][index(p,f)];
       }
     }
   }

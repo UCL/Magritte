@@ -76,9 +76,13 @@ PYBIND11_MODULE (magritte, module)
   py::class_<Parameters> (module, "Parameters")
       // constructor
       .def (py::init())
+      .def_readwrite ("r",    &Parameters::r)
+      .def_readwrite ("o",    &Parameters::o)
+      .def_readwrite ("f",    &Parameters::f)
       // setters
       .def ("set_ncells",     &Parameters::set_ncells    )
       .def ("set_nrays",      &Parameters::set_nrays     )
+      .def ("set_nrays",      &Parameters::set_nrays_red )
       .def ("set_nboundary",  &Parameters::set_nboundary )
       .def ("set_nfreqs",     &Parameters::set_nfreqs    )
       .def ("set_nfreqs_red", &Parameters::set_nfreqs_red)
@@ -90,7 +94,8 @@ PYBIND11_MODULE (magritte, module)
       .def ("set_pop_prec",   &Parameters::set_pop_prec  )
       // getters
       .def ("ncells",         &Parameters::ncells    )
-      .def ("nrays" ,         &Parameters::nrays     )
+      .def ("nrays",          &Parameters::nrays     )
+      .def ("nrays_red",      &Parameters::nrays_red )
       .def ("nboundary",      &Parameters::nboundary )
       .def ("nfreqs",         &Parameters::nfreqs    )
       .def ("nfreqs_red",     &Parameters::nfreqs_red)
@@ -140,14 +145,16 @@ PYBIND11_MODULE (magritte, module)
   // Rays
   py::class_<Rays> (module, "Rays")
       // attributes
-      .def_readwrite ("x", &Rays::x)
-      .def_readwrite ("y", &Rays::y)
-      .def_readwrite ("z", &Rays::z)
+      .def_readwrite ("x",       &Rays::x)
+      .def_readwrite ("y",       &Rays::y)
+      .def_readwrite ("z",       &Rays::z)
+      .def_readwrite ("weights", &Rays::weights)
+      .def_readwrite ("antipod", &Rays::antipod)
       // constructor
       .def (py::init())
       // functions
-      .def ("read",        &Rays::read)
-      .def ("write",       &Rays::write);
+      .def ("read",              &Rays::read)
+      .def ("write",             &Rays::write);
 
 
   // Boundary
@@ -329,8 +336,8 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("frequencies", &Radiation::frequencies)
       .def_readwrite ("u",           &Radiation::u)
       .def_readwrite ("v",           &Radiation::v)
-      .def_readwrite ("J",           &Radiation::v)
-      .def_readwrite ("G",           &Radiation::v)
+      .def_readwrite ("J",           &Radiation::J)
+      .def_readwrite ("G",           &Radiation::G)
       // constructor
       .def (py::init())
       // functions
@@ -358,11 +365,30 @@ PYBIND11_MODULE (magritte, module)
       // attributes
       .def_readonly ("error_max",              &Simulation::error_max)
       .def_readonly ("error_mean",             &Simulation::error_mean)
+      .def_readonly ("rayPair",                &Simulation::rayPair)
+
       // functions
       .def ("compute_spectral_discretisation", &Simulation::compute_spectral_discretisation)
       .def ("compute_boundary_intensities",    &Simulation::compute_boundary_intensities)
       .def ("compute_LTE_level_populations",   &Simulation::compute_LTE_level_populations)
       .def ("compute_radiation_field",         &Simulation::compute_radiation_field)
       .def ("compute_level_populations",       &Simulation::compute_level_populations);
+
+  // RayPair
+  py::class_<RayPair> (module, "RayPair")
+      // constructor
+      .def (py::init<>())
+      // attributes
+      .def_readonly ("n_ar", &RayPair::n_ar)
+      .def_readonly ("n_r",  &RayPair::n_r)
+      .def_readonly ("ndep", &RayPair::ndep)
+      .def_readonly ("chi",  &RayPair::chi)
+      .def_readonly ("Su",   &RayPair::Su)
+      .def_readonly ("Sv",   &RayPair::Sv)
+      .def_readonly ("nrs",  &RayPair::nrs)
+      .def_readonly ("frs",  &RayPair::frs)
+      .def_readonly ("dtau", &RayPair::dtau);
+
+      // functions
 
 }
