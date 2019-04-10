@@ -62,6 +62,13 @@ Grid-SIMD*
 *.pyc
 *__pycache__*
 
+
+# ipython checkpoints
+#####################
+
+*.ipynb_checkpoints/*
+
+
 # data files
 ############
 
