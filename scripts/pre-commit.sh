@@ -3,7 +3,7 @@
 echo "Running pre-commit hook"
 
 # Convert ipynb to executable scripts
-bash convert_all_ipynb_to_py.sh
+bash scripts/convert_all_ipynb_to_py.sh
 
 
 # Use when tests are included
