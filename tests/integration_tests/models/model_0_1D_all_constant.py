@@ -35,7 +35,7 @@ from setup    import Setup, linedata_from_LAMDA_file
 
 
 dimension = 1
-ncells    = 30
+ncells    = 50
 nrays     = 2
 nspecs    = 5
 nlspecs   = 1
@@ -46,10 +46,10 @@ nquads    = 39
 
 
 dens = 1.0E+12   # [m^-3]
-abun = 1.0E+4    # [m^-3]
-temp = 2.0E+01   # [K]
-turb = 0.0E+00   # [m/s]
-dx   = 1.0E4     # [m]
+abun = 1.0E+06   # [m^-3]
+temp = 2.5E+02   # [K]
+turb = 2.5E+02   # [m/s]
+dx   = 1.0E+04   # [m]
 
 
 # In[5]:
