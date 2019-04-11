@@ -78,6 +78,6 @@ Grid-SIMD*
 # dependencies
 ##############
 
-*dependencies/Eigen/*
-*dependencies/Grid-SIMD/*
-*dependencies/pybind11/*
+*dependencies/Eigen*
+*dependencies/Grid-SIMD*
+*dependencies/pybind11*
