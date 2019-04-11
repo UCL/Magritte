@@ -78,32 +78,35 @@ inline long newIndex (
     for (int lane = 0; lane < n_simd_lanes; lane++)
 
 
-inline double firstLane (
-    const vReal vec     )
+
+
+inline double getlane (
+    const vReal vec,
+    const int   lane  )
 
 #if (GRID_SIMD)
 {
-  return vec.getlane (0);
+  return vec.getlane (lane);
 }
 #else
 {
   return vec;
 }
 #endif
+
+
+inline double firstLane (
+    const vReal vec     )
+{
+  return getlane (vec, 0);
+}
 
 
 inline double lastLane (
     const vReal vec    )
-
-#if (GRID_SIMD)
 {
-  return vec.getlane (n_simd_lanes-1);
+  return getlane (vec, n_simd_lanes-1);
 }
-#else
-{
-  return vec;
-}
-#endif
 
 
 

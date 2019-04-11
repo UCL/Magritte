@@ -12,9 +12,8 @@
 #include "Tools/Parallel/wrap_omp.hpp"
 #include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/Parallel/wrap_Grid.hpp"
+#include "Tools/logger.hpp"
 
-#include <iostream>
-using namespace std;
 
 ///  read: read radiation field from file
 /////////////////////////////////////////
@@ -24,6 +23,9 @@ int Radiation ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading radiation");
+
 
   frequencies.read (io, parameters);
 
@@ -42,9 +44,8 @@ int Radiation ::
 
   // Size and initialize u, v, U and V
 
-  u_local.resize (nrays_red);
-        u.resize (nrays_red);
-        v.resize (nrays_red);
+  u.resize (nrays_red);
+  v.resize (nrays_red);
 
   U.resize (nrays_red);
   V.resize (nrays_red);
@@ -53,9 +54,8 @@ int Radiation ::
 
   for (long r = 0; r < nrays_red; r++)
   {
-    u_local[r].resize (ncells*nfreqs_red);
-          u[r].resize (ncells*nfreqs_red);
-          v[r].resize (ncells*nfreqs_red);
+    u[r].resize (ncells*nfreqs_red);
+    v[r].resize (ncells*nfreqs_red);
 
     U[r].resize (ncells*nfreqs_red);
     V[r].resize (ncells*nfreqs_red);
@@ -68,9 +68,8 @@ int Radiation ::
     }
   }
 
-  J_local.resize (ncells*nfreqs_red);
-        J.resize (ncells*nfreqs_red);
-        G.resize (ncells*nfreqs_red);
+  J.resize (ncells*nfreqs_red);
+  G.resize (ncells*nfreqs_red);
 
 
   return (0);
@@ -84,6 +83,9 @@ int Radiation ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing radiation");
+
 
   frequencies.write (io);
 
@@ -204,17 +206,15 @@ int initialize (
 
 
 int Radiation ::
-    calc_J_and_J_local ()
+    calc_J_and_G (
+        const Double2 weights)
 
 #if (MPI_PARALLEL)
 
 {
-  const double two_over_nrays = 2.0/nrays;
-  const double one_over_nrays = 1.0/nrays;
 
   initialize (J);
   initialize (G);
-  initialize (J_local);
 
   MPI_PARALLEL_FOR (r, nrays/2)
   {
@@ -224,9 +224,8 @@ int Radiation ::
     {
       for (long f = 0; f < nfreqs_red; f++)
       {
-        J      [index(p,f)] += two_over_nrays *       u[R][index(p,f)];
-        G      [index(p,f)] += two_over_nrays *       v[R][index(p,f)];
-        J_local[index(p,f)] += one_over_nrays * u_local[R][index(p,f)];
+        J[index(p,f)] += 2.0 * weights[p][r] * u[R][index(p,f)];
+        G[index(p,f)] += 2.0 * weights[p][r] * v[R][index(p,f)];
       }
     }
   }
@@ -261,16 +260,6 @@ int Radiation ::
 
   assert (ierr2 == 0);
 
-  int ierr3 = MPI_Allreduce (
-                MPI_IN_PLACE,      // pointer to data to be reduced -> here in //place
-                J_local.data(),    // pointer to data to be received
-                J_local.size(),    // size of data to be received
-                MPI_VREAL,         // type of reduced data
-                MPI_VSUM,          // reduction operation
-                MPI_COMM_WORLD);
-
-  assert (ierr3 == 0);
-
 
   MPI_Type_free (&MPI_VREAL);
   MPI_Op_free   (&MPI_VSUM);
@@ -283,12 +272,9 @@ int Radiation ::
 #else
 
 {
-  const double two_over_nrays = 2.0/nrays;
-  const double one_over_nrays = 1.0/nrays;
 
   initialize (J);
   initialize (G);
-  initialize (J_local);
 
   MPI_PARALLEL_FOR (r, nrays/2)
   {
@@ -298,9 +284,8 @@ int Radiation ::
     {
       for (long f = 0; f < nfreqs_red; f++)
       {
-        J      [index(p,f)] += two_over_nrays *       u[R][index(p,f)];
-        G      [index(p,f)] += two_over_nrays *       v[R][index(p,f)];
-        J_local[index(p,f)] += one_over_nrays * u_local[R][index(p,f)];
+        J[index(p,f)] += 2.0 * weights[p][r] * u[R][index(p,f)];
+        G[index(p,f)] += 2.0 * weights[p][r] * v[R][index(p,f)];
       }
     }
   }

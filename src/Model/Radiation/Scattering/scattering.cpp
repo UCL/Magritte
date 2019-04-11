@@ -6,6 +6,7 @@
 
 #include "scattering.hpp"
 #include "Tools/Parallel/wrap_Grid.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  Constructor for SCATTERING
@@ -18,6 +19,9 @@ int Scattering ::
         const Io &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading scattering");
+
 
   nrays      = parameters.nrays ();
   nfreqs_red = parameters.nfreqs_red ();

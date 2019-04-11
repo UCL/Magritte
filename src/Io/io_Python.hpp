@@ -31,6 +31,8 @@ struct IoPython : public Io
 
       int  read_length   (const string fname,       long    &length) const;
 
+      int  read_width    (const string fname,       long    &width ) const;
+
       int  read_number   (const string fname,       long    &number) const;
       int write_number   (const string fname, const long    &number) const;
 
@@ -63,13 +65,13 @@ struct IoPython : public Io
   private:
 
       template <class type>
-      void read_in_python (
+       int read_in_python (
           const string  function,
           const string  file_name,
                 type   &data      ) const;
 
       template <class type>
-      void write_in_python (
+       int write_in_python (
           const string  function,
           const string  file_name,
           const type   &data      ) const;

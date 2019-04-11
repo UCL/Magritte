@@ -22,16 +22,20 @@ addons:
     packages:
       - cmake
 
-before_install:
-  - test -n $CC && unset CC
-  - bash installMPICH.sh
-  - export LD_LIBRARY_PATH=$HOME/mpfr/lib/:$LD_LIBRARY_PATH
-  - bash installGrid.sh
+#before_install:
+#  - test -n $CC && unset CC
+#  - bash installMPICH.sh
+#  - export LD_LIBRARY_PATH=$HOME/mpfr/lib/:$LD_LIBRARY_PATH
+#  - bash installGrid.sh
 
 script:
-  - mkdir build; cd build
-  - CC=gcc CCX=g++  cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
-  - make
+  - bash build.sh
+  - cd tests
+  - bash run_tests.sh
+
+  #- mkdir build; cd build
+  #- CC=gcc CCX=g++  cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
+  #- make
   #- cd tests
   #- bash run_tests.sh
   #- cd ../../..

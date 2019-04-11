@@ -8,7 +8,10 @@
 #define __RAYPAIR_HPP_INCLUDED__
 
 
+#include <vector>
+
 #include "Tools/Parallel/wrap_Grid.hpp"
+#include "Model/model.hpp"
 
 
 ///  Raypair: data structure for a pair of rays
@@ -28,14 +31,16 @@ struct RayPair
       vReal I_bdy_n;
 
       long lnotch_at_origin;
-      vReal   eta_at_origin;
-      vReal   chi_at_origin;
+
+      vReal1 chi;
+      Long1  nrs;
+      vReal1 frs;
 
 
       // inline functions
       inline void initialize (
           const long n_ar,
-          const long n_r  );
+          const long n_r     );
 
       inline void solve ();
 
@@ -43,30 +48,53 @@ struct RayPair
 
       // setters
       inline void set_term1_and_term2 (
-              const vReal &eta,
-              const vReal &chi,
-              const vReal &U_scaled,
-              const vReal &V_scaled,
-              const long   n          );
+          const vReal &eta,
+          const vReal &chi,
+          const vReal &U_scaled,
+          const vReal &V_scaled,
+          const long   n              );
 
       inline void set_dtau (
-              const vReal  &chi,
-              const vReal  &chi_prev,
-              const double  dZ,
-              const long    n        );
-
+          const vReal  &chi,
+          const vReal  &chi_prev,
+          const double  dZ,
+          const long    n        );
 
       // getters
       inline vReal get_u_at_origin () const;
       inline vReal get_v_at_origin () const;
 
-      inline vReal get_u_local_at_origin () const;
-
       inline vReal get_I_p () const;
       inline vReal get_I_m () const;
 
 
-  private:
+      inline double get_L_diag (
+          const Thermodynamics &thermodynamics,
+          const double          freq_line,
+          const int             lane           ) const;
+
+      inline double get_L_lower (
+          const Thermodynamics &thermodynamics,
+          const double          freq_line,
+          const int             lane,
+          const long            m              ) const;
+
+      inline double get_L_upper (
+          const Thermodynamics &thermodynamics,
+          const double          freq_line,
+          const int             lane,
+          const long            m              ) const;
+
+      inline void update_Lambda (
+          const Frequencies                       &frequencies,
+          const Thermodynamics                    &thermodynamics,
+          const long                               p,
+          const long                               f,
+          const double                             weight_angular,
+                std::vector<LineProducingSpecies> &lineProducingSpecies) const;
+
+
+  //private:
 
       vReal1 A;       // A coefficient in Feautrier recursion relation
       vReal1 C;       // C coefficient in Feautrier recursion relation
@@ -80,7 +108,13 @@ struct RayPair
       vReal1 Sv;     // effective source for v along the ray
       vReal1 dtau;   // optical depth increment along the ray
 
-      vReal1 L;
+
+      const long n_off_diag = 1;
+
+      vReal2 L_upper;
+      vReal1 L_diag;
+      vReal2 L_lower;
+
 
 
 };

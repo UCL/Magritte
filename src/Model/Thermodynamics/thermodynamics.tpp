@@ -29,6 +29,16 @@ inline vReal Thermodynamics ::
 }
 
 
+inline vReal Thermodynamics ::
+    profile (
+        const long   p,
+        const double freq_line,
+        const vReal  freq      ) const
+{
+  return profile (profile_width (p, freq_line), freq - (vReal) freq_line);
+}
+
+
 
 
 ///  profile_width: line profile width due to thermal and turbulent Doppler shifts

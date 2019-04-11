@@ -26,11 +26,11 @@ PYBIND11_MAKE_OPAQUE (Double3);
 
 PYBIND11_MAKE_OPAQUE (String1);
 
-PYBIND11_MAKE_OPAQUE (std::vector<Linedata>);
+PYBIND11_MAKE_OPAQUE (std::vector<LineProducingSpecies>);
 PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 
 
-PYBIND11_MODULE (pyMagritte, module)
+PYBIND11_MODULE (magritte, module)
 {
 
   // Module docstring
@@ -49,8 +49,11 @@ PYBIND11_MODULE (pyMagritte, module)
 
   py::bind_vector<String1> (module, "String1");
 
-  py::bind_vector<std::vector<Linedata>>         (module, "vLinedata");
-  py::bind_vector<std::vector<CollisionPartner>> (module, "vCollisionPartner");
+  py::bind_vector<Lambda1> (module, "Lambda1");
+  py::bind_vector<Lambda2> (module, "Lambda2");
+
+  py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
+  py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
 
 
   // Model
@@ -73,9 +76,13 @@ PYBIND11_MODULE (pyMagritte, module)
   py::class_<Parameters> (module, "Parameters")
       // constructor
       .def (py::init())
-      // Setters
+      .def_readwrite ("r",    &Parameters::r)
+      .def_readwrite ("o",    &Parameters::o)
+      .def_readwrite ("f",    &Parameters::f)
+      // setters
       .def ("set_ncells",     &Parameters::set_ncells    )
       .def ("set_nrays",      &Parameters::set_nrays     )
+      .def ("set_nrays",      &Parameters::set_nrays_red )
       .def ("set_nboundary",  &Parameters::set_nboundary )
       .def ("set_nfreqs",     &Parameters::set_nfreqs    )
       .def ("set_nfreqs_red", &Parameters::set_nfreqs_red)
@@ -85,9 +92,10 @@ PYBIND11_MODULE (pyMagritte, module)
       .def ("set_nquads",     &Parameters::set_nquads    )
       .def ("set_max_iter",   &Parameters::set_max_iter  )
       .def ("set_pop_prec",   &Parameters::set_pop_prec  )
-      // Getters
+      // getters
       .def ("ncells",         &Parameters::ncells    )
-      .def ("nrays" ,         &Parameters::nrays     )
+      .def ("nrays",          &Parameters::nrays     )
+      .def ("nrays_red",      &Parameters::nrays_red )
       .def ("nboundary",      &Parameters::nboundary )
       .def ("nfreqs",         &Parameters::nfreqs    )
       .def ("nfreqs_red",     &Parameters::nfreqs_red)
@@ -96,7 +104,11 @@ PYBIND11_MODULE (pyMagritte, module)
       .def ("nlines",         &Parameters::nlines    )
       .def ("nquads",         &Parameters::nquads    )
       .def ("max_iter",       &Parameters::max_iter  )
-      .def ("pop_prec",       &Parameters::pop_prec  );
+      .def ("pop_prec",       &Parameters::pop_prec  )
+      // functions
+      .def ("read",           &Parameters::read      )
+      .def ("write",          &Parameters::write     );
+
 
 
   // Geometry
@@ -133,14 +145,16 @@ PYBIND11_MODULE (pyMagritte, module)
   // Rays
   py::class_<Rays> (module, "Rays")
       // attributes
-      .def_readwrite ("x", &Rays::x)
-      .def_readwrite ("y", &Rays::y)
-      .def_readwrite ("z", &Rays::z)
+      .def_readwrite ("x",       &Rays::x)
+      .def_readwrite ("y",       &Rays::y)
+      .def_readwrite ("z",       &Rays::z)
+      .def_readwrite ("weights", &Rays::weights)
+      .def_readwrite ("antipod", &Rays::antipod)
       // constructor
       .def (py::init())
       // functions
-      .def ("read",        &Rays::read)
-      .def ("write",       &Rays::write);
+      .def ("read",              &Rays::read)
+      .def ("write",             &Rays::write);
 
 
   // Boundary
@@ -216,23 +230,61 @@ PYBIND11_MODULE (pyMagritte, module)
   // Lines
   py::class_<Lines> (module, "Lines")
       // attributes
-      .def_readwrite ("linedata",           &Lines::linedata)
-      .def_readwrite ("quadrature_roots",   &Lines::quadrature_roots)
-      .def_readwrite ("quadrature_weights", &Lines::quadrature_weights)
-      .def_readwrite ("population",         &Lines::population)
-      .def_readwrite ("population_prev1",   &Lines::population_prev1)
-      .def_readwrite ("population_prev2",   &Lines::population_prev2)
-      .def_readwrite ("population_prev3",   &Lines::population_prev3)
-      .def_readwrite ("nr_line",            &Lines::nr_line)
-      .def_readwrite ("emissivity",         &Lines::emissivity)
-      .def_readwrite ("opacity",            &Lines::opacity)
-      .def_readwrite ("J_line",             &Lines::J_line)
-      .def_readwrite ("J_star",             &Lines::J_star)
+      .def_readwrite ("lineProducingSpecies", &Lines::lineProducingSpecies)
+      .def_readwrite ("emissivity",           &Lines::emissivity)
+      .def_readwrite ("opacity",              &Lines::opacity)
+      .def_readwrite ("line",                 &Lines::line)
+      .def_readwrite ("line_index",           &Lines::line_index)
       // constructor
       .def (py::init<>())
       // functions
-      .def ("read",                         &Lines::read)
-      .def ("write",                        &Lines::write);
+      .def ("read",                           &Lines::read)
+      .def ("write",                          &Lines::write);
+
+
+  // LineProducingSpecies
+  py::class_<LineProducingSpecies> (module, "LineProducingSpecies")
+      // attributes
+      .def_readwrite ("linedata",         &LineProducingSpecies::linedata)
+      .def_readwrite ("quadrature",       &LineProducingSpecies::quadrature)
+      .def_readwrite ("Lambda",           &LineProducingSpecies::lambda)
+      .def_readwrite ("Jeff",             &LineProducingSpecies::Jeff)
+      .def_readwrite ("Jlin",             &LineProducingSpecies::Jlin)
+      .def_readwrite ("nr_line",          &LineProducingSpecies::nr_line)
+      .def_readwrite ("population",       &LineProducingSpecies::population)
+      .def_readwrite ("population_tot",   &LineProducingSpecies::population_tot)
+      .def_readwrite ("population_prev1", &LineProducingSpecies::population_prev1)
+      .def_readwrite ("population_prev2", &LineProducingSpecies::population_prev2)
+      .def_readwrite ("population_prev3", &LineProducingSpecies::population_prev3)
+      .def_readwrite ("ncells",           &LineProducingSpecies::ncells)
+      // constructor
+      .def (py::init<>())
+      // functions
+      .def ("read",                       &LineProducingSpecies::read)
+      .def ("write",                      &LineProducingSpecies::write);
+
+
+  // Lambda
+  py::class_<Lambda> (module, "Lambda")
+      // attributes
+      .def_readwrite ("Ls", &Lambda::Ls)
+      .def_readwrite ("nr", &Lambda::nr)
+      // constructor
+      .def (py::init<>())
+      // functions
+      .def ("add_entry",    &Lambda::add_entry);
+
+
+  // Quadrature
+  py::class_<Quadrature> (module, "Quadrature")
+      // attributes
+      .def_readwrite ("roots",   &Quadrature::roots)
+      .def_readwrite ("weights", &Quadrature::weights)
+      // constructor
+      .def (py::init<>())
+      // functions
+      .def ("read",              &Quadrature::read)
+      .def ("write",             &Quadrature::write);
 
 
   // Linedata
@@ -284,14 +336,13 @@ PYBIND11_MODULE (pyMagritte, module)
       .def_readwrite ("frequencies", &Radiation::frequencies)
       .def_readwrite ("u",           &Radiation::u)
       .def_readwrite ("v",           &Radiation::v)
-      .def_readwrite ("J",           &Radiation::v)
-      .def_readwrite ("G",           &Radiation::v)
+      .def_readwrite ("J",           &Radiation::J)
+      .def_readwrite ("G",           &Radiation::G)
       // constructor
       .def (py::init())
       // functions
       .def ("read",                  &Radiation::read)
-      .def ("write",                 &Radiation::write)
-      .def ("index",                 &Radiation::index);
+      .def ("write",                 &Radiation::write);
 
 
   // Frequencies
@@ -314,11 +365,30 @@ PYBIND11_MODULE (pyMagritte, module)
       // attributes
       .def_readonly ("error_max",              &Simulation::error_max)
       .def_readonly ("error_mean",             &Simulation::error_mean)
+      .def_readonly ("rayPair",                &Simulation::rayPair)
+
       // functions
       .def ("compute_spectral_discretisation", &Simulation::compute_spectral_discretisation)
       .def ("compute_boundary_intensities",    &Simulation::compute_boundary_intensities)
       .def ("compute_LTE_level_populations",   &Simulation::compute_LTE_level_populations)
       .def ("compute_radiation_field",         &Simulation::compute_radiation_field)
       .def ("compute_level_populations",       &Simulation::compute_level_populations);
+
+  // RayPair
+  py::class_<RayPair> (module, "RayPair")
+      // constructor
+      .def (py::init<>())
+      // attributes
+      .def_readonly ("n_ar", &RayPair::n_ar)
+      .def_readonly ("n_r",  &RayPair::n_r)
+      .def_readonly ("ndep", &RayPair::ndep)
+      .def_readonly ("chi",  &RayPair::chi)
+      .def_readonly ("Su",   &RayPair::Su)
+      .def_readonly ("Sv",   &RayPair::Sv)
+      .def_readonly ("nrs",  &RayPair::nrs)
+      .def_readonly ("frs",  &RayPair::frs)
+      .def_readonly ("dtau", &RayPair::dtau);
+
+      // functions
 
 }

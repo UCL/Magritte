@@ -25,6 +25,8 @@ struct IoText : public Io
 
   int  read_length   (const string fname,       long    &length) const;
 
+  int  read_width    (const string fname,       long    &width ) const;
+
   int  read_number   (const string fname,       long    &number) const;
   int write_number   (const string fname, const long    &number) const;
 

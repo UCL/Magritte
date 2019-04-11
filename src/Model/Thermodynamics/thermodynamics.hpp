@@ -39,6 +39,11 @@ struct Thermodynamics
           const double width,
           const vReal  freq_diff  ) const;
 
+      inline vReal profile (
+          const long   p,
+          const double freq_line,
+          const vReal  freq      ) const;
+
       inline double profile_width (
           const long   p,
           const double freq_line  ) const;

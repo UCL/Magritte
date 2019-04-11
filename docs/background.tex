@@ -308,8 +308,8 @@ The discretized equation (\ref{dis}) can be rewritten in schematic form as
 where we defined
 \begin{equation}
 \begin{split}
-A_{d} \ &\equiv \ \frac{2}{\Delta\tau_{d-1} (\Delta\tau_{d-1} + \Delta\tau_{d}) } , \\
-C_{d} \ &\equiv \ \frac{2}{\Delta\tau_{d} (\Delta\tau_{d-1} + \Delta\tau_{d})} , \\
+A_{d} \ &\equiv \ \frac{2}{\Delta\tau_{d} (\Delta\tau_{d} + \Delta\tau_{d+1}) } , \\
+C_{d} \ &\equiv \ \frac{2}{\Delta\tau_{d+1} (\Delta\tau_{d} + \Delta\tau_{d+1})} , \\
 B_{d} \ &\equiv \ 1  + A_{d} + C_{d} .
 \end{split}
 \end{equation}

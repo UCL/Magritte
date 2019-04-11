@@ -12,17 +12,73 @@ from scipy.spatial import Delaunay
 from rays          import rayVectors
 
 # Magritte specific imports
-from pyMagritte import Linedata, CollisionPartner
-from pyMagritte import Rays
-from pyMagritte import Long1,   Long2,   Long3
-from pyMagritte import Double1, Double2, Double3
-from pyMagritte import vLinedata, vCollisionPartner
+from magritte import Linedata, CollisionPartner, LineProducingSpecies
+from magritte import Rays
+from magritte import Long1,   Long2,   Long3
+from magritte import Double1, Double2, Double3
+from magritte import vCollisionPartner
 
 
 # Physical constants
 CC = 2.99792458E+8    # [m/s] speed of light
 HH = 6.62607004E-34   # [J*s] Planck's constant
 KB = 1.38064852E-23   # [J/K] Boltzmann's constant
+
+from random import randint
+from math   import isclose
+
+RT = 1.0E-5
+
+def get_rays (cells, nr, nrays):
+    ncells = len(cells.x)
+    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(150))
+    #while (len(Rx) < 300):
+    #    p = randint (0, ncells-1)
+    #    if (p != nr):
+    #        x = cells.x[p] - cells.x[nr]
+    #        y = cells.y[p] - cells.y[nr]
+    #        z = cells.z[p] - cells.z[nr]
+    #        length = np.sqrt(x**2 + y**2 + z**2)
+    #        x /= length
+    #        y /= length
+    #        z /= length
+    #        already_in_list = False
+    #        for r in range (len(Rx)):
+    #            if (isclose(x, Rx[r], abs_tol=RT) and isclose(y, Ry[r], abs_tol=RT) and isclose(z, Rz[r], abs_tol=RT)):
+    #                already_in_list = True
+    #        if not already_in_list:
+    #            # Add ray
+    #            Rx.append (+x)
+    #            Ry.append (+y)
+    #            Rz.append (+z)
+    #            # Add antipodal
+    #            Rx.append (-x)
+    #            Ry.append (-y)
+    #            Rz.append (-z)
+    return (Rx, Ry, Rz)
+
+
+def get_neighbors(px, py, nr):
+    x      =  px[nr]
+    y      =  py[nr]
+    x_orth = -py[nr]
+    y_orth = +px[nr]
+    n1 = nr
+    s1 = 5.0
+    n2 = nr
+    s2 = 5.0
+    for p in range(len(px)):
+        rx = px[p]-x
+        ry = py[p]-y
+        s = rx**2 + ry**2
+        n = x_orth*px[p] + y_orth*py[p]
+        if (n > 0.0 and s < s1):
+            n1 = p
+            s1 = s
+        if (n < 0.0 and s < s2):
+            n2 = p
+            s2 = s
+    return (n1, n2)
 
 
 def model_name ():
@@ -48,7 +104,7 @@ class Setup ():
         if not self.dimension in [1, 2, 3]:
             raise ValueError ('Dimension should be 1, 2, or 3.')
 
-    def rays (self, nrays):
+    def rays_old (self, nrays):
         """
         Setup input for the Rays class.
         """
@@ -65,6 +121,98 @@ class Setup ():
         rays.x = Double1 (Rx)
         rays.y = Double1 (Ry)
         rays.z = Double1 (Rz)
+        # Done
+        return rays
+
+    def rays (self, nrays, cells):
+        """
+        Setup input for the Rays class.
+        """
+        # Check lengths
+        ncells = len (cells.x)
+        assert (ncells == len(cells.y))
+        assert (ncells == len(cells.z))
+        assert (ncells == len(cells.vx))
+        assert (ncells == len(cells.vy))
+        assert (ncells == len(cells.vz))
+        # Initialise arrays with some uniform rays
+        Rx = []
+        Ry = []
+        Rz = []
+        wt = []
+        if (self.dimension == 2):
+            # Assign rays to each cell
+            for p in range(ncells):
+                (rx, ry, rz) = get_rays (cells, p, ncells)
+                Rx.append (rx)
+                Ry.append (ry)
+                Rz.append (rz)
+                # Get weights
+                weights = []
+                for r in range(len(rx)):
+                    #(n1, n2) = get_neighbors (rx, ry, r)
+                    #cos = rx[n1]*rx[n2] + ry[n1]*ry[n2]
+                    #if (n1 == r):
+                    #    print("n1 == r")
+                    #    print("p= ", p, "    r = ", r)
+                    #if (n2 == r):
+                    #    print("n2 == r")
+                    #    print("p= ", p, "    r = ", r)
+                    #if (cos == 1.0):
+                    #    print(p, r, n1, n2)
+                    #    print(rx[n1], rx[n2], ry[n1], ry[n2])
+                    #weights.append (0.5*np.arccos(cos)/(2.0*np.pi))
+                    weights.append (1.0/150.0)
+                wt.append (weights)
+                #length = np.sqrt (cells.x[p]**2 + cells.y[p]**2 + cells.z[p]**2)
+                ## Set up parameters
+                #relevant_angle = np.arctan(7.5E+14 / length)
+                #ntheta_small = 30
+                #dtheta_small = relevant_angle / ntheta_small
+                #ntheta_large = 25
+                #dtheta_large = (np.pi - dtheta_small*ntheta_small) / ntheta_large
+                ## Set first ray
+                #Rx.append ([-cells.x[p]])
+                #Ry.append ([-cells.y[p]])
+                #Rz.append ([-cells.z[p]])
+                #wt.append ([dtheta_small / (2.0*np.pi)])
+                ## Assuming 2D...
+                #for _ in range (ntheta_small):
+                #    Rx[p].append (Rx[p][-1]*np.cos(dtheta_small) - Ry[p][-1]*np.sin(dtheta_small))
+                #    Ry[p].append (Rx[p][-1]*np.sin(dtheta_small) + Ry[p][-1]*np.cos(dtheta_small))
+                #    Rz[p].append (0.0)
+                #    wt[p].append (dtheta_small / (2.0*np.pi))
+                #wt[p][-1] = 0.5 * (dtheta_small + dtheta_large / (2.0 * np.pi))
+                #for _ in range (ntheta_large):
+                #    Rx[p].append (Rx[p][-1]*np.cos(dtheta_large) - Ry[p][-1]*np.sin(dtheta_large))
+                #    Ry[p].append (Rx[p][-1]*np.sin(dtheta_large) + Ry[p][-1]*np.cos(dtheta_large))
+                #    Rz[p].append (0.0)
+                #    wt[p].append (dtheta_large / (2.0*np.pi))
+                #for r in range (ntheta_small + ntheta_large+1):
+                #    Rx[p].append (-Rx[p][r])
+                #    Ry[p].append (-Ry[p][r])
+                #    Rz[p].append (0.0)
+                #    wt[p].append ( wt[p][r])
+                ## Rescale (determinant of rotation matrix is not exactly 1)
+                #for r in range (len(Rx[p])):
+                #    length = np.sqrt (Rx[p][r]**2 + Ry[p][r]**2)
+                #    Rx[p][r] = Rx[p][r] / length
+                #    Ry[p][r] = Ry[p][r] / length
+                #    Rz[p][r] = Rz[p][r] / length
+                #    wt[p][r] = wt[p][r] / sum(wt[p])
+        else:
+            for _ in range(ncells):
+                Rx.append (rayVectors (dimension=self.dimension, nrays=nrays)[0])
+                Ry.append (rayVectors (dimension=self.dimension, nrays=nrays)[1])
+                Rz.append (rayVectors (dimension=self.dimension, nrays=nrays)[2])
+                wt.append ([1.0/nrays for r in range(nrays)])
+        # Create rays object
+        rays = Rays ()
+        # Assign ray vectors
+        rays.x       = Double2([Double1(Rx[p]) for p in range(ncells)])
+        rays.y       = Double2([Double1(Ry[p]) for p in range(ncells)])
+        rays.z       = Double2([Double1(Rz[p]) for p in range(ncells)])
+        rays.weights = Double2([Double1(wt[p]) for p in range(ncells)])
         # Done
         return rays
 
@@ -281,5 +429,8 @@ def linedata_from_LAMDA_file (fileName, species):
                 i = colpar.icol[k]
                 j = colpar.jcol[k]
                 ld.colpar[c].Ce[t][k] = colpar.Cd[t][k] * ld.weight[i] / ld.weight[j] * np.exp(-(ld.energy[i]-ld.energy[j])/(KB * colpar.tmp[t]))
+    # Create LineProducingSpecies object
+    lspec          = LineProducingSpecies ()
+    lspec.linedata = ld
     # Done
-    return ld
+    return lspec

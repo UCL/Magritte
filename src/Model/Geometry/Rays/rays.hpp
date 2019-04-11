@@ -21,9 +21,15 @@ struct Rays
 
   public:
 
-      Double1 x;         ///< x component of direction vector
-      Double1 y;         ///< y component of direction vector
-      Double1 z;         ///< z component of direction vector
+      Double2 x;         ///< x component of direction vector
+      Double2 y;         ///< y component of direction vector
+      Double2 z;         ///< z component of direction vector
+
+      Double2 weights;   ///< weights for angular integration
+
+      //Double1 xr;         ///< x component of direction vector
+      //Double1 yr;         ///< y component of direction vector
+      //Double1 zr;         ///< z component of direction vector
 
       Double1 Ix;        ///< x component of horizontal image axis
       Double1 Iy;        ///< y component of horizontal image axis
@@ -32,7 +38,7 @@ struct Rays
       Double1 Jy;        ///< y component of vertical image axis
       Double1 Jz;        ///< z component of vertical image axis
 
-      Long1 antipod;     ///< ray number of antipodal ray
+      Long2 antipod;     ///< ray number of antipodal ray
 
 
       // Io
@@ -46,6 +52,7 @@ struct Rays
 
   private:
 
+      long ncells;
       long nrays;
 
 

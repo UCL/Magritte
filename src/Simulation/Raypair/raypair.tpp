@@ -5,6 +5,8 @@
 
 
 #include "Tools/debug.hpp"
+#include "Model/Radiation/Frequencies/frequencies.hpp"
+#include "Model/Lines/LineProducingSpecies/lineProducingSpecies.hpp"
 
 
 ///  initialize:
@@ -35,8 +37,22 @@ inline void RayPair ::
         Su.resize (ndep+10);
         Sv.resize (ndep+10);
       dtau.resize (ndep+10);
-         L.resize (ndep+10);
+    L_diag.resize (ndep+10);
+       chi.resize (ndep+10);
+       nrs.resize (ndep+10);
+       frs.resize (ndep+10);
+
+
+    L_upper.resize (n_off_diag);
+    L_lower.resize (n_off_diag);
+
+    for (long m = 0; m < n_off_diag; m++)
+    {
+      L_upper[m].resize (ndep+10);
+      L_lower[m].resize (ndep+10);
+    }
   }
+
 
 }
 
@@ -203,49 +219,32 @@ inline void RayPair ::
 
   // Calculate diagonal elements
 
-  //L[f](0,0) = (1.0 + G[1][f]) / (B0_min_C0[f] + B0[f]*G[1][f]);
-  L[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
+  L_diag[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
 
   for (long n = 1; n < ndep-1; n++)
   {
-   //L[f](n,n) = (1.0 + G[n+1][f]) / ((F[n][f] + G[n+1][f] + F[n][f]*G[n+1][f]) * C[n][f]);
-   L[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
+   L_diag[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
   }
 
-  //L[f](ndep-1,ndep-1) = (1.0 + F[ndep-2][f]) / (Bd_min_Ad[f] + Bd[f]*F[ndep-2][f]);
-  L[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
+  L_diag[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
 
 
-  //// Set number of off-diagonals to add
-  //
-  //const long ndiag = 0;
 
-  //// Add upper-diagonal elements
+  for (long n = 0; n < ndep-1; n++)
+  {
+    L_upper[0][n] = L_diag[n+1] / (vOne + F[n]);
+    L_lower[0][n] = L_diag[n]   / (vOne + G[n+1]);
+  }
 
-  //for (long m = 1; m < ndiag; m++)
-  //{
-  //  for (long n = 0; n < ndep-m; n++)
-  //  {
-  //    for (long f = 0; f < nfreq_red; f++)
-	//		{
-  //      L[f](n,n+m) = L[f](n+1,n+m) / (1.0 + F[n][f]);
-	//		}
-  //  }
-  //}
+  for (long m = 1; m < n_off_diag; m++)
+  {
+    for (long n = 0; n < ndep-1-m; n++)
+    {
+      L_upper[m][n] = L_upper[m-1][n+1] / (vOne + F[n]);
+      L_lower[m][n] = L_lower[m-1][n]   / (vOne + G[n+m+1]);
+    }
+  }
 
-
-  //// Add lower-diagonal elements
-
-  //for (long m = 1; m < ndiag; m++)
-  //{
-  //  for (long n = m; n < ndep; n++)
-  //  {
-  //    for (long f = 0; f < nfreq_red; f++)
-  //    {
-  //      L[f](n,n-m) = L[f](n-1,n-m) / (1.0 + G[n][f]);
-	//	  }
-  //  }
-  //}
 
 }
 
@@ -357,29 +356,6 @@ inline vReal RayPair ::
   return Sv[n_ar];
 }
 
-inline vReal RayPair ::
-    get_u_local_at_origin () const
-{
-
-  double Seff = term1[n_ar];
-
-  if      (n_ar == 0)
-  {
-    Seff -= (term2[1] - term2[0]) / dtau[0];
-  }
-  else if (n_ar == ndep-1)
-  {
-    Seff -= (term2[n_ar] - term2[n_ar-1]) / dtau[n_ar-1];
-  }
-  else
-  {
-    Seff -= 2.0 * (term2[n_ar+1] - term2[n_ar-1]) / (dtau[n_ar] + dtau[n_ar-1]);
-  }
-
-
-  return L[n_ar] * Seff;
-
-}
 
 inline vReal RayPair ::
     get_I_p () const
@@ -391,4 +367,122 @@ inline vReal RayPair ::
     get_I_m () const
 {
   return Su[0] - Sv[0];
+}
+
+
+
+
+inline double RayPair ::
+    get_L_diag (
+        const Thermodynamics &thermodynamics,
+        const double          freq_line,
+        const int             lane           ) const
+{
+  const vReal profile = thermodynamics.profile (nrs[n_ar], frs[n_ar], freq_line);
+
+  return getlane (frs[n_ar] * profile * L_diag[n_ar] / chi[n_ar], lane);
+}
+
+
+
+
+inline double RayPair ::
+    get_L_lower (
+        const Thermodynamics &thermodynamics,
+        const double          freq_line,
+        const int             lane,
+        const long            m              ) const
+{
+  const vReal profile = thermodynamics.profile (nrs[n_ar-m], frs[n_ar-m], freq_line);
+
+  return getlane (frs[n_ar-m] * profile * L_lower[m][n_ar-m] / chi[n_ar-m], lane);
+}
+
+
+
+
+inline double RayPair ::
+    get_L_upper (
+        const Thermodynamics &thermodynamics,
+        const double          freq_line,
+        const int             lane,
+        const long            m              ) const
+{
+  const vReal profile = thermodynamics.profile (nrs[n_ar+m], frs[n_ar+m], freq_line);
+
+  return getlane (frs[n_ar+m] * profile * L_upper[m][n_ar+m] / chi[n_ar+m], lane);
+}
+
+
+
+
+inline void RayPair ::
+    update_Lambda (
+        const Frequencies                       &frequencies,
+        const Thermodynamics                    &thermodynamics,
+        const long                               p,
+        const long                               f,
+        const double                             weight_angular,
+              std::vector<LineProducingSpecies> &lineProducingSpecies   ) const
+{
+
+
+  GRID_FOR_ALL_LANES (lane)
+  {
+    const long f_index = f * n_simd_lanes + lane;
+
+    if (frequencies.appears_in_line_integral[f_index])
+    {
+      const long l = frequencies.corresponding_l_for_spec[f_index];
+      const long k = frequencies.corresponding_k_for_tran[f_index];
+      const long z = frequencies.corresponding_z_for_line[f_index];
+
+      //write_to_log ("l = ", l);
+      //write_to_log ("k = ", k);
+      //write_to_log ("z = ", z);
+
+      const double freq_line = lineProducingSpecies[l].linedata.frequency[k];
+      const double weight    = lineProducingSpecies[l].quadrature.weights[z] * 2.0 * weight_angular;
+      const double factor    = lineProducingSpecies[l].linedata.A[k] * weight;
+
+
+      double L = factor * get_L_diag (thermodynamics, freq_line, lane);
+
+      const long i   = lineProducingSpecies[l].linedata.irad[k];
+      const long ind = lineProducingSpecies[l].index(nrs[n_ar], i);
+
+      //write_to_log ("src = ", L/L_diag[n_ar],
+      //       "     term1 = ", term1[n_ar] / (HH_OVER_FOUR_PI*lineProducingSpecies[l].population[ind]));
+      //write_to_log ("prox = ", L*(HH_OVER_FOUR_PI*lineProducingSpecies[l].population[ind]),
+      //       "       calc = ", L_diag[n_ar] * term1[n_ar],
+      //       "       Jeff = ", Su[n_ar]);
+
+      //lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
+
+      //write_to_log ("L diag = ", L);
+
+      //for (long m = 1; m < n_off_diag; m++)
+      //{
+      //  if (n_ar-m >= 0)
+      //  {
+      //    L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
+
+      //    //write_to_log ("L lower = ", L);
+
+      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
+      //  }
+
+      //  if (n_ar+m < ndep-m)
+      //  {
+      //    L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
+
+      //    //write_to_log ("L upper = ", L);
+
+      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
+      //  }
+      //}
+    }
+  }
+
+
 }

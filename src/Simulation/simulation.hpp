@@ -15,25 +15,25 @@
 
 
 ///  Simulation:
-//////////////////////////////////////////////////////////////////
+////////////////
 
 struct Simulation : public Model
 {
 
+
   Double1 error_max;
   Double1 error_mean;
 
+  RayPair rayPair;
 
   int compute_spectral_discretisation ();
 
+
+  // In sim_radiation.cpp
+
   int compute_boundary_intensities ();
 
-  int compute_LTE_level_populations ();
-
   int compute_radiation_field ();
-
-  int compute_level_populations ();
-
 
   inline void setup (
       const long     R,
@@ -50,16 +50,22 @@ struct Simulation : public Model
             vReal &eta,
             vReal &chi         ) const;
 
-int update_using_statistical_equilibrium ();
 
-void calc_J_and_L_eff (
-      const long p,
-      const int  l,
-      const long k    );
+  // In sim_lines.cpp
 
-Eigen::MatrixXd get_transition_matrix (
-      const long p,
-      const long l                    );
+  int compute_LTE_level_populations ();
+
+  int compute_level_populations ();
+
+  //int update_using_statistical_equilibrium (
+  //    const long l                         );
+
+  void calc_Jeff ();
+
+  //Eigen::MatrixXd get_transition_matrix (
+  //      const long p,
+  //      const long l                    );
+
 
 };
 

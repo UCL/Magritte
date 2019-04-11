@@ -6,6 +6,7 @@
 
 #include "model.hpp"
 #include "Io/io.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  read: read model data
@@ -17,6 +18,9 @@ int Model ::
       const Io &io)
 {
 
+  write_to_log ("Reading Model");
+
+
   geometry.read       (io, parameters);
 
   thermodynamics.read (io, parameters);
@@ -26,6 +30,22 @@ int Model ::
   lines.read          (io, parameters);
 
   radiation.read      (io, parameters);
+
+
+  write_to_log ("-----------------");
+  write_to_log ("Model parameters:");
+  write_to_log ("-----------------");
+  write_to_log ("ncells     = ", parameters.ncells     ());
+  write_to_log ("nrays      = ", parameters.nrays      ());
+  write_to_log ("nrays_red  = ", parameters.nrays_red  ());
+  write_to_log ("nboundary  = ", parameters.nboundary  ());
+  write_to_log ("nfreqs     = ", parameters.nfreqs     ());
+  write_to_log ("nfreqs_red = ", parameters.nfreqs_red ());
+  write_to_log ("nspecs     = ", parameters.nspecs     ());
+  write_to_log ("nlspecs    = ", parameters.nlspecs    ());
+  write_to_log ("nlines     = ", parameters.nlines     ());
+  write_to_log ("nquads     = ", parameters.nquads     ());
+  write_to_log ("-----------------");
 
 
   return (0);
@@ -43,6 +63,9 @@ int Model ::
    write (
       const Io &io) const
 {
+
+  write_to_log ("Writing Model");
+
 
   geometry.write       (io);
 

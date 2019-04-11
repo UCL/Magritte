@@ -10,9 +10,8 @@
 #include "Tools/constants.hpp"
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/logger.hpp"
 
-#include <iostream>
-using namespace std;
 
 const string Frequencies::prefix = "Radiation/Frequencies/";
 
@@ -27,6 +26,9 @@ int Frequencies ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading frequencies");
+
 
   ncells = parameters.ncells ();
   nlines = parameters.nlines ();
@@ -59,6 +61,12 @@ int Frequencies ::
   }
 
 
+  appears_in_line_integral.resize (nfreqs);
+  corresponding_l_for_spec.resize (nfreqs);
+  corresponding_k_for_tran.resize (nfreqs);
+  corresponding_z_for_line.resize (nfreqs);
+
+
   // frequencies.nu has to be initialized (for unused entries)
 
   OMP_PARALLEL_FOR (p, ncells)
@@ -85,6 +93,9 @@ int Frequencies ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing frequencies");
+
 
   // Print all frequencies (nu)
 # if (GRID_SIMD)

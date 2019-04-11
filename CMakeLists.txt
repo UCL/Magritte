@@ -27,7 +27,7 @@ if(OPENMP_FOUND)
 endif()
 
 # Link to pybind11
-add_subdirectory (/home/frederik/software/pybind11-2.2.4  pybind11)
+add_subdirectory (dependencies/pybind11  pybind11)
 
 # Add directory containing Magritte's source
 add_subdirectory (src)
@@ -36,7 +36,7 @@ add_subdirectory (src)
 add_subdirectory (bindings)
 
 # Add directory containing Magritte's tests
-add_subdirectory (tests)
+add_subdirectory (tests/unit_tests)
 
 # Add directory containing Magritte's examples
 add_subdirectory (examples)

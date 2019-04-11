@@ -27,29 +27,31 @@ int main (int argc, char **argv)
     std::cout << "Running model: " << modelName << std::endl;
 
 
-    IoPython io ("io_hdf5", modelName);
+    IoPython io ("hdf5", modelName);
 
 
     Simulation simulation;
     simulation.read (io);
 
-    simulation.parameters.set_max_iter (100);
-    simulation.parameters.set_pop_prec (1.0E-6);
+    simulation.parameters.set_max_iter (10);
+    simulation.parameters.set_pop_prec (1.0E-4);
 
 
     simulation.compute_spectral_discretisation ();
 
     simulation.compute_boundary_intensities ();
 
+    simulation.compute_LTE_level_populations ();
+
     simulation.compute_level_populations ();
 
 
     simulation.write (io);
 
-    for (long p = 0; p < simulation.parameters.ncells(); p++)
-    {
-      std::cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << std::endl;
-    }
+    //for (long p = 0; p < simulation.parameters.ncells(); p++)
+    //{
+    //  std::cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << std::endl;
+    //}
 
     std::cout << "Done." << std::endl;
   }

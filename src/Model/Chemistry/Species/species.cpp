@@ -5,6 +5,7 @@
 
 
 #include "species.hpp"
+#include "Tools/logger.hpp"
 
 
 const string Species::prefix = "Chemistry/Species/";
@@ -20,6 +21,9 @@ int Species ::
         const Io         &io,
               Parameters &parameters)
 {
+
+  write_to_log ("Reading species");
+
 
   io.read_length (prefix+"species",   nspecs);
   io.read_length (prefix+"abundance", ncells);
@@ -76,6 +80,9 @@ int Species ::
     write (
         const Io &io) const
 {
+
+  write_to_log ("Writing species");
+
 
   Long1 dummy = Long1 (sym.size(), 0);
 

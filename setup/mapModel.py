@@ -6,10 +6,10 @@
 
 import numpy as np
 
-from healpy     import pixelfunc
-from pyMagritte import Model, Long1
-from setup      import Setup
-from rays       import rayVectors
+from healpy   import pixelfunc
+from magritte import Model, Long1
+from setup    import Setup
+from rays     import rayVectors
 
 def sphericalXDscalar (fr, ndirs, f):
     '''
@@ -71,7 +71,7 @@ def mapToXD (model1D, dimension, nrays, cellsInShell):
     # Extract boundary
     model.geometry.boundary.boundary2cell_nr = Long1 (cellsInShell[-1])
     # Add rays
-    model.geometry.rays = setup.rays (nrays=nrays)
+    model.geometry.rays = setup.rays (nrays=nrays, cells=model.geometry.cells)
     # Extract number of cells
     ncells = 0
     for shell in cellsInShell:
@@ -80,9 +80,8 @@ def mapToXD (model1D, dimension, nrays, cellsInShell):
     # Extract neighbors
     model.geometry.cells = setup.neighborLists (model.geometry.cells)
     # Add linedata
-    model.lines.linedata = model1D.lines.linedata
-    # Add quadrature info
-    model.lines.quadrature_roots   = model1D.lines.quadrature_roots
-    model.lines.quadrature_weights = model1D.lines.quadrature_weights
+    model.lines = model1D.lines
+    # Add chemical species
+    model.chemistry.species.sym = model1D.chemistry.species.sym
     # Done
     return model

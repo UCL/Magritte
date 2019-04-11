@@ -4,10 +4,9 @@
 // _________________________________________________________________________
 
 
-#include <iostream>
-
 #include "lines.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/logger.hpp"
 #include "Functions/heapsort.hpp"
 
 
@@ -25,19 +24,22 @@ int Lines ::
               Parameters &parameters)
 {
 
+  write_to_log ("Reading lines");
+
+
   // Data
 
-  io.read_length (prefix+"Linedata", nlspecs);
+  io.read_length (prefix+"LineProducingSpecies_", nlspecs);
 
 
   parameters.set_nlspecs (nlspecs);
 
 
-  linedata.resize (nlspecs);
+  lineProducingSpecies.resize (nlspecs);
 
   for (int l = 0; l < nlspecs; l++)
   {
-    linedata[l].read (io, l);
+    lineProducingSpecies[l].read (io, l, parameters);
   }
 
 
@@ -45,21 +47,10 @@ int Lines ::
 
   for (int l = 1; l < nlspecs; l++)
   {
-    nrad_cum[l] = nrad_cum[l-1] + linedata[l-1].nrad;
+    nrad_cum[l] = nrad_cum[l-1] + lineProducingSpecies[l-1].linedata.nrad;
   }
 
 
-  io.read_length (prefix+"quadrature_weights", nquads);
-
-
-  parameters.set_nquads (nquads);
-
-
-  quadrature_weights.resize (nquads);
-  quadrature_roots.resize   (nquads);
-
-  io.read_list (prefix+"quadrature_weights", quadrature_weights);
-  io.read_list (prefix+"quadrature_roots",   quadrature_roots  );
 
 
   // Lines
@@ -68,7 +59,7 @@ int Lines ::
 
   for (int l = 0; l < nlspecs; l++)
   {
-    nlines += linedata[l].nrad;
+    nlines += lineProducingSpecies[l].linedata.nrad;
   }
 
 
@@ -82,9 +73,11 @@ int Lines ::
 
   for (int l = 0; l < nlspecs; l++)
   {
-    for (int k = 0; k < linedata[l].nrad; k++)
+    const Linedata linedata = lineProducingSpecies[l].linedata;
+
+    for (int k = 0; k < linedata.nrad; k++)
     {
-      line      [index] = linedata[l].frequency[k];
+      line      [index] = linedata.frequency[k];
       line_index[index] = index;
       index++;
     }
@@ -97,71 +90,8 @@ int Lines ::
   ncells = parameters.ncells();
 
 
-  nr_line.resize (ncells);
-
-  for (long p = 0; p < ncells; p++)
-  {
-    nr_line[p].resize (nlspecs);
-
-    for (int l = 0; l < nlspecs; l++)
-    {
-      nr_line[p][l].resize (linedata[l].nrad);
-
-      for (int k = 0; k < linedata[l].nrad; k++)
-      {
-        nr_line[p][l][k].resize (nquads);
-      }
-    }
-  }
-
-
   emissivity.resize (ncells*nlines);
      opacity.resize (ncells*nlines);
-
-
-  // Levels
-
-  fraction_not_converged.resize (nlspecs);
-           not_converged.resize (nlspecs);
-
-
-  for (int l = 0; l < nlspecs; l++)
-  {
-    fraction_not_converged[l] = 0.0;
-             not_converged[l] = true;
-  }
-
-
-  population_prev1.resize (ncells);
-  population_prev2.resize (ncells);
-  population_prev3.resize (ncells);
-    population_tot.resize (ncells);
-        population.resize (ncells);
-            J_line.resize (ncells);
-            J_star.resize (ncells);
-
-
-  for (long p = 0; p < ncells; p++)
-  {
-    population_prev1[p].resize (nlspecs);
-    population_prev2[p].resize (nlspecs);
-    population_prev3[p].resize (nlspecs);
-      population_tot[p].resize (nlspecs);
-          population[p].resize (nlspecs);
-              J_line[p].resize (nlspecs);
-              J_star[p].resize (nlspecs);
-
-
-    for (int l = 0; l < nlspecs; l++)
-    {
-      population_prev1[p][l].resize (linedata[l].nlev);
-      population_prev2[p][l].resize (linedata[l].nlev);
-      population_prev3[p][l].resize (linedata[l].nlev);
-            population[p][l].resize (linedata[l].nlev);
-                J_line[p][l].resize (linedata[l].nrad);
-                J_star[p][l].resize (linedata[l].nrad);
-    }
-  }
 
 
   return (0);
@@ -180,28 +110,111 @@ int Lines ::
         const Io &io) const
 {
 
-  for (int l = 0; l < linedata.size(); l++)
+  write_to_log ("Writing lines");
+
+
+  for (int l = 0; l < lineProducingSpecies.size(); l++)
   {
-    linedata[l].write (io, l);
-
-
-    Double2 pops (ncells, Double1 (linedata[l].nlev));
-
-    OMP_PARALLEL_FOR (p, ncells)
-    {
-      for (long i = 0; i < linedata[l].nlev; i++)
-      {
-        pops[p][i] = population[p][l](i);
-      }
-    }
-
-    const string name = prefix + "population_" + std::to_string (l);
-
-    io.write_array (name, pops);
+    lineProducingSpecies[l].write (io, l);
   }
 
-  io.write_list (prefix+"quadrature_weights", quadrature_weights);
-  io.write_list (prefix+"quadrature_roots",   quadrature_roots  );
+
+  return (0);
+
+}
+
+
+
+
+///  initialize_Lambda: clear all entries in the Lambda operators
+/////////////////////////////////////////////////////////////////
+
+int Lines ::
+    initialize_Lambda ()
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.initialize_Lambda ();
+  }
+
+
+  return (0);
+
+}
+
+
+
+
+int Lines ::
+    iteration_using_LTE (
+        const Double2 &abundance,
+        const Double1 &temperature)
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.update_using_LTE (abundance, temperature);
+  }
+
+
+  set_emissivity_and_opacity ();
+
+  //gather_emissivities_and_opacities ();
+
+
+  return (0);
+
+}
+
+
+
+int Lines ::
+    iteration_using_Ng_acceleration (
+        const double pop_prec       )
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.update_using_Ng_acceleration ();
+
+    lspec.check_for_convergence (pop_prec);
+  }
+
+
+  set_emissivity_and_opacity ();
+
+  //gather_emissivities_and_opacities ();
+
+
+  return (0);
+
+}
+
+
+
+
+int Lines ::
+    iteration_using_statistical_equilibrium (
+        const Double2 &abundance,
+        const Double1 &temperature,
+        const double   pop_prec             )
+{
+
+  for (LineProducingSpecies &lspec : lineProducingSpecies)
+  {
+    lspec.update_using_statistical_equilibrium (abundance, temperature);
+write_to_log("HERE?");
+    lspec.check_for_convergence (pop_prec);
+write_to_log("Nope!");
+  }
+
+
+write_to_log("HERE?");
+  set_emissivity_and_opacity ();
+write_to_log("Nope!");
+
+  //gather_emissivities_and_opacities ();
 
 
   return (0);

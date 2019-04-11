@@ -11,16 +11,17 @@ ${CMAKE_SOURCE_DIR}/bin/examples)
 
 # Include directory containing source
 include_directories (../src)
+include_directories (../dependencies)
 
 # Create executable for examples
 add_executable (example_1.exe
   example_1.cpp)
 target_link_libraries (example_1.exe
-  Magritte
+  _Magritte
   PyIo)
 
 add_executable (example_2.exe
   example_2.cpp)
 target_link_libraries (example_2.exe
-  Magritte
+  _Magritte
   PyIo)
