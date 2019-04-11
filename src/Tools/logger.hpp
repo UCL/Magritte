@@ -14,59 +14,50 @@ using std::string;
 
 
 inline void write_to_log (
-    const auto text    )
+    const string text    )
 {
   std::cout << text << std::endl;
 }
 
 
 inline void write_to_log (
-    const auto text1,
-    const auto text2     )
+    const string text,
+    const double number  )
 {
-  std::cout << text1 << text2 << std::endl;
+  std::cout << text << number << std::endl;
 }
 
 
 inline void write_to_log (
-    const auto text1,
-    const auto text2,
-    const auto text3     )
+    const string text1,
+    const double number1,
+    const string text2,
+    const double number2 )
 {
-  std::cout << text1 << text2 << text3 << std::endl;
+  std::cout << text1 << number1 << text2 << number2 << std::endl;
 }
 
 
 inline void write_to_log (
-    const auto text1,
-    const auto text2,
-    const auto text3,
-    const auto text4     )
+    const string text1,
+    const double number1,
+    const string text2,
+    const double number2,
+    const string text3   )
 {
-  std::cout << text1 << text2 << text3 << text4 << std::endl;
+  std::cout << text1 << number1 << text2 << number2 << text3 << std::endl;
 }
 
 
 inline void write_to_log (
-    const auto text1,
-    const auto text2,
-    const auto text3,
-    const auto text4,
-    const auto text5     )
+    const string text1,
+    const double number1,
+    const string text2,
+    const double number2,
+    const string text3,
+    const double number3 )
 {
-  std::cout << text1 << text2 << text3 << text4 << text5 << std::endl;
-}
-
-
-inline void write_to_log (
-    const auto text1,
-    const auto text2,
-    const auto text3,
-    const auto text4,
-    const auto text5,
-    const auto text6     )
-{
-  std::cout << text1 << text2 << text3 << text4 << text5 << text6 << std::endl;
+  std::cout << text1 << number1 << text2 << number2 << text3 << number3 << std::endl;
 }
 
 

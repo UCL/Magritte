@@ -359,8 +359,6 @@ inline void LineProducingSpecies ::
 
   RT.setFromTriplets (triplets.begin(), triplets.end());
 
-  write_to_log (RT);
-
   Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
   solver.compute (RT);
