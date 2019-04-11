@@ -11,6 +11,7 @@ ${CMAKE_SOURCE_DIR}/bin/examples)
 
 # Include directory containing source
 include_directories (../src)
+include_directories (../dependencies)
 
 # Create executable for examples
 add_executable (example_1.exe

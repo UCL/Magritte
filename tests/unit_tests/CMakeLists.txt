@@ -11,6 +11,7 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
 
 # Include directory containing source
 include_directories (../../src)
+include_directories (../../dependencies)
 
 # Include directory containing the catch header
 include_directories (.)

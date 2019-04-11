@@ -6,8 +6,9 @@
 configure_file (configure.hpp.in
   ${CMAKE_SOURCE_DIR}/src/configure.hpp)
 
-# Headers are included in this folder
+# Headers are included in this folder and in the dependencies
 include_directories (.)
+include_directories (../dependencies)
 
 # Create Magritte library
 add_library (_Magritte

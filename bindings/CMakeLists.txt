@@ -3,6 +3,7 @@
 
 # Point to the include directory
 include_directories (../src)
+include_directories (../dependencies)
 
 # pybind11 command to create the python module in bin directory
 pybind11_add_module (magritte

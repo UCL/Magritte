@@ -2,6 +2,8 @@ mkdir build
 
 cd build
 
-cmake -DPYTHON_EXECUTABLE:FILEPATH=/home/frederik/software/anaconda3/envs/magritte/bin/python ../
+PYTHON_EXECUTABLE=$(which python)
 
-make -j8
+cmake -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE ../
+
+make -j4
