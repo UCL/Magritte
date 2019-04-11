@@ -24,7 +24,7 @@ int CollisionPartner ::
         const int c  )
 {
 
-  write_to_log ("Reading collisionPartner");
+  cout << "Reading collisionPartner" << endl;
 
 
   const string prefix_lc = prefix + std::to_string (l) + "/Linedata"
@@ -77,7 +77,7 @@ int CollisionPartner ::
         const int c  ) const
 {
 
-  write_to_log ("Writing collisionPartner");
+  cout << "Writing collisionPartner" << endl;
 
 
   const string prefix_lc = prefix + std::to_string (l) + "/Linedata"

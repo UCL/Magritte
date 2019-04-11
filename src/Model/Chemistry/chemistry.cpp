@@ -19,7 +19,7 @@ int Chemistry ::
             Parameters &parameters)
 {
 
-  write_to_log ("Reading chemistry");
+  cout << "Reading chemistry" << endl;
 
 
   species.read (io, parameters);
@@ -41,7 +41,7 @@ int Chemistry ::
       const Io &io) const
 {
 
-  write_to_log ("Writing chemistry");
+  cout << "Writing chemistry" << endl;
 
 
   species.write (io);

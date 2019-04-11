@@ -23,7 +23,7 @@ int Turbulence ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading turbulence");
+  cout << "Reading turbulence" << endl;
 
 
   // Get number of cells from length of temperature/gas file
@@ -61,7 +61,7 @@ int Turbulence ::
         const Io &io) const
 {
 
-  write_to_log ("Writing turbulence");
+  cout << "Writing turbulence" << endl;
 
 
   // Read gas turbulence file

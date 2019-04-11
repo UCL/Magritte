@@ -23,7 +23,7 @@ int Quadrature ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading quadrature");
+  cout << "Reading quadrature" << endl;
 
 
   const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
@@ -59,7 +59,7 @@ int Quadrature ::
         const int  l  ) const
 {
 
-  write_to_log ("Writing quadrature");
+  cout << "Writing quadrature" << endl;
 
 
   const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";

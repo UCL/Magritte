@@ -27,7 +27,7 @@ int Frequencies ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading frequencies");
+  cout << "Reading frequencies" << endl;
 
 
   ncells = parameters.ncells ();
@@ -94,7 +94,7 @@ int Frequencies ::
         const Io &io) const
 {
 
-  write_to_log ("Writing frequencies");
+  cout << "Writing frequencies" << endl;
 
 
   // Print all frequencies (nu)

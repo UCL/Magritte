@@ -22,7 +22,7 @@ int Boundary ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading boundary");
+  cout << "Reading boundary" << endl;
 
 
   ncells = parameters.ncells();
@@ -78,7 +78,7 @@ int Boundary ::
         const Io &io) const
 {
 
-  write_to_log ("Writing boundary");
+  cout << "Writing boundary" << endl;
 
 
   io.write_list (prefix+"boundary2cell_nr", boundary2cell_nr);

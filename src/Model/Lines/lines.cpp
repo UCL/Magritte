@@ -24,7 +24,7 @@ int Lines ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading lines");
+  cout << "Reading lines" << endl;
 
 
   // Data
@@ -110,7 +110,7 @@ int Lines ::
         const Io &io) const
 {
 
-  write_to_log ("Writing lines");
+  cout << "Writing lines" << endl;
 
 
   for (int l = 0; l < lineProducingSpecies.size(); l++)
@@ -204,15 +204,12 @@ int Lines ::
   for (LineProducingSpecies &lspec : lineProducingSpecies)
   {
     lspec.update_using_statistical_equilibrium (abundance, temperature);
-write_to_log("HERE?");
+
     lspec.check_for_convergence (pop_prec);
-write_to_log("Nope!");
   }
 
 
-write_to_log("HERE?");
   set_emissivity_and_opacity ();
-write_to_log("Nope!");
 
   //gather_emissivities_and_opacities ();
 

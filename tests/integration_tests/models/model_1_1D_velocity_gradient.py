@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # 0) Analytical Model: 1D all constant
@@ -191,4 +191,10 @@ remove(modelName)
 
 
 model.write (io)
+
+
+# In[ ]:
+
+
+
 
