@@ -306,8 +306,7 @@ int Simulation ::
 
   radiation.calc_U_and_V ();
 
-  lines.reduce_Lambdas ();
-
+  // "Reduce Lambda's"
 
   return (0);
 
