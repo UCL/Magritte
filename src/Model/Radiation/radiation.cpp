@@ -24,7 +24,7 @@ int Radiation ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading radiation");
+  cout << "Reading radiation" << endl;
 
 
   frequencies.read (io, parameters);
@@ -84,7 +84,7 @@ int Radiation ::
         const Io &io) const
 {
 
-  write_to_log ("Writing radiation");
+  cout << "Writing radiation" << endl;
 
 
   frequencies.write (io);

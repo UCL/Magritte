@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # # 0) Analytical Model: 1D all constant
@@ -319,4 +319,10 @@ for s in range(s_min, s_max, s_step):
 plot = gridplot([[plot_model, plot_error]])
 
 show(plot)
+
+
+# In[ ]:
+
+
+
 

@@ -20,7 +20,7 @@ int Scattering ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading scattering");
+  cout << "Reading scattering" << endl;
 
 
   nrays      = parameters.nrays ();

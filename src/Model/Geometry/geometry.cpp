@@ -19,7 +19,7 @@ int Geometry ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading geometry");
+  cout << "Reading geometry" << endl;
 
 
   cells.read    (io, parameters);
@@ -45,7 +45,7 @@ int Geometry ::
         const Io &io) const
 {
 
-  write_to_log ("Writing geometry");
+  cout << "Writing geometry" << endl;
 
 
   cells.write    (io);

@@ -5,11 +5,9 @@
 // _________________________________________________________________________
 
 
-#include <iostream>
-using std::string;
-
 #include "Io/io_Python.hpp"
 #include "Simulation/simulation.hpp"
+#include "Tools/logger.hpp"
 
 
 int main (int argc, char **argv)
@@ -17,14 +15,14 @@ int main (int argc, char **argv)
 
   if (argc != 2)
   {
-    std::cout << "Please provide a model file as argument." << std::endl;
+    cout << "Please provide a model file as argument." << endl;
   }
 
   else
   {
     const string modelName = argv[1];
 
-    std::cout << "Running model: " << modelName << std::endl;
+    cout << "Running model: " << modelName << endl;
 
 
     IoPython io ("hdf5", modelName);
@@ -50,10 +48,10 @@ int main (int argc, char **argv)
 
     //for (long p = 0; p < simulation.parameters.ncells(); p++)
     //{
-    //  std::cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << std::endl;
+    //  cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << endl;
     //}
 
-    std::cout << "Done." << std::endl;
+    cout << "Done." << endl;
   }
 
 

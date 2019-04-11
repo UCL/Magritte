@@ -18,7 +18,7 @@ int Model ::
       const Io &io)
 {
 
-  write_to_log ("Reading Model");
+  cout << "Reading Model" << endl;
 
 
   geometry.read       (io, parameters);
@@ -32,20 +32,20 @@ int Model ::
   radiation.read      (io, parameters);
 
 
-  write_to_log ("-----------------");
-  write_to_log ("Model parameters:");
-  write_to_log ("-----------------");
-  write_to_log ("ncells     = ", parameters.ncells     ());
-  write_to_log ("nrays      = ", parameters.nrays      ());
-  write_to_log ("nrays_red  = ", parameters.nrays_red  ());
-  write_to_log ("nboundary  = ", parameters.nboundary  ());
-  write_to_log ("nfreqs     = ", parameters.nfreqs     ());
-  write_to_log ("nfreqs_red = ", parameters.nfreqs_red ());
-  write_to_log ("nspecs     = ", parameters.nspecs     ());
-  write_to_log ("nlspecs    = ", parameters.nlspecs    ());
-  write_to_log ("nlines     = ", parameters.nlines     ());
-  write_to_log ("nquads     = ", parameters.nquads     ());
-  write_to_log ("-----------------");
+  cout << "-----------------"                         << endl;
+  cout << "Model parameters:"                         << endl;
+  cout << "-----------------"                         << endl;
+  cout << "ncells     = " << parameters.ncells     () << endl;
+  cout << "nrays      = " << parameters.nrays      () << endl;
+  cout << "nrays_red  = " << parameters.nrays_red  () << endl;
+  cout << "nboundary  = " << parameters.nboundary  () << endl;
+  cout << "nfreqs     = " << parameters.nfreqs     () << endl;
+  cout << "nfreqs_red = " << parameters.nfreqs_red () << endl;
+  cout << "nspecs     = " << parameters.nspecs     () << endl;
+  cout << "nlspecs    = " << parameters.nlspecs    () << endl;
+  cout << "nlines     = " << parameters.nlines     () << endl;
+  cout << "nquads     = " << parameters.nquads     () << endl;
+  cout << "-----------------"                         << endl;
 
 
   return (0);
@@ -64,7 +64,7 @@ int Model ::
       const Io &io) const
 {
 
-  write_to_log ("Writing Model");
+  cout << "Writing Model" << endl;
 
 
   geometry.write       (io);

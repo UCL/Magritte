@@ -25,7 +25,7 @@ int Rays ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading rays");
+  cout << "Reading rays" << endl;
 
 
   long nrays_x, nrays_y, nrays_z;
@@ -112,7 +112,7 @@ int Rays ::
         const Io &io) const
 {
 
-  write_to_log ("Writing rays");
+  cout << "Writing rays" << endl;
 
 
   //io.write_3_vector (prefix+"rays", x, y, z);

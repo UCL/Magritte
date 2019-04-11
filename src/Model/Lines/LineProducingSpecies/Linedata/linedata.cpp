@@ -28,7 +28,7 @@ int Linedata ::
         const int l  )
 {
 
-  write_to_log ("Reading linedata");
+  cout << "Reading linedata" << endl;
 
 
   const string prefix_l = prefix + std::to_string (l) + "/Linedata/";
@@ -103,7 +103,7 @@ int Linedata ::
         const int l  ) const
 {
 
-  write_to_log ("Writing linedata");
+  cout << "Writing linedata" << endl;
 
 
   const string prefix_l = prefix + std::to_string (l) + "/Linedata/";

@@ -19,7 +19,7 @@ int Thermodynamics ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading thermodynamics");
+  cout << "Reading thermodynamics" << endl;
 
 
   temperature.read (io, parameters);
@@ -44,7 +44,7 @@ int Thermodynamics ::
         const Io &io) const
 {
 
-  write_to_log ("Writing thermodynamics");
+  cout << "Writing thermodynamics" << endl;
 
 
   temperature.write (io);

@@ -4,8 +4,6 @@
 // _________________________________________________________________________
 
 
-#include <iostream>
-
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
@@ -14,6 +12,7 @@
 
 #include "Simulation/Raypair/raypair.hpp"
 #include "Model/Thermodynamics/thermodynamics.hpp"
+#include "Tools/logger.hpp"
 
 #define EPS 1.0E-15
 
@@ -94,7 +93,7 @@ TEST_CASE ("RayPair::solve")
       {
         for (long d = 0; d < ndep-m-1; d++)
         {
-          std::cout << "m = " << m << "   d = " << d << std::endl;
+          cout << "m = " << m << "   d = " << d << endl;
 
           CHECK (rayPair.L_upper[m][d] == Approx(M_inverse(d,d+m+1)).epsilon(EPS));
         }
@@ -107,7 +106,7 @@ TEST_CASE ("RayPair::solve")
       {
         for (long d = 0; d < ndep-m-1; d++)
         {
-          std::cout << "m = " << m << "   d = " << d << std::endl;
+          cout << "m = " << m << "   d = " << d << endl;
 
           CHECK (rayPair.L_lower[m][d] == Approx(M_inverse(d+m+1,d)).epsilon(EPS));
         }
@@ -179,7 +178,7 @@ TEST_CASE ("RayPair::get_L_diag")
     MatrixXd M_inverse = M.inverse();
 
 
-    std::cout << M_inverse << std::endl;
+    cout << M_inverse << endl;
 
 
     SECTION ("L diagonal")
@@ -196,7 +195,7 @@ TEST_CASE ("RayPair::get_L_diag")
       {
         for (long d = 0; d < ndep-m-1; d++)
         {
-          std::cout << "m = " << m << "   d = " << d << std::endl;
+          cout << "m = " << m << "   d = " << d << endl;
 
           CHECK (rayPair.L_upper[m][d] == Approx(M_inverse(d,d+m+1)).epsilon(EPS));
         }
@@ -209,7 +208,7 @@ TEST_CASE ("RayPair::get_L_diag")
       {
         for (long d = 0; d < ndep-m-1; d++)
         {
-          std::cout << "m = " << m << "   d = " << d << std::endl;
+          cout << "m = " << m << "   d = " << d << endl;
 
           CHECK (rayPair.L_lower[m][d] == Approx(M_inverse(d+m+1,d)).epsilon(EPS));
         }

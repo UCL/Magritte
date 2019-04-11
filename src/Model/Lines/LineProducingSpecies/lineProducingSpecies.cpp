@@ -25,7 +25,7 @@ int LineProducingSpecies ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading lineProducingSpecies");
+  cout << "Reading lineProducingSpecies" << endl;
 
 
   linedata.read (io, l);
@@ -116,7 +116,7 @@ int LineProducingSpecies ::
         const long l  ) const
 {
 
-  write_to_log ("Writing lineProducingSpecies");
+  cout << "Writing lineProducingSpecies" << endl;
 
 
   linedata.write (io, l);

@@ -279,10 +279,10 @@ inline void LineProducingSpecies ::
     //{
     //  for (long m = 0; m < lambda[p][k].nr.size(); m++)
     //  {
-    //    //write_to_log ("already here?");
-    //    //write_to_log ("Ls ", lambda[p][k].Ls[m]);
+    //    //std::cout << "already here?");
+    //    //std::cout << "Ls ", lambda[p][k].Ls[m]);
     //    const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
-    //    //write_to_log (k, m, v_IJ);
+    //    //std::cout << k, m, v_IJ);
 
 
     //    // Note: we define our transition matrix as the transpose of R in the paper.
@@ -353,9 +353,6 @@ inline void LineProducingSpecies ::
 
   }
 
-  write_to_log ("Got to the end!");
-
-
 
   RT.setFromTriplets (triplets.begin(), triplets.end());
 
@@ -378,6 +375,5 @@ inline void LineProducingSpecies ::
     }
   }
 
-  write_to_log ("And also the solver!");
 
 }

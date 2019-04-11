@@ -13,7 +13,7 @@ int Parameters ::
         const Io &io)
 {
 
-  write_to_log ("Reading parameters");
+  cout << "Reading parameters" << endl;
 
 
   long dummy;
@@ -38,7 +38,7 @@ int Parameters ::
         const Io &io) const
 {
 
-  write_to_log ("Writing parameters");
+  cout << "Writing parameters" << endl;
 
 
   try {io.write_number (".ncells",     ncells     () );} catch (...) { }

@@ -226,7 +226,7 @@ int Simulation ::
   {
     const long R  = r - MPI_start (parameters.nrays()/2);
 
-    write_to_log ("ray = ", r);
+    cout << "ray = " << r << endl;
 
 //#   pragma omp parallel default (shared) private (rayPair)
 //    for (long o = OMP_start (parameters.ncells()); o < OMP_stop (parameters.ncells()); o++)
@@ -261,7 +261,7 @@ int Simulation ::
 
 
           // Extract the Lambda operator
-          //write_to_log ("Lambda");
+          //std::cout << "Lambda");
           rayPair.update_Lambda (
               radiation.frequencies,
               thermodynamics,
@@ -277,7 +277,7 @@ int Simulation ::
             return (-1);
           }
 
-          //write_to_log ("Got through...");
+          //std::cout << "Got through...");
         }
       }
 
@@ -299,19 +299,14 @@ int Simulation ::
 
   } // end of loop over ray pairs
 
-  write_to_log ("Fine here");
 
   // Reduce results of all MPI processes to get J, J_local, U and V
 
   radiation.calc_J_and_G (geometry.rays.weights);
 
-  write_to_log ("Fine in J and G");
-
   radiation.calc_U_and_V ();
 
-  write_to_log ("Fine in U and V");
-
-  //lines.reduce_Lambdas ();
+  lines.reduce_Lambdas ();
 
 
   return (0);
@@ -580,7 +575,7 @@ int Simulation ::
 
     iteration++;
 
-    write_to_log ("Starting iteration ", iteration);
+    cout << "Starting iteration " << iteration << endl;
 
 
     // Start assuming convergence
@@ -599,17 +594,13 @@ int Simulation ::
     {
       compute_radiation_field ();
 
-      write_to_log ("Calc_Jeff the issue?");
       calc_Jeff ();
-      write_to_log ("No...");
 
 
-      write_to_log ("iteration_using_statistical_equilibrium the issue?");
       lines.iteration_using_statistical_equilibrium (
           chemistry.species.abundance,
           thermodynamics.temperature.gas,
           parameters.pop_prec()                     );
-      write_to_log ("No...");
 
       iteration_normal++;
     }
@@ -625,16 +616,15 @@ int Simulation ::
         some_not_converged = true;
       }
 
-      write_to_log (100*lspec.fraction_not_converged, " % not (yet) converged");
+      cout << 100*lspec.fraction_not_converged << " % not (yet) converged" << endl;
     }
 
-    write_to_log("Even got to end of iteration!");
 
   } // end of while loop of iterations
 
 
   // Print convergence stats
-  write_to_log ("Converged after ", iteration, " iterations");
+  cout << "Converged after " << iteration << " iterations" << endl;
 
 
   return (0);

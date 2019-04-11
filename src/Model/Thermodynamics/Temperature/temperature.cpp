@@ -22,7 +22,7 @@ int Temperature ::
               Parameters &parameters)
 {
 
-  write_to_log ("Reading temperature");
+  cout << "Reading temperature" << endl;
 
 
   // Get number of cells from length of temperature/gas file
@@ -57,7 +57,7 @@ int Temperature ::
         const Io &io) const
 {
 
-  write_to_log ("Writing temperature");
+  cout << "Writing temperature" << endl;
 
 
   // Read gas temperature file

@@ -437,9 +437,9 @@ inline void RayPair ::
       const long k = frequencies.corresponding_k_for_tran[f_index];
       const long z = frequencies.corresponding_z_for_line[f_index];
 
-      //write_to_log ("l = ", l);
-      //write_to_log ("k = ", k);
-      //write_to_log ("z = ", z);
+      //std::cout << "l = ", l);
+      //std::cout << "k = ", k);
+      //std::cout << "z = ", z);
 
       const double freq_line = lineProducingSpecies[l].linedata.frequency[k];
       const double weight    = lineProducingSpecies[l].quadrature.weights[z] * 2.0 * weight_angular;
@@ -451,15 +451,15 @@ inline void RayPair ::
       const long i   = lineProducingSpecies[l].linedata.irad[k];
       const long ind = lineProducingSpecies[l].index(nrs[n_ar], i);
 
-      //write_to_log ("src = ", L/L_diag[n_ar],
+      //std::cout << "src = ", L/L_diag[n_ar],
       //       "     term1 = ", term1[n_ar] / (HH_OVER_FOUR_PI*lineProducingSpecies[l].population[ind]));
-      //write_to_log ("prox = ", L*(HH_OVER_FOUR_PI*lineProducingSpecies[l].population[ind]),
+      //std::cout << "prox = ", L*(HH_OVER_FOUR_PI*lineProducingSpecies[l].population[ind]),
       //       "       calc = ", L_diag[n_ar] * term1[n_ar],
       //       "       Jeff = ", Su[n_ar]);
 
       //lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
 
-      //write_to_log ("L diag = ", L);
+      //std::cout << "L diag = ", L);
 
       //for (long m = 1; m < n_off_diag; m++)
       //{
@@ -467,7 +467,7 @@ inline void RayPair ::
       //  {
       //    L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
 
-      //    //write_to_log ("L lower = ", L);
+      //    //std::cout << "L lower = ", L);
 
       //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
       //  }
@@ -476,7 +476,7 @@ inline void RayPair ::
       //  {
       //    L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
 
-      //    //write_to_log ("L upper = ", L);
+      //    //std::cout << "L upper = ", L);
 
       //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
       //  }
