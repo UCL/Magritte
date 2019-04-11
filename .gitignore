@@ -73,3 +73,11 @@ Grid-SIMD*
 ############
 
 *.hdf5
+
+
+# dependencies
+##############
+
+*dependencies/Eigen/*
+*dependencies/Grid-SIMD/*
+*dependencies/pybind11/*
