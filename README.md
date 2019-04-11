@@ -7,7 +7,25 @@
 ## Install
 ----------
 
-Assuming Anaconda (or Miniconda) it creates a conda environment (magritte_env) containing:
+First, download the dependencies and configure Magritte using
+```
+$ bash configure.sh
+```
+Then, create an anaconda environment from the environment file with
+```
+$ conda env create -f magritte_conda_environment.yml
+```
+Afterwards, activate the environment you just created with
+```
+$ conda activate magritte_env
+```
+Now Magritte can be build using
+```
+$ bash build.sh
+```
+
+
+magritte_conda_environment contains the default packages plus:
 * `healpy`, for uniform discretisations of a sphere (to create uniform rays);
 * `h5py`, for reading and writing HDF5 files;
 * `bokeh`, for visualusations;
