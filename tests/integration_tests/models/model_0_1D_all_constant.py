@@ -159,14 +159,14 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # ## 2) Write input file
 # ---
 
-# In[21]:
+# In[16]:
 
 
 from ioMagritte import IoPython
 from os         import remove
 
 
-# In[22]:
+# In[17]:
 
 
 modelName = 'model_0_1D_all_constant.hdf5'
@@ -174,19 +174,19 @@ modelName = 'model_0_1D_all_constant.hdf5'
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
 
-# In[23]:
+# In[18]:
 
 
 io = IoPython ("hdf5", modelName)
 
 
-# In[24]:
+# In[19]:
 
 
 remove(modelName)
 
 
-# In[25]:
+# In[20]:
 
 
 model.write (io)
