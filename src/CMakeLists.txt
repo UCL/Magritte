@@ -9,6 +9,7 @@ configure_file (configure.hpp.in
 # Headers are included in this folder and in the dependencies
 include_directories (.)
 include_directories (../dependencies)
+include_directories (../dependencies/pybind11/include)
 
 # Create Magritte library
 add_library (_Magritte

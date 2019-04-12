@@ -7,11 +7,8 @@
 #include <string>
 using std::string;
 
-#include <pybind11/pybind11.h>
 #include <pybind11/embed.h> // everything needed for embedding
-#include <pybind11/stl.h>
-
-//using namespace std;
+#include <pybind11/stl.h>   // conversion between stl and python
 namespace py = pybind11;
 
 #include "configure.hpp"
