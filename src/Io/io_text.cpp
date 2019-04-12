@@ -5,9 +5,10 @@
 
 
 #include <fstream>
-using namespace std;
+#include <sys/stat.h>
 
 #include "io_text.hpp"
+#include "Tools/logger.hpp"
 
 
 ///  Constructor for IoText
@@ -26,6 +27,21 @@ IoText ::
 
 
 
+///  pathExist: returns true if the given path exists
+///  @param[in] path: path to check
+/////////////////////////////////////////////////////
+
+bool pathExist (
+    const string &path)
+{
+  struct stat buffer;
+
+  return (stat (path.c_str(), &buffer) == 0);
+}
+
+
+
+
 ///  get_length:
 ///  @param[in] file_name: path to file containing the data
 ///  @param[out] length: length to be read
@@ -37,18 +53,35 @@ int IoText ::
               long  &length) const
 {
 
+  string fname = io_file + file_name;
+
   length = 0;
 
-  ifstream file (io_file + file_name + ".txt");
 
-  string line;
-
-  while (getline (file, line))
+  if (pathExist (fname + ".txt"))
   {
-    length++;
+    std::ifstream file (fname + ".txt");
+
+    string line;
+
+    while (std::getline (file, line))
+    {
+      length++;
+    }
+
+    file.close();
   }
 
-  file.close();
+  else
+  {
+    while (pathExist (fname + std::to_string (length)))
+    {
+      length++;
+    }
+  }
+
+  cout << fname << endl;
+  cout << "length = " << length << endl;
 
 
   return (0);
@@ -69,18 +102,41 @@ int IoText ::
               long  &width     ) const
 {
 
-  //length = 0;
+  string fname = io_file + file_name;
 
-  //ifstream file (io_file + file_name + ".txt");
+  width = 0;
 
-  //string line;
 
-  //while (getline (file, line))
-  //{
-  //  length++;
-  //}
+  if (pathExist (fname + ".txt"))
+  {
+    std::ifstream file (io_file + file_name + ".txt");
 
-  //file.close();
+    string line, elem;
+
+    std::getline (file, line);
+
+    std::stringstream ss (line);
+
+    while (std::getline (ss, elem, '\t'))
+    {
+      width++;
+    }
+
+    file.close();
+  }
+
+  else
+  {
+    while (pathExist (fname + std::to_string (width)))
+    {
+      width++;
+    }
+  }
+
+
+  cout << fname << endl;
+  cout << "width = " << width << endl;
+
 
 
   return (0);
@@ -101,7 +157,7 @@ int IoText ::
               long  &number    ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
   file >> number;
 
@@ -126,7 +182,7 @@ int IoText ::
         const long  &number    ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
   file << number;
 
@@ -150,7 +206,7 @@ int IoText ::
               string &word      ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
   file >> word;
 
@@ -174,7 +230,7 @@ int IoText ::
         const string &word      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
   file << word;
 
@@ -199,7 +255,7 @@ int IoText ::
               Long1 &list      ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
 
@@ -229,7 +285,7 @@ int IoText ::
         const Long1 &list      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
   for (long n = 0; n < list.size(); n++)
   {
@@ -257,7 +313,7 @@ int IoText ::
               Double1 &list      ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
 
@@ -287,7 +343,7 @@ int IoText ::
         const Double1 &list      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
   for (long n = 0; n < list.size(); n++)
   {
@@ -315,7 +371,7 @@ int IoText ::
               String1 &list      ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
 
@@ -345,7 +401,7 @@ int IoText ::
         const String1 &list      ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
   for (long n = 0; n < list.size(); n++)
   {
@@ -373,14 +429,20 @@ int IoText ::
               Long2   &array     ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
+
+  string line;
 
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
+    std::getline (file, line);
+
+    std::stringstream ss (line);
+
     for (long n2 = 0; n2 < array[n1].size(); n2++)
     {
-      file >> array[n1][n2];
+      ss >> array[n1][n2];
     }
   }
 
@@ -405,14 +467,14 @@ int IoText ::
         const Long2   &array     ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
     for (long n2 = 0; n2 < array[n1].size(); n2++)
     {
-      file << array[n1][n2];
+      file << array[n1][n2] << "\t";
     }
 
     file << endl;
@@ -439,14 +501,19 @@ int IoText ::
               Double2 &array     ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
+  string line;
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
+    std::getline (file, line);
+
+    std::stringstream ss (line);
+
     for (long n2 = 0; n2 < array[n1].size(); n2++)
     {
-      file >> array[n1][n2];
+      ss >> array[n1][n2];
     }
   }
 
@@ -471,14 +538,14 @@ int IoText ::
         const Double2 &array     ) const
 {
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
 
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
     for (long n2 = 0; n2 < array[n1].size(); n2++)
     {
-      file << array[n1][n2];
+      file << array[n1][n2] << "\t";
     }
 
     file << endl;
@@ -509,7 +576,7 @@ int IoText ::
               Double1 &z         ) const
 {
 
-  ifstream file (io_file + file_name + ".txt");
+  std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
 
@@ -555,11 +622,17 @@ int IoText ::
   }
 
 
-  ofstream file (io_file + file_name + ".txt");
+  std::ofstream file (io_file + file_name + ".txt");
+
+  cout << io_file + file_name + ".txt" << endl;
+
+  //cout << file << endl;
 
   for (long n = 0; n < length; n++)
   {
-    file << x[n] << y[n] << z[n] << endl;
+    file << x[n] << "\t" << y[n] << "\t" << z[n] << endl;
+
+    cout << "x = " << x[n] << endl;
   }
 
   file.close();

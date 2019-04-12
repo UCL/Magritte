@@ -26,8 +26,9 @@ if(OPENMP_FOUND)
   "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS} -mcmodel=large -std=c++11")
 endif()
 
-# Find Python
-#find_package (Python)
+# Should we be able to handle io through python?
+option (PYTHON_IO
+  "Should we be able to handle io through python" OFF)
 
 # Link to pybind11
 add_subdirectory (dependencies/pybind11  pybind11)

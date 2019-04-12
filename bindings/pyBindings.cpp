@@ -78,7 +78,7 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init())
       .def_readwrite ("r",    &Parameters::r)
       .def_readwrite ("o",    &Parameters::o)
-      .def_readwrite ("f",    &Parameters::f)
+      .def_readwrite ("f",    &Parameters::o)
       // setters
       .def ("set_ncells",     &Parameters::set_ncells    )
       .def ("set_nrays",      &Parameters::set_nrays     )

@@ -31,9 +31,13 @@ int Radiation ::
 
 
   ncells     = parameters.ncells     ();
+  cout << "ncells " << ncells << endl;
   nrays      = parameters.nrays      ();
+  cout << "nrays " << nrays << endl;
   nfreqs_red = parameters.nfreqs_red ();
+  cout << "nfreqs_red " << nfreqs_red << endl;
   nboundary  = parameters.nboundary  ();
+  cout << "nboundary " << nboundary << endl;
 
 
   nrays_red = MPI_length (nrays/2);

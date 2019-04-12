@@ -31,7 +31,7 @@ RT = 1.0E-5
 
 def get_rays (cells, nr, nrays):
     ncells = len(cells.x)
-    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(150))
+    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(80))
     #while (len(Rx) < 300):
     #    p = randint (0, ncells-1)
     #    if (p != nr):
@@ -162,7 +162,7 @@ class Setup ():
                     #    print(p, r, n1, n2)
                     #    print(rx[n1], rx[n2], ry[n1], ry[n2])
                     #weights.append (0.5*np.arccos(cos)/(2.0*np.pi))
-                    weights.append (1.0/150.0)
+                    weights.append (1.0/80.0)
                 wt.append (weights)
                 #length = np.sqrt (cells.x[p]**2 + cells.y[p]**2 + cells.z[p]**2)
                 ## Set up parameters

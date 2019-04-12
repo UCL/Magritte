@@ -235,11 +235,12 @@ int Simulation ::
       const long ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);
 
+      cout << "Tracing rays..." << endl;
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
-
+      cout << "Rays traced" << endl;
 
       if (rayPair.ndep > 1)
       {
@@ -569,7 +570,7 @@ int Simulation ::
 
 
   // Iterate as long as some levels are not converged
-  //while (some_not_converged && (iteration < parameters.max_iter()))
+  while (some_not_converged && (iteration < parameters.max_iter()))
   {
 
     iteration++;

@@ -36,8 +36,12 @@ add_library (_Magritte
   Functions/heapsort.cpp
   Simulation/simulation.cpp)
 
-add_library (PyIo
-  Io/io.cpp
-  Io/io_Python.cpp)
-target_link_libraries (PyIo PRIVATE
-  pybind11::embed)
+
+if (PYTHON_IO)
+  add_library (PyIo
+    Io/io.cpp
+    Io/io_Python.cpp)
+  target_link_libraries (PyIo PRIVATE
+    pybind11::embed)
+  set (OPTIONAL_LIBS ${OPTIONAL_LIBS} PyIo)
+endif (PYTHON_IO)
