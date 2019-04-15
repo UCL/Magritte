@@ -35,7 +35,6 @@ class Parameters
       SetOnce <double> pop_prec_;     ///< required precision for populations
 
 
-
   public:
 
       inline void set_ncells     (const long value) {    ncells_.set (value);}
@@ -65,6 +64,7 @@ class Parameters
       inline long max_iter   (void) const {return   max_iter_.get ();}
 
       inline double pop_prec (void) const {return   pop_prec_.get ();}
+
 
       long r;
       long o;

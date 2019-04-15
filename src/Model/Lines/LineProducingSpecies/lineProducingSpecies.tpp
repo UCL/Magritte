@@ -362,18 +362,19 @@ inline void LineProducingSpecies ::
 
   population = solver.solve (y);
 
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    for (long i = 0; i < linedata.nlev; i++)
-    {
-      const long I = index (p, i);
 
-      if (population[I] < 1.0E-50)
-      {
-        population[I] = 1.0E-50;
-      }
-    }
-  }
+  //OMP_PARALLEL_FOR (p, ncells)
+  //{
+  //  for (long i = 0; i < linedata.nlev; i++)
+  //  {
+  //    const long I = index (p, i);
+
+  //    if (population[I] < 1.0E-50)
+  //    {
+  //      population[I] = 1.0E-50;
+  //    }
+  //  }
+  //}
 
 
 }

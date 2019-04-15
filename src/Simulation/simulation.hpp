@@ -24,7 +24,7 @@ struct Simulation : public Model
   Double1 error_max;
   Double1 error_mean;
 
-  RayPair rayPair;
+  //RayPair rayPair;
 
   int compute_spectral_discretisation ();
 
@@ -55,7 +55,8 @@ struct Simulation : public Model
 
   int compute_LTE_level_populations ();
 
-  int compute_level_populations ();
+  int compute_level_populations (
+      const Io &io              );
 
   //int update_using_statistical_equilibrium (
   //    const long l                         );

@@ -7,6 +7,10 @@ cmake_minimum_required (VERSION 2.8.12)
 # Set project title
 project (Magritte)
 
+# Set version number
+set (MAGRITTE_VERSION_MAJOR 0)
+set (MAGRITTE_VERSION_MINOR 0)
+
 # Write all binary files to the bin directory
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
   ${CMAKE_SOURCE_DIR}/bin)

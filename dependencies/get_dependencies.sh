@@ -16,6 +16,11 @@ mv pybind11-2.2.4 pybind11
 # Remove tar ball
 rm v2.2.4.tar.gz
 
-
-# Clone Grid-SIMD
-#git clone git@github.com:Magritte-code/Grid-SIMD.git
+# Get Grid-SIMD
+wget https://github.com/Magritte-code/Grid-SIMD/archive/master.zip
+# Extract whole directory
+unzip master.zip
+# Rename the folder
+mv Grid-SIMD-master Grid-SIMD
+# Remove zip file
+rm master.zip

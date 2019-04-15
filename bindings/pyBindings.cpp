@@ -365,7 +365,7 @@ PYBIND11_MODULE (magritte, module)
       // attributes
       .def_readonly ("error_max",              &Simulation::error_max)
       .def_readonly ("error_mean",             &Simulation::error_mean)
-      .def_readonly ("rayPair",                &Simulation::rayPair)
+      //.def_readonly ("rayPair",                &Simulation::rayPair)
 
       // functions
       .def ("compute_spectral_discretisation", &Simulation::compute_spectral_discretisation)

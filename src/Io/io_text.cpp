@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <sys/stat.h>
+#include <iomanip>
 
 #include "io_text.hpp"
 #include "Tools/logger.hpp"
@@ -80,9 +81,6 @@ int IoText ::
     }
   }
 
-  cout << fname << endl;
-  cout << "length = " << length << endl;
-
 
   return (0);
 
@@ -134,11 +132,6 @@ int IoText ::
   }
 
 
-  cout << fname << endl;
-  cout << "width = " << width << endl;
-
-
-
   return (0);
 
 }
@@ -183,6 +176,8 @@ int IoText ::
 {
 
   std::ofstream file (io_file + file_name + ".txt");
+
+  file << std::scientific << std::setprecision (16);
 
   file << number;
 
@@ -257,7 +252,7 @@ int IoText ::
 
   std::ifstream file (io_file + file_name + ".txt");
 
-  long   n = 0;
+  long n = 0;
 
   while (file >> list[n])
   {
@@ -286,6 +281,8 @@ int IoText ::
 {
 
   std::ofstream file (io_file + file_name + ".txt");
+
+  file << std::scientific << std::setprecision (16);
 
   for (long n = 0; n < list.size(); n++)
   {
@@ -345,6 +342,8 @@ int IoText ::
 
   std::ofstream file (io_file + file_name + ".txt");
 
+  file << std::scientific << std::setprecision (16);
+
   for (long n = 0; n < list.size(); n++)
   {
     file << list[n] << endl;
@@ -402,6 +401,8 @@ int IoText ::
 {
 
   std::ofstream file (io_file + file_name + ".txt");
+
+  file << std::scientific << std::setprecision (16);
 
   for (long n = 0; n < list.size(); n++)
   {
@@ -469,6 +470,7 @@ int IoText ::
 
   std::ofstream file (io_file + file_name + ".txt");
 
+  file << std::scientific << std::setprecision (16);
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
@@ -540,6 +542,7 @@ int IoText ::
 
   std::ofstream file (io_file + file_name + ".txt");
 
+  file << std::scientific << std::setprecision (16);
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
@@ -624,15 +627,12 @@ int IoText ::
 
   std::ofstream file (io_file + file_name + ".txt");
 
-  cout << io_file + file_name + ".txt" << endl;
+  file << std::scientific << std::setprecision (16);
 
-  //cout << file << endl;
 
   for (long n = 0; n < length; n++)
   {
     file << x[n] << "\t" << y[n] << "\t" << z[n] << endl;
-
-    cout << "x = " << x[n] << endl;
   }
 
   file.close();

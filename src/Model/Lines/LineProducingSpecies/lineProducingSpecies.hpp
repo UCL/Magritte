@@ -55,6 +55,11 @@ struct LineProducingSpecies
           const Io  &io,
           const long l  ) const;
 
+      int write_populations (
+          const Io     &io,
+          const long    l,
+          const string  tag ) const;
+
 
       // Inline functions
       inline long index (

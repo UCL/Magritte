@@ -434,3 +434,28 @@ def linedata_from_LAMDA_file (fileName, species):
     lspec.linedata = ld
     # Done
     return lspec
+
+
+from os import mkdir
+
+def make_file_structure (modelName):
+    '''
+    Make file structure for a text based model.
+    '''
+    mkdir(modelName)
+    mkdir(f'{modelName}/Geometry')
+    mkdir(f'{modelName}/Geometry/Cells')
+    mkdir(f'{modelName}/Geometry/Rays')
+    mkdir(f'{modelName}/Geometry/Boundary')
+    mkdir(f'{modelName}/Thermodynamics')
+    mkdir(f'{modelName}/Thermodynamics/Temperature')
+    mkdir(f'{modelName}/Thermodynamics/Turbulence')
+    mkdir(f'{modelName}/Chemistry')
+    mkdir(f'{modelName}/Chemistry/Species')
+    mkdir(f'{modelName}/Lines')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata/CollisionPartner_0')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Quadrature')
+    mkdir(f'{modelName}/Radiation')
+    mkdir(f'{modelName}/Radiation/Frequencies')

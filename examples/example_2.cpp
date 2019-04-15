@@ -43,7 +43,7 @@ int main (int argc, char **argv)
 
     simulation.compute_LTE_level_populations ();
 
-    simulation.compute_level_populations ();
+    simulation.compute_level_populations (io);
 
 
     simulation.write (io);

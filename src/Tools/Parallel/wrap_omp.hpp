@@ -42,7 +42,7 @@ inline long OMP_stop (
 //    for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
 #define OMP_PARALLEL_FOR(index, total) \
-    for (long index = 0; index < total; index++)
+    for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
 //#define OMP_PARALLEL_FOR_WITH(index, total, on_each_thread) \
 //    _Pragma("omp parallel default(shared)") \

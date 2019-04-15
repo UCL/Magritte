@@ -31,11 +31,8 @@ int Frequencies ::
 
 
   ncells = parameters.ncells ();
-  cout << "ncells " << ncells << endl;
   nlines = parameters.nlines ();
-  cout << "nlines " << nlines << endl;
   nquads = parameters.nquads ();
-  cout << "nquads " << nquads << endl;
 
 
   // Count line frequencies
