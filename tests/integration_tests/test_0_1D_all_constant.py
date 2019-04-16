@@ -31,14 +31,16 @@ from setup    import Setup, linedata_from_LAMDA_file
 # In[3]:
 
 
-from ioMagritte import IoPython
+#from ioMagritte import IoPython
+from ioMagritte import IoText
 from   magritte import Simulation 
 
 
 # In[4]:
 
 
-modelName = 'models/model_0_1D_all_constant.hdf5'
+#modelName = 'models/model_0_1D_all_constant.hdf5'
+modelName = 'models/model_0_1D_all_constant/'
 
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
@@ -46,7 +48,8 @@ modelName = 'models/model_0_1D_all_constant.hdf5'
 # In[5]:
 
 
-io = IoPython ("hdf5", modelName)
+#io = IoPython ("hdf5", modelName)
+io = IoText (modelName)
 
 
 # In[6]:
@@ -61,12 +64,24 @@ simulation = Simulation ()
 simulation.read (io)
 
 
+# In[8]:
+
+
+simulation.lines.lineProducingSpecies[0].quadrature.roots
+
+
+# In[9]:
+
+
+simulation.geometry.cells.neighbors[9]
+
+
 # ## 3) Run the model
 # ---
 
 # Set additional run parameters
 
-# In[8]:
+# In[10]:
 
 
 simulation.parameters.set_max_iter (40)
@@ -76,31 +91,31 @@ simulation.parameters.o = 99999999999999999
 simulation.parameters.f = 99999999999999999
 
 
-# In[9]:
+# In[11]:
 
 
 simulation.compute_spectral_discretisation ()
 
 
-# In[10]:
+# In[12]:
 
 
 simulation.compute_boundary_intensities ()
 
 
-# In[11]:
+# In[13]:
 
 
 simulation.compute_LTE_level_populations ()
 
 
-# In[12]:
+# In[14]:
 
 
 simulation.compute_radiation_field ()
 
 
-# In[13]:
+# In[15]:
 
 
 simulation.write (io)
@@ -109,7 +124,7 @@ simulation.write (io)
 # ## 4) Check the output
 # ---
 
-# In[14]:
+# In[16]:
 
 
 from bokeh.plotting import figure, show, gridplot
@@ -118,7 +133,7 @@ from bokeh.io       import output_notebook
 output_notebook()
 
 
-# In[15]:
+# In[17]:
 
 
 line = 0
@@ -126,13 +141,13 @@ line = 0
 
 # Define helper quantities for the model.
 
-# In[16]:
+# In[18]:
 
 
 ncells = 50
 
 
-# In[17]:
+# In[19]:
 
 
 dens = 1.0E+12   # [m^-3]
@@ -142,7 +157,7 @@ turb = 2.5E+02   # [m/s]
 dx   = 1.0E+04   # [m]
 
 
-# In[18]:
+# In[20]:
 
 
 def color(s):
@@ -154,7 +169,7 @@ def legend(s):
     return f'{s}'
 
 
-# In[19]:
+# In[21]:
 
 
 s_min  = 0
@@ -162,7 +177,7 @@ s_max  = ncells
 s_step = 1
 
 
-# In[20]:
+# In[22]:
 
 
 def rindex (p, f):
@@ -202,7 +217,7 @@ def rindex (p, f):
 #   \tau_{\nu}(\ell) \ = \ \chi_{ij} \phi_{\nu} \ell.
 # \end{equation}
 
-# In[21]:
+# In[23]:
 
 
 import numpy as np
@@ -251,7 +266,7 @@ def G (nu, x):
     return   - 0.5 * (B-S) * (np.exp(-tau1) - np.exp(-tau2))
 
 
-# In[22]:
+# In[24]:
 
 
 def relativeError (a,b):
@@ -260,7 +275,7 @@ def relativeError (a,b):
     return 2.0 * np.abs((a-b)/(a+b))
 
 
-# In[23]:
+# In[25]:
 
 
 nr_center =  simulation.parameters.nquads() // 2
@@ -269,7 +284,7 @@ n_wings   = (simulation.parameters.nquads() - 1) // 2
 
 # #### Compare Magritte against analytic model
 
-# In[24]:
+# In[26]:
 
 
 plot_model = figure(title='u analytic and numeric', width=400, height=400, y_axis_type="log")
@@ -295,7 +310,7 @@ plot = gridplot([[plot_model, plot_error]])
 show(plot)
 
 
-# In[25]:
+# In[27]:
 
 
 plot_model = figure(title='v analytic and numeric', width=400, height=400, y_axis_type="log")

@@ -31,7 +31,7 @@ RT = 1.0E-5
 
 def get_rays (cells, nr, nrays):
     ncells = len(cells.x)
-    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(150))
+    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(80))
     #while (len(Rx) < 300):
     #    p = randint (0, ncells-1)
     #    if (p != nr):
@@ -162,7 +162,7 @@ class Setup ():
                     #    print(p, r, n1, n2)
                     #    print(rx[n1], rx[n2], ry[n1], ry[n2])
                     #weights.append (0.5*np.arccos(cos)/(2.0*np.pi))
-                    weights.append (1.0/150.0)
+                    weights.append (1.0/80.0)
                 wt.append (weights)
                 #length = np.sqrt (cells.x[p]**2 + cells.y[p]**2 + cells.z[p]**2)
                 ## Set up parameters
@@ -434,3 +434,28 @@ def linedata_from_LAMDA_file (fileName, species):
     lspec.linedata = ld
     # Done
     return lspec
+
+
+from os import mkdir
+
+def make_file_structure (modelName):
+    '''
+    Make file structure for a text based model.
+    '''
+    mkdir(modelName)
+    mkdir(f'{modelName}/Geometry')
+    mkdir(f'{modelName}/Geometry/Cells')
+    mkdir(f'{modelName}/Geometry/Rays')
+    mkdir(f'{modelName}/Geometry/Boundary')
+    mkdir(f'{modelName}/Thermodynamics')
+    mkdir(f'{modelName}/Thermodynamics/Temperature')
+    mkdir(f'{modelName}/Thermodynamics/Turbulence')
+    mkdir(f'{modelName}/Chemistry')
+    mkdir(f'{modelName}/Chemistry/Species')
+    mkdir(f'{modelName}/Lines')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata/CollisionPartner_0')
+    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Quadrature')
+    mkdir(f'{modelName}/Radiation')
+    mkdir(f'{modelName}/Radiation/Frequencies')

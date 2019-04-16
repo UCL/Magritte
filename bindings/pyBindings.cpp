@@ -78,7 +78,7 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init())
       .def_readwrite ("r",    &Parameters::r)
       .def_readwrite ("o",    &Parameters::o)
-      .def_readwrite ("f",    &Parameters::f)
+      .def_readwrite ("f",    &Parameters::o)
       // setters
       .def ("set_ncells",     &Parameters::set_ncells    )
       .def ("set_nrays",      &Parameters::set_nrays     )
@@ -239,7 +239,8 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init<>())
       // functions
       .def ("read",                           &Lines::read)
-      .def ("write",                          &Lines::write);
+      .def ("write",                          &Lines::write)
+      .def ("set_emissivity_and_opacity",     &Lines::set_emissivity_and_opacity);
 
 
   // LineProducingSpecies
@@ -365,7 +366,7 @@ PYBIND11_MODULE (magritte, module)
       // attributes
       .def_readonly ("error_max",              &Simulation::error_max)
       .def_readonly ("error_mean",             &Simulation::error_mean)
-      .def_readonly ("rayPair",                &Simulation::rayPair)
+      //.def_readonly ("rayPair",                &Simulation::rayPair)
 
       // functions
       .def ("compute_spectral_discretisation", &Simulation::compute_spectral_discretisation)

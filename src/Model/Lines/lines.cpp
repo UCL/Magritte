@@ -6,6 +6,7 @@
 
 #include "lines.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/logger.hpp"
 #include "Functions/heapsort.hpp"
 
@@ -238,14 +239,14 @@ int Lines ::
   int *displacements  = new int[comm_size];
 
 
-  for (int w = 0; w < world_size; w++)
+  for (int w = 0; w < comm_size; w++)
   {
     long start = ( w   *ncells)/comm_size;
     long stop  = ((w+1)*ncells)/comm_size;
 
     long ncells_red_w = stop - start;
 
-    buffer_lengths[w] = ncells_red_w * nrad_tot;
+    buffer_lengths[w] = ncells_red_w * nlines;
   }
 
   displacements[0] = 0;

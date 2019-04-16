@@ -457,7 +457,7 @@ inline void RayPair ::
       //       "       calc = ", L_diag[n_ar] * term1[n_ar],
       //       "       Jeff = ", Su[n_ar]);
 
-      //lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
+      lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
 
       //std::cout << "L diag = ", L);
 

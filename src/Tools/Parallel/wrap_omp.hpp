@@ -8,17 +8,23 @@
 #define __WRAP_OMP_HPP_INCLUDED__
 
 
-#if (_OPENMP)
-  #define OMP_PARALLEL true
-#else
-  #define OMP_PARALLEL false
-#endif
+#include "configure.hpp"
+
+//#if (_OPENMP)
+//  #define OMP_PARALLEL true
+//#else
+//  #define OMP_PARALLEL false
+//#endif
 
 #if (OMP_PARALLEL)
+
   #include <omp.h>
+
 #else
+
   inline long omp_get_thread_num  () {return 0;}
   inline long omp_get_num_threads () {return 1;}
+
 #endif
 
 
@@ -42,7 +48,7 @@ inline long OMP_stop (
 //    for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
 #define OMP_PARALLEL_FOR(index, total) \
-    for (long index = 0; index < total; index++)
+    for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
 //#define OMP_PARALLEL_FOR_WITH(index, total, on_each_thread) \
 //    _Pragma("omp parallel default(shared)") \

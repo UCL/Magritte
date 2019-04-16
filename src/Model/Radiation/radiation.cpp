@@ -15,8 +15,10 @@
 #include "Tools/logger.hpp"
 
 
-///  read: read radiation field from file
-/////////////////////////////////////////
+///  read: read in data structure
+///    @param[in] io: io object
+///    @paran[in] parameters: model parameters object
+/////////////////////////////////////////////////////
 
 int Radiation ::
     read (
@@ -78,6 +80,10 @@ int Radiation ::
 
 
 
+
+///  write: write out data structure
+///    @param[in] io: io object
+/////////////////////////////////
 
 int Radiation ::
     write (
@@ -188,6 +194,9 @@ int Radiation ::
 
 
 
+///  initialize: initialize vector with zero's
+//////////////////////////////////////////////
+
 int initialize (
     vReal1 &vec)
 {
@@ -204,6 +213,31 @@ int initialize (
 
 
 
+
+/// mpi_vector_sum: custom reduction operation for MPI_Reduce
+/////////////////////////////////////////////////////////////
+
+#if (MPI_PARALLEL)
+
+void mpi_vector_sum (
+    vReal        *in,
+    vReal        *inout,
+    int          *len,
+    MPI_Datatype *datatype)
+{
+  for (int i = 0; i < *len; i++)
+  {
+    inout[i] = in[i] + inout[i];
+  }
+}
+
+#endif
+
+
+
+
+/// calc_J_and_G: integrate mean intensity and "flux over all directions
+////////////////////////////////////////////////////////////////////////
 
 int Radiation ::
     calc_J_and_G (
@@ -300,6 +334,9 @@ int Radiation ::
 
 
 
+/// calc_U_and_V: integrate scattering quantities over all directions
+/////////////////////////////////////////////////////////////////////
+
 int Radiation ::
     calc_U_and_V ()
 
@@ -339,8 +376,8 @@ int Radiation ::
         {
           for (long f = 0; f < nfreqs_red; f++)
       	  {
-            U_local[index(p,f)] += u[R2][index(p,f)] * //scattering.phase[r1][r2][f];
-            V_local[index(p,f)] += v[R2][index(p,f)] * //scattering.phase[r1][r2][f];
+            U_local[index(p,f)] += u[R2][index(p,f)] ;//* scattering.phase[r1][r2][f];
+            V_local[index(p,f)] += v[R2][index(p,f)] ;//* scattering.phase[r1][r2][f];
           }
         }
 
@@ -348,24 +385,24 @@ int Radiation ::
 
 
       int ierr_u = MPI_Reduce (
-                     U_local.data(),    // pointer to the data to be reduced
-                     U[R1].data(),      // pointer to the data to be received
-                     ncells*nfreq_red,  // size of the data to be received
-                     MPI_VREAL,         // type of the reduced data
-                     MPI_VSUM,          // reduction operation
-                     w,                 // rank of root to which we reduce
+                     U_local.data(),     // pointer to the data to be reduced
+                     U[R1].data(),       // pointer to the data to be received
+                     ncells*nfreqs_red,  // size of the data to be received
+                     MPI_VREAL,          // type of the reduced data
+                     MPI_VSUM,           // reduction operation
+                     w,                  // rank of root to which we reduce
                      MPI_COMM_WORLD);
 
       assert (ierr_u == 0);
 
 
       int ierr_v = MPI_Reduce (
-                     V_local.data(),    // pointer to the data to be reduced
-                     V[R1].data(),      // pointer to the data to be received
-                     ncells*nfreq_red,  // size of the data to be received
-                     MPI_VREAL,         // type of the reduced data
-                     MPI_VSUM,          // reduction operation
-                     w,                 // rank of root to which we reduce
+                     V_local.data(),     // pointer to the data to be reduced
+                     V[R1].data(),       // pointer to the data to be received
+                     ncells*nfreqs_red,  // size of the data to be received
+                     MPI_VREAL,          // type of the reduced data
+                     MPI_VSUM,           // reduction operation
+                     w,                  // rank of root to which we reduce
                      MPI_COMM_WORLD);
 
       assert (ierr_v == 0);

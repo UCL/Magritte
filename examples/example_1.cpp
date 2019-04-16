@@ -5,7 +5,8 @@
 // _________________________________________________________________________
 
 
-#include "Io/io_Python.hpp"
+#include "Io/io_text.hpp"
+//#include "Io/io_Python.hpp"
 #include "Simulation/simulation.hpp"
 #include "Tools/logger.hpp"
 
@@ -25,7 +26,8 @@ int main (int argc, char **argv)
     cout << "Running model: " << modelName << endl;
 
 
-    IoPython io ("hdf5", modelName);
+    //IoPython io ("hdf5", modelName);
+    IoText io (modelName);
 
 
     Simulation simulation;

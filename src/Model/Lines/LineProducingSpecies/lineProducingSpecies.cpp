@@ -124,10 +124,15 @@ int LineProducingSpecies ::
   quadrature.write (io, l);
 
 
+  write_populations (io, l, "");
+
+
   const string prefix_l = prefix + std::to_string (l) + "/";
 
 
-  Double2 pops       (ncells, Double1 (linedata.nlev));
+  io.write_list (prefix_l+"population_tot", population_tot);
+
+
   Double2 pops_prev1 (ncells, Double1 (linedata.nlev));
   Double2 pops_prev2 (ncells, Double1 (linedata.nlev));
   Double2 pops_prev3 (ncells, Double1 (linedata.nlev));
@@ -137,20 +142,15 @@ int LineProducingSpecies ::
   {
     for (long i = 0; i < linedata.nlev; i++)
     {
-      pops      [p][i] = population       (index (p, i));
       pops_prev1[p][i] = population_prev1 (index (p, i));
       pops_prev2[p][i] = population_prev2 (index (p, i));
       pops_prev3[p][i] = population_prev3 (index (p, i));
     }
   }
 
-  io.write_array (prefix_l+"population",       pops      );
   io.write_array (prefix_l+"population_prev1", pops_prev1);
   io.write_array (prefix_l+"population_prev2", pops_prev2);
   io.write_array (prefix_l+"population_prev3", pops_prev3);
-
-
-  io.write_list (prefix_l+"population_tot", population_tot);
 
 
   return (0);
@@ -159,6 +159,44 @@ int LineProducingSpecies ::
 
 
 
+
+///  write_populations: write current level populations
+///    @param[in] l: number of line producing species
+///    @param[in] tag: extra info tag
+///////////////////////////////////////////////////////
+
+int LineProducingSpecies ::
+    write_populations (
+        const Io     &io,
+        const long    l,
+        const string  tag) const
+{
+
+  const string prefix_l = prefix + std::to_string (l) + "/";
+
+  Double2 pops (ncells, Double1 (linedata.nlev));
+
+
+  OMP_PARALLEL_FOR (p, ncells)
+  {
+    for (long i = 0; i < linedata.nlev; i++)
+    {
+      pops[p][i] = population (index (p, i));
+    }
+  }
+
+  io.write_array (prefix_l+"population"+tag, pops);
+
+
+  return (0);
+
+}
+
+
+
+
+///  initialize_Lambda: clear all entries of Lambda operator
+////////////////////////////////////////////////////////////
 
 int LineProducingSpecies ::
     initialize_Lambda ()
@@ -172,6 +210,22 @@ int LineProducingSpecies ::
       lambda[p][k].nr.clear();
     }
   }
+
+
+  return (0);
+
+}
+
+
+
+
+///  gather_Lambda: gather Lambda's from MPI distributed processes
+//////////////////////////////////////////////////////////////////
+
+int LineProducingSpecies ::
+    gather_Lambda ()
+{
+
 
 
   return (0);

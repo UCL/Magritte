@@ -162,14 +162,17 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # In[16]:
 
 
-from ioMagritte import IoPython
-from os         import remove
+#from ioMagritte import IoPython
+from ioMagritte import IoText
+#from os         import remove
+from setup      import make_file_structure
+from shutil     import rmtree
 
 
 # In[17]:
 
 
-modelName = 'model_0_1D_all_constant.hdf5'
+modelName = 'model_0_1D_all_constant/'
 
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
@@ -177,16 +180,23 @@ modelName = 'model_0_1D_all_constant.hdf5'
 # In[18]:
 
 
-io = IoPython ("hdf5", modelName)
+io = IoText (modelName)
 
 
 # In[19]:
 
 
-remove(modelName)
+#remove(modelName)
+rmtree(modelName)
 
 
 # In[20]:
+
+
+make_file_structure (modelName)
+
+
+# In[21]:
 
 
 model.write (io)

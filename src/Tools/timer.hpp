@@ -39,7 +39,8 @@ class TIMER
 	  ///  Constructor for TIMER
 	  //////////////////////////
 
-	  TIMER(string timer_name)
+	  TIMER (
+        const string timer_name)
 	  {
       name = timer_name;
 	  }

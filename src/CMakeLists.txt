@@ -1,14 +1,38 @@
-
 # CMakeLists.txt for Magritte's source
 ######################################
 
-# Write configuration file
-configure_file (configure.hpp.in
-  ${CMAKE_SOURCE_DIR}/src/configure.hpp)
 
 # Headers are included in this folder and in the dependencies
 include_directories (.)
 include_directories (../dependencies)
+
+
+if (MPI_PARALLEL)
+  # Look for package
+  find_package (MPI REQUIRED)
+  # Include headers
+  include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL true)
+else (MPI_PARALLEL)
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL false)
+endif (MPI_PARALLEL)
+
+if (GRID_SIMD)
+  # Include headers
+  include_directories (../dependencies/Grid-SIMD/include)
+  # Set variable in configuration file
+  set (MAGRITTE_GRID_SIMD true)
+else (GRID_SIMD)
+  # Set variable in configuration file
+  set (MAGRITTE_GRID_SIMD false)
+endif (GRID_SIMD)
+
+
+# Write configuration file
+configure_file (configure.hpp.in
+  ${CMAKE_SOURCE_DIR}/src/configure.hpp)
 
 # Create Magritte library
 add_library (_Magritte
@@ -35,8 +59,20 @@ add_library (_Magritte
   Functions/heapsort.cpp
   Simulation/simulation.cpp)
 
-add_library (PyIo
-  Io/io.cpp
-  Io/io_Python.cpp)
-target_link_libraries (PyIo PRIVATE
-  pybind11::embed)
+if (MPI_PARALLEL)
+  target_link_libraries (_Magritte
+    ${MPI_C_LIBRARIES})
+endif (MPI_PARALLEL)
+
+
+if (PYTHON_IO)
+  # Include pybind11
+  include_directories (../dependencies/pybind11/include)
+  # Create library for python io
+  add_library (PyIo
+    Io/io.cpp
+    Io/io_Python.cpp)
+  # Link embedding
+  target_link_libraries (PyIo PRIVATE
+    pybind11::embed)
+endif (PYTHON_IO)

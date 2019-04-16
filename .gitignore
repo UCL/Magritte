@@ -10,7 +10,7 @@ CMakeCache.txt
 # build folder
 ##############
 
-build*
+build/*
 
 # binary folder
 ###############

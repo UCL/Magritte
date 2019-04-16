@@ -222,24 +222,27 @@ int Simulation ::
   }
 
 
+  // Raypair along which the trasfer equation is solved
+  RayPair rayPair;
+
+
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
     const long R  = r - MPI_start (parameters.nrays()/2);
 
     cout << "ray = " << r << endl;
 
-//#   pragma omp parallel default (shared) private (rayPair)
-//    for (long o = OMP_start (parameters.ncells()); o < OMP_stop (parameters.ncells()); o++)
-    for (long o = 0; o < parameters.ncells(); o++)
+#   pragma omp parallel default (shared) private (rayPair)
     {
-      const long ar = geometry.rays.antipod[o][r];
+    OMP_PARALLEL_FOR (o, parameters.ncells())
+    {
+      const long           ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);
 
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
-
 
       if (rayPair.ndep > 1)
       {
@@ -270,12 +273,12 @@ int Simulation ::
               2.0*geometry.rays.weights[o][r],
               lines.lineProducingSpecies);
 
-          if (   (parameters.r == r)
-              && (parameters.o == o)
-              && (parameters.f == f))
-          {
-            return (-1);
-          }
+          //if (   (parameters.r == r)
+          //    && (parameters.o == o)
+          //    && (parameters.f == f))
+          //{
+          //  return (-1);
+          //}
 
           //std::cout << "Got through...");
         }
@@ -296,6 +299,7 @@ int Simulation ::
 
 
     } // end of loop over cells
+    }
 
   } // end of loop over ray pairs
 
@@ -306,8 +310,7 @@ int Simulation ::
 
   radiation.calc_U_and_V ();
 
-  lines.reduce_Lambdas ();
-
+  // "Reduce Lambda's"
 
   return (0);
 
@@ -554,8 +557,21 @@ int Simulation ::
 //////////////////////////////
 
 int Simulation ::
-    compute_level_populations ()
+    compute_level_populations (
+        const Io &io          )
 {
+
+  long l = 0;
+
+  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  {
+    const string tag = "_iteration_0";
+
+    lspec.write_populations (io, l, tag);
+
+    l++;
+  }
+
 
   // Initialize the number of iterations
   int iteration        = 0;
@@ -570,7 +586,7 @@ int Simulation ::
 
 
   // Iterate as long as some levels are not converged
-  //while (some_not_converged && (iteration < parameters.max_iter()))
+  while (some_not_converged && (iteration < parameters.max_iter()))
   {
 
     iteration++;
@@ -596,7 +612,6 @@ int Simulation ::
 
       calc_Jeff ();
 
-
       lines.iteration_using_statistical_equilibrium (
           chemistry.species.abundance,
           thermodynamics.temperature.gas,
@@ -605,6 +620,8 @@ int Simulation ::
       iteration_normal++;
     }
 
+
+    l = 0;
 
     for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
@@ -616,7 +633,15 @@ int Simulation ::
         some_not_converged = true;
       }
 
-      cout << 100*lspec.fraction_not_converged << " % not (yet) converged" << endl;
+      cout << "Already ";
+      cout << 100 * (1.0 - lspec.fraction_not_converged);
+      cout << " % converged" << endl;
+
+      const string tag = "_iteration_" + std::to_string (iteration);
+
+      lspec.write_populations (io, l, tag);
+
+      l++;
     }
 
 

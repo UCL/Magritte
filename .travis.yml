@@ -1,6 +1,6 @@
-sudo: false
-virtualenv:
-  system_site_packages: true
+#sudo: false
+#virtualenv:
+#  system_site_packages: true
 
 language:
   - cpp
@@ -10,13 +10,13 @@ language:
 python:
   - "3"
 
-env:
-  - WITH_MPI=ON
+#env:
+#  - WITH_MPI=ON
 
-cache:
-  directories:
-  - mpich
-  - mpich-3.2
+#cache:
+#  directories:
+#  - mpich
+#  - mpich-3.2
 
 addons:
     packages:

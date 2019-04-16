@@ -1,12 +1,29 @@
-mkdir build
+#! /bin/bash
 
-cd build
 
-PYTHON_EXECUTABLE=$(which python)
+if [ "$1" == "clean" ]; then
 
-CC_FLAG=$(which icc)
-CXX_FLAG=$(which icc)
+  echo "Removing entire build directory..."
+  rm -rf build/
+  echo "Done."
 
-CC=$CC_FLAG CXX=$CXX_FLAG cmake -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE ../
+else
 
-make -j4
+  echo "Building Magrite..."
+  mkdir build
+  cd build
+
+  PYTHON_EXECUTABLE=$(which python)
+
+  #CC_FLAG=$(which icc)
+  #CXX_FLAG=$(which icc)
+
+  #CC=$CC_FLAG CXX=$CXX_FLAG
+  cmake -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE ../
+
+  make #-j4
+
+  cd ..
+  echo "Done."
+
+fi
