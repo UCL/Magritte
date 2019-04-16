@@ -30,7 +30,7 @@ addons:
 
 script:
   - bash configure.sh
-  - bash build.sh
+  - bash build.sh minimal
   - cd tests
   - bash run_tests.sh
 

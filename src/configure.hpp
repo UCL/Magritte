@@ -6,8 +6,8 @@
 #define MAGRITTE_VERSION_MINOR "0"
 
 // Parallelisation
-#define MPI_PARALLEL false
-#define OMP_PARALLEL false
+#define MPI_PARALLEL true
+#define OMP_PARALLEL true
 
 // SIMD vectorisation
-#define GRID_SIMDL false
+#define GRID_SIMD false
