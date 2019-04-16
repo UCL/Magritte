@@ -29,6 +29,7 @@ addons:
 #  - bash installGrid.sh
 
 script:
+  - bash configure.sh
   - bash build.sh
   - cd tests
   - bash run_tests.sh
