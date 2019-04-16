@@ -239,7 +239,8 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init<>())
       // functions
       .def ("read",                           &Lines::read)
-      .def ("write",                          &Lines::write);
+      .def ("write",                          &Lines::write)
+      .def ("set_emissivity_and_opacity",     &Lines::set_emissivity_and_opacity);
 
 
   // LineProducingSpecies

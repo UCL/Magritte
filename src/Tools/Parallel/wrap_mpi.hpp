@@ -7,8 +7,8 @@
 #ifndef __WRAP_MPI_HPP_INCLUDED__
 #define __WRAP_MPI_HPP_INCLUDED__
 
-
-#define MPI_PARALLEL false
+#include "configure.hpp"
+//#define MPI_PARALLEL true
 
 #if (MPI_PARALLEL)
 
@@ -108,26 +108,6 @@ inline long MPI_length (
     for (long index = MPI_start (total); index < MPI_stop (total); index++)
 
 
-
-
-/// mpi_vector_sum: custom reduction operation fir MPI_Reduce
-/////////////////////////////////////////////////////////////
-
-#if (MPI_PARALLEL)
-
-void mpi_vector_sum (
-    vReal        *in,
-    vReal        *inout,
-    int          *len,
-    MPI_Datatype *datatype)
-{
-  for (int i = 0; i < *len; i++)
-  {
-    inout[i] = in[i] + inout[i];
-  }
-}
-
-#endif
 
 
 #endif // __WRAP_MPI_HPP_INCLUDED__

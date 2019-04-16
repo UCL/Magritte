@@ -90,6 +90,8 @@ struct LineProducingSpecies
 
       int initialize_Lambda ();
 
+      int gather_Lambda ();
+
 
       long ncells;
 

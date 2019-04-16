@@ -12,6 +12,7 @@ using namespace std;
 
 #include "configure.hpp"
 #include "Io/io_Python.hpp"
+#include "Tools/types.hpp"
 
 
 TEST_CASE ("IoPython", "[read_array]")

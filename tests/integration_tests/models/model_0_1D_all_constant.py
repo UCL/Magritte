@@ -162,9 +162,10 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # In[16]:
 
 
+#from ioMagritte import IoPython
 from ioMagritte import IoText
 #from os         import remove
-from os         import mkdir
+from setup      import make_file_structure
 from shutil     import rmtree
 
 
@@ -192,23 +193,7 @@ rmtree(modelName)
 # In[20]:
 
 
-mkdir(modelName)
-mkdir(f'{modelName}/Geometry')
-mkdir(f'{modelName}/Geometry/Cells')
-mkdir(f'{modelName}/Geometry/Rays')
-mkdir(f'{modelName}/Geometry/Boundary')
-mkdir(f'{modelName}/Thermodynamics')
-mkdir(f'{modelName}/Thermodynamics/Temperature')
-mkdir(f'{modelName}/Thermodynamics/Turbulence')
-mkdir(f'{modelName}/Chemistry')
-mkdir(f'{modelName}/Chemistry/Species')
-mkdir(f'{modelName}/Lines')
-mkdir(f'{modelName}/Lines/LineProducingSpecies_0')
-mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata')
-mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata/CollisionPartner_0')
-mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Quadrature')
-mkdir(f'{modelName}/Radiation')
-mkdir(f'{modelName}/Radiation/Frequencies')
+make_file_structure (modelName)
 
 
 # In[21]:

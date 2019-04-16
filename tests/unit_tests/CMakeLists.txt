@@ -28,37 +28,36 @@ if (PYTHON_IO)
     Io/test_io_Python.cpp)
   target_link_libraries (test_io_Python.exe
     _TestMain
-    ${OPTIONAL_LIBS})
+    PyIo)
 
 
 add_executable (test_model.exe
   Model/test_model.cpp)
 target_link_libraries (test_model.exe
-  PyIo
   _Magritte
   _TestMain
-  ${OPTIONAL_LIBS})
+  PyIo)
 
 add_executable (test_parameters.exe
   Model/test_parameters.cpp)
 target_link_libraries (test_parameters.exe
   _Magritte
   _TestMain
-  ${OPTIONAL_LIBS})
+  PyIo)
 
 add_executable (test_raypair.exe
   Simulation/Raypair/test_raypair.cpp)
 target_link_libraries (test_raypair.exe
   _Magritte
   _TestMain
-  ${OPTIONAL_LIBS})
+  PyIo)
 
 add_executable (test_lineProducingSpecies.exe
   Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
 target_link_libraries (test_lineProducingSpecies.exe
   _Magritte
   _TestMain
-  ${OPTIONAL_LIBS})
+  PyIo)
 
 endif (PYTHON_IO)
 

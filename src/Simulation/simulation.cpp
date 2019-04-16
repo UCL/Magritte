@@ -561,6 +561,18 @@ int Simulation ::
         const Io &io          )
 {
 
+  long l = 0;
+
+  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  {
+    const string tag = "_iteration_0";
+
+    lspec.write_populations (io, l, tag);
+
+    l++;
+  }
+
+
   // Initialize the number of iterations
   int iteration        = 0;
   int iteration_normal = 0;
@@ -609,7 +621,7 @@ int Simulation ::
     }
 
 
-    long l = 0;
+    l = 0;
 
     for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
