@@ -7,8 +7,9 @@
 #ifndef __WRAP_MPI_HPP_INCLUDED__
 #define __WRAP_MPI_HPP_INCLUDED__
 
+
 #include "configure.hpp"
-//#define MPI_PARALLEL true
+
 
 #if (MPI_PARALLEL)
 

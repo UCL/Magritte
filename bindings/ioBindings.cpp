@@ -5,8 +5,8 @@
 
 
 #include "Io/io.hpp"
-#include "Io/io_text.hpp"
-#include "Io/io_Python.hpp"
+#include "Io/cpp/io_cpp_text.hpp"
+#include "Io/python/io_python.hpp"
 #include "Tools/types.hpp"
 #include "Model/model.hpp"
 #include "Simulation/simulation.hpp"
@@ -34,6 +34,8 @@ PYBIND11_MODULE (ioMagritte, module)
       .def (py::init<const string &>());
 
 
+#if (PYTHON_IO)
+
   // IoPython
   py::class_<IoPython, Io> (module, "IoPython")
       // attributes
@@ -41,6 +43,8 @@ PYBIND11_MODULE (ioMagritte, module)
       .def_readonly ("io_file",        &IoPython::io_file)
       // constructor
       .def (py::init<const string &, const string &>());
+
+#endif
 
 
 }

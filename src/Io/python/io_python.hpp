@@ -64,6 +64,8 @@ struct IoPython : public Io
 
   private:
 
+      static const string io_folder;
+
       template <class type>
        int read_in_python (
           const string  function,

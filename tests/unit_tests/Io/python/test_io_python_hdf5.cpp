@@ -11,17 +11,17 @@ using namespace std;
 #include "catch.hpp"
 
 #include "configure.hpp"
-#include "Io/io_Python.hpp"
+#include "Io/python/io_python.hpp"
 #include "Tools/types.hpp"
 
 
-TEST_CASE ("IoPython", "[read_array]")
+TEST_CASE ("IoPython hdf5")
 {
 
   // Setup
 
   const string model_folder = string (MAGRITTE_FOLDER)
-                              + "/data/testdata/model_test_model.hdf5";
+                              + "bin/tests/testdata/test_io_python.hdf5";
 
   IoPython io ("hdf5", model_folder);
 
@@ -30,7 +30,6 @@ TEST_CASE ("IoPython", "[read_array]")
   Double2 pop (1, Double1 (1));
 
   cout << &pop << endl;
-
 
   int err = io.read_array (name, pop);
 

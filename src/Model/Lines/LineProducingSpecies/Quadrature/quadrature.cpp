@@ -28,11 +28,9 @@ int Quadrature ::
 
   const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
 
-  cout << prefix_l << endl;
 
   io.read_length (prefix_l+"weights", nquads);
 
-  cout << "nquads is " << nquads << endl;
 
   parameters.set_nquads (nquads);
 

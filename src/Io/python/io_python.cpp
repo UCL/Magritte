@@ -12,8 +12,11 @@ using std::string;
 namespace py = pybind11;
 
 #include "configure.hpp"
-#include "Io/io_Python.hpp"
+#include "Io/python/io_python.hpp"
 #include "Tools/logger.hpp"
+
+
+const string IoPython::io_folder = string (MAGRITTE_FOLDER) + "/src/Io/python/";
 
 
 ///  Constructor for IoPython
@@ -26,7 +29,7 @@ IoPython ::
         const string imp,
         const string io_file)
   : Io             (io_file),
-    implementation ("io_" + imp)
+    implementation ("io_python_" + imp)
 {
 
 
@@ -522,8 +525,6 @@ int IoPython ::
   catch (...) { }
 
 
-  const string io_folder = string (MAGRITTE_FOLDER) + "/src/Io";
-
   // Add /Io folder to Python path
   py::module::import("sys").attr("path").attr("insert")(0, io_folder);
 
@@ -577,8 +578,6 @@ int IoPython ::
   }
   catch (...) { }
 
-
-  const string io_folder = string (MAGRITTE_FOLDER) + "/src/Io";
 
   // Add /Io folder to Python path
   py::module::import("sys").attr("path").attr("insert")(0, io_folder.c_str());

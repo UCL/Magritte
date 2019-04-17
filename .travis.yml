@@ -1,6 +1,5 @@
-#sudo: false
-#virtualenv:
-#  system_site_packages: true
+# Configuration file for Travis-CI
+##################################
 
 language:
   - cpp
@@ -10,84 +9,12 @@ language:
 python:
   - "3"
 
-#env:
-#  - WITH_MPI=ON
-
-#cache:
-#  directories:
-#  - mpich
-#  - mpich-3.2
-
 addons:
     packages:
       - cmake
-
-#before_install:
-#  - test -n $CC && unset CC
-#  - bash installMPICH.sh
-#  - export LD_LIBRARY_PATH=$HOME/mpfr/lib/:$LD_LIBRARY_PATH
-#  - bash installGrid.sh
 
 script:
   - bash configure.sh
   - bash build.sh minimal
   - cd tests
   - bash run_tests.sh
-
-  #- mkdir build; cd build
-  #- CC=gcc CCX=g++  cmake -DGRID_INSTALL_FOLDER=`pwd`/../GridInstall/ ../modules/Lines
-  #- make
-  #- cd tests
-  #- bash run_tests.sh
-  #- cd ../../..
-  #- cd modules/RadiativeTransfer
-  #- bash run_tests.sh
-#export
-#export MPI_C_LIBRARIES=-L./mpich/lib -Wl,-rpath,./mpich/lib
-
-# language:
-#   - cpp
-#   - python
-#   - bash
-#
-# python:
-#   # We don't actually use the Travis Python, but this keeps it organized.
-#   - "2.7"
-#
-# install:
-#   - sudo apt-get install libvtk5-dev
-#
-# install:
-#   # - sudo apt-get update
-#   # We do this conditionally because it saves us some downloading if the
-#   # version is the same.
-#   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-#       wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-#     else
-#       wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-#     fi
-#   - bash miniconda.sh -b -p $HOME/miniconda
-#   - export PATH="$HOME/miniconda/bin:$PATH"
-#   - hash -r
-#   - conda config --set always_yes yes --set changeps1 no
-#   - conda update -q conda
-#   # Useful for debugging any issues with conda
-#   - conda info -a
-#   # Replace dep1 dep2 ... with your dependencies
-#   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
-#   - source activate test-environment
-#
-# addons:
-#   apt:
-#     sources:
-#       - boost-latest
-#     packages:
-#       - cmake
-#       - libboost1.55-all-dev
-#
-# script:
-#   - bash configure.sh
-#   - cd tests
-#   - bash run_tests.sh
-#   - cd ..
-#   - echo "Done!"

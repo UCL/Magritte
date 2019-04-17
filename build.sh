@@ -4,8 +4,9 @@
 if [ "$1" == "clean" ]; then
 
 
-  echo "Removing entire build directory..."
+  echo "Removing entire build and binary directory..."
   rm -rf build/
+  rm -rf bin/
   echo "Done."
   exit 0
 
@@ -17,12 +18,12 @@ elif [ "$1" == "minimal" ]; then
   mkdir build
   cd build
 
-  cmake                      \
-    -DPYTHON_IO=OFF          \
-    -DPYTHON_BINDINGS=OFF    \
-    -DOMP_PARALLEL=OFF       \
-    -DMPI_PARALLEL=OFF       \
-    -DGRID_SIMD=OFF          \
+  cmake                   \
+    -DPYTHON_IO=OFF       \
+    -DPYTHON_BINDINGS=OFF \
+    -DOMP_PARALLEL=OFF    \
+    -DMPI_PARALLEL=OFF    \
+    -DGRID_SIMD=OFF       \
     ../
 
   make #-j4

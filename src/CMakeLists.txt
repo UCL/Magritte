@@ -37,7 +37,7 @@ configure_file (configure.hpp.in
 # Create Magritte library
 add_library (_Magritte
   Io/io.cpp
-  Io/io_text.cpp
+  Io/cpp/io_cpp_text.cpp
   Model/model.cpp
   Model/parameters.cpp
   Model/Geometry/geometry.cpp
@@ -71,7 +71,7 @@ if (PYTHON_IO)
   # Create library for python io
   add_library (PyIo
     Io/io.cpp
-    Io/io_Python.cpp)
+    Io/python/io_python.cpp)
   # Link embedding
   target_link_libraries (PyIo PRIVATE
     pybind11::embed)

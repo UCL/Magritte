@@ -36,9 +36,9 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
 
 # Add compiler and linker flags
 set (CMAKE_C_FLAGS
-  "${CMAKE_C_FLAGS} -mcmodel=large -std=c++11")
+  "${CMAKE_C_FLAGS}          -mcmodel=large -std=c++11")
 set (CMAKE_CXX_FLAGS
-  "${CMAKE_CXX_FLAGS} -mcmodel=large -std=c++11")
+  "${CMAKE_CXX_FLAGS}        -mcmodel=large -std=c++11")
 set (CMAKE_EXE_LINKER_FLAGS
   "${CMAKE_EXE_LINKER_FLAGS} -mcmodel=large -std=c++11")
 
@@ -81,8 +81,3 @@ endif (PYTHON_BINDINGS   OR   PYTHON_IO)
 if (PYTHON_BINDINGS)
   add_subdirectory (bindings)
 endif (PYTHON_BINDINGS)
-
-## Add directory containing Magritte's Io via Python
-#if (PYTHON_IO)
-#  add_subdirectory (src/Io/python)
-#endif (PYTHON_IO)
