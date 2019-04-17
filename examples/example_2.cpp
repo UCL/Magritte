@@ -5,9 +5,11 @@
 // _________________________________________________________________________
 
 
+#include "configure.hpp"
 #include "Io/cpp/io_cpp_text.hpp"
 //#include "Io/python/io_python.hpp"
 #include "Simulation/simulation.hpp"
+#include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/logger.hpp"
 
 
@@ -24,6 +26,13 @@ int main (int argc, char **argv)
     const string modelName = argv[1];
 
     cout << "Running model: " << modelName << endl;
+
+
+#   if (MPI_PARALLEL)
+
+      MPI_Init (NULL, NULL);
+
+#   endif
 
 
     //IoPython io ("hdf5", modelName);
@@ -48,10 +57,13 @@ int main (int argc, char **argv)
 
     simulation.write (io);
 
-    //for (long p = 0; p < simulation.parameters.ncells(); p++)
-    //{
-    //  cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << endl;
-    //}
+
+#   if (MPI_PARALLEL)
+
+      MPI_Finalize ();
+
+#   endif
+
 
     cout << "Done." << endl;
   }
