@@ -109,7 +109,7 @@ struct RayPair
       vReal1 dtau;   // optical depth increment along the ray
 
 
-      const long n_off_diag = 1;
+      const long n_off_diag = 3;
 
       vReal2 L_upper;
       vReal1 L_diag;

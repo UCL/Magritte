@@ -19,6 +19,7 @@ else (MPI_PARALLEL)
   set (MAGRITTE_MPI_PARALLEL false)
 endif (MPI_PARALLEL)
 
+
 if (GRID_SIMD)
   # Include headers
   include_directories (../dependencies/Grid-SIMD/include)
@@ -31,7 +32,7 @@ endif (GRID_SIMD)
 
 
 # Write configuration file
-configure_file (configure.hpp.in
+configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
   ${CMAKE_SOURCE_DIR}/src/configure.hpp)
 
 # Create Magritte library
@@ -58,6 +59,7 @@ add_library (_Magritte
   Model/Thermodynamics/Turbulence/turbulence.cpp
   Functions/heapsort.cpp
   Simulation/simulation.cpp)
+
 
 if (MPI_PARALLEL)
   target_link_libraries (_Magritte

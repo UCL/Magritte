@@ -461,26 +461,26 @@ inline void RayPair ::
 
       //std::cout << "L diag = ", L);
 
-      //for (long m = 1; m < n_off_diag; m++)
-      //{
-      //  if (n_ar-m >= 0)
-      //  {
-      //    L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
+      for (long m = 1; m < n_off_diag; m++)
+      {
+        if (n_ar-m >= 0)
+        {
+          L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
 
-      //    //std::cout << "L lower = ", L);
+          //std::cout << "L lower = ", L);
 
-      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
-      //  }
+          lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
+        }
 
-      //  if (n_ar+m < ndep-m)
-      //  {
-      //    L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
+        if (n_ar+m < ndep-m)
+        {
+          L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
 
-      //    //std::cout << "L upper = ", L);
+          //std::cout << "L upper = ", L);
 
-      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
-      //  }
-      //}
+          lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
+        }
+      }
     }
   }
 

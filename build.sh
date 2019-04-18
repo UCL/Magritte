@@ -26,7 +26,7 @@ elif [ "$1" == "minimal" ]; then
     -DGRID_SIMD=OFF       \
     ../
 
-  make #-j4
+  make -j4
 
   cd ..
   echo "Done."
@@ -50,8 +50,8 @@ else
     -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
     -DPYTHON_IO=ON                                  \
     -DPYTHON_BINDINGS=ON                            \
-    -DOMP_PARALLEL=ON                               \
-    -DMPI_PARALLEL=ON                               \
+    -DOMP_PARALLEL=OFF                              \
+    -DMPI_PARALLEL=OFF                              \
     -DGRID_SIMD=OFF                                 \
     ../
 

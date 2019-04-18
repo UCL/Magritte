@@ -270,7 +270,7 @@ int Simulation ::
               thermodynamics,
               o,
               f,
-              2.0*geometry.rays.weights[o][r],
+              geometry.rays.weights[o][r],
               lines.lineProducingSpecies);
 
           //if (   (parameters.r == r)
@@ -598,15 +598,15 @@ int Simulation ::
     some_not_converged = false;
 
 
-    if (iteration_normal == 4)
-    {
-      lines.iteration_using_Ng_acceleration (
-          parameters.pop_prec()             );
+    //if (iteration_normal == 4)
+    //{
+    //  lines.iteration_using_Ng_acceleration (
+    //      parameters.pop_prec()             );
 
-      iteration_normal = 0;
-    }
+    //  iteration_normal = 0;
+    //}
 
-    else
+    //else
     {
       compute_radiation_field ();
 

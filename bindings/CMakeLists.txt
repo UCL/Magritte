@@ -6,6 +6,17 @@ include_directories (../src)
 include_directories (../dependencies)
 include_directories (../dependencies/pybind11/include)
 
+
+# Set variables in configuration file
+set (MAGRITTE_MPI_PARALLEL false)
+set (MAGRITTE_GRID_SIMD    false)
+
+
+# Write configuration file
+configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
+  ${CMAKE_SOURCE_DIR}/src/configure.hpp)
+
+
 # pybind11 command to create the python module in bin directory
 pybind11_add_module (magritte
   pyBindings.cpp
