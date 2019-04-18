@@ -73,6 +73,7 @@ Grid-SIMD*
 ############
 
 *.hdf5
+*/model_*
 
 
 # dependencies

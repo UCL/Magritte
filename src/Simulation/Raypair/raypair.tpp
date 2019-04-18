@@ -446,10 +446,10 @@ inline void RayPair ::
       const double factor    = lineProducingSpecies[l].linedata.A[k] * weight;
 
 
-      double L = factor * get_L_diag (thermodynamics, freq_line, lane);
+      //double L = factor * get_L_diag (thermodynamics, freq_line, lane);
 
-      const long i   = lineProducingSpecies[l].linedata.irad[k];
-      const long ind = lineProducingSpecies[l].index(nrs[n_ar], i);
+      //const long i   = lineProducingSpecies[l].linedata.irad[k];
+      //const long ind = lineProducingSpecies[l].index(nrs[n_ar], i);
 
       //std::cout << "src = ", L/L_diag[n_ar],
       //       "     term1 = ", term1[n_ar] / (HH_OVER_FOUR_PI*lineProducingSpecies[l].population[ind]));
@@ -457,30 +457,30 @@ inline void RayPair ::
       //       "       calc = ", L_diag[n_ar] * term1[n_ar],
       //       "       Jeff = ", Su[n_ar]);
 
-      lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
+      //lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
 
       //std::cout << "L diag = ", L);
 
-      for (long m = 1; m < n_off_diag; m++)
-      {
-        if (n_ar-m >= 0)
-        {
-          L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
+      //for (long m = 1; m < n_off_diag; m++)
+      //{
+      //  if (n_ar-m >= 0)
+      //  {
+      //    L = factor * get_L_lower (thermodynamics, freq_line, lane, m);
 
-          //std::cout << "L lower = ", L);
+      //    //std::cout << "L lower = ", L);
 
-          lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
-        }
+      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
+      //  }
 
-        if (n_ar+m < ndep-m)
-        {
-          L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
+      //  if (n_ar+m < ndep-m)
+      //  {
+      //    L = factor * get_L_upper (thermodynamics, freq_line, lane, m);
 
-          //std::cout << "L upper = ", L);
+      //    //std::cout << "L upper = ", L);
 
-          lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
-        }
-      }
+      //    lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
+      //  }
+      //}
     }
   }
 
