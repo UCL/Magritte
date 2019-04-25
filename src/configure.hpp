@@ -10,4 +10,4 @@
 #define OMP_PARALLEL false
 
 // SIMD vectorisation
-#define GRID_SIMDL false
+#define GRID_SIMD false

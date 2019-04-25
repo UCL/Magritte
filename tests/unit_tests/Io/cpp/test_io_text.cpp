@@ -9,7 +9,7 @@
 
 #include "catch.hpp"
 
-#include "Io/io_text.hpp"
+#include "Io/cpp/io_text.hpp"
 
 
 TEST_CASE ("Reading .txt input")

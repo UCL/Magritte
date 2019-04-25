@@ -5,9 +5,11 @@
 // _________________________________________________________________________
 
 
-//#include "Io/io_Python.hpp"
-#include "Io/io_text.hpp"
+#include "configure.hpp"
+#include "Io/cpp/io_cpp_text.hpp"
+//#include "Io/python/io_python.hpp"
 #include "Simulation/simulation.hpp"
+#include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/logger.hpp"
 
 
@@ -26,6 +28,13 @@ int main (int argc, char **argv)
     cout << "Running model: " << modelName << endl;
 
 
+#   if (MPI_PARALLEL)
+
+      MPI_Init (NULL, NULL);
+
+#   endif
+
+
     //IoPython io ("hdf5", modelName);
     IoText io (modelName);
 
@@ -33,8 +42,8 @@ int main (int argc, char **argv)
     Simulation simulation;
     simulation.read (io);
 
-    simulation.parameters.set_max_iter (10);
-    simulation.parameters.set_pop_prec (1.0E-4);
+    simulation.parameters.set_max_iter (100);
+    simulation.parameters.set_pop_prec (1.0E-6);
 
 
     simulation.compute_spectral_discretisation ();
@@ -48,10 +57,13 @@ int main (int argc, char **argv)
 
     simulation.write (io);
 
-    //for (long p = 0; p < simulation.parameters.ncells(); p++)
-    //{
-    //  cout << simulation.lines.population[p][0](0) << "   " << simulation.lines.population[p][0](1) << endl;
-    //}
+
+#   if (MPI_PARALLEL)
+
+      MPI_Finalize ();
+
+#   endif
+
 
     cout << "Done." << endl;
   }

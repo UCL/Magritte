@@ -17,56 +17,46 @@ include_directories (../../dependencies)
 include_directories (.)
 
 # Create main lib (as advised in Catch docs, to speed up compilation)
-add_library (_TestMain
+add_library (TestMain
   main.cpp)
 
 
 # Create executable to test io
 
-if (PYTHON_IO)
-  add_executable (test_io_Python.exe
-    Io/test_io_Python.cpp)
-  target_link_libraries (test_io_Python.exe
-    _TestMain
-    PyIo)
 
-
-add_executable (test_model.exe
-  Model/test_model.cpp)
-target_link_libraries (test_model.exe
-  _Magritte
-  _TestMain
-  PyIo)
-
-add_executable (test_parameters.exe
-  Model/test_parameters.cpp)
-target_link_libraries (test_parameters.exe
-  _Magritte
-  _TestMain
-  PyIo)
-
-add_executable (test_raypair.exe
-  Simulation/Raypair/test_raypair.cpp)
-target_link_libraries (test_raypair.exe
-  _Magritte
-  _TestMain
-  PyIo)
-
-add_executable (test_lineProducingSpecies.exe
-  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
-target_link_libraries (test_lineProducingSpecies.exe
-  _Magritte
-  _TestMain
-  PyIo)
-
-endif (PYTHON_IO)
-
-
-add_executable (test_lambda.exe
-  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
-target_link_libraries (test_lambda.exe
-  _Magritte
-  _TestMain)
+#add_executable (test_model.exe
+#  Model/test_model.cpp)
+#target_link_libraries (test_model.exe
+#  _Magritte
+#  TestMain
+#  PyIo)
+#
+#add_executable (test_parameters.exe
+#  Model/test_parameters.cpp)
+#target_link_libraries (test_parameters.exe
+#  _Magritte
+#  TestMain
+#  PyIo)
+#
+#add_executable (test_raypair.exe
+#  Simulation/Raypair/test_raypair.cpp)
+#target_link_libraries (test_raypair.exe
+#  _Magritte
+#  TestMain
+#  PyIo)
+#
+#add_executable (test_lineProducingSpecies.exe
+#  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
+#target_link_libraries (test_lineProducingSpecies.exe
+#  _Magritte
+#  TestMain
+#  PyIo)
+#
+#add_executable (test_lambda.exe
+#  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
+#target_link_libraries (test_lambda.exe
+#  _Magritte
+#  TestMain)
 
 ## Create executable to test model
 #add_executable (test_model.exe
@@ -174,3 +164,12 @@ target_link_libraries (test_lambda.exe
 #_RADIATIVE_TRANSFER
 #_LINES
 #_TEST_RT_MAIN )
+
+
+if (PYTHON_IO)
+  add_executable (test_io_python_hdf5.exe
+    Io/python/test_io_python_hdf5.cpp)
+  target_link_libraries (test_io_python_hdf5.exe
+    TestMain
+    PyIo)
+endif (PYTHON_IO)

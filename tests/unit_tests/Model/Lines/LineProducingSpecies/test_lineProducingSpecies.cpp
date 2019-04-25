@@ -13,7 +13,7 @@ using namespace std;
 #include "configure.hpp"
 #include "Model/parameters.hpp"
 #include "Model/Lines/LineProducingSpecies/lineProducingSpecies.hpp"
-#include "Io/io_Python.hpp"
+#include "Io/python/io_python.hpp"
 
 
 TEST_CASE ("LineProducingSpecies::update_using_statistical_equilibrium")

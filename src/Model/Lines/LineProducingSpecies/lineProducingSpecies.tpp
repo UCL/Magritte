@@ -33,7 +33,7 @@ inline double LineProducingSpecies ::
 
   const long ind_i = index (p, linedata.irad[k]);
 
-  return HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
+  return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
 
 }
 
@@ -49,7 +49,7 @@ inline double LineProducingSpecies ::
   const long ind_i = index (p, linedata.irad[k]);
   const long ind_j = index (p, linedata.jrad[k]);
 
-  return HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
+  return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
                             - population(ind_i) * linedata.Bs[k] );
 
 }
@@ -88,7 +88,8 @@ inline void LineProducingSpecies ::
     {
       const long ind = index (p, i);
 
-      population(ind) *= population_tot[p] / partition_function;
+      //population(ind) *= population_tot[p] / partition_function;
+      population(ind) *= 1.0 / partition_function;
     }
   }
 
@@ -113,7 +114,7 @@ inline void LineProducingSpecies ::
 
   OMP_PARALLEL_FOR (p, ncells)
   {
-    const double min_pop = 1.0E-10 * population_tot[p];
+    const double min_pop = 1.0E-10 ;//* population_tot[p];
 
     for (int i = 0; i < linedata.nlev; i++)
     {
@@ -275,32 +276,32 @@ inline void LineProducingSpecies ::
 
     // Approximated Lambda operator
 
-    //for (long k = 0; k < linedata.nrad; k++)
-    //{
-    //  for (long m = 0; m < lambda[p][k].nr.size(); m++)
-    //  {
-    //    //std::cout << "already here?");
-    //    //std::cout << "Ls ", lambda[p][k].Ls[m]);
-    //    const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
-    //    //std::cout << k, m, v_IJ);
+    for (long k = 0; k < linedata.nrad; k++)
+    {
+      for (long m = 0; m < lambda[p][k].nr.size(); m++)
+      {
+        //std::cout << "already here?");
+        //std::cout << "Ls ", lambda[p][k].Ls[m]);
+        const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
+        //std::cout << k, m, v_IJ);
 
 
-    //    // Note: we define our transition matrix as the transpose of R in the paper.
+        // Note: we define our transition matrix as the transpose of R in the paper.
 
-    //    const long I = index (lambda[p][k].nr[m], linedata.irad[k]);
-    //    const long J = index (p,                  linedata.jrad[k]);
+        const long I = index (lambda[p][k].nr[m], linedata.irad[k]);
+        const long J = index (p,                  linedata.jrad[k]);
 
-    //    if (linedata.jrad[k] != linedata.nlev-1)
-    //    {
-    //      triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
-    //    }
+        if (linedata.jrad[k] != linedata.nlev-1)
+        {
+          triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
+        }
 
-    //    if (linedata.irad[k] != linedata.nlev-1)
-    //    {
-    //      triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
-    //    }
-    //  }
-    //}
+        if (linedata.irad[k] != linedata.nlev-1)
+        {
+          triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
+        }
+      }
+    }
 
 
 
@@ -349,7 +350,8 @@ inline void LineProducingSpecies ::
       triplets.push_back (Eigen::Triplet<double> (I, J, 1.0));
     }
 
-    y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
 
   }
 
@@ -365,14 +367,17 @@ inline void LineProducingSpecies ::
 
   //OMP_PARALLEL_FOR (p, ncells)
   //{
+  //  
   //  for (long i = 0; i < linedata.nlev; i++)
   //  {
   //    const long I = index (p, i);
 
-  //    if (population[I] < 1.0E-50)
-  //    {
-  //      population[I] = 1.0E-50;
-  //    }
+  //    population[I] = population_prev1[I];
+
+  //    //if (population[I] < 1.0E-50)
+  //    //{
+  //    //  population[I] = 1.0E-50;
+  //    //}
   //  }
   //}
 

@@ -187,6 +187,9 @@ int LineProducingSpecies ::
 
   io.write_array (prefix_l+"population"+tag, pops);
 
+  io.write_array (prefix_l+"Jlin"+tag, Jlin);
+  io.write_array (prefix_l+"Jeff"+tag, Jeff);
+
 
   return (0);
 

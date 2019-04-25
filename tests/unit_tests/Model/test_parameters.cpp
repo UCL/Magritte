@@ -12,7 +12,7 @@ using namespace std;
 
 #include "configure.hpp"
 #include "Model/parameters.hpp"
-#include "Io/io_Python.hpp"
+#include "Io/python/io_python.hpp"
 
 
 TEST_CASE ("parameters", "[io]")

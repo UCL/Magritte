@@ -1,5 +1,5 @@
 # CMake related files
-# -------------------
+#####################
 
 CMakeFiles/
 Makefile
@@ -7,33 +7,18 @@ Makefile
 CMakeCache.txt
 
 
-# build folder
-##############
+# build, bin and run folders
+############################
 
 build/*
-
-# binary folder
-###############
-
-bin*
+bin/*
+run/*
 
 
 # Configuration
 ###############
 
 configure.hpp
-
-
-# Eigen folder
-##############
-
-Eigen*
-
-
-# Grid-SIMD folder
-##################
-
-Grid-SIMD*
 
 
 # executables
@@ -56,16 +41,11 @@ Grid-SIMD*
 *.swp
 
 
-# .pyc files
-############
+# Python related cache
+######################
 
 *.pyc
 *__pycache__*
-
-
-# ipython checkpoints
-#####################
-
 *ipynb_checkpoints*
 
 
@@ -73,6 +53,7 @@ Grid-SIMD*
 ############
 
 *.hdf5
+*model_*
 
 
 # dependencies

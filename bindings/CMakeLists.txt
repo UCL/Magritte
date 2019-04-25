@@ -6,6 +6,17 @@ include_directories (../src)
 include_directories (../dependencies)
 include_directories (../dependencies/pybind11/include)
 
+
+# Set variables in configuration file
+set (MAGRITTE_MPI_PARALLEL false)
+set (MAGRITTE_GRID_SIMD    false)
+
+
+# Write configuration file
+configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
+  ${CMAKE_SOURCE_DIR}/src/configure.hpp)
+
+
 # pybind11 command to create the python module in bin directory
 pybind11_add_module (magritte
   pyBindings.cpp
@@ -30,9 +41,10 @@ pybind11_add_module (magritte
   ../src/Functions/heapsort.cpp
   ../src/Simulation/simulation.cpp)
 
+
 # pybind11 command to create the python module in bin directory
 pybind11_add_module (ioMagritte
   ioBindings.cpp
   ../src/Io/io.cpp
-  ../src/Io/io_text.cpp
-  ../src/Io/io_Python.cpp)
+  ../src/Io/cpp/io_cpp_text.cpp
+  ../src/Io/python/io_python.cpp)

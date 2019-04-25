@@ -64,18 +64,6 @@ simulation = Simulation ()
 simulation.read (io)
 
 
-# In[8]:
-
-
-simulation.lines.lineProducingSpecies[0].quadrature.roots
-
-
-# In[9]:
-
-
-simulation.geometry.cells.neighbors[9]
-
-
 # ## 3) Run the model
 # ---
 
@@ -334,6 +322,24 @@ for s in range(s_min, s_max, s_step):
 plot = gridplot([[plot_model, plot_error]])
 
 show(plot)
+
+
+# In[28]:
+
+
+np.pi
+
+
+# In[29]:
+
+
+4.0*np.pi
+
+
+# In[30]:
+
+
+1 / np.sqrt(np.pi)
 
 
 # In[ ]:

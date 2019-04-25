@@ -270,7 +270,7 @@ int Simulation ::
               thermodynamics,
               o,
               f,
-              2.0*geometry.rays.weights[o][r],
+              geometry.rays.weights[o][r],
               lines.lineProducingSpecies);
 
           //if (   (parameters.r == r)
@@ -464,7 +464,7 @@ inline void Simulation ::
 
   // Reset eta and chi
   eta = 0.0;
-  chi = 0.0;
+  chi = 1.0E-22;
 
 
   const double lower = 1.00001*lines.lineProducingSpecies[0].quadrature.roots[0];
@@ -507,30 +507,30 @@ inline void Simulation ::
 
   // Set minimal opacity to avoid zero optical depth increments (dtau)
 
-# if (GRID_SIMD)
-
-    GRID_FOR_ALL_LANES (lane)
-    {
-      if (fabs (chi.getlane(lane)) < 1.0E-99)
-      {
-        eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
-        chi.putlane(1.0E-99, lane);
-
-        //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
-      }
-    }
-
-# else
-
-    if (fabs (chi) < 1.0E-26)
-    {
-      eta = eta / (chi * 1.0E+26);
-      chi = 1.0E-26;
-
-      //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
-    }
-
-# endif
+//# if (GRID_SIMD)
+//
+//    GRID_FOR_ALL_LANES (lane)
+//    {
+//      if (fabs (chi.getlane(lane)) < 1.0E-99)
+//      {
+//        eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
+//        chi.putlane(1.0E-99, lane);
+//
+//        //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
+//      }
+//    }
+//
+//# else
+//
+//    if (fabs (chi) < 1.0E-26)
+//    {
+//      eta = eta / (chi * 1.0E+26);
+//      chi = 1.0E-26;
+//
+//      //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
+//    }
+//
+//# endif
 
 
 }
