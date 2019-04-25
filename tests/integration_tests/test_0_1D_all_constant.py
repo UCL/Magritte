@@ -64,18 +64,6 @@ simulation = Simulation ()
 simulation.read (io)
 
 
-# In[8]:
-
-
-simulation.lines.lineProducingSpecies[0].quadrature.roots
-
-
-# In[9]:
-
-
-simulation.geometry.cells.neighbors[9]
-
-
 # ## 3) Run the model
 # ---
 
