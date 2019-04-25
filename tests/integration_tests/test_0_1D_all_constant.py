@@ -336,6 +336,24 @@ plot = gridplot([[plot_model, plot_error]])
 show(plot)
 
 
+# In[28]:
+
+
+np.pi
+
+
+# In[29]:
+
+
+4.0*np.pi
+
+
+# In[30]:
+
+
+1 / np.sqrt(np.pi)
+
+
 # In[ ]:
 
 

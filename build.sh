@@ -4,9 +4,8 @@
 if [ "$1" == "clean" ]; then
 
 
-  echo "Removing entire build and binary directory..."
+  echo "Removing entire build directory..."
   rm -rf build/
-  rm -rf bin/
   echo "Done."
   exit 0
 
@@ -25,6 +24,31 @@ elif [ "$1" == "minimal" ]; then
     -DMPI_PARALLEL=OFF    \
     -DGRID_SIMD=OFF       \
     ../
+
+  make -j4
+
+  cd ..
+  echo "Done."
+  exit 0
+
+
+elif [ "$1" == "analysis" ]; then
+
+
+  echo "Building Magrite with minimal options and score-p analysis"
+  mkdir build
+  cd build
+
+
+  SCOREP_WRAPPER=off                              \
+  cmake ../                                       \
+  -DCMAKE_C_COMPILER=/opt/scorep/bin/scorep-gcc   \
+  -DCMAKE_CXX_COMPILER=/opt/scorep/bin/scorep-g++ \
+  -DPYTHON_IO=OFF                                 \
+  -DPYTHON_BINDINGS=OFF                           \
+  -DOMP_PARALLEL=OFF                              \
+  -DMPI_PARALLEL=OFF                              \
+  -DGRID_SIMD=OFF
 
   make -j4
 
