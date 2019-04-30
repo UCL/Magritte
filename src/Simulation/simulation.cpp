@@ -234,7 +234,7 @@ int Simulation ::
 
 #   pragma omp parallel default (shared) private (rayPair)
     {
-    OMP_PARALLEL_FOR (o, parameters.ncells())
+    OMP_FOR (o, parameters.ncells())
     {
       const long           ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);

@@ -10,6 +10,7 @@
 //#include "Io/python/io_python.hpp"
 #include "Simulation/simulation.hpp"
 #include "Tools/Parallel/wrap_mpi.hpp"
+#include "Tools/Parallel/wrap_omp.hpp"
 #include "Tools/logger.hpp"
 
 
@@ -27,6 +28,10 @@ int main (int argc, char **argv)
 
     cout << "Running model: " << modelName << endl;
 
+#   pragma omp parallel
+    {
+      cout << "n_omp_threads = " << omp_get_num_threads () << endl;
+    }
 
 #   if (MPI_PARALLEL)
 

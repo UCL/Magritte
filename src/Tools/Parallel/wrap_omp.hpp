@@ -43,16 +43,21 @@ inline long OMP_stop (
   return ((omp_get_thread_num()+1) * total) / omp_get_num_threads();
 }
 
-//#define OMP_PARALLEL_FOR(index, total) \
-//    _Pragma("omp parallel default(shared)") \
-//    for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
-#define OMP_PARALLEL_FOR(index, total) \
+#define OMP_FOR(index, total) \
     for (long index = OMP_start (total); index < OMP_stop (total); index++)
+
+
+#define OMP_PARALLEL_FOR(index, total)      \
+    OMP_FOR (index, total)
+
+//    _Pragma("omp parallel default(shared)") \
+
 
 //#define OMP_PARALLEL_FOR_WITH(index, total, on_each_thread) \
 //    _Pragma("omp parallel default(shared)") \
 //    on_each_thread \
 //    for (long index = OMP_start (total); index < OMP_stop (total); index++)
+
 
 #endif // __WRAP_OMP_HPP_INCLUDED__
