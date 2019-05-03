@@ -62,3 +62,4 @@ configure.hpp
 *dependencies/Eigen*
 *dependencies/Grid-SIMD*
 *dependencies/pybind11*
+*dependencies/scorep*
