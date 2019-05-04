@@ -56,8 +56,8 @@ configure.hpp
 
 *.hdf5
 *model_*
-!model_*.py
-!model_*.ipynb
+!*model_*.py
+!*model_*.ipynb
 
 
 # dependencies
