@@ -775,7 +775,8 @@ void Simulation ::
         {
           const long I = lspec.index (lspec.lambda[p][k].nr[m], lspec.linedata.irad[k]);
 
-          lspec.Jeff[p][k] -= lspec.population_tot[p] * HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
+          //lspec.Jeff[p][k] -= lspec.population_tot[p] * HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
+          lspec.Jeff[p][k] -= HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
         }
       }
     }

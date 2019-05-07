@@ -33,7 +33,8 @@ inline double LineProducingSpecies ::
 
   const long ind_i = index (p, linedata.irad[k]);
 
-  return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
+  //return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
+  return HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
 
 }
 
@@ -49,7 +50,9 @@ inline double LineProducingSpecies ::
   const long ind_i = index (p, linedata.irad[k]);
   const long ind_j = index (p, linedata.jrad[k]);
 
-  return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
+  //return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
+  //                          - population(ind_i) * linedata.Bs[k] );
+  return HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
                             - population(ind_i) * linedata.Bs[k] );
 
 }
@@ -88,8 +91,8 @@ inline void LineProducingSpecies ::
     {
       const long ind = index (p, i);
 
-      //population(ind) *= population_tot[p] / partition_function;
-      population(ind) *= 1.0 / partition_function;
+      population(ind) *= population_tot[p] / partition_function;
+      //population(ind) *= 1.0 / partition_function;
     }
   }
 
@@ -114,7 +117,7 @@ inline void LineProducingSpecies ::
 
   OMP_PARALLEL_FOR (p, ncells)
   {
-    const double min_pop = 1.0E-10 ;//* population_tot[p];
+    const double min_pop = 1.0E-10 * population_tot[p];
 
     for (int i = 0; i < linedata.nlev; i++)
     {
@@ -347,8 +350,8 @@ inline void LineProducingSpecies ::
       triplets.push_back (Eigen::Triplet<double> (I, J, 1.0));
     }
 
-    //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
-    y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
+    y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
 
   }
 
