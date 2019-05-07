@@ -28,10 +28,10 @@ int main (int argc, char **argv)
 
     cout << "Running model: " << modelName << endl;
 
-#   pragma omp parallel
-    {
-      cout << "n_omp_threads = " << omp_get_num_threads () << endl;
-    }
+//#   pragma omp parallel
+//    {
+//      cout << "n_omp_threads = " << omp_get_num_threads () << endl;
+//    }
 
 #   if (MPI_PARALLEL)
 

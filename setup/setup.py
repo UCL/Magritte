@@ -28,35 +28,35 @@ from random import randint
 from math   import isclose
 
 RT = 1.0E-5
-
-def get_rays (cells, nr, nrays):
-    ncells = len(cells.x)
-    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(80))
-    #while (len(Rx) < 300):
-    #    p = randint (0, ncells-1)
-    #    if (p != nr):
-    #        x = cells.x[p] - cells.x[nr]
-    #        y = cells.y[p] - cells.y[nr]
-    #        z = cells.z[p] - cells.z[nr]
-    #        length = np.sqrt(x**2 + y**2 + z**2)
-    #        x /= length
-    #        y /= length
-    #        z /= length
-    #        already_in_list = False
-    #        for r in range (len(Rx)):
-    #            if (isclose(x, Rx[r], abs_tol=RT) and isclose(y, Ry[r], abs_tol=RT) and isclose(z, Rz[r], abs_tol=RT)):
-    #                already_in_list = True
-    #        if not already_in_list:
-    #            # Add ray
-    #            Rx.append (+x)
-    #            Ry.append (+y)
-    #            Rz.append (+z)
-    #            # Add antipodal
-    #            Rx.append (-x)
-    #            Ry.append (-y)
-    #            Rz.append (-z)
-    return (Rx, Ry, Rz)
-
+# 
+# def get_rays (cells, nr, nrays):
+#     ncells = len(cells.x)
+#     (Rx, Ry, Rz) = rayVectors (dimension=3, nrays=int(80))
+#     #while (len(Rx) < 300):
+#     #    p = randint (0, ncells-1)
+#     #    if (p != nr):
+#     #        x = cells.x[p] - cells.x[nr]
+#     #        y = cells.y[p] - cells.y[nr]
+#     #        z = cells.z[p] - cells.z[nr]
+#     #        length = np.sqrt(x**2 + y**2 + z**2)
+#     #        x /= length
+#     #        y /= length
+#     #        z /= length
+#     #        already_in_list = False
+#     #        for r in range (len(Rx)):
+#     #            if (isclose(x, Rx[r], abs_tol=RT) and isclose(y, Ry[r], abs_tol=RT) and isclose(z, Rz[r], abs_tol=RT)):
+#     #                already_in_list = True
+#     #        if not already_in_list:
+#     #            # Add ray
+#     #            Rx.append (+x)
+#     #            Ry.append (+y)
+#     #            Rz.append (+z)
+#     #            # Add antipodal
+#     #            Rx.append (-x)
+#     #            Ry.append (-y)
+#     #            Rz.append (-z)
+#     return (Rx, Ry, Rz)
+#
 
 def get_neighbors(px, py, nr):
     x      =  px[nr]
@@ -459,3 +459,5 @@ def make_file_structure (modelName):
     mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Quadrature')
     mkdir(f'{modelName}/Radiation')
     mkdir(f'{modelName}/Radiation/Frequencies')
+    mkdir(f'{modelName}/Simulation')
+    mkdir(f'{modelName}/Simulation/Image')

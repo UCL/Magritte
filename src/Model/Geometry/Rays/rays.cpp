@@ -70,16 +70,6 @@ int Rays ::
   }
 
 
-  Ix.resize (nrays);
-  Iy.resize (nrays);
-
-  Jx.resize (nrays);
-  Jy.resize (nrays);
-  Jz.resize (nrays);
-
-
-
-
   // Read rays
 
   //io.read_3_vector (prefix+"rays", x, y, z);
@@ -183,30 +173,6 @@ int Rays ::
 
 
 
-
-///  setup_image_axis: define the axis for the (2D) image frame
-///////////////////////////////////////////////////////////////
-
-int Rays ::
-    setup_image_axis ()
-{
-
-  //for (long r = 0; r < nrays; r++)
-  //{
-  //  double inverse_denominator = 1.0 / sqrt(x[r]*x[r] + y[r]*y[r]);
-
-  //  Ix[r] =  y[r] * inverse_denominator;
-  //  Iy[r] = -x[r] * inverse_denominator;
-
-  //  Jx[r] =  x[r] * z[r] * inverse_denominator;
-  //  Jy[r] =  y[r] * z[r] * inverse_denominator;
-  //  Jz[r] =              - inverse_denominator;
-  //}
-
-
-  return (0);
-
-}
 
 // int Rays ::
 //     setup_mirror_rays ()

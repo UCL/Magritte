@@ -4,17 +4,25 @@
 # # 0) Analytical Model: 1D all constant
 # ---
 
+# In[1]:
+
+
+import os, inspect
+thisFolder     = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+magritteFolder = f'{thisFolder}/../../../'
+
+
 # ## 0) Setup
 # ---
 
 # Add Magritte's `/setup/` and `/bin/` directories to the Python path.
 
-# In[1]:
+# In[2]:
 
 
-from sys import path
-path.insert (0, '../../../setup/')
-path.insert (0, '../../../bin/')
+from sys import path as sysPath
+sysPath.insert (0, f'{magritteFolder}setup/')
+sysPath.insert (0, f'{magritteFolder}bin/')
 
 
 # Import Magritte's Python modules and setup.
@@ -50,7 +58,6 @@ abun = 1.0E+06   # [m^-3]
 temp = 2.5E+02   # [K]
 turb = 2.5E+02   # [m/s]
 dx   = 1.0E+04   # [m]
-dv   = 2.0E+01   # [m/s]
 
 
 # In[5]:
@@ -88,7 +95,7 @@ model.geometry.cells.x  = Double1 ([i*dx for i in range(ncells)])
 model.geometry.cells.y  = Double1 ([0.0  for _ in range(ncells)])
 model.geometry.cells.z  = Double1 ([0.0  for _ in range(ncells)])
 
-model.geometry.cells.vx = Double1 ([i*dv for i in range(ncells)])
+model.geometry.cells.vx = Double1 ([0.0  for _ in range(ncells)])
 model.geometry.cells.vy = Double1 ([0.0  for _ in range(ncells)])
 model.geometry.cells.vz = Double1 ([0.0  for _ in range(ncells)])
 
@@ -135,7 +142,7 @@ model.chemistry.species.sym       = String1 (['dummy0', 'test', 'H2', 'e-', 'dum
 # In[13]:
 
 
-linedataFolder = 'data/Linedata/test.txt'
+linedataFolder = f'{thisFolder}data/Linedata/test.txt'
 
 
 # Define the linedata.
@@ -163,14 +170,17 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # In[16]:
 
 
-from ioMagritte import IoPython
-from os         import remove
+#from ioMagritte import IoPython
+from ioMagritte import IoText
+#from os         import remove
+from setup      import make_file_structure
+from shutil     import rmtree
 
 
 # In[17]:
 
 
-modelName = 'model_1_1D_velocity_gradient.hdf5'
+modelName = f'{thisFolder}/model_0_1D_all_constant/'
 
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
@@ -178,16 +188,23 @@ modelName = 'model_1_1D_velocity_gradient.hdf5'
 # In[18]:
 
 
-io = IoPython ("hdf5", modelName)
+io = IoText (modelName)
 
 
 # In[19]:
 
 
-remove(modelName)
+#remove(modelName)
+rmtree(modelName)
 
 
 # In[20]:
+
+
+make_file_structure (modelName)
+
+
+# In[21]:
 
 
 model.write (io)

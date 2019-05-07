@@ -373,6 +373,7 @@ PYBIND11_MODULE (magritte, module)
       .def ("compute_boundary_intensities",    &Simulation::compute_boundary_intensities)
       .def ("compute_LTE_level_populations",   &Simulation::compute_LTE_level_populations)
       .def ("compute_radiation_field",         &Simulation::compute_radiation_field)
+      .def ("compute_and_write_image",         &Simulation::compute_and_write_image)
       .def ("compute_level_populations",       &Simulation::compute_level_populations);
 
   // RayPair
@@ -391,5 +392,17 @@ PYBIND11_MODULE (magritte, module)
       .def_readonly ("dtau", &RayPair::dtau);
 
       // functions
+
+  // Image
+  py::class_<Image> (module, "Image")
+      // attributes
+      .def_readonly ("ImX", &Image::ImX)
+      .def_readonly ("ImY", &Image::ImY)
+      .def_readonly ("I_p", &Image::I_p)
+      .def_readonly ("I_m", &Image::I_m)
+      // constructor
+      .def (py::init<const long, const Parameters &>())
+      // functions
+      .def ("write", &Image::write);
 
 }

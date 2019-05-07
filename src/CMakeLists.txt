@@ -58,7 +58,8 @@ add_library (_Magritte
   Model/Thermodynamics/Temperature/temperature.cpp
   Model/Thermodynamics/Turbulence/turbulence.cpp
   Functions/heapsort.cpp
-  Simulation/simulation.cpp)
+  Simulation/simulation.cpp
+  Simulation/Image/image.cpp)
 
 
 if (MPI_PARALLEL)

@@ -66,14 +66,6 @@ struct Geometry
           const long r,
           const long current      ) const;
 
-      inline double x_projected (
-          const long p,
-          const long r          ) const;
-
-      inline double y_projected (
-          const long p,
-          const long r          ) const;
-
 
 };
 

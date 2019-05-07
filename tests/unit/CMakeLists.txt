@@ -3,11 +3,11 @@
 
 # Write all binary files to the bin directory
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/bin/tests)
+  ${BINARY_DIRECTORY}/tests)
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/bin/tests)
+  ${BINARY_DIRECTORY}/tests)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/bin/tests)
+  ${BINARY_DIRECTORY}/tests)
 
 # Include directory containing source
 include_directories (../../src)

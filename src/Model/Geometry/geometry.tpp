@@ -43,6 +43,8 @@ inline RayData Geometry ::
       shift_nxt = doppler_shift (origin, ray, nxt);
 
       set_data (crt, nxt, shift_crt, shift_nxt, dZ, dshift_max, rayData);
+
+//      cout << nxt << endl;
     }
   }
 
@@ -214,46 +216,5 @@ inline double Geometry ::
   return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[origin][ray]
                 + (cells.vy[current] - cells.vy[origin]) * rays.y[origin][ray]
                 + (cells.vz[current] - cells.vz[origin]) * rays.z[origin][ray]);
-
-}
-
-
-
-
-///  x_projected: x coordinate of the point p on the image in direction r
-///    @param[in] p: number of cell to be projected on the image
-///    @param[in] r: number of the ray orthogonal to the image
-///    @return: x coordinate on the image
-/////////////////////////////////////////////////////////////////////////
-
-inline double Geometry ::
-    x_projected (
-        const long p,
-        const long r  ) const
-{
-
-  return (  cells.x[p]*rays.Ix[r]
-          + cells.y[p]*rays.Iy[r]);
-
-}
-
-
-
-
-///  y_projected: y coordinate of the point p on the image in direction r
-///    @param[in] p: number of cell to be projected on the image
-///    @param[in] r: number of the ray orthogonal to the image
-///    @return: y coordinate on the image
-/////////////////////////////////////////////////////////////////////////
-
-inline double Geometry ::
-    y_projected (
-        const long p,
-        const long r  ) const
-{
-
-  return (  cells.x[p]*rays.Jx[r]
-          + cells.y[p]*rays.Jy[r]
-          + cells.z[p]*rays.Jz[r]);
 
 }

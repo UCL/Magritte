@@ -11,6 +11,7 @@
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
 #include "Model/model.hpp"
+#include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 
 
@@ -49,6 +50,10 @@ struct Simulation : public Model
             long  &lnotch,
             vReal &eta,
             vReal &chi         ) const;
+
+  int compute_and_write_image (
+        const Io  &io,
+        const long r          ) const;
 
 
   // In sim_lines.cpp

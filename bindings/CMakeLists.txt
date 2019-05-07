@@ -39,7 +39,8 @@ pybind11_add_module (magritte
   ../src/Model/Thermodynamics/Temperature/temperature.cpp
   ../src/Model/Thermodynamics/Turbulence/turbulence.cpp
   ../src/Functions/heapsort.cpp
-  ../src/Simulation/simulation.cpp)
+  ../src/Simulation/simulation.cpp
+  ../src/Simulation/Image/image.cpp)
 
 
 # pybind11 command to create the python module in bin directory

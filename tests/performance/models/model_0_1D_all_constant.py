@@ -4,17 +4,25 @@
 # # 0) Analytical Model: 1D all constant
 # ---
 
+# In[1]:
+
+
+import os, inspect
+thisFolder     = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+magritteFolder = f'{thisFolder}/../../../'
+
+
 # ## 0) Setup
 # ---
 
 # Add Magritte's `/setup/` and `/bin/` directories to the Python path.
 
-# In[1]:
+# In[2]:
 
 
-from sys import path
-path.insert (0, '../../../setup/')
-path.insert (0, '../../../bin/')
+from sys import path as sysPath
+sysPath.insert (0, f'{magritteFolder}setup/')
+sysPath.insert (0, f'{magritteFolder}bin/')
 
 
 # Import Magritte's Python modules and setup.
@@ -134,7 +142,7 @@ model.chemistry.species.sym       = String1 (['dummy0', 'test', 'H2', 'e-', 'dum
 # In[13]:
 
 
-linedataFolder = 'data/Linedata/test.txt'
+linedataFolder = f'{thisFolder}data/Linedata/test.txt'
 
 
 # Define the linedata.
@@ -172,7 +180,7 @@ from shutil     import rmtree
 # In[17]:
 
 
-modelName = 'model_0_1D_all_constant/'
+modelName = f'{thisFolder}/model_0_1D_all_constant/'
 
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)

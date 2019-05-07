@@ -4,7 +4,7 @@
 // _________________________________________________________________________
 
 
-#include <Eigen/QR>
+//#include <Eigen/QR>
 
 #include "simulation.hpp"
 #include "Tools/debug.hpp"
@@ -228,7 +228,7 @@ int Simulation ::
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
-    const long R  = r - MPI_start (parameters.nrays()/2);
+    const long R = r - MPI_start (parameters.nrays()/2);
 
     cout << "ray = " << r << endl;
 
@@ -236,6 +236,8 @@ int Simulation ::
     {
     OMP_FOR (o, parameters.ncells())
     {
+      //cout << "cell " << o << endl;
+
       const long           ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);
 
@@ -243,6 +245,8 @@ int Simulation ::
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
+
+      //cout << "ndep " << rayPair.ndep << endl;
 
       if (rayPair.ndep > 1)
       {
@@ -316,6 +320,91 @@ int Simulation ::
 
 }
 
+
+
+
+///  compute_image
+//////////////////
+
+int Simulation ::
+    compute_and_write_image (
+        const Io  &io,
+        const long r        ) const
+{
+
+  // Create image object
+  Image image (r, parameters);
+
+  // Raypair along which the trasfer equation is solved
+  RayPair rayPair;
+
+
+  // if the ray is in this MPI process
+  if (   (r >= MPI_start (parameters.nrays()/2))
+      && (r <  MPI_stop  (parameters.nrays()/2)) )
+  {
+    const long R = r - MPI_start (parameters.nrays()/2);
+
+
+#   pragma omp parallel default (shared) private (rayPair)
+    {
+    OMP_FOR (o, parameters.ncells())
+    {
+
+      const long           ar = geometry.rays.antipod[o][r];
+      const double dshift_max = 0.5 * thermodynamics.profile_width (o);
+
+      RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
+      RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
+
+      rayPair.initialize (rayData_ar.size(), rayData_r.size());
+
+
+      if (rayPair.ndep > 1)
+      {
+        for (long f = 0; f < parameters.nfreqs_red(); f++)
+        {
+          // Setup and solve the ray equations
+
+          setup (R, o, f, rayData_ar, rayData_r, rayPair);
+
+          rayPair.solve ();
+
+
+          // Store solution of the radiation field
+
+          image.I_m[o][f] = rayPair.get_I_m ();
+          image.I_p[o][f] = rayPair.get_I_p ();
+        }
+      }
+
+      else
+      {
+        const long b = geometry.boundary.cell2boundary_nr[o];
+
+        for (long f = 0; f < parameters.nfreqs_red(); f++)
+        {
+          image.I_m[o][f] = radiation.I_bdy[b][r][f];
+          image.I_p[o][f] = radiation.I_bdy[b][r][f];
+        }
+      }
+
+
+    } // end of loop over cells
+    }
+
+  }
+
+
+  image.set_coordinates (geometry);
+
+
+  image.write (io);
+
+
+  return (0);
+
+}
 
 
 
