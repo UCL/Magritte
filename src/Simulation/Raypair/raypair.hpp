@@ -8,8 +8,6 @@
 #define __RAYPAIR_HPP_INCLUDED__
 
 
-#include <vector>
-
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Model/model.hpp"
 
@@ -35,6 +33,8 @@ struct RayPair
       vReal1 chi;
       Long1  nrs;
       vReal1 frs;
+
+      long n_off_diag;
 
 
       // inline functions
@@ -94,7 +94,7 @@ struct RayPair
                 std::vector<LineProducingSpecies> &lineProducingSpecies) const;
 
 
-  //private:
+  private:
 
       vReal1 A;       // A coefficient in Feautrier recursion relation
       vReal1 C;       // C coefficient in Feautrier recursion relation
@@ -108,9 +108,6 @@ struct RayPair
       vReal1 Sv;     // effective source for v along the ray
       vReal1 dtau;   // optical depth increment along the ray
 
-
-      const long n_off_diag = 3;
-
       vReal2 L_upper;
       vReal1 L_diag;
       vReal2 L_lower;
@@ -121,6 +118,8 @@ struct RayPair
 
 
 #include "raypair.tpp"
+#include "raypair_solver.tpp"
+#include "raypair_lambda.tpp"
 
 
 #endif // __RAYPAIR_HPP_INCLUDED__

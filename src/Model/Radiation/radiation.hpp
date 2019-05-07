@@ -131,7 +131,6 @@ struct Radiation
       long nrays_red;             ///< reduced number of rays
       long nfreqs_red;             ///< reduced number of frequencies
       long nboundary;             ///< number of boundary cells
-      long n_off_diag;             ///< number of boundary cells
 
   //template <int Dimension, long Nrays>
   //int compute_mean_intensity                      (

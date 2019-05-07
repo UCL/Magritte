@@ -280,10 +280,7 @@ inline void LineProducingSpecies ::
     {
       for (long m = 0; m < lambda[p][k].nr.size(); m++)
       {
-        //std::cout << "already here?");
-        //std::cout << "Ls ", lambda[p][k].Ls[m]);
         const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
-        //std::cout << k, m, v_IJ);
 
 
         // Note: we define our transition matrix as the transpose of R in the paper.
@@ -367,7 +364,7 @@ inline void LineProducingSpecies ::
 
   //OMP_PARALLEL_FOR (p, ncells)
   //{
-  //  
+  //
   //  for (long i = 0; i < linedata.nlev; i++)
   //  {
   //    const long I = index (p, i);

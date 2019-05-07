@@ -224,6 +224,8 @@ int Simulation ::
 
   // Raypair along which the trasfer equation is solved
   RayPair rayPair;
+  rayPair.n_off_diag = parameters.n_off_diag;
+  cout << "Set n_off_diag " << rayPair.n_off_diag << endl;
 
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
@@ -232,12 +234,10 @@ int Simulation ::
 
     cout << "ray = " << r << endl;
 
-#   pragma omp parallel default (shared) private (rayPair)
+#   pragma omp parallel default (shared) firstprivate (rayPair)
     {
     OMP_FOR (o, parameters.ncells())
     {
-      //cout << "cell " << o << endl;
-
       const long           ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);
 
@@ -246,29 +246,23 @@ int Simulation ::
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
-      //cout << "ndep " << rayPair.ndep << endl;
 
       if (rayPair.ndep > 1)
       {
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
           // Setup and solve the ray equations
-
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
-
           rayPair.solve ();
 
 
           // Store solution of the radiation field
-
           const long ind = radiation.index (o,f);
-
           radiation.u[R][ind] = rayPair.get_u_at_origin ();
           radiation.v[R][ind] = rayPair.get_v_at_origin ();
 
 
           // Extract the Lambda operator
-          //std::cout << "Lambda");
           rayPair.update_Lambda (
               radiation.frequencies,
               thermodynamics,
@@ -276,15 +270,6 @@ int Simulation ::
               f,
               geometry.rays.weights[o][r],
               lines.lineProducingSpecies);
-
-          //if (   (parameters.r == r)
-          //    && (parameters.o == o)
-          //    && (parameters.f == f))
-          //{
-          //  return (-1);
-          //}
-
-          //std::cout << "Got through...");
         }
       }
 
@@ -350,7 +335,6 @@ int Simulation ::
     {
     OMP_FOR (o, parameters.ncells())
     {
-
       const long           ar = geometry.rays.antipod[o][r];
       const double dshift_max = 0.5 * thermodynamics.profile_width (o);
 
@@ -365,14 +349,11 @@ int Simulation ::
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
           // Setup and solve the ray equations
-
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
-
           rayPair.solve ();
 
 
           // Store solution of the radiation field
-
           image.I_m[o][f] = rayPair.get_I_m ();
           image.I_p[o][f] = rayPair.get_I_p ();
         }
@@ -388,7 +369,6 @@ int Simulation ::
           image.I_p[o][f] = radiation.I_bdy[b][r][f];
         }
       }
-
 
     } // end of loop over cells
     }
@@ -795,7 +775,7 @@ void Simulation ::
         {
           const long I = lspec.index (lspec.lambda[p][k].nr[m], lspec.linedata.irad[k]);
 
-          lspec.Jeff[p][k] -= HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
+          lspec.Jeff[p][k] -= lspec.population_tot[p] * HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
         }
       }
     }

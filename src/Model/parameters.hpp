@@ -70,6 +70,8 @@ class Parameters
       long o;
       long f;
 
+      long n_off_diag;
+
 
       // Io
       int read (

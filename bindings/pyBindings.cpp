@@ -76,9 +76,10 @@ PYBIND11_MODULE (magritte, module)
   py::class_<Parameters> (module, "Parameters")
       // constructor
       .def (py::init())
-      .def_readwrite ("r",    &Parameters::r)
-      .def_readwrite ("o",    &Parameters::o)
-      .def_readwrite ("f",    &Parameters::o)
+      .def_readwrite ("r",          &Parameters::r)
+      .def_readwrite ("o",          &Parameters::o)
+      .def_readwrite ("f",          &Parameters::o)
+      .def_readwrite ("n_off_diag", &Parameters::n_off_diag)
       // setters
       .def ("set_ncells",     &Parameters::set_ncells    )
       .def ("set_nrays",      &Parameters::set_nrays     )
@@ -383,13 +384,13 @@ PYBIND11_MODULE (magritte, module)
       // attributes
       .def_readonly ("n_ar", &RayPair::n_ar)
       .def_readonly ("n_r",  &RayPair::n_r)
-      .def_readonly ("ndep", &RayPair::ndep)
-      .def_readonly ("chi",  &RayPair::chi)
-      .def_readonly ("Su",   &RayPair::Su)
-      .def_readonly ("Sv",   &RayPair::Sv)
-      .def_readonly ("nrs",  &RayPair::nrs)
-      .def_readonly ("frs",  &RayPair::frs)
-      .def_readonly ("dtau", &RayPair::dtau);
+      .def_readonly ("ndep", &RayPair::ndep);
+      // .def_readonly ("chi",  &RayPair::chi)
+      // .def_readonly ("Su",   &RayPair::Su)
+      // .def_readonly ("Sv",   &RayPair::Sv)
+      // .def_readonly ("nrs",  &RayPair::nrs)
+      // .def_readonly ("frs",  &RayPair::frs)
+      // .def_readonly ("dtau", &RayPair::dtau)
 
       // functions
 
