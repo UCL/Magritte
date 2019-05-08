@@ -60,5 +60,5 @@ inline double Thermodynamics ::
     profile_width (
         const long p) const
 {
-  return sqrt (/*TWO_KB_OVER_MP_C_SQUARED * temperature.gas[p] +*/ turbulence.vturb2[p]);
+  return sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature.gas[p] + turbulence.vturb2[p]);
 }

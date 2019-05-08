@@ -63,6 +63,11 @@ struct Simulation : public Model
   int compute_level_populations (
       const Io &io              );
 
+  int compute_level_populations_opts (
+      const Io   &io,
+      const bool  use_Ng_acceleration,
+      const long  max_niterations     );
+
   //int update_using_statistical_equilibrium (
   //    const long l                         );
 

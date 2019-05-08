@@ -34,7 +34,7 @@ struct RayPair
       Long1  nrs;
       vReal1 frs;
 
-      long n_off_diag;
+      long n_off_diag = 0;
 
 
       // inline functions

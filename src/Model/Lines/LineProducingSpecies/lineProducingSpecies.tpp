@@ -223,6 +223,12 @@ void LineProducingSpecies ::
 
 
 
+///  update_using_statistical_equilibrium: computes level populations by solving
+///  the statistical equilibrium equation taking into account the radiation field
+///    @param[in] abundance: chemical abundances of species in the model
+///    @param[in] temperature: gas temperature in the model
+/////////////////////////////////////////////////////////////////////////////////
+
 inline void LineProducingSpecies ::
     update_using_statistical_equilibrium (
         const Double2 &abundance,
@@ -285,7 +291,6 @@ inline void LineProducingSpecies ::
       {
         const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
 
-
         // Note: we define our transition matrix as the transpose of R in the paper.
 
         const long I = index (lambda[p][k].nr[m], linedata.irad[k]);
@@ -314,6 +319,7 @@ inline void LineProducingSpecies ::
 
       colpar.adjust_abundance_for_ortho_or_para (tmp, abn);
       colpar.interpolate_collision_coefficients (tmp);
+
 
 
       for (long k = 0; k < colpar.ncol; k++)

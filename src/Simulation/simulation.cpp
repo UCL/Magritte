@@ -607,6 +607,9 @@ inline void Simulation ::
 
 
 
+///  compute_LTE_level_populations: sets level populations to LTE values
+////////////////////////////////////////////////////////////////////////
+
 int Simulation ::
     compute_LTE_level_populations ()
 {
@@ -622,25 +625,44 @@ int Simulation ::
 }
 
 
+
+
+///  compute_level_populations: computes level populations self-consistenly with
+///  the radiation field assuming statistical equilibrium
+////////////////////////////////////////////////////////////////////////////////
+
+int Simulation ::
+    compute_level_populations (
+        const Io   &io        )
+{
+
+  const bool use_Ng_acceleration = true;
+  const long max_niterations     = 100;
+
+  compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
+
+  return (0);
+
+}
+
+
 ///  compute_level_populations
 //////////////////////////////
 
 int Simulation ::
-    compute_level_populations (
-        const Io &io          )
+    compute_level_populations_opts (
+        const Io   &io,
+        const bool  use_Ng_acceleration,
+        const long  max_niterations     )
 {
 
-  long l = 0;
-
-  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  // Write out initial level populations
+  for (int l = 0; l < parameters.nlspecs(); l++)
   {
     const string tag = "_iteration_0";
 
-    lspec.write_populations (io, l, tag);
-
-    l++;
+    lines.lineProducingSpecies[l].write_populations (io, l, tag);
   }
-
 
   // Initialize the number of iterations
   int iteration        = 0;
@@ -655,7 +677,7 @@ int Simulation ::
 
 
   // Iterate as long as some levels are not converged
-  while (some_not_converged && (iteration < parameters.max_iter()))
+  while (some_not_converged && (iteration < max_niterations))
   {
 
     iteration++;
@@ -667,7 +689,7 @@ int Simulation ::
     some_not_converged = false;
 
 
-    if (iteration_normal == 4)
+    if (use_Ng_acceleration && (iteration_normal == 4))
     {
       lines.iteration_using_Ng_acceleration (
           parameters.pop_prec()             );
@@ -690,27 +712,23 @@ int Simulation ::
     }
 
 
-    l = 0;
-
-    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+    for (int l = 0; l < parameters.nlspecs(); l++)
     {
-      error_mean.push_back (lspec.relative_change_mean);
-      error_max.push_back  (lspec.relative_change_max);
+      error_mean.push_back (lines.lineProducingSpecies[l].relative_change_mean);
+      error_max.push_back  (lines.lineProducingSpecies[l].relative_change_max);
 
-      if (lspec.fraction_not_converged > 0.005)
+      if (lines.lineProducingSpecies[l].fraction_not_converged > 0.005)
       {
         some_not_converged = true;
       }
 
       cout << "Already ";
-      cout << 100 * (1.0 - lspec.fraction_not_converged);
+      cout << 100 * (1.0 - lines.lineProducingSpecies[l].fraction_not_converged);
       cout << " % converged" << endl;
 
       const string tag = "_iteration_" + std::to_string (iteration);
 
-      lspec.write_populations (io, l, tag);
-
-      l++;
+      lines.lineProducingSpecies[l].write_populations (io, l, tag);
     }
 
 

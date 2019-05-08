@@ -375,7 +375,8 @@ PYBIND11_MODULE (magritte, module)
       .def ("compute_LTE_level_populations",   &Simulation::compute_LTE_level_populations)
       .def ("compute_radiation_field",         &Simulation::compute_radiation_field)
       .def ("compute_and_write_image",         &Simulation::compute_and_write_image)
-      .def ("compute_level_populations",       &Simulation::compute_level_populations);
+      .def ("compute_level_populations",       &Simulation::compute_level_populations)
+      .def ("compute_level_populations_opts",  &Simulation::compute_level_populations_opts);
 
   // RayPair
   py::class_<RayPair> (module, "RayPair")
