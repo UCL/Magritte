@@ -66,6 +66,7 @@ int Model ::
 
   cout << "Writing Model" << endl;
 
+  parameters.write     (io);
 
   geometry.write       (io);
 

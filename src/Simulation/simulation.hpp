@@ -36,6 +36,9 @@ struct Simulation : public Model
 
   int compute_radiation_field ();
 
+  inline double get_dshift_max (
+        const long o           );
+
   inline void setup (
       const long     R,
       const long     origin,
@@ -53,7 +56,7 @@ struct Simulation : public Model
 
   int compute_and_write_image (
         const Io  &io,
-        const long r          ) const;
+        const long r          );
 
 
   // In sim_lines.cpp

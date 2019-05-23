@@ -28,7 +28,6 @@ int Parameters ::
   try {io.read_number (".nlspecs",    dummy); set_nlspecs    (dummy);} catch (...) { }
   try {io.read_number (".nlines",     dummy); set_nlines     (dummy);} catch (...) { }
   try {io.read_number (".nquads",     dummy); set_nquads     (dummy);} catch (...) { }
-  try {io.read_number (".max_iter",   dummy); set_max_iter   (dummy);} catch (...) { }
 
 }
 
@@ -51,7 +50,6 @@ int Parameters ::
   try {io.write_number (".nlspecs",    nlspecs    () );} catch (...) { }
   try {io.write_number (".nlines",     nlines     () );} catch (...) { }
   try {io.write_number (".nquads",     nquads     () );} catch (...) { }
-  try {io.write_number (".max_iter",   max_iter   () );} catch (...) { }
 
 
 }

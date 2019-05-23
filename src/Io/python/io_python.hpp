@@ -36,6 +36,9 @@ struct IoPython : public Io
       int  read_number   (const string fname,       long    &number) const;
       int write_number   (const string fname, const long    &number) const;
 
+      int  read_number   (const string fname,       double  &number) const;
+      int write_number   (const string fname, const double  &number) const;
+
       int  read_word     (const string fname,       string  &word  ) const;
       int write_word     (const string fname, const string  &word  ) const;
 

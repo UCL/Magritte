@@ -28,8 +28,15 @@ option (GRID_SIMD
   "GRID SIMD vectorisation required?"     OFF)
 option (PERF_ANALYSIS
   "Build for performance analysis"        OFF)
-option (PERF_ANALYSIS
-  "Build for performance analysis"        OFF)
+
+
+# Set variable for use in the source code (defined in configure.hpp)
+if (PYTHON_IO)
+  set (MAGRITTE_PYTHON_IO true)
+else (PYTHON_IO)
+  set (MAGRITTE_PYTHON_IO false)
+endif (PYTHON_IO)
+
 
 # Set directory for binaries (and provide a separate one for instrumented binaries for performance testing)
 if (PERF_ANALYSIS)

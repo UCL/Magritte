@@ -70,28 +70,31 @@ struct RayPair
 
       inline double get_L_diag (
           const Thermodynamics &thermodynamics,
+          const double          inverse_mass,
           const double          freq_line,
           const int             lane           ) const;
 
       inline double get_L_lower (
           const Thermodynamics &thermodynamics,
+          const double          inverse_mass,
           const double          freq_line,
           const int             lane,
           const long            m              ) const;
 
       inline double get_L_upper (
           const Thermodynamics &thermodynamics,
+          const double          inverse_mass,
           const double          freq_line,
           const int             lane,
           const long            m              ) const;
 
       inline void update_Lambda (
-          const Frequencies                       &frequencies,
-          const Thermodynamics                    &thermodynamics,
-          const long                               p,
-          const long                               f,
-          const double                             weight_angular,
-                std::vector<LineProducingSpecies> &lineProducingSpecies) const;
+          const Frequencies    &frequencies,
+          const Thermodynamics &thermodynamics,
+          const long            p,
+          const long            f,
+          const double          weight_angular,
+                Lines          &lines          ) const;
 
 
   private:

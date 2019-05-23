@@ -69,7 +69,7 @@ simulation.read (io)
 
 # Set additional run parameters
 
-# In[10]:
+# In[8]:
 
 
 simulation.parameters.set_max_iter (40)
@@ -79,31 +79,31 @@ simulation.parameters.o = 99999999999999999
 simulation.parameters.f = 99999999999999999
 
 
-# In[11]:
+# In[9]:
 
 
 simulation.compute_spectral_discretisation ()
 
 
-# In[12]:
+# In[10]:
 
 
 simulation.compute_boundary_intensities ()
 
 
-# In[13]:
+# In[11]:
 
 
 simulation.compute_LTE_level_populations ()
 
 
-# In[14]:
+# In[12]:
 
 
 simulation.compute_radiation_field ()
 
 
-# In[15]:
+# In[13]:
 
 
 simulation.write (io)
@@ -112,7 +112,7 @@ simulation.write (io)
 # ## 4) Check the output
 # ---
 
-# In[16]:
+# In[14]:
 
 
 from bokeh.plotting import figure, show, gridplot
@@ -121,7 +121,7 @@ from bokeh.io       import output_notebook
 output_notebook()
 
 
-# In[17]:
+# In[15]:
 
 
 line = 0
@@ -129,13 +129,13 @@ line = 0
 
 # Define helper quantities for the model.
 
-# In[18]:
+# In[16]:
 
 
 ncells = 50
 
 
-# In[19]:
+# In[17]:
 
 
 dens = 1.0E+12   # [m^-3]
@@ -145,7 +145,7 @@ turb = 2.5E+02   # [m/s]
 dx   = 1.0E+04   # [m]
 
 
-# In[20]:
+# In[18]:
 
 
 def color(s):
@@ -157,7 +157,7 @@ def legend(s):
     return f'{s}'
 
 
-# In[21]:
+# In[19]:
 
 
 s_min  = 0
@@ -165,7 +165,7 @@ s_max  = ncells
 s_step = 1
 
 
-# In[22]:
+# In[20]:
 
 
 def rindex (p, f):
@@ -205,7 +205,7 @@ def rindex (p, f):
 #   \tau_{\nu}(\ell) \ = \ \chi_{ij} \phi_{\nu} \ell.
 # \end{equation}
 
-# In[23]:
+# In[35]:
 
 
 import numpy as np
@@ -217,8 +217,6 @@ c     = 2.99792458E+8    # [m/s] speed of light
 kb    = 1.38064852E-23   # [J/K] Boltzmann's constant
 mp    = 1.6726219E-27    # [kg] proton mass
 T_CMB = 2.7254800        # [K] CMB temperature
-vturb = 2.50E+02         # [m/s] turbulent speed
-
 
 pops       = tests.LTEpop (linedata, temp) * abun
 emissivity = tests.lineEmissivity (linedata, pops)
@@ -232,7 +230,7 @@ S    =  source[line]
 chi  = opacity[line]
 L    = dx * (ncells-1)
 nuij = linedata.frequency[line]
-dnu  = nuij * 150.0 / c
+dnu  = nuij / c * np.sqrt(2.0*kb*temp/mp + turb**2)
 
 
 def phi (nu):
@@ -254,7 +252,7 @@ def G (nu, x):
     return   - 0.5 * (B-S) * (np.exp(-tau1) - np.exp(-tau2))
 
 
-# In[24]:
+# In[36]:
 
 
 def relativeError (a,b):
@@ -263,7 +261,7 @@ def relativeError (a,b):
     return 2.0 * np.abs((a-b)/(a+b))
 
 
-# In[25]:
+# In[37]:
 
 
 nr_center =  simulation.parameters.nquads() // 2
@@ -272,7 +270,7 @@ n_wings   = (simulation.parameters.nquads() - 1) // 2
 
 # #### Compare Magritte against analytic model
 
-# In[26]:
+# In[38]:
 
 
 plot_model = figure(title='u analytic and numeric', width=400, height=400, y_axis_type="log")
@@ -298,7 +296,7 @@ plot = gridplot([[plot_model, plot_error]])
 show(plot)
 
 
-# In[27]:
+# In[30]:
 
 
 plot_model = figure(title='v analytic and numeric', width=400, height=400, y_axis_type="log")
@@ -322,24 +320,6 @@ for s in range(s_min, s_max, s_step):
 plot = gridplot([[plot_model, plot_error]])
 
 show(plot)
-
-
-# In[28]:
-
-
-np.pi
-
-
-# In[29]:
-
-
-4.0*np.pi
-
-
-# In[30]:
-
-
-1 / np.sqrt(np.pi)
 
 
 # In[ ]:

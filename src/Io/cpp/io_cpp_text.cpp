@@ -191,6 +191,58 @@ int IoText ::
 
 
 
+///  read_number:
+///  @param[in] file_name: file containing the number
+///  @param[out] number: number to be read
+/////////////////////////////////////////////////////
+
+int IoText ::
+    read_number (
+        const string  file_name,
+              double &number    ) const
+{
+
+  std::ifstream file (io_file + file_name + ".txt");
+
+  file >> number;
+
+  file.close();
+
+
+  return (0);
+
+}
+
+
+
+
+///  write_number:
+///  @param[in] file_name: file containing the number
+///  @param[out] number: number to be written
+/////////////////////////////////////////////////////
+
+int IoText ::
+    write_number (
+        const string  file_name,
+        const double &number    ) const
+{
+
+  std::ofstream file (io_file + file_name + ".txt");
+
+  file << std::scientific << std::setprecision (16);
+
+  file << number;
+
+  file.close();
+
+
+  return (0);
+
+}
+
+
+
+
 ///  read_word:
 ///  @param[in] file_name: file containing the number
 /////////////////////////////////////////////////////

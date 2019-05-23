@@ -91,7 +91,6 @@ PYBIND11_MODULE (magritte, module)
       .def ("set_nlspecs",    &Parameters::set_nlspecs   )
       .def ("set_nlines",     &Parameters::set_nlines    )
       .def ("set_nquads",     &Parameters::set_nquads    )
-      .def ("set_max_iter",   &Parameters::set_max_iter  )
       .def ("set_pop_prec",   &Parameters::set_pop_prec  )
       // getters
       .def ("ncells",         &Parameters::ncells    )
@@ -104,7 +103,6 @@ PYBIND11_MODULE (magritte, module)
       .def ("nlspecs",        &Parameters::nlspecs   )
       .def ("nlines",         &Parameters::nlines    )
       .def ("nquads",         &Parameters::nquads    )
-      .def ("max_iter",       &Parameters::max_iter  )
       .def ("pop_prec",       &Parameters::pop_prec  )
       // functions
       .def ("read",           &Parameters::read      )
@@ -292,25 +290,26 @@ PYBIND11_MODULE (magritte, module)
   // Linedata
   py::class_<Linedata> (module, "Linedata")
       // attributes
-      .def_readwrite ("num",       &Linedata::num)
-      .def_readwrite ("sym",       &Linedata::sym)
-      .def_readwrite ("nlev",      &Linedata::nlev)
-      .def_readwrite ("nrad",      &Linedata::nrad)
-      .def_readwrite ("irad",      &Linedata::irad)
-      .def_readwrite ("jrad",      &Linedata::jrad)
-      .def_readwrite ("energy",    &Linedata::energy)
-      .def_readwrite ("weight",    &Linedata::weight)
-      .def_readwrite ("frequency", &Linedata::frequency)
-      .def_readwrite ("A",         &Linedata::A)
-      .def_readwrite ("Ba",        &Linedata::Ba)
-      .def_readwrite ("Bs",        &Linedata::Bs)
-      .def_readwrite ("ncolpar",   &Linedata::ncolpar)
-      .def_readwrite ("colpar",    &Linedata::colpar)
+      .def_readwrite ("num",          &Linedata::num)
+      .def_readwrite ("sym",          &Linedata::sym)
+      .def_readwrite ("inverse_mass", &Linedata::inverse_mass)
+      .def_readwrite ("nlev",         &Linedata::nlev)
+      .def_readwrite ("nrad",         &Linedata::nrad)
+      .def_readwrite ("irad",         &Linedata::irad)
+      .def_readwrite ("jrad",         &Linedata::jrad)
+      .def_readwrite ("energy",       &Linedata::energy)
+      .def_readwrite ("weight",       &Linedata::weight)
+      .def_readwrite ("frequency",    &Linedata::frequency)
+      .def_readwrite ("A",            &Linedata::A)
+      .def_readwrite ("Ba",           &Linedata::Ba)
+      .def_readwrite ("Bs",           &Linedata::Bs)
+      .def_readwrite ("ncolpar",      &Linedata::ncolpar)
+      .def_readwrite ("colpar",       &Linedata::colpar)
       // constructor
       .def (py::init<>())
       // functions
-      .def ("read",                &Linedata::read)
-      .def ("write",               &Linedata::write);
+      .def ("read",                   &Linedata::read)
+      .def ("write",                  &Linedata::write);
 
 
   // Colpartner

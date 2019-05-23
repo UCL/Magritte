@@ -10,6 +10,7 @@ dir_path = ospath.dirname(ospath.realpath(__file__))
 syspath.insert (0, f'{dir_path}/../bin')
 syspath.insert (0, f'{dir_path}/../setup')
 
+from setup import make_file_structure
 
 import   magritte
 import ioMagritte
@@ -18,7 +19,7 @@ import quadrature
 
 def create_testdata_for_test_lineProducingSpecies ():
     # Define the model name
-    modelName = "testdata/model_test_lineProducingSpecies.hdf5"
+    modelName = "testdata/model_test_lineProducingSpecies/"
     # Create parameter and lineProducingSpecies objects
     parameters           = magritte.Parameters ()
     lineProducingSpecies = magritte.LineProducingSpecies ()
@@ -43,7 +44,8 @@ def create_testdata_for_test_lineProducingSpecies ():
     lineProducingSpecies.quadrature.roots   = magritte.Double1 (quadrature.H_roots   (parameters.nquads()))
     lineProducingSpecies.quadrature.weights = magritte.Double1 (quadrature.H_weights (parameters.nquads()))
     # Write data
-    io = ioMagritte.IoPython ("hdf5", modelName)
+    io = ioMagritte.IoText (modelName)
+    make_file_structure(modelName)
     parameters.write (io)
     lineProducingSpecies.write (io, 0)
 

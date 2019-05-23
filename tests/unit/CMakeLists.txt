@@ -45,12 +45,12 @@ add_library (TestMain
 #  TestMain
 #  PyIo)
 #
-#add_executable (test_lineProducingSpecies.exe
-#  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
-#target_link_libraries (test_lineProducingSpecies.exe
-#  _Magritte
-#  TestMain
-#  PyIo)
+
+add_executable (test_lineProducingSpecies.exe
+  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
+target_link_libraries (test_lineProducingSpecies.exe
+  _Magritte
+  TestMain)
 #
 #add_executable (test_lambda.exe
 #  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)

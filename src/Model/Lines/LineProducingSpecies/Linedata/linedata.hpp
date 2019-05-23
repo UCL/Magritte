@@ -23,6 +23,7 @@ struct Linedata
 
       long   num;                              ///< number of line producing species
       string sym;                              ///< symbol of line producing species
+      double inverse_mass;                     ///< 1/mass of line producing species
 
       long nlev;                               ///< number of levels
       long nrad;                               ///< number of radiative transitions

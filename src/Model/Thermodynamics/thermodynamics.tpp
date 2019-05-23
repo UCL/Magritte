@@ -31,11 +31,13 @@ inline vReal Thermodynamics ::
 
 inline vReal Thermodynamics ::
     profile (
+        const double inverse_mass,
         const long   p,
         const double freq_line,
-        const vReal  freq      ) const
+        const vReal  freq          ) const
 {
-  return profile (profile_width (p, freq_line), freq - (vReal) freq_line);
+  return profile (profile_width (inverse_mass, p, freq_line),
+                  freq - (vReal) freq_line                   );
 }
 
 
@@ -49,16 +51,19 @@ inline vReal Thermodynamics ::
 
 inline double Thermodynamics ::
     profile_width (
+        const double inverse_mass,
         const long   p,
-        const double freq_line) const
+        const double freq_line    ) const
 {
-  return freq_line * profile_width (p);
+  return freq_line * profile_width (inverse_mass, p);
 }
 
 
 inline double Thermodynamics ::
     profile_width (
-        const long p) const
+        const double inverse_mass,
+        const long   p            ) const
 {
-  return sqrt (TWO_KB_OVER_MP_C_SQUARED * temperature.gas[p] + turbulence.vturb2[p]);
+  return sqrt (TWO_KB_OVER_AMU_C_SQUARED * inverse_mass * temperature.gas[p]
+               + turbulence.vturb2[p]);
 }

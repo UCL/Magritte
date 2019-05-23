@@ -5,6 +5,7 @@
 
 
 //#include <Eigen/QR>
+#include <limits>
 
 #include "simulation.hpp"
 #include "Tools/debug.hpp"
@@ -32,10 +33,12 @@ int Simulation ::
     // Add the line frequencies (over the profile)
     for (int l = 0; l < parameters.nlspecs(); l++)
     {
+      const double inverse_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+
       for (int k = 0; k < lines.lineProducingSpecies[l].linedata.nrad; k++)
       {
         const double freqs_line = lines.line[index0];
-        const double width      = freqs_line * thermodynamics.profile_width (p);
+        const double width      = freqs_line * thermodynamics.profile_width (inverse_mass, p);
 
         for (long z = 0; z < parameters.nquads(); z++)
         {
@@ -208,6 +211,34 @@ int Simulation ::
 
 
 
+///  get_dshift_max: the maximum allowed shift is determined by the smallest line
+///    @param[in] o: number of point under consideration
+/////////////////////////////////////////////////////////////////////////////////
+
+inline double Simulation ::
+    get_dshift_max (
+        const long o)
+{
+
+  double dshift_max = std::numeric_limits<double>::max();   // Initialize to "infinity"
+
+  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  {
+    const double inverse_mass   = lspec.linedata.inverse_mass;
+    const double new_dshift_max = 0.5 * thermodynamics.profile_width (inverse_mass, o);
+
+    if (new_dshift_max < dshift_max)
+    {
+      dshift_max = new_dshift_max;
+    }
+  }
+
+  return dshift_max;
+
+}
+
+
+
 ///  compute_radiation_field
 ////////////////////////////
 
@@ -239,7 +270,7 @@ int Simulation ::
     OMP_FOR (o, parameters.ncells())
     {
       const long           ar = geometry.rays.antipod[o][r];
-      const double dshift_max = 0.5 * thermodynamics.profile_width (o);
+      const double dshift_max = get_dshift_max (o);
 
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
@@ -269,7 +300,7 @@ int Simulation ::
               o,
               f,
               geometry.rays.weights[o][r],
-              lines.lineProducingSpecies);
+              lines                       );
         }
       }
 
@@ -314,7 +345,7 @@ int Simulation ::
 int Simulation ::
     compute_and_write_image (
         const Io  &io,
-        const long r        ) const
+        const long r        )
 {
 
   // Create image object
@@ -336,7 +367,7 @@ int Simulation ::
     OMP_FOR (o, parameters.ncells())
     {
       const long           ar = geometry.rays.antipod[o][r];
-      const double dshift_max = 0.5 * thermodynamics.profile_width (o);
+      const double dshift_max = get_dshift_max (o);
 
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
@@ -542,8 +573,11 @@ inline void Simulation ::
 
   // Move notch up to first line to include
 
-  vReal freq_diff = freq_scaled - (vReal) lines.line[lnotch];
-  double    width = lines.line[lnotch] * thermodynamics.profile_width (p);
+  vReal  freq_diff = freq_scaled - (vReal) lines.line[lnotch];
+  long           f = lines.line_index[lnotch];
+  long           l = radiation.frequencies.corresponding_l_for_spec[f];
+  double invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+  double    width = lines.line[lnotch] * thermodynamics.profile_width (invr_mass, p);
 
 
   while ( (firstLane (freq_diff) > upper*width) && (lnotch < parameters.nlines()-1) )
@@ -551,7 +585,10 @@ inline void Simulation ::
     lnotch++;
 
     freq_diff = freq_scaled - (vReal) lines.line[lnotch];
-        width = lines.line[lnotch] * thermodynamics.profile_width (p);
+            f = lines.line_index[lnotch];
+            l = radiation.frequencies.corresponding_l_for_spec[f];
+    invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+        width = lines.line[lnotch] * thermodynamics.profile_width (invr_mass, p);
   }
 
 
@@ -570,36 +607,39 @@ inline void Simulation ::
     lindex++;
 
     freq_diff = freq_scaled - (vReal) lines.line[lindex];
-        width = lines.line[lindex] * thermodynamics.profile_width (p);
+            f = lines.line_index[lnotch];
+            l = radiation.frequencies.corresponding_l_for_spec[f];
+    invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+        width = lines.line[lindex] * thermodynamics.profile_width (invr_mass, p);
   }
 
 
-  // Set minimal opacity to avoid zero optical depth increments (dtau)
+    // Set minimal opacity to avoid zero optical depth increments (dtau)
 
-//# if (GRID_SIMD)
-//
-//    GRID_FOR_ALL_LANES (lane)
-//    {
-//      if (fabs (chi.getlane(lane)) < 1.0E-99)
-//      {
-//        eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
-//        chi.putlane(1.0E-99, lane);
-//
-//        //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
-//      }
-//    }
-//
-//# else
-//
-//    if (fabs (chi) < 1.0E-26)
-//    {
-//      eta = eta / (chi * 1.0E+26);
-//      chi = 1.0E-26;
-//
-//      //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
-//    }
-//
-//# endif
+# if (GRID_SIMD)
+
+    //GRID_FOR_ALL_LANES (lane)
+    //{
+    //  if (fabs (chi.getlane(lane)) < 1.0E-99)
+    //  {
+    //    eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
+    //    chi.putlane(1.0E-99, lane);
+
+    //    //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
+    //  }
+    //}
+
+# else
+
+  //  if (fabs (chi) < 1.0E-22)
+  //  {
+  //    eta = eta / (chi * 1.0E+22);
+  //    chi = 1.0E-22;
+
+      //cout << "WARNING : Opacity reached lower bound (1.0E-22)" << endl;
+  //  }
+
+# endif
 
 
 }
@@ -792,8 +832,7 @@ void Simulation ::
         for (long m = 0; m < lspec.lambda[p][k].nr.size(); m++)
         {
           const long I = lspec.index (lspec.lambda[p][k].nr[m], lspec.linedata.irad[k]);
-
-          //lspec.Jeff[p][k] -= lspec.population_tot[p] * HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
+          
           lspec.Jeff[p][k] -= HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
         }
       }

@@ -30,7 +30,6 @@ class Parameters
       SetOnce <long> nlspecs_;      ///< number of line producing species
       SetOnce <long> nlines_;       ///< number of line transitions
       SetOnce <long> nquads_;       ///< number of frequency quadrature points
-      SetOnce <long> max_iter_;     ///< maximum number of iterations
 
       SetOnce <double> pop_prec_;     ///< required precision for populations
 
@@ -47,7 +46,6 @@ class Parameters
       inline void set_nlspecs    (const long value) {   nlspecs_.set (value);}
       inline void set_nlines     (const long value) {    nlines_.set (value);}
       inline void set_nquads     (const long value) {    nquads_.set (value);}
-      inline void set_max_iter   (const long value) {  max_iter_.set (value);}
 
       inline void set_pop_prec   (const double value) {pop_prec_.set (value);}
 
@@ -61,7 +59,6 @@ class Parameters
       inline long nlspecs    (void) const {return    nlspecs_.get ();}
       inline long nlines     (void) const {return     nlines_.get ();}
       inline long nquads     (void) const {return     nquads_.get ();}
-      inline long max_iter   (void) const {return   max_iter_.get ();}
 
       inline double pop_prec (void) const {return   pop_prec_.get ();}
 

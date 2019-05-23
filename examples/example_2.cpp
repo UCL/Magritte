@@ -47,7 +47,6 @@ int main (int argc, char **argv)
     Simulation simulation;
     simulation.read (io);
 
-    simulation.parameters.set_max_iter (100);
     simulation.parameters.set_pop_prec (1.0E-6);
 
 

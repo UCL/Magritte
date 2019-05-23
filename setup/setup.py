@@ -28,7 +28,7 @@ from random import randint
 from math   import isclose
 
 RT = 1.0E-5
-# 
+#
 # def get_rays (cells, nr, nrays):
 #     ncells = len(cells.x)
 #     (Rx, Ry, Rz) = rayVectors (dimension=3, nrays=int(80))
@@ -358,7 +358,8 @@ def linedata_from_LAMDA_file (fileName, species):
     # Read radiative data
     ld.sym    = rd.readColumn(start= 1,         nElem=1,       columnNr=0, type='str')[0]
     ld.num    = getSpeciesNumber (species, ld.sym)
-    #ld.mass   = rd.readColumn(start= 3,         nElem=1,       columnNr=0, type='float')[0]
+    mass      = rd.readColumn(start= 3,         nElem=1,       columnNr=0, type='float')[0]
+    ld.inverse_mass = float (1.0 / mass)
     ld.nlev   = rd.readColumn(start= 5,         nElem=1,       columnNr=0, type='int')[0]
     ld.energy = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=1, type='float')
     ld.weight = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=2, type='float')
