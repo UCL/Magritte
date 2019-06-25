@@ -64,6 +64,9 @@ struct RayPair
       inline vReal get_u_at_origin () const;
       inline vReal get_v_at_origin () const;
 
+      inline vReal get_Ip ();
+      inline vReal get_Im ();
+
       inline vReal get_I_p () const;
       inline vReal get_I_m () const;
 
@@ -96,24 +99,28 @@ struct RayPair
           const double          weight_angular,
                 Lines          &lines          ) const;
 
-
-  private:
+      // The following variabled "should" be declared private,
+      // but are here for testing purposes...
 
       vReal1 A;       // A coefficient in Feautrier recursion relation
       vReal1 C;       // C coefficient in Feautrier recursion relation
       vReal1 F;       // helper variable from Rybicki & Hummer (1991)
       vReal1 G;       // helper variable from Rybicki & Hummer (1991)
 
-      vReal1 term1;   // effective source for u along the ray
-      vReal1 term2;   // effective source for v along the ray
-
       vReal1 Su;     // effective source for u along the ray
       vReal1 Sv;     // effective source for v along the ray
       vReal1 dtau;   // optical depth increment along the ray
 
-      vReal2 L_upper;
-      vReal1 L_diag;
-      vReal2 L_lower;
+      vReal2 L_upper;   // upper-half of L matrix
+      vReal1 L_diag;    // diagonal   of L matrix
+      vReal2 L_lower;   // lower-half of L matrix
+
+
+  private:
+
+      vReal1 term1;   // effective source for u along the ray
+      vReal1 term2;   // effective source for v along the ray
+
 
 
 

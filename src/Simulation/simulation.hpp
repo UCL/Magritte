@@ -25,8 +25,6 @@ struct Simulation : public Model
   Double1 error_max;
   Double1 error_mean;
 
-  //RayPair rayPair;
-
   int compute_spectral_discretisation ();
 
 
@@ -71,14 +69,7 @@ struct Simulation : public Model
       const bool  use_Ng_acceleration,
       const long  max_niterations     );
 
-  //int update_using_statistical_equilibrium (
-  //    const long l                         );
-
   void calc_Jeff ();
-
-  //Eigen::MatrixXd get_transition_matrix (
-  //      const long p,
-  //      const long l                    );
 
 
 };

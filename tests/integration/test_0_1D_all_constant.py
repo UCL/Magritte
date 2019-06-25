@@ -205,7 +205,7 @@ def rindex (p, f):
 #   \tau_{\nu}(\ell) \ = \ \chi_{ij} \phi_{\nu} \ell.
 # \end{equation}
 
-# In[35]:
+# In[31]:
 
 
 import numpy as np
@@ -215,8 +215,10 @@ linedata = simulation.lines.lineProducingSpecies[0].linedata
 
 c     = 2.99792458E+8    # [m/s] speed of light
 kb    = 1.38064852E-23   # [J/K] Boltzmann's constant
-mp    = 1.6726219E-27    # [kg] proton mass
+amu   = 1.66053904E-27   # [kg] atomic mass unit
 T_CMB = 2.7254800        # [K] CMB temperature
+
+inverse_mass = linedata.inverse_mass
 
 pops       = tests.LTEpop (linedata, temp) * abun
 emissivity = tests.lineEmissivity (linedata, pops)
@@ -230,7 +232,7 @@ S    =  source[line]
 chi  = opacity[line]
 L    = dx * (ncells-1)
 nuij = linedata.frequency[line]
-dnu  = nuij / c * np.sqrt(2.0*kb*temp/mp + turb**2)
+dnu  = nuij / c * np.sqrt(2.0*kb*temp*inverse_mass + turb**2)
 
 
 def phi (nu):
@@ -252,7 +254,7 @@ def G (nu, x):
     return   - 0.5 * (B-S) * (np.exp(-tau1) - np.exp(-tau2))
 
 
-# In[36]:
+# In[32]:
 
 
 def relativeError (a,b):
@@ -261,7 +263,7 @@ def relativeError (a,b):
     return 2.0 * np.abs((a-b)/(a+b))
 
 
-# In[37]:
+# In[33]:
 
 
 nr_center =  simulation.parameters.nquads() // 2
@@ -270,7 +272,7 @@ n_wings   = (simulation.parameters.nquads() - 1) // 2
 
 # #### Compare Magritte against analytic model
 
-# In[38]:
+# In[34]:
 
 
 plot_model = figure(title='u analytic and numeric', width=400, height=400, y_axis_type="log")
@@ -296,7 +298,7 @@ plot = gridplot([[plot_model, plot_error]])
 show(plot)
 
 
-# In[30]:
+# In[35]:
 
 
 plot_model = figure(title='v analytic and numeric', width=400, height=400, y_axis_type="log")

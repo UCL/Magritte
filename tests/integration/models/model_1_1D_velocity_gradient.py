@@ -39,7 +39,7 @@ from setup    import Setup, linedata_from_LAMDA_file
 
 # Define helper quantities for the model.
 
-# In[3]:
+# In[4]:
 
 
 dimension = 1
@@ -50,7 +50,7 @@ nlspecs   = 1
 nquads    = 39
 
 
-# In[4]:
+# In[5]:
 
 
 dens = 1.0E+12   # [m^-3]
@@ -61,7 +61,7 @@ dx   = 1.0E+04   # [m]
 dv   = 2.0E+01   # [m/s]
 
 
-# In[5]:
+# In[6]:
 
 
 setup = Setup (dimension = dimension)
@@ -69,7 +69,7 @@ setup = Setup (dimension = dimension)
 
 # Create a Magritte model object.
 
-# In[6]:
+# In[7]:
 
 
 model = Model ()
@@ -77,7 +77,7 @@ model = Model ()
 
 # Define model parameters.
 
-# In[7]:
+# In[8]:
 
 
 model.parameters.set_ncells  (ncells)
@@ -89,7 +89,7 @@ model.parameters.set_nquads  (nquads)
 
 # Define geometry. First define cells.
 
-# In[8]:
+# In[9]:
 
 
 model.geometry.cells.x  = Double1 ([i*dx for i in range(ncells)])
@@ -106,7 +106,7 @@ model.geometry.cells = setup.neighborLists (model.geometry.cells)
 
 # Then define the boundary of the geometry.
 
-# In[9]:
+# In[10]:
 
 
 model.geometry.boundary.boundary2cell_nr = Long1 ([0, ncells-1])
@@ -114,7 +114,7 @@ model.geometry.boundary.boundary2cell_nr = Long1 ([0, ncells-1])
 
 # Finally, define the rays for the geometry.
 
-# In[10]:
+# In[11]:
 
 
 model.geometry.rays = setup.rays (nrays=nrays, cells=model.geometry.cells)
@@ -122,7 +122,7 @@ model.geometry.rays = setup.rays (nrays=nrays, cells=model.geometry.cells)
 
 # Define thermodynamics.
 
-# In[11]:
+# In[12]:
 
 
 model.thermodynamics.temperature.gas   = Double1 ([temp for _ in range(ncells)])
@@ -131,7 +131,7 @@ model.thermodynamics.turbulence.vturb2 = Double1 ([turb for _ in range(ncells)])
 
 # Define the chemical species involved.
 
-# In[12]:
+# In[13]:
 
 
 model.chemistry.species.abundance = Double2 ([ Double1 ([0.0, abun, dens, 0.0, 1.0]) for _ in range(ncells)])
@@ -140,7 +140,7 @@ model.chemistry.species.sym       = String1 (['dummy0', 'test', 'H2', 'e-', 'dum
 
 # Define the folder containing the linedata.
 
-# In[13]:
+# In[14]:
 
 
 linedataFolder = f'{thisFolder}/data/Linedata/test.txt'
@@ -148,7 +148,7 @@ linedataFolder = f'{thisFolder}/data/Linedata/test.txt'
 
 # Define the linedata.
 
-# In[14]:
+# In[15]:
 
 
 model.lines.lineProducingSpecies.append (linedata_from_LAMDA_file (linedataFolder, model.chemistry.species))
@@ -156,7 +156,7 @@ model.lines.lineProducingSpecies.append (linedata_from_LAMDA_file (linedataFolde
 
 # Define the quadrature roots and weights.
 
-# In[15]:
+# In[16]:
 
 
 import quadrature
@@ -168,14 +168,14 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # ## 2) Write input file
 # ---
 
-# In[16]:
+# In[17]:
 
 
 from ioMagritte import IoPython
 from os         import remove
 
 
-# In[17]:
+# In[18]:
 
 
 modelName = f'{thisFolder}/model_1_1D_velocity_gradient.hdf5'
@@ -183,19 +183,22 @@ modelName = f'{thisFolder}/model_1_1D_velocity_gradient.hdf5'
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
 
-# In[18]:
+# In[19]:
 
 
 io = IoPython ("hdf5", modelName)
 
 
-# In[19]:
-
-
-remove(modelName)
-
-
 # In[20]:
+
+
+try:
+    remove(modelName)
+except:
+    pass
+
+
+# In[21]:
 
 
 model.write (io)

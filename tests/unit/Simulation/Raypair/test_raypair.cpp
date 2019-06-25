@@ -20,6 +20,8 @@
 #define private public
 
 
+//double derive (double y2, double y1, double dx)
+
 TEST_CASE ("RayPair::solve")
 {
 
@@ -42,6 +44,9 @@ TEST_CASE ("RayPair::solve")
   const vReal  V_scaled = 0.0;
   const double dZ       = 0.1;
 
+  rayPair.I_bdy_0 = 0.0;
+  rayPair.I_bdy_n = 0.0;
+
   for (long d = 0; d < ndep; d++)
   {
     rayPair.set_term1_and_term2 ((d+1)*eta, (d*d)*chi,       U_scaled, V_scaled, d);
@@ -50,6 +55,24 @@ TEST_CASE ("RayPair::solve")
 
 
   rayPair.solve ();
+
+
+   SECTION ("u and v consistency")
+   {
+
+    for (long d = 0; d < ndep-1; d++)
+    {
+
+      cout << rayPair.dtau[d] << endl;
+
+      // Why are they NaN ???
+      cout << rayPair.Su[d] << "\t" << rayPair.Sv[d] << endl;
+
+      //cout << rayPair.Sv[d] << rayPair.Sv[d] + (rayPair.Su[d+1] - rayPair.Su[d]) / rayPair.dtau[d] << endl;
+    }
+
+   }
+
 
   SECTION ("Lambda operator")
   {
@@ -178,7 +201,7 @@ TEST_CASE ("RayPair::get_L_diag")
     MatrixXd M_inverse = M.inverse();
 
 
-    cout << M_inverse << endl;
+    //cout << M_inverse << endl;
 
 
     SECTION ("L diagonal")

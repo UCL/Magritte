@@ -9,8 +9,10 @@
 #include "Model/Lines/LineProducingSpecies/lineProducingSpecies.hpp"
 
 
-///  initialize:
-///////////////////////////////////////////////////////
+///  initialize: initialize ray pair (by allocating memory)
+///    @param[in] n_ar_local: number of cell on ray ar
+///    @param[in] n_r_local: number of cell on ray r
+////////////////////////////////////////////////////////////
 
 inline void RayPair ::
     initialize (
@@ -62,6 +64,14 @@ inline void RayPair ::
 
 
 
+///  set_term1_and_term2: set Feautrier term 1 and term 2
+///    @param[in] eta: emissivity
+///    @param[in] chi: opacity
+///    @param[in] U_scaled: scattering U in co-moving frame
+///    @param[in] V_scaled: scattering V in co-moving frame
+///    @param[in] n: index on the ray pair
+///////////////////////////////////////////////////////////
+
 inline void RayPair ::
     set_term1_and_term2 (
         const vReal &eta,
@@ -73,8 +83,8 @@ inline void RayPair ::
 
   const vReal inverse_chi = 1.0 / chi;
 
-  term1[n] = (U_scaled*0.0 + eta) * inverse_chi;
-  term2[n] =  V_scaled*0.0        * inverse_chi;
+  term1[n] = (U_scaled + eta) * inverse_chi;
+  term2[n] =  V_scaled        * inverse_chi;
 
 
 }
@@ -82,6 +92,12 @@ inline void RayPair ::
 
 
 
+///  set_dtau: set optical depth increment
+///    @param[in] chi: opacity in thid cell
+///    @param[in] chi_prev: opacity in previous cell
+///    @param[in] dZ: distance increment between this and previous cell
+///    @param[in] n: index on the ray pair
+///////////////////////////////////////////////////////////////////////
 
 inline void RayPair ::
     set_dtau (

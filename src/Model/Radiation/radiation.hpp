@@ -29,8 +29,8 @@ struct Radiation
       Scattering  scattering;
 
 
-      vReal2 u;         ///< u intensity              (r, index(p,f))
-      vReal2 v;         ///< v intensity              (r, index(p,f))
+      vReal2 u;         ///< u intensity             (r, index(p,f))
+      vReal2 v;         ///< v intensity             (r, index(p,f))
 
       vReal2 U;         ///< U scattered intensity   (r, index(p,f))
       vReal2 V;         ///< V scattered intensity   (r, index(p,f))
@@ -129,32 +129,11 @@ struct Radiation
       long ncells;                ///< number of cells
       long nrays;                 ///< number of rays
       long nrays_red;             ///< reduced number of rays
-      long nfreqs_red;             ///< reduced number of frequencies
+      long nfreqs_red;            ///< reduced number of frequencies
       long nboundary;             ///< number of boundary cells
 
-  //template <int Dimension, long Nrays>
-  //int compute_mean_intensity                      (
-  //    const CELLS <Dimension, Nrays> &cells,
-  //    const TEMPERATURE              &temperature,
-  //    const FREQUENCIES              &frequencies,
-  //    const LINES                    &lines,
-  //    const SCATTERING               &scattering  );
+      bool use_scattering;        ///< number of boundary cells
 
-  //template <int Dimension, long Nrays>
-  //int compute_images                              (
-  //    const CELLS <Dimension, Nrays> &cells,
-  //    const TEMPERATURE              &temperature,
-  //    const FREQUENCIES              &frequencies,
-  //    const LINES                    &lines,
-  //    const SCATTERING               &scattering  );
-
-  //template <int Dimension, long Nrays>
-  //int compute_mean_intensity_and_images           (
-  //    const CELLS <Dimension, Nrays> &cells,
-  //    const TEMPERATURE              &temperature,
-  //    const FREQUENCIES              &frequencies,
-  //    const LINES                    &lines,
-  //    const SCATTERING               &scattering  );
 
 };
 

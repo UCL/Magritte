@@ -37,6 +37,8 @@ int Radiation ::
   nfreqs_red = parameters.nfreqs_red ();
   nboundary  = parameters.nboundary  ();
 
+  use_scattering = parameters.use_scattering ();
+
 
   nrays_red = MPI_length (nrays/2);
 
@@ -44,25 +46,27 @@ int Radiation ::
   parameters.set_nrays_red (nrays_red);
 
 
-  // Size and initialize u, v, U and V
+  // Size and initialize u, v, I_bdy, U and V
 
   u.resize (nrays_red);
   v.resize (nrays_red);
-
-  U.resize (nrays_red);
-  V.resize (nrays_red);
-
-  I_bdy.resize (nrays_red);
 
   for (long r = 0; r < nrays_red; r++)
   {
     u[r].resize (ncells*nfreqs_red);
     v[r].resize (ncells*nfreqs_red);
+  }
 
-    U[r].resize (ncells*nfreqs_red);
-    V[r].resize (ncells*nfreqs_red);
 
-    I_bdy[r].resize (ncells);
+  J.resize (ncells*nfreqs_red);
+  G.resize (ncells*nfreqs_red);
+
+
+  I_bdy.resize (nrays_red);
+
+  for (long r = 0; r < nrays_red; r++)
+  {
+    I_bdy[r].resize (nboundary);
 
     for (long p = 0; p < nboundary; p++)
     {
@@ -70,8 +74,18 @@ int Radiation ::
     }
   }
 
-  J.resize (ncells*nfreqs_red);
-  G.resize (ncells*nfreqs_red);
+
+  if (use_scattering)
+  {
+    U.resize (nrays_red);
+    V.resize (nrays_red);
+
+    for (long r = 0; r < nrays_red; r++)
+    {
+      U[r].resize (ncells*nfreqs_red);
+      V[r].resize (ncells*nfreqs_red);
+    }
+  }
 
 
   return (0);

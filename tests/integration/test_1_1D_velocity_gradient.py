@@ -9,7 +9,7 @@
 
 # Add Magritte's `/setup/` and `/bin/` directories to the Python path.
 
-# In[1]:
+# In[ ]:
 
 
 from sys import path
@@ -214,13 +214,12 @@ from scipy.special import erf
 
 linedata = simulation.lines.lineProducingSpecies[0].linedata
 
-# Constants
 c     = 2.99792458E+8    # [m/s] speed of light
 kb    = 1.38064852E-23   # [J/K] Boltzmann's constant
-mp    = 1.6726219E-27    # [kg] proton mass
+amu   = 1.66053904E-27   # [kg] atomic mass unit
 T_CMB = 2.7254800        # [K] CMB temperature
-vturb = 0.0E0            # [m/s] turbulent speed
 
+inverse_mass = linedata.inverse_mass
 
 pops       = tests.LTEpop         (linedata, temp) * abun
 emissivity = tests.lineEmissivity (linedata, pops)
@@ -235,7 +234,7 @@ chi  = opacity[line]
 L    = dx * (ncells-1)
 vmax = dv * (ncells-1)
 nuij = linedata.frequency[line]
-dnu  = nuij * 150.0 / c #np.sqrt(2.0*kb*temp/mp + turb**2)
+dnu  = nuij / c * np.sqrt(2.0*kb*temp*inverse_mass + turb**2)
 
 
 def phi (nu):

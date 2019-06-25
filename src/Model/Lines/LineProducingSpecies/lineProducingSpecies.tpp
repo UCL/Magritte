@@ -159,7 +159,7 @@ inline void LineProducingSpecies ::
 
 ///  update_using_Ng_acceleration: perform a Ng accelerated iteration step
 ///    for level populations. All variable names are based on lecture notes
-///    by C.P. Dullemond
+///    by C.P. Dullemond which are based on Olson, Auer and Buchler (1985).
 ///////////////////////////////////////////////////////////////////////////
 
 void LineProducingSpecies ::
@@ -177,7 +177,7 @@ void LineProducingSpecies ::
   //{
   //  if (population (ind) > 0.0)
   //  {
-  //    Wt (ind) = 1.0 / population (ind);
+  //    Wt (ind) = Jlin[p][k];
   //  }
 
   //  else

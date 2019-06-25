@@ -225,9 +225,10 @@ inline double Simulation ::
   for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
     const double inverse_mass   = lspec.linedata.inverse_mass;
-    const double new_dshift_max = 0.5 * thermodynamics.profile_width (inverse_mass, o);
+    const double new_dshift_max = parameters.max_width_fraction
+                                  * thermodynamics.profile_width (inverse_mass, o);
 
-    if (new_dshift_max < dshift_max)
+    if (dshift_max > new_dshift_max)
     {
       dshift_max = new_dshift_max;
     }
@@ -328,7 +329,10 @@ int Simulation ::
 
   radiation.calc_J_and_G (geometry.rays.weights);
 
-  radiation.calc_U_and_V ();
+  if (parameters.use_scattering())
+  {
+    radiation.calc_U_and_V ();
+  }
 
   // "Reduce Lambda's"
 
@@ -362,10 +366,13 @@ int Simulation ::
     const long R = r - MPI_start (parameters.nrays()/2);
 
 
-#   pragma omp parallel default (shared) private (rayPair)
+//#   pragma omp parallel default (shared) private (rayPair)
+//    {
+    //OMP_FOR (o, parameters.ncells())
+//    OMP_FOR (b, parameters.nboundary())
+    for (long o=55000; o<65000; o++)
     {
-    OMP_FOR (o, parameters.ncells())
-    {
+      //const long            o = geometry.boundary.boundary2cell_nr[b];
       const long           ar = geometry.rays.antipod[o][r];
       const double dshift_max = get_dshift_max (o);
 
@@ -375,33 +382,33 @@ int Simulation ::
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
 
-      if (rayPair.ndep > 1)
-      {
+      //if (rayPair.ndep > 1)
+      //{
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
           // Setup and solve the ray equations
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
-          rayPair.solve ();
+          //rayPair.solve ();
 
 
           // Store solution of the radiation field
-          image.I_m[o][f] = rayPair.get_I_m ();
-          image.I_p[o][f] = rayPair.get_I_p ();
+          image.I_m[o][f] = rayPair.get_Im ();
+          image.I_p[o][f] = rayPair.get_Ip ();
         }
-      }
+      //}
 
-      else
-      {
-        const long b = geometry.boundary.cell2boundary_nr[o];
+      //else
+      //{
+      //  const long b = geometry.boundary.cell2boundary_nr[o];
 
-        for (long f = 0; f < parameters.nfreqs_red(); f++)
-        {
-          image.I_m[o][f] = radiation.I_bdy[b][r][f];
-          image.I_p[o][f] = radiation.I_bdy[b][r][f];
-        }
-      }
+      //  for (long f = 0; f < parameters.nfreqs_red(); f++)
+      //  {
+      //    image.I_m[o][f] = radiation.I_bdy[b][r][f];
+      //    image.I_p[o][f] = radiation.I_bdy[b][r][f];
+      //  }
+      //}
 
-    } // end of loop over cells
+//    } // end of loop over cells
     }
 
   }
@@ -442,8 +449,20 @@ inline void Simulation ::
   long        cellNr = origin;
   long         index = rayData_ar.size();
 
-  vReal U_scaled = radiation.get_U (R, origin, f);
-  vReal V_scaled = radiation.get_V (R, origin, f);
+  vReal U_scaled;
+  vReal V_scaled;
+
+  if (parameters.use_scattering())
+  {
+    U_scaled = radiation.get_U (R, origin, f);
+    V_scaled = radiation.get_V (R, origin, f);
+  }
+  else
+  {
+    U_scaled = 0.0;
+    V_scaled = 0.0;
+  }
+
 
   get_eta_and_chi (freq_scaled, cellNr, rayPair.lnotch_at_origin, eta, chi);
 
@@ -467,8 +486,12 @@ inline void Simulation ::
     {
       freq_scaled = data.shift * radiation.frequencies.nu[origin][f];
 
-      radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
-                get_eta_and_chi (freq_scaled,    data.cellNr, data.lnotch, eta,      chi     );
+      if (parameters.use_scattering())
+      {
+        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
+      }
+
+      get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index);
@@ -508,8 +531,12 @@ inline void Simulation ::
     {
       freq_scaled = data.shift * radiation.frequencies.nu[origin][f];
 
-      radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
-                get_eta_and_chi (freq_scaled,    data.cellNr, data.lnotch, eta,      chi     );
+      if (parameters.use_scattering())
+      {
+        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
+      }
+
+      get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index-1);
@@ -564,7 +591,7 @@ inline void Simulation ::
 
   // Reset eta and chi
   eta = 0.0;
-  chi = 1.0E-22;
+  chi = 1.0E-99;
 
 
   const double lower = 1.00001*lines.lineProducingSpecies[0].quadrature.roots[0];
@@ -832,7 +859,7 @@ void Simulation ::
         for (long m = 0; m < lspec.lambda[p][k].nr.size(); m++)
         {
           const long I = lspec.index (lspec.lambda[p][k].nr[m], lspec.linedata.irad[k]);
-          
+
           lspec.Jeff[p][k] -= HH_OVER_FOUR_PI * lspec.lambda[p][k].Ls[m] * lspec.population [I];
         }
       }

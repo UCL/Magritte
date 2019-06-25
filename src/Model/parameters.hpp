@@ -33,6 +33,9 @@ class Parameters
 
       SetOnce <double> pop_prec_;     ///< required precision for populations
 
+      SetOnce <bool>   use_scattering_;        ///< true if scattering is used
+      SetOnce <bool>   use_Ng_acceleration_;   ///< true if Ng accelera
+
 
   public:
 
@@ -49,6 +52,9 @@ class Parameters
 
       inline void set_pop_prec   (const double value) {pop_prec_.set (value);}
 
+      inline void set_use_scattering      (const bool value) {use_scattering_     .set (value);}
+      inline void set_use_Ng_acceleration (const bool value) {use_Ng_acceleration_.set (value);}
+
       inline long ncells     (void) const {return     ncells_.get ();}
       inline long nrays      (void) const {return      nrays_.get ();}
       inline long nrays_red  (void) const {return  nrays_red_.get ();}
@@ -62,12 +68,17 @@ class Parameters
 
       inline double pop_prec (void) const {return   pop_prec_.get ();}
 
+      inline bool use_scattering      (void) const {return use_scattering_     .get ();}
+      inline bool use_Ng_acceleration (void) const {return use_Ng_acceleration_.get ();}
+
 
       long r;
       long o;
       long f;
 
       long n_off_diag = 0;
+
+      double max_width_fraction = 0.5;
 
 
       // Io

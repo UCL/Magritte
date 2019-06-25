@@ -177,7 +177,7 @@ from setup      import make_file_structure
 from shutil     import rmtree
 
 
-# In[18]:
+# In[2]:
 
 
 modelName = f'{thisFolder}/model_0_1D_all_constant/'
@@ -191,11 +191,14 @@ modelName = f'{thisFolder}/model_0_1D_all_constant/'
 io = IoText (modelName)
 
 
-# In[20]:
+# In[1]:
 
 
 #remove(modelName)
-rmtree(modelName)
+try:
+    rmtree(modelName)
+except:
+    pass
 
 
 # In[21]:
