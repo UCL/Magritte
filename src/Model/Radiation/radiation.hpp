@@ -29,16 +29,13 @@ struct Radiation
       Scattering  scattering;
 
 
-      vReal2 u;         ///< u intensity              (r, index(p,f))
-      vReal2 v;         ///< v intensity              (r, index(p,f))
+      vReal2 u;         ///< u intensity             (r, index(p,f))
+      vReal2 v;         ///< v intensity             (r, index(p,f))
 
       vReal2 U;         ///< U scattered intensity   (r, index(p,f))
       vReal2 V;         ///< V scattered intensity   (r, index(p,f))
 
       vReal1 J;         ///< (angular) mean intensity (index(p,f))
-      vReal1 G;         ///< (angular) mean intensity (index(p,f))
-
-      //vReal1 J_local;   ///< local approximation to J (index(p,f))
 
       vReal3 I_bdy;     ///< intensity at the boundary (r,b,f)
 
@@ -118,8 +115,9 @@ struct Radiation
               vReal &Ibdy_scaled) const;
 
 
-    int calc_J_and_G (
-        const Double2 weights);
+    int initialize_J ();
+
+    int MPI_reduce_J ();
 
     int calc_U_and_V ();
 
@@ -129,33 +127,11 @@ struct Radiation
       long ncells;                ///< number of cells
       long nrays;                 ///< number of rays
       long nrays_red;             ///< reduced number of rays
-      long nfreqs_red;             ///< reduced number of frequencies
+      long nfreqs_red;            ///< reduced number of frequencies
       long nboundary;             ///< number of boundary cells
-      long n_off_diag;             ///< number of boundary cells
 
-  //template <int Dimension, long Nrays>
-  //int compute_mean_intensity                      (
-  //    const CELLS <Dimension, Nrays> &cells,
-  //    const TEMPERATURE              &temperature,
-  //    const FREQUENCIES              &frequencies,
-  //    const LINES                    &lines,
-  //    const SCATTERING               &scattering  );
+      bool use_scattering;        ///< number of boundary cells
 
-  //template <int Dimension, long Nrays>
-  //int compute_images                              (
-  //    const CELLS <Dimension, Nrays> &cells,
-  //    const TEMPERATURE              &temperature,
-  //    const FREQUENCIES              &frequencies,
-  //    const LINES                    &lines,
-  //    const SCATTERING               &scattering  );
-
-  //template <int Dimension, long Nrays>
-  //int compute_mean_intensity_and_images           (
-  //    const CELLS <Dimension, Nrays> &cells,
-  //    const TEMPERATURE              &temperature,
-  //    const FREQUENCIES              &frequencies,
-  //    const LINES                    &lines,
-  //    const SCATTERING               &scattering  );
 
 };
 

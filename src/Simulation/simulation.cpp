@@ -4,7 +4,8 @@
 // _________________________________________________________________________
 
 
-#include <Eigen/QR>
+//#include <Eigen/QR>
+#include <limits>
 
 #include "simulation.hpp"
 #include "Tools/debug.hpp"
@@ -32,10 +33,12 @@ int Simulation ::
     // Add the line frequencies (over the profile)
     for (int l = 0; l < parameters.nlspecs(); l++)
     {
+      const double inverse_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+
       for (int k = 0; k < lines.lineProducingSpecies[l].linedata.nrad; k++)
       {
         const double freqs_line = lines.line[index0];
-        const double width      = freqs_line * thermodynamics.profile_width (p);
+        const double width      = freqs_line * thermodynamics.profile_width (inverse_mass, p);
 
         for (long z = 0; z < parameters.nquads(); z++)
         {
@@ -208,6 +211,35 @@ int Simulation ::
 
 
 
+///  get_dshift_max: the maximum allowed shift is determined by the smallest line
+///    @param[in] o: number of point under consideration
+/////////////////////////////////////////////////////////////////////////////////
+
+inline double Simulation ::
+    get_dshift_max (
+        const long o)
+{
+
+  double dshift_max = std::numeric_limits<double>::max();   // Initialize to "infinity"
+
+  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  {
+    const double inverse_mass   = lspec.linedata.inverse_mass;
+    const double new_dshift_max = parameters.max_width_fraction
+                                  * thermodynamics.profile_width (inverse_mass, o);
+
+    if (dshift_max > new_dshift_max)
+    {
+      dshift_max = new_dshift_max;
+    }
+  }
+
+  return dshift_max;
+
+}
+
+
+
 ///  compute_radiation_field
 ////////////////////////////
 
@@ -215,72 +247,71 @@ int Simulation ::
     compute_radiation_field ()
 {
 
+  // Initialisations
 
   for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
     lspec.initialize_Lambda ();
   }
 
+  radiation.initialize_J ();
+
 
   // Raypair along which the trasfer equation is solved
   RayPair rayPair;
+  rayPair.n_off_diag = parameters.n_off_diag;
+  cout << "Set n_off_diag " << rayPair.n_off_diag << endl;
 
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
-    const long R  = r - MPI_start (parameters.nrays()/2);
+    const long R = r - MPI_start (parameters.nrays()/2);
 
     cout << "ray = " << r << endl;
 
-#   pragma omp parallel default (shared) private (rayPair)
+#   pragma omp parallel default (shared) firstprivate (rayPair)
     {
-    OMP_PARALLEL_FOR (o, parameters.ncells())
+    OMP_FOR (o, parameters.ncells())
     {
       const long           ar = geometry.rays.antipod[o][r];
-      const double dshift_max = 0.5 * thermodynamics.profile_width (o);
+      const double dshift_max = get_dshift_max (o);
 
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
+
       if (rayPair.ndep > 1)
       {
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
           // Setup and solve the ray equations
-
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
-
           rayPair.solve ();
 
-
-          // Store solution of the radiation field
-
-          const long ind = radiation.index (o,f);
-
-          radiation.u[R][ind] = rayPair.get_u_at_origin ();
-          radiation.v[R][ind] = rayPair.get_v_at_origin ();
-
-
           // Extract the Lambda operator
-          //std::cout << "Lambda");
           rayPair.update_Lambda (
               radiation.frequencies,
               thermodynamics,
               o,
               f,
               geometry.rays.weights[o][r],
-              lines.lineProducingSpecies);
+              lines                       );
 
-          //if (   (parameters.r == r)
-          //    && (parameters.o == o)
-          //    && (parameters.f == f))
-          //{
-          //  return (-1);
-          //}
+          // Store solution of the radiation field
+          const vReal u = rayPair.get_u_at_origin ();
+          const vReal v = rayPair.get_v_at_origin ();
 
-          //std::cout << "Got through...");
+          const long ind = radiation.index (o,f);
+
+          radiation.J[ind] += 2.0 * geometry.rays.weights[o][r] * u;
+
+          if (parameters.use_scattering())
+          {
+            radiation.u[r][ind] = u;
+            radiation.v[r][ind] = v;
+          }
         }
       }
 
@@ -290,10 +321,18 @@ int Simulation ::
 
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
+          const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+          const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+
           const long ind = radiation.index (o,f);
 
-          radiation.u[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
-          radiation.v[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+          radiation.J[ind] += 2.0 * geometry.rays.weights[o][r] * u;
+
+          if (parameters.use_scattering())
+          {
+            radiation.u[r][ind] = u;
+            radiation.v[r][ind] = v;
+          }
         }
       }
 
@@ -304,18 +343,173 @@ int Simulation ::
   } // end of loop over ray pairs
 
 
-  // Reduce results of all MPI processes to get J, J_local, U and V
+  // Reduce results of all MPI processes to get J and Lambda
 
-  radiation.calc_J_and_G (geometry.rays.weights);
+# if (MPI_PARALLEL)
 
-  radiation.calc_U_and_V ();
+    radiation.MPI_reduce_J ();
 
-  // "Reduce Lambda's"
+    // "Reduce Lambda's"
+
+# endif
+
+
+  if (parameters.use_scattering())
+  {
+    radiation.calc_U_and_V ();
+  }
+
 
   return (0);
 
 }
 
+
+
+
+///  compute_and_write_image:
+///    @param[in] io : io object used to write the images
+///    @param[in] r  : number of the ray indicating the direction of the image
+////////////////////////////////////////////////////////////////////////////
+
+int Simulation ::
+    compute_and_write_image (
+        const Io  &io,
+        const long r        )
+{
+
+  cout << "Creating an image along ray " << r << "..." << endl;
+
+  // Create image object
+  Image image (r, parameters);
+
+  // Raypair along which the trasfer equation is solved
+  RayPair rayPair;
+
+
+  // if the ray is in this MPI process
+  if (   (r >= MPI_start (parameters.nrays()/2))
+      && (r <  MPI_stop  (parameters.nrays()/2)) )
+  {
+    const long R = r - MPI_start (parameters.nrays()/2);
+
+
+#   pragma omp parallel default (shared) private (rayPair)
+    {
+    OMP_FOR (c, parameters.ncameras())
+//    OMP_FOR (b, parameters.nboundary())
+//    for (long c = 0; c < parameters.ncameras(); c++)
+    {
+      const long o = geometry.cameras.camera2cell_nr[c];
+
+      cout << "Considering camera: " << c << " at " << o << endl;
+      //const long o = geometry.boundary.boundary2cell_nr[b];
+
+      // Use data of the first boundary cell for the camera cell
+      const long           op = geometry.boundary.boundary2cell_nr[0];
+      const long           ar = geometry.rays.antipod[o][r];
+      const double dshift_max = get_dshift_max (op);
+
+      //cout << " r = " <<  r << endl;
+      //cout << "ar = " << ar << endl;
+      //cout << "Tracing rays..." << endl;
+
+      RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
+      RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
+
+      //cout << "Rays traced" << endl;
+
+
+
+      cout << "dshift_max " << dshift_max << endl;
+
+      //rayData_r[0].shift += rayData_ar[0].shift;
+      //rayData_r[0].dZ    += rayData_ar[0].dZ;
+
+      //// Remove first element (the camera cell)
+      //rayData_ar.erase (rayData_ar.begin());
+
+
+      //cout << "ncameras   " << parameters.ncameras   () << endl;
+      //cout << "nfreqs     " << parameters.nfreqs     () << endl;
+      //cout << "nfreqs_red " << parameters.nfreqs_red () << endl;
+
+      cout << "raysize  r " << rayData_r .size() << endl;
+      cout << "raysize ar " << rayData_ar.size() << endl;
+
+
+      //for (int l=0; l < rayData_ar.size(); l++)
+      //{
+      //  cout << "cells_nr ar " << rayData_ar[l].cellNr << endl;
+      //  cout << "shift    ar " << rayData_ar[l].shift << endl;
+      //  cout << "dZ       ar " << rayData_ar[l].dZ << endl;
+      //}
+
+      //for (int l=0; l < rayData_r.size(); l++)
+      //{
+      //  cout << "cells_nr r " << rayData_r[l].cellNr << endl;
+      //  cout << "shift    r " << rayData_r[l].shift << endl;
+      //  cout << "dZ       r " << rayData_r[l].dZ << endl;
+      //}
+
+      //cout << "Initializing..." << endl;
+
+      rayPair.initialize (rayData_ar.size(), rayData_r.size());
+
+      //cout << "Initialised" << endl;
+
+      //if (rayPair.ndep > 1)
+      //{
+      //cout << "nfreqs    " << parameters.nfreqs    () << endl;
+      //cout << "nfreqsred " << parameters.nfreqs_red() << endl;
+
+        for (long f = 0; f < parameters.nfreqs_red(); f++)
+        {
+        //long f = 0;
+
+
+          //cout << "Setting up..." << endl;
+          // Setup and solve the ray equations
+          setup (R, op, f, rayData_ar, rayData_r, rayPair);
+          //rayPair.solve ();
+          //cout << "Set up" << endl;
+
+
+          // Store solution of the radiation field
+          //cout << "Image m" << endl;
+          image.I_m[c][f] = rayPair.get_Im ();
+          //cout << "Image p" << endl;
+          image.I_p[c][f] = rayPair.get_Ip ();
+          //cout << "Done... for now..." << endl;
+        }
+      //}
+
+      //else
+      //{
+      //  const long b = geometry.boundary.cell2boundary_nr[o];
+
+      //  for (long f = 0; f < parameters.nfreqs_red(); f++)
+      //  {
+      //    image.I_m[o][f] = radiation.I_bdy[b][r][f];
+      //    image.I_p[o][f] = radiation.I_bdy[b][r][f];
+      //  }
+      //}
+
+    } // end of loop over cells
+    }
+
+  }
+
+
+  image.set_coordinates (geometry);
+
+
+  image.write (io);
+
+
+  return (0);
+
+}
 
 
 
@@ -342,8 +536,20 @@ inline void Simulation ::
   long        cellNr = origin;
   long         index = rayData_ar.size();
 
-  vReal U_scaled = radiation.get_U (R, origin, f);
-  vReal V_scaled = radiation.get_V (R, origin, f);
+  vReal U_scaled;
+  vReal V_scaled;
+
+  if (parameters.use_scattering())
+  {
+    U_scaled = radiation.get_U (R, origin, f);
+    V_scaled = radiation.get_V (R, origin, f);
+  }
+  else
+  {
+    U_scaled = 0.0;
+    V_scaled = 0.0;
+  }
+
 
   get_eta_and_chi (freq_scaled, cellNr, rayPair.lnotch_at_origin, eta, chi);
 
@@ -367,8 +573,12 @@ inline void Simulation ::
     {
       freq_scaled = data.shift * radiation.frequencies.nu[origin][f];
 
-      radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
-                get_eta_and_chi (freq_scaled,    data.cellNr, data.lnotch, eta,      chi     );
+      if (parameters.use_scattering())
+      {
+        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch, U_scaled, V_scaled);
+      }
+
+      get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index);
@@ -379,15 +589,28 @@ inline void Simulation ::
 
       chi_prev = chi;
       index--;
+
+      ////cout << "ar chi prev" << chi_o << endl;
     }
+
+    //cout << "Set boundary" << endl;
+    //cout << "cell nr     " << cellNr << endl;
 
     cellNr = rayData_ar.back().cellNr;
      notch = rayData_ar.back().notch;
      bdyNr = geometry.boundary.cell2boundary_nr[cellNr];
 
+     //cout << "bdyNr " << bdyNr << endl;
+     //cout << " R "    << R << endl;
+     //cout << " freq_scaled "    << freq_scaled << endl;
+     //cout << " notch "    << notch << endl;
+
     radiation.rescale_I_bdy (freq_scaled, R, cellNr, bdyNr, notch, rayPair.I_bdy_0);
 
     chi_prev = chi_o;
+
+    //cout << "Boundary set" << endl;
+
   }
 
   else
@@ -402,14 +625,27 @@ inline void Simulation ::
 
   if (rayData_r.size() > 0)
   {
+    //cout << "Setting up r" << endl;
+
     index = rayData_ar.size() + 1;
 
     for (ProjectedCellData data : rayData_r)
     {
+      //cout << "Getting data from r" << endl;
+      //cout << "index = " << index << endl;
+
       freq_scaled = data.shift * radiation.frequencies.nu[origin][f];
 
-      radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
-                get_eta_and_chi (freq_scaled,    data.cellNr, data.lnotch, eta,      chi     );
+      if (parameters.use_scattering())
+      {
+        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch, U_scaled, V_scaled);
+      }
+
+      //cout << "getting eta and chi" << endl;
+
+      get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
+
+      //cout << "settng terms" << endl;
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index-1);
@@ -420,6 +656,8 @@ inline void Simulation ::
 
       chi_prev = chi;
       index++;
+
+      //cout << "r chi prev" << chi_o << endl;
     }
 
     cellNr = rayData_r.back().cellNr;
@@ -464,7 +702,7 @@ inline void Simulation ::
 
   // Reset eta and chi
   eta = 0.0;
-  chi = 1.0E-22;
+  chi = 1.0E-26;
 
 
   const double lower = 1.00001*lines.lineProducingSpecies[0].quadrature.roots[0];
@@ -473,8 +711,11 @@ inline void Simulation ::
 
   // Move notch up to first line to include
 
-  vReal freq_diff = freq_scaled - (vReal) lines.line[lnotch];
-  double    width = lines.line[lnotch] * thermodynamics.profile_width (p);
+  vReal  freq_diff = freq_scaled - (vReal) lines.line[lnotch];
+  long           f = lines.line_index[lnotch];
+  long           l = radiation.frequencies.corresponding_l_for_spec[f];
+  double invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+  double    width = lines.line[lnotch] * thermodynamics.profile_width (invr_mass, p);
 
 
   while ( (firstLane (freq_diff) > upper*width) && (lnotch < parameters.nlines()-1) )
@@ -482,7 +723,10 @@ inline void Simulation ::
     lnotch++;
 
     freq_diff = freq_scaled - (vReal) lines.line[lnotch];
-        width = lines.line[lnotch] * thermodynamics.profile_width (p);
+            f = lines.line_index[lnotch];
+            l = radiation.frequencies.corresponding_l_for_spec[f];
+    invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+        width = lines.line[lnotch] * thermodynamics.profile_width (invr_mass, p);
   }
 
 
@@ -501,42 +745,48 @@ inline void Simulation ::
     lindex++;
 
     freq_diff = freq_scaled - (vReal) lines.line[lindex];
-        width = lines.line[lindex] * thermodynamics.profile_width (p);
+            f = lines.line_index[lnotch];
+            l = radiation.frequencies.corresponding_l_for_spec[f];
+    invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
+        width = lines.line[lindex] * thermodynamics.profile_width (invr_mass, p);
   }
 
 
-  // Set minimal opacity to avoid zero optical depth increments (dtau)
+    // Set minimal opacity to avoid zero optical depth increments (dtau)
 
-//# if (GRID_SIMD)
-//
-//    GRID_FOR_ALL_LANES (lane)
-//    {
-//      if (fabs (chi.getlane(lane)) < 1.0E-99)
-//      {
-//        eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
-//        chi.putlane(1.0E-99, lane);
-//
-//        //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
-//      }
-//    }
-//
-//# else
-//
-//    if (fabs (chi) < 1.0E-26)
-//    {
-//      eta = eta / (chi * 1.0E+26);
-//      chi = 1.0E-26;
-//
-//      //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
-//    }
-//
-//# endif
+# if (GRID_SIMD)
+
+    //GRID_FOR_ALL_LANES (lane)
+    //{
+    //  if (fabs (chi.getlane(lane)) < 1.0E-99)
+    //  {
+    //    eta.putlane((eta / (chi * 1.0E+99)).getlane(lane), lane);
+    //    chi.putlane(1.0E-99, lane);
+
+    //    //cout << "WARNING : Opacity reached lower bound (1.0E-99)" << endl;
+    //  }
+    //}
+
+# else
+
+  //  if (fabs (chi) < 1.0E-22)
+  //  {
+  //    eta = eta / (chi * 1.0E+22);
+  //    chi = 1.0E-22;
+
+      //cout << "WARNING : Opacity reached lower bound (1.0E-22)" << endl;
+  //  }
+
+# endif
 
 
 }
 
 
 
+
+///  compute_LTE_level_populations: sets level populations to LTE values
+////////////////////////////////////////////////////////////////////////
 
 int Simulation ::
     compute_LTE_level_populations ()
@@ -553,25 +803,44 @@ int Simulation ::
 }
 
 
+
+
+///  compute_level_populations: computes level populations self-consistenly with
+///  the radiation field assuming statistical equilibrium
+////////////////////////////////////////////////////////////////////////////////
+
+int Simulation ::
+    compute_level_populations (
+        const Io   &io        )
+{
+
+  const bool use_Ng_acceleration = true;
+  const long max_niterations     = 100;
+
+  compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
+
+  return (0);
+
+}
+
+
 ///  compute_level_populations
 //////////////////////////////
 
 int Simulation ::
-    compute_level_populations (
-        const Io &io          )
+    compute_level_populations_opts (
+        const Io   &io,
+        const bool  use_Ng_acceleration,
+        const long  max_niterations     )
 {
 
-  long l = 0;
-
-  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  // Write out initial level populations
+  for (int l = 0; l < parameters.nlspecs(); l++)
   {
     const string tag = "_iteration_0";
 
-    lspec.write_populations (io, l, tag);
-
-    l++;
+    lines.lineProducingSpecies[l].write_populations (io, l, tag);
   }
-
 
   // Initialize the number of iterations
   int iteration        = 0;
@@ -586,7 +855,7 @@ int Simulation ::
 
 
   // Iterate as long as some levels are not converged
-  while (some_not_converged && (iteration < parameters.max_iter()))
+  while (some_not_converged && (iteration < max_niterations))
   {
 
     iteration++;
@@ -598,7 +867,7 @@ int Simulation ::
     some_not_converged = false;
 
 
-    if (iteration_normal == 4)
+    if (use_Ng_acceleration && (iteration_normal == 4))
     {
       lines.iteration_using_Ng_acceleration (
           parameters.pop_prec()             );
@@ -621,27 +890,23 @@ int Simulation ::
     }
 
 
-    l = 0;
-
-    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+    for (int l = 0; l < parameters.nlspecs(); l++)
     {
-      error_mean.push_back (lspec.relative_change_mean);
-      error_max.push_back  (lspec.relative_change_max);
+      error_mean.push_back (lines.lineProducingSpecies[l].relative_change_mean);
+      error_max.push_back  (lines.lineProducingSpecies[l].relative_change_max);
 
-      if (lspec.fraction_not_converged > 0.005)
+      if (lines.lineProducingSpecies[l].fraction_not_converged > 0.005)
       {
         some_not_converged = true;
       }
 
       cout << "Already ";
-      cout << 100 * (1.0 - lspec.fraction_not_converged);
+      cout << 100 * (1.0 - lines.lineProducingSpecies[l].fraction_not_converged);
       cout << " % converged" << endl;
 
       const string tag = "_iteration_" + std::to_string (iteration);
 
-      lspec.write_populations (io, l, tag);
-
-      l++;
+      lines.lineProducingSpecies[l].write_populations (io, l, tag);
     }
 
 

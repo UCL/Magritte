@@ -5,6 +5,8 @@
 
 
 #include<Eigen/SparseLU>
+//#include<Eigen/SparseCholesky>
+
 #include<Eigen/Core>
 
 #include "Tools/Parallel/wrap_omp.hpp"
@@ -33,7 +35,8 @@ inline double LineProducingSpecies ::
 
   const long ind_i = index (p, linedata.irad[k]);
 
-  return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
+  //return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
+  return HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
 
 }
 
@@ -49,7 +52,9 @@ inline double LineProducingSpecies ::
   const long ind_i = index (p, linedata.irad[k]);
   const long ind_j = index (p, linedata.jrad[k]);
 
-  return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
+  //return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
+  //                          - population(ind_i) * linedata.Bs[k] );
+  return HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
                             - population(ind_i) * linedata.Bs[k] );
 
 }
@@ -88,8 +93,8 @@ inline void LineProducingSpecies ::
     {
       const long ind = index (p, i);
 
-      //population(ind) *= population_tot[p] / partition_function;
-      population(ind) *= 1.0 / partition_function;
+      population(ind) *= population_tot[p] / partition_function;
+      //population(ind) *= 1.0 / partition_function;
     }
   }
 
@@ -114,7 +119,7 @@ inline void LineProducingSpecies ::
 
   OMP_PARALLEL_FOR (p, ncells)
   {
-    const double min_pop = 1.0E-10 ;//* population_tot[p];
+    const double min_pop = 1.0E-10 * population_tot[p];
 
     for (int i = 0; i < linedata.nlev; i++)
     {
@@ -154,7 +159,7 @@ inline void LineProducingSpecies ::
 
 ///  update_using_Ng_acceleration: perform a Ng accelerated iteration step
 ///    for level populations. All variable names are based on lecture notes
-///    by C.P. Dullemond
+///    by C.P. Dullemond which are based on Olson, Auer and Buchler (1985).
 ///////////////////////////////////////////////////////////////////////////
 
 void LineProducingSpecies ::
@@ -172,7 +177,7 @@ void LineProducingSpecies ::
   //{
   //  if (population (ind) > 0.0)
   //  {
-  //    Wt (ind) = 1.0 / population (ind);
+  //    Wt (ind) = Jlin[p][k];
   //  }
 
   //  else
@@ -220,6 +225,12 @@ void LineProducingSpecies ::
 
 
 
+///  update_using_statistical_equilibrium: computes level populations by solving
+///  the statistical equilibrium equation taking into account the radiation field
+///    @param[in] abundance: chemical abundances of species in the model
+///    @param[in] temperature: gas temperature in the model
+/////////////////////////////////////////////////////////////////////////////////
+
 inline void LineProducingSpecies ::
     update_using_statistical_equilibrium (
         const Double2 &abundance,
@@ -243,6 +254,7 @@ inline void LineProducingSpecies ::
 
   triplets.reserve (non_zeros);
 
+  cout << "problem in here?" << endl;
 
   OMP_PARALLEL_FOR (p, ncells)
   {
@@ -264,12 +276,14 @@ inline void LineProducingSpecies ::
       {
         triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
         triplets.push_back (Eigen::Triplet<double> (J, J, -v_JI));
+        //triplets.push_back (Eigen::Triplet<double> (J, J, -v_IJ));
       }
 
       if (linedata.irad[k] != linedata.nlev-1)
       {
         triplets.push_back (Eigen::Triplet<double> (I, J, +v_JI));
         triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
+        //triplets.push_back (Eigen::Triplet<double> (I, I, -v_JI));
       }
     }
 
@@ -280,11 +294,7 @@ inline void LineProducingSpecies ::
     {
       for (long m = 0; m < lambda[p][k].nr.size(); m++)
       {
-        //std::cout << "already here?");
-        //std::cout << "Ls ", lambda[p][k].Ls[m]);
         const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
-        //std::cout << k, m, v_IJ);
-
 
         // Note: we define our transition matrix as the transpose of R in the paper.
 
@@ -315,6 +325,18 @@ inline void LineProducingSpecies ::
       colpar.adjust_abundance_for_ortho_or_para (tmp, abn);
       colpar.interpolate_collision_coefficients (tmp);
 
+      //cout << "Is it here?" << endl;
+      // Moved interpolation for excitation rate here...
+      //for (long k = 0; k < colpar.ncol; k++)
+      //{
+      //  //cout << "k = " << k << endl;
+      //  const long i = colpar.icol[k];
+      //  const long j = colpar.jcol[k];
+
+      //  colpar.Ce_intpld[k] = colpar.Cd_intpld[k] * linedata.weight[i] / linedata.weight[j] * exp ( - HH*linedata.frequency[k] / (KB*tmp) );
+      //}
+      //
+      //cout << "Nope..." << endl;
 
       for (long k = 0; k < colpar.ncol; k++)
       {
@@ -331,12 +353,14 @@ inline void LineProducingSpecies ::
         {
           triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
           triplets.push_back (Eigen::Triplet<double> (J, J, -v_JI));
+          //triplets.push_back (Eigen::Triplet<double> (J, J, -v_IJ));
         }
 
         if (colpar.icol[k] != linedata.nlev-1)
         {
           triplets.push_back (Eigen::Triplet<double> (I, J, +v_JI));
           triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
+          //triplets.push_back (Eigen::Triplet<double> (I, I, -v_JI));
         }
       }
     }
@@ -350,8 +374,8 @@ inline void LineProducingSpecies ::
       triplets.push_back (Eigen::Triplet<double> (I, J, 1.0));
     }
 
-    //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
-    y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
+    y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
 
   }
 
@@ -359,15 +383,21 @@ inline void LineProducingSpecies ::
   RT.setFromTriplets (triplets.begin(), triplets.end());
 
   Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+  //Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+
+  cout << "Magritte RT ---------" << endl;
+  //cout << RT << endl;
+  cout << "---------------------" << endl;
 
   solver.compute (RT);
 
   population = solver.solve (y);
 
+  cout << "Nope..." << endl;
 
   //OMP_PARALLEL_FOR (p, ncells)
   //{
-  //  
+  //
   //  for (long i = 0; i < linedata.nlev; i++)
   //  {
   //    const long I = index (p, i);

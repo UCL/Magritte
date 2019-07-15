@@ -122,6 +122,48 @@ int IoPython ::
 
 
 
+///  read_number:
+///  @param[in] file_name: file containing the number
+///  @param[out] number: number to be read
+/////////////////////////////////////////////////////
+
+int IoPython ::
+    read_number (
+        const string  file_name,
+              double &number    ) const
+{
+
+  int err = read_in_python <double> ("read_number", file_name, number);
+
+
+  return err;
+
+}
+
+
+
+
+///  write_number:
+///  @param[in] file_name: file containing the number
+///  @param[in] number: number to be written
+/////////////////////////////////////////////////////
+
+int IoPython ::
+    write_number (
+        const string  file_name,
+        const double &number    ) const
+{
+
+  int err = write_in_python <double> ("write_number", file_name, number);
+
+
+  return err;
+
+}
+
+
+
+
 ///  read_word:
 ///  @param[in] file_name: file containing the number
 ///  @param[out] word: word to be written

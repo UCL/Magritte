@@ -1,0 +1,84 @@
+\hypertarget{structLines}{}\section{Lines Struct Reference}
+\label{structLines}\index{Lines@{Lines}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{structLines_a49df41a4611ab3504240e9b6714a2d8c}{read}} (const \mbox{\hyperlink{structIo}{Io}} \&io, \mbox{\hyperlink{classParameters}{Parameters}} \&parameters)
+\item 
+int \mbox{\hyperlink{structLines_aa9400de12f5a5674743190766608b268}{write}} (const \mbox{\hyperlink{structIo}{Io}} \&io) const
+\item 
+\mbox{\Hypertarget{structLines_a7cfb0be6ab6f2b0addfea206918b2172}\label{structLines_a7cfb0be6ab6f2b0addfea206918b2172}} 
+int {\bfseries iteration\+\_\+using\+\_\+\+L\+TE} (const Double2 \&abundance, const Double1 \&temperature)
+\item 
+\mbox{\Hypertarget{structLines_afff2e68f179f5c2f03ff36ff93b53e0a}\label{structLines_afff2e68f179f5c2f03ff36ff93b53e0a}} 
+int {\bfseries iteration\+\_\+using\+\_\+statistical\+\_\+equilibrium} (const Double2 \&abundance, const Double1 \&temperature, const double pop\+\_\+prec)
+\item 
+\mbox{\Hypertarget{structLines_a68f4d951b85233d09c5f079e66458190}\label{structLines_a68f4d951b85233d09c5f079e66458190}} 
+int {\bfseries iteration\+\_\+using\+\_\+\+Ng\+\_\+acceleration} (const double pop\+\_\+prec)
+\item 
+\mbox{\Hypertarget{structLines_a13a0899ce002a1f703ba120d300b887b}\label{structLines_a13a0899ce002a1f703ba120d300b887b}} 
+long {\bfseries index} (const long p, const int l, const int k) const
+\item 
+\mbox{\Hypertarget{structLines_ae59044a1cb509d074af2449f64dba80a}\label{structLines_ae59044a1cb509d074af2449f64dba80a}} 
+long {\bfseries index} (const long p, const long \mbox{\hyperlink{structLines_aec3fe598ca48779b70a16219871ec98d}{line\+\_\+index}}) const
+\item 
+\mbox{\Hypertarget{structLines_aaa0b4d40e79b6d3729f190a7d77a36a2}\label{structLines_aaa0b4d40e79b6d3729f190a7d77a36a2}} 
+void {\bfseries set\+\_\+emissivity\+\_\+and\+\_\+opacity} ()
+\item 
+\mbox{\Hypertarget{structLines_a9d524958a8b1fcd3c9e25948ca7d1f5b}\label{structLines_a9d524958a8b1fcd3c9e25948ca7d1f5b}} 
+int \mbox{\hyperlink{structLines_a9d524958a8b1fcd3c9e25948ca7d1f5b}{initialize\+\_\+\+Lambda}} ()
+\begin{DoxyCompactList}\small\item\em initialize\+\_\+\+Lambda\+: clear all entries in the \mbox{\hyperlink{structLambda}{Lambda}} operators \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLines_a5076637cc6088a15e539632de7c2f42c}\label{structLines_a5076637cc6088a15e539632de7c2f42c}} 
+int {\bfseries gather\+\_\+emissivities\+\_\+and\+\_\+opacities} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structLines_a5dbc4f4f8b9bcb91844bafafcb901175}\label{structLines_a5dbc4f4f8b9bcb91844bafafcb901175}} 
+std\+::vector$<$ \mbox{\hyperlink{structLineProducingSpecies}{Line\+Producing\+Species}} $>$ {\bfseries line\+Producing\+Species}
+\item 
+\mbox{\Hypertarget{structLines_a10eac926d9d3e56f65d0a0ad7a40777c}\label{structLines_a10eac926d9d3e56f65d0a0ad7a40777c}} 
+Double1 \mbox{\hyperlink{structLines_a10eac926d9d3e56f65d0a0ad7a40777c}{line}}
+\begin{DoxyCompactList}\small\item\em \mbox{[}Hz\mbox{]} line center frequencies orderd \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLines_aec3fe598ca48779b70a16219871ec98d}\label{structLines_aec3fe598ca48779b70a16219871ec98d}} 
+Long1 \mbox{\hyperlink{structLines_aec3fe598ca48779b70a16219871ec98d}{line\+\_\+index}}
+\begin{DoxyCompactList}\small\item\em index of the corresponding frequency in line \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLines_a9a391401fe052994ec544a06a5ea9934}\label{structLines_a9a391401fe052994ec544a06a5ea9934}} 
+Double1 \mbox{\hyperlink{structLines_a9a391401fe052994ec544a06a5ea9934}{emissivity}}
+\begin{DoxyCompactList}\small\item\em line emissivity (p,l,k) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLines_addf752e735e59bdef808a69cbc4c9dc9}\label{structLines_addf752e735e59bdef808a69cbc4c9dc9}} 
+Double1 \mbox{\hyperlink{structLines_addf752e735e59bdef808a69cbc4c9dc9}{opacity}}
+\begin{DoxyCompactList}\small\item\em line opacity (p,l,k) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structLines_a49df41a4611ab3504240e9b6714a2d8c}\label{structLines_a49df41a4611ab3504240e9b6714a2d8c}} 
+\index{Lines@{Lines}!read@{read}}
+\index{read@{read}!Lines@{Lines}}
+\subsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily int Lines\+::read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io,  }\item[{\mbox{\hyperlink{classParameters}{Parameters}} \&}]{parameters }\end{DoxyParamCaption})}
+
+read\+: read in data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\mbox{\tt in}  & {\em parameters} & model parameters object \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structLines_aa9400de12f5a5674743190766608b268}\label{structLines_aa9400de12f5a5674743190766608b268}} 
+\index{Lines@{Lines}!write@{write}}
+\index{write@{write}!Lines@{Lines}}
+\subsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily int Lines\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io }\end{DoxyParamCaption}) const}
+
+write\+: write out data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Lines/lines.\+hpp\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Lines/lines.\+cpp\end{DoxyCompactItemize}

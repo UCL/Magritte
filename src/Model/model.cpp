@@ -36,6 +36,7 @@ int Model ::
   cout << "Model parameters:"                         << endl;
   cout << "-----------------"                         << endl;
   cout << "ncells     = " << parameters.ncells     () << endl;
+  cout << "ncameras   = " << parameters.ncameras   () << endl;
   cout << "nrays      = " << parameters.nrays      () << endl;
   cout << "nrays_red  = " << parameters.nrays_red  () << endl;
   cout << "nboundary  = " << parameters.nboundary  () << endl;
@@ -66,6 +67,7 @@ int Model ::
 
   cout << "Writing Model" << endl;
 
+  parameters.write     (io);
 
   geometry.write       (io);
 

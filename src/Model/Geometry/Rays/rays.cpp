@@ -15,8 +15,8 @@ const string Rays::prefix = "Geometry/Rays/";
 
 
 ///  read: read the input into the data structure
-///  @paran[in] io: io object
-///  @paran[in] parameters: model parameters object
+///  @param[in] io: io object
+///  @param[in] parameters: model parameters object
 ///////////////////////////////////////////////////
 
 int Rays ::
@@ -47,19 +47,22 @@ int Rays ::
   parameters.set_nrays (nrays);
 
 
-  ncells = parameters.ncells();
+  ncells   = parameters.ncells   ();
+  ncameras = parameters.ncameras ();
+
+  ncells_plus_ncameras = ncells + ncameras;
 
 
   // Resize all containers
 
-  x.resize (ncells);
-  y.resize (ncells);
-  z.resize (ncells);
+  x.resize (ncells_plus_ncameras);
+  y.resize (ncells_plus_ncameras);
+  z.resize (ncells_plus_ncameras);
 
-  weights.resize (ncells);
-  antipod.resize (ncells);
+  weights.resize (ncells_plus_ncameras);
+  antipod.resize (ncells_plus_ncameras);
 
-  for (long p = 0; p < ncells; p++)
+  for (long p = 0; p < ncells_plus_ncameras; p++)
   {
     x[p].resize (nrays);
     y[p].resize (nrays);
@@ -68,16 +71,6 @@ int Rays ::
     weights[p].resize (nrays);
     antipod[p].resize (nrays);
   }
-
-
-  Ix.resize (nrays);
-  Iy.resize (nrays);
-
-  Jx.resize (nrays);
-  Jy.resize (nrays);
-  Jz.resize (nrays);
-
-
 
 
   // Read rays
@@ -104,7 +97,7 @@ int Rays ::
 
 
 ///  write: write out the data structure
-///  @paran[in] io: io object
+///  @param[in] io: io object
 /////////////////////////////////////////////////
 
 int Rays ::
@@ -183,30 +176,6 @@ int Rays ::
 
 
 
-
-///  setup_image_axis: define the axis for the (2D) image frame
-///////////////////////////////////////////////////////////////
-
-int Rays ::
-    setup_image_axis ()
-{
-
-  //for (long r = 0; r < nrays; r++)
-  //{
-  //  double inverse_denominator = 1.0 / sqrt(x[r]*x[r] + y[r]*y[r]);
-
-  //  Ix[r] =  y[r] * inverse_denominator;
-  //  Iy[r] = -x[r] * inverse_denominator;
-
-  //  Jx[r] =  x[r] * z[r] * inverse_denominator;
-  //  Jy[r] =  y[r] * z[r] * inverse_denominator;
-  //  Jz[r] =              - inverse_denominator;
-  //}
-
-
-  return (0);
-
-}
 
 // int Rays ::
 //     setup_mirror_rays ()

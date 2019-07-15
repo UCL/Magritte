@@ -21,8 +21,8 @@ const double INVERSE_SQRT_PI = 0.5641895835478;   // 1/sqrt(pi)
 const double CC    = 2.99792458E+8;    // [m/s] speed of light
 const double HH    = 6.62607004E-34;   // [J*s] Planck's constant
 const double KB    = 1.38064852E-23;   // [J/K] Boltzmann's constant
-const double MP    = 1.6726219E-27;    // [kg] proton mass
-const double T_CMB = 2.728;//2.7254800;        // [K] CMB temperature
+const double AMU   = 1.66053904E-27;    // [kg] proton mass
+const double T_CMB = 2.7254800;        // [K] CMB temperature
 //const double EV    = 1.60217646E-12;   // one electron Volt in erg
 //const double PC    = 3.08568025E+18;   // one parsec in cm
 //const double AU    = 1.66053878E-24;   // atomic mass unit
@@ -41,7 +41,7 @@ const double V_TURB_OVER_C_ALL_SQUARED = 0.15E3 * 0.15E3 / C_SQUARED;   // (v_tu
 //const double V_TURB_OVER_C_ALL_SQUARED = v_turb * v_turb / C_SQUARED;   // (v_turb / c)^2
 //#endif
 
-const double TWO_KB_OVER_MP_C_SQUARED  = 2.0 * KB / (MP * C_SQUARED);   // 2.0*Kb/Mp*c^2
+const double TWO_KB_OVER_AMU_C_SQUARED  = 2.0 * KB / (AMU * C_SQUARED);   // 2.0*Kb/(AMU*c^2)
 
 const double TWO_HH_OVER_CC_SQUARED = 2.0 * HH / C_SQUARED;
 

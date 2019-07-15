@@ -48,7 +48,6 @@ int CollisionPartner ::
   Ce.resize (ntmp);
   Cd.resize (ntmp);
 
-
   for (long t = 0; t < ntmp; t++)
   {
     Ce[t].resize (ncol);
@@ -57,6 +56,10 @@ int CollisionPartner ::
     io.read_array (prefix_lc+"Ce", Ce);
     io.read_array (prefix_lc+"Cd", Cd);
   }
+
+
+  Ce_intpld.resize (ncol);
+  Cd_intpld.resize (ncol);
 
 
   return (0);

@@ -42,6 +42,7 @@ add_library (_Magritte
   Model/model.cpp
   Model/parameters.cpp
   Model/Geometry/geometry.cpp
+  Model/Geometry/Cameras/cameras.cpp
   Model/Geometry/Cells/cells.cpp
   Model/Geometry/Rays/rays.cpp
   Model/Geometry/Boundary/boundary.cpp
@@ -58,7 +59,8 @@ add_library (_Magritte
   Model/Thermodynamics/Temperature/temperature.cpp
   Model/Thermodynamics/Turbulence/turbulence.cpp
   Functions/heapsort.cpp
-  Simulation/simulation.cpp)
+  Simulation/simulation.cpp
+  Simulation/Image/image.cpp)
 
 
 if (MPI_PARALLEL)

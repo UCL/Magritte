@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 
+#include "configure.hpp"
 #include "Io/io.hpp"
 #include "Io/cpp/io_cpp_text.hpp"
 #include "Io/python/io_python.hpp"

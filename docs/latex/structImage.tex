@@ -1,0 +1,63 @@
+\hypertarget{structImage}{}\section{Image Struct Reference}
+\label{structImage}\index{Image@{Image}}
+
+
+\mbox{\hyperlink{structImage}{Image}}\+: data structure for the images.  
+
+
+
+
+{\ttfamily \#include $<$image.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structImage_a20f4e6ffdb814623fa290d73bb1e797c}\label{structImage_a20f4e6ffdb814623fa290d73bb1e797c}} 
+\mbox{\hyperlink{structImage_a20f4e6ffdb814623fa290d73bb1e797c}{Image}} (const long \mbox{\hyperlink{structImage_a96b20b62cef09709597a8c96559d0fa8}{ray\+\_\+nr}}, const \mbox{\hyperlink{classParameters}{Parameters}} \&parameters)
+\begin{DoxyCompactList}\small\item\em Constructor for \mbox{\hyperlink{structImage}{Image}}. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{structImage_a9b3922e23578e6e8f5f471c327c1b250}{write}} (const \mbox{\hyperlink{structIo}{Io}} \&io) const
+\item 
+\mbox{\Hypertarget{structImage_a9b5b0b4da304a0cebacabedfe9759c3e}\label{structImage_a9b5b0b4da304a0cebacabedfe9759c3e}} 
+int \mbox{\hyperlink{structImage_a9b5b0b4da304a0cebacabedfe9759c3e}{set\+\_\+coordinates}} (const \mbox{\hyperlink{structGeometry}{Geometry}} \&geometry)
+\begin{DoxyCompactList}\small\item\em set\+\_\+axis\+: set axis on which to project image \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structImage_a96b20b62cef09709597a8c96559d0fa8}\label{structImage_a96b20b62cef09709597a8c96559d0fa8}} 
+const long \mbox{\hyperlink{structImage_a96b20b62cef09709597a8c96559d0fa8}{ray\+\_\+nr}}
+\begin{DoxyCompactList}\small\item\em number of the ray to be imaged \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structImage_affa6c57e43fdcde6839437377102a6e7}\label{structImage_affa6c57e43fdcde6839437377102a6e7}} 
+Double1 \mbox{\hyperlink{structImage_affa6c57e43fdcde6839437377102a6e7}{ImX}}
+\begin{DoxyCompactList}\small\item\em x coordinate of point in image \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structImage_a99fe8443aa2bdd1e73421a1be071968c}\label{structImage_a99fe8443aa2bdd1e73421a1be071968c}} 
+Double1 \mbox{\hyperlink{structImage_a99fe8443aa2bdd1e73421a1be071968c}{ImY}}
+\begin{DoxyCompactList}\small\item\em y coordinate of point in image \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structImage_aec73e9c458ec241940402be87de2cd12}\label{structImage_aec73e9c458ec241940402be87de2cd12}} 
+Double2 \mbox{\hyperlink{structImage_aec73e9c458ec241940402be87de2cd12}{I\+\_\+p}}
+\begin{DoxyCompactList}\small\item\em intensity out along ray (index(p,f)) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structImage_a3a4e1e82bb8a5855fe15b3ea49a1a188}\label{structImage_a3a4e1e82bb8a5855fe15b3ea49a1a188}} 
+Double2 \mbox{\hyperlink{structImage_a3a4e1e82bb8a5855fe15b3ea49a1a188}{I\+\_\+m}}
+\begin{DoxyCompactList}\small\item\em intensity out along ray (index(p,f)) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\mbox{\hyperlink{structImage}{Image}}\+: data structure for the images. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structImage_a9b3922e23578e6e8f5f471c327c1b250}\label{structImage_a9b3922e23578e6e8f5f471c327c1b250}} 
+\index{Image@{Image}!write@{write}}
+\index{write@{write}!Image@{Image}}
+\subsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily int Image\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io }\end{DoxyParamCaption}) const}
+
+print\+: write out the images 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Simulation/\+Image/image.\+hpp\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Simulation/\+Image/image.\+cpp\end{DoxyCompactItemize}

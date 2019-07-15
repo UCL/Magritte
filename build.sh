@@ -1,6 +1,10 @@
 #! /bin/bash
 
 
+# Get directory this script is in
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
 if [ "$1" == "clean" ]; then
 
 
@@ -17,13 +21,12 @@ elif [ "$1" == "minimal" ]; then
   mkdir build
   cd build
 
-  cmake                   \
+  cmake $DIR              \
     -DPYTHON_IO=OFF       \
     -DPYTHON_BINDINGS=OFF \
     -DOMP_PARALLEL=OFF    \
     -DMPI_PARALLEL=OFF    \
     -DGRID_SIMD=OFF       \
-    ../
 
   make -j4
 
@@ -32,27 +35,29 @@ elif [ "$1" == "minimal" ]; then
   exit 0
 
 
-elif [ "$1" == "analysis" ]; then
+elif [ "$1" == "performance_audit" ]; then
 
+  SCOREP_FOLDER=$DIR/dependencies/scorep/installed/bin
 
-  echo "Building Magrite with minimal options and score-p analysis"
+  echo "Building Magritte with Score-P instrumentation..."
+  echo "-------------------------------------------------"
   mkdir build
   cd build
 
+  SCOREP_WRAPPER=off                                \
+  cmake                                             \
+    -DPERF_ANALYSIS=ON                              \
+    -DCMAKE_C_COMPILER=$SCOREP_FOLDER/scorep-gcc    \
+    -DCMAKE_CXX_COMPILER=$SCOREP_FOLDER/scorep-g++  \
+    -DOMP_PARALLEL=OFF                              \
+    -DMPI_PARALLEL=OFF                              \
+    -DGRID_SIMD=OFF                                 \
+    $DIR
 
-  SCOREP_WRAPPER=off                              \
-  cmake ../                                       \
-  -DCMAKE_C_COMPILER=/opt/scorep/bin/scorep-gcc   \
-  -DCMAKE_CXX_COMPILER=/opt/scorep/bin/scorep-g++ \
-  -DPYTHON_IO=OFF                                 \
-  -DPYTHON_BINDINGS=OFF                           \
-  -DOMP_PARALLEL=OFF                              \
-  -DMPI_PARALLEL=OFF                              \
-  -DGRID_SIMD=OFF
-
-  make -j4
+  make
 
   cd ..
+  echo "-----"
   echo "Done."
   exit 0
 
@@ -60,29 +65,32 @@ elif [ "$1" == "analysis" ]; then
 else
 
 
-  echo "Building Magrite..."
-  mkdir build
-  cd build
+   echo "Building Magrite..."
+   echo "-------------------"
+   mkdir build
+   cd build
 
-  PYTHON_EXECUTABLE=$(which python)
+   PYTHON_EXECUTABLE=$(which python)
 
-  #CC_FLAG=$(which icc)
-  #CXX_FLAG=$(which icc)
+   #CC_FLAG=$(which icc)
+   #CXX_FLAG=$(which icc)
 
-  #CC=$CC_FLAG CXX=$CXX_FLAG
-  cmake                                             \
-    -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
-    -DPYTHON_IO=ON                                  \
-    -DPYTHON_BINDINGS=ON                            \
-    -DOMP_PARALLEL=OFF                              \
-    -DMPI_PARALLEL=OFF                              \
-    -DGRID_SIMD=OFF                                 \
-    ../
+   #CC=$CC_FLAG CXX=$CXX_FLAG
+   cmake                                             \
+     -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
+     -DPYTHON_IO=ON                                  \
+     -DPYTHON_BINDINGS=ON                            \
+     -DOMP_PARALLEL=ON                               \
+     -DMPI_PARALLEL=OFF                              \
+     -DGRID_SIMD=ON                                  \
+     $DIR
 
-  make #-j4
+   make -j4
 
-  cd ..
-  echo "Done."
+   cd ..
+
+  echo "----"
+  echo "Done"
   exit 0
 
 

@@ -11,6 +11,7 @@
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
 #include "Model/model.hpp"
+#include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 
 
@@ -24,8 +25,6 @@ struct Simulation : public Model
   Double1 error_max;
   Double1 error_mean;
 
-  //RayPair rayPair;
-
   int compute_spectral_discretisation ();
 
 
@@ -34,6 +33,9 @@ struct Simulation : public Model
   int compute_boundary_intensities ();
 
   int compute_radiation_field ();
+
+  inline double get_dshift_max (
+        const long o           );
 
   inline void setup (
       const long     R,
@@ -50,6 +52,10 @@ struct Simulation : public Model
             vReal &eta,
             vReal &chi         ) const;
 
+  int compute_and_write_image (
+        const Io  &io,
+        const long r          );
+
 
   // In sim_lines.cpp
 
@@ -58,14 +64,12 @@ struct Simulation : public Model
   int compute_level_populations (
       const Io &io              );
 
-  //int update_using_statistical_equilibrium (
-  //    const long l                         );
+  int compute_level_populations_opts (
+      const Io   &io,
+      const bool  use_Ng_acceleration,
+      const long  max_niterations     );
 
   void calc_Jeff ();
-
-  //Eigen::MatrixXd get_transition_matrix (
-  //      const long p,
-  //      const long l                    );
 
 
 };

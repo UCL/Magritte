@@ -16,28 +16,28 @@ else
   cd run
 
   # Model file
-  MODEL_FILE=$1
+  MODEL=$1
 
   # Number of processes and threads
-  NUMBER_OF_PROCS=1
-  NUMBER_OF_THRDS=1
+  N_PROCS=1
+  N_THRDS=6
 
   # Flag for shared memory systems
   FLAGS="-env I_MPI_SHM_LMT shm"
 
   # Path to Magritte executable
-  PATH_TO_EXECUTABLE="../bin/examples/example_1.exe"
+  EXECUTABLE="../bin/examples/example_2.exe"
 
   # Set number of threads
-  export OMP_NUM_THREADS=$NUMBER_OF_THRDS
+  export OMP_NUM_THREADS=$N_THRDS
 
-
-  export SCOREP_ENABLE_TRACING=true
+  # Allow Score-P to trace the run
+  #export SCOREP_ENABLE_TRACING=true
 
 
   echo "Running Magritte..."
 
-  mpirun -np $NUMBER_OF_PROCS $FLAGS $PATH_TO_EXECUTABLE $MODEL_FILE
+  mpirun -np $N_PROCS $FLAGS $EXECUTABLE $MODEL
 
   echo "Done."
   exit 0

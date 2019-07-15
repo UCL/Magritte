@@ -26,24 +26,42 @@ option (MPI_PARALLEL
   "MPI parallelisation required?"         OFF)
 option (GRID_SIMD
   "GRID SIMD vectorisation required?"     OFF)
+option (PERF_ANALYSIS
+  "Build for performance analysis"        OFF)
+
+
+# Set variable for use in the source code (defined in configure.hpp)
+if (PYTHON_IO)
+  set (MAGRITTE_PYTHON_IO true)
+else (PYTHON_IO)
+  set (MAGRITTE_PYTHON_IO false)
+endif (PYTHON_IO)
+
+
+# Set directory for binaries (and provide a separate one for instrumented binaries for performance testing)
+if (PERF_ANALYSIS)
+  set (BINARY_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests/performance)
+else (PERF_ANALYSIS)
+  set (BINARY_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+endif (PERF_ANALYSIS)
 
 
 # Write all binary files to the bin directory
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/bin)
+  ${BINARY_DIRECTORY})
 set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/bin)
+  ${BINARY_DIRECTORY})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/bin)
+  ${BINARY_DIRECTORY})
 
 
 # Add compiler and linker flags
 set (CMAKE_C_FLAGS
-  "${CMAKE_C_FLAGS}          -mcmodel=large -std=c++11")
+"${CMAKE_C_FLAGS}          -mcmodel=large -std=c++11")
 set (CMAKE_CXX_FLAGS
-  "${CMAKE_CXX_FLAGS}        -mcmodel=large -std=c++11")
+"${CMAKE_CXX_FLAGS}        -mcmodel=large -std=c++11")
 set (CMAKE_EXE_LINKER_FLAGS
-  "${CMAKE_EXE_LINKER_FLAGS} -mcmodel=large -std=c++11")
+"${CMAKE_EXE_LINKER_FLAGS} -mcmodel=large -std=c++11")
 
 
 # Add OpenMP if required
@@ -69,7 +87,7 @@ endif (OMP_PARALLEL)
 add_subdirectory (src)
 
 # Add directory containing Magritte's tests
-add_subdirectory (tests/unit_tests)
+add_subdirectory (tests/unit)
 
 # Add directory containing Magritte's examples
 add_subdirectory (examples)

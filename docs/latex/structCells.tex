@@ -1,0 +1,81 @@
+\hypertarget{structCells}{}\section{Cells Struct Reference}
+\label{structCells}\index{Cells@{Cells}}
+
+
+C\+E\+L\+LS\+: data structure containing all geometric data.  
+
+
+
+
+{\ttfamily \#include $<$cells.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{structCells_a280e3eca7c52ea570a28d9b1d491f241}{read}} (const \mbox{\hyperlink{structIo}{Io}} \&io, \mbox{\hyperlink{classParameters}{Parameters}} \&parameters)
+\item 
+int \mbox{\hyperlink{structCells_a7dca95accb0521eca543b40beffc7461}{write}} (const \mbox{\hyperlink{structIo}{Io}} \&io) const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structCells_ab8765ffff4b6d4821875252904912af4}\label{structCells_ab8765ffff4b6d4821875252904912af4}} 
+Double1 {\bfseries x}
+\item 
+\mbox{\Hypertarget{structCells_ad36a58579efd1cb28eb0308dd4439660}\label{structCells_ad36a58579efd1cb28eb0308dd4439660}} 
+Double1 {\bfseries y}
+\item 
+\mbox{\Hypertarget{structCells_aba848aff3e5c78cc71dd284b2c30db2c}\label{structCells_aba848aff3e5c78cc71dd284b2c30db2c}} 
+Double1 \mbox{\hyperlink{structCells_aba848aff3e5c78cc71dd284b2c30db2c}{z}}
+\begin{DoxyCompactList}\small\item\em \mbox{[}m\mbox{]} coordinates of cell center \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCells_af0dfa925987e11c540f1d72c62c663b0}\label{structCells_af0dfa925987e11c540f1d72c62c663b0}} 
+Double1 {\bfseries vx}
+\item 
+\mbox{\Hypertarget{structCells_a861e9079fce24b334630c83df38720b7}\label{structCells_a861e9079fce24b334630c83df38720b7}} 
+Double1 {\bfseries vy}
+\item 
+\mbox{\Hypertarget{structCells_a4095bd91644a89f9a1b47ea403f88126}\label{structCells_a4095bd91644a89f9a1b47ea403f88126}} 
+Double1 \mbox{\hyperlink{structCells_a4095bd91644a89f9a1b47ea403f88126}{vz}}
+\begin{DoxyCompactList}\small\item\em \mbox{[}.\mbox{]} components of velocity field (as fraction of C) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCells_a446105841ae435ffe70b74f9e75e65d3}\label{structCells_a446105841ae435ffe70b74f9e75e65d3}} 
+Long1 \mbox{\hyperlink{structCells_a446105841ae435ffe70b74f9e75e65d3}{n\+\_\+neighbors}}
+\begin{DoxyCompactList}\small\item\em number of neighbors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structCells_ae979bf26bc664992f6442e8431735fd5}\label{structCells_ae979bf26bc664992f6442e8431735fd5}} 
+Long2 \mbox{\hyperlink{structCells_ae979bf26bc664992f6442e8431735fd5}{neighbors}}
+\begin{DoxyCompactList}\small\item\em cell numbers of neighors \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+C\+E\+L\+LS\+: data structure containing all geometric data. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structCells_a280e3eca7c52ea570a28d9b1d491f241}\label{structCells_a280e3eca7c52ea570a28d9b1d491f241}} 
+\index{Cells@{Cells}!read@{read}}
+\index{read@{read}!Cells@{Cells}}
+\subsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily int Cells\+::read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io,  }\item[{\mbox{\hyperlink{classParameters}{Parameters}} \&}]{parameters }\end{DoxyParamCaption})}
+
+read\+: read the input into the data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\mbox{\tt in}  & {\em parameters} & model parameters object \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structCells_a7dca95accb0521eca543b40beffc7461}\label{structCells_a7dca95accb0521eca543b40beffc7461}} 
+\index{Cells@{Cells}!write@{write}}
+\index{write@{write}!Cells@{Cells}}
+\subsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily int Cells\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io }\end{DoxyParamCaption}) const}
+
+write\+: write the dat astructure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Geometry/\+Cells/cells.\+hpp\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Geometry/\+Cells/cells.\+cpp\end{DoxyCompactItemize}

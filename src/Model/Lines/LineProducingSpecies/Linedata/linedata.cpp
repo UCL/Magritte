@@ -37,6 +37,8 @@ int Linedata ::
   io.read_number (prefix_l+".num", num);
   io.read_word   (prefix_l+".sym", sym);
 
+  io.read_number (prefix_l+".inverse_mass", inverse_mass);
+
   io.read_number (prefix_l+".nlev", nlev);
   io.read_number (prefix_l+".nrad", nrad);
 
@@ -111,6 +113,8 @@ int Linedata ::
 
   io.write_number (prefix_l+".num", num);
   io.write_word   (prefix_l+".sym", sym);
+
+  io.write_number (prefix_l+".inverse_mass", inverse_mass);
 
   io.write_number (prefix_l+".nlev", nlev);
   io.write_number (prefix_l+".nrad", nrad);

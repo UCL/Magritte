@@ -5,6 +5,7 @@
 
 
 #include "Functions/interpolation.hpp"
+#include "Tools/debug.hpp"
 
 
 inline long Radiation ::
@@ -201,7 +202,14 @@ inline void Radiation ::
 
 {
 
+  //cout << "search notch" << endl;
+
+  //cout << "p = " << p << endl;
+  //cout << "freas len " << frequencies.nu.size() << endl;
+  //cout << "freas len " << frequencies.nu[p].size() << endl;
+
   search_with_notch (frequencies.nu[p], notch, freq_scaled);
+  //cout << "notch = " << notch << endl;
 
   const long f1 = notch;
   const long f2 = notch-1;
@@ -209,10 +217,15 @@ inline void Radiation ::
   const double nu1 = frequencies.nu[p][f1];
   const double nu2 = frequencies.nu[p][f2];
 
+  //cout << "Getting IBDY " << endl;
   const double I_bdy1 = get_I_bdy (R, b, f1);
   const double I_bdy2 = get_I_bdy (R, b, f2);
 
+  //cout << "Upper and lower I " << I_bdy1 << "  " << I_bdy2 << endl;
+
   I_bdy_scaled = interpolate_linear (nu1, I_bdy1, nu2, I_bdy2, freq_scaled);
+
+  //cout << "I scaled = " << I_bdy_scaled << I_bdy2 << endl;
 
 }
 

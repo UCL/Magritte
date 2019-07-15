@@ -15,7 +15,7 @@ const string LineProducingSpecies::prefix = "Lines/LineProducingSpecies_";
 ///  read: read in data structure
 ///    @param[in] io: io object
 ///    @param[in] l: nr of line producing species
-///    @paran[in] parameters: model parameters object
+///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
 int LineProducingSpecies ::

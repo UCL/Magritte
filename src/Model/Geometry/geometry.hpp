@@ -10,6 +10,7 @@
 
 #include "Io/io.hpp"
 #include "Model/parameters.hpp"
+#include "Model/Geometry/Cameras/cameras.hpp"
 #include "Model/Geometry/Cells/cells.hpp"
 #include "Model/Geometry/Rays/rays.hpp"
 #include "Model/Geometry/Boundary/boundary.hpp"
@@ -30,6 +31,8 @@ struct Geometry
 
       Boundary boundary;
 
+      Cameras  cameras;
+
 
       int read (
           const Io         &io,
@@ -45,7 +48,7 @@ struct Geometry
           const long   ray,
           const double dshift_max) const;
 
-      inline void set_data (
+      inline int set_data (
           const long     crt,
           const long     nxt,
           const double   shift_crt,
@@ -65,14 +68,6 @@ struct Geometry
           const long origin,
           const long r,
           const long current      ) const;
-
-      inline double x_projected (
-          const long p,
-          const long r          ) const;
-
-      inline double y_projected (
-          const long p,
-          const long r          ) const;
 
 
 };

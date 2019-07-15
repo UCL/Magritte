@@ -12,8 +12,8 @@ const string Boundary::prefix = "Geometry/Boundary/";
 
 
 ///  read: read the input into the data structure
-///  @paran[in] io: io object
-///  @paran[in] parameters: model parameters object
+///  @param[in] io: io object
+///  @param[in] parameters: model parameters object
 ///////////////////////////////////////////////////
 
 int Boundary ::
@@ -29,7 +29,6 @@ int Boundary ::
 
 
   // Resize boundary
-  boundary2cell_nr.resize (ncells);
   cell2boundary_nr.resize (ncells);
           boundary.resize (ncells);
 
@@ -38,13 +37,15 @@ int Boundary ::
   for (long p = 0; p < ncells; p++)
   {
     cell2boundary_nr[p] = ncells;
-    boundary2cell_nr[p] = ncells;
             boundary[p] = false;
   }
 
 
   // Read boundary list
   io.read_length (prefix+"boundary2cell_nr", nboundary);
+
+  boundary2cell_nr.resize (nboundary);
+
   io.read_list   (prefix+"boundary2cell_nr", boundary2cell_nr);
 
 
@@ -69,8 +70,8 @@ int Boundary ::
 
 
 
-///  write: write the dat astructure
-///  @paran[in] io: io object
+///  write: write the data structure
+///  @param[in] io: io object
 ////////////////////////////////////////////////
 
 int Boundary ::

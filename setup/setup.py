@@ -28,35 +28,35 @@ from random import randint
 from math   import isclose
 
 RT = 1.0E-5
-
-def get_rays (cells, nr, nrays):
-    ncells = len(cells.x)
-    (Rx, Ry, Rz) = rayVectors (dimension=2, nrays=int(80))
-    #while (len(Rx) < 300):
-    #    p = randint (0, ncells-1)
-    #    if (p != nr):
-    #        x = cells.x[p] - cells.x[nr]
-    #        y = cells.y[p] - cells.y[nr]
-    #        z = cells.z[p] - cells.z[nr]
-    #        length = np.sqrt(x**2 + y**2 + z**2)
-    #        x /= length
-    #        y /= length
-    #        z /= length
-    #        already_in_list = False
-    #        for r in range (len(Rx)):
-    #            if (isclose(x, Rx[r], abs_tol=RT) and isclose(y, Ry[r], abs_tol=RT) and isclose(z, Rz[r], abs_tol=RT)):
-    #                already_in_list = True
-    #        if not already_in_list:
-    #            # Add ray
-    #            Rx.append (+x)
-    #            Ry.append (+y)
-    #            Rz.append (+z)
-    #            # Add antipodal
-    #            Rx.append (-x)
-    #            Ry.append (-y)
-    #            Rz.append (-z)
-    return (Rx, Ry, Rz)
-
+#
+# def get_rays (cells, nr, nrays):
+#     ncells = len(cells.x)
+#     (Rx, Ry, Rz) = rayVectors (dimension=3, nrays=int(80))
+#     #while (len(Rx) < 300):
+#     #    p = randint (0, ncells-1)
+#     #    if (p != nr):
+#     #        x = cells.x[p] - cells.x[nr]
+#     #        y = cells.y[p] - cells.y[nr]
+#     #        z = cells.z[p] - cells.z[nr]
+#     #        length = np.sqrt(x**2 + y**2 + z**2)
+#     #        x /= length
+#     #        y /= length
+#     #        z /= length
+#     #        already_in_list = False
+#     #        for r in range (len(Rx)):
+#     #            if (isclose(x, Rx[r], abs_tol=RT) and isclose(y, Ry[r], abs_tol=RT) and isclose(z, Rz[r], abs_tol=RT)):
+#     #                already_in_list = True
+#     #        if not already_in_list:
+#     #            # Add ray
+#     #            Rx.append (+x)
+#     #            Ry.append (+y)
+#     #            Rz.append (+z)
+#     #            # Add antipodal
+#     #            Rx.append (-x)
+#     #            Ry.append (-y)
+#     #            Rz.append (-z)
+#     return (Rx, Ry, Rz)
+#
 
 def get_neighbors(px, py, nr):
     x      =  px[nr]
@@ -129,12 +129,12 @@ class Setup ():
         Setup input for the Rays class.
         """
         # Check lengths
-        ncells = len (cells.x)
-        assert (ncells == len(cells.y))
-        assert (ncells == len(cells.z))
-        assert (ncells == len(cells.vx))
-        assert (ncells == len(cells.vy))
-        assert (ncells == len(cells.vz))
+        ncells_plus_ncameras = len (cells.x)
+        assert (ncells_plus_ncameras == len(cells.y))
+        assert (ncells_plus_ncameras == len(cells.z))
+        assert (ncells_plus_ncameras == len(cells.vx))
+        assert (ncells_plus_ncameras == len(cells.vy))
+        assert (ncells_plus_ncameras == len(cells.vz))
         # Initialise arrays with some uniform rays
         Rx = []
         Ry = []
@@ -142,8 +142,8 @@ class Setup ():
         wt = []
         if (self.dimension == 2):
             # Assign rays to each cell
-            for p in range(ncells):
-                (rx, ry, rz) = get_rays (cells, p, ncells)
+            for p in range(ncells_plus_ncameras):
+                (rx, ry, rz) = get_rays (cells, p, ncells_plus_ncameras)
                 Rx.append (rx)
                 Ry.append (ry)
                 Rz.append (rz)
@@ -201,7 +201,7 @@ class Setup ():
                 #    Rz[p][r] = Rz[p][r] / length
                 #    wt[p][r] = wt[p][r] / sum(wt[p])
         else:
-            for _ in range(ncells):
+            for _ in range(ncells_plus_ncameras):
                 Rx.append (rayVectors (dimension=self.dimension, nrays=nrays)[0])
                 Ry.append (rayVectors (dimension=self.dimension, nrays=nrays)[1])
                 Rz.append (rayVectors (dimension=self.dimension, nrays=nrays)[2])
@@ -209,26 +209,29 @@ class Setup ():
         # Create rays object
         rays = Rays ()
         # Assign ray vectors
-        rays.x       = Double2([Double1(Rx[p]) for p in range(ncells)])
-        rays.y       = Double2([Double1(Ry[p]) for p in range(ncells)])
-        rays.z       = Double2([Double1(Rz[p]) for p in range(ncells)])
-        rays.weights = Double2([Double1(wt[p]) for p in range(ncells)])
+        rays.x       = Double2([Double1(Rx[p]) for p in range(ncells_plus_ncameras)])
+        rays.y       = Double2([Double1(Ry[p]) for p in range(ncells_plus_ncameras)])
+        rays.z       = Double2([Double1(Rz[p]) for p in range(ncells_plus_ncameras)])
+        rays.weights = Double2([Double1(wt[p]) for p in range(ncells_plus_ncameras)])
         # Done
         return rays
 
-    def neighborLists (self, cells):
+    def neighborLists (self, cameras, cells):
         """
         Extract neighbor lists from cell centers assuming Voronoi tesselation
         """
+        ncameras = len(cameras.camera2cell_nr)
         # Check lengths
-        ncells = len (cells.x)
-        assert (ncells == len(cells.y))
-        assert (ncells == len(cells.z))
-        assert (ncells == len(cells.vx))
-        assert (ncells == len(cells.vy))
-        assert (ncells == len(cells.vz))
+        ncells =          len(cells.x)  - ncameras
+        assert (ncells == len(cells.y)  - ncameras)
+        assert (ncells == len(cells.z)  - ncameras)
+        assert (ncells == len(cells.vx) - ncameras)
+        assert (ncells == len(cells.vy) - ncameras)
+        assert (ncells == len(cells.vz) - ncameras)
         # Find neighbors
         if   (self.dimension == 1):
+            # Ignore cameras in 1D as they are not really useful.
+            
             # For the middle points
             cells.neighbors   = Long2 ([Long1 ([p-1, p+1]) for p in range(1,ncells-1)])
             cells.n_neighbors = Long1 ([2                  for p in range(1,ncells-1)])
@@ -238,15 +241,25 @@ class Setup ():
             # For the last point
             cells.neighbors.append   (Long1 ([ncells-2]))
             cells.n_neighbors.append (1)
+
+            max_n_neighbors = max(cells.n_neighbors)
+
+            # Change neighbors into a rectangular array (necessary for hdf5)
+            for p in range(ncells):
+                n_missing_entries = max_n_neighbors - cells.n_neighbors[p]
+                for w in range(n_missing_entries):
+                    cells.neighbors[p].append (0)
+
         elif (self.dimension == 2):
-            points  = [[cells.x[p], cells.y[p]] for p in range(ncells)]
-            # Make a Delaulay triangulation
-            delaunay = Delaunay (points)
-            # Extract Delaunay vertices (= Voronoi neighbors)
-            (indptr, indices) = delaunay.vertex_neighbor_vertices
-            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(ncells)])
-            # Extract the number of neighbors for each point
-            cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
+            raise ValueError ('Dimension = 2 is not supported.')
+            #points  = [[cells.x[p], cells.y[p]] for p in range(ncells)]
+            ## Make a Delaulay triangulation
+            #delaunay = Delaunay (points)
+            ## Extract Delaunay vertices (= Voronoi neighbors)
+            #(indptr, indices) = delaunay.vertex_neighbor_vertices
+            #cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in #range(ncells)])
+            ## Extract the number of neighbors for each point
+            #cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
         elif (self.dimension == 3):
             points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(ncells)]
             # Make a Delaulay triangulation
@@ -256,11 +269,56 @@ class Setup ():
             cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(ncells)])
             # Extract the number of neighbors for each point
             cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
-        # Change neighbors into a rectangular array (necessary for hdf5)
-        for p in range(ncells):
-            n_missing_entries = max(cells.n_neighbors) - cells.n_neighbors[p]
-            for w in range(n_missing_entries):
-                cells.neighbors[p].append (0)
+
+            if (ncameras!=0):
+
+                cells.neighbors = Long2([])
+
+                ### Search neighbors for points that are not cameras
+                points = []
+                for p in range(ncells+ncameras):
+                    if not p in cameras.camera2cell_nr:
+                        points.append([cells.x[p], cells.y[p], cells.z[p]])
+                # Make a Delaulay triangulation
+                delaunay = Delaunay (points)
+                # Extract Delaunay vertices (= Voronoi neighbors)
+                (indptr, indices) = delaunay.vertex_neighbor_vertices
+                for k in range(ncells):
+                    cells.neighbors.append (Long1 (indices[indptr[k]:indptr[k+1]]))
+
+                ### Search neighbors for cameras
+                points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(ncells+ncameras)]
+                # Make a Delaulay triangulation
+                delaunay = Delaunay (points)
+                # Extract Delaunay vertices (= Voronoi neighbors)
+                (indptr, indices) = delaunay.vertex_neighbor_vertices
+                for k in range(ncells,ncells+ncameras):
+                    # Remove cameras as neighbors of cameras
+                    neighbors          = []
+                    possible_neighbors = indices[indptr[k]:indptr[k+1]]
+                    for pn in possible_neighbors:
+                        if not pn in cameras.camera2cell_nr:
+                            neighbors.append(pn)
+                    cells.neighbors.append (Long1 (neighbors))
+
+                assert len(cells.neighbors) == ncells + ncameras
+
+                # Extract the number of neighbors for each point
+                cells.n_neighbors = Long1 ([])
+                for i,nList in enumerate(cells.neighbors):
+                    cells.n_neighbors.append (len (nList))
+
+            print(ncells, ncameras, ncells+ncameras,  len(cells.n_neighbors))
+            assert ncells+ncameras == len(cells.n_neighbors)
+
+            max_n_neighbors = max(cells.n_neighbors)
+
+            # Change neighbors into a rectangular array (necessary for hdf5)
+            for p in range(ncells+ncameras):
+                n_missing_entries = max_n_neighbors - cells.n_neighbors[p]
+                for w in range(n_missing_entries):
+                    cells.neighbors[p].append (0)
+
         # Done
         return cells
 
@@ -358,7 +416,8 @@ def linedata_from_LAMDA_file (fileName, species):
     # Read radiative data
     ld.sym    = rd.readColumn(start= 1,         nElem=1,       columnNr=0, type='str')[0]
     ld.num    = getSpeciesNumber (species, ld.sym)
-    #ld.mass   = rd.readColumn(start= 3,         nElem=1,       columnNr=0, type='float')[0]
+    mass      = rd.readColumn(start= 3,         nElem=1,       columnNr=0, type='float')[0]
+    ld.inverse_mass = float (1.0 / mass)
     ld.nlev   = rd.readColumn(start= 5,         nElem=1,       columnNr=0, type='int')[0]
     ld.energy = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=1, type='float')
     ld.weight = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=2, type='float')
@@ -444,6 +503,7 @@ def make_file_structure (modelName):
     '''
     mkdir(modelName)
     mkdir(f'{modelName}/Geometry')
+    mkdir(f'{modelName}/Geometry/Cameras')
     mkdir(f'{modelName}/Geometry/Cells')
     mkdir(f'{modelName}/Geometry/Rays')
     mkdir(f'{modelName}/Geometry/Boundary')
@@ -459,3 +519,5 @@ def make_file_structure (modelName):
     mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Quadrature')
     mkdir(f'{modelName}/Radiation')
     mkdir(f'{modelName}/Radiation/Frequencies')
+    mkdir(f'{modelName}/Simulation')
+    mkdir(f'{modelName}/Simulation/Image')

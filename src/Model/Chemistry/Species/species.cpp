@@ -12,8 +12,8 @@ const string Species::prefix = "Chemistry/Species/";
 
 
 ///  read: read the input into the data structure
-///    @paran[in] io: io object
-///    @paran[in] parameters: model parameters object
+///    @param[in] io: io object
+///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
 int Species ::
@@ -73,7 +73,7 @@ int Species ::
 
 
 ///  write: write out the data structure
-///  @paran[in] io: io object
+///  @param[in] io: io object
 /////////////////////////////////////////////////
 
 int Species ::

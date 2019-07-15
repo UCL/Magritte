@@ -1,0 +1,72 @@
+\hypertarget{structRays}{}\section{Rays Struct Reference}
+\label{structRays}\index{Rays@{Rays}}
+
+
+R\+A\+YS\+: data struct containing directional discretization info.  
+
+
+
+
+{\ttfamily \#include $<$rays.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{structRays_af90c503c26516728ffd0d896c169608a}{read}} (const \mbox{\hyperlink{structIo}{Io}} \&io, \mbox{\hyperlink{classParameters}{Parameters}} \&parameters)
+\item 
+int \mbox{\hyperlink{structRays_ad7dea515bc1a0121cc874c58f7a39416}{write}} (const \mbox{\hyperlink{structIo}{Io}} \&io) const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structRays_a1392458487f0346dfcd3508d6b4704cd}\label{structRays_a1392458487f0346dfcd3508d6b4704cd}} 
+Double2 \mbox{\hyperlink{structRays_a1392458487f0346dfcd3508d6b4704cd}{x}}
+\begin{DoxyCompactList}\small\item\em x component of direction vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structRays_aa0326329d8747c3b6f0c7d3b2453af34}\label{structRays_aa0326329d8747c3b6f0c7d3b2453af34}} 
+Double2 \mbox{\hyperlink{structRays_aa0326329d8747c3b6f0c7d3b2453af34}{y}}
+\begin{DoxyCompactList}\small\item\em y component of direction vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structRays_a975eef37042186b4c75bc332bf33151a}\label{structRays_a975eef37042186b4c75bc332bf33151a}} 
+Double2 \mbox{\hyperlink{structRays_a975eef37042186b4c75bc332bf33151a}{z}}
+\begin{DoxyCompactList}\small\item\em z component of direction vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structRays_a5c5fe776caa7523a97d1e41837897aca}\label{structRays_a5c5fe776caa7523a97d1e41837897aca}} 
+Double2 \mbox{\hyperlink{structRays_a5c5fe776caa7523a97d1e41837897aca}{weights}}
+\begin{DoxyCompactList}\small\item\em weights for angular integration \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structRays_aba543b9ec12d6b7dcd4b96d98e4645c2}\label{structRays_aba543b9ec12d6b7dcd4b96d98e4645c2}} 
+Long2 \mbox{\hyperlink{structRays_aba543b9ec12d6b7dcd4b96d98e4645c2}{antipod}}
+\begin{DoxyCompactList}\small\item\em ray number of antipodal ray \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+R\+A\+YS\+: data struct containing directional discretization info. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structRays_af90c503c26516728ffd0d896c169608a}\label{structRays_af90c503c26516728ffd0d896c169608a}} 
+\index{Rays@{Rays}!read@{read}}
+\index{read@{read}!Rays@{Rays}}
+\subsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily int Rays\+::read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io,  }\item[{\mbox{\hyperlink{classParameters}{Parameters}} \&}]{parameters }\end{DoxyParamCaption})}
+
+read\+: read the input into the data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\mbox{\tt in}  & {\em parameters} & model parameters object \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structRays_ad7dea515bc1a0121cc874c58f7a39416}\label{structRays_ad7dea515bc1a0121cc874c58f7a39416}} 
+\index{Rays@{Rays}!write@{write}}
+\index{write@{write}!Rays@{Rays}}
+\subsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily int Rays\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io }\end{DoxyParamCaption}) const}
+
+write\+: write out the data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Geometry/\+Rays/rays.\+hpp\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Geometry/\+Rays/rays.\+cpp\end{DoxyCompactItemize}

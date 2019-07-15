@@ -27,17 +27,6 @@ struct Rays
 
       Double2 weights;   ///< weights for angular integration
 
-      //Double1 xr;         ///< x component of direction vector
-      //Double1 yr;         ///< y component of direction vector
-      //Double1 zr;         ///< z component of direction vector
-
-      Double1 Ix;        ///< x component of horizontal image axis
-      Double1 Iy;        ///< y component of horizontal image axis
-
-      Double1 Jx;        ///< x component of vertical image axis
-      Double1 Jy;        ///< y component of vertical image axis
-      Double1 Jz;        ///< z component of vertical image axis
-
       Long2 antipod;     ///< ray number of antipodal ray
 
 
@@ -52,15 +41,15 @@ struct Rays
 
   private:
 
-      long ncells;
-      long nrays;
+      long ncells;                 ///< number of cells
+      long ncameras;               ///< number of cameras
+      long ncells_plus_ncameras;   ///< number of cells plus number of cameras
+      long nrays;                  ///< number of rays
 
 
       int setup ();
 
       // Helper functions
-      int setup_image_axis ();
-
       int setup_antipodal_rays ();
 
 

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cells',['CELLS',['../structCELLS.html',1,'']]]
+  ['frequencies',['Frequencies',['../structFrequencies.html',1,'']]]
 ];

@@ -18,7 +18,7 @@ const string Frequencies::prefix = "Radiation/Frequencies/";
 
 ///  read: read in the data file
 ///    @param[in] io: io object
-///    @paran[in] parameters: model parameters object
+///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
 int Frequencies ::

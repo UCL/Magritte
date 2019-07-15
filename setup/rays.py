@@ -51,3 +51,26 @@ def rayVectors (dimension, nrays):
         raise ValueError ('dimension shound be 1, 2, or 3.')
     # Done
     return (Rx, Ry, Rz)
+
+
+def imageAxis (Rx, Ry, Rz):
+    # Define help quantity
+    sRx2pRy2 = np.sqrt(Rx**2 + Ry**2)
+    if (sRx2pRy2 > 0.0):
+        # Define unit vector along horizontal image axis
+        Ix =  Ry / sRx2pRy2
+        Iy = -Rx / sRx2pRy2
+        Iz =  0.0
+        # Define unit vector alonng vertical image axis
+        Jx = Rx * Rz / sRx2pRy2
+        Jy = Ry * Rz / sRx2pRy2
+        Jz = -sRx2pRy2
+        # Define image coordinates
+        imageX = np.array([Ix, Iy, 0.])
+        imageY = np.array([Jx, Jy, Jz])
+    else:
+        # Define image coordinates
+        imageX = np.array([1., 0., 0.])
+        imageY = np.array([0., 1., 0.])
+    # Done
+    return (imageX, imageY)
