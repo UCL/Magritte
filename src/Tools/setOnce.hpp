@@ -52,8 +52,10 @@ class SetOnce
         {
           if (value != new_value)
           {
+            std::cout << "!!! ERROR !!!"             << std::endl;
             std::cout << "    value = " <<     value << std::endl;
             std::cout << "new value = " << new_value << std::endl;
+            std::cout << "!!!       !!!"             << std::endl;
 
             throw DoubleSetException ();
           }

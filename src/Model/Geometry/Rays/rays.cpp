@@ -15,8 +15,8 @@ const string Rays::prefix = "Geometry/Rays/";
 
 
 ///  read: read the input into the data structure
-///  @paran[in] io: io object
-///  @paran[in] parameters: model parameters object
+///  @param[in] io: io object
+///  @param[in] parameters: model parameters object
 ///////////////////////////////////////////////////
 
 int Rays ::
@@ -47,19 +47,22 @@ int Rays ::
   parameters.set_nrays (nrays);
 
 
-  ncells = parameters.ncells();
+  ncells   = parameters.ncells   ();
+  ncameras = parameters.ncameras ();
+
+  ncells_plus_ncameras = ncells + ncameras;
 
 
   // Resize all containers
 
-  x.resize (ncells);
-  y.resize (ncells);
-  z.resize (ncells);
+  x.resize (ncells_plus_ncameras);
+  y.resize (ncells_plus_ncameras);
+  z.resize (ncells_plus_ncameras);
 
-  weights.resize (ncells);
-  antipod.resize (ncells);
+  weights.resize (ncells_plus_ncameras);
+  antipod.resize (ncells_plus_ncameras);
 
-  for (long p = 0; p < ncells; p++)
+  for (long p = 0; p < ncells_plus_ncameras; p++)
   {
     x[p].resize (nrays);
     y[p].resize (nrays);
@@ -94,7 +97,7 @@ int Rays ::
 
 
 ///  write: write out the data structure
-///  @paran[in] io: io object
+///  @param[in] io: io object
 /////////////////////////////////////////////////
 
 int Rays ::

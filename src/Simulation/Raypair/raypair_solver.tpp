@@ -253,13 +253,23 @@ inline vReal RayPair ::
 
 {
 
-  vReal tau = 0.0;     // optical depth
-  vReal Im  = Su[0];   // intensity down the ray
+  Su[0] = term1[0]; //- (term2[1] + term2[0] - 2.0*I_bdy_0) / dtau[0];
 
-  for (long n=0; n < ndep-1; n++)
+  for (long n = 1; n < ndep-1; n++)
   {
-    tau += dtau[n];
-    Im  += Su[n+1] * exp(-tau);
+    Su[n] = term1[n];// - 2.0 * (term2[n+1] - term2[n-1]) / (dtau[n] + dtau[n-1]);
+  }
+
+  Su[ndep-1] = term1[ndep-1]; //+ (term2[ndep-1] + term2[ndep-2] + 2.0*I_bdy_n) / dtau[ndep-2];
+
+
+  vReal tau = 0.0;        // optical depth
+  vReal Im  = Su[n_ar];   // intensity down the ray
+
+  for (long n = n_ar+1; n < ndep; n++)
+  {
+    tau += dtau[n-1];
+    Im  +=   Su[n  ] * exp(-tau);
   }
 
   Im += I_bdy_n * exp(-tau);
@@ -280,13 +290,24 @@ inline vReal RayPair ::
 
 {
 
-  vReal tau = 0.0;          // optical depth
-  vReal Ip  = Su[ndep-1];   // intensity down the ray
+  Su[0] = term1[0];// - (term2[1] + term2[0] - 2.0*I_bdy_0) / dtau[0];
 
-  for (long n=ndep-2; n >= 0; n--)
+  for (long n = 1; n < ndep-1; n++)
   {
-    tau += dtau[n];
-    Ip  +=   Su[n] * exp(-tau);
+    Su[n] = term1[n];// - 2.0 * (term2[n+1] - term2[n-1]) / (dtau[n] + dtau[n-1]);
+  }
+
+  Su[ndep-1] = term1[ndep-1]; //+ (term2[ndep-1] + term2[ndep-2] + 2.0*I_bdy_n) / dtau[ndep-2];
+
+
+  vReal tau = 0.0;        // optical depth
+  vReal Ip  = Su[n_ar];   // intensity down the ray
+
+  for (long n = n_ar; n > 0; n--)
+  {
+    tau += dtau[n-1];
+    Ip  +=   Su[n-1] * exp(-tau);
+    //cout << "tau = " << tau << "\t dtau = " << dtau[n-1] << "\t Su =" << Su[n-1] << "\t Ip = " << Ip << endl;
   }
 
   Ip += I_bdy_0 * exp(-tau);

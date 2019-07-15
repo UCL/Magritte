@@ -39,7 +39,9 @@ struct Cells
 
   private:
 
-      long ncells;              ///< number of cells
+      long ncells;                 ///< number of cells
+      long ncameras;               ///< number of cameras
+      long ncells_plus_ncameras;   ///< number of cells plus number of cameras
 
       static const string prefix;
 

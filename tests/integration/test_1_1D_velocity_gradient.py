@@ -9,7 +9,7 @@
 
 # Add Magritte's `/setup/` and `/bin/` directories to the Python path.
 
-# In[ ]:
+# In[1]:
 
 
 from sys import path
@@ -31,14 +31,16 @@ from setup    import Setup, linedata_from_LAMDA_file
 # In[3]:
 
 
-from ioMagritte import IoPython
+#from ioMagritte import IoPython
+from ioMagritte import IoText
 from   magritte import Simulation 
 
 
 # In[4]:
 
 
-modelName = 'models/model_1_1D_velocity_gradient.hdf5'
+#modelName = 'models/model_1_1D_velocity_gradient.hdf5'
+modelName = 'models/model_1_1D_velocity_gradient/'
 
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
@@ -46,7 +48,8 @@ modelName = 'models/model_1_1D_velocity_gradient.hdf5'
 # In[5]:
 
 
-io = IoPython ("hdf5", modelName)
+#io = IoPython ("hdf5", modelName)
+io = IoText (modelName)
 
 
 # In[6]:
@@ -69,11 +72,7 @@ simulation.read (io)
 # In[8]:
 
 
-simulation.parameters.set_max_iter (40)
 simulation.parameters.set_pop_prec (1.0E-8)
-simulation.parameters.r = 99999999999999999
-simulation.parameters.o = 99999999999999999
-simulation.parameters.f = 99999999999999999
 
 
 # In[9]:

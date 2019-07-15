@@ -20,7 +20,7 @@ else
 
   # Number of processes and threads
   N_PROCS=1
-  N_THRDS=1
+  N_THRDS=6
 
   # Flag for shared memory systems
   FLAGS="-env I_MPI_SHM_LMT shm"

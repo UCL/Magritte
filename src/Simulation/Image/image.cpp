@@ -19,23 +19,23 @@ Image ::
 Image (
     const long        ray_nr,
     const Parameters &parameters)
-  : ray_nr (ray_nr)
-  , ncells (parameters.ncells())
-  , nfreqs (parameters.nfreqs())
+  : ray_nr   (ray_nr)
+  , ncameras (parameters.ncameras())
+  , nfreqs   (parameters.nfreqs())
 {
 
   // Size and initialize Ip_out and Im_out
 
-  ImX.resize (ncells);
-  ImY.resize (ncells);
+  ImX.resize (ncameras);
+  ImY.resize (ncameras);
 
-  I_p.resize (ncells);
-  I_m.resize (ncells);
+  I_p.resize (ncameras);
+  I_m.resize (ncameras);
 
-  for (long p = 0; p < ncells; p++)
+  for (long c = 0; c < ncameras; c++)
   {
-    I_p[p].resize (nfreqs);
-    I_m[p].resize (nfreqs);
+    I_p[c].resize (nfreqs);
+    I_m[c].resize (nfreqs);
   }
 
 
@@ -79,8 +79,13 @@ int Image ::
         const Geometry &geometry)
 {
 
-  OMP_PARALLEL_FOR (p, ncells)
+  //OMP_PARALLEL_FOR (p, ncells)
+  for (long c = 0; c < ncameras; c++)
   {
+
+    const long p = geometry.cameras.camera2cell_nr[c];
+
+
     const double rx = geometry.rays.x[p][ray_nr];
     const double ry = geometry.rays.y[p][ray_nr];
     const double rz = geometry.rays.z[p][ray_nr];
@@ -96,10 +101,10 @@ int Image ::
     const double jz = -denominator;
 
 
-    ImX[p] =   ix * geometry.cells.x[p]
+    ImX[c] =   ix * geometry.cells.x[p]
              + iy * geometry.cells.y[p];
 
-    ImY[p] =   jx * geometry.cells.x[p]
+    ImY[c] =   jx * geometry.cells.x[p]
              + jy * geometry.cells.y[p]
              + jz * geometry.cells.z[p];
   }

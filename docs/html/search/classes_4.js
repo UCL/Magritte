@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['pcgmemrec',['PcgMemRec',['../structPcgMemRec.html',1,'']]]
+  ['geometry',['Geometry',['../structGeometry.html',1,'']]],
+  ['getbeforesetexception',['GetBeforeSetException',['../structGetBeforeSetException.html',1,'']]]
 ];

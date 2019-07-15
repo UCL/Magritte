@@ -10,7 +10,7 @@
 #include <vector>
 
 
-#define GRID_SIMD false
+#include "configure.hpp"
 
 
 #if (GRID_SIMD)

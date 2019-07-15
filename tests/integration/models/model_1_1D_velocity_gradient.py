@@ -171,14 +171,17 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 # In[17]:
 
 
-from ioMagritte import IoPython
-from os         import remove
+#from ioMagritte import IoPython
+from ioMagritte import IoText
+#from os         import remove
+from setup      import make_file_structure
+from shutil     import rmtree
 
 
 # In[18]:
 
 
-modelName = f'{thisFolder}/model_1_1D_velocity_gradient.hdf5'
+modelName = f'{thisFolder}/model_1_1D_velocity_gradient/'
 
 
 # Define an io object to handle input and output. (In this case via Python using HDF5.)
@@ -186,19 +189,27 @@ modelName = f'{thisFolder}/model_1_1D_velocity_gradient.hdf5'
 # In[19]:
 
 
-io = IoPython ("hdf5", modelName)
+#io = IoPython ("hdf5", modelName)
+io = IoText (modelName)
 
 
 # In[20]:
 
 
+#remove(modelName)
 try:
-    remove(modelName)
+    rmtree(modelName)
 except:
     pass
 
 
 # In[21]:
+
+
+make_file_structure (modelName)
+
+
+# In[22]:
 
 
 model.write (io)

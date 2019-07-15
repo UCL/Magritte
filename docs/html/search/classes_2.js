@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['evalpoints',['EVALPOINTS',['../structEVALPOINTS.html',1,'']]]
+  ['doublesetexception',['DoubleSetException',['../structDoubleSetException.html',1,'']]]
 ];

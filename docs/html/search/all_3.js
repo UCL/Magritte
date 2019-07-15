@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cells',['CELLS',['../structCELLS.html',1,'']]]
+  ['doublesetexception',['DoubleSetException',['../structDoubleSetException.html',1,'']]]
 ];

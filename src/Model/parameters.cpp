@@ -19,6 +19,7 @@ int Parameters ::
   long dummy;
 
   try {io.read_number (".ncells",     dummy); set_ncells     (dummy);} catch (...) { }
+  try {io.read_number (".ncameras",   dummy); set_ncameras   (dummy);} catch (...) { }
   try {io.read_number (".nrays",      dummy); set_nrays      (dummy);} catch (...) { }
   try {io.read_number (".nrays_red",  dummy); set_nrays_red  (dummy);} catch (...) { }
   try {io.read_number (".nboundary",  dummy); set_nboundary  (dummy);} catch (...) { }
@@ -41,6 +42,7 @@ int Parameters ::
 
 
   try {io.write_number (".ncells",     ncells     () );} catch (...) { }
+  try {io.write_number (".ncameras",   ncameras   () );} catch (...) { }
   try {io.write_number (".nrays",      nrays      () );} catch (...) { }
   try {io.write_number (".nrays_red",  nrays_red  () );} catch (...) { }
   try {io.write_number (".nboundary",  nboundary  () );} catch (...) { }

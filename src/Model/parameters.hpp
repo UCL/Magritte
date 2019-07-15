@@ -21,6 +21,7 @@ class Parameters
   private:
 
       SetOnce <long> ncells_;       ///< number of cells
+      SetOnce <long> ncameras_;     ///< number of cameras
       SetOnce <long> nrays_;        ///< number of rays (originating from each cell)
       SetOnce <long> nrays_red_;    ///< number of rays reduced
       SetOnce <long> nboundary_;    ///< number of points on the boundary
@@ -40,6 +41,7 @@ class Parameters
   public:
 
       inline void set_ncells     (const long value) {    ncells_.set (value);}
+      inline void set_ncameras   (const long value) {  ncameras_.set (value);}
       inline void set_nrays      (const long value) {     nrays_.set (value);}
       inline void set_nrays_red  (const long value) { nrays_red_.set (value);}
       inline void set_nboundary  (const long value) { nboundary_.set (value);}
@@ -56,6 +58,7 @@ class Parameters
       inline void set_use_Ng_acceleration (const bool value) {use_Ng_acceleration_.set (value);}
 
       inline long ncells     (void) const {return     ncells_.get ();}
+      inline long ncameras   (void) const {return   ncameras_.get ();}
       inline long nrays      (void) const {return      nrays_.get ();}
       inline long nrays_red  (void) const {return  nrays_red_.get ();}
       inline long nboundary  (void) const {return  nboundary_.get ();}

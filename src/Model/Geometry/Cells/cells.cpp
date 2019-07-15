@@ -12,10 +12,10 @@
 const string Cells::prefix = "Geometry/Cells/";
 
 
-///  read: read the input into the data structure
-///    @paran[in] io: io object
-///    @paran[in] parameters: model parameters object
-/////////////////////////////////////////////////////
+///  Read the Cells data from the Io object
+///    @param[in] io:         Io object to read from
+///    @param[in] parameters: Parameters object of the model
+////////////////////////////////////////////////////////////
 
 int Cells ::
     read (
@@ -26,28 +26,35 @@ int Cells ::
   cout << "Reading cells" << endl;
 
 
-  io.read_length (prefix+"cells", ncells);
+  io.read_length (prefix+"cells", ncells_plus_ncameras);
+
+  ncameras = parameters.ncameras ();
+  ncells   = ncells_plus_ncameras - ncameras;
+
+  cout << "ncells                = " << ncells << endl;
+  cout << "ncameras              = " << ncameras << endl;
+  cout << "ncells_plus_ncameras  = " << ncells_plus_ncameras << endl;
 
 
   parameters.set_ncells (ncells);
 
 
   // Read cell centers and velocities
-  x.resize (ncells);
-  y.resize (ncells);
-  z.resize (ncells);
+  x.resize (ncells_plus_ncameras);
+  y.resize (ncells_plus_ncameras);
+  z.resize (ncells_plus_ncameras);
 
   io.read_3_vector (prefix+"cells", x, y, z);
 
-  vx.resize (ncells);
-  vy.resize (ncells);
-  vz.resize (ncells);
+  vx.resize (ncells_plus_ncameras);
+  vy.resize (ncells_plus_ncameras);
+  vz.resize (ncells_plus_ncameras);
 
   io.read_3_vector (prefix+"velocities", vx, vy, vz);
 
 
   // Convert velocities in m/s to fractions for C
-  for (long p = 0; p < ncells; p++)
+  for (long p = 0; p < ncells_plus_ncameras; p++)
   {
     vx[p] /= CC;
     vy[p] /= CC;
@@ -56,15 +63,15 @@ int Cells ::
 
 
   // Read number of neighbors
-  n_neighbors.resize (ncells);
+  n_neighbors.resize (ncells_plus_ncameras);
 
   io.read_list (prefix+"n_neighbors", n_neighbors);
 
 
   // Resize the neighbors to appropriate sizes
-  neighbors.resize (ncells);
+  neighbors.resize (ncells_plus_ncameras);
 
-  for (long p = 0; p < ncells; p++)
+  for (long p = 0; p < ncells_plus_ncameras; p++)
   {
     neighbors[p].resize (n_neighbors[p]);
   }
@@ -82,7 +89,7 @@ int Cells ::
 
 
 ///  write: write the dat astructure
-///  @paran[in] io: io object
+///  @param[in] io: io object
 ////////////////////////////////////////////////
 
 int Cells ::

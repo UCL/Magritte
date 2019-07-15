@@ -1,0 +1,136 @@
+\hypertarget{structLineProducingSpecies}{}\section{Line\+Producing\+Species Struct Reference}
+\label{structLineProducingSpecies}\index{Line\+Producing\+Species@{Line\+Producing\+Species}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{structLineProducingSpecies_a682268d3085f8ca3d24b278df757f141}{read}} (const \mbox{\hyperlink{structIo}{Io}} \&io, const long l, \mbox{\hyperlink{classParameters}{Parameters}} \&parameters)
+\item 
+int \mbox{\hyperlink{structLineProducingSpecies_a9152eaa80ee71288e3bdc05e749939b6}{write}} (const \mbox{\hyperlink{structIo}{Io}} \&io, const long l) const
+\item 
+int \mbox{\hyperlink{structLineProducingSpecies_ab6062b14b7d076bffedb96b3d61fc1d4}{write\+\_\+populations}} (const \mbox{\hyperlink{structIo}{Io}} \&io, const long l, const string tag) const
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a1ef68cebbf968f57e3190f385cfda6e6}\label{structLineProducingSpecies_a1ef68cebbf968f57e3190f385cfda6e6}} 
+long {\bfseries index} (const long p, const long i) const
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a17b5c3f00749cdcff0f575fcd99fd92a}\label{structLineProducingSpecies_a17b5c3f00749cdcff0f575fcd99fd92a}} 
+double {\bfseries get\+\_\+emissivity} (const long p, const long k) const
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a83d52693fc6a050402fe93ccdcd47500}\label{structLineProducingSpecies_a83d52693fc6a050402fe93ccdcd47500}} 
+double {\bfseries get\+\_\+opacity} (const long p, const long k) const
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a7b7415df082a8dc660fde417ece3aced}\label{structLineProducingSpecies_a7b7415df082a8dc660fde417ece3aced}} 
+void {\bfseries check\+\_\+for\+\_\+convergence} (const double pop\+\_\+prec)
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_ae55c10a0b41b332d78c640bd72c169bc}\label{structLineProducingSpecies_ae55c10a0b41b332d78c640bd72c169bc}} 
+void {\bfseries update\+\_\+using\+\_\+\+L\+TE} (const Double2 \&abundance, const Double1 \&temperature)
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a95c95f687306608a8aff6e26ae5bd848}\label{structLineProducingSpecies_a95c95f687306608a8aff6e26ae5bd848}} 
+void {\bfseries update\+\_\+using\+\_\+statistical\+\_\+equilibrium} (const Double2 \&abundance, const Double1 \&temperature)
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_aea9a3fc9d735fa6b5238c44fd38296aa}\label{structLineProducingSpecies_aea9a3fc9d735fa6b5238c44fd38296aa}} 
+void {\bfseries update\+\_\+using\+\_\+\+Ng\+\_\+acceleration} ()
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a8400c3ec984ab4fc25174c39954342c9}\label{structLineProducingSpecies_a8400c3ec984ab4fc25174c39954342c9}} 
+int \mbox{\hyperlink{structLineProducingSpecies_a8400c3ec984ab4fc25174c39954342c9}{initialize\+\_\+\+Lambda}} ()
+\begin{DoxyCompactList}\small\item\em initialize\+\_\+\+Lambda\+: clear all entries of \mbox{\hyperlink{structLambda}{Lambda}} operator \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_ade61c881ebf614736992e173f8c0cc3c}\label{structLineProducingSpecies_ade61c881ebf614736992e173f8c0cc3c}} 
+int \mbox{\hyperlink{structLineProducingSpecies_ade61c881ebf614736992e173f8c0cc3c}{gather\+\_\+\+Lambda}} ()
+\begin{DoxyCompactList}\small\item\em gather\+\_\+\+Lambda\+: gather \mbox{\hyperlink{structLambda}{Lambda}}\textquotesingle{}s from M\+PI distributed processes \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_af82c9246277856fe9a85fee5efc020a9}\label{structLineProducingSpecies_af82c9246277856fe9a85fee5efc020a9}} 
+\mbox{\hyperlink{structLinedata}{Linedata}} \mbox{\hyperlink{structLineProducingSpecies_af82c9246277856fe9a85fee5efc020a9}{linedata}}
+\begin{DoxyCompactList}\small\item\em data for line producing species \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a5ddef72c65be1892caa3260ff4c671fb}\label{structLineProducingSpecies_a5ddef72c65be1892caa3260ff4c671fb}} 
+\mbox{\hyperlink{structQuadrature}{Quadrature}} \mbox{\hyperlink{structLineProducingSpecies_a5ddef72c65be1892caa3260ff4c671fb}{quadrature}}
+\begin{DoxyCompactList}\small\item\em data for integral over line \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a476b6eff37715b47fcece3ea21bea8f9}\label{structLineProducingSpecies_a476b6eff37715b47fcece3ea21bea8f9}} 
+std\+::vector$<$ std\+::vector$<$ \mbox{\hyperlink{structLambda}{Lambda}} $>$ $>$ {\bfseries lambda}
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a633ab10bbe9df398e2ad92fe4dc082c0}\label{structLineProducingSpecies_a633ab10bbe9df398e2ad92fe4dc082c0}} 
+Double2 {\bfseries Jeff}
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a3de194bf4535cff2d431bf1e337c5df6}\label{structLineProducingSpecies_a3de194bf4535cff2d431bf1e337c5df6}} 
+Double2 {\bfseries Jlin}
+\item 
+\mbox{\Hypertarget{structLineProducingSpecies_af3112742ce529751bcd6d370fbb25ec6}\label{structLineProducingSpecies_af3112742ce529751bcd6d370fbb25ec6}} 
+Long3 \mbox{\hyperlink{structLineProducingSpecies_af3112742ce529751bcd6d370fbb25ec6}{nr\+\_\+line}}
+\begin{DoxyCompactList}\small\item\em frequency number corresponing to line (p,k,z) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a0c056f43cef52d62974c1ade2ad215b5}\label{structLineProducingSpecies_a0c056f43cef52d62974c1ade2ad215b5}} 
+double \mbox{\hyperlink{structLineProducingSpecies_a0c056f43cef52d62974c1ade2ad215b5}{relative\+\_\+change\+\_\+mean}}
+\begin{DoxyCompactList}\small\item\em mean relative change \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a884352a22da6800b6e43638855bb4a89}\label{structLineProducingSpecies_a884352a22da6800b6e43638855bb4a89}} 
+double \mbox{\hyperlink{structLineProducingSpecies_a884352a22da6800b6e43638855bb4a89}{relative\+\_\+change\+\_\+max}}
+\begin{DoxyCompactList}\small\item\em maximum relative change \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a347bfc717e582bd924b5b5d64958cd79}\label{structLineProducingSpecies_a347bfc717e582bd924b5b5d64958cd79}} 
+double \mbox{\hyperlink{structLineProducingSpecies_a347bfc717e582bd924b5b5d64958cd79}{fraction\+\_\+not\+\_\+converged}}
+\begin{DoxyCompactList}\small\item\em fraction of levels that is not converged \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_ac83d9371a65de6f98f716504a7fdb58f}\label{structLineProducingSpecies_ac83d9371a65de6f98f716504a7fdb58f}} 
+Vector\+Xd \mbox{\hyperlink{structLineProducingSpecies_ac83d9371a65de6f98f716504a7fdb58f}{population}}
+\begin{DoxyCompactList}\small\item\em level population (most recent) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a31a52c4f7471e440ba71bdc6bd4ddefb}\label{structLineProducingSpecies_a31a52c4f7471e440ba71bdc6bd4ddefb}} 
+Double1 \mbox{\hyperlink{structLineProducingSpecies_a31a52c4f7471e440ba71bdc6bd4ddefb}{population\+\_\+tot}}
+\begin{DoxyCompactList}\small\item\em total level population (sum over levels) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a6361b08c8cbae2ea1b0ff7426b65612c}\label{structLineProducingSpecies_a6361b08c8cbae2ea1b0ff7426b65612c}} 
+Vector\+Xd \mbox{\hyperlink{structLineProducingSpecies_a6361b08c8cbae2ea1b0ff7426b65612c}{population\+\_\+prev1}}
+\begin{DoxyCompactList}\small\item\em level populations 1 iteration back \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a941e0dedc5739b8363fc3828f69c00a9}\label{structLineProducingSpecies_a941e0dedc5739b8363fc3828f69c00a9}} 
+Vector\+Xd \mbox{\hyperlink{structLineProducingSpecies_a941e0dedc5739b8363fc3828f69c00a9}{population\+\_\+prev2}}
+\begin{DoxyCompactList}\small\item\em level populations 2 iterations back \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a582e0d0d9b4fe273eaa35d97e3dcfe3e}\label{structLineProducingSpecies_a582e0d0d9b4fe273eaa35d97e3dcfe3e}} 
+Vector\+Xd \mbox{\hyperlink{structLineProducingSpecies_a582e0d0d9b4fe273eaa35d97e3dcfe3e}{population\+\_\+prev3}}
+\begin{DoxyCompactList}\small\item\em level populations 3 iterations back \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structLineProducingSpecies_a5f1fceaadee40ff4df0569b44b615f39}\label{structLineProducingSpecies_a5f1fceaadee40ff4df0569b44b615f39}} 
+long {\bfseries ncells}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structLineProducingSpecies_a682268d3085f8ca3d24b278df757f141}\label{structLineProducingSpecies_a682268d3085f8ca3d24b278df757f141}} 
+\index{Line\+Producing\+Species@{Line\+Producing\+Species}!read@{read}}
+\index{read@{read}!Line\+Producing\+Species@{Line\+Producing\+Species}}
+\subsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily int Line\+Producing\+Species\+::read (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io,  }\item[{const long}]{l,  }\item[{\mbox{\hyperlink{classParameters}{Parameters}} \&}]{parameters }\end{DoxyParamCaption})}
+
+read\+: read in data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\mbox{\tt in}  & {\em l} & nr of line producing species \\
+\hline
+\mbox{\tt in}  & {\em parameters} & model parameters object \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structLineProducingSpecies_a9152eaa80ee71288e3bdc05e749939b6}\label{structLineProducingSpecies_a9152eaa80ee71288e3bdc05e749939b6}} 
+\index{Line\+Producing\+Species@{Line\+Producing\+Species}!write@{write}}
+\index{write@{write}!Line\+Producing\+Species@{Line\+Producing\+Species}}
+\subsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily int Line\+Producing\+Species\+::write (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io,  }\item[{const long}]{l }\end{DoxyParamCaption}) const}
+
+write\+: write out data structure 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em io} & io object \\
+\hline
+\mbox{\tt in}  & {\em l} & nr of line producing species \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structLineProducingSpecies_ab6062b14b7d076bffedb96b3d61fc1d4}\label{structLineProducingSpecies_ab6062b14b7d076bffedb96b3d61fc1d4}} 
+\index{Line\+Producing\+Species@{Line\+Producing\+Species}!write\+\_\+populations@{write\+\_\+populations}}
+\index{write\+\_\+populations@{write\+\_\+populations}!Line\+Producing\+Species@{Line\+Producing\+Species}}
+\subsubsection{\texorpdfstring{write\+\_\+populations()}{write\_populations()}}
+{\footnotesize\ttfamily int Line\+Producing\+Species\+::write\+\_\+populations (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structIo}{Io}} \&}]{io,  }\item[{const long}]{l,  }\item[{const string}]{tag }\end{DoxyParamCaption}) const}
+
+write\+\_\+populations\+: write current level populations 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em l} & number of line producing species \\
+\hline
+\mbox{\tt in}  & {\em tag} & extra info tag \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Lines/\+Line\+Producing\+Species/line\+Producing\+Species.\+hpp\item 
+/home/frederik/\+Dropbox/\+Astro/\+Magritte/src/\+Model/\+Lines/\+Line\+Producing\+Species/line\+Producing\+Species.\+cpp\end{DoxyCompactItemize}

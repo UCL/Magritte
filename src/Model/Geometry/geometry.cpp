@@ -9,8 +9,8 @@
 
 
 ///  read: read the input into the data structure
-///    @paran[in] io: io object
-///    @paran[in] parameters: model parameters object
+///    @param[in] io: io object
+///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
 int Geometry ::
@@ -21,6 +21,8 @@ int Geometry ::
 
   cout << "Reading geometry" << endl;
 
+
+  cameras.read  (io, parameters);
 
   cells.read    (io, parameters);
 
@@ -37,7 +39,7 @@ int Geometry ::
 
 
 ///  write: write the dat astructure
-///  @paran[in] io: io object
+///  @param[in] io: io object
 ////////////////////////////////////////////////
 
 int Geometry ::
@@ -47,6 +49,8 @@ int Geometry ::
 
   cout << "Writing geometry" << endl;
 
+
+  cameras.write  (io);
 
   cells.write    (io);
 

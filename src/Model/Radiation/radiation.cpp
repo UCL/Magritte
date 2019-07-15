@@ -17,7 +17,7 @@
 
 ///  read: read in data structure
 ///    @param[in] io: io object
-///    @paran[in] parameters: model parameters object
+///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
 int Radiation ::
@@ -46,21 +46,10 @@ int Radiation ::
   parameters.set_nrays_red (nrays_red);
 
 
-  // Size and initialize u, v, I_bdy, U and V
-
-  u.resize (nrays_red);
-  v.resize (nrays_red);
-
-  for (long r = 0; r < nrays_red; r++)
-  {
-    u[r].resize (ncells*nfreqs_red);
-    v[r].resize (ncells*nfreqs_red);
-  }
-
-
   J.resize (ncells*nfreqs_red);
-  G.resize (ncells*nfreqs_red);
 
+
+  // Size and initialize I_bdy, u, v, U and V
 
   I_bdy.resize (nrays_red);
 
@@ -77,11 +66,17 @@ int Radiation ::
 
   if (use_scattering)
   {
+    u.resize (nrays_red);
+    v.resize (nrays_red);
+
     U.resize (nrays_red);
     V.resize (nrays_red);
 
     for (long r = 0; r < nrays_red; r++)
     {
+      u[r].resize (ncells*nfreqs_red);
+      v[r].resize (ncells*nfreqs_red);
+
       U[r].resize (ncells*nfreqs_red);
       V[r].resize (ncells*nfreqs_red);
     }
@@ -226,6 +221,16 @@ int initialize (
 }
 
 
+int Radiation ::
+    initialize_J ()
+{
+
+  initialize (J);
+
+
+  return (0);
+
+}
 
 
 /// mpi_vector_sum: custom reduction operation for MPI_Reduce
@@ -250,34 +255,15 @@ void mpi_vector_sum (
 
 
 
-/// calc_J_and_G: integrate mean intensity and "flux over all directions
-////////////////////////////////////////////////////////////////////////
+/// calc_J: integrate mean intensity and "flux over all directions
+//////////////////////////////////////////////////////////////////
 
 int Radiation ::
-    calc_J_and_G (
-        const Double2 weights)
+    MPI_reduce_J ()
 
 #if (MPI_PARALLEL)
 
 {
-
-  initialize (J);
-  initialize (G);
-
-  MPI_PARALLEL_FOR (r, nrays/2)
-  {
-    const long R = r - MPI_start (nrays/2);
-
-    OMP_PARALLEL_FOR (p, ncells)
-    {
-      for (long f = 0; f < nfreqs_red; f++)
-      {
-        J[index(p,f)] += 2.0 * weights[p][r] * u[R][index(p,f)];
-        G[index(p,f)] += 2.0 * weights[p][r] * v[R][index(p,f)];
-      }
-    }
-  }
-
 
   MPI_Datatype MPI_VREAL;
   MPI_Type_contiguous (n_simd_lanes, MPI_DOUBLE, &MPI_VREAL);
@@ -287,7 +273,7 @@ int Radiation ::
   MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
-  int ierr1 = MPI_Allreduce (
+  int ierr = MPI_Allreduce (
                 MPI_IN_PLACE,      // pointer to data to be reduced -> here in //place
                 J.data(),          // pointer to data to be received
                 J.size(),          // size of data to be received
@@ -295,18 +281,7 @@ int Radiation ::
                 MPI_VSUM,          // reduction operation
                 MPI_COMM_WORLD);
 
-  assert (ierr1 == 0);
-
-
-  int ierr2 = MPI_Allreduce (
-                MPI_IN_PLACE,      // pointer to data to be reduced -> here in //place
-                G.data(),          // pointer to data to be received
-                G.size(),          // size of data to be received
-                MPI_VREAL,         // type of reduced data
-                MPI_VSUM,          // reduction operation
-                MPI_COMM_WORLD);
-
-  assert (ierr2 == 0);
+  assert (ierr == 0);
 
 
   MPI_Type_free (&MPI_VREAL);
@@ -320,24 +295,6 @@ int Radiation ::
 #else
 
 {
-
-  initialize (J);
-  initialize (G);
-
-  MPI_PARALLEL_FOR (r, nrays/2)
-  {
-    const long R = r - MPI_start (nrays/2);
-
-    OMP_PARALLEL_FOR (p, ncells)
-    {
-      for (long f = 0; f < nfreqs_red; f++)
-      {
-        J[index(p,f)] += 2.0 * weights[p][r] * u[R][index(p,f)];
-        G[index(p,f)] += 2.0 * weights[p][r] * v[R][index(p,f)];
-      }
-    }
-  }
-
 
   return (0);
 

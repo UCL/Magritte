@@ -26,6 +26,7 @@ inline RayData Geometry ::
 
   long nxt = next (origin, ray, origin, Z, dZ);
 
+  //cout << "nxt " << nxt << endl;
 
   if (nxt != -1)   // if we are not going out of grid
   {
@@ -42,9 +43,11 @@ inline RayData Geometry ::
       nxt       = next          (origin, ray, nxt, Z, dZ);
       shift_nxt = doppler_shift (origin, ray, nxt);
 
+      //cout << "nxt " << nxt << endl;
+
       set_data (crt, nxt, shift_crt, shift_nxt, dZ, dshift_max, rayData);
 
-//      cout << nxt << endl;
+      //cout << nxt << endl;
     }
   }
 
@@ -56,7 +59,7 @@ inline RayData Geometry ::
 
 
 
-inline void Geometry ::
+inline int Geometry ::
     set_data (
         const long     crt,
         const long     nxt,
@@ -67,22 +70,46 @@ inline void Geometry ::
               RayData &rayData    ) const
 {
 
+  //cout << "Can data be set?" << endl;
+
   ProjectedCellData data;
 
   const double dshift     = shift_nxt - shift_crt;
   const double dshift_abs = fabs (dshift);
 
+  //cout << " shift_nxt = " <<  shift_nxt << endl;
+  //cout << " shift_crt = " <<  shift_crt << endl;
+  //cout << "dshift_max = " << dshift_max << endl;
+  //cout << "dshift_abs = " << dshift_abs << endl;
+  //cout << "Let's try the if statement" << endl;
 
   // If velocity gradient is not well-sampled enough
 
   if (dshift_abs > dshift_max)
   {
+    //cout << "dshift_abs > dshift_max" << endl;
 
     // Interpolate velocity gradient field
     const long        n_interpl = dshift_abs / dshift_max + 1;
     const long   half_n_interpl =        0.5 * n_interpl;
     const double     dZ_interpl =     dZ_loc / n_interpl;
     const double dshift_interpl =     dshift / n_interpl;
+
+
+
+    if ( (n_interpl > 10000) ||
+         (n_interpl <     0)    )
+    {
+      // Too many (> 10000) interpolations needed!
+      // Or dshift_max is negative (probably due to overflow)
+
+      return (-1);
+    }
+    
+    //cout << "        n_interpl = " <<       n_interpl << endl;
+    //cout << "   half_n_interpl = " <<  half_n_interpl << endl;
+    //cout << "       dZ_interpl = " <<      dZ_interpl << endl;
+    //cout << "   dshift_interpl = " <<  dshift_interpl << endl;
 
 
     // Assign current cell to first half of interpolation points
@@ -96,6 +123,8 @@ inline void Geometry ::
       data.notch  = 0;               // CHECK IF THIS IS NECESSARY !!!
 
       rayData.push_back (data);
+
+      //cout << "m = " << m << endl;
     }
 
 
@@ -110,11 +139,15 @@ inline void Geometry ::
       data.notch  = 0;               // CHECK IF THIS IS NECESSARY !!!
 
       rayData.push_back (data);
+
+      //cout << "m = " << m << endl;
     }
   }
 
   else
   {
+    //cout << "else..." << endl;
+
     data.cellNr = nxt;
     data.shift  = shift_nxt;
     data.dZ     = dZ_loc;
@@ -123,7 +156,12 @@ inline void Geometry ::
     data.notch  = 0;               // CHECK IF THIS IS NECESSARY !!!
 
     rayData.push_back (data);
+
+    //cout << "just added it (no interpolation)" << endl;
   }
+
+
+  return (0);
 
 }
 

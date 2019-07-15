@@ -36,9 +36,6 @@ struct Radiation
       vReal2 V;         ///< V scattered intensity   (r, index(p,f))
 
       vReal1 J;         ///< (angular) mean intensity (index(p,f))
-      vReal1 G;         ///< (angular) mean intensity (index(p,f))
-
-      //vReal1 J_local;   ///< local approximation to J (index(p,f))
 
       vReal3 I_bdy;     ///< intensity at the boundary (r,b,f)
 
@@ -118,8 +115,9 @@ struct Radiation
               vReal &Ibdy_scaled) const;
 
 
-    int calc_J_and_G (
-        const Double2 weights);
+    int initialize_J ();
+
+    int MPI_reduce_J ();
 
     int calc_U_and_V ();
 

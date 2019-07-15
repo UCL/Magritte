@@ -41,8 +41,10 @@ struct Rays
 
   private:
 
-      long ncells;
-      long nrays;
+      long ncells;                 ///< number of cells
+      long ncameras;               ///< number of cameras
+      long ncells_plus_ncameras;   ///< number of cells plus number of cameras
+      long nrays;                  ///< number of rays
 
 
       int setup ();

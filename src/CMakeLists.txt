@@ -42,6 +42,7 @@ add_library (_Magritte
   Model/model.cpp
   Model/parameters.cpp
   Model/Geometry/geometry.cpp
+  Model/Geometry/Cameras/cameras.cpp
   Model/Geometry/Cells/cells.cpp
   Model/Geometry/Rays/rays.cpp
   Model/Geometry/Boundary/boundary.cpp

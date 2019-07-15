@@ -1,21 +1,24 @@
 var indexSectionsWithContent =
 {
-  0: "_cegprsu",
-  1: "_cegprsu",
-  2: "pr"
+  0: "abcdefgijlmnopqrstuvwxyz",
+  1: "bcdfgilmpqrst",
+  2: "cgimprstw",
+  3: "abcefgijlnopqrstuvwxyz"
 };
 
 var indexSectionNames =
 {
   0: "all",
   1: "classes",
-  2: "pages"
+  2: "functions",
+  3: "variables"
 };
 
 var indexSectionLabels =
 {
   0: "All",
   1: "Classes",
-  2: "Pages"
+  2: "Functions",
+  3: "Variables"
 };
 

@@ -11,6 +11,7 @@
 #include "Simulation/simulation.hpp"
 #include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/logger.hpp"
 
 
@@ -28,10 +29,18 @@ int main (int argc, char **argv)
 
     cout << "Running model: " << modelName << endl;
 
-//#   pragma omp parallel
-//    {
-//      cout << "n_omp_threads = " << omp_get_num_threads () << endl;
-//    }
+    const bool use_Ng_acceleration = true;
+    const long max_niterations     = 20;
+
+
+#   pragma omp parallel
+    {
+      cout << "n_omp_threads = " << omp_get_num_threads () << endl;
+    }
+
+
+    cout << "n_simd_lanes = " << n_simd_lanes << endl;
+
 
 #   if (MPI_PARALLEL)
 
@@ -43,12 +52,12 @@ int main (int argc, char **argv)
     //IoPython io ("hdf5", modelName);
     IoText io (modelName);
 
-
     Simulation simulation;
+
+    simulation.parameters.set_pop_prec       (1.0E-6);
+    simulation.parameters.set_use_scattering (false);
+
     simulation.read (io);
-
-    simulation.parameters.set_pop_prec (1.0E-6);
-
 
     simulation.compute_spectral_discretisation ();
 
@@ -56,8 +65,7 @@ int main (int argc, char **argv)
 
     simulation.compute_LTE_level_populations ();
 
-    simulation.compute_level_populations (io);
-
+    simulation.compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
 
     simulation.write (io);
 

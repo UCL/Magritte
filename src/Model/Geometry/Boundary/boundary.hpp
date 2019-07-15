@@ -46,4 +46,4 @@ struct Boundary
 };
 
 
-#endif // __CELLS_HPP_INCLUDED__
+#endif // __BOUNDARY_HPP_INCLUDED__

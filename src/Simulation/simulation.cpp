@@ -247,11 +247,14 @@ int Simulation ::
     compute_radiation_field ()
 {
 
+  // Initialisations
 
   for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
     lspec.initialize_Lambda ();
   }
+
+  radiation.initialize_J ();
 
 
   // Raypair along which the trasfer equation is solved
@@ -287,13 +290,6 @@ int Simulation ::
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
           rayPair.solve ();
 
-
-          // Store solution of the radiation field
-          const long ind = radiation.index (o,f);
-          radiation.u[R][ind] = rayPair.get_u_at_origin ();
-          radiation.v[R][ind] = rayPair.get_v_at_origin ();
-
-
           // Extract the Lambda operator
           rayPair.update_Lambda (
               radiation.frequencies,
@@ -302,6 +298,20 @@ int Simulation ::
               f,
               geometry.rays.weights[o][r],
               lines                       );
+
+          // Store solution of the radiation field
+          const vReal u = rayPair.get_u_at_origin ();
+          const vReal v = rayPair.get_v_at_origin ();
+
+          const long ind = radiation.index (o,f);
+
+          radiation.J[ind] += 2.0 * geometry.rays.weights[o][r] * u;
+
+          if (parameters.use_scattering())
+          {
+            radiation.u[r][ind] = u;
+            radiation.v[r][ind] = v;
+          }
         }
       }
 
@@ -311,10 +321,18 @@ int Simulation ::
 
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
+          const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+          const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+
           const long ind = radiation.index (o,f);
 
-          radiation.u[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
-          radiation.v[R][ind] = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+          radiation.J[ind] += 2.0 * geometry.rays.weights[o][r] * u;
+
+          if (parameters.use_scattering())
+          {
+            radiation.u[r][ind] = u;
+            radiation.v[r][ind] = v;
+          }
         }
       }
 
@@ -325,16 +343,22 @@ int Simulation ::
   } // end of loop over ray pairs
 
 
-  // Reduce results of all MPI processes to get J, J_local, U and V
+  // Reduce results of all MPI processes to get J and Lambda
 
-  radiation.calc_J_and_G (geometry.rays.weights);
+# if (MPI_PARALLEL)
+
+    radiation.MPI_reduce_J ();
+
+    // "Reduce Lambda's"
+
+# endif
+
 
   if (parameters.use_scattering())
   {
     radiation.calc_U_and_V ();
   }
 
-  // "Reduce Lambda's"
 
   return (0);
 
@@ -343,14 +367,18 @@ int Simulation ::
 
 
 
-///  compute_image
-//////////////////
+///  compute_and_write_image:
+///    @param[in] io : io object used to write the images
+///    @param[in] r  : number of the ray indicating the direction of the image
+////////////////////////////////////////////////////////////////////////////
 
 int Simulation ::
     compute_and_write_image (
         const Io  &io,
         const long r        )
 {
+
+  cout << "Creating an image along ray " << r << "..." << endl;
 
   // Create image object
   Image image (r, parameters);
@@ -366,34 +394,93 @@ int Simulation ::
     const long R = r - MPI_start (parameters.nrays()/2);
 
 
-//#   pragma omp parallel default (shared) private (rayPair)
-//    {
-    //OMP_FOR (o, parameters.ncells())
-//    OMP_FOR (b, parameters.nboundary())
-    for (long o=55000; o<65000; o++)
+#   pragma omp parallel default (shared) private (rayPair)
     {
-      //const long            o = geometry.boundary.boundary2cell_nr[b];
+    OMP_FOR (c, parameters.ncameras())
+//    OMP_FOR (b, parameters.nboundary())
+//    for (long c = 0; c < parameters.ncameras(); c++)
+    {
+      const long o = geometry.cameras.camera2cell_nr[c];
+
+      cout << "Considering camera: " << c << " at " << o << endl;
+      //const long o = geometry.boundary.boundary2cell_nr[b];
+
+      // Use data of the first boundary cell for the camera cell
+      const long           op = geometry.boundary.boundary2cell_nr[0];
       const long           ar = geometry.rays.antipod[o][r];
-      const double dshift_max = get_dshift_max (o);
+      const double dshift_max = get_dshift_max (op);
+
+      //cout << " r = " <<  r << endl;
+      //cout << "ar = " << ar << endl;
+      //cout << "Tracing rays..." << endl;
 
       RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
 
+      //cout << "Rays traced" << endl;
+
+
+
+      cout << "dshift_max " << dshift_max << endl;
+
+      //rayData_r[0].shift += rayData_ar[0].shift;
+      //rayData_r[0].dZ    += rayData_ar[0].dZ;
+
+      //// Remove first element (the camera cell)
+      //rayData_ar.erase (rayData_ar.begin());
+
+
+      //cout << "ncameras   " << parameters.ncameras   () << endl;
+      //cout << "nfreqs     " << parameters.nfreqs     () << endl;
+      //cout << "nfreqs_red " << parameters.nfreqs_red () << endl;
+
+      cout << "raysize  r " << rayData_r .size() << endl;
+      cout << "raysize ar " << rayData_ar.size() << endl;
+
+
+      //for (int l=0; l < rayData_ar.size(); l++)
+      //{
+      //  cout << "cells_nr ar " << rayData_ar[l].cellNr << endl;
+      //  cout << "shift    ar " << rayData_ar[l].shift << endl;
+      //  cout << "dZ       ar " << rayData_ar[l].dZ << endl;
+      //}
+
+      //for (int l=0; l < rayData_r.size(); l++)
+      //{
+      //  cout << "cells_nr r " << rayData_r[l].cellNr << endl;
+      //  cout << "shift    r " << rayData_r[l].shift << endl;
+      //  cout << "dZ       r " << rayData_r[l].dZ << endl;
+      //}
+
+      //cout << "Initializing..." << endl;
+
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
+      //cout << "Initialised" << endl;
 
       //if (rayPair.ndep > 1)
       //{
+      //cout << "nfreqs    " << parameters.nfreqs    () << endl;
+      //cout << "nfreqsred " << parameters.nfreqs_red() << endl;
+
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
+        //long f = 0;
+
+
+          //cout << "Setting up..." << endl;
           // Setup and solve the ray equations
-          setup (R, o, f, rayData_ar, rayData_r, rayPair);
+          setup (R, op, f, rayData_ar, rayData_r, rayPair);
           //rayPair.solve ();
+          //cout << "Set up" << endl;
 
 
           // Store solution of the radiation field
-          image.I_m[o][f] = rayPair.get_Im ();
-          image.I_p[o][f] = rayPair.get_Ip ();
+          //cout << "Image m" << endl;
+          image.I_m[c][f] = rayPair.get_Im ();
+          //cout << "Image p" << endl;
+          image.I_p[c][f] = rayPair.get_Ip ();
+          //cout << "Done... for now..." << endl;
         }
       //}
 
@@ -408,7 +495,7 @@ int Simulation ::
       //  }
       //}
 
-//    } // end of loop over cells
+    } // end of loop over cells
     }
 
   }
@@ -488,7 +575,7 @@ inline void Simulation ::
 
       if (parameters.use_scattering())
       {
-        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
+        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch, U_scaled, V_scaled);
       }
 
       get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
@@ -502,15 +589,28 @@ inline void Simulation ::
 
       chi_prev = chi;
       index--;
+
+      ////cout << "ar chi prev" << chi_o << endl;
     }
+
+    //cout << "Set boundary" << endl;
+    //cout << "cell nr     " << cellNr << endl;
 
     cellNr = rayData_ar.back().cellNr;
      notch = rayData_ar.back().notch;
      bdyNr = geometry.boundary.cell2boundary_nr[cellNr];
 
+     //cout << "bdyNr " << bdyNr << endl;
+     //cout << " R "    << R << endl;
+     //cout << " freq_scaled "    << freq_scaled << endl;
+     //cout << " notch "    << notch << endl;
+
     radiation.rescale_I_bdy (freq_scaled, R, cellNr, bdyNr, notch, rayPair.I_bdy_0);
 
     chi_prev = chi_o;
+
+    //cout << "Boundary set" << endl;
+
   }
 
   else
@@ -525,18 +625,27 @@ inline void Simulation ::
 
   if (rayData_r.size() > 0)
   {
+    //cout << "Setting up r" << endl;
+
     index = rayData_ar.size() + 1;
 
     for (ProjectedCellData data : rayData_r)
     {
+      //cout << "Getting data from r" << endl;
+      //cout << "index = " << index << endl;
+
       freq_scaled = data.shift * radiation.frequencies.nu[origin][f];
 
       if (parameters.use_scattering())
       {
-        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch,  U_scaled, V_scaled);
+        radiation.rescale_U_and_V (freq_scaled, R, data.cellNr, data.notch, U_scaled, V_scaled);
       }
 
+      //cout << "getting eta and chi" << endl;
+
       get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
+
+      //cout << "settng terms" << endl;
 
       rayPair.set_term1_and_term2 (eta, chi, U_scaled, V_scaled, index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ,       index-1);
@@ -547,6 +656,8 @@ inline void Simulation ::
 
       chi_prev = chi;
       index++;
+
+      //cout << "r chi prev" << chi_o << endl;
     }
 
     cellNr = rayData_r.back().cellNr;
@@ -591,7 +702,7 @@ inline void Simulation ::
 
   // Reset eta and chi
   eta = 0.0;
-  chi = 1.0E-99;
+  chi = 1.0E-26;
 
 
   const double lower = 1.00001*lines.lineProducingSpecies[0].quadrature.roots[0];

@@ -13,7 +13,7 @@ const string Quadrature::prefix = "Lines/LineProducingSpecies_";
 
 ///  read: read in data structure
 ///    @param[in] io: io object
-///    @paran[in] parameters: model parameters object
+///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
 int Quadrature ::

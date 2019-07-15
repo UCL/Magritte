@@ -82,34 +82,36 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("n_off_diag", &Parameters::n_off_diag)
       .def_readwrite ("max_width_fraction", &Parameters::max_width_fraction)
       // setters
-      .def ("set_ncells",         &Parameters::set_ncells        )
-      .def ("set_nrays",          &Parameters::set_nrays         )
-      .def ("set_nrays",          &Parameters::set_nrays_red     )
-      .def ("set_nboundary",      &Parameters::set_nboundary     )
-      .def ("set_nfreqs",         &Parameters::set_nfreqs        )
-      .def ("set_nfreqs_red",     &Parameters::set_nfreqs_red    )
-      .def ("set_nspecs",         &Parameters::set_nspecs        )
-      .def ("set_nlspecs",        &Parameters::set_nlspecs       )
-      .def ("set_nlines",         &Parameters::set_nlines        )
-      .def ("set_nquads",         &Parameters::set_nquads        )
-      .def ("set_pop_prec",       &Parameters::set_pop_prec      )
-      .def ("set_use_scattering", &Parameters::set_use_scattering)
+      .def ("set_ncells",           &Parameters::set_ncells        )
+      .def ("set_ncameras",         &Parameters::set_ncameras      )
+      .def ("set_nrays",            &Parameters::set_nrays         )
+      .def ("set_nrays",            &Parameters::set_nrays_red     )
+      .def ("set_nboundary",        &Parameters::set_nboundary     )
+      .def ("set_nfreqs",           &Parameters::set_nfreqs        )
+      .def ("set_nfreqs_red",       &Parameters::set_nfreqs_red    )
+      .def ("set_nspecs",           &Parameters::set_nspecs        )
+      .def ("set_nlspecs",          &Parameters::set_nlspecs       )
+      .def ("set_nlines",           &Parameters::set_nlines        )
+      .def ("set_nquads",           &Parameters::set_nquads        )
+      .def ("set_pop_prec",         &Parameters::set_pop_prec      )
+      .def ("set_use_scattering",   &Parameters::set_use_scattering)
       // getters
-      .def ("ncells",         &Parameters::ncells        )
-      .def ("nrays",          &Parameters::nrays         )
-      .def ("nrays_red",      &Parameters::nrays_red     )
-      .def ("nboundary",      &Parameters::nboundary     )
-      .def ("nfreqs",         &Parameters::nfreqs        )
-      .def ("nfreqs_red",     &Parameters::nfreqs_red    )
-      .def ("nspecs",         &Parameters::nspecs        )
-      .def ("nlspecs",        &Parameters::nlspecs       )
-      .def ("nlines",         &Parameters::nlines        )
-      .def ("nquads",         &Parameters::nquads        )
-      .def ("pop_prec",       &Parameters::pop_prec      )
-      .def ("use_scattering", &Parameters::use_scattering)
+      .def ("ncells",               &Parameters::ncells        )
+      .def ("ncameras",             &Parameters::ncameras      )
+      .def ("nrays",                &Parameters::nrays         )
+      .def ("nrays_red",            &Parameters::nrays_red     )
+      .def ("nboundary",            &Parameters::nboundary     )
+      .def ("nfreqs",               &Parameters::nfreqs        )
+      .def ("nfreqs_red",           &Parameters::nfreqs_red    )
+      .def ("nspecs",               &Parameters::nspecs        )
+      .def ("nlspecs",              &Parameters::nlspecs       )
+      .def ("nlines",               &Parameters::nlines        )
+      .def ("nquads",               &Parameters::nquads        )
+      .def ("pop_prec",             &Parameters::pop_prec      )
+      .def ("use_scattering",       &Parameters::use_scattering)
       // functions
-      .def ("read",           &Parameters::read      )
-      .def ("write",          &Parameters::write     );
+      .def ("read",                 &Parameters::read      )
+      .def ("write",                &Parameters::write     );
 
 
 
@@ -119,11 +121,23 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("cells",    &Geometry::cells)
       .def_readwrite ("rays",     &Geometry::rays)
       .def_readwrite ("boundary", &Geometry::boundary)
+      .def_readwrite ("cameras",  &Geometry::cameras)
       // constructor
       .def (py::init())
       // functions
       .def ("read",               &Geometry::read)
       .def ("write",              &Geometry::write);
+
+
+  // Cameras
+  py::class_<Cameras> (module, "Cameras")
+      // attributes
+      .def_readwrite ("camera2cell_nr", &Cameras::camera2cell_nr)
+      // constructor
+      .def (py::init())
+      // functions
+      .def ("read",                     &Cameras::read)
+      .def ("write",                    &Cameras::write);
 
 
   // Cells
@@ -341,7 +355,6 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("u",           &Radiation::u)
       .def_readwrite ("v",           &Radiation::v)
       .def_readwrite ("J",           &Radiation::J)
-      .def_readwrite ("G",           &Radiation::G)
       // constructor
       .def (py::init())
       // functions

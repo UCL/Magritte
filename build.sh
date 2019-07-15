@@ -80,9 +80,9 @@ else
      -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
-     -DOMP_PARALLEL=OFF                              \
+     -DOMP_PARALLEL=ON                               \
      -DMPI_PARALLEL=OFF                              \
-     -DGRID_SIMD=OFF                                 \
+     -DGRID_SIMD=ON                                  \
      $DIR
 
    make -j4

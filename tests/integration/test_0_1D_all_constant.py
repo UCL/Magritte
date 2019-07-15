@@ -72,11 +72,7 @@ simulation.read (io)
 # In[8]:
 
 
-simulation.parameters.set_max_iter (40)
 simulation.parameters.set_pop_prec (1.0E-8)
-simulation.parameters.r = 99999999999999999
-simulation.parameters.o = 99999999999999999
-simulation.parameters.f = 99999999999999999
 
 
 # In[9]:
@@ -205,7 +201,7 @@ def rindex (p, f):
 #   \tau_{\nu}(\ell) \ = \ \chi_{ij} \phi_{\nu} \ell.
 # \end{equation}
 
-# In[31]:
+# In[21]:
 
 
 import numpy as np
@@ -254,7 +250,7 @@ def G (nu, x):
     return   - 0.5 * (B-S) * (np.exp(-tau1) - np.exp(-tau2))
 
 
-# In[32]:
+# In[22]:
 
 
 def relativeError (a,b):
@@ -263,7 +259,7 @@ def relativeError (a,b):
     return 2.0 * np.abs((a-b)/(a+b))
 
 
-# In[33]:
+# In[23]:
 
 
 nr_center =  simulation.parameters.nquads() // 2
@@ -272,7 +268,7 @@ n_wings   = (simulation.parameters.nquads() - 1) // 2
 
 # #### Compare Magritte against analytic model
 
-# In[34]:
+# In[24]:
 
 
 plot_model = figure(title='u analytic and numeric', width=400, height=400, y_axis_type="log")
@@ -298,7 +294,7 @@ plot = gridplot([[plot_model, plot_error]])
 show(plot)
 
 
-# In[35]:
+# In[25]:
 
 
 plot_model = figure(title='v analytic and numeric', width=400, height=400, y_axis_type="log")
