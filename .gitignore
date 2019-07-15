@@ -12,7 +12,8 @@ CMakeCache.txt
 
 build/*
 bin/*
-docs/*
+docs/html/*
+docs/latex/*
 run/*
 
 tests/performance/build/*
