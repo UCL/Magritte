@@ -7,11 +7,12 @@ Makefile
 CMakeCache.txt
 
 
-# build, bin and run folders
-############################
+# build, bin, docs and run folders
+##################################
 
 build/*
 bin/*
+docs/*
 run/*
 
 tests/performance/build/*
