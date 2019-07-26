@@ -18,6 +18,9 @@
 #include "Functions/planck.hpp"
 
 
+///  Computer for spectral (=frequency) discretisation
+//////////////////////////////////////////////////////
+
 int Simulation ::
     compute_spectral_discretisation ()
 {
@@ -186,6 +189,9 @@ int Simulation ::
 
 
 
+///  Computer for boundary intensities (setting the boundary conditions for RT)
+///////////////////////////////////////////////////////////////////////////////
+
 int Simulation ::
     compute_boundary_intensities ()
 {
@@ -211,9 +217,10 @@ int Simulation ::
 
 
 
-///  get_dshift_max: the maximum allowed shift is determined by the smallest line
-///    @param[in] o: number of point under consideration
-/////////////////////////////////////////////////////////////////////////////////
+///  Getter for the maximum allowed shift value determined by the smallest line
+///    @param[in] o : number of point under consideration
+///    @retrun maximum allowed shift value determined by the smallest line
+///////////////////////////////////////////////////////////////////////////////
 
 inline double Simulation ::
     get_dshift_max (
@@ -240,8 +247,9 @@ inline double Simulation ::
 
 
 
-///  compute_radiation_field
-////////////////////////////
+
+///  Computer for the radiation field
+/////////////////////////////////////
 
 int Simulation ::
     compute_radiation_field ()
@@ -259,8 +267,9 @@ int Simulation ::
 
   // Raypair along which the trasfer equation is solved
   RayPair rayPair;
+
+  // Set bandwidth of the Approximated Lambda operator (ALO)
   rayPair.n_off_diag = parameters.n_off_diag;
-  cout << "Set n_off_diag " << rayPair.n_off_diag << endl;
 
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
@@ -269,73 +278,104 @@ int Simulation ::
 
     cout << "ray = " << r << endl;
 
+    //// Indicator to check how mant times a cell appeard on a ray
+    //Long1 ntimes_encounterd (parameters.ncells(), 0);
+
 #   pragma omp parallel default (shared) firstprivate (rayPair)
     {
     OMP_FOR (o, parameters.ncells())
     {
-      const long           ar = geometry.rays.antipod[o][r];
-      const double dshift_max = get_dshift_max (o);
-
-      RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
-      RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
-
-      rayPair.initialize (rayData_ar.size(), rayData_r.size());
+      //if (ntimes_encounterd[o] == 0)
+      //{
+        const long           ar = geometry.rays.antipod[o][r];
+        const double weight_ang = geometry.rays.weights[o][r];
+        const double dshift_max = get_dshift_max (o);
 
 
-      if (rayPair.ndep > 1)
-      {
-        for (long f = 0; f < parameters.nfreqs_red(); f++)
+        // Trace and initialize the ray pair
+
+        RayData rayData_r  = geometry.trace_ray <CoMoving> (o, r,  dshift_max);
+        RayData rayData_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+
+        rayPair.initialize (rayData_ar.size(), rayData_r.size());
+
+
+        // Solve radiative transfre along ray pair
+
+        if (rayPair.ndep > 1)
         {
-          // Setup and solve the ray equations
-          setup (R, o, f, rayData_ar, rayData_r, rayPair);
-          rayPair.solve ();
-
-          // Extract the Lambda operator
-          rayPair.update_Lambda (
-              radiation.frequencies,
-              thermodynamics,
-              o,
-              f,
-              geometry.rays.weights[o][r],
-              lines                       );
-
-          // Store solution of the radiation field
-          const vReal u = rayPair.get_u_at_origin ();
-          const vReal v = rayPair.get_v_at_origin ();
-
-          const long ind = radiation.index (o,f);
-
-          radiation.J[ind] += 2.0 * geometry.rays.weights[o][r] * u;
-
-          if (parameters.use_scattering())
+          for (long f = 0; f < parameters.nfreqs_red(); f++)
           {
-            radiation.u[r][ind] = u;
-            radiation.v[r][ind] = v;
+            // Setup and solve the ray equations
+            setup (R, o, f, rayData_ar, rayData_r, rayPair);
+
+            rayPair.solve ();
+
+            rayPair.update_Lambda (
+                radiation.frequencies,
+                thermodynamics,
+                o,
+                f,
+                weight_ang,
+                lines                 );
+
+
+            //rayPair.update_radiation (
+            //    R,
+            //    f,
+            //    ntimes_encounterd,
+            //    weight_ang,
+            //    radiation            );
+
+
+            // Store solution of the radiation field
+            const vReal u = rayPair.get_u_at_origin ();
+            const vReal v = rayPair.get_v_at_origin ();
+
+            const long ind = radiation.index (o,f);
+
+            radiation.J[ind] += 2.0 * weight_ang * u;
+
+            if (parameters.use_scattering())
+            {
+              radiation.u[R][ind] = u;
+              radiation.v[R][ind] = v;
+            }
           }
         }
-      }
 
-      else
-      {
-        const long b = geometry.boundary.cell2boundary_nr[o];
-
-        for (long f = 0; f < parameters.nfreqs_red(); f++)
+        else
         {
-          const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
-          const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+          // Only 2 points on the ray
 
-          const long ind = radiation.index (o,f);
+          const long b = geometry.boundary.cell2boundary_nr[o];
 
-          radiation.J[ind] += 2.0 * geometry.rays.weights[o][r] * u;
-
-          if (parameters.use_scattering())
+          for (long f = 0; f < parameters.nfreqs_red(); f++)
           {
-            radiation.u[r][ind] = u;
-            radiation.v[r][ind] = v;
+            const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+            const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+
+            const long ind = radiation.index (o,f);
+
+            radiation.J[ind] += 2.0 * weight_ang * u;
+
+            if (parameters.use_scattering())
+            {
+              radiation.u[R][ind] = u;
+              radiation.v[R][ind] = v;
+            }
           }
         }
-      }
 
+
+      //  // Indicate the cells that were encountered on the ray pair
+
+      //  for (long n = 0; n < rayPair.ndep; n++)
+      //  {
+      //    ntimes_encounterd [rayPair.nrs[n]] += 1;
+      //  }
+
+      //} // end of if ntimes_encounterd == 0
 
     } // end of loop over cells
     }
@@ -367,10 +407,158 @@ int Simulation ::
 
 
 
-///  compute_and_write_image:
+///  Computer and writer for images
 ///    @param[in] io : io object used to write the images
 ///    @param[in] r  : number of the ray indicating the direction of the image
-////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+//int Simulation ::
+//    compute_and_write_image (
+//        const Io  &io,
+//        const long r        )
+//{
+//
+//  cout << "Creating an image along ray " << r << "..." << endl;
+//
+//  // Create image object
+//  Image image (r, parameters);
+//
+//  // Raypair along which the trasfer equation is solved
+//  RayPair rayPair;
+//
+//
+//  // if the ray is in this MPI process
+//  if (   (r >= MPI_start (parameters.nrays()/2))
+//      && (r <  MPI_stop  (parameters.nrays()/2)) )
+//  {
+//    const long R = r - MPI_start (parameters.nrays()/2);
+//
+//
+//#   pragma omp parallel default (shared) private (rayPair)
+//    {
+//    OMP_FOR (c, parameters.ncameras())
+////    OMP_FOR (b, parameters.nboundary())
+////    for (long c = 0; c < parameters.ncameras(); c++)
+//    {
+//      const long o = geometry.cameras.camera2cell_nr[c];
+//
+//      cout << "Considering camera: " << c << " at " << o << endl;
+//      //const long o = geometry.boundary.boundary2cell_nr[b];
+//
+//      // Use data of the first boundary cell for the camera cell
+//      const long           op = geometry.boundary.boundary2cell_nr[0];
+//      const long           ar = geometry.rays.antipod[o][r];
+//      const double dshift_max = get_dshift_max (op);
+//
+//      //cout << " r = " <<  r << endl;
+//      //cout << "ar = " << ar << endl;
+//      //cout << "Tracing rays..." << endl;
+//
+//      RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
+//      RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
+//
+//      //cout << "Rays traced" << endl;
+//
+//
+//
+//      cout << "dshift_max " << dshift_max << endl;
+//
+//      //rayData_r[0].shift += rayData_ar[0].shift;
+//      //rayData_r[0].dZ    += rayData_ar[0].dZ;
+//
+//      //// Remove first element (the camera cell)
+//      //rayData_ar.erase (rayData_ar.begin());
+//
+//
+//      //cout << "ncameras   " << parameters.ncameras   () << endl;
+//      //cout << "nfreqs     " << parameters.nfreqs     () << endl;
+//      //cout << "nfreqs_red " << parameters.nfreqs_red () << endl;
+//
+//      cout << "raysize  r " << rayData_r .size() << endl;
+//      cout << "raysize ar " << rayData_ar.size() << endl;
+//
+//
+//      //for (int l=0; l < rayData_ar.size(); l++)
+//      //{
+//      //  cout << "cells_nr ar " << rayData_ar[l].cellNr << endl;
+//      //  cout << "shift    ar " << rayData_ar[l].shift << endl;
+//      //  cout << "dZ       ar " << rayData_ar[l].dZ << endl;
+//      //}
+//
+//      //for (int l=0; l < rayData_r.size(); l++)
+//      //{
+//      //  cout << "cells_nr r " << rayData_r[l].cellNr << endl;
+//      //  cout << "shift    r " << rayData_r[l].shift << endl;
+//      //  cout << "dZ       r " << rayData_r[l].dZ << endl;
+//      //}
+//
+//      //cout << "Initializing..." << endl;
+//
+//      rayPair.initialize (rayData_ar.size(), rayData_r.size());
+//
+//      //cout << "Initialised" << endl;
+//
+//      //if (rayPair.ndep > 1)
+//      //{
+//      //cout << "nfreqs    " << parameters.nfreqs    () << endl;
+//      //cout << "nfreqsred " << parameters.nfreqs_red() << endl;
+//
+//        for (long f = 0; f < parameters.nfreqs_red(); f++)
+//        {
+//        //long f = 0;
+//
+//
+//          //cout << "Setting up..." << endl;
+//          // Setup and solve the ray equations
+//          setup (R, op, f, rayData_ar, rayData_r, rayPair);
+//
+//          //rayPair.solve ();
+//          //cout << "Set up" << endl;
+//
+//
+//          // Store solution of the radiation field
+//          //cout << "Image m" << endl;
+//          image.I_m[c][f] = rayPair.get_Im ();
+//          //cout << "Image p" << endl;
+//          image.I_p[c][f] = rayPair.get_Ip ();
+//          //cout << "Done... for now..." << endl;
+//        }
+//      //}
+//
+//      //else
+//      //{
+//      //  const long b = geometry.boundary.cell2boundary_nr[o];
+//
+//      //  for (long f = 0; f < parameters.nfreqs_red(); f++)
+//      //  {
+//      //    image.I_m[o][f] = radiation.I_bdy[b][r][f];
+//      //    image.I_p[o][f] = radiation.I_bdy[b][r][f];
+//      //  }
+//      //}
+//
+//    } // end of loop over cells
+//    }
+//
+//  }
+//
+//
+//  image.set_coordinates (geometry);
+//
+//
+//  image.write (io);
+//
+//
+//  return (0);
+//
+//}
+
+
+
+
+///  Computer and writer for images
+///    @param[in] io : io object used to write the images
+///    @param[in] r  : number of the ray indicating the direction of the image
+//////////////////////////////////////////////////////////////////////////////
 
 int Simulation ::
     compute_and_write_image (
@@ -396,104 +584,42 @@ int Simulation ::
 
 #   pragma omp parallel default (shared) private (rayPair)
     {
-    OMP_FOR (c, parameters.ncameras())
-//    OMP_FOR (b, parameters.nboundary())
-//    for (long c = 0; c < parameters.ncameras(); c++)
+    OMP_FOR (o, parameters.ncells())
     {
-      const long o = geometry.cameras.camera2cell_nr[c];
-
-      cout << "Considering camera: " << c << " at " << o << endl;
-      //const long o = geometry.boundary.boundary2cell_nr[b];
-
-      // Use data of the first boundary cell for the camera cell
-      const long           op = geometry.boundary.boundary2cell_nr[0];
       const long           ar = geometry.rays.antipod[o][r];
-      const double dshift_max = get_dshift_max (op);
+      const double dshift_max = get_dshift_max (o);
 
-      //cout << " r = " <<  r << endl;
-      //cout << "ar = " << ar << endl;
-      //cout << "Tracing rays..." << endl;
-
-      RayData rayData_r  = geometry.trace_ray (o, r,  dshift_max);
-      RayData rayData_ar = geometry.trace_ray (o, ar, dshift_max);
-
-      //cout << "Rays traced" << endl;
-
-
-
-      cout << "dshift_max " << dshift_max << endl;
-
-      //rayData_r[0].shift += rayData_ar[0].shift;
-      //rayData_r[0].dZ    += rayData_ar[0].dZ;
-
-      //// Remove first element (the camera cell)
-      //rayData_ar.erase (rayData_ar.begin());
-
-
-      //cout << "ncameras   " << parameters.ncameras   () << endl;
-      //cout << "nfreqs     " << parameters.nfreqs     () << endl;
-      //cout << "nfreqs_red " << parameters.nfreqs_red () << endl;
-
-      cout << "raysize  r " << rayData_r .size() << endl;
-      cout << "raysize ar " << rayData_ar.size() << endl;
-
-
-      //for (int l=0; l < rayData_ar.size(); l++)
-      //{
-      //  cout << "cells_nr ar " << rayData_ar[l].cellNr << endl;
-      //  cout << "shift    ar " << rayData_ar[l].shift << endl;
-      //  cout << "dZ       ar " << rayData_ar[l].dZ << endl;
-      //}
-
-      //for (int l=0; l < rayData_r.size(); l++)
-      //{
-      //  cout << "cells_nr r " << rayData_r[l].cellNr << endl;
-      //  cout << "shift    r " << rayData_r[l].shift << endl;
-      //  cout << "dZ       r " << rayData_r[l].dZ << endl;
-      //}
-
-      //cout << "Initializing..." << endl;
+      RayData rayData_r  = geometry.trace_ray <Rest> (o, r,  dshift_max);
+      RayData rayData_ar = geometry.trace_ray <Rest> (o, ar, dshift_max);
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
-      //cout << "Initialised" << endl;
-
-      //if (rayPair.ndep > 1)
-      //{
-      //cout << "nfreqs    " << parameters.nfreqs    () << endl;
-      //cout << "nfreqsred " << parameters.nfreqs_red() << endl;
+      if (rayPair.ndep > 1)
+      {
 
         for (long f = 0; f < parameters.nfreqs_red(); f++)
         {
-        //long f = 0;
-
-
-          //cout << "Setting up..." << endl;
           // Setup and solve the ray equations
-          setup (R, op, f, rayData_ar, rayData_r, rayPair);
-          //rayPair.solve ();
-          //cout << "Set up" << endl;
+          setup (R, o, f, rayData_ar, rayData_r, rayPair);
 
+          rayPair.solve ();
 
           // Store solution of the radiation field
-          //cout << "Image m" << endl;
-          image.I_m[c][f] = rayPair.get_Im ();
-          //cout << "Image p" << endl;
-          image.I_p[c][f] = rayPair.get_Ip ();
-          //cout << "Done... for now..." << endl;
+          image.I_m[o][f] = rayPair.get_Im_at_front ();
+          image.I_p[o][f] = rayPair.get_Ip_at_end ();
         }
-      //}
+      }
 
-      //else
-      //{
-      //  const long b = geometry.boundary.cell2boundary_nr[o];
+      else
+      {
+        const long b = geometry.boundary.cell2boundary_nr[o];
 
-      //  for (long f = 0; f < parameters.nfreqs_red(); f++)
-      //  {
-      //    image.I_m[o][f] = radiation.I_bdy[b][r][f];
-      //    image.I_p[o][f] = radiation.I_bdy[b][r][f];
-      //  }
-      //}
+        for (long f = 0; f < parameters.nfreqs_red(); f++)
+        {
+          image.I_m[o][f] = radiation.I_bdy[b][ar][f];
+          image.I_p[o][f] = radiation.I_bdy[b][ r][f];
+        }
+      }
 
     } // end of loop over cells
     }
@@ -682,8 +808,13 @@ inline void Simulation ::
 
 
 
-///  get_eta_and_chi
-////////////////////
+///  Getter for the emissivity (eta) and the opacity (chi)
+///    @param[in]  freq_scaled : frequency (in co-moving frame)
+///    @param[in]  p           : in dex of the cell
+///    @param[in]  lnotch      : notch indicating where we are in the set of lines
+///    @param[out] eta         : emissivity
+///    @param[out] chi         : opacity
+//////////////////////////////////////////////////////////////////////////////////
 
 inline void Simulation ::
     get_eta_and_chi (

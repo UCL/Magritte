@@ -12,11 +12,11 @@
 const string LineProducingSpecies::prefix = "Lines/LineProducingSpecies_";
 
 
-///  read: read in data structure
-///    @param[in] io: io object
-///    @param[in] l: nr of line producing species
-///    @param[in] parameters: model parameters object
-/////////////////////////////////////////////////////
+///  Reader for the LineProducingSpecies data from the Io object
+///    @param[in] io         : io object
+///    @param[in] l          : nr of line producing species
+///    @param[in] parameters : model parameters object
+////////////////////////////////////////////////////////////////
 
 int LineProducingSpecies ::
     read (
@@ -75,12 +75,13 @@ int LineProducingSpecies ::
   io.read_list (prefix_l+"population_tot", population_tot);
 
 
-  Double2 pops       (ncells, Double1 (linedata.nlev));
+  read_populations (io, l, "");
+
+
   Double2 pops_prev1 (ncells, Double1 (linedata.nlev));
   Double2 pops_prev2 (ncells, Double1 (linedata.nlev));
   Double2 pops_prev3 (ncells, Double1 (linedata.nlev));
 
-  int err       = io.read_array (prefix_l+"population",       pops      );
   int err_prev1 = io.read_array (prefix_l+"population_prev1", pops_prev1);
   int err_prev2 = io.read_array (prefix_l+"population_prev2", pops_prev2);
   int err_prev3 = io.read_array (prefix_l+"population_prev3", pops_prev3);
@@ -90,7 +91,6 @@ int LineProducingSpecies ::
   {
     for (long i = 0; i < linedata.nlev; i++)
     {
-      if (err       == 0) {population       (index (p, i)) = pops      [p][i];}
       if (err_prev1 == 0) {population_prev1 (index (p, i)) = pops_prev1[p][i];}
       if (err_prev2 == 0) {population_prev2 (index (p, i)) = pops_prev2[p][i];}
       if (err_prev3 == 0) {population_prev3 (index (p, i)) = pops_prev3[p][i];}
@@ -105,10 +105,10 @@ int LineProducingSpecies ::
 
 
 
-///  write: write out data structure
-///    @param[in] io: io object
-///    @param[in] l: nr of line producing species
-/////////////////////////////////////////////////
+///  Writer for the LineProducingSpecies data to the Io object
+///    @param[in] io : io object
+///    @param[in] l  : nr of line producing species
+//////////////////////////////////////////////////////////////
 
 int LineProducingSpecies ::
     write (
@@ -160,10 +160,53 @@ int LineProducingSpecies ::
 
 
 
-///  write_populations: write current level populations
-///    @param[in] l: number of line producing species
-///    @param[in] tag: extra info tag
-///////////////////////////////////////////////////////
+///  Reader for the level populations from the Io object
+///    @param[in] io  : io object
+///    @param[in] l   : number of line producing species
+///    @param[in] tag : extra info tag
+////////////////////////////////////////////////////////
+
+int LineProducingSpecies ::
+    read_populations (
+        const Io     &io,
+        const long    l,
+        const string  tag)
+{
+
+  const string prefix_l = prefix + std::to_string (l) + "/";
+
+  Double2 pops (ncells, Double1 (linedata.nlev));
+
+  int err = io.read_array (prefix_l+"population"+tag, pops);
+
+
+  if (err == 0)
+  {
+    OMP_PARALLEL_FOR (p, ncells)
+    {
+      for (long i = 0; i < linedata.nlev; i++)
+      {
+        population (index (p, i)) = pops[p][i];
+      }
+    }
+  }
+
+  //io.read_array (prefix_l+"Jlin"+tag, Jlin);
+  //io.read_array (prefix_l+"Jeff"+tag, Jeff);
+
+
+  return (0);
+
+}
+
+
+
+
+///  Writer for the level populations to the Io object
+///    @param[in] io  : io object
+///    @param[in] l   : number of line producing species
+///    @param[in] tag : extra info tag
+////////////////////////////////////////////////////////
 
 int LineProducingSpecies ::
     write_populations (
@@ -187,8 +230,8 @@ int LineProducingSpecies ::
 
   io.write_array (prefix_l+"population"+tag, pops);
 
-  io.write_array (prefix_l+"Jlin"+tag, Jlin);
-  io.write_array (prefix_l+"Jeff"+tag, Jeff);
+  //io.write_array (prefix_l+"Jlin"+tag, Jlin);
+  //io.write_array (prefix_l+"Jeff"+tag, Jeff);
 
 
   return (0);
@@ -198,8 +241,8 @@ int LineProducingSpecies ::
 
 
 
-///  initialize_Lambda: clear all entries of Lambda operator
-////////////////////////////////////////////////////////////
+///  Initializer for the Lambda operator
+////////////////////////////////////////
 
 int LineProducingSpecies ::
     initialize_Lambda ()
@@ -222,8 +265,8 @@ int LineProducingSpecies ::
 
 
 
-///  gather_Lambda: gather Lambda's from MPI distributed processes
-//////////////////////////////////////////////////////////////////
+///  Gatherer for the Lambda's from the MPI distributed processes
+/////////////////////////////////////////////////////////////////
 
 int LineProducingSpecies ::
     gather_Lambda ()

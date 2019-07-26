@@ -20,19 +20,21 @@ Image (
     const long        ray_nr,
     const Parameters &parameters)
   : ray_nr   (ray_nr)
+  , ncells   (parameters.ncells())
   , ncameras (parameters.ncameras())
   , nfreqs   (parameters.nfreqs())
 {
 
   // Size and initialize Ip_out and Im_out
 
-  ImX.resize (ncameras);
-  ImY.resize (ncameras);
+  ImX.resize (ncells);
+  ImY.resize (ncells);
 
-  I_p.resize (ncameras);
-  I_m.resize (ncameras);
+  I_p.resize (ncells);
+  I_m.resize (ncells);
 
-  for (long c = 0; c < ncameras; c++)
+  for (long c = 0; c < ncells; c++)
+  //for (long c = 0; c < ncameras; c++)
   {
     I_p[c].resize (nfreqs);
     I_m[c].resize (nfreqs);
@@ -70,8 +72,9 @@ int Image ::
 
 
 
-/// set_axis: set axis on which to project image
-////////////////////////////////////////////////
+///  Setter for the coordinates on the image axes
+///    @param[in] geometry : geometry object of the model
+/////////////////////////////////////////////////////////
 
 
 int Image ::
@@ -79,11 +82,11 @@ int Image ::
         const Geometry &geometry)
 {
 
-  //OMP_PARALLEL_FOR (p, ncells)
-  for (long c = 0; c < ncameras; c++)
+  OMP_PARALLEL_FOR (p, ncells)
+  //for (long c = 0; c < ncameras; c++)
   {
 
-    const long p = geometry.cameras.camera2cell_nr[c];
+    //const long p = geometry.cameras.camera2cell_nr[c];
 
 
     const double rx = geometry.rays.x[p][ray_nr];
@@ -101,10 +104,10 @@ int Image ::
     const double jz = -denominator;
 
 
-    ImX[c] =   ix * geometry.cells.x[p]
+    ImX[p] =   ix * geometry.cells.x[p]
              + iy * geometry.cells.y[p];
 
-    ImY[c] =   jx * geometry.cells.x[p]
+    ImY[p] =   jx * geometry.cells.x[p]
              + jy * geometry.cells.y[p]
              + jz * geometry.cells.z[p];
   }

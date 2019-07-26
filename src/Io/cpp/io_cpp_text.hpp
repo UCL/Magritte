@@ -36,6 +36,9 @@ struct IoText : public Io
   int  read_word     (const string fname,       string  &word  ) const;
   int write_word     (const string fname, const string  &word  ) const;
 
+  int  read_bool     (const string fname,       bool    &value ) const;
+  int write_bool     (const string fname, const bool    &value ) const;
+
   int  read_list     (const string fname,       Long1   &list  ) const;
   int write_list     (const string fname, const Long1   &list  ) const;
 
@@ -60,9 +63,6 @@ struct IoText : public Io
 
 
 };
-
-
-//#include "../src/io_text.tpp"
 
 
 #endif // __INPUT_TEXT_HPP_INCLUDED__

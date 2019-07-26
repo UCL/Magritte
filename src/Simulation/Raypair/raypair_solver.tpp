@@ -4,8 +4,8 @@
 // _________________________________________________________________________
 
 
-///  solve: Feautrier solver for mean ontensity (u) and flux (v) along raypair.
-///////////////////////////////////////////////////////////////////////////////
+///  Feautrier solver for mean intensity (u) and flux (v) along the raypair
+///////////////////////////////////////////////////////////////////////////
 
 inline void RayPair ::
     solve (void)
@@ -246,12 +246,15 @@ inline void RayPair ::
 
 
 ///  get_Im: Get I_{-} intensity exiting first cell of the raypair.
+///    @return
 ///////////////////////////////////////////////////////////////////
 
 inline vReal RayPair ::
     get_Im (void)
 
 {
+
+  // Initialize Su
 
   Su[0] = term1[0]; //- (term2[1] + term2[0] - 2.0*I_bdy_0) / dtau[0];
 
@@ -262,6 +265,8 @@ inline vReal RayPair ::
 
   Su[ndep-1] = term1[ndep-1]; //+ (term2[ndep-1] + term2[ndep-2] + 2.0*I_bdy_n) / dtau[ndep-2];
 
+
+  // Integrate (first order) transfer equation
 
   vReal tau = 0.0;        // optical depth
   vReal Im  = Su[n_ar];   // intensity down the ray

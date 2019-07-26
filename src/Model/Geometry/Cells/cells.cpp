@@ -12,10 +12,10 @@
 const string Cells::prefix = "Geometry/Cells/";
 
 
-///  Read the Cells data from the Io object
-///    @param[in] io:         Io object to read from
-///    @param[in] parameters: Parameters object of the model
-////////////////////////////////////////////////////////////
+///  Reader for the Cells data from the Io object
+///    @param[in] io         : Io object to read from
+///    @param[in] parameters : Parameters object of the model
+/////////////////////////////////////////////////////////////
 
 int Cells ::
     read (
@@ -54,12 +54,12 @@ int Cells ::
 
 
   // Convert velocities in m/s to fractions for C
-  for (long p = 0; p < ncells_plus_ncameras; p++)
-  {
-    vx[p] /= CC;
-    vy[p] /= CC;
-    vz[p] /= CC;
-  }
+  //for (long p = 0; p < ncells_plus_ncameras; p++)
+  //{
+  //  vx[p] /= CC;
+  //  vy[p] /= CC;
+  //  vz[p] /= CC;
+  //}
 
 
   // Read number of neighbors
@@ -88,9 +88,9 @@ int Cells ::
 
 
 
-///  write: write the dat astructure
-///  @param[in] io: io object
-////////////////////////////////////////////////
+///  Writer for the Cells data to the Io object
+///  @param[in] io : io object
+///////////////////////////////////////////////
 
 int Cells ::
     write (

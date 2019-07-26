@@ -55,6 +55,11 @@ struct LineProducingSpecies
           const Io  &io,
           const long l  ) const;
 
+      int read_populations (
+          const Io     &io,
+          const long    l,
+          const string  tag );
+
       int write_populations (
           const Io     &io,
           const long    l,

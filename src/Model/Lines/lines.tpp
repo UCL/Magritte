@@ -10,8 +10,11 @@
 #include "Tools/debug.hpp"
 
 
-///  index:
-///////////
+///  Indexer for cell, line producing species and transition indices
+///    @param[in] p : index of the cell
+///    @param[in] l : index of the line producing species
+///    @param[in] k : index of the line transition
+////////////////////////////////////////////////////////////////////
 
 inline long Lines ::
     index (
@@ -24,8 +27,10 @@ inline long Lines ::
 
 
 
-///  index:
-///////////
+///  Indexer for cell and line indices
+///    @param[in] p          : index of the cell
+///    @param[in] line_index : index of the line
+////////////////////////////////////////////////
 
 inline long Lines ::
     index (
@@ -38,10 +43,10 @@ inline long Lines ::
 
 
 
-///  set_emissivity_and_opacity
-///    @param[in] p: number of cell
-///    @param[in] l: number of line producing species
-/////////////////////////////////////////////////////
+///  Setter for line emissivity and opacity
+///    @param[in] p : index of the cell
+///    @param[in] l : index of the line producing species
+/////////////////////////////////////////////////////////
 
 inline void Lines ::
     set_emissivity_and_opacity ()
@@ -55,7 +60,7 @@ inline void Lines ::
       for (int k = 0; k < lineProducingSpecies[l].linedata.nrad; k++)
       {
         const long ind = index (p,l,k);
-        
+
         emissivity[ind] = lineProducingSpecies[l].get_emissivity (p, k);
            opacity[ind] = lineProducingSpecies[l].get_opacity    (p, k);
       }

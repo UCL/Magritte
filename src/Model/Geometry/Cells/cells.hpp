@@ -21,14 +21,20 @@ struct Cells
 
   public:
 
-      Double1  x,  y,  z;       ///< [m] coordinates of cell center
-      Double1 vx, vy, vz;       ///< [.] components of velocity field (as fraction of C)
+      Double1  x;          ///< x coordinate of cell center [m]
+      Double1  y;          ///< y coordinate of cell center [m]
+      Double1  z;          ///< z coordinate of cell center [m]
 
-      Long1 n_neighbors;        ///< number of neighbors
-      Long2   neighbors;        ///< cell numbers of neighors
+      Double1 vx;          ///< x component of velocity field (as fraction of C) [.]
+      Double1 vy;          ///< y component of velocity field (as fraction of C) [.]
+      Double1 vz;          ///< z component of velocity field (as fraction of C) [.]
+
+      Long1 n_neighbors;   ///< number of neighbors of each cell
+      Long2   neighbors;   ///< cell numbers of the neighbors of each cell
 
 
       // Io
+
       int read (
           const Io         &io,
                 Parameters &parameters);
@@ -39,11 +45,11 @@ struct Cells
 
   private:
 
-      long ncells;                 ///< number of cells
-      long ncameras;               ///< number of cameras
-      long ncells_plus_ncameras;   ///< number of cells plus number of cameras
+      long ncells;                  ///< number of cells
+      long ncameras;                ///< number of cameras
+      long ncells_plus_ncameras;    ///< number of cells plus number of cameras
 
-      static const string prefix;
+      static const string prefix;   ///< prefix to be used in io
 
 
 };

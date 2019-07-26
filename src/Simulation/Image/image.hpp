@@ -46,6 +46,7 @@ struct Image
 
   private:
 
+      const long ncells;     ///< number of cells
       const long ncameras;   ///< number of cameras
       const long nfreqs;     ///< number of frequencies
 

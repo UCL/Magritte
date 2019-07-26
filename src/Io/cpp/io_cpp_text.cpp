@@ -13,8 +13,8 @@
 
 
 ///  Constructor for IoText
-///    @param[in] io_file: file to read from and write to
-/////////////////////////////////////////////////////////
+///    @param[in] io_file : file to read from and write to
+//////////////////////////////////////////////////////////
 
 IoText ::
     IoText (
@@ -28,9 +28,9 @@ IoText ::
 
 
 
-///  pathExist: returns true if the given path exists
-///  @param[in] path: path to check
-/////////////////////////////////////////////////////
+///  Check if the given path exists
+///    @param[in] path : path to check
+//////////////////////////////////////
 
 bool pathExist (
     const string &path)
@@ -43,10 +43,10 @@ bool pathExist (
 
 
 
-///  get_length:
-///  @param[in] file_name: path to file containing the data
-///  @param[out] length: length to be read
-///////////////////////////////////////////////////////////
+///  Reader for the length of a text file
+///    @param[in]  file_name : path to file containing the data
+///    @param[out] length    : length to be read
+///////////////////////////////////////////////////////////////
 
 int IoText ::
     read_length (
@@ -89,10 +89,11 @@ int IoText ::
 
 
 
-///  get_length:
-///  @param[in] file_name: path to file containing the data
-///  @param[out] length: length to be read
-///////////////////////////////////////////////////////////
+///  Reader for the number of columns (width) of a text file
+///  or the number of files with a similar file name
+///    @param[in]  file_name : path to file containing the data
+///    @param[out] width     : width to be read
+///////////////////////////////////////////////////////////////
 
 int IoText ::
     read_width (
@@ -107,6 +108,8 @@ int IoText ::
 
   if (pathExist (fname + ".txt"))
   {
+    // Count the number of columns in the file
+
     std::ifstream file (io_file + file_name + ".txt");
 
     string line, elem;
@@ -125,6 +128,8 @@ int IoText ::
 
   else
   {
+    // Count the number of files with a similar name
+
     while (pathExist (fname + std::to_string (width)))
     {
       width++;
@@ -139,10 +144,10 @@ int IoText ::
 
 
 
-///  read_number:
-///  @param[in] file_name: file containing the number
-///  @param[out] number: number to be read
-/////////////////////////////////////////////////////
+///  Reader for a single (long integer) number from a text file
+///    @param[in]  file_name : path to the file containing the number
+///    @param[out] number    : number to be read
+/////////////////////////////////////////////////////////////////////
 
 int IoText ::
     read_number (
@@ -164,10 +169,10 @@ int IoText ::
 
 
 
-///  write_number:
-///  @param[in] file_name: file containing the number
-///  @param[out] number: number to be written
-/////////////////////////////////////////////////////
+///  Writer for a single (long integer) number to a text file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] number    : number to be written
+/////////////////////////////////////////////////////////////
 
 int IoText ::
     write_number (
@@ -191,10 +196,10 @@ int IoText ::
 
 
 
-///  read_number:
-///  @param[in] file_name: file containing the number
-///  @param[out] number: number to be read
-/////////////////////////////////////////////////////
+///  Reader for a single (double) number from a text file
+///    @param[in]  file_name : path to the file containing the number
+///    @param[out] number    : number to be read
+/////////////////////////////////////////////////////////////////////
 
 int IoText ::
     read_number (
@@ -216,10 +221,10 @@ int IoText ::
 
 
 
-///  write_number:
-///  @param[in] file_name: file containing the number
-///  @param[out] number: number to be written
-/////////////////////////////////////////////////////
+///  Writer for a single (double) number to a text file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] number    : number to be written
+/////////////////////////////////////////////////////////////
 
 int IoText ::
     write_number (
@@ -243,12 +248,13 @@ int IoText ::
 
 
 
-///  read_word:
-///  @param[in] file_name: file containing the number
-/////////////////////////////////////////////////////
+///  Reader for a single string from a text file
+///    @param[in]  file_name : path to the file containing the string
+///    @param[out] word      : string to be read
+/////////////////////////////////////////////////////////////////////
 
 int IoText ::
-    read_word  (
+    read_word (
         const string  file_name,
               string &word      ) const
 {
@@ -267,12 +273,13 @@ int IoText ::
 
 
 
-///  write_word:
-///  @param[in] file_name: file containing the number
-/////////////////////////////////////////////////////
+///  Writer for a single string to a text file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] word      : string to be written
+/////////////////////////////////////////////////////////////
 
 int IoText ::
-    write_word  (
+    write_word (
         const string  file_name,
         const string &word      ) const
 {
@@ -291,10 +298,64 @@ int IoText ::
 
 
 
-///  read_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be filled
-///////////////////////////////////////////////////////////
+///  Reader for a single boolean from a text file
+///    @param[in]  file_name : path to the file containing the boolean
+///    @param[out] value     : value to be read
+//////////////////////////////////////////////////////////////////////
+
+int IoText ::
+    read_bool (
+        const string file_name,
+              bool  &value     ) const
+{
+
+  // Treat booleans as text in io
+
+  string word;
+
+  read_word (file_name, word);
+
+  value = word.compare("true");
+
+
+  return (0);
+
+}
+
+
+
+
+///  Writer for a single boolean to a text file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] value     : value to be written
+/////////////////////////////////////////////////////////////
+
+int IoText ::
+    write_bool (
+        const string file_name,
+        const bool  &value     ) const
+{
+
+  // Treat booleans as text in io
+
+  string word = "false";
+
+  if (value) {word = "true";}
+
+  write_word (file_name, word);
+
+
+  return (0);
+
+}
+
+
+
+
+///  Reader for a list of long integers from a text file
+///     @param[in] file_name : path to file containing the list
+///     @param[in] list      : list to be read
+///////////////////////////////////////////////////////////////
 
 int IoText ::
     read_list (
@@ -321,10 +382,10 @@ int IoText ::
 
 
 
-///  write_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of long integers to a text file
+///    @param[in] file_name : path to file to be written
+///    @param[in] list      : list to be written
+////////////////////////////////////////////////////////
 
 int IoText ::
     write_list (
@@ -351,10 +412,10 @@ int IoText ::
 
 
 
-///  read_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be filled
-///////////////////////////////////////////////////////////
+///  Reader for a list of doubles from a text file
+///    @param[in] file_name : path to file containing the list
+///    @param[in] list      : list to be read
+//////////////////////////////////////////////////////////////
 
 int IoText ::
     read_list (
@@ -381,10 +442,10 @@ int IoText ::
 
 
 
-///  write_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of strings to a text file
+///    @param[in] file_name : path to file to be written
+///    @param[in] list      : list to be written
+////////////////////////////////////////////////////////
 
 int IoText ::
     write_list (
@@ -411,10 +472,10 @@ int IoText ::
 
 
 
-///  read_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be filled
-///////////////////////////////////////////////////////////
+///  Reader for a list of strings from a text file
+///    @param[in] file_name : path to file containing the list
+///    @param[in] list      : list to be read
+//////////////////////////////////////////////////////////////
 
 int IoText ::
     read_list (
@@ -441,10 +502,10 @@ int IoText ::
 
 
 
-///  write_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of strings to a text file
+///    @param[in] file_name : path to file to be written
+///    @param[in] list      : list to be written
+////////////////////////////////////////////////////////
 
 int IoText ::
     write_list (
@@ -471,10 +532,10 @@ int IoText ::
 
 
 
-///  read_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be filled
-///////////////////////////////////////////////////////////
+///  Reader for an array of long integers from a text file
+///    @param[in] file_name : path to file containing the array
+///    @param[in] array     : array to be read
+///////////////////////////////////////////////////////////////
 
 int IoText ::
     read_array (
@@ -509,10 +570,10 @@ int IoText ::
 
 
 
-///  write_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be written
-///////////////////////////////////////////////////////////
+///  Writer for an array of long integers to a text file
+///    @param[in] file_name : path to file to be written
+///    @param[in] array     : array to be written
+////////////////////////////////////////////////////////
 
 int IoText ::
     write_array (
@@ -544,10 +605,10 @@ int IoText ::
 
 
 
-///  read_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be filled
-///////////////////////////////////////////////////////////
+///  Reader for an array of doubles from a text file
+///    @param[in] file_name : path to file containing the array
+///    @param[in] array     : array to be read
+///////////////////////////////////////////////////////////////
 
 int IoText ::
     read_array (
@@ -581,10 +642,10 @@ int IoText ::
 
 
 
-///  write_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be written
-///////////////////////////////////////////////////////////
+///  Writer for an array of doubles from a text file
+///    @param[in] file_name : path to file to be written
+///    @param[in] array     : array to be written
+////////////////////////////////////////////////////////
 
 int IoText ::
     write_array (
@@ -616,12 +677,12 @@ int IoText ::
 
 
 
-///  read_3_vector:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] x: x component of the vector to be read
-///  @param[in] y: y component of the vector to be read
-///  @param[in] z: z component of the vector to be read
-///////////////////////////////////////////////////////////
+///  Reader for a list of 3-vectors of doubles from a text file
+///    @param[in] file_name : path to file containing the vectors
+///    @param[in] x         : x component of the vector to be read
+///    @param[in] y         : y component of the vector to be read
+///    @param[in] z         : z component of the vector to be read
+//////////////////////////////////////////////////////////////////
 
 int IoText ::
     read_3_vector (
@@ -650,12 +711,12 @@ int IoText ::
 
 
 
-///  write_3_vector:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] x: x component of the vector to be written
-///  @param[in] y: y component of the vector to be written
-///  @param[in] z: z component of the vector to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of 3-vectors of doubles to a text file
+///    @param[in] file_name : path to file containing the vectors
+///    @param[in] x         : x component of the vector to be written
+///    @param[in] y         : y component of the vector to be written
+///    @param[in] z         : z component of the vector to be written
+/////////////////////////////////////////////////////////////////////
 
 int IoText ::
     write_3_vector (

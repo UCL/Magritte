@@ -16,10 +16,10 @@
 const string Frequencies::prefix = "Radiation/Frequencies/";
 
 
-///  read: read in the data file
-///    @param[in] io: io object
-///    @param[in] parameters: model parameters object
-/////////////////////////////////////////////////////
+///  Reader for the Frequencies data
+///    @param[in] io         : io object to read with
+///    @param[in] parameters : model parameters object
+//////////////////////////////////////////////////////
 
 int Frequencies ::
     read (
@@ -33,6 +33,10 @@ int Frequencies ::
   ncells = parameters.ncells ();
   nlines = parameters.nlines ();
   nquads = parameters.nquads ();
+
+  cout << "ncells = " << ncells << endl;
+  cout << "nlines = " << nlines << endl;
+  cout << "nquads = " << nquads << endl;
 
 
   // Count line frequencies
@@ -85,9 +89,9 @@ int Frequencies ::
 
 
 
-///  write: write out data structure
-///    @param[in] io: io object
-////////////////////////////////////
+///  Writer for the Frequencies data
+///    @param[in] io : io object to write with
+/////////////////////.////////////////////////
 
 int Frequencies ::
     write (

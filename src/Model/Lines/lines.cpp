@@ -14,10 +14,10 @@
 const string Lines::prefix = "Lines/";
 
 
-///  read: read in data structure
-///    @param[in] io: io object
-///    @param[in] parameters: model parameters object
-/////////////////////////////////////////////////////
+///  Reader for the Lines data
+///    @param[in] io         : io object to read with
+///    @param[in] parameters : model parameters object
+//////////////////////////////////////////////////////
 
 int Lines ::
     read (
@@ -102,9 +102,9 @@ int Lines ::
 
 
 
-///  write: write out data structure
-///    @param[in] io: io object
-////////////////////////////////////
+///  Writer for the Lines data
+///    @param[in] io: io object to write with
+/////////////////////////////////////////////
 
 int Lines ::
     write (
