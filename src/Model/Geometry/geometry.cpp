@@ -31,6 +31,9 @@ int Geometry ::
   boundary.read (io, parameters);
 
 
+  nrays = parameters.nrays();
+
+
   return (0);
 
 }

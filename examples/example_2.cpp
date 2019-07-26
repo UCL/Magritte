@@ -29,8 +29,8 @@ int main (int argc, char **argv)
 
     cout << "Running model: " << modelName << endl;
 
-    const bool use_Ng_acceleration = true;
-    const long max_niterations     = 20;
+    const bool use_Ng_acceleration = false;
+    const long max_niterations     = 1;
 
 
 #   pragma omp parallel

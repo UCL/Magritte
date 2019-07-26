@@ -39,6 +39,7 @@ int Radiation ::
 
   use_scattering = parameters.use_scattering ();
 
+  cout << "use_scattering = " << use_scattering << endl;
 
   nrays_red = MPI_length (nrays/2);
 

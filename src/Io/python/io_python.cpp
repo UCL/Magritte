@@ -20,9 +20,9 @@ const string IoPython::io_folder = string (MAGRITTE_FOLDER) + "/src/Io/python/";
 
 
 ///  Constructor for IoPython
-///    @param[in] implementation: python module containing the implementaion
-///    @param[in] io_file: file to read from and write to
-////////////////////////////////////////////////////////////////////////////
+///    @param[in] implementaion : name of python module with io implementation
+///    @param[in] io_file       : file to read from and write to
+//////////////////////////////////////////////////////////////////////////////
 
 IoPython ::
     IoPython (
@@ -38,10 +38,10 @@ IoPython ::
 
 
 
-///  read_length:
-///  @param[in] file_name: path to file containing the data
-///  @param[out] length: length to be read
-///////////////////////////////////////////////////////////
+///  Reader for the length of a file
+///    @param[in]  file_name : path to file containing the data
+///    @param[out] length    : length to be read
+///////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_length (
@@ -59,10 +59,11 @@ int IoPython ::
 
 
 
-///  read_width:
-///  @param[in] file_name: path to file containing the data
-///  @param[out] length: length to be read
-///////////////////////////////////////////////////////////
+///  Reader for the number of columns (width) of a file
+///  or the number of files with a similar file name
+///    @param[in]  file_name : path to file containing the data
+///    @param[out] width     : width to be read
+///////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_width (
@@ -80,10 +81,10 @@ int IoPython ::
 
 
 
-///  read_number:
-///  @param[in] file_name: file containing the number
-///  @param[out] number: number to be read
-/////////////////////////////////////////////////////
+///  Reader for a single (long integer) number from a file
+///    @param[in]  file_name : path to the file containing the number
+///    @param[out] number    : number to be read
+/////////////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_number (
@@ -101,10 +102,10 @@ int IoPython ::
 
 
 
-///  write_number:
-///  @param[in] file_name: file containing the number
-///  @param[in] number: number to be written
-/////////////////////////////////////////////////////
+///  Writer for a single (long integer) number to a file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] number    : number to be written
+/////////////////////////////////////////////////////////////
 
 int IoPython ::
     write_number (
@@ -122,10 +123,10 @@ int IoPython ::
 
 
 
-///  read_number:
-///  @param[in] file_name: file containing the number
-///  @param[out] number: number to be read
-/////////////////////////////////////////////////////
+///  Reader for a single (double) number from a file
+///    @param[in]  file_name : path to the file containing the number
+///    @param[out] number    : number to be read
+/////////////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_number (
@@ -143,10 +144,10 @@ int IoPython ::
 
 
 
-///  write_number:
-///  @param[in] file_name: file containing the number
-///  @param[in] number: number to be written
-/////////////////////////////////////////////////////
+///  Writer for a single (double) number to a file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] number    : number to be written
+/////////////////////////////////////////////////////////////
 
 int IoPython ::
     write_number (
@@ -164,10 +165,10 @@ int IoPython ::
 
 
 
-///  read_word:
-///  @param[in] file_name: file containing the number
-///  @param[out] word: word to be written
-/////////////////////////////////////////////////////
+///  Reader for a single string from a file
+///    @param[in]  file_name : path to the file containing the string
+///    @param[out] word      : string to be read
+/////////////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_word  (
@@ -185,10 +186,10 @@ int IoPython ::
 
 
 
-///  write_word:
-///  @param[in] file_name: file containing the number
-///  @param[in] word: word to be written
-/////////////////////////////////////////////////////
+///  Writer for a single string to a file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] word      : string to be written
+/////////////////////////////////////////////////////////////
 
 int IoPython ::
     write_word  (
@@ -206,10 +207,63 @@ int IoPython ::
 
 
 
-///  read_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be filled
-///////////////////////////////////////////////////////////
+///  Reader for a single boolean from a file
+///    @param[in]  file_name : path to the file containing the boolean
+///    @param[out] value     : value to be read
+//////////////////////////////////////////////////////////////////////
+
+int IoPython ::
+    read_bool  (
+        const string file_name,
+              bool  &value     ) const
+{
+
+  // Treat booleans as text in io
+
+  string word;
+
+  int err = read_word (file_name, word);
+
+  value = word.compare("true");
+
+
+  return err;
+
+}
+
+
+
+
+///  Writer for a single boolean to a file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] value     : value to be written
+/////////////////////////////////////////////////////////////
+
+int IoPython ::
+    write_bool  (
+        const string file_name,
+        const bool  &value     ) const
+{
+
+  // Treat booleans as text in io
+
+  string word = "false";
+
+  if (value) {word = "true";}
+
+  int err = write_word (file_name, word);
+
+
+  return err;
+
+}
+
+
+
+///  Reader for a list of long integers from a file
+///     @param[in] file_name : path to file containing the list
+///     @param[in] list      : list to be read
+///////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_list (
@@ -227,10 +281,10 @@ int IoPython ::
 
 
 
-///  write_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of long integers to a file
+///    @param[in] file_name : path to file to be written
+///    @param[in] list      : list to be written
+////////////////////////////////////////////////////////
 
 int IoPython ::
     write_list (
@@ -254,10 +308,10 @@ int IoPython ::
 
 
 
-///  read_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be filled
-///////////////////////////////////////////////////////////
+///  Reader for a list of doubles from a file
+///    @param[in] file_name : path to file containing the list
+///    @param[in] list      : list to be read
+//////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_list (
@@ -275,10 +329,10 @@ int IoPython ::
 
 
 
-///  write_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of doubles to a file
+///    @param[in] file_name : path to file to be written
+///    @param[in] list      : list to be written
+////////////////////////////////////////////////////////
 
 int IoPython ::
     write_list (
@@ -302,10 +356,10 @@ int IoPython ::
 
 
 
-///  read_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be filled
-///////////////////////////////////////////////////////////
+///  Reader for a list of strings from a file
+///    @param[in] file_name : path to file containing the list
+///    @param[in] list      : list to be read
+//////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_list (
@@ -323,10 +377,10 @@ int IoPython ::
 
 
 
-///  write_list:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: list to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of strings to a file
+///    @param[in] file_name : path to file to be written
+///    @param[in] list      : list to be written
+////////////////////////////////////////////////////////
 
 int IoPython ::
     write_list (
@@ -350,10 +404,10 @@ int IoPython ::
 
 
 
-///  read_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be filled
-///////////////////////////////////////////////////////////
+///  Reader for an array of long integers from a file
+///    @param[in] file_name : path to file containing the array
+///    @param[in] array     : array to be read
+///////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_array (
@@ -371,10 +425,10 @@ int IoPython ::
 
 
 
-///  write_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be written
-///////////////////////////////////////////////////////////
+///  Writer for an array of long integers to a file
+///    @param[in] file_name : path to file to be written
+///    @param[in] array     : array to be written
+////////////////////////////////////////////////////////
 
 int IoPython ::
     write_array (
@@ -398,10 +452,10 @@ int IoPython ::
 
 
 
-///  read_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be filled
-///////////////////////////////////////////////////////////
+///  Reader for an array of doubles from a file
+///    @param[in] file_name : path to file containing the array
+///    @param[in] array     : array to be read
+///////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_array (
@@ -419,10 +473,10 @@ int IoPython ::
 
 
 
-///  write_array:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] list: array to be written
-///////////////////////////////////////////////////////////
+///  Writer for an array of doubles from a file
+///    @param[in] file_name : path to file to be written
+///    @param[in] array     : array to be written
+////////////////////////////////////////////////////////
 
 int IoPython ::
     write_array (
@@ -446,12 +500,12 @@ int IoPython ::
 
 
 
-///  read_3_vector:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] x: x component of the vector to be read
-///  @param[in] y: y component of the vector to be read
-///  @param[in] z: z component of the vector to be read
-///////////////////////////////////////////////////////////
+///  Reader for a list of 3-vectors of doubles from a file
+///    @param[in] file_name : path to file containing the vectors
+///    @param[in] x         : x component of the vector to be read
+///    @param[in] y         : y component of the vector to be read
+///    @param[in] z         : z component of the vector to be read
+//////////////////////////////////////////////////////////////////
 
 int IoPython ::
     read_3_vector (
@@ -493,12 +547,12 @@ int IoPython ::
 
 
 
-///  write_3_vector:
-///  @param[in] file_name: path to file containing the data
-///  @param[in] x: x component of the vector to be written
-///  @param[in] y: y component of the vector to be written
-///  @param[in] z: z component of the vector to be written
-///////////////////////////////////////////////////////////
+///  Writer for a list of 3-vectors of doubles to a file
+///    @param[in] file_name : path to file containing the vectors
+///    @param[in] x         : x component of the vector to be written
+///    @param[in] y         : y component of the vector to be written
+///    @param[in] z         : z component of the vector to be written
+/////////////////////////////////////////////////////////////////////
 
 int IoPython ::
     write_3_vector (
@@ -546,10 +600,10 @@ int IoPython ::
 
 
 
-///  execute_io_function_in_python: executes io function in python
-///    @param[in] function: name of io function to execute
-///    @param[in] file_name: name of the file from which to read
-///    @param[out] data: the data read from the file
+///  Executer in python for reader functions
+///    @param[in]  function  : name of reader function to execute
+///    @param[in]  file_name : name of the file from which to read
+///    @param[out] data      : data read from the file
 //////////////////////////////////////////////////////////////////
 
 template <class type>
@@ -600,11 +654,11 @@ int IoPython ::
 
 
 
-///  execute_io_function_in_python: executes io function in python
-///    @param[in] function: name of io function to execute
-///    @param[in] file_name: name of the file from which to read
-///    @param[out] data: the data read from the file
-//////////////////////////////////////////////////////////////////
+///  Executer in python for writer functions
+///    @param[in] function  : name of writer function to execute
+///    @param[in] file_name : name of the file to write to
+///    @param[out] data     : data read from the file
+////////////////////////////////////////////////////////////////
 
 template <class type>
 int IoPython ::

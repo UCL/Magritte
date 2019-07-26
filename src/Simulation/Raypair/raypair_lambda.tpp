@@ -9,6 +9,13 @@
 #include "Model/Lines/LineProducingSpecies/lineProducingSpecies.hpp"
 
 
+///  Getter for the diagonal entries of the Lambda operator
+///    @param[in]     thermodynamics : thermodynamics object of the model
+///    @param[in]     inverse_mass   : one over the mass of line producing species
+///    @param[in]     freq_line      : frequency of the line
+///    @param[in]     lane           : lane of the vector element
+//////////////////////////////////////////////////////////////////////////////////
+
 inline double RayPair ::
     get_L_diag (
         const Thermodynamics &thermodynamics,
@@ -24,6 +31,14 @@ inline double RayPair ::
 
 
 
+
+///  Getter for the lower diagonal entries of the Lambda operator
+///    @param[in]     thermodynamics : thermodynamics object of the model
+///    @param[in]     inverse_mass   : one over the mass of line producing species
+///    @param[in]     freq_line      : frequency of the line
+///    @param[in]     lane           : lane of the vector element
+///    @param[in]     m              : index for position above the diagonal
+//////////////////////////////////////////////////////////////////////////////////
 
 inline double RayPair ::
     get_L_lower (
@@ -42,6 +57,14 @@ inline double RayPair ::
 
 
 
+///  Getter for the upper diagonal entries of the Lambda operator
+///    @param[in]     thermodynamics : thermodynamics object of the model
+///    @param[in]     inverse_mass   : one over the mass of line producing species
+///    @param[in]     freq_line      : frequency of the line
+///    @param[in]     lane           : lane of the vector element
+///    @param[in]     m              : index for position above the diagonal
+//////////////////////////////////////////////////////////////////////////////////
+
 inline double RayPair ::
     get_L_upper (
         const Thermodynamics &thermodynamics,
@@ -58,6 +81,15 @@ inline double RayPair ::
 
 
 
+
+///  Updater for the Lambda operators of the line producing species
+///    @param[in]     frequencies    : frequencies object of the model
+///    @param[in]     thermodynamics : thermodynamics object of the model
+///    @param[in]     p              : index of the cell
+///    @param[in]     f              : index of the frequency
+///    @param[in]     weight_angular : angular weight for this entry of the Lambda operator
+///    @param[in/out] lines          : lines object of the model
+///////////////////////////////////////////////////////////////////////////////////////////
 
 inline void RayPair ::
     update_Lambda (
@@ -110,7 +142,7 @@ inline void RayPair ::
           lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
         }
       }
-     }
+    }
   }
 
 

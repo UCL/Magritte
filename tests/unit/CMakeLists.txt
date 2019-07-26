@@ -20,8 +20,14 @@ include_directories (.)
 add_library (TestMain
   main.cpp)
 
+# Create test executables
+#########################
 
-# Create executable to test io
+add_executable (test_geometry.exe
+  Model/Geometry/test_geometry.cpp)
+target_link_libraries (test_geometry.exe
+  _Magritte
+  TestMain)
 
 
 #add_executable (test_model.exe

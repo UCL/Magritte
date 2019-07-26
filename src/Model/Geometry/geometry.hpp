@@ -17,8 +17,16 @@
 #include "Model/Geometry/raydata.hpp"
 
 
+///  Frame of reference used in geometry computations
+/////////////////////////////////////////////////////
+
+enum Frame {CoMoving, Rest};
+
+
+
+
 ///  Geometry: data structure containing all geometric data
-////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 struct Geometry
 {
@@ -43,6 +51,7 @@ struct Geometry
 
 
       // Inlined functions
+      template <Frame frame>
       inline RayData trace_ray (
           const long   origin,
           const long   ray,
@@ -57,18 +66,23 @@ struct Geometry
           const double   dshift_max,
                 RayData &rayData    ) const;
 
-      inline long next (
+      inline long get_next (
           const long    origin,
           const long    ray,
           const long    current,
                 double &Z,
                 double &dZ      ) const;
 
-      inline double doppler_shift (
-          const long origin,
-          const long r,
-          const long current      ) const;
+      template <Frame frame>
+      inline double get_doppler_shift (
+          const long  origin,
+          const long  r,
+          const long  current         ) const;
 
+
+  private:
+
+      long nrays;   ///< number of rays
 
 };
 

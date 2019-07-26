@@ -9,9 +9,9 @@
 #include "Tools/logger.hpp"
 
 
-///  read: read model data
-///    @param[in] io: io data object
-////////////////////////////////////
+///  Reader for the Model data
+///    @param[in] io : io object to read with
+/////////////////////////////////////////////
 
 int Model ::
    read (
@@ -56,9 +56,9 @@ int Model ::
 
 
 
-///  write: write out model data
-///    @param[in] io: io data object
-////////////////////////////////////
+///  Writer for the Model data
+///    @param[in] io : io object to write with
+//////////////////////////////////////////////
 
 int Model ::
    write (

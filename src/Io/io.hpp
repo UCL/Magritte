@@ -31,11 +31,15 @@ struct Io
 
   virtual int  read_number   (const string fname,       long    &number) const = 0;
   virtual int write_number   (const string fname, const long    &number) const = 0;
+
   virtual int  read_number   (const string fname,       double  &number) const = 0;
   virtual int write_number   (const string fname, const double  &number) const = 0;
 
   virtual int  read_word     (const string fname,       string  &word  ) const = 0;
   virtual int write_word     (const string fname, const string  &word  ) const = 0;
+
+  virtual int  read_bool     (const string fname,       bool    &value ) const = 0;
+  virtual int write_bool     (const string fname, const bool    &value ) const = 0;
 
   virtual int  read_list     (const string fname,       Long1   &list  ) const = 0;
   virtual int write_list     (const string fname, const Long1   &list  ) const = 0;

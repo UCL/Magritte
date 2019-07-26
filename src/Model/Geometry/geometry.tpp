@@ -7,8 +7,11 @@
 #include <limits>
 
 #include "Tools/logger.hpp"
+#include "Tools/constants.hpp"
+#include <iomanip>
 
 
+template <Frame frame>
 inline RayData Geometry ::
     trace_ray (
         const long   origin,
@@ -24,15 +27,22 @@ inline RayData Geometry ::
   double  Z = 0.0;   // distance from origin (o)
   double dZ = 0.0;   // last increment in Z
 
-  long nxt = next (origin, ray, origin, Z, dZ);
+  long nxt = get_next (origin, ray, origin, Z, dZ);
 
   //cout << "nxt " << nxt << endl;
 
   if (nxt != -1)   // if we are not going out of grid
   {
-    double shift_crt = 1.0;
     long   crt       = origin;
-    double shift_nxt = doppler_shift (origin, ray, nxt);
+    double shift_crt = get_doppler_shift <frame> (origin, ray, crt);
+    double shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
+
+
+    //cout << std::scientific << std::setprecision (16);
+    //cout << "shift_crt " << shift_crt << endl;
+    //cout << cells.vx[crt]*CC << "   " << cells.vy[crt]*CC << "   " << cells.vz[crt]*CC << endl;
+
+    //cout << "----------------------------" << endl;
 
     set_data (crt, nxt, shift_crt, shift_nxt, dZ, dshift_max, rayData);
 
@@ -40,8 +50,8 @@ inline RayData Geometry ::
     while (!boundary.boundary[nxt])   // while we have not hit the boundary
     {
       shift_crt = shift_nxt;
-      nxt       = next          (origin, ray, nxt, Z, dZ);
-      shift_nxt = doppler_shift (origin, ray, nxt);
+      nxt       = get_next                  (origin, ray, nxt, Z, dZ);
+      shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
 
       //cout << "nxt " << nxt << endl;
 
@@ -105,7 +115,7 @@ inline int Geometry ::
 
       return (-1);
     }
-    
+
     //cout << "        n_interpl = " <<       n_interpl << endl;
     //cout << "   half_n_interpl = " <<  half_n_interpl << endl;
     //cout << "       dZ_interpl = " <<      dZ_interpl << endl;
@@ -168,21 +178,22 @@ inline int Geometry ::
 
 
 
-///  next: find number of next cell on ray and its distance along ray
-///    @param[in] origin: number of cell from which the ray originates
-///    @param[in] r: number of the ray along which we are looking
-///    @param[in] current: number of the cell put last on the ray
-///    @param[in/out] Z: reference to the current distance along the ray
-///    @param[out] dZ: reference to the distance increment to the next ray
+///  Getter for the number of the next cell on ray and its distance along ray
+///    @param[in]     origin  : number of cell from which the ray originates
+///    @param[in]     r       : number of the ray along which we are looking
+///    @param[in]     current : number of the cell put last on the ray
+///    @param[in/out] Z       : reference to the current distance along the ray
+///    @param[out]    dZ      : reference to the distance increment to the next ray
 ///    @return number of the next cell on the ray after the current cell
-/////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
 inline long Geometry ::
-    next (const long    origin,
-          const long    ray,
-          const long    current,
-                double &Z,
-                double &dZ      ) const
+    get_next (
+        const long    origin,
+        const long    ray,
+        const long    current,
+              double &Z,
+              double &dZ      ) const
 {
 
   // Pick neighbor on "right side" closest to ray
@@ -237,22 +248,47 @@ inline long Geometry ::
 
 
 
-///  relative_velocity: get relative velocity of current w.r.t. origin along ray
-///    @param[in] origin: number of cell from which the ray originates
-///    @param[in] r: number of the ray along which we are looking
-///    @param[in] current: number of the cell for which we want the velocity
-///    @return relative velocity of cell current w.r.t. cell origin
-////////////////////////////////////////////////////////////////////////////////
+///  Getter for the doppler shift along the ray between the current cell and the origin
+///    @param[in] origin  : number of cell from which the ray originates
+///    @param[in] r       : number of the ray along which we are looking
+///    @param[in] current : number of the cell for which we want the velocity
+///    @return doppler shift along the ray between the current cell and the origin
+///////////////////////////////////////////////////////////////////////////////////////
 
+template <Frame frame>
 inline double Geometry ::
-    doppler_shift (
-        const long origin,
-        const long ray,
-        const long current) const
+    get_doppler_shift (
+        const long  origin,
+        const long  ray,
+        const long  current) const
 {
 
-  return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[origin][ray]
-                + (cells.vy[current] - cells.vy[origin]) * rays.y[origin][ray]
-                + (cells.vz[current] - cells.vz[origin]) * rays.z[origin][ray]);
+  // Co-moving frame implementation
+
+  if (frame == CoMoving)
+  {
+    return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[origin][ray]
+                  + (cells.vy[current] - cells.vy[origin]) * rays.y[origin][ray]
+                  + (cells.vz[current] - cells.vz[origin]) * rays.z[origin][ray]);
+  }
+
+  // Rest frame implementation
+
+  if (frame == Rest)
+  {
+    // In the rest frame the direction of the projected should be fixed
+    // We choose to fix it to "up the ray"
+
+    long ray_correct = ray;
+
+    if (ray >= nrays/2)
+    {
+      ray_correct = rays.antipod[origin][ray];
+    }
+
+    return 1.0 - (  cells.vx[current] * rays.x[origin][ray_correct]
+                  + cells.vy[current] * rays.y[origin][ray_correct]
+                  + cells.vz[current] * rays.z[origin][ray_correct]);
+  }
 
 }

@@ -32,7 +32,7 @@ class Parameters
       SetOnce <long> nlines_;       ///< number of line transitions
       SetOnce <long> nquads_;       ///< number of frequency quadrature points
 
-      SetOnce <double> pop_prec_;     ///< required precision for populations
+      SetOnce <double> pop_prec_;   ///< required precision for populations
 
       SetOnce <bool>   use_scattering_;        ///< true if scattering is used
       SetOnce <bool>   use_Ng_acceleration_;   ///< true if Ng accelera
