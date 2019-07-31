@@ -29,8 +29,8 @@ int main (int argc, char **argv)
 
     cout << "Running model: " << modelName << endl;
 
-    const bool use_Ng_acceleration = false;
-    const long max_niterations     = 1;
+    const bool use_Ng_acceleration = true;
+    const long max_niterations     = 50;
 
 
 #   pragma omp parallel
@@ -67,7 +67,7 @@ int main (int argc, char **argv)
 
     simulation.compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
 
-    //simulation.write (io);
+    simulation.write (io);
 
 
 #   if (MPI_PARALLEL)

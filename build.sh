@@ -72,17 +72,17 @@ else
 
    PYTHON_EXECUTABLE=$(which python)
 
-   #CC_FLAG=$(which icc)
-   #CXX_FLAG=$(which icc)
+   CC_FLAG=$(which gcc)
+   CXX_FLAG=$(which g++)
 
-   #CC=$CC_FLAG CXX=$CXX_FLAG
+   CC=$CC_FLAG CXX=$CXX_FLAG                         \
    cmake                                             \
      -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
      -DOMP_PARALLEL=ON                               \
      -DMPI_PARALLEL=OFF                              \
-     -DGRID_SIMD=ON                                  \
+     -DGRID_SIMD=OFF                                 \
      $DIR
 
    make -j4

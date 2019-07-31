@@ -10,6 +10,7 @@
 
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
+#include "Tools/timer.hpp"
 #include "Model/model.hpp"
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"

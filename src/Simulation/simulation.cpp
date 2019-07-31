@@ -285,6 +285,7 @@ int Simulation ::
     {
     OMP_FOR (o, parameters.ncells())
     {
+      //cout << o << endl;
       //if (ntimes_encounterd[o] == 0)
       //{
         const long           ar = geometry.rays.antipod[o][r];
@@ -307,10 +308,25 @@ int Simulation ::
           for (long f = 0; f < parameters.nfreqs_red(); f++)
           {
             // Setup and solve the ray equations
+
+            //cout << "    setup" << endl;
+
+            Timer timer1("setup");
+            timer1.start();
             setup (R, o, f, rayData_ar, rayData_r, rayPair);
+            timer1.stop();
+            timer1.print();
 
+            //cout << "    slove" << endl;
+
+            Timer timer2("solve");
+            timer2.start();
             rayPair.solve ();
+            timer2.stop();
+            timer2.print();
 
+            Timer timer3("lambda");
+            timer3.start();
             rayPair.update_Lambda (
                 radiation.frequencies,
                 thermodynamics,
@@ -318,6 +334,8 @@ int Simulation ::
                 f,
                 weight_ang,
                 lines                 );
+            timer3.stop();
+            timer3.print();
 
 
             //rayPair.update_radiation (
@@ -849,7 +867,8 @@ inline void Simulation ::
   double    width = lines.line[lnotch] * thermodynamics.profile_width (invr_mass, p);
 
 
-  while ( (firstLane (freq_diff) > upper*width) && (lnotch < parameters.nlines()-1) )
+  //while ( (firstLane (freq_diff) > upper*width) && (lnotch < parameters.nlines()-1) )
+  while (firstLane (freq_diff) > upper*width)
   {
     lnotch++;
 
@@ -858,6 +877,11 @@ inline void Simulation ::
             l = radiation.frequencies.corresponding_l_for_spec[f];
     invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
         width = lines.line[lnotch] * thermodynamics.profile_width (invr_mass, p);
+
+    if (lnotch >= parameters.nlines()-1)
+    {
+      break;
+    }
   }
 
 
@@ -865,7 +889,8 @@ inline void Simulation ::
 
   long lindex = lnotch;
 
-  while ( (lastLane (freq_diff) >= lower*width) && (lindex < parameters.nlines()) )
+  //while ( (lastLane (freq_diff) >= lower*width) && (lindex < parameters.nlines()) )
+  while (lastLane (freq_diff) >= lower*width)
   {
     const vReal line_profile = thermodynamics.profile (width, freq_diff);
     const long           ind = lines.index (p, lines.line_index[lindex]);
@@ -875,8 +900,13 @@ inline void Simulation ::
 
     lindex++;
 
+    if (lindex >= parameters.nlines())
+    {
+      break;
+    }
+
     freq_diff = freq_scaled - (vReal) lines.line[lindex];
-            f = lines.line_index[lnotch];
+            f = lines.line_index[lindex];
             l = radiation.frequencies.corresponding_l_for_spec[f];
     invr_mass = lines.lineProducingSpecies[l].linedata.inverse_mass;
         width = lines.line[lindex] * thermodynamics.profile_width (invr_mass, p);
@@ -1110,3 +1140,47 @@ void Simulation ::
 
 
 }
+
+
+
+
+// ///  Computer for the number of points on each ray
+// //////////////////////////////////////////////////
+//
+// int Simulation ::
+//     compute_number_of_points_on_rays ()
+// {
+//
+//   // Initialisation
+//
+//   Long2 npoints (parameters.nrays(), Long1 (parameters.ncells()));
+//
+//
+//   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
+//   {
+//     cout << "ray = " << r << endl;
+//
+// #   pragma omp parallel default (shared)
+//     {
+//     OMP_FOR (o, parameters.ncells())
+//     {
+//       const long           ar = geometry.rays.antipod[o][r];
+//       const double dshift_max = get_dshift_max (o);
+//
+//
+//       // Trace and initialize the ray pair
+//
+//       RayData rayData_r  = geometry.trace_ray <CoMoving> (o, r,  dshift_max);
+//       RayData rayData_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+//
+//       npoints[r][o] = rayData_r.size() + rayData_ar.size() + 1;
+//
+//     } // end of loop over cells
+//     }
+//
+//   } // end of loop over ray pairs
+//
+//
+//   return (0);
+//
+// }

@@ -127,6 +127,7 @@ struct Radiation
       long ncells;                ///< number of cells
       long nrays;                 ///< number of rays
       long nrays_red;             ///< reduced number of rays
+      long nfreqs;                ///< number of frequencies
       long nfreqs_red;            ///< reduced number of frequencies
       long nboundary;             ///< number of boundary cells
 

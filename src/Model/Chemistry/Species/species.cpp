@@ -89,9 +89,9 @@ int Species ::
   io.write_list  (prefix+"species",   dummy);
   io.write_array (prefix+"abundance", abundance);
 
-  io.write_number (prefix+".nr_e", nr_e);
-  io.write_number (prefix+".nr_H2", nr_H2);
-  io.write_number (prefix+".nr_HD", nr_HD);
+  //io.write_number (prefix+".nr_e",  nr_e );
+  //io.write_number (prefix+".nr_H2", nr_H2);
+  //io.write_number (prefix+".nr_HD", nr_HD);
 
 
   return (0);

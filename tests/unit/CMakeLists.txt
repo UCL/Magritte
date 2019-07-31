@@ -2,12 +2,9 @@
 #########################
 
 # Write all binary files to the bin directory
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY}/tests)
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY}/tests)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY}/tests)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${BINARY_DIRECTORY}/tests)
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY   ${BINARY_DIRECTORY}/tests)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY   ${BINARY_DIRECTORY}/tests)
 
 # Include directory containing source
 include_directories (../../src)
@@ -17,17 +14,13 @@ include_directories (../../dependencies)
 include_directories (.)
 
 # Create main lib (as advised in Catch docs, to speed up compilation)
-add_library (TestMain
-  main.cpp)
+add_library (TestMain   main.cpp)
 
 # Create test executables
 #########################
 
-add_executable (test_geometry.exe
-  Model/Geometry/test_geometry.cpp)
-target_link_libraries (test_geometry.exe
-  _Magritte
-  TestMain)
+add_executable        (test_geometry.exe   Model/Geometry/test_geometry.cpp)
+target_link_libraries (test_geometry.exe   _Magritte   TestMain            )
 
 
 #add_executable (test_model.exe
@@ -44,18 +37,12 @@ target_link_libraries (test_geometry.exe
 #  TestMain
 #  PyIo)
 
-add_executable (test_raypair.exe
-  Simulation/Raypair/test_raypair.cpp)
-target_link_libraries (test_raypair.exe
-  _Magritte
-  TestMain)
+add_executable        (test_raypair.exe  Simulation/Raypair/test_raypair.cpp)
+target_link_libraries (test_raypair.exe   _Magritte   TestMain)
 
 
-add_executable (test_lineProducingSpecies.exe
-  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
-target_link_libraries (test_lineProducingSpecies.exe
-  _Magritte
-  TestMain)
+add_executable        (test_lineProducingSpecies.exe   Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
+target_link_libraries (test_lineProducingSpecies.exe   _Magritte   TestMain)
 #
 #add_executable (test_lambda.exe
 #  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
@@ -172,9 +159,6 @@ target_link_libraries (test_lineProducingSpecies.exe
 
 
 if (PYTHON_IO)
-  add_executable (test_io_python_hdf5.exe
-    Io/python/test_io_python_hdf5.cpp)
-  target_link_libraries (test_io_python_hdf5.exe
-    TestMain
-    PyIo)
+  add_executable        (test_io_python_hdf5.exe   Io/python/test_io_python_hdf5.cpp)
+  target_link_libraries (test_io_python_hdf5.exe   TestMain   PyIo                  )
 endif (PYTHON_IO)

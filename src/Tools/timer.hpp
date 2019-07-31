@@ -13,16 +13,13 @@
 #include <vector>
 #include <chrono>
 using namespace std;
-#include <mpi.h>
-
-#include "folders.hpp"
-
+#include <Tools/Parallel/wrap_mpi.hpp>
 
 
 /// TIMER: class for precise process timing
 ///////////////////////////////////////////
 
-class TIMER
+class Timer
 {
 
   private:
@@ -39,7 +36,7 @@ class TIMER
 	  ///  Constructor for TIMER
 	  //////////////////////////
 
-	  TIMER (
+	  Timer (
         const string timer_name)
 	  {
       name = timer_name;
@@ -68,16 +65,16 @@ class TIMER
 	  ///////////////////////////////////////////////
 
 
-	  void print_to_file ()
-	  {
-      string file_name = output_folder + "timer_" + name + ".txt";
+	  //void print_to_file ()
+	  //{
+    //  string file_name = output_folder + "timer_" + name + ".txt";
 
-	  	ofstream outFile (file_name, ios_base::app);
+	  //	ofstream outFile (file_name, ios_base::app);
 
-      outFile << interval.count() << endl;
+    //  outFile << interval.count() << endl;
 
-	  	outFile.close();
-	  }
+	  //	outFile.close();
+	  //}
 
 
 	  ///  print: print time interval to screen
@@ -94,6 +91,8 @@ class TIMER
 
 
 
+
+#if (MAGRITTE_MPI_PARALLEL)
 
 /// MPI_TIMER: class for precise process timing when using MPI
 //////////////////////////////////////////////////////////////
@@ -198,6 +197,8 @@ class MPI_TIMER
     }
 
 };
+
+#endif
 
 
 #endif // __TIMER_HPP_INCLUDED__

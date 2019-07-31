@@ -5,6 +5,16 @@
 
 
 #include <Eigen/SparseLU>
+using Eigen::SparseLU;
+#include <Eigen/SparseCore>
+using Eigen::SparseMatrix;
+using Eigen::SparseVector;
+using Eigen::Triplet;
+using Eigen::COLAMDOrdering;
+
+//#include <Eigen/IterativeLinearSolvers>
+
+
 //#include <Eigen/SparseCholesky>
 
 #include <Eigen/Core>
@@ -238,8 +248,8 @@ inline void LineProducingSpecies ::
 {
 
   const long non_zeros = ncells * (    linedata.nlev
-                                   + 2*linedata.nrad
-                                   + 2*linedata.ncol_tot );
+                                   + 6*linedata.nrad
+                                   + 4*linedata.ncol_tot );
 
 
   population_prev3 = population_prev2;
@@ -247,16 +257,18 @@ inline void LineProducingSpecies ::
   population_prev1 = population;
 
 
-  Eigen::SparseMatrix<double> RT (ncells*linedata.nlev, ncells*linedata.nlev);
-  Eigen::SparseVector<double> y  (ncells*linedata.nlev);
+  SparseMatrix<double> RT (ncells*linedata.nlev, ncells*linedata.nlev);
 
-  std::vector<Eigen::Triplet<double>> triplets;
+  VectorXd y = VectorXd::Zero (ncells*linedata.nlev);
+
+  vector<Triplet<double, int>> triplets;
 
   triplets.reserve (non_zeros);
 
-  cout << "problem in here?" << endl;
+  // !!! push_back is not thread safe !!!
 
-  OMP_PARALLEL_FOR (p, ncells)
+  //OMP_PARALLEL_FOR (p, ncells)
+  for (long p = 0; p < ncells; p++)
   {
 
     // Radiative transitions
@@ -274,16 +286,16 @@ inline void LineProducingSpecies ::
 
       if (linedata.jrad[k] != linedata.nlev-1)
       {
-        triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
-        triplets.push_back (Eigen::Triplet<double> (J, J, -v_JI));
-        //triplets.push_back (Eigen::Triplet<double> (J, J, -v_IJ));
+        triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
+        triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+        //triplets.push_back (Eigen::Triplet<double, int> (J, J, -v_IJ));
       }
 
       if (linedata.irad[k] != linedata.nlev-1)
       {
-        triplets.push_back (Eigen::Triplet<double> (I, J, +v_JI));
-        triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
-        //triplets.push_back (Eigen::Triplet<double> (I, I, -v_JI));
+        triplets.push_back (Triplet<double, int> (I, J, +v_JI));
+        triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+        //triplets.push_back (Eigen::Triplet<double, int> (I, I, -v_JI));
       }
     }
 
@@ -303,12 +315,12 @@ inline void LineProducingSpecies ::
 
         if (linedata.jrad[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
+          triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
         }
 
         if (linedata.irad[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
+          triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
         }
       }
     }
@@ -351,16 +363,16 @@ inline void LineProducingSpecies ::
 
         if (colpar.jcol[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
-          triplets.push_back (Eigen::Triplet<double> (J, J, -v_JI));
-          //triplets.push_back (Eigen::Triplet<double> (J, J, -v_IJ));
+          triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
+          triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+          //triplets.push_back (Eigen::Triplet<double, int> (J, J, -v_IJ));
         }
 
         if (colpar.icol[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (I, J, +v_JI));
-          triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
-          //triplets.push_back (Eigen::Triplet<double> (I, I, -v_JI));
+          triplets.push_back (Triplet<double, int> (I, J, +v_JI));
+          triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+          //triplets.push_back (Eigen::Triplet<double, int> (I, I, -v_JI));
         }
       }
     }
@@ -371,29 +383,95 @@ inline void LineProducingSpecies ::
       const long I = index (p, linedata.nlev-1);
       const long J = index (p, i);
 
-      triplets.push_back (Eigen::Triplet<double> (I, J, 1.0));
+      triplets.push_back (Triplet<double, int> (I, J, 1.0));
     }
 
-    y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    y[index (p, linedata.nlev-1)] = population_tot[p];
     //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
 
-  }
+  } // for all cells
+
+  cout << omp_get_num_threads() << endl;
 
 
   RT.setFromTriplets (triplets.begin(), triplets.end());
 
-  Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+
+  //cout << "Compressing RT" << endl;
+
+  //RT.makeCompressed ();
+
+
+  //Eigen::BiCGSTAB <SparseMatrix<double>> solver;
+
+  //cout << "Try compute" << endl;
+
+  //solver.compute (RT);
+
+  //if (solver.info() != Eigen::Success)
+  //{
+  //  cout << "Decomposition failed" << endl;
+  //  //assert(false);
+  //}
+
+
+  //for (int tel=0; tel<5; tel++)
+  //{
+  //  //Eigen::Gues x0 = population;
+
+  //  population = solver.solveWithGuess (y, population);
+  //  std::cout << "#iterations:     " << solver.iterations() << std::endl;
+  //  std::cout << "estimated error: " << solver.error()      << std::endl;
+  //}
+
+  //assert (false);
+
+
+  SparseLU <SparseMatrix<double>, COLAMDOrdering<int>> solver;
   //Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
 
-  cout << "Magritte RT ---------" << endl;
-  //cout << RT << endl;
-  cout << "---------------------" << endl;
 
-  solver.compute (RT);
+  cout << "Analyzing system of rate equations..."      << endl;
+
+  solver.analyzePattern (RT);
+
+  cout << "Factorizing system of rate equations..."    << endl;
+
+  solver.factorize (RT);
+
+  if (solver.info() != Eigen::Success)
+  {
+    cout << "Factorization failed with error message:" << endl;
+    cout << solver.lastErrorMessage()                  << endl;
+    assert (false);
+  }
+
+
+  //cout << "Try compute" << endl;
+
+  //solver.compute (RT);
+
+  //if (solver.info() != Eigen::Success)
+  //{
+  //  cout << "Decomposition failed" << endl;
+  //  //assert(false);
+  //}
+
+
+  cout << "Solving rate equations for the level populations..." << endl;
 
   population = solver.solve (y);
 
-  cout << "Nope..." << endl;
+  if (solver.info() != Eigen::Success)
+  {
+    cout << "Solving failed with error:" << endl;
+    cout << solver.lastErrorMessage()    << endl;
+    assert (false);
+  }
+
+  cout << "Succesfully solved for the level populations!"       << endl;
+
 
   //OMP_PARALLEL_FOR (p, ncells)
   //{

@@ -34,6 +34,7 @@ int Radiation ::
 
   ncells     = parameters.ncells     ();
   nrays      = parameters.nrays      ();
+  nfreqs     = parameters.nfreqs     ();
   nfreqs_red = parameters.nfreqs_red ();
   nboundary  = parameters.nboundary  ();
 

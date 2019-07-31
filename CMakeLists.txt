@@ -12,56 +12,49 @@ set (MAGRITTE_VERSION_MAJOR 0)
 set (MAGRITTE_VERSION_MINOR 0)
 
 # Set build type to Release to set all optimisation flags
-set (CMAKE_BUILD_TYPE Release)
+set (CMAKE_BUILD_TYPE  Release)
 
 
 # Build options
-option (PYTHON_IO
-  "Handling all io through python (slow)" OFF)
-option (PYTHON_BINDINGS
-  "Python front-end?"                     OFF)
-option (OMP_PARALLEL
-  "OpenMP parallelisation required?"      OFF)
-option (MPI_PARALLEL
-  "MPI parallelisation required?"         OFF)
-option (GRID_SIMD
-  "GRID SIMD vectorisation required?"     OFF)
-option (PERF_ANALYSIS
-  "Build for performance analysis"        OFF)
+option (PYTHON_IO        "Handling all io through python (slow)"  OFF)
+option (PYTHON_BINDINGS  "Python front-end?"                      OFF)
+option (OMP_PARALLEL     "OpenMP parallelisation required?"       OFF)
+option (MPI_PARALLEL     "MPI parallelisation required?"          OFF)
+option (GRID_SIMD        "GRID SIMD vectorisation required?"      OFF)
+option (PERF_ANALYSIS    "Build for performance analysis"         OFF)
 
 
 # Set variable for use in the source code (defined in configure.hpp)
 if (PYTHON_IO)
-  set (MAGRITTE_PYTHON_IO true)
+  set (MAGRITTE_PYTHON_IO  true)
 else (PYTHON_IO)
-  set (MAGRITTE_PYTHON_IO false)
+  set (MAGRITTE_PYTHON_IO  false)
 endif (PYTHON_IO)
 
 
 # Set directory for binaries (and provide a separate one for instrumented binaries for performance testing)
 if (PERF_ANALYSIS)
-  set (BINARY_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests/performance)
+  set (BINARY_DIRECTORY  ${CMAKE_SOURCE_DIR}/bin/tests/performance)
 else (PERF_ANALYSIS)
-  set (BINARY_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+  set (BINARY_DIRECTORY  ${CMAKE_SOURCE_DIR}/bin)
 endif (PERF_ANALYSIS)
 
 
 # Write all binary files to the bin directory
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY})
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY})
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY})
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY})
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY})
 
 
-# Add compiler and linker flags
-set (CMAKE_C_FLAGS
-"${CMAKE_C_FLAGS}          -mcmodel=large -std=c++11")
-set (CMAKE_CXX_FLAGS
-"${CMAKE_CXX_FLAGS}        -mcmodel=large -std=c++11")
-set (CMAKE_EXE_LINKER_FLAGS
-"${CMAKE_EXE_LINKER_FLAGS} -mcmodel=large -std=c++11")
+# Use C++11
+set (CMAKE_C_FLAGS           "${CMAKE_C_FLAGS}           -std=c++11")
+set (CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS}         -std=c++11")
+set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS}  -std=c++11")
+
+# Set large memory model
+set (CMAKE_C_FLAGS           "${CMAKE_C_FLAGS}           -mcmodel=large")
+set (CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS}         -mcmodel=large")
+set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS}  -mcmodel=large")
 
 
 # Add OpenMP if required
@@ -69,12 +62,9 @@ if (OMP_PARALLEL)
   # Look for package
   find_package (OpenMP REQUIRED)
   # Set compiler and linker flags
-  set (CMAKE_C_FLAGS
-    "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  set (CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  set (CMAKE_EXE_LINKER_FLAGS
-    "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+  set (CMAKE_C_FLAGS           "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set (CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
   # Set variable in configuration file
   set (MAGRITTE_OMP_PARALLEL true)
 else (OMP_PARALLEL)
