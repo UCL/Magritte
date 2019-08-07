@@ -11,6 +11,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+using std::vector;
 #include <chrono>
 using namespace std;
 #include <Tools/Parallel/wrap_mpi.hpp>
@@ -26,8 +27,12 @@ class Timer
 
     string name;
 
-    chrono::duration <double> interval;
-    chrono::high_resolution_clock::time_point initial;
+    vector <chrono::high_resolution_clock::time_point> starts;
+    vector <chrono::high_resolution_clock::time_point> stops;
+
+    vector <chrono::duration <double>> intervals;
+
+    chrono::duration <double> total;
 
 
   public:
@@ -48,7 +53,7 @@ class Timer
 
     void start ()
     {
-      initial = chrono::high_resolution_clock::now();
+      starts.push_back (chrono::high_resolution_clock::now());
     }
 
 
@@ -57,7 +62,13 @@ class Timer
 
     void stop ()
     {
-      interval = chrono::high_resolution_clock::now() - initial;
+      stops.push_back (chrono::high_resolution_clock::now());
+
+      const chrono::duration <double> interval = stops.back()-starts.back();
+
+      intervals.push_back (interval);
+
+      total += interval;
     }
 
 
@@ -82,9 +93,12 @@ class Timer
 
     void print ()
     {
-      cout << "Timer " << name << ":" << endl;
+      cout << "T| "  << name << " : " << intervals.back().count() << " seconds" << endl;
+    }
 
-      cout << interval.count() << " seconds" << endl;
+    void print_total ()
+    {
+      cout << "Tot| "<< name << " : " << total.count()            << " seconds" << endl;
     }
 
 };

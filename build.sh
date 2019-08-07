@@ -82,7 +82,7 @@ else
      -DPYTHON_BINDINGS=ON                            \
      -DOMP_PARALLEL=ON                               \
      -DMPI_PARALLEL=OFF                              \
-     -DGRID_SIMD=OFF                                 \
+     -DGRID_SIMD=ON                                  \
      $DIR
 
    make -j4

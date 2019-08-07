@@ -40,6 +40,9 @@ struct Radiation
       vReal3 I_bdy;     ///< intensity at the boundary (r,b,f)
 
 
+
+
+      // Io
       int read (
           const Io         &io,
                 Parameters &parameters);
@@ -97,6 +100,22 @@ struct Radiation
         const long lane     ) const;
 
 #endif
+
+
+    inline double get_u (
+        const long r,
+        const long p,
+        const long f    ) const;
+
+    inline double get_v (
+        const long r,
+        const long p,
+        const long f    ) const;
+
+    inline double get_J (
+        const long p,
+        const long f    ) const;
+
 
     inline void rescale_U_and_V (
         const vReal &freq_scaled,

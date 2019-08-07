@@ -20,19 +20,22 @@ struct RayPair
 
   public:
 
-      long n_ar;   ///< number of points on the antipodal ray side
-      long n_r;    ///< number of points on the ray side
+      long n_ar;       ///< number of points on the antipodal ray side
+      long n_r;        ///< number of points on the ray side
 
-      long ndep;   ///< total number of points on the ray
+      long first;      ///< index of the first used element
+      long last;       ///< index of the last used element
+
+      long ndep;       ///< total number of points on the ray
 
       vReal I_bdy_0;   ///< Incoming intensity on the front of the ray (boundary condition)
       vReal I_bdy_n;   ///< Incoming intensity on the back of the ray (boundary condition)
 
       long lnotch_at_origin;
 
-      vReal1 chi;   ///< opacities
-      Long1  nrs;   ///< corresponding cell indices
-      vReal1 frs;   ///< frequencies
+      vReal1 chi;      ///< opacities
+      Long1  nrs;      ///< corresponding cell indices
+      vReal1 frs;      ///< frequencies
 
       long n_off_diag = 0;   ///< number of off-diagonal rows on one side (default = 0)
 
@@ -42,7 +45,8 @@ struct RayPair
           const long n_ar,
           const long n_r     );
 
-      inline void solve ();
+      inline void solve_using_scattering ();
+      inline void solve                  ();
 
       //inline void solve_ndep_is_1 ();
 
@@ -52,6 +56,11 @@ struct RayPair
           const vReal &chi,
           const vReal &U_scaled,
           const vReal &V_scaled,
+          const long   n              );
+
+      inline void set_term1_and_term2 (
+          const vReal &eta,
+          const vReal &chi,
           const long   n              );
 
       inline void set_dtau (
@@ -111,6 +120,7 @@ struct RayPair
       vReal1 F;         ///< helper variable from Rybicki & Hummer (1991)
       vReal1 G;         ///< helper variable from Rybicki & Hummer (1991)
 
+
       vReal1 Su;        ///< effective source for u along the ray
       vReal1 Sv;        ///< effective source for v along the ray
       vReal1 dtau;      ///< optical depth increment along the ray
@@ -125,6 +135,23 @@ struct RayPair
       vReal1 term1;   ///< effective source for u along the ray
       vReal1 term2;   ///< effective source for v along the ray
 
+      vReal inverse_dtau0;         ///< helper variable
+      vReal inverse_dtaud;         ///< helper variable
+
+      vReal B0;                    ///< helper variable
+      vReal inverse_B0;            ///< helper variable
+      vReal B0_min_C0;             ///< helper variable
+
+      vReal Bd;                    ///< helper variable
+      vReal Bd_min_Ad;             ///< helper variable
+
+      vReal denominator;           ///< helper variable
+
+      vReal1 inverse_one_plus_F;   ///< helper variable
+      vReal1 inverse_one_plus_G;   ///< helper variable
+      vReal1  G_over_one_plus_G;   ///< helper variable
+      vReal1 inverse_A;            ///< helper variable
+      vReal1 inverse_C;            ///< helper variable
 
 
 

@@ -10,6 +10,7 @@
 
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
+#include "Tools/Parallel/wrap_Grid.hpp"
 #include "Model/parameters.hpp"
 #include "Model/Geometry/geometry.hpp"
 
@@ -27,8 +28,8 @@ struct Image
       Double1 ImX;         ///< x coordinate of point in image
       Double1 ImY;         ///< y coordinate of point in image
 
-      Double2 I_p;         ///< intensity out along ray (index(p,f))
-      Double2 I_m;         ///< intensity out along ray (index(p,f))
+      vReal2 I_p;          ///< intensity out along ray (index(p,f))
+      vReal2 I_m;          ///< intensity out along ray (index(p,f))
 
 
       Image (
@@ -46,9 +47,10 @@ struct Image
 
   private:
 
-      const long ncells;     ///< number of cells
-      const long ncameras;   ///< number of cameras
-      const long nfreqs;     ///< number of frequencies
+      const long ncells;       ///< number of cells
+      const long ncameras;     ///< number of cameras
+      const long nfreqs;       ///< number of frequencies
+      const long nfreqs_red;   ///< nfreqs divided by n_simd_lanes
 
       static const string prefix;
 

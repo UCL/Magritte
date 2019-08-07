@@ -359,7 +359,10 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init())
       // functions
       .def ("read",                  &Radiation::read)
-      .def ("write",                 &Radiation::write);
+      .def ("write",                 &Radiation::write)
+      .def ("get_u",                 &Radiation::get_u)
+      .def ("get_v",                 &Radiation::get_v)
+      .def ("get_J",                 &Radiation::get_J);
 
 
   // Frequencies
@@ -370,7 +373,8 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init())
       // functions
       .def ("read",         &Frequencies::read)
-      .def ("write",        &Frequencies::write);
+      .def ("write",        &Frequencies::write)
+      .def ("get_nu",       &Frequencies::get_nu);
 
 
 

@@ -9,7 +9,20 @@ include_directories (../dependencies/pybind11/include)
 
 # Set variables in configuration file
 set (MAGRITTE_MPI_PARALLEL false)
-set (MAGRITTE_GRID_SIMD    false)
+
+
+# If Grid-SIMD is used
+if    (GRID_SIMD)
+  # Include headers
+  include_directories (../dependencies/Grid-SIMD/include)
+  # Set compiler flags
+  set (CMAKE_CXX_FLAGS   "${CMAKE_CXX_FLAGS} -mavx -mf16c")
+  # Set variable in configuration file
+  set (MAGRITTE_GRID_SIMD true)
+else  (GRID_SIMD)
+  # Set variable in configuration file
+  set (MAGRITTE_GRID_SIMD false)
+endif (GRID_SIMD)
 
 
 # Write configuration file
@@ -42,6 +55,11 @@ pybind11_add_module (magritte
   ../src/Functions/heapsort.cpp
   ../src/Simulation/simulation.cpp
   ../src/Simulation/Image/image.cpp)
+
+
+if    (GRID_SIMD)
+  target_link_libraries (magritte   PRIVATE   GridSIMD)
+endif (GRID_SIMD)
 
 
 # pybind11 command to create the python module in bin directory

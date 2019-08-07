@@ -35,6 +35,8 @@ int Model ::
   cout << "-----------------"                         << endl;
   cout << "Model parameters:"                         << endl;
   cout << "-----------------"                         << endl;
+  cout << "Using " << n_simd_lanes << " SIMD lanes."  << endl;
+  cout << "-----------------"                         << endl;
   cout << "ncells     = " << parameters.ncells     () << endl;
   cout << "ncameras   = " << parameters.ncameras   () << endl;
   cout << "nrays      = " << parameters.nrays      () << endl;

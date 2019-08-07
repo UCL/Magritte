@@ -7,23 +7,29 @@
 #ifndef __WRAP_GRID_HPP_INCLUDED__
 #define __WRAP_GRID_HPP_INCLUDED__
 
-#include <vector>
 
-
+#include "Tools/types.hpp"
 #include "configure.hpp"
+
+
+const Double1 inverse_index
+{    0.,     1., 1./ 2., 1./ 3., 1./ 4., 1./ 5., 1./ 6, 1./ 7, 1./ 8., 1/ 9.,
+ 1./10., 1./11., 1./12., 1./13., 1./14., 1./15., 1./16, 1./17, 1./18., 1/19.,
+ 1./20., 1./21., 1./22., 1./23., 1./24., 1./25., 1./26, 1./27, 1./28., 1/29.,
+ 1./30., 1./31., 1./32., 1./33., 1./34., 1./35., 1./36, 1./37, 1./38., 1/39. };
 
 
 #if (GRID_SIMD)
 
   // When Grid is used
 
-  #include <Grid.h>
+  #include <Grid/Grid.h>
 
   typedef Grid::vRealD vReal;
 
   const int n_simd_lanes = vReal::Nsimd();
 
-  typedef std::vector<vReal, Grid::alignedAllocator<vReal>> vReal1;
+  typedef vector<vReal, Grid::alignedAllocator<vReal>> vReal1;
 
 #else
 
@@ -33,17 +39,17 @@
 
   const int n_simd_lanes = 1;
 
-  typedef std::vector<vReal> vReal1;
+  typedef vector<vReal> vReal1;
 
 #endif
 
 
 // Define tensors (types with more indices)
 
-typedef std::vector<vReal1> vReal2;
-typedef std::vector<vReal2> vReal3;
-typedef std::vector<vReal3> vReal4;
-typedef std::vector<vReal4> vReal5;
+typedef vector<vReal1> vReal2;
+typedef vector<vReal2> vReal3;
+typedef vector<vReal3> vReal4;
+typedef vector<vReal4> vReal5;
 
 
 // Constant vector blocks
@@ -123,22 +129,16 @@ inline vReal vExp (const vReal x)
 
 {
 
-  const int n = 25;
+  const int n = 21;
 
   vReal result = 1.0;
 
   for (int i = n; i > 1; i--)
   {
-    const double factor = 1.0 / i;   // INEFFICIENT -> STORE IN LIST
-    const vReal vFactor = factor;
-
-    result = vOne + x*result*vFactor;
+    result = vOne + x * result * inverse_index[i];
   }
 
-  result = vOne + x*result;
-
-
-  return result;
+  return vOne + x*result;
 
 }
 
@@ -170,28 +170,23 @@ inline vReal vExpMinus (const vReal x)
 ///    @return exponential minus 1.0 of x
 ///////////////////////////////////////////////////////////
 
+
 inline vReal vExpm1 (const vReal x)
 
 #if (GRID_SIMD)
 
 {
 
-  const int n = 30;
+  const int n = 21;
 
   vReal result = 1.0;
 
   for (int i = n; i > 1; i--)
   {
-    const double factor = 1.0 / i;
-    const vReal vFactor = factor;
-
-    result = vOne + x*result*vFactor;
+    result = vOne + x * result * inverse_index[i];
   }
 
-  result = x*result;
-
-
-  return result;
+  return x*result;
 
 }
 
@@ -202,5 +197,100 @@ inline vReal vExpm1 (const vReal x)
 }
 
 #endif
+
+
+
+
+///  Comparator for two vReal's
+///    @param[in] x : first vReal
+///    @param[in] y : second vReal
+///    @return true x>y in all lanes
+///////////////////////////////////////////////////////////
+
+inline bool all_greather_then (
+    const vReal &x,
+    const vReal &y )
+
+#if (GRID_SIMD)
+
+{
+  GRID_FOR_ALL_LANES (lane)
+  {
+    if (x.getlane(lane) < y.getlane(lane)) return false;
+  }
+
+  return true;
+}
+
+#else
+
+{
+  return (x > y);
+}
+
+#endif
+
+
+
+
+///  Comparator for two vReal's
+///    @param[in] x : first vReal
+///    @param[in] y : second vReal
+///    @return true x==y in all lanes
+///////////////////////////////////////////////////////////
+
+inline bool equal (
+    const vReal &x,
+    const vReal &y,
+    const double EPSILON )
+
+#if (GRID_SIMD)
+
+{
+  GRID_FOR_ALL_LANES (lane)
+  {
+    if ( fabs(x.getlane(lane) - y.getlane(lane)) > EPSILON) return false;
+  }
+
+  return true;
+}
+
+#else
+
+{
+  return (x == y);
+}
+
+#endif
+
+
+
+
+///  Comparator for two vReal's
+///    @param[in] x : first vReal
+///    @return true x==y in all lanes
+///////////////////////////////////////////////////////////
+
+inline double get (
+    const vReal1 &x,
+    const long    f )
+
+#if (GRID_SIMD)
+
+{
+  const long index = newIndex (f);
+  const  int lane  = laneNr   (f);
+
+  return x[index].getlane(lane);
+}
+
+#else
+
+{
+  return x[f];
+}
+
+#endif
+
 
 #endif // __WRAP_GRID_HPP_INCLUDED__

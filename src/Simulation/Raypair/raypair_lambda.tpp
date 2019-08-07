@@ -24,7 +24,7 @@ inline double RayPair ::
         const int             lane           ) const
 {
   const vReal profile = thermodynamics.profile (inverse_mass, nrs[n_ar],
-                                                frs[n_ar], freq_line    );
+                                                freq_line, frs[n_ar]    );
 
   return getlane (frs[n_ar] * profile * L_diag[n_ar] / chi[n_ar], lane);
 }
@@ -49,7 +49,7 @@ inline double RayPair ::
         const long            m              ) const
 {
   const vReal profile = thermodynamics.profile (inverse_mass, nrs[n_ar-m],
-                                                frs[n_ar-m], freq_line    );
+                                                freq_line, frs[n_ar-m]    );
 
   return getlane (frs[n_ar-m] * profile * L_lower[m][n_ar-m] / chi[n_ar-m], lane);
 }
@@ -74,7 +74,7 @@ inline double RayPair ::
         const long            m              ) const
 {
   const vReal profile = thermodynamics.profile (inverse_mass, nrs[n_ar+m],
-                                                frs[n_ar+m], freq_line    );
+                                                freq_line, frs[n_ar+m]    );
 
   return getlane (frs[n_ar+m] * profile * L_upper[m][n_ar+m] / chi[n_ar+m], lane);
 }

@@ -13,6 +13,12 @@
 #include "Tools/Parallel/wrap_omp.hpp"
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/logger.hpp"
+#include "Tools/timer.hpp"
+
+
+/// Test bench for performance testing of the setup and solve functions
+/// that compute the radiation field in Magritte.
+///////////////////////////////////////////////////////////////////////
 
 
 int main (int argc, char **argv)
@@ -27,26 +33,24 @@ int main (int argc, char **argv)
   {
     const string modelName = argv[1];
 
-    cout << "Running model: " << modelName << endl;
-
-    const bool use_Ng_acceleration = false;
-    const long max_niterations     = 1;
+    cout << "-------------------------------------------------" << endl;
+    cout << "___Magritte______________________________________" << endl;
+    cout << "-------------------------------------------------" << endl;
+    cout << "Performance tests for setup and solver functions." << endl;
+    cout << "(Only for single node use, i.e. no MPI.)         " << endl;
+    cout << "-------------------------------------------------" << endl;
+    cout << "Running model: " << modelName                      << endl;
+    cout << "-------------------------------------------------" << endl;
 
 
 #   pragma omp parallel
     {
-      cout << "n_omp_threads = " << omp_get_num_threads () << endl;
+      if (omp_get_thread_num() == 0)
+      {
+        cout << "n_omp_threads = " << omp_get_num_threads () << endl;
+        cout << "n_simd_lanes  = " << n_simd_lanes           << endl;
+      }
     }
-
-
-    cout << "n_simd_lanes = " << n_simd_lanes << endl;
-
-
-#   if (MPI_PARALLEL)
-
-      MPI_Init (NULL, NULL);
-
-#   endif
 
 
     //IoPython io ("hdf5", modelName);
@@ -65,16 +69,79 @@ int main (int argc, char **argv)
 
     simulation.compute_LTE_level_populations ();
 
-    simulation.compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
 
-    //simulation.write (io);
+    // Raypair along which the trasfer equation is solved
+    RayPair rayPair;
+
+    // Set bandwidth of the Approximated Lambda operator (ALO)
+    rayPair.n_off_diag = simulation.parameters.n_off_diag;
 
 
-#   if (MPI_PARALLEL)
+    MPI_PARALLEL_FOR (r, simulation.parameters.nrays()/2)
+    {
+      const long R = r - MPI_start (simulation.parameters.nrays()/2);
 
-      MPI_Finalize ();
+      cout << "ray = " << r << endl;
 
-#   endif
+
+#     pragma omp parallel default (shared) firstprivate (rayPair)
+      {
+
+      Timer timer0("trace");
+      Timer timer1("setup");
+      Timer timer2("solve");
+
+      OMP_FOR (o, simulation.parameters.ncells())
+      {
+        const long           ar = simulation.geometry.rays.antipod[o][r];
+        const double weight_ang = simulation.geometry.rays.weights[o][r];
+        const double dshift_max = simulation.get_dshift_max (o);
+
+
+        // Trace and initialize the ray pair
+
+        timer0.start();
+          RayData rayData_r  = simulation.geometry.trace_ray <CoMoving> (o, r,  dshift_max);
+          RayData rayData_ar = simulation.geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+        timer0.stop();
+        timer0.print();
+
+        rayPair.initialize (rayData_ar.size(), rayData_r.size());
+
+
+        // Solve radiative transfer along ray pair
+
+        if (rayPair.ndep > 1)
+        {
+          for (long f = 0; f < simulation.parameters.nfreqs_red(); f++)
+          {
+            // Setup and solve the ray equations
+
+            timer1.start();
+              simulation.setup (R, o, f, rayData_ar, rayData_r, rayPair);
+            timer1.stop();
+            timer1.print();
+
+
+            timer2.start();
+              rayPair.solve ();
+            timer2.stop();
+            timer2.print();
+
+            cout << "----------------------------------" << endl;
+          }
+        }
+
+      } // end of loop over cells
+
+      timer0.print_total();
+      timer1.print_total();
+      timer2.print_total();
+
+      }
+
+
+    } // end of loop over ray pairs
 
 
     cout << "Done." << endl;

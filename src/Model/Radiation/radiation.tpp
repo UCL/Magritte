@@ -88,6 +88,83 @@ inline double Radiation ::
 
 
 
+inline double Radiation ::
+    get_u (
+        const long r,
+        const long p,
+        const long f ) const
+
+#if (GRID_SIMD)
+
+{
+  const long indx = newIndex (f);
+  const  int lane = laneNr   (f);
+
+  return u[r][index(p,indx)].getlane(lane);
+}
+
+#else
+
+{
+  return u[r][index(p,f)];
+}
+
+#endif
+
+
+
+
+inline double Radiation ::
+    get_v (
+        const long r,
+        const long p,
+        const long f ) const
+
+#if (GRID_SIMD)
+
+{
+  const long indx = newIndex (f);
+  const  int lane = laneNr   (f);
+
+  return v[r][index(p,indx)].getlane(lane);
+}
+
+#else
+
+{
+  return v[r][index(p,f)];
+}
+
+#endif
+
+
+
+
+inline double Radiation ::
+    get_J (
+        const long p,
+        const long f ) const
+
+#if (GRID_SIMD)
+
+{
+  const long indx = newIndex (f);
+  const  int lane = laneNr   (f);
+
+  return J[index(p,indx)].getlane(lane);
+}
+
+#else
+
+{
+  return J[index(p,f)];
+}
+
+#endif
+
+
+
+
 inline void Radiation ::
     rescale_U_and_V (
         const vReal &freq_scaled,
@@ -117,7 +194,8 @@ inline void Radiation ::
       const  int lane1 = laneNr   (notch);
 
       nu1.putlane (frequencies.nu[p][f1].getlane (lane1), lane);
-      nu2.putlane (frequencies.nu[p][f1].getlane (lane1), lane);
+      nu2.putlane (1+frequencies.nu[p][f1].getlane (lane1), lane);
+      // the 1+ is to avoid divide by 0 in interpolation
 
        U1.putlane (get_U (R, p, f1, lane1), lane);
        U2.putlane (get_U (R, p, f1, lane1), lane);
@@ -203,6 +281,7 @@ inline void Radiation ::
 
   vReal nu1, nu2, I_bdy1, I_bdy2;
 
+  //cout << "freq_scaled = " << freq_scaled << endl;
 
   GRID_FOR_ALL_LANES (lane)
   {
@@ -210,17 +289,25 @@ inline void Radiation ::
 
     search_with_notch (frequencies.nu[p], notch, freq);
 
+    //cout << "notch["<<lane<<"] = "<< notch << endl;
 
     if ( (notch == 0) || (notch == nfreqs-1) )
     {
       const long f1    = newIndex (notch);
       const  int lane1 = laneNr   (notch);
 
-      nu1.putlane (frequencies.nu[p][f1].getlane (lane1), lane);
-      nu2.putlane (frequencies.nu[p][f1].getlane (lane1), lane);
+      nu1.putlane (  frequencies.nu[p][f1].getlane (lane1), lane);
+      nu2.putlane (1+frequencies.nu[p][f1].getlane (lane1), lane);
+      // the 1+ is to avoid divide by 0 in interpolation
 
       I_bdy1.putlane (get_I_bdy (R, b, f1, lane1), lane);
       I_bdy2.putlane (get_I_bdy (R, b, f1, lane1), lane);
+
+      //cout << "nu1["<<lane<<"] = "<< nu1.getlane(lane) << endl;
+      //cout << "nu2["<<lane<<"] = "<< nu2.getlane(lane) << endl;
+
+      //cout << "Ibdy1["<<lane<<"] = "<< I_bdy1.getlane(lane) << endl;
+      //cout << "Ibdy2["<<lane<<"] = "<< I_bdy2.getlane(lane) << endl;
     }
 
     else
@@ -236,10 +323,18 @@ inline void Radiation ::
 
       I_bdy1.putlane (get_I_bdy (R, b, f1, lane1), lane);
       I_bdy2.putlane (get_I_bdy (R, b, f2, lane2), lane);
+
+      //cout << "nu1["<<lane1<<"] = "<< nu1.getlane(lane1) << endl;
+      //cout << "nu2["<<lane2<<"] = "<< nu2.getlane(lane2) << endl;
+
+      //cout << "Ibdy1["<<lane1<<"] = "<< I_bdy1.getlane(lane1) << endl;
+      //cout << "Ibdy2["<<lane2<<"] = "<< I_bdy2.getlane(lane2) << endl;
     }
   }
 
   I_bdy_scaled = interpolate_linear (nu1, I_bdy1, nu2, I_bdy2, freq_scaled);
+
+  //cout << "I_bdy_scaled = " << I_bdy_scaled << endl;
 
 }
 

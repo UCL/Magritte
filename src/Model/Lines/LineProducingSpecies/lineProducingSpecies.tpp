@@ -13,8 +13,6 @@ using Eigen::Triplet;
 using Eigen::COLAMDOrdering;
 
 //#include <Eigen/IterativeLinearSolvers>
-
-
 //#include <Eigen/SparseCholesky>
 
 #include <Eigen/Core>
@@ -25,8 +23,11 @@ using Eigen::COLAMDOrdering;
 #include "Tools/logger.hpp"
 
 
-///  index:
-///////////
+///  Indexer for level populations
+///    @param[in] p : index of the cell
+///    @param[in] i : index of the level
+///    @return corresponding index for p and i
+//////////////////////////////////////////////
 
 inline long LineProducingSpecies ::
     index (
@@ -37,37 +38,47 @@ inline long LineProducingSpecies ::
 }
 
 
+
+
+///  Getter for the line emissivity
+///    @param[in] p : index of the cell
+///    @param[in] k : index of the transition
+///    @return line emissivity for cell p and transition k
+//////////////////////////////////////////////////////////
+
 inline double LineProducingSpecies ::
     get_emissivity (
         const long p,
         const long k ) const
 {
-
   const long ind_i = index (p, linedata.irad[k]);
 
-  //return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
   return HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
-
 }
 
 
 
+
+///  Getter for the line opacity
+///    @param[in] p : index of the cell
+///    @param[in] k : index of the transition
+///    @return line opacity for cell p and transition k
+///////////////////////////////////////////////////////
 
 inline double LineProducingSpecies ::
     get_opacity (
         const long p,
         const long k ) const
 {
-
   const long ind_i = index (p, linedata.irad[k]);
   const long ind_j = index (p, linedata.jrad[k]);
 
-  //return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
-  //                          - population(ind_i) * linedata.Bs[k] );
   return HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
                             - population(ind_i) * linedata.Bs[k] );
-
 }
+
+
+
 
 ///  set_LTE_level_populations
 ///    @param[in] abundance_lspec: abundance of line species
@@ -275,6 +286,9 @@ inline void LineProducingSpecies ::
 
     for (long k = 0; k < linedata.nrad; k++)
     {
+      //cout<<"Jeff["<<p<<"]["<<k<<"] = "<<Jeff[p][k]<<endl;
+      //cout<<"Jlin["<<p<<"]["<<k<<"] = "<<Jlin[p][k]<<endl;
+
       const double v_IJ = linedata.A[k] + linedata.Bs[k] * Jeff[p][k];
       const double v_JI =                 linedata.Ba[k] * Jeff[p][k];
 

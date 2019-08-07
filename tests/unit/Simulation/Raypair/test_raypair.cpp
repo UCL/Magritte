@@ -10,8 +10,10 @@
 
 #include "catch.hpp"
 
+#include "configure.hpp"
 #include "Simulation/Raypair/raypair.hpp"
 #include "Model/Thermodynamics/thermodynamics.hpp"
+#include "Tools/logger.hpp"
 #include "Tools/logger.hpp"
 
 #define EPS 1.0E-15
@@ -78,25 +80,47 @@ TEST_CASE ("RayPair::solve")
   {
     Eigen::MatrixXd M (ndep, ndep);
 
-    for (long d = 0; d < ndep-1; d++)
-    {
-      M(d,d+1) = -rayPair.C[d];
-    }
+#   if (GRID_SIMD)
+      for (long d = 0; d < ndep-1; d++)
+      {
+        M(d,d+1) = -rayPair.C[d].getlane(0);
+      }
 
-    for (long d = 1; d < ndep; d++)
-    {
-      M(d,d-1) = -rayPair.A[d];
-    }
+      for (long d = 1; d < ndep; d++)
+      {
+        M(d,d-1) = -rayPair.A[d].getlane(0);
+      }
 
-    for (long d = 1; d < ndep-1; d++)
-    {
-      M(d,d) = 1.0 + rayPair.A[d] + rayPair.C[d];
-    }
+      for (long d = 1; d < ndep-1; d++)
+      {
+        M(d,d) = 1.0 + rayPair.A[d].getlane(0) + rayPair.C[d].getlane(0);
+      }
 
-    M(0     ,0      ) = vOne + 2.0/rayPair.dtau[0]
-                        + 2.0/(rayPair.dtau[0]     *rayPair.dtau[0]     );
-    M(ndep-1, ndep-1) = vOne + 2.0/rayPair.dtau[ndep-2]
-                        + 2.0/(rayPair.dtau[ndep-2]*rayPair.dtau[ndep-2]);
+      M(0     ,0      ) = 1 + 2.0/rayPair.dtau[0].getlane(0)
+                            + 2.0/(rayPair.dtau[0].getlane(0)     *rayPair.dtau[0].getlane(0)     );
+      M(ndep-1, ndep-1) = 1 + 2.0/rayPair.dtau[ndep-2].getlane(0)
+                            + 2.0/(rayPair.dtau[ndep-2].getlane(0)*rayPair.dtau[ndep-2].getlane(0));
+#   else
+      for (long d = 0; d < ndep-1; d++)
+      {
+        M(d,d+1) = -rayPair.C[d];
+      }
+
+      for (long d = 1; d < ndep; d++)
+      {
+        M(d,d-1) = -rayPair.A[d];
+      }
+
+      for (long d = 1; d < ndep-1; d++)
+      {
+        M(d,d) = 1.0 + rayPair.A[d] + rayPair.C[d];
+      }
+
+      M(0     ,0      ) = 1 + 2.0 /  rayPair.dtau[0]
+                            + 2.0 / (rayPair.dtau[0]      * rayPair.dtau[0]     );
+      M(ndep-1, ndep-1) = 1 + 2.0 /  rayPair.dtau[ndep-2]
+                            + 2.0 / (rayPair.dtau[ndep-2] * rayPair.dtau[ndep-2]);
+#   endif
 
 
     MatrixXd M_inverse = M.inverse();
@@ -106,7 +130,7 @@ TEST_CASE ("RayPair::solve")
     {
       for (long d = 0; d < ndep; d++)
       {
-        CHECK (rayPair.L_diag[d] == Approx(M_inverse(d,d)).epsilon(EPS));
+        CHECK (equal (rayPair.L_diag[d], M_inverse(d,d), EPS));
       }
     }
 
@@ -118,7 +142,7 @@ TEST_CASE ("RayPair::solve")
         {
           cout << "m = " << m << "   d = " << d << endl;
 
-          CHECK (rayPair.L_upper[m][d] == Approx(M_inverse(d,d+m+1)).epsilon(EPS));
+          CHECK (equal (rayPair.L_upper[m][d], M_inverse(d,d+m+1), EPS));
         }
       }
     }
@@ -131,7 +155,7 @@ TEST_CASE ("RayPair::solve")
         {
           cout << "m = " << m << "   d = " << d << endl;
 
-          CHECK (rayPair.L_lower[m][d] == Approx(M_inverse(d+m+1,d)).epsilon(EPS));
+          CHECK (equal (rayPair.L_lower[m][d], M_inverse(d+m+1,d), EPS));
         }
       }
     }
@@ -177,25 +201,48 @@ TEST_CASE ("RayPair::get_L_diag")
   {
     Eigen::MatrixXd M (ndep, ndep);
 
-    for (long d = 0; d < ndep-1; d++)
-    {
-      M(d,d+1) = -rayPair.C[d];
-    }
+#   if (GRID_SIMD)
+      for (long d = 0; d < ndep-1; d++)
+      {
+        M(d,d+1) = -rayPair.C[d].getlane(0);
+      }
 
-    for (long d = 1; d < ndep; d++)
-    {
-      M(d,d-1) = -rayPair.A[d];
-    }
+      for (long d = 1; d < ndep; d++)
+      {
+        M(d,d-1) = -rayPair.A[d].getlane(0);
+      }
 
-    for (long d = 1; d < ndep-1; d++)
-    {
-      M(d,d) = 1.0 + rayPair.A[d] + rayPair.C[d];
-    }
+      for (long d = 1; d < ndep-1; d++)
+      {
+        M(d,d) = 1.0 + rayPair.A[d].getlane(0) + rayPair.C[d].getlane(0);
+      }
 
-    M(0     ,0      ) = vOne + 2.0/rayPair.dtau[0]
-                        + 2.0/(rayPair.dtau[0]     *rayPair.dtau[0]     );
-    M(ndep-1, ndep-1) = vOne + 2.0/rayPair.dtau[ndep-2]
-                        + 2.0/(rayPair.dtau[ndep-2]*rayPair.dtau[ndep-2]);
+      M(0     ,0      ) = 1 + 2.0/rayPair.dtau[0].getlane(0)
+                            + 2.0/(rayPair.dtau[0].getlane(0)     *rayPair.dtau[0].getlane(0)     );
+      M(ndep-1, ndep-1) = 1 + 2.0/rayPair.dtau[ndep-2].getlane(0)
+                            + 2.0/(rayPair.dtau[ndep-2].getlane(0)*rayPair.dtau[ndep-2].getlane(0));
+#   else
+      for (long d = 0; d < ndep-1; d++)
+      {
+        M(d,d+1) = -rayPair.C[d];
+      }
+
+      for (long d = 1; d < ndep; d++)
+      {
+        M(d,d-1) = -rayPair.A[d];
+      }
+
+      for (long d = 1; d < ndep-1; d++)
+      {
+        M(d,d) = 1.0 + rayPair.A[d] + rayPair.C[d];
+      }
+
+      M(0     ,0      ) = 1 + 2.0/rayPair.dtau[0]
+                            + 2.0/(rayPair.dtau[0]     *rayPair.dtau[0]     );
+      M(ndep-1, ndep-1) = 1 + 2.0/rayPair.dtau[ndep-2]
+                            + 2.0/(rayPair.dtau[ndep-2]*rayPair.dtau[ndep-2]);
+#   endif
+
 
 
     MatrixXd M_inverse = M.inverse();
@@ -208,7 +255,7 @@ TEST_CASE ("RayPair::get_L_diag")
     {
       for (long d = 0; d < ndep; d++)
       {
-        CHECK (rayPair.L_diag[d] == Approx(M_inverse(d,d)).epsilon(EPS));
+        CHECK (equal (rayPair.L_diag[d], M_inverse(d,d), EPS));
       }
     }
 
@@ -220,7 +267,7 @@ TEST_CASE ("RayPair::get_L_diag")
         {
           cout << "m = " << m << "   d = " << d << endl;
 
-          CHECK (rayPair.L_upper[m][d] == Approx(M_inverse(d,d+m+1)).epsilon(EPS));
+          CHECK (equal (rayPair.L_upper[m][d], M_inverse(d,d+m+1), EPS));
         }
       }
     }
@@ -233,7 +280,7 @@ TEST_CASE ("RayPair::get_L_diag")
         {
           cout << "m = " << m << "   d = " << d << endl;
 
-          CHECK (rayPair.L_lower[m][d] == Approx(M_inverse(d+m+1,d)).epsilon(EPS));
+          CHECK (equal (rayPair.L_lower[m][d], M_inverse(d+m+1,d), EPS));
         }
       }
     }

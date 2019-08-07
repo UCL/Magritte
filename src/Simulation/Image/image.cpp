@@ -19,10 +19,11 @@ Image ::
 Image (
     const long        ray_nr,
     const Parameters &parameters)
-  : ray_nr   (ray_nr)
-  , ncells   (parameters.ncells())
-  , ncameras (parameters.ncameras())
-  , nfreqs   (parameters.nfreqs())
+  : ray_nr     (ray_nr)
+  , ncells     (parameters.ncells())
+  , ncameras   (parameters.ncameras())
+  , nfreqs     (parameters.nfreqs())
+  , nfreqs_red (parameters.nfreqs_red())
 {
 
   // Size and initialize Ip_out and Im_out
@@ -36,8 +37,8 @@ Image (
   for (long c = 0; c < ncells; c++)
   //for (long c = 0; c < ncameras; c++)
   {
-    I_p[c].resize (nfreqs);
-    I_m[c].resize (nfreqs);
+    I_p[c].resize (nfreqs_red);
+    I_m[c].resize (nfreqs_red);
   }
 
 
@@ -62,8 +63,22 @@ int Image ::
   io.write_list  (prefix+"ImX_"+str_ray_nr, ImX);
   io.write_list  (prefix+"ImY_"+str_ray_nr, ImY);
 
-  io.write_array (prefix+"I_m_"+str_ray_nr, I_m);
-  io.write_array (prefix+"I_p_"+str_ray_nr, I_p);
+
+  Double2 intensity_m (ncells, Double1 (nfreqs));
+  Double2 intensity_p (ncells, Double1 (nfreqs));
+
+  OMP_PARALLEL_FOR (p, ncells)
+  {
+    for (long f = 0; f < nfreqs; f++)
+    {
+      intensity_m[p][f] = get (I_m[p], f);
+      intensity_p[p][f] = get (I_p[p], f);
+    }
+  }
+
+
+  io.write_array (prefix+"I_m_"+str_ray_nr, intensity_m);
+  io.write_array (prefix+"I_p_"+str_ray_nr, intensity_p);
 
 
   return (0);

@@ -12,7 +12,7 @@ set (MAGRITTE_VERSION_MAJOR 0)
 set (MAGRITTE_VERSION_MINOR 0)
 
 # Set build type to Release to set all optimisation flags
-set (CMAKE_BUILD_TYPE  Release)
+set (CMAKE_BUILD_TYPE Release)
 
 
 # Build options
@@ -25,17 +25,23 @@ option (PERF_ANALYSIS    "Build for performance analysis"         OFF)
 
 
 # Set variable for use in the source code (defined in configure.hpp)
-if (PYTHON_IO)
+if    (PYTHON_IO)
   set (MAGRITTE_PYTHON_IO  true)
-else (PYTHON_IO)
+else  (PYTHON_IO)
   set (MAGRITTE_PYTHON_IO  false)
 endif (PYTHON_IO)
 
+if    (GRID_SIMD)
+  set (MAGRITTE_GRID_SIMD true)
+else  (GRID_SIMD)
+  set (MAGRITTE_GRID_SIMD false)
+endif (GRID_SIMD)
+
 
 # Set directory for binaries (and provide a separate one for instrumented binaries for performance testing)
-if (PERF_ANALYSIS)
+if    (PERF_ANALYSIS)
   set (BINARY_DIRECTORY  ${CMAKE_SOURCE_DIR}/bin/tests/performance)
-else (PERF_ANALYSIS)
+else  (PERF_ANALYSIS)
   set (BINARY_DIRECTORY  ${CMAKE_SOURCE_DIR}/bin)
 endif (PERF_ANALYSIS)
 
@@ -58,7 +64,7 @@ set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS}  -mcmodel=large")
 
 
 # Add OpenMP if required
-if (OMP_PARALLEL)
+if    (OMP_PARALLEL)
   # Look for package
   find_package (OpenMP REQUIRED)
   # Set compiler and linker flags
@@ -67,10 +73,16 @@ if (OMP_PARALLEL)
   set (CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
   # Set variable in configuration file
   set (MAGRITTE_OMP_PARALLEL true)
-else (OMP_PARALLEL)
+else  (OMP_PARALLEL)
   # Set variable in configuration file
   set (MAGRITTE_OMP_PARALLEL false)
 endif (OMP_PARALLEL)
+
+
+if    (GRID_SIMD)
+  # Add directory containing Grid-SIMD's source
+  add_subdirectory (dependencies/Grid-SIMD)
+endif (GRID_SIMD)
 
 
 # Add directory containing Magritte's source
@@ -84,11 +96,11 @@ add_subdirectory (examples)
 
 
 # Link to pybind11 directory if required
-if (PYTHON_BINDINGS   OR   PYTHON_IO)
+if    (PYTHON_BINDINGS   OR   PYTHON_IO)
   add_subdirectory (dependencies/pybind11 pybind11)
 endif (PYTHON_BINDINGS   OR   PYTHON_IO)
 
 # Add directory containing Magritte's Python bindings
-if (PYTHON_BINDINGS)
+if    (PYTHON_BINDINGS)
   add_subdirectory (bindings)
 endif (PYTHON_BINDINGS)
