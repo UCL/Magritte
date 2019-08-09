@@ -11,7 +11,7 @@ if    (GRID_SIMD)
   # Include headers
   include_directories (../dependencies/Grid-SIMD/include)
   # Set compiler flags
-  set (CMAKE_CXX_FLAGS   "${CMAKE_CXX_FLAGS} -mavx -mf16c")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_COMPILER_FLAGS}")
   # Set variable in configuration file
   set (MAGRITTE_GRID_SIMD true)
 else  (GRID_SIMD)

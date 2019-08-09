@@ -82,6 +82,8 @@ endif (OMP_PARALLEL)
 if    (GRID_SIMD)
   # Add directory containing Grid-SIMD's source
   add_subdirectory (dependencies/Grid-SIMD)
+  # Set Grid compiler flags
+  set (GRID_COMPILER_FLAGS "-mavx -mf16c")
 endif (GRID_SIMD)
 
 

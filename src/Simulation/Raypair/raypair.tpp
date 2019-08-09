@@ -28,42 +28,42 @@ inline void RayPair ::
   lnotch_at_origin = 0;
 
 
-  if (ndep > term1.size())
-  {
-     term1.resize (ndep+10);
-     term2.resize (ndep+10);
-         A.resize (ndep+10);
-         C.resize (ndep+10);
-         F.resize (ndep+10);
-         G.resize (ndep+10);
-        Su.resize (ndep+10);
-        Sv.resize (ndep+10);
-      dtau.resize (ndep+10);
-    L_diag.resize (ndep+10);
-       chi.resize (ndep+10);
-       nrs.resize (ndep+10);
-       frs.resize (ndep+10);
+  //if (ndep > term1.size())
+  //{
+  //   term1.resize (ndep+10);
+  //   term2.resize (ndep+10);
+  //       A.resize (ndep+10);
+  //       C.resize (ndep+10);
+  //       F.resize (ndep+10);
+  //       G.resize (ndep+10);
+  //      Su.resize (ndep+10);
+  //      Sv.resize (ndep+10);
+  //    dtau.resize (ndep+10);
+  //  L_diag.resize (ndep+10);
+  //     chi.resize (ndep+10);
+  //     nrs.resize (ndep+10);
+  //     frs.resize (ndep+10);
 
-       inverse_one_plus_F.resize (ndep+10);
-       inverse_one_plus_G.resize (ndep+10);
-        G_over_one_plus_G.resize (ndep+10);
-                inverse_A.resize (ndep+10);
-                inverse_C.resize (ndep+10);
+  //     inverse_one_plus_F.resize (ndep+10);
+  //     inverse_one_plus_G.resize (ndep+10);
+  //      G_over_one_plus_G.resize (ndep+10);
+  //              inverse_A.resize (ndep+10);
+  //              inverse_C.resize (ndep+10);
 
 
-    if (n_off_diag > 0)
-    {
-      L_upper.resize (n_off_diag);
-      L_lower.resize (n_off_diag);
+  //  if (n_off_diag > 0)
+  //  {
+  //    L_upper.resize (n_off_diag);
+  //    L_lower.resize (n_off_diag);
 
-      for (long m = 0; m < n_off_diag; m++)
-      {
-        L_upper[m].resize (ndep+10);
-        L_lower[m].resize (ndep+10);
-      }
-    }
+  //    for (long m = 0; m < n_off_diag; m++)
+  //    {
+  //      L_upper[m].resize (ndep+10);
+  //      L_lower[m].resize (ndep+10);
+  //    }
+  //  }
 
-  }
+  //}
 
 
 }

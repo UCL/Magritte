@@ -250,12 +250,20 @@ int Simulation ::
 
   radiation.initialize_J ();
 
+  // Get the number of available threads
+  int nthrds = get_nthreads ();
 
   // Raypair along which the trasfer equation is solved
-  RayPair rayPair;
+  vector<RayPair> rayPairs (nthrds, RayPair (parameters.ncells (),
+                                             parameters.n_off_diag));
 
-  // Set bandwidth of the Approximated Lambda operator (ALO)
-  rayPair.n_off_diag = parameters.n_off_diag;
+
+
+  // // Raypair along which the trasfer equation is solved
+  // RayPair rayPair;
+
+  // // Set bandwidth of the Approximated Lambda operator (ALO)
+  // rayPair.n_off_diag = parameters.n_off_diag;
 
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
@@ -265,8 +273,13 @@ int Simulation ::
     cout << "ray = " << r << endl;
 
 
-#   pragma omp parallel default (shared) firstprivate (rayPair)
+#   pragma omp parallel default (shared)
     {
+    // Create a reference to the ray pair object for this thread.
+    // Required to avoid calls to the Grid-SIMD allocator (AllignedAllocator)
+    // inside of an OpenMP (omp) parallel region.
+    RayPair &rayPair = rayPairs[omp_get_thread_num()];
+
     //OMP_FOR (o, parameters.ncells())
 
     // For better load balancing!!! (avoid getting boundary points on 1 thread)
@@ -437,8 +450,14 @@ int Simulation ::
   // Create image object
   Image image (r, parameters);
 
+
+  // Get the number of available threads
+  int nthrds = get_nthreads ();
+
+
   // Raypair along which the trasfer equation is solved
-  RayPair rayPair;
+  vector<RayPair> rayPairs (nthrds, RayPair (parameters.ncells (),
+                                             parameters.n_off_diag));
 
 
   // if the ray is in this MPI process
@@ -448,8 +467,13 @@ int Simulation ::
     const long R = r - MPI_start (parameters.nrays()/2);
 
 
-#   pragma omp parallel default (shared) private (rayPair)
+#   pragma omp parallel default (shared)
     {
+    // Create a reference to the ray pair object for this thread.
+    // Required to avoid calls to the Grid-SIMD allocator (AllignedAllocator)
+    // inside of an OpenMP (omp) parallel region.
+    RayPair &rayPair = rayPairs[omp_get_thread_num()];
+
     OMP_FOR (o, parameters.ncells())
     {
       const long           ar = geometry.rays.antipod[o][r];
@@ -702,43 +726,47 @@ void Simulation ::
 
 
 
-// ///  Computer for the number of points on each ray
-// //////////////////////////////////////////////////
-//
-// int Simulation ::
-//     compute_number_of_points_on_rays ()
-// {
-//
-//   // Initialisation
-//
-//   Long2 npoints (parameters.nrays(), Long1 (parameters.ncells()));
-//
-//
-//   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
+///  Computer for the number of points on each ray
+//////////////////////////////////////////////////
+int Simulation ::
+    compute_number_of_points_on_rays () const
+{
+
+  const long hnrays = parameters.nrays  () / 2;
+  const long ncells = parameters.ncells ();
+
+  const int nthrds = get_nthreads ();
+
+
+  // Initialisation
+  Long2 npoints (hnrays, Long1 (ncells));
+  Long3 bins    (hnrays, Long2 (nthrds));
+
+//   MPI_PARALLEL_FOR (r, hnrays);
 //   {
-//     cout << "ray = " << r << endl;
+//     for (int t = 0; t < nthrds; t++)
+//     {
+//       bins.reserve (ncells/nthrds);
+//     }
 //
 // #   pragma omp parallel default (shared)
 //     {
-//     OMP_FOR (o, parameters.ncells())
-//     {
-//       const long           ar = geometry.rays.antipod[o][r];
-//       const double dshift_max = get_dshift_max (o);
+//       OMP_FOR (o, ncells)
+//       {
+//         const long           ar = geometry.rays.antipod[o][r];
+//         const double dshift_max = get_dshift_max (o);
 //
+//         RayData rayData_r  = geometry.trace_ray <CoMoving> (o, r,  dshift_max);
+//         RayData rayData_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
 //
-//       // Trace and initialize the ray pair
+//         npoints[r][o] = rayData_ar.size() + rayData_r.size() + 1;
 //
-//       RayData rayData_r  = geometry.trace_ray <CoMoving> (o, r,  dshift_max);
-//       RayData rayData_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
-//
-//       npoints[r][o] = rayData_r.size() + rayData_ar.size() + 1;
-//
-//     } // end of loop over cells
+//         bins[r][omp_get_thread_num()].push_back ();
+//       }
 //     }
-//
-//   } // end of loop over ray pairs
-//
-//
-//   return (0);
-//
-// }
+//   }
+
+
+ return (0);
+
+}

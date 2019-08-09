@@ -28,6 +28,19 @@
 #endif
 
 
+inline long get_nthreads ()
+{
+  int nthreads;
+
+# pragma omp parallel
+  {
+    nthreads = omp_get_num_threads ();
+  }
+
+  return nthreads;
+}
+
+
 // OMP loops
 
 inline long OMP_start (

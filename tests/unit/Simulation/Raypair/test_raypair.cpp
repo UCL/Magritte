@@ -29,11 +29,13 @@ TEST_CASE ("RayPair::solve")
 
   // Setup
 
-  RayPair rayPair;
-
-
   const long n_r  = 5;
   const long n_ar = 5;
+
+  const long length = n_r + n_ar;
+
+  RayPair rayPair (length, 1);
+
 
   rayPair.initialize (n_ar, n_r);
 
@@ -171,11 +173,12 @@ TEST_CASE ("RayPair::get_L_diag")
 
   // Setup
 
-  RayPair rayPair;
-
-
   const long n_r  = 5;
   const long n_ar = 5;
+
+  const long length = n_r + n_ar;
+
+  RayPair rayPair (length, 1);
 
   rayPair.initialize (n_ar, n_r);
 

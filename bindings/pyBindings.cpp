@@ -400,7 +400,7 @@ PYBIND11_MODULE (magritte, module)
   // RayPair
   py::class_<RayPair> (module, "RayPair")
       // constructor
-      .def (py::init<>())
+      .def (py::init<const long, const long>())
       // attributes
       .def_readonly ("n_ar", &RayPair::n_ar)
       .def_readonly ("n_r",  &RayPair::n_r)

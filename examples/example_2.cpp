@@ -69,12 +69,12 @@ int main (int argc, char **argv)
 
     simulation.compute_LTE_level_populations ();
 
+    // Get the number of available threads
+    int nthrds = get_nthreads ();
 
     // Raypair along which the trasfer equation is solved
-    RayPair rayPair;
-
-    // Set bandwidth of the Approximated Lambda operator (ALO)
-    rayPair.n_off_diag = simulation.parameters.n_off_diag;
+    vector<RayPair> rayPairs (nthrds, RayPair (simulation.parameters.ncells (),
+                                               simulation.parameters.n_off_diag));
 
 
     MPI_PARALLEL_FOR (r, simulation.parameters.nrays()/2)
@@ -84,8 +84,12 @@ int main (int argc, char **argv)
       cout << "ray = " << r << endl;
 
 
-#     pragma omp parallel default (shared) firstprivate (rayPair)
+#     pragma omp parallel default (shared)
       {
+      // Create a reference to the ray pair object for this thread.
+      // Required to avoid calls to the Grid-SIMD allocator (AllignedAllocator)
+      // inside of an OpenMP (omp) parallel region.
+      RayPair &rayPair = rayPairs[omp_get_thread_num()];
 
       Timer timer0("trace");
       Timer timer1("setup");

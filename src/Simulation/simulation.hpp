@@ -86,6 +86,8 @@ struct Simulation : public Model
 
   void calc_Jeff ();
 
+  int compute_number_of_points_on_rays () const;
+
 
   private:
 

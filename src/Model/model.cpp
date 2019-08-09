@@ -18,7 +18,11 @@ int Model ::
       const Io &io)
 {
 
-  cout << "Reading Model" << endl;
+  cout << "                                           " << endl;
+  cout << "-------------------------------------------" << endl;
+  cout << "  Reading Model...                         " << endl;
+  cout << "-------------------------------------------" << endl;
+  cout << "                                           " << endl;
 
 
   geometry.read       (io, parameters);
@@ -32,23 +36,23 @@ int Model ::
   radiation.read      (io, parameters);
 
 
-  cout << "-----------------"                         << endl;
-  cout << "Model parameters:"                         << endl;
-  cout << "-----------------"                         << endl;
-  cout << "Using " << n_simd_lanes << " SIMD lanes."  << endl;
-  cout << "-----------------"                         << endl;
-  cout << "ncells     = " << parameters.ncells     () << endl;
-  cout << "ncameras   = " << parameters.ncameras   () << endl;
-  cout << "nrays      = " << parameters.nrays      () << endl;
-  cout << "nrays_red  = " << parameters.nrays_red  () << endl;
-  cout << "nboundary  = " << parameters.nboundary  () << endl;
-  cout << "nfreqs     = " << parameters.nfreqs     () << endl;
-  cout << "nfreqs_red = " << parameters.nfreqs_red () << endl;
-  cout << "nspecs     = " << parameters.nspecs     () << endl;
-  cout << "nlspecs    = " << parameters.nlspecs    () << endl;
-  cout << "nlines     = " << parameters.nlines     () << endl;
-  cout << "nquads     = " << parameters.nquads     () << endl;
-  cout << "-----------------"                         << endl;
+  cout << "                                           " << endl;
+  cout << "-------------------------------------------" << endl;
+  cout << "  Model parameters:                        " << endl;
+  cout << "-----------------------------------------  " << endl;
+  cout << "  ncells     = " << parameters.ncells     () << endl;
+  cout << "  ncameras   = " << parameters.ncameras   () << endl;
+  cout << "  nrays      = " << parameters.nrays      () << endl;
+  cout << "  nrays_red  = " << parameters.nrays_red  () << endl;
+  cout << "  nboundary  = " << parameters.nboundary  () << endl;
+  cout << "  nfreqs     = " << parameters.nfreqs     () << endl;
+  cout << "  nfreqs_red = " << parameters.nfreqs_red () << endl;
+  cout << "  nspecs     = " << parameters.nspecs     () << endl;
+  cout << "  nlspecs    = " << parameters.nlspecs    () << endl;
+  cout << "  nlines     = " << parameters.nlines     () << endl;
+  cout << "  nquads     = " << parameters.nquads     () << endl;
+  cout << "-------------------------------------------" << endl;
+  cout << "                                           " << endl;
 
 
   return (0);
