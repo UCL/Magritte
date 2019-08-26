@@ -29,6 +29,14 @@ else  (GRID_SIMD)
   set (MAGRITTE_GRID_SIMD false)
 endif (GRID_SIMD)
 
+# If MPI is used
+if    (MPI_PARALLEL)
+  # Look for package
+  find_package (MPI REQUIRED)
+  # Include headers
+  include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+endif (MPI_PARALLEL)
+
 
 # Create test executables
 #########################
@@ -62,6 +70,16 @@ target_link_libraries (test_lineProducingSpecies.exe   _Magritte   TestMain)
 
 add_executable        (test_wrap_Grid.exe   Tools/Parallel/test_wrap_Grid.cpp)
 target_link_libraries (test_wrap_Grid.exe   _Magritte   TestMain)
+
+add_executable        (test_radiation.exe   Model/Radiation/test_radiation.cpp)
+target_link_libraries (test_radiation.exe   _Magritte   TestMain)
+
+# Link MPI libraries
+if    (MPI_PARALLEL)
+  target_link_libraries (test_radiation.exe   ${MPI_C_LIBRARIES})
+endif (MPI_PARALLEL)
+
+
 #
 #add_executable (test_lambda.exe
 #  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
@@ -177,7 +195,7 @@ target_link_libraries (test_wrap_Grid.exe   _Magritte   TestMain)
 #_TEST_RT_MAIN )
 
 
-if (PYTHON_IO)
+if    (PYTHON_IO)
   add_executable        (test_io_python_hdf5.exe   Io/python/test_io_python_hdf5.cpp)
   target_link_libraries (test_io_python_hdf5.exe   TestMain   PyIo                  )
 endif (PYTHON_IO)

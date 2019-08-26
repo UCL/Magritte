@@ -43,7 +43,7 @@ struct RayPair
       RayPair (
           const long length,
           const long n_off_diag);
-      
+
 
       // inline functions
       inline void initialize (
@@ -52,6 +52,7 @@ struct RayPair
 
       inline void solve_using_scattering ();
       inline void solve                  ();
+      inline void solve_for_image        ();
 
       //inline void solve_ndep_is_1 ();
 

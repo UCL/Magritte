@@ -11,10 +11,13 @@
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
 #include "Tools/timer.hpp"
+#include "Tools/logger.hpp"
 #include "Model/model.hpp"
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 
+
+enum SpecDiscSetting {None, LineSet, ImageSet};
 
 ///  Simulation:
 ////////////////
@@ -22,13 +25,18 @@
 struct Simulation : public Model
 {
 
-
   Double1 error_max;
   Double1 error_mean;
+
+  SpecDiscSetting specDiscSetting = None;
+
 
   //vReal tau_max = 10.0;
 
   int compute_spectral_discretisation ();
+
+  int compute_spectral_discretisation_image (
+      const double width                    );
 
 
   // In sim_radiation.cpp

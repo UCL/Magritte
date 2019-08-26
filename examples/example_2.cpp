@@ -94,6 +94,7 @@ int main (int argc, char **argv)
       Timer timer0("trace");
       Timer timer1("setup");
       Timer timer2("solve");
+      Timer timer3("set_L");
 
       OMP_FOR (o, simulation.parameters.ncells())
       {
@@ -132,6 +133,19 @@ int main (int argc, char **argv)
             timer2.stop();
             timer2.print();
 
+
+            timer3.start();
+            rayPair.update_Lambda (
+                simulation.radiation.frequencies,
+                simulation.thermodynamics,
+                o,
+                f,
+                weight_ang,
+                simulation.lines                 );
+            timer3.stop();
+            timer3.print();
+
+
             cout << "----------------------------------" << endl;
           }
         }
@@ -141,6 +155,7 @@ int main (int argc, char **argv)
       timer0.print_total();
       timer1.print_total();
       timer2.print_total();
+      timer3.print_total();
 
       }
 

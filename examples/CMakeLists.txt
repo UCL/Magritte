@@ -19,6 +19,14 @@ else  (GRID_SIMD)
   set (MAGRITTE_GRID_SIMD false)
 endif (GRID_SIMD)
 
+# If MPI is used
+if    (MPI_PARALLEL)
+  # Look for package
+  find_package (MPI REQUIRED)
+  # Include headers
+  include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+endif (MPI_PARALLEL)
+
 # Include directory containing source
 include_directories (../src)
 include_directories (../dependencies)
@@ -35,3 +43,11 @@ target_link_libraries (example_3.exe  _Magritte     )
 
 add_executable        (example_4.exe   example_4.cpp)
 target_link_libraries (example_4.exe  _Magritte     )
+
+# Link MPI libraries
+if    (MPI_PARALLEL)
+  target_link_libraries (example_1.exe   ${MPI_C_LIBRARIES})
+  target_link_libraries (example_2.exe   ${MPI_C_LIBRARIES})
+  target_link_libraries (example_3.exe   ${MPI_C_LIBRARIES})
+  target_link_libraries (example_4.exe   ${MPI_C_LIBRARIES})
+endif (MPI_PARALLEL)

@@ -44,8 +44,8 @@ TEST_CASE ("LineProducingSpecies::update_using_statistical_equilibrium")
     {
       simulation.lines.lineProducingSpecies[0].Jeff[p][k] = 1.0;
 
-      simulation.lines.lineProducingSpecies[0].lambda[p][k].nr.clear();
-      simulation.lines.lineProducingSpecies[0].lambda[p][k].Ls.clear();
+      simulation.lines.lineProducingSpecies[0].lambda.nr.clear();
+      simulation.lines.lineProducingSpecies[0].lambda.Ls.clear();
     }
   }
 

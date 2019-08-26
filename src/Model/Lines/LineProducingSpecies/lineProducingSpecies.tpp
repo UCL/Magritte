@@ -132,13 +132,15 @@ inline void LineProducingSpecies ::
 
   const double weight = 1.0 / (ncells * linedata.nlev);
 
-  fraction_not_converged = 0.0;
+  double fnc = 0.0;
+  double rcm = 0.0;
 
-  relative_change_mean = 0.0;
   relative_change_max  = 0.0;
 
 
-  OMP_PARALLEL_FOR (p, ncells)
+//  for (long p = 0; p < ncells; p++)
+# pragma omp parallel for reduction (+: fnc, rcm)
+  for (long p = 0; p < ncells; p++)
   {
     const double min_pop = 1.0E-10 * population_tot[p];
 
@@ -153,24 +155,25 @@ inline void LineProducingSpecies ::
         relative_change *= fabs (population (ind) - population_prev1 (ind));
         relative_change /=      (population (ind) + population_prev1 (ind));
 
-
         if (relative_change > pop_prec)
         {
-          fraction_not_converged += weight;
+          fnc += weight;
         }
 
+        rcm += (weight * relative_change);
 
-        relative_change_mean += (weight * relative_change);
-
-
-        if (relative_change > relative_change_max)
-        {
-          relative_change_max = relative_change;
-        }
-
+        // NOT THREAD SAFE !!!
+        //if (relative_change > relative_change_max)
+        //{
+        //  relative_change_max = relative_change;
+        //}
       }
     }
   }
+
+
+  fraction_not_converged = fnc;
+  relative_change_mean   = rcm;
 
 
 }
@@ -318,14 +321,14 @@ inline void LineProducingSpecies ::
 
     for (long k = 0; k < linedata.nrad; k++)
     {
-      for (long m = 0; m < lambda[p][k].nr.size(); m++)
+      for (long m = 0; m < lambda.get_size (p,k); m++)
       {
-        const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
+        const double v_IJ = -get_opacity (p, k) * lambda.get_Ls (p, k, m);
 
         // Note: we define our transition matrix as the transpose of R in the paper.
 
-        const long I = index (lambda[p][k].nr[m], linedata.irad[k]);
-        const long J = index (p,                  linedata.jrad[k]);
+        const long I = index (lambda.get_nr (p, k, m), linedata.irad[k]);
+        const long J = index (p,                       linedata.jrad[k]);
 
         if (linedata.jrad[k] != linedata.nlev-1)
         {
@@ -405,8 +408,6 @@ inline void LineProducingSpecies ::
     //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
 
   } // for all cells
-
-  cout << omp_get_num_threads() << endl;
 
 
   RT.setFromTriplets (triplets.begin(), triplets.end());

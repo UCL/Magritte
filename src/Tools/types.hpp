@@ -13,6 +13,7 @@ using std::vector;
 using std::list;
 #include <string>
 using std::string;
+using std::to_string;
 #include <Eigen/Core>
 using Eigen::VectorXd;
 using Eigen::MatrixXd;

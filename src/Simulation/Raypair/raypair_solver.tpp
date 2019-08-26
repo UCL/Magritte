@@ -511,6 +511,93 @@ inline void RayPair ::
 
 
 
+///  Feautrier solver for mean intensity (u) and flux (v) along the raypair
+///////////////////////////////////////////////////////////////////////////
+
+/// if no scattering
+
+inline void RayPair ::
+    solve_for_image (void)
+
+{
+
+
+  // SETUP FEAUTRIER RECURSION RELATION
+  // __________________________________
+
+  inverse_dtau0 = 1.0 / dtau[first];
+  inverse_dtaud = 1.0 / dtau[last-1];
+
+
+   C[first] =        2.0 * inverse_dtau0 * inverse_dtau0;
+  B0_min_C0 = vOne + 2.0 * inverse_dtau0;
+
+          B0 = B0_min_C0 + C[first];
+  inverse_B0 = 1.0 / B0;
+
+  Su[first] = term1[first] + 2.0 * I_bdy_0 * inverse_dtau0;
+
+  for (long n = first+1; n < last; n++)
+  {
+    inverse_A[n] = 0.5 * (dtau[n-1] + dtau[n]) * dtau[n-1];
+            A[n] = 1.0 / inverse_A[n];
+
+    inverse_C[n] = 0.5 * (dtau[n-1] + dtau[n]) * dtau[n];
+            C[n] = 1.0 / inverse_C[n];
+
+    Su[n] = term1[n];
+  }
+
+    A[last] =        2.0 * inverse_dtaud * inverse_dtaud;
+  Bd_min_Ad = vOne + 2.0 * inverse_dtaud;
+
+  Bd = Bd_min_Ad + A[last];
+
+  Su[last] = term1[last] + 2.0 * I_bdy_n * inverse_dtaud;
+
+
+  // SOLVE FEAUTRIER RECURSION RELATION
+  // __________________________________
+
+
+  // ELIMINATION STEP
+  //_________________
+
+
+  Su[first] = Su[first] * inverse_B0;
+
+  // F[0] = (B[0] - C[0]) / C[0];
+                   F[first] = 0.5 * B0_min_C0 * dtau[first] * dtau[first];
+  inverse_one_plus_F[first] = 1.0 / (vOne + F[first]);
+
+  for (long n = first+1; n < last; n++)
+  {
+                     F[n] = (vOne + A[n]*F[n-1]*inverse_one_plus_F[n-1]) * inverse_C[n];
+    inverse_one_plus_F[n] = 1.0 / (vOne + F[n]);
+
+    Su[n] = (Su[n] + A[n]*Su[n-1]) * inverse_one_plus_F[n] * inverse_C[n];
+  }
+
+
+  denominator = 1.0 / (Bd_min_Ad + Bd*F[last-1]);
+
+  Su[last] = (Su[last] + A[last]*Su[last-1]) * (vOne + F[last-1]) * denominator;
+
+
+  // BACK SUBSTITUTION
+  // _________________
+
+  for (long n = last-1; n >= 0; n--)
+  {
+    Su[n] = Su[n] + Su[n+1] * inverse_one_plus_F[n];
+  }
+
+
+}
+
+
+
+
 ///  get_Im: Get I_{-} intensity exiting first cell of the raypair.
 ///    @return
 ///////////////////////////////////////////////////////////////////
@@ -535,9 +622,9 @@ inline vReal RayPair ::
   // Integrate (first order) transfer equation
 
   vReal tau = 0.0;        // optical depth
-  vReal Im  = Su[n_ar];   // intensity down the ray
+  vReal Im  = Su[0];   // intensity down the ray
 
-  for (long n = n_ar+1; n < ndep; n++)
+  for (long n = 1; n < ndep; n++)
   {
     tau += dtau[n-1];
     Im  +=   Su[n  ] * exp(-tau);
@@ -571,13 +658,13 @@ inline vReal RayPair ::
   Su[ndep-1] = term1[ndep-1]; //+ (term2[ndep-1] + term2[ndep-2] + 2.0*I_bdy_n) / dtau[ndep-2];
 
 
-  vReal tau = 0.0;        // optical depth
-  vReal Ip  = Su[n_ar];   // intensity down the ray
+  vReal tau = 0.0;          // optical depth
+  vReal Ip  = Su[ndep-1];   // intensity down the ray
 
-  for (long n = n_ar; n > 0; n--)
+  for (long n = ndep-2; n >= 0; n--)
   {
-    tau += dtau[n-1];
-    Ip  +=   Su[n-1] * exp(-tau);
+    tau += dtau[n];
+    Ip  +=   Su[n] * exp(-tau);
     //cout << "tau = " << tau << "\t dtau = " << dtau[n-1] << "\t Su =" << Su[n-1] << "\t Ip = " << Ip << endl;
   }
 

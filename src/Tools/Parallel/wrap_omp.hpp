@@ -61,7 +61,7 @@ inline long OMP_stop (
     for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
 
-#define OMP_PARALLEL_FOR(index, total)      \
+#define OMP_PARALLEL_FOR(index, total)       \
     _Pragma("omp parallel default (shared)") \
     OMP_FOR (index, total)
 

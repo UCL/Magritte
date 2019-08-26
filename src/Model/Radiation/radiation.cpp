@@ -235,8 +235,8 @@ int Radiation ::
 }
 
 
-/// mpi_vector_sum: custom reduction operation for MPI_Reduce
-/////////////////////////////////////////////////////////////
+/// mpi_vector_sum: custom reduction operation using vReals for MPI_Reduce
+//////////////////////////////////////////////////////////////////////////
 
 #if (MPI_PARALLEL)
 
@@ -272,11 +272,11 @@ int Radiation ::
   MPI_Type_commit (&MPI_VREAL);
 
   MPI_Op MPI_VSUM;
-  MPI_Op_create ( (MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
+  MPI_Op_create ((MPI_User_function*) mpi_vector_sum, true, &MPI_VSUM);
 
 
   int ierr = MPI_Allreduce (
-                MPI_IN_PLACE,      // pointer to data to be reduced -> here in //place
+                MPI_IN_PLACE,      // pointer to data to be reduced -> here in place
                 J.data(),          // pointer to data to be received
                 J.size(),          // size of data to be received
                 MPI_VREAL,         // type of reduced data

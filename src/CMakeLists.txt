@@ -9,6 +9,7 @@ include_directories (../dependencies)
 
 # If MPI is used
 if    (MPI_PARALLEL)
+  message (STATUS "Getting ready for MPI...")
   # Look for package
   find_package (MPI REQUIRED)
   # Include headers
@@ -16,6 +17,7 @@ if    (MPI_PARALLEL)
   # Set variable in configuration file
   set (MAGRITTE_MPI_PARALLEL true)
 else  (MPI_PARALLEL)
+  message (STATUS "NOT ready for MPI...")
   # Set variable in configuration file
   set (MAGRITTE_MPI_PARALLEL false)
 endif (MPI_PARALLEL)

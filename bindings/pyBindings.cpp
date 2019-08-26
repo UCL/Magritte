@@ -49,8 +49,8 @@ PYBIND11_MODULE (magritte, module)
 
   py::bind_vector<String1> (module, "String1");
 
-  py::bind_vector<Lambda1> (module, "Lambda1");
-  py::bind_vector<Lambda2> (module, "Lambda2");
+  //py::bind_vector<Lambda1> (module, "Lambda1");
+  //py::bind_vector<Lambda2> (module, "Lambda2");
 
   py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
   py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
@@ -284,12 +284,13 @@ PYBIND11_MODULE (magritte, module)
   // Lambda
   py::class_<Lambda> (module, "Lambda")
       // attributes
-      .def_readwrite ("Ls", &Lambda::Ls)
-      .def_readwrite ("nr", &Lambda::nr)
+      .def_readwrite ("Ls",   &Lambda::Ls)
+      .def_readwrite ("nr",   &Lambda::nr)
+      .def_readwrite ("size", &Lambda::size)
       // constructor
       .def (py::init<>())
       // functions
-      .def ("add_entry",    &Lambda::add_entry);
+      .def ("add_element",    &Lambda::add_element);
 
 
   // Quadrature
@@ -389,13 +390,14 @@ PYBIND11_MODULE (magritte, module)
       //.def_readonly ("rayPair",                &Simulation::rayPair)
 
       // functions
-      .def ("compute_spectral_discretisation", &Simulation::compute_spectral_discretisation)
-      .def ("compute_boundary_intensities",    &Simulation::compute_boundary_intensities)
-      .def ("compute_LTE_level_populations",   &Simulation::compute_LTE_level_populations)
-      .def ("compute_radiation_field",         &Simulation::compute_radiation_field)
-      .def ("compute_and_write_image",         &Simulation::compute_and_write_image)
-      .def ("compute_level_populations",       &Simulation::compute_level_populations)
-      .def ("compute_level_populations_opts",  &Simulation::compute_level_populations_opts);
+      .def ("compute_spectral_discretisation",       &Simulation::compute_spectral_discretisation)
+      .def ("compute_spectral_discretisation_image", &Simulation::compute_spectral_discretisation_image)
+      .def ("compute_boundary_intensities",          &Simulation::compute_boundary_intensities)
+      .def ("compute_LTE_level_populations",         &Simulation::compute_LTE_level_populations)
+      .def ("compute_radiation_field",               &Simulation::compute_radiation_field)
+      .def ("compute_and_write_image",               &Simulation::compute_and_write_image)
+      .def ("compute_level_populations",             &Simulation::compute_level_populations)
+      .def ("compute_level_populations_opts",        &Simulation::compute_level_populations_opts);
 
   // RayPair
   py::class_<RayPair> (module, "RayPair")

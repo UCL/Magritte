@@ -123,7 +123,7 @@ inline void RayPair ::
       const long i   = lines.lineProducingSpecies[l].linedata.irad[k];
       const long ind = lines.lineProducingSpecies[l].index (nrs[n_ar], i);
 
-      lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
+      lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar], L);
 
 
       for (long m = 1; m < n_off_diag; m++)
@@ -132,14 +132,14 @@ inline void RayPair ::
         {
           L = factor * get_L_lower (thermodynamics, invr_mass, freq_line, lane, m);
 
-          lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
+          lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar-m], L);
         }
 
         if (n_ar+m < ndep-m)
         {
           L = factor * get_L_upper (thermodynamics, invr_mass, freq_line, lane, m);
 
-          lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
+          lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar+m], L);
         }
       }
     }
