@@ -7,6 +7,7 @@
 #include "model.hpp"
 #include "Io/io.hpp"
 #include "Tools/logger.hpp"
+#include "Tools/Parallel/wrap_mpi.hpp"
 
 
 ///  Reader for the Model data
@@ -71,32 +72,34 @@ int Model ::
       const Io &io) const
 {
 
-  logger.write ("                                           ");
-  logger.write ("-------------------------------------------");
-  logger.write ("  Writing Model...                         ");
-  logger.write ("-------------------------------------------");
-  logger.write ("                                           ");
+  if (MPI_comm_rank () == 0)
+  {
+    logger.write ("                                           ");
+    logger.write ("-------------------------------------------");
+    logger.write ("  Writing Model...                         ");
+    logger.write ("-------------------------------------------");
+    logger.write ("                                           ");
 
 
-  parameters.write     (io);
+    parameters.write     (io);
 
-  geometry.write       (io);
+    geometry.write       (io);
 
-  thermodynamics.write (io);
+    thermodynamics.write (io);
 
-  chemistry.write      (io);
+    chemistry.write      (io);
 
-  lines.write          (io);
+    lines.write          (io);
 
-  radiation.write      (io);
+    radiation.write      (io);
 
 
-  logger.write ("                                           ");
-  logger.write ("-------------------------------------------");
-  logger.write ("  Model written.                           ");
-  logger.write ("-------------------------------------------");
-  logger.write ("                                           ");
-
+    logger.write ("                                           ");
+    logger.write ("-------------------------------------------");
+    logger.write ("  Model written.                           ");
+    logger.write ("-------------------------------------------");
+    logger.write ("                                           ");
+  }
 
  return (0);
 

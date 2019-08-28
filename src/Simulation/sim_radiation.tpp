@@ -42,7 +42,7 @@ int Simulation ::
 
   for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
-    lspec.initialize_Lambda ();
+    lspec.lambda.clear ();
   }
 
   radiation.initialize_J ();
@@ -211,15 +211,23 @@ int Simulation ::
   } // end of loop over ray pairs
 
 
-  // Reduce results of all MPI processes to get J and Lambda
+  // Gather and reduce results of all MPI processes to get Lambda and J
 
 # if (MPI_PARALLEL)
+
+
+    logger.write ("Gathering Lambda operators...");
+
+    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+    {
+      lspec.lambda.MPI_gather ();
+    }
+
 
     logger.write ("Reducing the mean intensities (J's)...");
 
     radiation.MPI_reduce_J ();
 
-    // "Reduce Lambda's"
 
 # endif
 

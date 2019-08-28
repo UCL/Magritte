@@ -19,7 +19,7 @@ set (CMAKE_BUILD_TYPE Release)
 option (PYTHON_IO        "Handling all io through python (slow)"  OFF)
 option (PYTHON_BINDINGS  "Python front-end?"                      OFF)
 option (OMP_PARALLEL     "OpenMP parallelisation required?"       OFF)
-option (MPI_PARALLEL     "MPI parallelisation required?"          ON)
+option (MPI_PARALLEL     "MPI parallelisation required?"          OFF)
 option (GRID_SIMD        "GRID SIMD vectorisation required?"      OFF)
 option (PERF_ANALYSIS    "Build for performance analysis"         OFF)
 

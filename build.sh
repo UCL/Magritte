@@ -79,9 +79,9 @@ else
    cmake                                             \
      -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
      -DPYTHON_IO=ON                                  \
-     -DPYTHON_BINDINGS=ON                            \
+     -DPYTHON_BINDINGS=OFF                           \
      -DOMP_PARALLEL=ON                               \
-     -DMPI_PARALLEL=OFF                              \
+     -DMPI_PARALLEL=ON                               \
      -DGRID_SIMD=OFF                                 \
      $DIR
 

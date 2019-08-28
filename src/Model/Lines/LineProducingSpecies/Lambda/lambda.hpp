@@ -11,6 +11,8 @@
 #include <vector>
 
 #include "Tools/types.hpp"
+#include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/Parallel/wrap_mpi.hpp"
 
 
 ///  Lambda: data structure for the Lambda oprator
@@ -51,6 +53,12 @@ struct Lambda
   inline int initialize (
       const Parameters &parameters,
       const long        nrad_new   );
+
+  inline int clear ();
+
+  inline int linearize_data ();
+
+  inline int MPI_gather ();
 
 
   inline long index_first (

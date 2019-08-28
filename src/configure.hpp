@@ -9,7 +9,7 @@
 #define PYTHON_IO true
 
 // Parallelisation
-#define MPI_PARALLEL false
+#define MPI_PARALLEL true
 #define OMP_PARALLEL true
 
 // SIMD vectorisation
