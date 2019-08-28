@@ -7,7 +7,6 @@
 #ifndef __LINEPRODUCINGSPECIES_HPP_INCLUDED__
 #define __LINEPRODUCINGSPECIES_HPP_INCLUDED__
 
-#include <vector>
 
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
@@ -26,9 +25,12 @@ struct LineProducingSpecies
 
       Quadrature quadrature;           ///< data for integral over line
 
-      std::vector<std::vector<Lambda>> lambda;
-      Double2 Jeff;
-      Double2 Jlin;
+      Lambda lambda;                   ///< Approximate Lambda Operator (ALO)
+      //Lambda2 lambda;                  ///< Approximate Lambda Operator (ALO)
+      //Long2   lambda_size;             ///< Approximate Lambda Operator (ALO) size
+
+      Double2 Jlin;                    ///< actual mean intensity in the line
+      Double2 Jeff;                    ///< effective mean intensity in the line (actual - ALO)
 
       Long3 nr_line;                   ///< frequency number corresponing to line (p,k,z)
 

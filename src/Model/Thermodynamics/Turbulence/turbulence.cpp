@@ -27,22 +27,17 @@ int Turbulence ::
 
 
   // Get number of cells from length of temperature/gas file
-  io.read_length (prefix+"vturbulence", ncells);
+  io.read_length (prefix+"vturb2", ncells);
 
 
   parameters.set_ncells (ncells);
 
 
-  // Read gas turbulence file
   vturb2.resize (ncells);
-  io.read_list (prefix+"vturbulence", vturb2);
 
-  // Convert to square of turbulent velocity w.r.t. c
-  for (long p = 0; p < ncells; p++)
-  {
-    vturb2[p] /= CC;          // devide by speed of light
-    vturb2[p] *= vturb2[p];   // square
-  }
+
+  // Read gas turbulence file
+  io.read_list (prefix+"vturb2", vturb2);
 
 
   return (0);
@@ -65,7 +60,7 @@ int Turbulence ::
 
 
   // Read gas turbulence file
-  io.write_list (prefix+"vturbulence", vturb2);
+  io.write_list (prefix+"vturb2", vturb2);
 
 
   return (0);

@@ -37,15 +37,20 @@ int LineProducingSpecies ::
   nquads = parameters.nquads();
 
 
-  lambda.resize (ncells);
-    Jeff.resize (ncells);
-    Jlin.resize (ncells);
+  lambda.initialize (parameters, linedata.nrad);
+  //lambda.     resize (ncells);
+  //lambda_size.resize (ncells);
+
+  Jeff.resize (ncells);
+  Jlin.resize (ncells);
 
   for (long p = 0; p < ncells; p++)
   {
-    lambda[p].resize (linedata.nrad);
-      Jeff[p].resize (linedata.nrad);
-      Jlin[p].resize (linedata.nrad);
+    //lambda     [p].resize (linedata.nrad);
+    //lambda_size[p].resize (linedata.nrad);
+
+    Jeff[p].resize (linedata.nrad);
+    Jlin[p].resize (linedata.nrad);
   }
 
 
@@ -191,8 +196,8 @@ int LineProducingSpecies ::
     }
   }
 
-  //io.read_array (prefix_l+"Jlin"+tag, Jlin);
-  //io.read_array (prefix_l+"Jeff"+tag, Jeff);
+  io.read_array (prefix_l+"J_lin"+tag, Jlin);
+  io.read_array (prefix_l+"J_eff"+tag, Jeff);
 
 
   return (0);
@@ -230,8 +235,8 @@ int LineProducingSpecies ::
 
   io.write_array (prefix_l+"population"+tag, pops);
 
-  //io.write_array (prefix_l+"Jlin"+tag, Jlin);
-  //io.write_array (prefix_l+"Jeff"+tag, Jeff);
+  io.write_array (prefix_l+"J_lin"+tag, Jlin);
+  io.write_array (prefix_l+"J_eff"+tag, Jeff);
 
 
   return (0);
@@ -252,10 +257,16 @@ int LineProducingSpecies ::
   {
     for (long k = 0; k < linedata.nrad; k++)
     {
-      lambda[p][k].Ls.clear();
-      lambda[p][k].nr.clear();
+      lambda.Ls[p][k].clear();
+      lambda.nr[p][k].clear();
     }
   }
+
+
+  lambda.Lss.clear();
+  lambda.nrs.clear();
+
+  lambda.size.clear();
 
 
   return (0);
@@ -272,6 +283,37 @@ int LineProducingSpecies ::
     gather_Lambda ()
 {
 
+  // Gather the sizes of the Lambda operators at each process
+
+  // OMP_PARALLEL_FOR (p, ncells)
+  // {
+  //   for (long k = 0; k < linedata.nrad; k++)
+  //   {
+  //     lambda_size[p][k] = lambda[p][k].size();
+  //   }
+  // }
+  //
+  //
+  //
+  // long  length =
+  // Long1 lengths (MPI_comm_size ());
+  //
+  //
+  //
+  //
+  // for (long p = 0; p < ncells; p++)
+  // {
+  //   for (long k = 0; k < linedata.nrad; k++)
+  //   {
+  //
+  //
+  //
+  //     for (long m = 0; m < lambda[p][k].nr.size(); m++)
+  //     {
+  //     }
+  //
+  //   }
+  // }
 
 
   return (0);

@@ -27,6 +27,14 @@ struct Frequencies
       Long1 corresponding_z_for_line;   ///< number of line number corresponding to frequency
 
 
+      inline double get_nu (
+          const long p,
+          const long f ) const
+      {
+        return get (nu[p], f);
+      }
+
+
       // Io
       int read (
           const Io         &io,
@@ -45,7 +53,7 @@ struct Frequencies
       // const long ncont = 0;    ///< number of background bins
 
       long nfreqs;       ///< number of frequencies
-      long nfreqs_red;   ///< nfreq divided by n_simd_lanes
+      long nfreqs_red;   ///< nfreqs divided by n_simd_lanes
 
       static const string prefix;
 

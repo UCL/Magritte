@@ -9,17 +9,89 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <string>
 using std::string;
 using std::cout;
 using std::endl;
 
-//#define write_to_log()
-//
+#include "Tools/Parallel/wrap_mpi.hpp"
+
+
+struct Logger
+{
+
+  string file_name;
+
+
+  Logger ()
+  {
+    file_name = "magritte_" + std::to_string (MPI_comm_rank()) + ".log";
+
+    std::ofstream file (file_name);
+
+    file << "--- Log file for Magritte ---" << endl;
+    file << "_____________________________" << endl;
+  }
+
+
+  void write (
+      const string log_line ) const
+  {
+    std::ofstream file (file_name, std::ios_base::app);
+
+    file << log_line << endl;
+    cout << log_line << endl;
+  }
+
+  void write (
+      const string text,
+      const long   number ) const
+  {
+    write (text + std::to_string (number));
+  }
+
+  void write (
+      const string text1,
+      const long   number,
+      const string text2  ) const
+  {
+    write (text1 + std::to_string (number) + text2);
+  }
+
+  void write (
+      const string text,
+      const double number ) const
+  {
+    write (text + std::to_string (number));
+  }
+
+  void write (
+      const string text1,
+      const double number,
+      const string text2  ) const
+  {
+    write (text1 + std::to_string (number) + text2);
+  }
+
+
+};
+
+
 //inline void write_to_log (
 //    const string text    )
 //{
 //  std::cout << text << std::endl;
+//
+//
+//  std::ofstream file (io_file + file_name + ".txt");
+//
+//  file << std::scientific << std::setprecision (16);
+//
+//  file << number;
+//
+//  file.close();
+//
 //}
 //
 //

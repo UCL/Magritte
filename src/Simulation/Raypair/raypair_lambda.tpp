@@ -24,7 +24,7 @@ inline double RayPair ::
         const int             lane           ) const
 {
   const vReal profile = thermodynamics.profile (inverse_mass, nrs[n_ar],
-                                                frs[n_ar], freq_line    );
+                                                freq_line, frs[n_ar]    );
 
   return getlane (frs[n_ar] * profile * L_diag[n_ar] / chi[n_ar], lane);
 }
@@ -49,7 +49,7 @@ inline double RayPair ::
         const long            m              ) const
 {
   const vReal profile = thermodynamics.profile (inverse_mass, nrs[n_ar-m],
-                                                frs[n_ar-m], freq_line    );
+                                                freq_line, frs[n_ar-m]    );
 
   return getlane (frs[n_ar-m] * profile * L_lower[m][n_ar-m] / chi[n_ar-m], lane);
 }
@@ -74,7 +74,7 @@ inline double RayPair ::
         const long            m              ) const
 {
   const vReal profile = thermodynamics.profile (inverse_mass, nrs[n_ar+m],
-                                                frs[n_ar+m], freq_line    );
+                                                freq_line, frs[n_ar+m]    );
 
   return getlane (frs[n_ar+m] * profile * L_upper[m][n_ar+m] / chi[n_ar+m], lane);
 }
@@ -123,7 +123,7 @@ inline void RayPair ::
       const long i   = lines.lineProducingSpecies[l].linedata.irad[k];
       const long ind = lines.lineProducingSpecies[l].index (nrs[n_ar], i);
 
-      lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar]);
+      lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar], L);
 
 
       for (long m = 1; m < n_off_diag; m++)
@@ -132,14 +132,14 @@ inline void RayPair ::
         {
           L = factor * get_L_lower (thermodynamics, invr_mass, freq_line, lane, m);
 
-          lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar-m]);
+          lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar-m], L);
         }
 
         if (n_ar+m < ndep-m)
         {
           L = factor * get_L_upper (thermodynamics, invr_mass, freq_line, lane, m);
 
-          lines.lineProducingSpecies[l].lambda[p][k].add_entry (L, nrs[n_ar+m]);
+          lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar+m], L);
         }
       }
     }

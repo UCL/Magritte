@@ -28,6 +28,19 @@
 #endif
 
 
+inline long get_nthreads ()
+{
+  int nthreads;
+
+# pragma omp parallel
+  {
+    nthreads = omp_get_num_threads ();
+  }
+
+  return nthreads;
+}
+
+
 // OMP loops
 
 inline long OMP_start (
@@ -48,10 +61,10 @@ inline long OMP_stop (
     for (long index = OMP_start (total); index < OMP_stop (total); index++)
 
 
-#define OMP_PARALLEL_FOR(index, total)      \
+#define OMP_PARALLEL_FOR(index, total)       \
+    _Pragma("omp parallel default (shared)") \
     OMP_FOR (index, total)
 
-//    _Pragma("omp parallel default(shared)") \
 
 
 //#define OMP_PARALLEL_FOR_WITH(index, total, on_each_thread) \

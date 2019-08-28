@@ -2,12 +2,9 @@
 #########################
 
 # Write all binary files to the bin directory
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY}/tests)
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY}/tests)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  ${BINARY_DIRECTORY}/tests)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${BINARY_DIRECTORY}/tests)
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY   ${BINARY_DIRECTORY}/tests)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY   ${BINARY_DIRECTORY}/tests)
 
 # Include directory containing source
 include_directories (../../src)
@@ -17,17 +14,35 @@ include_directories (../../dependencies)
 include_directories (.)
 
 # Create main lib (as advised in Catch docs, to speed up compilation)
-add_library (TestMain
-  main.cpp)
+add_library (TestMain   main.cpp)
+
+# If Grid-SIMD is used
+if    (GRID_SIMD)
+  # Include headers
+  include_directories (../../dependencies/Grid-SIMD/include)
+  # Set compiler flags
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_COMPILER_FLAGS}")
+  # Set variable in configuration file
+  set (MAGRITTE_GRID_SIMD true)
+else  (GRID_SIMD)
+  # Set variable in configuration file
+  set (MAGRITTE_GRID_SIMD false)
+endif (GRID_SIMD)
+
+# If MPI is used
+if    (MPI_PARALLEL)
+  # Look for package
+  find_package (MPI REQUIRED)
+  # Include headers
+  include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+endif (MPI_PARALLEL)
+
 
 # Create test executables
 #########################
 
-add_executable (test_geometry.exe
-  Model/Geometry/test_geometry.cpp)
-target_link_libraries (test_geometry.exe
-  _Magritte
-  TestMain)
+add_executable        (test_geometry.exe   Model/Geometry/test_geometry.cpp)
+target_link_libraries (test_geometry.exe   _Magritte   TestMain            )
 
 
 #add_executable (test_model.exe
@@ -44,18 +59,27 @@ target_link_libraries (test_geometry.exe
 #  TestMain
 #  PyIo)
 
-add_executable (test_raypair.exe
-  Simulation/Raypair/test_raypair.cpp)
-target_link_libraries (test_raypair.exe
-  _Magritte
-  TestMain)
+add_executable        (test_simulation.exe  Simulation/test_simulation.cpp)
+target_link_libraries (test_simulation.exe   _Magritte   TestMain)
+
+add_executable        (test_raypair.exe  Simulation/Raypair/test_raypair.cpp)
+target_link_libraries (test_raypair.exe   _Magritte   TestMain)
+
+add_executable        (test_lineProducingSpecies.exe   Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
+target_link_libraries (test_lineProducingSpecies.exe   _Magritte   TestMain)
+
+add_executable        (test_wrap_Grid.exe   Tools/Parallel/test_wrap_Grid.cpp)
+target_link_libraries (test_wrap_Grid.exe   _Magritte   TestMain)
+
+add_executable        (test_radiation.exe   Model/Radiation/test_radiation.cpp)
+target_link_libraries (test_radiation.exe   _Magritte   TestMain)
+
+# Link MPI libraries
+if    (MPI_PARALLEL)
+  target_link_libraries (test_radiation.exe   ${MPI_C_LIBRARIES})
+endif (MPI_PARALLEL)
 
 
-add_executable (test_lineProducingSpecies.exe
-  Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
-target_link_libraries (test_lineProducingSpecies.exe
-  _Magritte
-  TestMain)
 #
 #add_executable (test_lambda.exe
 #  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
@@ -171,10 +195,7 @@ target_link_libraries (test_lineProducingSpecies.exe
 #_TEST_RT_MAIN )
 
 
-if (PYTHON_IO)
-  add_executable (test_io_python_hdf5.exe
-    Io/python/test_io_python_hdf5.cpp)
-  target_link_libraries (test_io_python_hdf5.exe
-    TestMain
-    PyIo)
+if    (PYTHON_IO)
+  add_executable        (test_io_python_hdf5.exe   Io/python/test_io_python_hdf5.cpp)
+  target_link_libraries (test_io_python_hdf5.exe   TestMain   PyIo                  )
 endif (PYTHON_IO)

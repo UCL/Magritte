@@ -26,9 +26,9 @@ struct Species
 
 
       // species numbers of some inportant species
-      long nr_e;      // nr for electrons
-      long nr_H2;     // nr for H2
-      long nr_HD;     // nr for HD
+      //long nr_e;      // nr for electrons
+      //long nr_H2;     // nr for H2
+      //long nr_HD;     // nr for HD
       //long nr_C;      // nr for C
       //long nr_H;      // nr for H
       //long nr_H2x;    // nr for H2+

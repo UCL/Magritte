@@ -22,6 +22,9 @@
 
 struct Model
 {
+  
+  // Log file writer
+  Logger logger;
 
   // Bookkeeping
   Parameters parameters;

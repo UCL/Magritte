@@ -40,6 +40,9 @@ struct Radiation
       vReal3 I_bdy;     ///< intensity at the boundary (r,b,f)
 
 
+
+
+      // Io
       int read (
           const Io         &io,
                 Parameters &parameters);
@@ -98,6 +101,22 @@ struct Radiation
 
 #endif
 
+
+    inline double get_u (
+        const long r,
+        const long p,
+        const long f    ) const;
+
+    inline double get_v (
+        const long r,
+        const long p,
+        const long f    ) const;
+
+    inline double get_J (
+        const long p,
+        const long f    ) const;
+
+
     inline void rescale_U_and_V (
         const vReal &freq_scaled,
         const long   R,
@@ -127,6 +146,7 @@ struct Radiation
       long ncells;                ///< number of cells
       long nrays;                 ///< number of rays
       long nrays_red;             ///< reduced number of rays
+      long nfreqs;                ///< number of frequencies
       long nfreqs_red;            ///< reduced number of frequencies
       long nboundary;             ///< number of boundary cells
 

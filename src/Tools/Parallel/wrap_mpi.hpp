@@ -8,6 +8,9 @@
 #define __WRAP_MPI_HPP_INCLUDED__
 
 
+#include <string>
+using std::string;
+
 #include "configure.hpp"
 
 
@@ -53,6 +56,21 @@ inline int MPI_comm_rank ()
   return comm_rank;
 
 }
+
+
+
+
+/// MPI_comm_rank: return rank of communicator
+//////////////////////////////////////////////
+
+inline string str_MPI_comm_rank ()
+{
+  
+  return std::to_string (MPI_comm_rank ());
+
+}
+
+
 
 
 /// The following abstractions simplify MPI parallel for loops.

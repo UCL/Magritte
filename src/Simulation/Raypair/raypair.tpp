@@ -28,35 +28,42 @@ inline void RayPair ::
   lnotch_at_origin = 0;
 
 
-  if (ndep > term1.size())
-  {
-     term1.resize (ndep+10);
-     term2.resize (ndep+10);
-         A.resize (ndep+10);
-         C.resize (ndep+10);
-         F.resize (ndep+10);
-         G.resize (ndep+10);
-        Su.resize (ndep+10);
-        Sv.resize (ndep+10);
-      dtau.resize (ndep+10);
-    L_diag.resize (ndep+10);
-       chi.resize (ndep+10);
-       nrs.resize (ndep+10);
-       frs.resize (ndep+10);
+  //if (ndep > term1.size())
+  //{
+  //   term1.resize (ndep+10);
+  //   term2.resize (ndep+10);
+  //       A.resize (ndep+10);
+  //       C.resize (ndep+10);
+  //       F.resize (ndep+10);
+  //       G.resize (ndep+10);
+  //      Su.resize (ndep+10);
+  //      Sv.resize (ndep+10);
+  //    dtau.resize (ndep+10);
+  //  L_diag.resize (ndep+10);
+  //     chi.resize (ndep+10);
+  //     nrs.resize (ndep+10);
+  //     frs.resize (ndep+10);
 
-    if (n_off_diag > 0)
-    {
-      L_upper.resize (n_off_diag);
-      L_lower.resize (n_off_diag);
+  //     inverse_one_plus_F.resize (ndep+10);
+  //     inverse_one_plus_G.resize (ndep+10);
+  //      G_over_one_plus_G.resize (ndep+10);
+  //              inverse_A.resize (ndep+10);
+  //              inverse_C.resize (ndep+10);
 
-      for (long m = 0; m < n_off_diag; m++)
-      {
-        L_upper[m].resize (ndep+10);
-        L_lower[m].resize (ndep+10);
-      }
-    }
 
-  }
+  //  if (n_off_diag > 0)
+  //  {
+  //    L_upper.resize (n_off_diag);
+  //    L_lower.resize (n_off_diag);
+
+  //    for (long m = 0; m < n_off_diag; m++)
+  //    {
+  //      L_upper[m].resize (ndep+10);
+  //      L_lower[m].resize (ndep+10);
+  //    }
+  //  }
+
+  //}
 
 
 }
@@ -64,13 +71,13 @@ inline void RayPair ::
 
 
 
-///  Setter for Feautrier term 1 and term 2
+///  Setter for Feautrier term 1 and term 2 (considering scattering)
 ///    @param[in] eta      : emissivity
 ///    @param[in] chi      : opacity
 ///    @param[in] U_scaled : scattering U in co-moving frame
 ///    @param[in] V_scaled : scattering V in co-moving frame
 ///    @param[in] n        : current index on the ray pair
-////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 
 inline void RayPair ::
     set_term1_and_term2 (
@@ -86,6 +93,26 @@ inline void RayPair ::
   term1[n] = (U_scaled + eta) * inverse_chi;
   term2[n] =  V_scaled        * inverse_chi;
 
+
+}
+
+
+
+
+///  Setter for Feautrier term 1 (if no scattering is considered)
+///    @param[in] eta      : emissivity
+///    @param[in] chi      : opacity
+///    @param[in] n        : current index on the ray pair
+/////////////////////////////////////////////////////////////////
+
+inline void RayPair ::
+    set_term1_and_term2 (
+        const vReal &eta,
+        const vReal &chi,
+        const long   n        )
+{
+
+  term1[n] = eta / chi;
 
 }
 
@@ -202,7 +229,7 @@ inline vReal RayPair ::
 
 
 
-// PROBLEM: The code below code has to problem that the intensity s in the wrong frequency bin
+// PROBLEM: The code below code has to problem that the intensity s in the wrong frequency bin i.e. co-moving vs rest frame
 
 //inline int RayPair ::
 //    update_radiation (

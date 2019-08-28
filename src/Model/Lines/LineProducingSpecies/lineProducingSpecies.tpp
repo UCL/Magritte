@@ -5,6 +5,14 @@
 
 
 #include <Eigen/SparseLU>
+using Eigen::SparseLU;
+#include <Eigen/SparseCore>
+using Eigen::SparseMatrix;
+using Eigen::SparseVector;
+using Eigen::Triplet;
+using Eigen::COLAMDOrdering;
+
+//#include <Eigen/IterativeLinearSolvers>
 //#include <Eigen/SparseCholesky>
 
 #include <Eigen/Core>
@@ -15,8 +23,11 @@
 #include "Tools/logger.hpp"
 
 
-///  index:
-///////////
+///  Indexer for level populations
+///    @param[in] p : index of the cell
+///    @param[in] i : index of the level
+///    @return corresponding index for p and i
+//////////////////////////////////////////////
 
 inline long LineProducingSpecies ::
     index (
@@ -27,37 +38,47 @@ inline long LineProducingSpecies ::
 }
 
 
+
+
+///  Getter for the line emissivity
+///    @param[in] p : index of the cell
+///    @param[in] k : index of the transition
+///    @return line emissivity for cell p and transition k
+//////////////////////////////////////////////////////////
+
 inline double LineProducingSpecies ::
     get_emissivity (
         const long p,
         const long k ) const
 {
-
   const long ind_i = index (p, linedata.irad[k]);
 
-  //return population_tot[p] * HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
   return HH_OVER_FOUR_PI * linedata.A[k] * population(ind_i);
-
 }
 
 
 
+
+///  Getter for the line opacity
+///    @param[in] p : index of the cell
+///    @param[in] k : index of the transition
+///    @return line opacity for cell p and transition k
+///////////////////////////////////////////////////////
 
 inline double LineProducingSpecies ::
     get_opacity (
         const long p,
         const long k ) const
 {
-
   const long ind_i = index (p, linedata.irad[k]);
   const long ind_j = index (p, linedata.jrad[k]);
 
-  //return population_tot[p] * HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
-  //                          - population(ind_i) * linedata.Bs[k] );
   return HH_OVER_FOUR_PI * (  population(ind_j) * linedata.Ba[k]
                             - population(ind_i) * linedata.Bs[k] );
-
 }
+
+
+
 
 ///  set_LTE_level_populations
 ///    @param[in] abundance_lspec: abundance of line species
@@ -111,13 +132,15 @@ inline void LineProducingSpecies ::
 
   const double weight = 1.0 / (ncells * linedata.nlev);
 
-  fraction_not_converged = 0.0;
+  double fnc = 0.0;
+  double rcm = 0.0;
 
-  relative_change_mean = 0.0;
   relative_change_max  = 0.0;
 
 
-  OMP_PARALLEL_FOR (p, ncells)
+//  for (long p = 0; p < ncells; p++)
+# pragma omp parallel for reduction (+: fnc, rcm)
+  for (long p = 0; p < ncells; p++)
   {
     const double min_pop = 1.0E-10 * population_tot[p];
 
@@ -132,24 +155,25 @@ inline void LineProducingSpecies ::
         relative_change *= fabs (population (ind) - population_prev1 (ind));
         relative_change /=      (population (ind) + population_prev1 (ind));
 
-
         if (relative_change > pop_prec)
         {
-          fraction_not_converged += weight;
+          fnc += weight;
         }
 
+        rcm += (weight * relative_change);
 
-        relative_change_mean += (weight * relative_change);
-
-
-        if (relative_change > relative_change_max)
-        {
-          relative_change_max = relative_change;
-        }
-
+        // NOT THREAD SAFE !!!
+        //if (relative_change > relative_change_max)
+        //{
+        //  relative_change_max = relative_change;
+        //}
       }
     }
   }
+
+
+  fraction_not_converged = fnc;
+  relative_change_mean   = rcm;
 
 
 }
@@ -238,8 +262,8 @@ inline void LineProducingSpecies ::
 {
 
   const long non_zeros = ncells * (    linedata.nlev
-                                   + 2*linedata.nrad
-                                   + 2*linedata.ncol_tot );
+                                   + 6*linedata.nrad
+                                   + 4*linedata.ncol_tot );
 
 
   population_prev3 = population_prev2;
@@ -247,22 +271,27 @@ inline void LineProducingSpecies ::
   population_prev1 = population;
 
 
-  Eigen::SparseMatrix<double> RT (ncells*linedata.nlev, ncells*linedata.nlev);
-  Eigen::SparseVector<double> y  (ncells*linedata.nlev);
+  SparseMatrix<double> RT (ncells*linedata.nlev, ncells*linedata.nlev);
 
-  std::vector<Eigen::Triplet<double>> triplets;
+  VectorXd y = VectorXd::Zero (ncells*linedata.nlev);
+
+  vector<Triplet<double, int>> triplets;
 
   triplets.reserve (non_zeros);
 
-  cout << "problem in here?" << endl;
+  // !!! push_back is not thread safe !!!
 
-  OMP_PARALLEL_FOR (p, ncells)
+  //OMP_PARALLEL_FOR (p, ncells)
+  for (long p = 0; p < ncells; p++)
   {
 
     // Radiative transitions
 
     for (long k = 0; k < linedata.nrad; k++)
     {
+      //cout<<"Jeff["<<p<<"]["<<k<<"] = "<<Jeff[p][k]<<endl;
+      //cout<<"Jlin["<<p<<"]["<<k<<"] = "<<Jlin[p][k]<<endl;
+
       const double v_IJ = linedata.A[k] + linedata.Bs[k] * Jeff[p][k];
       const double v_JI =                 linedata.Ba[k] * Jeff[p][k];
 
@@ -274,16 +303,16 @@ inline void LineProducingSpecies ::
 
       if (linedata.jrad[k] != linedata.nlev-1)
       {
-        triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
-        triplets.push_back (Eigen::Triplet<double> (J, J, -v_JI));
-        //triplets.push_back (Eigen::Triplet<double> (J, J, -v_IJ));
+        triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
+        triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+        //triplets.push_back (Eigen::Triplet<double, int> (J, J, -v_IJ));
       }
 
       if (linedata.irad[k] != linedata.nlev-1)
       {
-        triplets.push_back (Eigen::Triplet<double> (I, J, +v_JI));
-        triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
-        //triplets.push_back (Eigen::Triplet<double> (I, I, -v_JI));
+        triplets.push_back (Triplet<double, int> (I, J, +v_JI));
+        triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+        //triplets.push_back (Eigen::Triplet<double, int> (I, I, -v_JI));
       }
     }
 
@@ -292,23 +321,23 @@ inline void LineProducingSpecies ::
 
     for (long k = 0; k < linedata.nrad; k++)
     {
-      for (long m = 0; m < lambda[p][k].nr.size(); m++)
+      for (long m = 0; m < lambda.get_size (p,k); m++)
       {
-        const double v_IJ = -get_opacity (p, k) * lambda[p][k].Ls[m];
+        const double v_IJ = -get_opacity (p, k) * lambda.get_Ls (p, k, m);
 
         // Note: we define our transition matrix as the transpose of R in the paper.
 
-        const long I = index (lambda[p][k].nr[m], linedata.irad[k]);
-        const long J = index (p,                  linedata.jrad[k]);
+        const long I = index (lambda.get_nr (p, k, m), linedata.irad[k]);
+        const long J = index (p,                       linedata.jrad[k]);
 
         if (linedata.jrad[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
+          triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
         }
 
         if (linedata.irad[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
+          triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
         }
       }
     }
@@ -351,16 +380,16 @@ inline void LineProducingSpecies ::
 
         if (colpar.jcol[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (J, I, +v_IJ));
-          triplets.push_back (Eigen::Triplet<double> (J, J, -v_JI));
-          //triplets.push_back (Eigen::Triplet<double> (J, J, -v_IJ));
+          triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
+          triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+          //triplets.push_back (Eigen::Triplet<double, int> (J, J, -v_IJ));
         }
 
         if (colpar.icol[k] != linedata.nlev-1)
         {
-          triplets.push_back (Eigen::Triplet<double> (I, J, +v_JI));
-          triplets.push_back (Eigen::Triplet<double> (I, I, -v_IJ));
-          //triplets.push_back (Eigen::Triplet<double> (I, I, -v_JI));
+          triplets.push_back (Triplet<double, int> (I, J, +v_JI));
+          triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+          //triplets.push_back (Eigen::Triplet<double, int> (I, I, -v_JI));
         }
       }
     }
@@ -371,29 +400,93 @@ inline void LineProducingSpecies ::
       const long I = index (p, linedata.nlev-1);
       const long J = index (p, i);
 
-      triplets.push_back (Eigen::Triplet<double> (I, J, 1.0));
+      triplets.push_back (Triplet<double, int> (I, J, 1.0));
     }
 
-    y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+    y[index (p, linedata.nlev-1)] = population_tot[p];
     //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
 
-  }
+  } // for all cells
 
 
   RT.setFromTriplets (triplets.begin(), triplets.end());
 
-  Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+
+  //cout << "Compressing RT" << endl;
+
+  //RT.makeCompressed ();
+
+
+  //Eigen::BiCGSTAB <SparseMatrix<double>> solver;
+
+  //cout << "Try compute" << endl;
+
+  //solver.compute (RT);
+
+  //if (solver.info() != Eigen::Success)
+  //{
+  //  cout << "Decomposition failed" << endl;
+  //  //assert(false);
+  //}
+
+
+  //for (int tel=0; tel<5; tel++)
+  //{
+  //  //Eigen::Gues x0 = population;
+
+  //  population = solver.solveWithGuess (y, population);
+  //  std::cout << "#iterations:     " << solver.iterations() << std::endl;
+  //  std::cout << "estimated error: " << solver.error()      << std::endl;
+  //}
+
+  //assert (false);
+
+
+  SparseLU <SparseMatrix<double>, COLAMDOrdering<int>> solver;
   //Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
 
-  cout << "Magritte RT ---------" << endl;
-  //cout << RT << endl;
-  cout << "---------------------" << endl;
 
-  solver.compute (RT);
+  cout << "Analyzing system of rate equations..."      << endl;
+
+  solver.analyzePattern (RT);
+
+  cout << "Factorizing system of rate equations..."    << endl;
+
+  solver.factorize (RT);
+
+  if (solver.info() != Eigen::Success)
+  {
+    cout << "Factorization failed with error message:" << endl;
+    cout << solver.lastErrorMessage()                  << endl;
+    assert (false);
+  }
+
+
+  //cout << "Try compute" << endl;
+
+  //solver.compute (RT);
+
+  //if (solver.info() != Eigen::Success)
+  //{
+  //  cout << "Decomposition failed" << endl;
+  //  //assert(false);
+  //}
+
+
+  cout << "Solving rate equations for the level populations..." << endl;
 
   population = solver.solve (y);
 
-  cout << "Nope..." << endl;
+  if (solver.info() != Eigen::Success)
+  {
+    cout << "Solving failed with error:" << endl;
+    cout << solver.lastErrorMessage()    << endl;
+    assert (false);
+  }
+
+  cout << "Succesfully solved for the level populations!"       << endl;
+
 
   //OMP_PARALLEL_FOR (p, ncells)
   //{

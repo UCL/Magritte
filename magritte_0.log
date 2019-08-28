@@ -1,0 +1,163 @@
+--- Log file for Magritte ---
+_____________________________
+                                           
+-------------------------------------------
+  Reading Model...                         
+-------------------------------------------
+                                           
+                                           
+-------------------------------------------
+  Model read, parameters:                  
+-------------------------------------------
+  ncells     = 24
+  ncameras   = 0
+  nrays      = 108
+  nrays_red  = 27
+  nboundary  = 12
+  nfreqs     = 21
+  nfreqs_red = 21
+  nspecs     = 5
+  nlspecs    = 1
+  nlines     = 1
+  nquads     = 21
+-------------------------------------------
+                                           
+Starting iteration 1
+Computing the radiation field...
+ray = 0
+ray = 1
+ray = 2
+ray = 3
+ray = 4
+ray = 5
+ray = 6
+ray = 7
+ray = 8
+ray = 9
+ray = 10
+ray = 11
+ray = 12
+ray = 13
+ray = 14
+ray = 15
+ray = 16
+ray = 17
+ray = 18
+ray = 19
+ray = 20
+ray = 21
+ray = 22
+ray = 23
+ray = 24
+ray = 25
+ray = 26
+Gathering Lambda operators...
+Reducing the mean intensities (J's)...
+Already 0.000000 % converged!
+Starting iteration 2
+Computing the radiation field...
+ray = 0
+ray = 1
+ray = 2
+ray = 3
+ray = 4
+ray = 5
+ray = 6
+ray = 7
+ray = 8
+ray = 9
+ray = 10
+ray = 11
+ray = 12
+ray = 13
+ray = 14
+ray = 15
+ray = 16
+ray = 17
+ray = 18
+ray = 19
+ray = 20
+ray = 21
+ray = 22
+ray = 23
+ray = 24
+ray = 25
+ray = 26
+Gathering Lambda operators...
+Reducing the mean intensities (J's)...
+Already 0.000000 % converged!
+Starting iteration 3
+Computing the radiation field...
+ray = 0
+ray = 1
+ray = 2
+ray = 3
+ray = 4
+ray = 5
+ray = 6
+ray = 7
+ray = 8
+ray = 9
+ray = 10
+ray = 11
+ray = 12
+ray = 13
+ray = 14
+ray = 15
+ray = 16
+ray = 17
+ray = 18
+ray = 19
+ray = 20
+ray = 21
+ray = 22
+ray = 23
+ray = 24
+ray = 25
+ray = 26
+Gathering Lambda operators...
+Reducing the mean intensities (J's)...
+Already 0.000000 % converged!
+Starting iteration 4
+Computing the radiation field...
+ray = 0
+ray = 1
+ray = 2
+ray = 3
+ray = 4
+ray = 5
+ray = 6
+ray = 7
+ray = 8
+ray = 9
+ray = 10
+ray = 11
+ray = 12
+ray = 13
+ray = 14
+ray = 15
+ray = 16
+ray = 17
+ray = 18
+ray = 19
+ray = 20
+ray = 21
+ray = 22
+ray = 23
+ray = 24
+ray = 25
+ray = 26
+Gathering Lambda operators...
+Reducing the mean intensities (J's)...
+Already 100.000000 % converged!
+Converged after 4 iterations
+                                           
+-------------------------------------------
+  Writing Model...                         
+-------------------------------------------
+                                           
+                                           
+-------------------------------------------
+  Model written.                           
+-------------------------------------------
+                                           

@@ -7,25 +7,31 @@ include_directories (.)
 include_directories (../dependencies)
 
 
-if (MPI_PARALLEL)
+# If MPI is used
+if    (MPI_PARALLEL)
+  message (STATUS "Getting ready for MPI...")
   # Look for package
   find_package (MPI REQUIRED)
   # Include headers
   include_directories (SYSTEM ${MPI_INCLUDE_PATH})
   # Set variable in configuration file
   set (MAGRITTE_MPI_PARALLEL true)
-else (MPI_PARALLEL)
+else  (MPI_PARALLEL)
+  message (STATUS "NOT ready for MPI...")
   # Set variable in configuration file
   set (MAGRITTE_MPI_PARALLEL false)
 endif (MPI_PARALLEL)
 
 
-if (GRID_SIMD)
+# If Grid-SIMD is used
+if    (GRID_SIMD)
   # Include headers
   include_directories (../dependencies/Grid-SIMD/include)
+  # Set compiler flags
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_COMPILER_FLAGS}")
   # Set variable in configuration file
   set (MAGRITTE_GRID_SIMD true)
-else (GRID_SIMD)
+else  (GRID_SIMD)
   # Set variable in configuration file
   set (MAGRITTE_GRID_SIMD false)
 endif (GRID_SIMD)
@@ -60,16 +66,20 @@ add_library (_Magritte
   Model/Thermodynamics/Turbulence/turbulence.cpp
   Functions/heapsort.cpp
   Simulation/simulation.cpp
+  Simulation/Raypair/raypair.cpp
   Simulation/Image/image.cpp)
 
 
-if (MPI_PARALLEL)
-  target_link_libraries (_Magritte
-    ${MPI_C_LIBRARIES})
+if    (GRID_SIMD)
+  target_link_libraries (_Magritte   GridSIMD)
+endif (GRID_SIMD)
+
+if    (MPI_PARALLEL)
+  target_link_libraries (_Magritte   ${MPI_C_LIBRARIES})
 endif (MPI_PARALLEL)
 
 
-if (PYTHON_IO)
+if    (PYTHON_IO)
   # Include pybind11
   include_directories (../dependencies/pybind11/include)
   # Create library for python io
@@ -77,6 +87,5 @@ if (PYTHON_IO)
     Io/io.cpp
     Io/python/io_python.cpp)
   # Link embedding
-  target_link_libraries (PyIo PRIVATE
-    pybind11::embed)
+  target_link_libraries (PyIo PRIVATE   pybind11::embed)
 endif (PYTHON_IO)

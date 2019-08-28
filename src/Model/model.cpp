@@ -7,6 +7,7 @@
 #include "model.hpp"
 #include "Io/io.hpp"
 #include "Tools/logger.hpp"
+#include "Tools/Parallel/wrap_mpi.hpp"
 
 
 ///  Reader for the Model data
@@ -18,7 +19,11 @@ int Model ::
       const Io &io)
 {
 
-  cout << "Reading Model" << endl;
+  logger.write ("                                           ");
+  logger.write ("-------------------------------------------");
+  logger.write ("  Reading Model...                         ");
+  logger.write ("-------------------------------------------");
+  logger.write ("                                           ");
 
 
   geometry.read       (io, parameters);
@@ -32,21 +37,23 @@ int Model ::
   radiation.read      (io, parameters);
 
 
-  cout << "-----------------"                         << endl;
-  cout << "Model parameters:"                         << endl;
-  cout << "-----------------"                         << endl;
-  cout << "ncells     = " << parameters.ncells     () << endl;
-  cout << "ncameras   = " << parameters.ncameras   () << endl;
-  cout << "nrays      = " << parameters.nrays      () << endl;
-  cout << "nrays_red  = " << parameters.nrays_red  () << endl;
-  cout << "nboundary  = " << parameters.nboundary  () << endl;
-  cout << "nfreqs     = " << parameters.nfreqs     () << endl;
-  cout << "nfreqs_red = " << parameters.nfreqs_red () << endl;
-  cout << "nspecs     = " << parameters.nspecs     () << endl;
-  cout << "nlspecs    = " << parameters.nlspecs    () << endl;
-  cout << "nlines     = " << parameters.nlines     () << endl;
-  cout << "nquads     = " << parameters.nquads     () << endl;
-  cout << "-----------------"                         << endl;
+  logger.write ("                                           ");
+  logger.write ("-------------------------------------------");
+  logger.write ("  Model read, parameters:                  ");
+  logger.write ("-------------------------------------------");
+  logger.write ("  ncells     = ", parameters.ncells     ()  );
+  logger.write ("  ncameras   = ", parameters.ncameras   ()  );
+  logger.write ("  nrays      = ", parameters.nrays      ()  );
+  logger.write ("  nrays_red  = ", parameters.nrays_red  ()  );
+  logger.write ("  nboundary  = ", parameters.nboundary  ()  );
+  logger.write ("  nfreqs     = ", parameters.nfreqs     ()  );
+  logger.write ("  nfreqs_red = ", parameters.nfreqs_red ()  );
+  logger.write ("  nspecs     = ", parameters.nspecs     ()  );
+  logger.write ("  nlspecs    = ", parameters.nlspecs    ()  );
+  logger.write ("  nlines     = ", parameters.nlines     ()  );
+  logger.write ("  nquads     = ", parameters.nquads     ()  );
+  logger.write ("-------------------------------------------");
+  logger.write ("                                           ");
 
 
   return (0);
@@ -65,20 +72,34 @@ int Model ::
       const Io &io) const
 {
 
-  cout << "Writing Model" << endl;
+  if (MPI_comm_rank () == 0)
+  {
+    logger.write ("                                           ");
+    logger.write ("-------------------------------------------");
+    logger.write ("  Writing Model...                         ");
+    logger.write ("-------------------------------------------");
+    logger.write ("                                           ");
 
-  parameters.write     (io);
 
-  geometry.write       (io);
+    parameters.write     (io);
 
-  thermodynamics.write (io);
+    geometry.write       (io);
 
-  chemistry.write      (io);
+    thermodynamics.write (io);
 
-  lines.write          (io);
+    chemistry.write      (io);
 
-  radiation.write      (io);
+    lines.write          (io);
 
+    radiation.write      (io);
+
+
+    logger.write ("                                           ");
+    logger.write ("-------------------------------------------");
+    logger.write ("  Model written.                           ");
+    logger.write ("-------------------------------------------");
+    logger.write ("                                           ");
+  }
 
  return (0);
 

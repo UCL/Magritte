@@ -10,10 +10,14 @@
 
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
+#include "Tools/timer.hpp"
+#include "Tools/logger.hpp"
 #include "Model/model.hpp"
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 
+
+enum SpecDiscSetting {None, LineSet, ImageSet};
 
 ///  Simulation:
 ////////////////
@@ -21,11 +25,18 @@
 struct Simulation : public Model
 {
 
-
   Double1 error_max;
   Double1 error_mean;
 
+  SpecDiscSetting specDiscSetting = None;
+
+
+  //vReal tau_max = 10.0;
+
   int compute_spectral_discretisation ();
+
+  int compute_spectral_discretisation_image (
+      const double width                    );
 
 
   // In sim_radiation.cpp
@@ -36,6 +47,14 @@ struct Simulation : public Model
 
   inline double get_dshift_max (
         const long o           );
+
+  inline void setup_using_scattering (
+      const long     R,
+      const long     origin,
+      const long     f,
+            RayData &rayData_ar,
+            RayData &rayData_r,
+            RayPair &rayPair    ) const;
 
   inline void setup (
       const long     R,
@@ -51,6 +70,10 @@ struct Simulation : public Model
             long  &lnotch,
             vReal &eta,
             vReal &chi         ) const;
+
+  inline double get_line_width (
+        const long p,
+        const long lindex      ) const;
 
   int compute_and_write_image (
         const Io  &io,
@@ -71,8 +94,19 @@ struct Simulation : public Model
 
   void calc_Jeff ();
 
+  int compute_number_of_points_on_rays () const;
+
+
+  private:
+
+      //vReal freq_diff;      ///< helper variable;
+      //vReal line_profile;   ///< helper variable;
+
 
 };
+
+
+#include "simulation.tpp"
 
 
 #endif // __SIMULATION_HPP_INCLUDED__
