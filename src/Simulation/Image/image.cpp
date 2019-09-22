@@ -21,7 +21,6 @@ Image (
     const Parameters &parameters)
   : ray_nr     (ray_nr)
   , ncells     (parameters.ncells())
-  , ncameras   (parameters.ncameras())
   , nfreqs     (parameters.nfreqs())
   , nfreqs_red (parameters.nfreqs_red())
 {
@@ -35,7 +34,6 @@ Image (
   I_m.resize (ncells);
 
   for (long c = 0; c < ncells; c++)
-  //for (long c = 0; c < ncameras; c++)
   {
     I_p[c].resize (nfreqs_red);
     I_m[c].resize (nfreqs_red);
@@ -98,12 +96,7 @@ int Image ::
 {
 
   OMP_PARALLEL_FOR (p, ncells)
-  //for (long c = 0; c < ncameras; c++)
   {
-
-    //const long p = geometry.cameras.camera2cell_nr[c];
-
-
     const double rx = geometry.rays.x[p][ray_nr];
     const double ry = geometry.rays.y[p][ray_nr];
     const double rz = geometry.rays.z[p][ray_nr];

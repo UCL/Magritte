@@ -42,7 +42,6 @@ int Model ::
   logger.write ("  Model read, parameters:                  ");
   logger.write ("-------------------------------------------");
   logger.write ("  ncells     = ", parameters.ncells     ()  );
-  logger.write ("  ncameras   = ", parameters.ncameras   ()  );
   logger.write ("  nrays      = ", parameters.nrays      ()  );
   logger.write ("  nrays_red  = ", parameters.nrays_red  ()  );
   logger.write ("  nboundary  = ", parameters.nboundary  ()  );

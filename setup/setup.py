@@ -129,12 +129,12 @@ class Setup ():
         Setup input for the Rays class.
         """
         # Check lengths
-        ncells_plus_ncameras = len (cells.x)
-        assert (ncells_plus_ncameras == len(cells.y))
-        assert (ncells_plus_ncameras == len(cells.z))
-        assert (ncells_plus_ncameras == len(cells.vx))
-        assert (ncells_plus_ncameras == len(cells.vy))
-        assert (ncells_plus_ncameras == len(cells.vz))
+        ncells = len (cells.x)
+        assert (ncells == len(cells.y))
+        assert (ncells == len(cells.z))
+        assert (ncells == len(cells.vx))
+        assert (ncells == len(cells.vy))
+        assert (ncells == len(cells.vz))
         # Initialise arrays with some uniform rays
         Rx = []
         Ry = []
@@ -142,8 +142,8 @@ class Setup ():
         wt = []
         if (self.dimension == 2):
             # Assign rays to each cell
-            for p in range(ncells_plus_ncameras):
-                (rx, ry, rz) = get_rays (cells, p, ncells_plus_ncameras)
+            for p in range(ncells):
+                (rx, ry, rz) = get_rays (cells, p, ncells)
                 Rx.append (rx)
                 Ry.append (ry)
                 Rz.append (rz)
@@ -201,7 +201,7 @@ class Setup ():
                 #    Rz[p][r] = Rz[p][r] / length
                 #    wt[p][r] = wt[p][r] / sum(wt[p])
         else:
-            for _ in range(ncells_plus_ncameras):
+            for _ in range(ncells):
                 Rx.append (rayVectors (dimension=self.dimension, nrays=nrays)[0])
                 Ry.append (rayVectors (dimension=self.dimension, nrays=nrays)[1])
                 Rz.append (rayVectors (dimension=self.dimension, nrays=nrays)[2])
@@ -209,29 +209,26 @@ class Setup ():
         # Create rays object
         rays = Rays ()
         # Assign ray vectors
-        rays.x       = Double2([Double1(Rx[p]) for p in range(ncells_plus_ncameras)])
-        rays.y       = Double2([Double1(Ry[p]) for p in range(ncells_plus_ncameras)])
-        rays.z       = Double2([Double1(Rz[p]) for p in range(ncells_plus_ncameras)])
-        rays.weights = Double2([Double1(wt[p]) for p in range(ncells_plus_ncameras)])
+        rays.x       = Double2([Double1(Rx[p]) for p in range(ncells)])
+        rays.y       = Double2([Double1(Ry[p]) for p in range(ncells)])
+        rays.z       = Double2([Double1(Rz[p]) for p in range(ncells)])
+        rays.weights = Double2([Double1(wt[p]) for p in range(ncells)])
         # Done
         return rays
 
-    def neighborLists (self, cameras, cells):
+    def neighborLists (self, cells):
         """
         Extract neighbor lists from cell centers assuming Voronoi tesselation
         """
-        ncameras = len(cameras.camera2cell_nr)
         # Check lengths
-        ncells =          len(cells.x)  - ncameras
-        assert (ncells == len(cells.y)  - ncameras)
-        assert (ncells == len(cells.z)  - ncameras)
-        assert (ncells == len(cells.vx) - ncameras)
-        assert (ncells == len(cells.vy) - ncameras)
-        assert (ncells == len(cells.vz) - ncameras)
+        ncells = len(cells.x)
+        assert (ncells == len(cells.y))
+        assert (ncells == len(cells.z))
+        assert (ncells == len(cells.vx))
+        assert (ncells == len(cells.vy))
+        assert (ncells == len(cells.vz))
         # Find neighbors
         if   (self.dimension == 1):
-            # Ignore cameras in 1D as they are not really useful.
-            
             # For the middle points
             cells.neighbors   = Long2 ([Long1 ([p-1, p+1]) for p in range(1,ncells-1)])
             cells.n_neighbors = Long1 ([2                  for p in range(1,ncells-1)])
@@ -241,14 +238,6 @@ class Setup ():
             # For the last point
             cells.neighbors.append   (Long1 ([ncells-2]))
             cells.n_neighbors.append (1)
-
-            max_n_neighbors = max(cells.n_neighbors)
-
-            # Change neighbors into a rectangular array (necessary for hdf5)
-            for p in range(ncells):
-                n_missing_entries = max_n_neighbors - cells.n_neighbors[p]
-                for w in range(n_missing_entries):
-                    cells.neighbors[p].append (0)
 
         elif (self.dimension == 2):
             raise ValueError ('Dimension = 2 is not supported.')
@@ -270,54 +259,12 @@ class Setup ():
             # Extract the number of neighbors for each point
             cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
 
-            if (ncameras!=0):
-
-                cells.neighbors = Long2([])
-
-                ### Search neighbors for points that are not cameras
-                points = []
-                for p in range(ncells+ncameras):
-                    if not p in cameras.camera2cell_nr:
-                        points.append([cells.x[p], cells.y[p], cells.z[p]])
-                # Make a Delaulay triangulation
-                delaunay = Delaunay (points)
-                # Extract Delaunay vertices (= Voronoi neighbors)
-                (indptr, indices) = delaunay.vertex_neighbor_vertices
-                for k in range(ncells):
-                    cells.neighbors.append (Long1 (indices[indptr[k]:indptr[k+1]]))
-
-                ### Search neighbors for cameras
-                points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(ncells+ncameras)]
-                # Make a Delaulay triangulation
-                delaunay = Delaunay (points)
-                # Extract Delaunay vertices (= Voronoi neighbors)
-                (indptr, indices) = delaunay.vertex_neighbor_vertices
-                for k in range(ncells,ncells+ncameras):
-                    # Remove cameras as neighbors of cameras
-                    neighbors          = []
-                    possible_neighbors = indices[indptr[k]:indptr[k+1]]
-                    for pn in possible_neighbors:
-                        if not pn in cameras.camera2cell_nr:
-                            neighbors.append(pn)
-                    cells.neighbors.append (Long1 (neighbors))
-
-                assert len(cells.neighbors) == ncells + ncameras
-
-                # Extract the number of neighbors for each point
-                cells.n_neighbors = Long1 ([])
-                for i,nList in enumerate(cells.neighbors):
-                    cells.n_neighbors.append (len (nList))
-
-            print(ncells, ncameras, ncells+ncameras,  len(cells.n_neighbors))
-            assert ncells+ncameras == len(cells.n_neighbors)
-
-            max_n_neighbors = max(cells.n_neighbors)
-
-            # Change neighbors into a rectangular array (necessary for hdf5)
-            for p in range(ncells+ncameras):
-                n_missing_entries = max_n_neighbors - cells.n_neighbors[p]
-                for w in range(n_missing_entries):
-                    cells.neighbors[p].append (0)
+        # Change neighbors into a rectangular array (necessary for hdf5)
+        max_n_neighbors = max(cells.n_neighbors)
+        for p in range(ncells):
+            n_missing_entries = max_n_neighbors - cells.n_neighbors[p]
+            for w in range(n_missing_entries):
+                cells.neighbors[p].append (0)
 
         # Done
         return cells

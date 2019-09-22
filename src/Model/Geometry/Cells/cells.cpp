@@ -26,52 +26,35 @@ int Cells ::
   cout << "Reading cells" << endl;
 
 
-  io.read_length (prefix+"cells", ncells_plus_ncameras);
-
-  ncameras = parameters.ncameras ();
-  ncells   = ncells_plus_ncameras - ncameras;
-
-  cout << "ncells                = " << ncells << endl;
-  cout << "ncameras              = " << ncameras << endl;
-  cout << "ncells_plus_ncameras  = " << ncells_plus_ncameras << endl;
-
+  io.read_length (prefix+"cells", ncells);
 
   parameters.set_ncells (ncells);
 
 
   // Read cell centers and velocities
-  x.resize (ncells_plus_ncameras);
-  y.resize (ncells_plus_ncameras);
-  z.resize (ncells_plus_ncameras);
+  x.resize (ncells);
+  y.resize (ncells);
+  z.resize (ncells);
 
   io.read_3_vector (prefix+"cells", x, y, z);
 
-  vx.resize (ncells_plus_ncameras);
-  vy.resize (ncells_plus_ncameras);
-  vz.resize (ncells_plus_ncameras);
+  vx.resize (ncells);
+  vy.resize (ncells);
+  vz.resize (ncells);
 
   io.read_3_vector (prefix+"velocities", vx, vy, vz);
 
 
-  // Convert velocities in m/s to fractions for C
-  //for (long p = 0; p < ncells_plus_ncameras; p++)
-  //{
-  //  vx[p] /= CC;
-  //  vy[p] /= CC;
-  //  vz[p] /= CC;
-  //}
-
-
   // Read number of neighbors
-  n_neighbors.resize (ncells_plus_ncameras);
+  n_neighbors.resize (ncells);
 
   io.read_list (prefix+"n_neighbors", n_neighbors);
 
 
   // Resize the neighbors to appropriate sizes
-  neighbors.resize (ncells_plus_ncameras);
+  neighbors.resize (ncells);
 
-  for (long p = 0; p < ncells_plus_ncameras; p++)
+  for (long p = 0; p < ncells; p++)
   {
     neighbors[p].resize (n_neighbors[p]);
   }

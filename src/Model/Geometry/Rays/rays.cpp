@@ -47,22 +47,19 @@ int Rays ::
   parameters.set_nrays (nrays);
 
 
-  ncells   = parameters.ncells   ();
-  ncameras = parameters.ncameras ();
-
-  ncells_plus_ncameras = ncells + ncameras;
+  ncells = parameters.ncells ();
 
 
   // Resize all containers
 
-  x.resize (ncells_plus_ncameras);
-  y.resize (ncells_plus_ncameras);
-  z.resize (ncells_plus_ncameras);
+  x.resize (ncells);
+  y.resize (ncells);
+  z.resize (ncells);
 
-  weights.resize (ncells_plus_ncameras);
-  antipod.resize (ncells_plus_ncameras);
+  weights.resize (ncells);
+  antipod.resize (ncells);
 
-  for (long p = 0; p < ncells_plus_ncameras; p++)
+  for (long p = 0; p < ncells; p++)
   {
     x[p].resize (nrays);
     y[p].resize (nrays);

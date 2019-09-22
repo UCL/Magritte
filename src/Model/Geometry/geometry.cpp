@@ -22,8 +22,6 @@ int Geometry ::
   cout << "Reading geometry" << endl;
 
 
-  cameras.read  (io, parameters);
-
   cells.read    (io, parameters);
 
   rays.read     (io, parameters);
@@ -52,8 +50,6 @@ int Geometry ::
 
   cout << "Writing geometry" << endl;
 
-
-  cameras.write  (io);
 
   cells.write    (io);
 

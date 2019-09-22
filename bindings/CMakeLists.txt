@@ -36,7 +36,6 @@ pybind11_add_module (magritte
   ../src/Model/model.cpp
   ../src/Model/parameters.cpp
   ../src/Model/Geometry/geometry.cpp
-  ../src/Model/Geometry/Cameras/cameras.cpp
   ../src/Model/Geometry/Cells/cells.cpp
   ../src/Model/Geometry/Rays/rays.cpp
   ../src/Model/Geometry/Boundary/boundary.cpp

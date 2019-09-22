@@ -91,7 +91,6 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("max_width_fraction", &Parameters::max_width_fraction)
       // setters
       .def ("set_ncells",           &Parameters::set_ncells        )
-      .def ("set_ncameras",         &Parameters::set_ncameras      )
       .def ("set_nrays",            &Parameters::set_nrays         )
       .def ("set_nrays",            &Parameters::set_nrays_red     )
       .def ("set_nboundary",        &Parameters::set_nboundary     )
@@ -105,7 +104,6 @@ PYBIND11_MODULE (magritte, module)
       .def ("set_use_scattering",   &Parameters::set_use_scattering)
       // getters
       .def ("ncells",               &Parameters::ncells        )
-      .def ("ncameras",             &Parameters::ncameras      )
       .def ("nrays",                &Parameters::nrays         )
       .def ("nrays_red",            &Parameters::nrays_red     )
       .def ("nboundary",            &Parameters::nboundary     )
@@ -129,23 +127,11 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("cells",    &Geometry::cells)
       .def_readwrite ("rays",     &Geometry::rays)
       .def_readwrite ("boundary", &Geometry::boundary)
-      .def_readwrite ("cameras",  &Geometry::cameras)
       // constructor
       .def (py::init())
       // functions
       .def ("read",               &Geometry::read)
       .def ("write",              &Geometry::write);
-
-
-  // Cameras
-  py::class_<Cameras> (module, "Cameras")
-      // attributes
-      .def_readwrite ("camera2cell_nr", &Cameras::camera2cell_nr)
-      // constructor
-      .def (py::init())
-      // functions
-      .def ("read",                     &Cameras::read)
-      .def ("write",                    &Cameras::write);
 
 
   // Cells

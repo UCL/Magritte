@@ -20,7 +20,6 @@ int Parameters ::
   long n;
 
   try {io.read_number (".ncells",     n); set_ncells     (n);} catch (...) { }
-  try {io.read_number (".ncameras",   n); set_ncameras   (n);} catch (...) { }
   try {io.read_number (".nrays",      n); set_nrays      (n);} catch (...) { }
   try {io.read_number (".nrays_red",  n); set_nrays_red  (n);} catch (...) { }
   try {io.read_number (".nboundary",  n); set_nboundary  (n);} catch (...) { }
@@ -57,7 +56,6 @@ int Parameters ::
 
 
   try {io.write_number (".ncells",     ncells     () );} catch (...) { }
-  try {io.write_number (".ncameras",   ncameras   () );} catch (...) { }
   try {io.write_number (".nrays",      nrays      () );} catch (...) { }
   try {io.write_number (".nrays_red",  nrays_red  () );} catch (...) { }
   try {io.write_number (".nboundary",  nboundary  () );} catch (...) { }
