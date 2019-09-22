@@ -177,7 +177,7 @@ inline void RayPair ::
 
     for (long m = 1; m < n_off_diag; m++)
     {
-      for (long n = ndep-2-m; n >= 0; n++)
+      for (long n = ndep-2-m; n >= 0; n--)
       {
         L_upper[m][n] = L_upper[m-1][n+1] * inverse_one_plus_F[n    ];
         L_lower[m][n] = L_lower[m-1][n  ] * inverse_one_plus_G[n+m+1];
@@ -333,6 +333,7 @@ inline void RayPair ::
     // BACK SUBSTITUTION
     // _________________
 
+
     // G[ndep-1] = (B[ndep-1] - A[ndep-1]) / A[ndep-1];
                      G[last] = 0.5 * Bd_min_Ad * dtau[last-1] * dtau[last-1];
     inverse_one_plus_G[last] = 1.0 / (vOne + G[last]);
@@ -348,9 +349,9 @@ inline void RayPair ::
     Su[first] = Su[first] + Su[first+1] * inverse_one_plus_F[first];
 
 
-
     // CALCULATE LAMBDA OPERATOR
     // _________________________
+
 
     L_diag[last] = (vOne + F[last-1]) / (Bd_min_Ad + Bd*F[last-1]);
 
@@ -367,50 +368,16 @@ inline void RayPair ::
       L_lower[0][n] = L_diag[n  ] * inverse_one_plus_G[n+1];
     }
 
+
     for (long m = 1; m < n_off_diag; m++)
     {
-      for (long n = last-1-m; n >= first; n++)
+      for (long n = last-1-m; n >= first; n--)
       {
         L_upper[m][n] = L_upper[m-1][n+1] * inverse_one_plus_F[n    ];
         L_lower[m][n] = L_lower[m-1][n  ] * inverse_one_plus_G[n+m+1];
       }
     }
-
   }
-
-
-
-//  // Calculate diagonal elements
-//
-//  //// Top to Bottom
-//
-//  L_diag[0] = (vOne + G[1]) / (B0_min_C0 + B0*G[1]);
-//
-//  for (long n = 1; n < ndep-1; n++)
-//  {
-//   L_diag[n] = (vOne + G[n+1]) / ((F[n] + G[n+1] + F[n]*G[n+1]) * C[n]);
-//  }
-//
-//  L_diag[ndep-1] = (vOne + F[ndep-2]) / (Bd_min_Ad + Bd*F[ndep-2]);
-//
-//
-//  if (n_off_diag > 0)
-//  {
-//    for (long n = 0; n < ndep-1; n++)
-//    {
-//      L_upper[0][n] = L_diag[n+1] * inverse_one_plus_F[n];
-//      L_lower[0][n] = L_diag[n]   * inverse_one_plus_G[n+1];
-//    }
-//
-//    for (long m = 1; m < n_off_diag; m++)
-//    {
-//      for (long n = 0; n < ndep-1-m; n++)
-//      {
-//        L_upper[m][n] = L_upper[m-1][n+1] * inverse_one_plus_F[n];
-//        L_lower[m][n] = L_lower[m-1][n]   * inverse_one_plus_G[n+m+1];
-//      }
-//    }
-//  }
 
 
 }

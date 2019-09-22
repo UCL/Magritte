@@ -5,6 +5,7 @@
 
 
 #include "Tools/types.hpp"
+#include "Tools/Parallel/wrap_Grid.hpp"
 #include "Model/model.hpp"
 #include "Simulation/simulation.hpp"
 
@@ -54,6 +55,13 @@ PYBIND11_MODULE (magritte, module)
 
   py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
   py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
+
+
+  // Grid wrapper
+  module.def("vreal",  &vreal,  "Pack a number into a vReal vector");
+  module.def("pack",   &pack,   "Pack a vector into a vector of Grid-SIMD vectors.");
+  module.def("unpack", &unpack, "Unpack a vector of Grid-SIMD vectors into a vector.");
+
 
 
   // Model
@@ -404,17 +412,26 @@ PYBIND11_MODULE (magritte, module)
       // constructor
       .def (py::init<const long, const long>())
       // attributes
-      .def_readonly ("n_ar", &RayPair::n_ar)
-      .def_readonly ("n_r",  &RayPair::n_r)
-      .def_readonly ("ndep", &RayPair::ndep);
-      // .def_readonly ("chi",  &RayPair::chi)
-      // .def_readonly ("Su",   &RayPair::Su)
-      // .def_readonly ("Sv",   &RayPair::Sv)
-      // .def_readonly ("nrs",  &RayPair::nrs)
-      // .def_readonly ("frs",  &RayPair::frs)
-      // .def_readonly ("dtau", &RayPair::dtau)
-
+      .def_readwrite ("I_bdy_0", &RayPair::I_bdy_0)
+      .def_readwrite ("I_bdy_n", &RayPair::I_bdy_n)
+      .def_readonly ("n_ar",     &RayPair::n_ar)
+      .def_readonly ("n_r",      &RayPair::n_r)
+      .def_readonly ("ndep",     &RayPair::ndep)
+      .def_readonly ("A",        &RayPair::A)
+      .def_readonly ("C",        &RayPair::C)
+      .def_readonly ("Su",       &RayPair::Su)
+      .def_readonly ("Sv",       &RayPair::Sv)
+      .def_readonly ("dtau",     &RayPair::dtau)
+      .def_readonly ("L_diag",   &RayPair::L_diag)
+      .def_readonly ("L_upper",  &RayPair::L_upper)
+      .def_readonly ("L_lower",  &RayPair::L_lower)
       // functions
+      .def ("initialize",        &RayPair::initialize)
+      .def ("set_term1_and_term2",
+            (void (RayPair::*)(const vReal&, const vReal&, const long))
+                                 &RayPair::set_term1_and_term2)
+      .def ("set_dtau",          &RayPair::set_dtau)
+      .def ("solve",             &RayPair::solve);
 
   // Image
   py::class_<Image> (module, "Image")
@@ -427,5 +444,12 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init<const long, const Parameters &>())
       // functions
       .def ("write", &Image::write);
+
+
+  //py::class_<vReal> (module, "vReal")
+  //    // attributes
+  //    // constructor
+  //    .def (py::init<const double&>());
+  //    // functions
 
 }

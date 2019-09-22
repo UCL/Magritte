@@ -207,7 +207,7 @@ inline vReal vExpm1 (const vReal x)
 ///    @return true x>y in all lanes
 ///////////////////////////////////////////////////////////
 
-inline bool all_greather_then (
+inline bool all_greater_then (
     const vReal &x,
     const vReal &y )
 
@@ -291,6 +291,86 @@ inline double get (
 }
 
 #endif
+
+
+
+
+///  Pack a vector in to aligned simd-vectors
+///    @param[in] vec : vector to pack
+///    @return packed vector
+/////////////////////////////////////////////
+
+inline vReal1 pack (
+    const Double1 &vec)
+
+#if (GRID_SIMD)
+
+{
+  vReal1 vec_packed (reduced (vec.size ()), 0.0);
+
+  for (long i = 0; i < vec.size(); i++)
+  {
+    const long index = newIndex (i);
+    const  int lane  = laneNr   (i);
+
+    vec_packed[index].putlane(vec[i], lane);
+  }
+
+  return vec_packed;
+}
+
+#else
+
+{
+  return vec;
+}
+
+#endif
+
+
+
+
+///  Unpack aligned simd-vectors into an std::vector
+///    @param[in] vec : vector to unpack
+///    @return unpacked vector
+////////////////////////////////////////////////////
+
+inline Double1 unpack (
+    const vReal1 &vec )
+
+#if (GRID_SIMD)
+
+{
+  Double1 vec_unpacked (n_simd_lanes*vec.size (), 0.0);
+
+  for (long i = 0; i < vec.size(); i++)
+  {
+    const long index = newIndex (i);
+    const  int lane  = laneNr   (i);
+
+    vec_unpacked[i] = vec[index].getlane(lane);
+  }
+
+  return vec_unpacked;
+}
+
+#else
+
+{
+  return vec;
+}
+
+#endif
+
+
+
+
+inline vReal vreal(
+    const double number)
+{
+  return vReal (number);
+}
+
 
 
 #endif // __WRAP_GRID_HPP_INCLUDED__

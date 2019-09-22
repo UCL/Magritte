@@ -40,7 +40,9 @@ inline RayData Geometry ::
 
     //cout << std::scientific << std::setprecision (16);
     //cout << "shift_crt " << shift_crt << endl;
+    //cout << "shift_nxt " << shift_nxt << endl;
     //cout << cells.vx[crt]*CC << "   " << cells.vy[crt]*CC << "   " << cells.vz[crt]*CC << endl;
+    //cout << cells.vx[nxt]*CC << "   " << cells.vy[nxt]*CC << "   " << cells.vz[nxt]*CC << endl;
 
     //cout << "----------------------------" << endl;
 
@@ -51,9 +53,22 @@ inline RayData Geometry ::
     {
       shift_crt = shift_nxt;
       nxt       = get_next                  (origin, ray, nxt, Z, dZ);
+
+      if (nxt < 0)
+      {
+        cout << "--- ERROR ------------------------------------------" << endl;
+        cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
+        cout << "----------------------------------------------------" << endl;
+      }
+
       shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
 
       //cout << "nxt " << nxt << endl;
+      //cout << std::scientific << std::setprecision (16);
+      //cout << "shift_crt " << shift_crt << endl;
+      //cout << "shift_nxt " << shift_nxt << endl;
+      //cout << cells.vx[crt]*CC << "   " << cells.vy[crt]*CC << "   " << cells.vz[crt]*CC << endl;
+      //cout << cells.vx[nxt]*CC << "   " << cells.vy[nxt]*CC << "   " << cells.vz[nxt]*CC << endl;
 
       set_data (crt, nxt, shift_crt, shift_nxt, dZ, dshift_max, rayData);
 
@@ -110,8 +125,10 @@ inline int Geometry ::
     if ( (n_interpl > 10000) ||
          (n_interpl <     0)    )
     {
-      // Too many (> 10000) interpolations needed!
-      // Or dshift_max is negative (probably due to overflow)
+      cout << "--- ERROR ------------------------------------------" << endl;
+      cout << "Too many (> 10000) interpolations needed!"            << endl;
+      cout << "or dshift_max is negative (probably due to overflow)" << endl;
+      cout << "----------------------------------------------------" << endl;
 
       return (-1);
     }
@@ -199,31 +216,24 @@ inline long Geometry ::
   // Pick neighbor on "right side" closest to ray
 
   double dmin = std::numeric_limits<double>::max();   // Initialize to "infinity"
-
-  long next = -1;   // return -1 when there is no next cell
+  long   next = -1;                                   // return -1 when there is no next cell
 
 
   for (long n = 0; n < cells.n_neighbors[current]; n++)
   {
-    long neighbor = cells.neighbors[current][n];
+    const long neighbor = cells.neighbors[current][n];
 
-    double position[3];
+    const double x = cells.x[neighbor] - cells.x[origin];
+    const double y = cells.y[neighbor] - cells.y[origin];
+    const double z = cells.z[neighbor] - cells.z[origin];
 
-    position[0] = cells.x[neighbor] - cells.x[origin];
-    position[1] = cells.y[neighbor] - cells.y[origin];
-    position[2] = cells.z[neighbor] - cells.z[origin];
-
-    double Z_new =   position[0]*rays.x[origin][ray]
-                   + position[1]*rays.y[origin][ray]
-                   + position[2]*rays.z[origin][ray];
+    const double Z_new =  x * rays.x[origin][ray]
+                        + y * rays.y[origin][ray]
+                        + z * rays.z[origin][ray];
 
     if (Z_new > Z)
     {
-      double distance_from_origin2 =   position[0]*position[0]
-                                     + position[1]*position[1]
-                                     + position[2]*position[2];
-
-      double distance_from_ray2 = distance_from_origin2 - Z_new*Z_new;
+      const double distance_from_ray2 = (x*x + y*y + z*z) - Z_new*Z_new;
 
       if (distance_from_ray2 < dmin)
       {
@@ -232,7 +242,6 @@ inline long Geometry ::
         dZ   = Z_new - Z;   // such that dZ > 0.0
       }
     }
-
   } // end of n loop over neighbors
 
 

@@ -160,7 +160,6 @@ struct RayPair
       vReal1 inverse_C;            ///< helper variable
 
 
-
 };
 
 

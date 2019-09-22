@@ -97,9 +97,12 @@ int Simulation ::
 
       // Trace and initialize the ray pair
 
+      //cout << "  " << r << "   " << o << endl;
+      //cout << "  Try ray tracing!" << endl;
       RayData rayData_r  = geometry.trace_ray <CoMoving> (o, r,  dshift_max);
       RayData rayData_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
-      //cout << r << " " << o << " " << "   Rays traced!" << endl;
+      //cout << "  Rays traced!" << endl;
+      //cout << "  "<< rayData_r.size() << "   " << rayData_ar.size() << endl;
 
       if (rayData_r.size() > rayData_ar.size())
       {

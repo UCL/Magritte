@@ -305,14 +305,12 @@ inline void LineProducingSpecies ::
       {
         triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
         triplets.push_back (Triplet<double, int> (J, J, -v_JI));
-        //triplets.push_back (Eigen::Triplet<double, int> (J, J, -v_IJ));
       }
 
       if (linedata.irad[k] != linedata.nlev-1)
       {
         triplets.push_back (Triplet<double, int> (I, J, +v_JI));
         triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
-        //triplets.push_back (Eigen::Triplet<double, int> (I, I, -v_JI));
       }
     }
 
@@ -354,18 +352,6 @@ inline void LineProducingSpecies ::
       colpar.adjust_abundance_for_ortho_or_para (tmp, abn);
       colpar.interpolate_collision_coefficients (tmp);
 
-      //cout << "Is it here?" << endl;
-      // Moved interpolation for excitation rate here...
-      //for (long k = 0; k < colpar.ncol; k++)
-      //{
-      //  //cout << "k = " << k << endl;
-      //  const long i = colpar.icol[k];
-      //  const long j = colpar.jcol[k];
-
-      //  colpar.Ce_intpld[k] = colpar.Cd_intpld[k] * linedata.weight[i] / linedata.weight[j] * exp ( - HH*linedata.frequency[k] / (KB*tmp) );
-      //}
-      //
-      //cout << "Nope..." << endl;
 
       for (long k = 0; k < colpar.ncol; k++)
       {
@@ -382,14 +368,12 @@ inline void LineProducingSpecies ::
         {
           triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
           triplets.push_back (Triplet<double, int> (J, J, -v_JI));
-          //triplets.push_back (Eigen::Triplet<double, int> (J, J, -v_IJ));
         }
 
         if (colpar.icol[k] != linedata.nlev-1)
         {
           triplets.push_back (Triplet<double, int> (I, J, +v_JI));
           triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
-          //triplets.push_back (Eigen::Triplet<double, int> (I, I, -v_JI));
         }
       }
     }
