@@ -46,7 +46,7 @@ struct Simulation : public Model
   int compute_radiation_field ();
 
   inline double get_dshift_max (
-        const long o           );
+        const long o           ) const;
 
   inline void setup_using_scattering (
       const long     R,
@@ -94,7 +94,12 @@ struct Simulation : public Model
 
   void calc_Jeff ();
 
-  int compute_number_of_points_on_rays () const;
+
+  template <Frame frame>
+  Long2 get_npoints_on_rays () const;
+
+  template <Frame frame>
+  long get_max_npoints_on_rays () const;
 
 
   private:

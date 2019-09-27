@@ -1,3 +1,9 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
 ///  compute_LTE_level_populations: sets level populations to LTE values
 ////////////////////////////////////////////////////////////////////////
 

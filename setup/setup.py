@@ -450,7 +450,6 @@ def make_file_structure (modelName):
     '''
     mkdir(modelName)
     mkdir(f'{modelName}/Geometry')
-    mkdir(f'{modelName}/Geometry/Cameras')
     mkdir(f'{modelName}/Geometry/Cells')
     mkdir(f'{modelName}/Geometry/Rays')
     mkdir(f'{modelName}/Geometry/Boundary')

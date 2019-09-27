@@ -13,7 +13,7 @@ from rays     import rayVectors
 
 def sphericalXDscalar (fr, ndirs, f):
     '''
-    Copy 1D model scalar data over shell in 2D model
+    Copy 1D model scalar data over shell in XD model
     '''
     if (ndirs == 0):
         f.append (fr)
@@ -36,7 +36,7 @@ def sphericalXDscalar (fr, ndirs, f):
 
 def sphericalXDvector(Vr, dimension, ndirs, Vx, Vy, Vz):
     '''
-    Copy 1D model scalar data over shell in 2D model
+    Copy 1D model scalar data over shell in XD model
     '''
     if (ndirs == 0):
         Vx.append (Vr)
@@ -44,7 +44,7 @@ def sphericalXDvector(Vr, dimension, ndirs, Vx, Vy, Vz):
         Vz.append (Vr)
     else:
         # Create ray directions
-        (Rx, Ry, Rz) = rayVectors(dimension, ndirs)
+        (Rx, Ry, Rz) = rayVectors(dimension, ndirs, randomize=True)
         # Extend vectors
         for r in range (ndirs):
             Vx.append (Vr*Rx[r])

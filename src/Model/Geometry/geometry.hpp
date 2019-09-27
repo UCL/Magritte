@@ -36,7 +36,7 @@ struct Geometry
       Rays     rays;
       Boundary boundary;
 
-
+      
       int read (
           const Io         &io,
                 Parameters &parameters);

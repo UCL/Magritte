@@ -94,6 +94,10 @@ struct LineProducingSpecies
 
       inline void update_using_Ng_acceleration ();
 
+      /// For tests in python... ////
+      ///////////////////////////////
+      int print_populations () const;
+      ///////////////////////////////
 
       int initialize_Lambda ();
 

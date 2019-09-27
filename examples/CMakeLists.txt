@@ -44,6 +44,9 @@ target_link_libraries (example_3.exe  _Magritte     )
 add_executable        (example_4.exe   example_4.cpp)
 target_link_libraries (example_4.exe  _Magritte     )
 
+add_executable        (example_5.exe   example_5.cpp)
+target_link_libraries (example_5.exe  _Magritte     )
+
 # Link MPI libraries
 if    (MPI_PARALLEL)
   target_link_libraries (example_1.exe   ${MPI_C_LIBRARIES})

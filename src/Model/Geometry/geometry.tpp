@@ -29,7 +29,7 @@ inline RayData Geometry ::
 
   long nxt = get_next (origin, ray, origin, Z, dZ);
 
-  //cout << "nxt " << nxt << endl;
+  // cout << "nxt " << nxt << endl;
 
   if (nxt != -1)   // if we are not going out of grid
   {
@@ -63,7 +63,7 @@ inline RayData Geometry ::
 
       shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
 
-      //cout << "nxt " << nxt << endl;
+      // cout << "nxt " << nxt << endl;
       //cout << std::scientific << std::setprecision (16);
       //cout << "shift_crt " << shift_crt << endl;
       //cout << "shift_nxt " << shift_nxt << endl;

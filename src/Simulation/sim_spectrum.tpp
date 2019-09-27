@@ -1,3 +1,12 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
+#include "Functions/heapsort.hpp"
+
+
 ///  Computer for spectral (=frequency) discretisation
 //////////////////////////////////////////////////////
 

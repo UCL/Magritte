@@ -80,7 +80,7 @@ else
      -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
-     -DOMP_PARALLEL=ON                               \
+     -DOMP_PARALLEL=OFF                              \
      -DMPI_PARALLEL=ON                               \
      -DGRID_SIMD=OFF                                 \
      $DIR

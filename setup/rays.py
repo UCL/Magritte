@@ -6,7 +6,8 @@
 
 import numpy as np
 
-from healpy import pixelfunc
+from healpy                  import pixelfunc
+from scipy.spatial.transform import Rotation
 
 
 def nRays (nsides):
@@ -29,7 +30,7 @@ def nSides (nrays):
     return nsides
 
 
-def rayVectors (dimension, nrays):
+def rayVectors (dimension, nrays, randomize=False):
     '''
     Devide 1, 2, or 3D sphere into 'nrays' rays.
     '''
@@ -40,13 +41,16 @@ def rayVectors (dimension, nrays):
         Ry = [ 0.0, 0.0]
         Rz = [ 0.0, 0.0]
     elif (dimension == 2):
-        Rx = [np.cos((2.0*np.pi*r)/nrays) for r in range(nrays)]
-        Ry = [np.sin((2.0*np.pi*r)/nrays) for r in range(nrays)]
-        Rz = [0.0                         for _ in range(nrays)]
+        if randomize:
+            delta = np.random.uniform(0.0, 2.0*np.pi)
+        Rx = [np.cos((2.0*np.pi*r)/nrays+delta) for r in range(nrays)]
+        Ry = [np.sin((2.0*np.pi*r)/nrays+delta) for r in range(nrays)]
+        Rz = [0.0                               for _ in range(nrays)]
     elif (dimension == 3):
-        Rx = pixelfunc.pix2vec(nSides(nrays), range(nrays))[0]
-        Ry = pixelfunc.pix2vec(nSides(nrays), range(nrays))[1]
-        Rz = pixelfunc.pix2vec(nSides(nrays), range(nrays))[2]
+        R = pixelfunc.pix2vec(nSides(nrays), range(nrays))
+        if randomize:
+            R = Rotation.random().apply(np.array(R).T).T
+        (Rx, Ry, Rz) = (R[0], R[1], R[2])
     else:
         raise ValueError ('dimension shound be 1, 2, or 3.')
     # Done

@@ -224,12 +224,15 @@ int LineProducingSpecies ::
 
   Double2 pops (ncells, Double1 (linedata.nlev));
 
+  cout << "Writing populations" << endl;
+  cout << "   " << ncells << "   " << linedata.nlev << endl;
 
   OMP_PARALLEL_FOR (p, ncells)
   {
     for (long i = 0; i < linedata.nlev; i++)
     {
       pops[p][i] = population (index (p, i));
+      cout << population (index (p, i)) << endl;
     }
   }
 
@@ -243,6 +246,13 @@ int LineProducingSpecies ::
 
 }
 
+int LineProducingSpecies ::
+    print_populations () const
+{
+  cout << population << endl;
+
+  return (0);
+}
 
 
 

@@ -1,3 +1,9 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
 #include "Tools/Parallel/wrap_Grid.hpp"
 
 
@@ -8,12 +14,12 @@
 
 inline double Simulation ::
     get_dshift_max (
-        const long o)
+        const long o) const
 {
 
   double dshift_max = std::numeric_limits<double>::max();   // Initialize to "infinity"
 
-  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  for (const LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
     const double inverse_mass   = lspec.linedata.inverse_mass;
     const double new_dshift_max = parameters.max_width_fraction
@@ -24,6 +30,7 @@ inline double Simulation ::
       dshift_max = new_dshift_max;
     }
   }
+
 
   return dshift_max;
 
@@ -232,7 +239,6 @@ inline void Simulation ::
       get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
 
       //cout << "Got eta and chi     " << data.lnotch << endl;
-
       rayPair.set_term1_and_term2 (eta, chi,               index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index);
       //cout << "Set terms and dtau " << endl;

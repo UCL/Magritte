@@ -272,7 +272,9 @@ PYBIND11_MODULE (magritte, module)
       .def (py::init<>())
       // functions
       .def ("read",                       &LineProducingSpecies::read)
-      .def ("write",                      &LineProducingSpecies::write);
+      .def ("write",                      &LineProducingSpecies::write)
+      .def ("print_populations",                      &LineProducingSpecies::print_populations)
+      .def ("index",                      &LineProducingSpecies::index);
 
 
   // Lambda

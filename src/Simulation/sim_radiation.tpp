@@ -1,5 +1,12 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
+#include "Functions/planck.hpp"
 
 
 ///  Computer for boundary intensities (setting the boundary conditions for RT)
@@ -56,9 +63,13 @@ int Simulation ::
   cout << "ncells = " << parameters.ncells()   << endl;
   cout << "noff_d = " << parameters.n_off_diag << endl;
 
+
+  const long max_npoints_on_rays = get_max_npoints_on_rays <CoMoving> ();
+
+
   // Raypair along which the trasfer equation is solved
   cout << "Initializing raypair nthreads..." << endl;
-  vector<RayPair> rayPairs (nthrds, RayPair (parameters.ncells (),
+  vector<RayPair> rayPairs (nthrds, RayPair (max_npoints_on_rays,
                                              parameters.n_off_diag));
 
 
@@ -88,7 +99,7 @@ int Simulation ::
 
     // For better load balancing!!! (avoid getting boundary points on 1 thread)
     // removes any systematic in the distribution of points
-    for (long o =  omp_get_thread_num(); o <  parameters.ncells(); o += omp_get_num_threads())
+    for (long o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
     {
       const long           ar = geometry.rays.antipod[o][r];
       const double weight_ang = geometry.rays.weights[o][r];
@@ -276,15 +287,24 @@ int Simulation ::
   // Create image object
   Image image (r, parameters);
 
-
   // Get the number of available threads
-  int nthrds = get_nthreads ();
+  const int nthrds = get_nthreads ();
+
+  // No need for the Lambda operator here
+  const long n_off_diag = 0;
 
 
-  const long n_off_diag = 0;   // No need for the Lambda operator here
+  cout << "nthrds = " << nthrds                << endl;
+  cout << "ncells = " << parameters.ncells()   << endl;
+  cout << "noff_d = " << parameters.n_off_diag << endl;
+
+  const long max_npoints_on_rays = get_max_npoints_on_rays <Rest> ();
+
+  cout << "max_npoints_on_rays = " << max_npoints_on_rays << endl;
 
   // Raypair along which the trasfer equation is solved
-  vector<RayPair> rayPairs (nthrds, RayPair (parameters.ncells (), n_off_diag));
+  vector<RayPair> rayPairs (nthrds, RayPair (max_npoints_on_rays,
+                                             n_off_diag          ));
 
 
   // if the ray is in this MPI process
@@ -301,13 +321,23 @@ int Simulation ::
     // inside of an OpenMP (omp) parallel region.
     RayPair &rayPair = rayPairs[omp_get_thread_num()];
 
-    OMP_FOR (o, parameters.ncells())
+    //for (long o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
+    //OMP_FOR (o, parameters.ncells())
+
+    for (long o = 0; o < 2; o++)//parameters.ncells(); o++)
     {
+      cout << o << endl;
+
+      cout << "ar" << endl;
       const long           ar = geometry.rays.antipod[o][r];
+      cout << "ds" << endl;
       const double dshift_max = get_dshift_max (o);
 
+      cout << "Tracing r " << endl;
       RayData rayData_r  = geometry.trace_ray <Rest> (o, r,  dshift_max);
+      cout << "Tracing ar " << endl;
       RayData rayData_ar = geometry.trace_ray <Rest> (o, ar, dshift_max);
+      cout << "Initializing" << endl;
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
@@ -319,15 +349,19 @@ int Simulation ::
           rayPair.first = 0;
           rayPair.last  = rayPair.ndep-1;
 
+          cout << "Setup  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
           // Setup and solve the ray equations
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
+          cout << "Solve  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
 
           // Solve to get the intensities along the ray
           rayPair.solve_for_image ();
 
+          cout << "Store  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
           // Store solution of the radiation field
           image.I_m[o][f] = rayPair.get_Im_at_front (); // rayPair.get_Im ();
           image.I_p[o][f] = rayPair.get_Ip_at_end ();   // rayPair.get_Ip ();
+          cout << "Done.  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
         }
       }
 
@@ -341,6 +375,9 @@ int Simulation ::
           image.I_p[o][f] = radiation.I_bdy[b][ r][f];
         }
       }
+
+      cout << "Completely through" << endl;
+      cout << "o = " << o << endl;
 
     } // end of loop over cells
     }

@@ -4,29 +4,27 @@
 // _________________________________________________________________________
 
 
-//#include <Eigen/QR>
-#include <limits>
-
 #include "simulation.hpp"
-#include "Tools/debug.hpp"
-#include "Tools/logger.hpp"
-#include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
-#include "Tools/Parallel/wrap_mpi.hpp"
-#include "Tools/Parallel/hybrid.hpp"
-#include "Functions/heapsort.hpp"
-#include "Functions/planck.hpp"
-
+#include "Tools/Parallel/wrap_omp.hpp"
+#include "Tools/logger.hpp"
 
 #include "sim_spectrum.tpp"
 #include "sim_radiation.tpp"
 #include "sim_lines.tpp"
 
 
-///  Computer for the number of points on each ray
-//////////////////////////////////////////////////
-int Simulation ::
-    compute_number_of_points_on_rays () const
+
+///  Getter for the number of points on each ray pair in each point
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+///////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+Long2 Simulation ::
+    get_npoints_on_rays () const
 {
 
   const long hnrays = parameters.nrays  () / 2;
@@ -35,35 +33,69 @@ int Simulation ::
   const int nthrds = get_nthreads ();
 
 
-  // Initialisation
   Long2 npoints (hnrays, Long1 (ncells));
-  Long3 bins    (hnrays, Long2 (nthrds));
-
-//   MPI_PARALLEL_FOR (r, hnrays);
-//   {
-//     for (int t = 0; t < nthrds; t++)
-//     {
-//       bins.reserve (ncells/nthrds);
-//     }
-//
-// #   pragma omp parallel default (shared)
-//     {
-//       OMP_FOR (o, ncells)
-//       {
-//         const long           ar = geometry.rays.antipod[o][r];
-//         const double dshift_max = get_dshift_max (o);
-//
-//         RayData rayData_r  = geometry.trace_ray <CoMoving> (o, r,  dshift_max);
-//         RayData rayData_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
-//
-//         npoints[r][o] = rayData_ar.size() + rayData_r.size() + 1;
-//
-//         bins[r][omp_get_thread_num()].push_back ();
-//       }
-//     }
-//   }
 
 
- return (0);
+  MPI_PARALLEL_FOR (r, hnrays)
+  {
+    cout << "r = " << r << endl;
+
+    OMP_FOR (o, ncells)
+    {
+      const long           ar = geometry.rays.antipod[o][r];
+      const double dshift_max = get_dshift_max (o);
+
+      RayData rayData_r  = geometry.trace_ray <frame> (o, r,  dshift_max);
+      RayData rayData_ar = geometry.trace_ray <frame> (o, ar, dshift_max);
+
+      npoints[r][o] = rayData_ar.size() + rayData_r.size() + 1;
+
+      cout << "(r="<<r<<")    npoints = " << npoints[r][o] << endl;
+    }
+  }
+
+
+  return npoints;
+
+}
+
+
+
+
+///  Getter for the maximum number of points on a ray pair
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+///////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+long Simulation ::
+    get_max_npoints_on_rays () const
+{
+
+  const long hnrays = parameters.nrays  () / 2;
+  const long ncells = parameters.ncells ();
+
+
+  long  maximum = 0;
+  Long2 npoints = get_npoints_on_rays <frame> ();
+
+
+  MPI_PARALLEL_FOR (r, hnrays)
+  {
+    cout << "r = " << r << endl;
+
+    OMP_FOR (o, ncells)
+    {
+      if (maximum < npoints[r][o])
+      {
+        maximum = npoints[r][o];
+      }
+    }
+  }
+
+
+  return maximum;
 
 }

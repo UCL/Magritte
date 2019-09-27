@@ -12,7 +12,8 @@ set (MAGRITTE_VERSION_MAJOR 0)
 set (MAGRITTE_VERSION_MINOR 0)
 
 # Set build type to Release to set all optimisation flags
-set (CMAKE_BUILD_TYPE Release)
+#set (CMAKE_BUILD_TYPE Release)
+set (CMAKE_BUILD_TYPE Debug)
 
 
 # Build options
