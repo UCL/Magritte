@@ -20,7 +20,6 @@
 /// that compute the radiation field in Magritte.
 ///////////////////////////////////////////////////////////////////////
 
-
 int main (int argc, char **argv)
 {
 
@@ -72,9 +71,21 @@ int main (int argc, char **argv)
     // Get the number of available threads
     int nthrds = get_nthreads ();
 
+    if (simulation.geometry.max_npoints_on_rays == -1)
+    {
+      simulation.get_max_npoints_on_rays <CoMoving> ();
+    }
+
     // Raypair along which the trasfer equation is solved
-    vector<RayPair> rayPairs (nthrds, RayPair (simulation.parameters.ncells (),
-                                               simulation.parameters.n_off_diag));
+    vector<RayPair> rayPairs (nthrds);
+
+    // The resizing of the RayPair objects is left out of the RayPair constructor
+    // since it (in some cases) yielded "General Protection Faults".
+    // See Issue #6 in Grid-SIMD.
+    for (int t = 0; t < rayPairs.size(); t++)
+    {
+      rayPairs[t].resize (simulation.geometry.max_npoints_on_rays, 0);
+    }
 
 
     MPI_PARALLEL_FOR (r, simulation.parameters.nrays()/2)

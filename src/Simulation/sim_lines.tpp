@@ -34,7 +34,7 @@ int Simulation ::
 {
 
   const bool use_Ng_acceleration = true;
-  const long max_niterations     = 100;
+  const long max_niterations     = 1000;
 
   compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
 

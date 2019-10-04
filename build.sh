@@ -24,8 +24,8 @@ elif [ "$1" == "minimal" ]; then
   cmake $DIR              \
     -DPYTHON_IO=OFF       \
     -DPYTHON_BINDINGS=OFF \
-    -DOMP_PARALLEL=OFF    \
-    -DMPI_PARALLEL=OFF    \
+    -DOMP_PARALLEL=ON     \
+    -DMPI_PARALLEL=ON     \
     -DGRID_SIMD=OFF       \
 
   make -j4
@@ -65,8 +65,8 @@ elif [ "$1" == "performance_audit" ]; then
 else
 
 
-   echo "Building Magrite..."
-   echo "-------------------"
+   echo "Building Magritte..."
+   echo "--------------------"
    mkdir build
    cd build
 
@@ -80,9 +80,9 @@ else
      -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
-     -DOMP_PARALLEL=OFF                              \
+     -DOMP_PARALLEL=ON                               \
      -DMPI_PARALLEL=ON                               \
-     -DGRID_SIMD=OFF                                 \
+     -DGRID_SIMD=ON                                  \
      $DIR
 
    make -j4

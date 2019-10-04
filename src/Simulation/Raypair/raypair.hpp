@@ -40,7 +40,11 @@ struct RayPair
       long n_off_diag = 0;   ///< number of off-diagonal rows on one side (default = 0)
 
 
-      RayPair (
+      //RayPair (
+      //    const long length,
+      //    const long n_off_diag);
+
+      int resize (
           const long length,
           const long n_off_diag);
 

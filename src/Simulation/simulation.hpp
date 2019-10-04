@@ -19,6 +19,7 @@
 
 enum SpecDiscSetting {None, LineSet, ImageSet};
 
+
 ///  Simulation:
 ////////////////
 
@@ -96,16 +97,18 @@ struct Simulation : public Model
 
 
   template <Frame frame>
+  Long1 get_npoints_on_ray (
+      const long r         ) const;
+
+  template <Frame frame>
+  long get_max_npoints_on_ray (
+      const long r            ) const;
+
+  template <Frame frame>
   Long2 get_npoints_on_rays () const;
 
   template <Frame frame>
-  long get_max_npoints_on_rays () const;
-
-
-  private:
-
-      //vReal freq_diff;      ///< helper variable;
-      //vReal line_profile;   ///< helper variable;
+  long get_max_npoints_on_rays ();
 
 
 };

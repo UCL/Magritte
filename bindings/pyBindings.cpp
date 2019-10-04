@@ -398,7 +398,7 @@ PYBIND11_MODULE (magritte, module)
   // RayPair
   py::class_<RayPair> (module, "RayPair")
       // constructor
-      .def (py::init<const long, const long>())
+      .def (py::init<>())
       // attributes
       .def_readwrite ("I_bdy_0", &RayPair::I_bdy_0)
       .def_readwrite ("I_bdy_n", &RayPair::I_bdy_n)
@@ -414,6 +414,7 @@ PYBIND11_MODULE (magritte, module)
       .def_readonly ("L_upper",  &RayPair::L_upper)
       .def_readonly ("L_lower",  &RayPair::L_lower)
       // functions
+      .def ("resize",            &RayPair::resize)
       .def ("initialize",        &RayPair::initialize)
       .def ("set_term1_and_term2",
             (void (RayPair::*)(const vReal&, const vReal&, const long))

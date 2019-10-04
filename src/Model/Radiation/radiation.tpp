@@ -289,7 +289,7 @@ inline void Radiation ::
 
     search_with_notch (frequencies.nu[p], notch, freq);
 
-    //cout << "notch["<<lane<<"] = "<< notch << endl;
+    // cout << "notch["<<lane<<"] = "<< notch << endl;
 
     if ( (notch == 0) || (notch == nfreqs-1) )
     {
@@ -303,11 +303,11 @@ inline void Radiation ::
       I_bdy1.putlane (get_I_bdy (R, b, f1, lane1), lane);
       I_bdy2.putlane (get_I_bdy (R, b, f1, lane1), lane);
 
-      //cout << "nu1["<<lane<<"] = "<< nu1.getlane(lane) << endl;
-      //cout << "nu2["<<lane<<"] = "<< nu2.getlane(lane) << endl;
+      // cout << "nu1["<<lane<<"] = "<< nu1.getlane(lane) << endl;
+      // cout << "nu2["<<lane<<"] = "<< nu2.getlane(lane) << endl;
 
-      //cout << "Ibdy1["<<lane<<"] = "<< I_bdy1.getlane(lane) << endl;
-      //cout << "Ibdy2["<<lane<<"] = "<< I_bdy2.getlane(lane) << endl;
+      // cout << "Ibdy1["<<lane<<"] = "<< I_bdy1.getlane(lane) << endl;
+      // cout << "Ibdy2["<<lane<<"] = "<< I_bdy2.getlane(lane) << endl;
     }
 
     else
@@ -324,17 +324,17 @@ inline void Radiation ::
       I_bdy1.putlane (get_I_bdy (R, b, f1, lane1), lane);
       I_bdy2.putlane (get_I_bdy (R, b, f2, lane2), lane);
 
-      //cout << "nu1["<<lane1<<"] = "<< nu1.getlane(lane1) << endl;
-      //cout << "nu2["<<lane2<<"] = "<< nu2.getlane(lane2) << endl;
+      // cout << "nu1["<<lane1<<"] = "<< nu1.getlane(lane1) << endl;
+      // cout << "nu2["<<lane2<<"] = "<< nu2.getlane(lane2) << endl;
 
-      //cout << "Ibdy1["<<lane1<<"] = "<< I_bdy1.getlane(lane1) << endl;
-      //cout << "Ibdy2["<<lane2<<"] = "<< I_bdy2.getlane(lane2) << endl;
+      // cout << "Ibdy1["<<lane1<<"] = "<< I_bdy1.getlane(lane1) << endl;
+      // cout << "Ibdy2["<<lane2<<"] = "<< I_bdy2.getlane(lane2) << endl;
     }
   }
 
   I_bdy_scaled = interpolate_linear (nu1, I_bdy1, nu2, I_bdy2, freq_scaled);
 
-  //cout << "I_bdy_scaled = " << I_bdy_scaled << endl;
+  // cout << "I_bdy_scaled = " << I_bdy_scaled << endl;
 
 }
 

@@ -225,14 +225,12 @@ int LineProducingSpecies ::
   Double2 pops (ncells, Double1 (linedata.nlev));
 
   cout << "Writing populations" << endl;
-  cout << "   " << ncells << "   " << linedata.nlev << endl;
 
   OMP_PARALLEL_FOR (p, ncells)
   {
     for (long i = 0; i < linedata.nlev; i++)
     {
       pops[p][i] = population (index (p, i));
-      cout << population (index (p, i)) << endl;
     }
   }
 
@@ -246,86 +244,16 @@ int LineProducingSpecies ::
 
 }
 
+
+
+
+///  Print the levelpopulations to screen
+/////////////////////////////////////////
+
 int LineProducingSpecies ::
     print_populations () const
 {
   cout << population << endl;
 
   return (0);
-}
-
-
-
-///  Initializer for the Lambda operator
-////////////////////////////////////////
-
-int LineProducingSpecies ::
-    initialize_Lambda ()
-{
-
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    for (long k = 0; k < linedata.nrad; k++)
-    {
-      lambda.Ls[p][k].clear();
-      lambda.nr[p][k].clear();
-    }
-  }
-
-
-  lambda.Lss.clear();
-  lambda.nrs.clear();
-
-  lambda.size.clear();
-
-
-  return (0);
-
-}
-
-
-
-
-///  Gatherer for the Lambda's from the MPI distributed processes
-/////////////////////////////////////////////////////////////////
-
-int LineProducingSpecies ::
-    gather_Lambda ()
-{
-
-  // Gather the sizes of the Lambda operators at each process
-
-  // OMP_PARALLEL_FOR (p, ncells)
-  // {
-  //   for (long k = 0; k < linedata.nrad; k++)
-  //   {
-  //     lambda_size[p][k] = lambda[p][k].size();
-  //   }
-  // }
-  //
-  //
-  //
-  // long  length =
-  // Long1 lengths (MPI_comm_size ());
-  //
-  //
-  //
-  //
-  // for (long p = 0; p < ncells; p++)
-  // {
-  //   for (long k = 0; k < linedata.nrad; k++)
-  //   {
-  //
-  //
-  //
-  //     for (long m = 0; m < lambda[p][k].nr.size(); m++)
-  //     {
-  //     }
-  //
-  //   }
-  // }
-
-
-  return (0);
-
 }

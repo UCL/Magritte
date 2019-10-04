@@ -42,7 +42,6 @@ int main (int argc, char **argv)
     Simulation simulation;
     simulation.read (io);
 
-
     simulation.compute_spectral_discretisation ();
 
     simulation.compute_boundary_intensities ();

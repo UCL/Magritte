@@ -57,21 +57,46 @@ int Simulation ::
   // Get the number of available threads
   cout << "Getting nthreads..." << endl;
 
-  int nthrds = get_nthreads ();
+  const int nthrds = get_nthreads ();
 
   cout << "nthrds = " << nthrds                << endl;
   cout << "ncells = " << parameters.ncells()   << endl;
   cout << "noff_d = " << parameters.n_off_diag << endl;
 
 
-  const long max_npoints_on_rays = get_max_npoints_on_rays <CoMoving> ();
+  if (geometry.max_npoints_on_rays == -1)
+  {
+    get_max_npoints_on_rays <CoMoving> ();
+  }
 
 
   // Raypair along which the trasfer equation is solved
-  cout << "Initializing raypair nthreads..." << endl;
-  vector<RayPair> rayPairs (nthrds, RayPair (max_npoints_on_rays,
-                                             parameters.n_off_diag));
+  cout << "Initializing raypair..." << endl;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//// The resizing of the RayPair objects is left out of the RayPair constructor
+//// since it (in some cases) yielded "General Protection Faults".
+//// See Issue #6 in Grid-SIMD.
+  if (nthrds > MAX_NTHREADS)
+  {
+    logger.write ("ERROR !!!                                                ");
+    logger.write ("MAX_NTHREADS = ", (long) MAX_NTHREADS, " which is too low");
+    logger.write ("(MAX_NTHREADS is defined in Tools/constants.hpp"          );
+  }
+
+  assert (nthrds <= MAX_NTHREADS);
+
+  RayPair rayPairs [MAX_NTHREADS];
+
+  for (int t = 0; t < nthrds; t++)
+  {
+    rayPairs[t].resize (geometry.max_npoints_on_rays, parameters.n_off_diag);
+  }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+  cout << "Constructed RayPair array" << endl;
 
 
   // // Raypair along which the trasfer equation is solved
@@ -274,7 +299,7 @@ int Simulation ::
 
   if (specDiscSetting != ImageSet)
   {
-    cout << "Error: Spectral discretisation was not set for Images!" << endl;
+    logger.write ("Error: Spectral discretisation was not set for Images!");
 
     return (-1);
   }
@@ -298,13 +323,32 @@ int Simulation ::
   cout << "ncells = " << parameters.ncells()   << endl;
   cout << "noff_d = " << parameters.n_off_diag << endl;
 
-  const long max_npoints_on_rays = get_max_npoints_on_rays <Rest> ();
+  const long max_npoints_on_ray = get_max_npoints_on_ray <Rest> (r);
 
-  cout << "max_npoints_on_rays = " << max_npoints_on_rays << endl;
+  cout << "max_npoints_on_rays = " << max_npoints_on_ray << endl;
 
-  // Raypair along which the trasfer equation is solved
-  vector<RayPair> rayPairs (nthrds, RayPair (max_npoints_on_rays,
-                                             n_off_diag          ));
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//// The resizing of the RayPair objects is left out of the RayPair constructor
+//// since it (in some cases) yielded "General Protection Faults".
+//// See Issue #6 in Grid-SIMD.
+  if (nthrds > MAX_NTHREADS)
+  {
+    logger.write ("ERROR !!!                                                ");
+    logger.write ("MAX_NTHREADS = ", (long) MAX_NTHREADS, " which is too low");
+    logger.write ("(MAX_NTHREADS is defined in Tools/constants.hpp"          );
+  }
+
+  assert (nthrds <= MAX_NTHREADS);
+
+  RayPair rayPairs [MAX_NTHREADS];
+
+  for (int t = 0; t < nthrds; t++)
+  {
+    rayPairs[t].resize (max_npoints_on_ray, n_off_diag);
+  }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 
   // if the ray is in this MPI process
@@ -323,21 +367,15 @@ int Simulation ::
 
     //for (long o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
     //OMP_FOR (o, parameters.ncells())
-
-    for (long o = 0; o < 2; o++)//parameters.ncells(); o++)
+    for (long o = 0; o < parameters.ncells(); o++)
     {
       cout << o << endl;
 
-      cout << "ar" << endl;
       const long           ar = geometry.rays.antipod[o][r];
-      cout << "ds" << endl;
       const double dshift_max = get_dshift_max (o);
 
-      cout << "Tracing r " << endl;
       RayData rayData_r  = geometry.trace_ray <Rest> (o, r,  dshift_max);
-      cout << "Tracing ar " << endl;
       RayData rayData_ar = geometry.trace_ray <Rest> (o, ar, dshift_max);
-      cout << "Initializing" << endl;
 
       rayPair.initialize (rayData_ar.size(), rayData_r.size());
 
@@ -349,19 +387,15 @@ int Simulation ::
           rayPair.first = 0;
           rayPair.last  = rayPair.ndep-1;
 
-          cout << "Setup  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
           // Setup and solve the ray equations
           setup (R, o, f, rayData_ar, rayData_r, rayPair);
-          cout << "Solve  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
 
           // Solve to get the intensities along the ray
           rayPair.solve_for_image ();
 
-          cout << "Store  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
           // Store solution of the radiation field
           image.I_m[o][f] = rayPair.get_Im_at_front (); // rayPair.get_Im ();
-          image.I_p[o][f] = rayPair.get_Ip_at_end ();   // rayPair.get_Ip ();
-          cout << "Done.  " << r << "  " << o << "  " << f << "/" << parameters.nfreqs_red() << endl;
+          image.I_p[o][f] = rayPair.get_Ip_at_end   (); // rayPair.get_Ip ();
         }
       }
 
@@ -376,8 +410,6 @@ int Simulation ::
         }
       }
 
-      cout << "Completely through" << endl;
-      cout << "o = " << o << endl;
 
     } // end of loop over cells
     }

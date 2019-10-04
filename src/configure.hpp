@@ -10,7 +10,7 @@
 
 // Parallelisation
 #define MPI_PARALLEL false
-#define OMP_PARALLEL false
+#define OMP_PARALLEL true
 
 // SIMD vectorisation
-#define GRID_SIMD false
+#define GRID_SIMD true

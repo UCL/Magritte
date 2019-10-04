@@ -63,8 +63,6 @@ struct Lines
       inline void set_emissivity_and_opacity ();
 
 
-      int initialize_Lambda ();
-
       int gather_emissivities_and_opacities ();
 
 

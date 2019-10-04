@@ -10,6 +10,7 @@
 
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/types.hpp"
+#include "Tools/debug.hpp"
 
 
 ///  search: look up the index of a value in a list

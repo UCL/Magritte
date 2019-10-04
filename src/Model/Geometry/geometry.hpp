@@ -35,8 +35,10 @@ struct Geometry
       Cells    cells;
       Rays     rays;
       Boundary boundary;
-
       
+      long  max_npoints_on_rays = -1;
+
+
       int read (
           const Io         &io,
                 Parameters &parameters);

@@ -464,3 +464,122 @@ inline void Simulation ::
 
 
 }
+
+
+
+
+///  Getter for the number of points on a ray pair in each point
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+/////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+Long1 Simulation ::
+    get_npoints_on_ray (
+        const long r   ) const
+{
+
+  Long1 npoints (parameters.ncells ());
+
+
+  OMP_FOR (o, parameters.ncells ())
+  {
+    const long           ar = geometry.rays.antipod[o][r];
+    const double dshift_max = get_dshift_max (o);
+
+    RayData rayData_r  = geometry.trace_ray <frame> (o, r,  dshift_max);
+    RayData rayData_ar = geometry.trace_ray <frame> (o, ar, dshift_max);
+
+    npoints[o] = rayData_ar.size() + rayData_r.size() + 1;
+  }
+
+
+  return npoints;
+
+}
+
+
+
+
+///  Getter for the maximum number of points on a ray pair
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+/////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+long Simulation ::
+    get_max_npoints_on_ray (
+        const long r       ) const
+{
+
+  const Long1 npoints_on_ray = get_npoints_on_ray <frame> (r);
+
+  return *std::max_element (npoints_on_ray.begin(), npoints_on_ray.end());
+
+}
+
+
+
+
+///  Getter for the number of points on each ray pair in each point
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+///////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+Long2 Simulation ::
+    get_npoints_on_rays () const
+{
+
+  Long2 npoints (parameters.nrays()/2);
+
+
+  MPI_PARALLEL_FOR (r, parameters.nrays()/2)
+  {
+    npoints[r] = get_max_npoints_on_ray <frame> (r);
+  }
+
+
+  return npoints;
+
+}
+
+
+
+
+///  Getter for the maximum number of points on a ray pair
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+///////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+long Simulation ::
+    get_max_npoints_on_rays ()
+{
+
+  long  maximum = 0;
+
+
+  MPI_PARALLEL_FOR (r, parameters.nrays()/2)
+  {
+    const long local_max = get_max_npoints_on_ray <frame> (r);
+
+    if (maximum < local_max) maximum = local_max;
+  }
+
+
+  // Set max_npoints_on_rays in geometry
+  geometry.max_npoints_on_rays = maximum;
+
+
+  return maximum;
+
+}

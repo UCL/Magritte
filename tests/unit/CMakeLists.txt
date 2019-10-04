@@ -65,6 +65,9 @@ target_link_libraries (test_simulation.exe   _Magritte   TestMain)
 add_executable        (test_raypair.exe  Simulation/Raypair/test_raypair.cpp)
 target_link_libraries (test_raypair.exe   _Magritte   TestMain)
 
+add_executable        (test_raypair_constr.exe  Simulation/Raypair/test_raypair_constr.cpp)
+target_link_libraries (test_raypair_constr.exe   _Magritte   TestMain)
+
 add_executable        (test_lineProducingSpecies.exe   Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
 target_link_libraries (test_lineProducingSpecies.exe   _Magritte   TestMain)
 

@@ -127,26 +127,6 @@ int Lines ::
 
 
 
-///  initialize_Lambda: clear all entries in the Lambda operators
-/////////////////////////////////////////////////////////////////
-
-int Lines ::
-    initialize_Lambda ()
-{
-
-  for (LineProducingSpecies &lspec : lineProducingSpecies)
-  {
-    lspec.initialize_Lambda ();
-  }
-
-
-  return (0);
-
-}
-
-
-
-
 int Lines ::
     iteration_using_LTE (
         const Double2 &abundance,
