@@ -52,12 +52,13 @@ inline RayData Geometry ::
     while (!boundary.boundary[nxt])   // while we have not hit the boundary
     {
       shift_crt = shift_nxt;
-      nxt       = get_next                  (origin, ray, nxt, Z, dZ);
+      nxt       = get_next (origin, ray, nxt, Z, dZ);
 
       if (nxt < 0)
       {
         cout << "--- ERROR ------------------------------------------" << endl;
         cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
+        cout << "                                                    " << endl;
         cout << "----------------------------------------------------" << endl;
       }
 
@@ -218,11 +219,13 @@ inline long Geometry ::
   double dmin = std::numeric_limits<double>::max();   // Initialize to "infinity"
   long   next = -1;                                   // return -1 when there is no next cell
 
+  ///////////////////////
+  double Z_new_max = 0.0;
+  long   n_new_max = 0;
+  ///////////////////////
 
-  for (long n = 0; n < cells.n_neighbors[current]; n++)
+  for (const long neighbor : cells.neighbors[current])
   {
-    const long neighbor = cells.neighbors[current][n];
-
     const double x = cells.x[neighbor] - cells.x[origin];
     const double y = cells.y[neighbor] - cells.y[origin];
     const double z = cells.z[neighbor] - cells.z[origin];
@@ -230,6 +233,14 @@ inline long Geometry ::
     const double Z_new =  x * rays.x[origin][ray]
                         + y * rays.y[origin][ray]
                         + z * rays.z[origin][ray];
+
+    ///////////////////////
+    if (Z_new > Z_new_max)
+    {
+      Z_new_max = Z_new;
+      n_new_max = neighbor;
+    }
+    ///////////////////////
 
     if (Z_new > Z)
     {
@@ -242,8 +253,45 @@ inline long Geometry ::
         dZ   = Z_new - Z;   // such that dZ > 0.0
       }
     }
-  } // end of n loop over neighbors
+  }
 
+
+  //////////////////////////////////////////////////
+  // Try to catch the error of no neighbors found.
+  //////////////////////////////////////////////////
+  if (next == -1)
+  {
+
+    // Just do one try with the furthest points (largest Z)
+
+    for (const long neighbor : cells.neighbors[n_new_max])
+    {
+      if (neighbor != current)
+      {
+        const double x = cells.x[neighbor] - cells.x[origin];
+        const double y = cells.y[neighbor] - cells.y[origin];
+        const double z = cells.z[neighbor] - cells.z[origin];
+
+        const double Z_new =  x * rays.x[origin][ray]
+                            + y * rays.y[origin][ray]
+                            + z * rays.z[origin][ray];
+
+        if (Z_new > Z)
+        {
+          const double distance_from_ray2 = (x*x + y*y + z*z) - Z_new*Z_new;
+
+          if (distance_from_ray2 < dmin)
+          {
+            dmin = distance_from_ray2;
+            next = neighbor;
+            dZ   = Z_new - Z;   // such that dZ > 0.0
+          }
+        }
+      }
+      // cout << "cell with nxt=-1 was : " << current << endl;
+    }
+  }
+  //////////////////////////////////////////////////
 
   // Update distance along ray
 
