@@ -9,7 +9,7 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY}/examples)
 # If Grid-SIMD is used
 if    (GRID_SIMD)
   # Include headers
-  include_directories (../dependencies/Grid-SIMD/include)
+  include_directories (../../dependencies/Grid-SIMD/include)
   # Set compiler flags
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_COMPILER_FLAGS}")
   # Set variable in configuration file
@@ -28,8 +28,8 @@ if    (MPI_PARALLEL)
 endif (MPI_PARALLEL)
 
 # Include directory containing source
-include_directories (../src)
-include_directories (../dependencies)
+include_directories (../)
+include_directories (../../dependencies)
 
 # Create executable for examples
 add_executable        (example_1.exe   example_1.cpp)

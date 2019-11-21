@@ -50,9 +50,6 @@ PYBIND11_MODULE (magritte, module)
 
   py::bind_vector<String1> (module, "String1");
 
-  //py::bind_vector<Lambda1> (module, "Lambda1");
-  //py::bind_vector<Lambda2> (module, "Lambda2");
-
   py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
   py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
 

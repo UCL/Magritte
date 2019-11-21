@@ -39,7 +39,7 @@ endif (GRID_SIMD)
 
 # Write configuration file
 configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
-  ${CMAKE_SOURCE_DIR}/src/configure.hpp)
+                ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
 
 # Create Magritte library
 add_library (_Magritte
@@ -68,7 +68,6 @@ add_library (_Magritte
   Simulation/Raypair/raypair.cpp
   Simulation/Image/image.cpp)
 
-
 if    (GRID_SIMD)
   target_link_libraries (_Magritte   GridSIMD)
 endif (GRID_SIMD)
@@ -76,7 +75,6 @@ endif (GRID_SIMD)
 if    (MPI_PARALLEL)
   target_link_libraries (_Magritte   ${MPI_C_LIBRARIES})
 endif (MPI_PARALLEL)
-
 
 if    (PYTHON_IO)
   # Include pybind11
@@ -86,5 +84,13 @@ if    (PYTHON_IO)
     Io/io.cpp
     Io/python/io_python.cpp)
   # Link embedding
-  target_link_libraries (PyIo PRIVATE   pybind11::embed)
+  target_link_libraries (PyIo PRIVATE pybind11::embed)
 endif (PYTHON_IO)
+
+# Add directory containing Magritte's Python bindings
+if    (PYTHON_BINDINGS)
+  add_subdirectory (bindings)
+endif (PYTHON_BINDINGS)
+
+# Add directory containing Magritte's examples
+add_subdirectory (examples)
