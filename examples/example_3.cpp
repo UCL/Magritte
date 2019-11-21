@@ -65,7 +65,7 @@ int main (int argc, char **argv)
 
     simulation.compute_LTE_level_populations ();
 
-    simulation.compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
+    simulation.compute_level_populations (io, use_Ng_acceleration, max_niterations);
 
     simulation.write (io);
 

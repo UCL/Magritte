@@ -77,7 +77,7 @@ int main (int argc, char **argv)
     Timer timer ("1 level pop iteration");
     timer.start();
 
-    simulation.compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
+    simulation.compute_level_populations (io, use_Ng_acceleration, max_niterations);
 
     timer.stop();
     timer.print();

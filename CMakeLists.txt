@@ -23,6 +23,7 @@ option (OMP_PARALLEL     "OpenMP parallelisation required?"       OFF)
 option (MPI_PARALLEL     "MPI parallelisation required?"          OFF)
 option (GRID_SIMD        "GRID SIMD vectorisation required?"      OFF)
 option (PERF_ANALYSIS    "Build for performance analysis"         OFF)
+option (CUDA_SOLVER      "Build using the CUDA GPU solver"        OFF)
 
 
 # Set variable for use in the source code (defined in configure.hpp)
@@ -99,9 +100,9 @@ add_subdirectory (examples)
 
 
 # Link to pybind11 directory if required
-if    (PYTHON_BINDINGS   OR   PYTHON_IO)
+if    (PYTHON_BINDINGS OR PYTHON_IO)
   add_subdirectory (dependencies/pybind11 pybind11)
-endif (PYTHON_BINDINGS   OR   PYTHON_IO)
+endif (PYTHON_BINDINGS OR PYTHON_IO)
 
 # Add directory containing Magritte's Python bindings
 if    (PYTHON_BINDINGS)

@@ -85,10 +85,10 @@ struct Simulation : public Model
 
   int compute_LTE_level_populations ();
 
-  int compute_level_populations (
-      const Io &io              );
+  long compute_level_populations (
+      const Io &io               );
 
-  int compute_level_populations_opts (
+  long compute_level_populations (
       const Io   &io,
       const bool  use_Ng_acceleration,
       const long  max_niterations     );
