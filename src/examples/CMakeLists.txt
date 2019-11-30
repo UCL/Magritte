@@ -25,27 +25,68 @@ if    (MPI_PARALLEL)
   find_package (MPI REQUIRED)
   # Include headers
   include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL true)
+else  (MPI_PARALLEL)
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL false)
 endif (MPI_PARALLEL)
+
+# If GPU acceleration
+if    (GPU_ACCELERATION)
+  set (MAGRITTE_GPU_ACCELERATION true)
+else  (GPU_ACCELERATION)
+  set (MAGRITTE_GPU_ACCELERATION false)
+endif (GPU_ACCELERATION)
+
+# Write configuration file
+configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
+                ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
 
 # Include directory containing source
 include_directories (../)
 include_directories (../../dependencies)
 
 # Create executable for examples
-add_executable        (example_1.exe   example_1.cpp)
-target_link_libraries (example_1.exe   _Magritte    )
 
-add_executable        (example_2.exe   example_2.cpp)
-target_link_libraries (example_2.exe  _Magritte     )
+if    (GPU_ACCELERATION)
 
-add_executable        (example_3.exe   example_3.cpp)
-target_link_libraries (example_3.exe  _Magritte     )
+  find_package (CUDA REQUIRED)
 
-add_executable        (example_4.exe   example_4.cpp)
-target_link_libraries (example_4.exe  _Magritte     )
+  cuda_add_executable   (example_1_gpu.exe   example_1.cpp)
+  target_link_libraries (example_1_gpu.exe   Magritte     )
 
-add_executable        (example_5.exe   example_5.cpp)
-target_link_libraries (example_5.exe  _Magritte     )
+  cuda_add_executable   (example_2_gpu.exe   example_2_gpu.cpp)
+  target_link_libraries (example_2_gpu.exe   Magritte         )
+
+  cuda_add_executable   (example_3_gpu.exe example_3.cpp)
+  target_link_libraries (example_3_gpu.exe Magritte     )
+
+  cuda_add_executable   (example_4_gpu.exe example_4.cpp)
+  target_link_libraries (example_4_gpu.exe Magritte     )
+
+  cuda_add_executable   (example_5_gpu.exe example_5.cpp)
+  target_link_libraries (example_5_gpu.exe Magritte     )
+
+else  (GPU_ACCELERATION)
+
+  add_executable        (example_1_cpu.exe   example_1.cpp)
+  target_link_libraries (example_1_cpu.exe   Magritte     )
+
+  add_executable        (example_2_cpu.exe   example_2_cpu.cpp)
+  target_link_libraries (example_2_cpu.exe   Magritte         )
+
+  add_executable        (example_3_cpu.exe example_3.cpp)
+  target_link_libraries (example_3_cpu.exe Magritte     )
+
+  add_executable        (example_4_cpu.exe example_4.cpp)
+  target_link_libraries (example_4_cpu.exe Magritte     )
+
+  add_executable        (example_5_cpu.exe example_5.cpp)
+  target_link_libraries (example_5_cpu.exe Magritte     )
+  
+endif (GPU_ACCELERATION)
+
 
 # Link MPI libraries
 if    (MPI_PARALLEL)

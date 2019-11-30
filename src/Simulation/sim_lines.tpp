@@ -86,7 +86,7 @@ long Simulation ::
 
   // Initialize errors
   error_mean.clear ();
-  error_max.clear ();
+  error_max .clear ();
 
   // Initialize some_not_converged
   bool some_not_converged = true;
@@ -133,7 +133,7 @@ long Simulation ::
     for (int l = 0; l < parameters.nlspecs(); l++)
     {
       error_mean.push_back (lines.lineProducingSpecies[l].relative_change_mean);
-      error_max.push_back  (lines.lineProducingSpecies[l].relative_change_max);
+      error_max .push_back (lines.lineProducingSpecies[l].relative_change_max);
 
       if (lines.lineProducingSpecies[l].fraction_not_converged > 0.005)
       {

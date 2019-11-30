@@ -14,6 +14,8 @@
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/logger.hpp"
 
+const string Radiation::prefix = "Radiation/";
+
 
 ///  read: read in data structure
 ///    @param[in] io: io object
@@ -105,6 +107,20 @@ int Radiation ::
 
 
   frequencies.write (io);
+
+
+  Double2 JJ (ncells, Double1 (nfreqs));
+
+  OMP_PARALLEL_FOR (p, ncells)
+  {
+    for (long f = 0; f < nfreqs; f++)
+    {
+      JJ[p][f] = get_J (p,f);
+    }
+  }
+
+  io.write_array (prefix+"J", JJ);
+
 
   // Print all frequencies (nu)
 //# if (GRID_SIMD)

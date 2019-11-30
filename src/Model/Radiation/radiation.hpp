@@ -135,9 +135,7 @@ struct Radiation
 
 
     int initialize_J ();
-
     int MPI_reduce_J ();
-
     int calc_U_and_V ();
 
 
@@ -152,6 +150,7 @@ struct Radiation
 
       bool use_scattering;        ///< number of boundary cells
 
+      static const string prefix;
 
 };
 

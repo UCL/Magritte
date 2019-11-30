@@ -13,4 +13,7 @@
 #define OMP_PARALLEL true
 
 // SIMD vectorisation
-#define GRID_SIMD true
+#define GRID_SIMD false
+
+// GPU acceleration
+#define GPU_ACCELERATION true

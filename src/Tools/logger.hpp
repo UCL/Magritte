@@ -34,6 +34,16 @@ struct Logger
     file << "_____________________________" << endl;
   }
 
+  Logger (const string file_name_local)
+  {
+    file_name = file_name_local + ".log";
+
+    std::ofstream file (file_name);
+
+    file << "--- Log file for Magritte ---" << endl;
+    file << "_____________________________" << endl;
+  }
+
 
   void write (
       const string log_line ) const

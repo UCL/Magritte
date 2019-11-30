@@ -81,8 +81,9 @@ else
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
      -DOMP_PARALLEL=ON                               \
-     -DMPI_PARALLEL=ON                               \
-     -DGRID_SIMD=ON                                  \
+     -DMPI_PARALLEL=OFF                              \
+     -DGRID_SIMD=OFF                                 \
+     -DGPU_ACCELERATION=ON                           \
      $DIR
 
    make -j4

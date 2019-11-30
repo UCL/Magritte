@@ -4,6 +4,7 @@
 // _________________________________________________________________________
 
 
+#include "configure.hpp"
 #include "Tools/types.hpp"
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Model/model.hpp"
@@ -381,7 +382,10 @@ PYBIND11_MODULE (magritte, module)
       .def_readonly ("error_max",              &Simulation::error_max)
       .def_readonly ("error_mean",             &Simulation::error_mean)
       //.def_readonly ("rayPair",                &Simulation::rayPair)
-
+#     if (GPU_ACCELERATION)
+      .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)
+      .def ("gpu_compute_radiation_field",           &Simulation::gpu_compute_radiation_field)
+#     endif
       // functions
       .def ("compute_spectral_discretisation",       &Simulation::compute_spectral_discretisation)
       .def ("compute_spectral_discretisation_image", &Simulation::compute_spectral_discretisation_image)

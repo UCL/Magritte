@@ -583,3 +583,34 @@ long Simulation ::
   return maximum;
 
 }
+
+
+
+
+inline void Simulation ::
+    get_radiation_field_from_boundary (
+        const long R,
+        const long r,
+        const long o                  )
+{
+  const double weight_ang = 2.0 * geometry.rays.weights[o][r];
+  const long            b = geometry.boundary.cell2boundary_nr[o];
+
+  for (long f = 0; f < parameters.nfreqs_red(); f++)
+  {
+    const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+    const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+
+    const long ind = radiation.index (o,f);
+
+    radiation.J[ind] += weight_ang * u;
+
+    if (parameters.use_scattering())
+    {
+      radiation.u[R][ind] = u;
+      radiation.v[R][ind] = v;
+    }
+  }
+
+  return;
+}

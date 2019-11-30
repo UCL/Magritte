@@ -11,10 +11,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
-using std::vector;
 #include <chrono>
 using namespace std;
-#include <Tools/Parallel/wrap_mpi.hpp>
+
+#include "Tools/Parallel/wrap_mpi.hpp"
 
 
 /// TIMER: class for precise process timing
@@ -91,14 +91,26 @@ class Timer
 	  ///  print: print time interval to screen
 	  /////////////////////////////////////////
 
+    string get_print_string ()
+    {
+      return "T   | " + name + " : " + to_string(intervals.back().count()) + " seconds";
+    }
+
+    string get_print_total_string ()
+    {
+      return "Tot | " + name + " : " + to_string(total.count()           ) + " seconds";
+    }
+
     void print ()
     {
-      cout << "T| "  << name << " : " << intervals.back().count() << " seconds" << endl;
+      cout << get_print_string () << endl;
+      // cout << "T  | " << name << " : " << intervals.back().count() << " seconds" << endl;
     }
 
     void print_total ()
     {
-      cout << "Tot| "<< name << " : " << total.count()            << " seconds" << endl;
+      cout << get_print_total_string () << endl;
+      // cout << "Tot| " << name << " : " << total.count()            << " seconds" << endl;
     }
 
 };

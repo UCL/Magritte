@@ -16,6 +16,10 @@
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 
+#if (GPU_ACCELERATION)
+# include "Raypair/raypair.cuh"
+#endif
+
 
 enum SpecDiscSetting {None, LineSet, ImageSet};
 
@@ -26,6 +30,12 @@ enum SpecDiscSetting {None, LineSet, ImageSet};
 struct Simulation : public Model
 {
 
+# if (GPU_ACCELERATION)
+    int gpu_get_device_properties   (void);
+    int gpu_compute_radiation_field (void);
+# endif
+
+
   Double1 error_max;
   Double1 error_mean;
 
@@ -34,17 +44,10 @@ struct Simulation : public Model
 
   //vReal tau_max = 10.0;
 
-  int compute_spectral_discretisation ();
-
-  int compute_spectral_discretisation_image (
-      const double width                    );
-
-
-  // In sim_radiation.cpp
-
-  int compute_boundary_intensities ();
-
-  int compute_radiation_field ();
+  int compute_spectral_discretisation       (void);
+  int compute_spectral_discretisation_image (const double width);
+  int compute_boundary_intensities          (void);
+  int compute_radiation_field               (void);
 
   inline double get_dshift_max (
         const long o           ) const;
@@ -110,6 +113,11 @@ struct Simulation : public Model
   template <Frame frame>
   long get_max_npoints_on_rays ();
 
+
+  inline void get_radiation_field_from_boundary (
+      const long R,
+      const long r,
+      const long o                              );
 
 };
 

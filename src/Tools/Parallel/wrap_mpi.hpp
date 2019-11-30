@@ -22,8 +22,8 @@ using std::string;
 
   #define MPI_COMM_WORLD 1
 
-  inline int MPI_Comm_size (int dummy, int *comm_size) {*comm_size = 1;}
-  inline int MPI_Comm_rank (int dummy, int *comm_rank) {*comm_rank = 0;}
+  inline void MPI_Comm_size (int dummy, int *comm_size) {*comm_size = 1;}
+  inline void MPI_Comm_rank (int dummy, int *comm_rank) {*comm_rank = 0;}
 
 #endif
 
@@ -65,7 +65,7 @@ inline int MPI_comm_rank ()
 
 inline string str_MPI_comm_rank ()
 {
-  
+
   return std::to_string (MPI_comm_rank ());
 
 }

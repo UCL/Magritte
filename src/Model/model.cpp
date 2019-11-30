@@ -23,7 +23,8 @@ int Model ::
   logger.write ("-------------------------------------------");
   logger.write ("  Reading Model...                         ");
   logger.write ("-------------------------------------------");
-  logger.write ("                                           ");
+  logger.write (" model file = " + io.io_file                );
+  logger.write ("-------------------------------------------");
 
 
   geometry.read       (io, parameters);

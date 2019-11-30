@@ -227,8 +227,12 @@ inline void RayPair ::
 
   Su[first] = term1[first] + 2.0 * I_bdy_0 * inverse_dtau0;
 
+  // printf("term1 = %le    dtau = %le\n", term1[first], dtau[first]);
+
   for (long n = first+1; n < last; n++)
   {
+    // printf("term1 = %le    dtau = %le\n", term1[n], dtau[n]);
+
     inverse_A[n] = 0.5 * (dtau[n-1] + dtau[n]) * dtau[n-1];
             A[n] = 1.0 / inverse_A[n];
 
@@ -245,6 +249,7 @@ inline void RayPair ::
 
   Su[last] = term1[last] + 2.0 * I_bdy_n * inverse_dtaud;
 
+  // cout << I_bdy_0 << "   " << I_bdy_n << endl;
 
   // Add third order terms of the boundary condition
 
@@ -313,6 +318,7 @@ inline void RayPair ::
 
       Su[n_ar] = Su[n_ar] + Su[n_ar+1] * inverse_one_plus_F[n_ar];
 
+      // cout << "Su[n_ar] = " << Su[n_ar] << endl;
 
       // CALCULATE LAMBDA OPERATOR (DIAGONAL)
       // ____________________________________

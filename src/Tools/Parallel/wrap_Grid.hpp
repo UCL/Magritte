@@ -27,7 +27,7 @@ const Double1 inverse_index
 
   typedef Grid::vRealD vReal;
 
-  const int n_simd_lanes = vReal::Nsimd();
+  const long n_simd_lanes = vReal::Nsimd();
 
   typedef vector<vReal, Grid::alignedAllocator<vReal>> vReal1;
 
@@ -37,7 +37,7 @@ const Double1 inverse_index
 
   typedef double vReal;
 
-  const int n_simd_lanes = 1;
+  const long n_simd_lanes = 1;
 
   typedef vector<vReal> vReal1;
 

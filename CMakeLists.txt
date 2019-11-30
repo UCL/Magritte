@@ -14,15 +14,19 @@ set (MAGRITTE_VERSION_MINOR 0)
 # Set build type to Release to set all optimisation flags
 set (CMAKE_BUILD_TYPE Release)
 # set (CMAKE_BUILD_TYPE Relwithdebinfo)
+# set (CMAKE_BUILD_TYPE Debug)
+
+# set (CUDA_SEPARABLE_COMPILATION ON)
+set (CUDA_NVCC_FLAGS " -g -G")
 
 # Build options
-option (PYTHON_IO        "Handling all io through python (slow)"  OFF)
-option (PYTHON_BINDINGS  "Python front-end?"                      OFF)
-option (OMP_PARALLEL     "OpenMP parallelisation required?"       OFF)
-option (MPI_PARALLEL     "MPI parallelisation required?"          OFF)
-option (GRID_SIMD        "GRID SIMD vectorisation required?"      OFF)
-option (PERF_ANALYSIS    "Build for performance analysis"         OFF)
-option (CUDA_SOLVER      "Build using the CUDA GPU solver"        OFF)
+option (PYTHON_IO        "Handling all io through python (slow)" OFF)
+option (PYTHON_BINDINGS  "Python front-end?"                     OFF)
+option (OMP_PARALLEL     "OpenMP parallelisation required?"      OFF)
+option (MPI_PARALLEL     "MPI parallelisation required?"         OFF)
+option (GRID_SIMD        "GRID SIMD vectorisation required?"     OFF)
+option (PERF_ANALYSIS    "Build for performance analysis"        OFF)
+option (GPU_ACCELERATION "Build using the CUDA GPU solver"       OFF)
 
 # Set variable for use in the source code (defined in configure.hpp)
 if    (PYTHON_IO)
@@ -90,4 +94,4 @@ endif (PYTHON_BINDINGS OR PYTHON_IO)
 add_subdirectory (src)
 
 # Add directory containing Magritte's tests
-add_subdirectory (tests/unit)
+# add_subdirectory (tests/unit)
