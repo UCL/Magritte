@@ -2,27 +2,44 @@
 #include "Raypair/raypair.cuh"
 
 
+int Simulation :: handleCudaError (cudaError_t error)
+{
+  if (error != cudaSuccess)
+  {
+    logger.write ("CUDA ERROR : " + string (cudaGetErrorString (error)));
+  }
+
+  return (0);
+}
+
 
 int Simulation :: gpu_get_device_properties (void)
 {
   int nDevices;
-  cudaGetDeviceCount(&nDevices);
+  HANDLE_ERROR (cudaGetDeviceCount (&nDevices));
 
-  for (int i = 0; i < nDevices; i++)
+  logger.write_line (                                      );
+  logger.write      (" Properties of the available GPU's :");
+  logger.write_line (                                      );
+
+  for (long i = 0; i < nDevices; i++)
   {
     cudaDeviceProp prop;
-    cudaGetDeviceProperties(&prop, i);
+    HANDLE_ERROR (cudaGetDeviceProperties (&prop, i));
 
+    const string cr  = std::to_string(prop.memoryClockRate);
+    const string bw  = std::to_string(prop.memoryBusWidth);
+    const string cc  = std::to_string(prop.major)+"."+std::to_string(prop.minor);
     const double pmb = 2.0*prop.memoryClockRate*(prop.memoryBusWidth/8)/1.0e6;
 
-    printf("------------------------------------\n"                        );
-    printf("Device Number                : %d   \n", i                     );
-    printf("Device name                  : %s   \n", prop.name             );
-    printf("Compute compatibility        : %d.%d\n", prop.major, prop.minor);
-    printf("Memory Clock Rate (KHz)      : %d   \n", prop.memoryClockRate  );
-    printf("Memory Bus Width (bits)      : %d   \n", prop.memoryBusWidth   );
-    printf("Peak Memory Bandwidth (GB/s) : %f   \n", pmb                   );
-    printf("------------------------------------\n"                        );
+    logger.write_line (                                                     );
+    logger.write      ("Device Number                : ",  i                );
+    logger.write      ("Device name                  : " + string(prop.name));
+    logger.write      ("Compute compatibility        : " + cc               );
+    logger.write      ("Memory Clock Rate (KHz)      : " + cr               );
+    logger.write      ("Memory Bus Width (bits)      : " + bw               );
+    logger.write      ("Peak Memory Bandwidth (GB/s) : ",  pmb              );
+    logger.write_line (                                                     );
   }
 
   return (0);

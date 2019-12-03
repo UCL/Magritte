@@ -28,22 +28,20 @@ int main (int argc, char **argv)
   /// Error if no model file was providad as argument
   if (argc != 2)
   {
-    logger.write ("Please provide a model file as argument.");
-
-    return (-1);
+    logger.write ("Please provide a model file as argument."); return (-1);
   }
 
   /// Store model name
   const string modelName = argv[1];
 
-  logger.write("-------------------------------------------------");
-  logger.write("   Magritte   (GPU)                              ");
-  logger.write("-------------------------------------------------");
-  logger.write("Performance tests for setup and solver functions.");
-  logger.write("(Only for GPU and single node use, i.e. no MPI)  ");
-  logger.write("-------------------------------------------------");
-  logger.write("Running model: " + modelName                      );
-  logger.write("-------------------------------------------------");
+  logger.write_line (                                                   );
+  logger.write      ("   Magritte   (GPU)"                              );
+  logger.write_line (                                                   );
+  logger.write      ("Performance tests for setup and solver functions.");
+  logger.write      ("( Only for GPU and single node use, i.e. no MPI )");
+  logger.write_line (                                                   );
+  logger.write      ("Running model: " + modelName                      );
+  logger.write_line (                                                   );
 
   /// Create timer instances
   Timer timer1 ("copyT");
@@ -57,6 +55,10 @@ int main (int argc, char **argv)
 
   Simulation simulation;
 
+  /// Write gpu properties
+  simulation.gpu_get_device_properties();
+
+  /// Set parameters
   simulation.parameters.set_pop_prec       (1.0E-6);
   simulation.parameters.set_use_scattering (false);
 
@@ -72,22 +74,21 @@ int main (int argc, char **argv)
   }
 
   /// Create a gpuRayPair object
+  cout << "Creating raypair..." << endl;
   gpuRayPair *raypair = new gpuRayPair (simulation.geometry.max_npoints_on_rays,
                                         simulation.parameters.ncells(),
                                         simulation.parameters.nfreqs(),
                                         simulation.parameters.nlines()          );
 
-  /// Set model data
+  /// Copy model data
+  cout << "Copying model data..." << endl;
   timer1.start();
   raypair->copy_model_data (simulation);
   timer1.stop();
   // timer1.print();
 
-// return(0);
-
-
-  // for (long r = 0; r < simulation.parameters.nrays()/2; r++)
-  {long r = 0;
+  for (long r = 0; r < simulation.parameters.nrays()/2; r++)
+  {
     const long R = r - MPI_start (simulation.parameters.nrays()/2);
 
     logger.write ("ray = ", r);
@@ -151,9 +152,6 @@ int main (int argc, char **argv)
   timer3.print_total();
   timer4.print_total();
   timer5.print_total();
-
-  /// Write gpu properties
-  simulation.gpu_get_device_properties();
 
   /// Write exit message
   logger.write ("--- Magritte example 2 GPU benchmark is done.");

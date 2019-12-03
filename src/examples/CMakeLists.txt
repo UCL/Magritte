@@ -49,42 +49,41 @@ include_directories (../../dependencies)
 
 # Create executable for examples
 
+add_executable        (example_1_cpu.exe example_1.cpp    )
+target_link_libraries (example_1_cpu.exe Magritte         )
+
+add_executable        (example_2_cpu.exe example_2_cpu.cpp)
+target_link_libraries (example_2_cpu.exe Magritte         )
+
+add_executable        (example_3_cpu.exe example_3.cpp    )
+target_link_libraries (example_3_cpu.exe Magritte         )
+
+add_executable        (example_4_cpu.exe example_4.cpp    )
+target_link_libraries (example_4_cpu.exe Magritte         )
+
+add_executable        (example_5_cpu.exe example_5.cpp    )
+target_link_libraries (example_5_cpu.exe Magritte         )
+
+
 if    (GPU_ACCELERATION)
 
   find_package (CUDA REQUIRED)
 
-  cuda_add_executable   (example_1_gpu.exe   example_1.cpp)
-  target_link_libraries (example_1_gpu.exe   Magritte     )
+  cuda_add_executable   (example_1_gpu.exe example_1.cpp    )
+  target_link_libraries (example_1_gpu.exe Magritte         )
 
-  cuda_add_executable   (example_2_gpu.exe   example_2_gpu.cpp)
-  target_link_libraries (example_2_gpu.exe   Magritte         )
+  cuda_add_executable   (example_2_gpu.exe example_2_gpu.cpp)
+  target_link_libraries (example_2_gpu.exe Magritte         )
 
-  cuda_add_executable   (example_3_gpu.exe example_3.cpp)
-  target_link_libraries (example_3_gpu.exe Magritte     )
+  cuda_add_executable   (example_3_gpu.exe example_3.cpp    )
+  target_link_libraries (example_3_gpu.exe Magritte         )
 
-  cuda_add_executable   (example_4_gpu.exe example_4.cpp)
-  target_link_libraries (example_4_gpu.exe Magritte     )
+  cuda_add_executable   (example_4_gpu.exe example_4.cpp    )
+  target_link_libraries (example_4_gpu.exe Magritte         )
 
-  cuda_add_executable   (example_5_gpu.exe example_5.cpp)
-  target_link_libraries (example_5_gpu.exe Magritte     )
+  cuda_add_executable   (example_5_gpu.exe example_5.cpp    )
+  target_link_libraries (example_5_gpu.exe Magritte         )
 
-else  (GPU_ACCELERATION)
-
-  add_executable        (example_1_cpu.exe   example_1.cpp)
-  target_link_libraries (example_1_cpu.exe   Magritte     )
-
-  add_executable        (example_2_cpu.exe   example_2_cpu.cpp)
-  target_link_libraries (example_2_cpu.exe   Magritte         )
-
-  add_executable        (example_3_cpu.exe example_3.cpp)
-  target_link_libraries (example_3_cpu.exe Magritte     )
-
-  add_executable        (example_4_cpu.exe example_4.cpp)
-  target_link_libraries (example_4_cpu.exe Magritte     )
-
-  add_executable        (example_5_cpu.exe example_5.cpp)
-  target_link_libraries (example_5_cpu.exe Magritte     )
-  
 endif (GPU_ACCELERATION)
 
 

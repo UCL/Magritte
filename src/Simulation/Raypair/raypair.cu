@@ -302,18 +302,13 @@ void feautrierKernel (gpuRayPair &raypair)
 __host__
 void gpuRayPair :: solve (void)
 {
-  const long blockSize = 1;
+  const long blockSize = 32;
   const long numBlocks = (nfreqs + blockSize-1) / blockSize;
 
   feautrierKernel <<<numBlocks, blockSize>>> (*this);
 
   // Wait for GPU to finish and get possible error
-  cudaError_t err = cudaDeviceSynchronize();
-
-  if (err != cudaSuccess)
-  {
-    cout << "CUDA ERROR : " << cudaGetErrorString (err) << endl;
-  }
+  HANDLE_ERROR(cudaDeviceSynchronize());
 
   return;
 }
@@ -391,7 +386,7 @@ void gpuRayPair :: get_eta_and_chi (const long d, const long f)
     const double profile = freqs_scaled[idf] * gaussian (width[lnl], diff);
 
     eta[idf] = fma (profile, line_emissivity[lnl], eta[idf]);
-    chi[idf] = fma (profile, line_opacity   [lnl], eta[idf]);
+    chi[idf] = fma (profile, line_opacity   [lnl], chi[idf]);
 
 //    printf("lnl     = %d\n",  lnl);
 //    printf("width   = %le\n",  width[lnl]);
@@ -443,12 +438,14 @@ void gpuRayPair :: solve_Feautrier (
 
 
   /// Determine emissivities, opacities and optical depth increments
-
+  TIMER_TIC (t1)
   for (long n = first; n <= last; n++)
   {
     get_eta_and_chi (n, f);
   }
+  TIMER_TOC (t1, "get_eta_and_chi")
 
+  TIMER_TIC (t2)
   for (long n = first; n <= last; n++)
   {
     term1[I(n,f)] = eta[I(n,f)] / chi[I(n,f)];
@@ -460,8 +457,10 @@ void gpuRayPair :: solve_Feautrier (
     dtau[I(n,f)] = 0.5 * (chi[I(n,f)] + chi[I(n+1,f)]) * dZs[n];
     // printf("term1 = %le    dtau = %le\n", term1[I(n,f)], dtau[I(n,f)]);
   }
+  TIMER_TOC (t2, "set_term_&_dtau")
 
 
+  TIMER_TIC (t3)
   /// Set boundary conditions
 
   const double inverse_dtau0 = 1.0 / dtau[I(first, f)];
@@ -500,6 +499,7 @@ void gpuRayPair :: solve_Feautrier (
 
     Su[I(n,f)] = term1[I(n,f)];
   }
+  TIMER_TOC (t3, "set_up         ")
 
 
   /// SOLVE FEAUTRIER RECURSION RELATION
@@ -509,6 +509,7 @@ void gpuRayPair :: solve_Feautrier (
   /// ELIMINATION STEP
   ////////////////////
 
+  TIMER_TIC (t4)
 
   Su[I(first,f)] = Su[I(first,f)] * inverse_B0;
 
@@ -557,6 +558,19 @@ void gpuRayPair :: solve_Feautrier (
   {
     L_diag[I(last,f)] = (1.0 + F[I(last-1,f)]) / fma (Bd, F[I(last-1,f)], Bd_min_Ad);
   }
+
+  TIMER_TOC (t4, "solve          ")
+  PRINTLINE;
+
+
+//  if (isnan(Su[I(n_ar,f)]))
+//  {
+//    for (long n = first; n <  last; n++)
+//    {
+//      printf("term1 = %le,  dtau = %le,  eta = %le,  chi = %le\n", term1[I(n,f)], dtau[I(n,f)], eta[I(n,f)], chi[I(n,f)]);
+//    }
+//  }
+
 
 
   return;

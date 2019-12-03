@@ -31,6 +31,7 @@ struct Simulation : public Model
 {
 
 # if (GPU_ACCELERATION)
+    int handleCudaError (cudaError_t error);
     int gpu_get_device_properties   (void);
     int gpu_compute_radiation_field (void);
 # endif

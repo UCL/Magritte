@@ -15,9 +15,7 @@ set (MAGRITTE_VERSION_MINOR 0)
 set (CMAKE_BUILD_TYPE Release)
 # set (CMAKE_BUILD_TYPE Relwithdebinfo)
 # set (CMAKE_BUILD_TYPE Debug)
-
-# set (CUDA_SEPARABLE_COMPILATION ON)
-set (CUDA_NVCC_FLAGS " -g -G")
+# set (CUDA_NVCC_FLAGS " -g -G")
 
 # Build options
 option (PYTHON_IO        "Handling all io through python (slow)" OFF)

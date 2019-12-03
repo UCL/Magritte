@@ -29,9 +29,6 @@ struct Logger
     file_name = "magritte_" + std::to_string (MPI_comm_rank()) + ".log";
 
     std::ofstream file (file_name);
-
-    file << "--- Log file for Magritte ---" << endl;
-    file << "_____________________________" << endl;
   }
 
   Logger (const string file_name_local)
@@ -39,9 +36,6 @@ struct Logger
     file_name = file_name_local + ".log";
 
     std::ofstream file (file_name);
-
-    file << "--- Log file for Magritte ---" << endl;
-    file << "_____________________________" << endl;
   }
 
 
@@ -84,6 +78,10 @@ struct Logger
     write (text1 + std::to_string (number) + text2);
   }
 
+  void write_line (void)
+  {
+    write ("-------------------------------------------------");
+  }
 
 };
 

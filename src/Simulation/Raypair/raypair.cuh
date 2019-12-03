@@ -8,7 +8,7 @@
 #define __RAYPAIR_CUH_INCLUDED__
 
 #include "Model/model.hpp"
-#include "managed.cuh"
+#include "myCudaTools.cuh"
 
 #ifdef __CUDACC__
 # define CUDA_HOST_DEVICE __host__ __device__
