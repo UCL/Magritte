@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# Activat magritte (Ana)conda environment
+# conda activate magritte
 
 # Get directory this script is in
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"

@@ -19,8 +19,7 @@ struct IoText : public Io
 {
 
   // Constructor
-  IoText (
-      const string io_file);
+  IoText (const string io_file);
 
 
   int  read_length   (const string fname,       long    &length) const;

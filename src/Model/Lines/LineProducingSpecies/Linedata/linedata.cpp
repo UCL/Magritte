@@ -132,8 +132,11 @@ int Linedata ::
   io.write_list (prefix_l+"Ba", Ba);
 
 
+  cout << "ncolpoar = " << ncolpar << endl;
+
   for (int c = 0; c < ncolpar; c++)
   {
+    cout << "--- colpoar = " << c << endl;
     colpar[c].write (io, l, c);
   }
 

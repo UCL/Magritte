@@ -52,11 +52,15 @@ inline RayData Geometry ::
     while (!boundary.boundary[nxt])   // while we have not hit the boundary
     {
       shift_crt = shift_nxt;
+
+      const long nxtnxt = nxt;
+
       nxt       = get_next (origin, ray, nxt, Z, dZ);
 
       if (nxt < 0)
       {
         cout << "--- ERROR ------------------------------------------" << endl;
+        cout << "nxt = " << nxtnxt << endl;
         cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
         cout << "                                                    " << endl;
         cout << "----------------------------------------------------" << endl;

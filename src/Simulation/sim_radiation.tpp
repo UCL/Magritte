@@ -250,10 +250,10 @@ int Simulation ::
   } // end of loop over ray pairs
 
 
+
   // Gather and reduce results of all MPI processes to get Lambda and J
 
 # if (MPI_PARALLEL)
-
 
     logger.write ("Gathering Lambda operators...");
 
@@ -266,7 +266,6 @@ int Simulation ::
     logger.write ("Reducing the mean intensities (J's)...");
 
     radiation.MPI_reduce_J ();
-
 
 # endif
 

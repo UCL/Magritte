@@ -30,6 +30,8 @@ int Cells ::
 
   parameters.set_ncells (ncells);
 
+  cout << "ncells = " << ncells << endl;
+
 
   // Read cell centers and velocities
   x.resize (ncells);

@@ -29,7 +29,6 @@ int Frequencies ::
 
   cout << "Reading frequencies" << endl;
 
-
   ncells = parameters.ncells ();
   nlines = parameters.nlines ();
   nquads = parameters.nquads ();

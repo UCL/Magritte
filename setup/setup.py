@@ -444,7 +444,7 @@ def linedata_from_LAMDA_file (fileName, species):
 
 from os import mkdir
 
-def make_file_structure (modelName):
+def make_file_structure (model, modelName):
     '''
     Make file structure for a text based model.
     '''
@@ -459,10 +459,12 @@ def make_file_structure (modelName):
     mkdir(f'{modelName}/Chemistry')
     mkdir(f'{modelName}/Chemistry/Species')
     mkdir(f'{modelName}/Lines')
-    mkdir(f'{modelName}/Lines/LineProducingSpecies_0')
-    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata')
-    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Linedata/CollisionPartner_0')
-    mkdir(f'{modelName}/Lines/LineProducingSpecies_0/Quadrature')
+    for l in range(model.parameters.nlspecs()):
+        mkdir(f'{modelName}/Lines/LineProducingSpecies_{l}')
+        mkdir(f'{modelName}/Lines/LineProducingSpecies_{l}/Linedata')
+        for c in range(model.lines.lineProducingSpecies[l].linedata.ncolpar):
+            mkdir(f'{modelName}/Lines/LineProducingSpecies_{l}/Linedata/CollisionPartner_{c}')
+        mkdir(f'{modelName}/Lines/LineProducingSpecies_{l}/Quadrature')
     mkdir(f'{modelName}/Radiation')
     mkdir(f'{modelName}/Radiation/Frequencies')
     mkdir(f'{modelName}/Simulation')

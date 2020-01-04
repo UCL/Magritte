@@ -21,8 +21,7 @@ struct Io
 
 
   // Constructor
-  Io (
-      const string io_file);
+  Io (const string io_file);
 
 
   virtual int  read_length   (const string fname,       long    &length) const = 0;

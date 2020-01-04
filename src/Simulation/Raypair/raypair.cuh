@@ -90,6 +90,12 @@ class gpuRayPair : public Managed
       double *line_opacity;
       double *width;
 
+      double3 *position;
+      double3 *velocity;
+
+      long    *neighbors;
+      long    *n_neighbors;
+
       double *freqs;
       double *freqs_scaled;
       long   *freqs_lower;
@@ -144,6 +150,21 @@ class gpuRayPair : public Managed
       CUDA_DEVICE double frequency_interpolate (
           const double *Vs,
           const long    f                      );
+
+
+      CUDA_DEVICE void trace_ray (void);
+
+      CUDA_DEVICE double get_doppler_shift (
+          const long     origin,
+          const long     current,
+          const double3 &ray               ) const;
+
+      CUDA_DEVICE long get_next (
+          const long     origin,
+          const long     current,
+          const double3 &ray,
+                double  &Z,
+                double  &dZ      ) const;
 
   //    inline double get_L_diag (
   //        const Thermodynamics &thermodynamics,

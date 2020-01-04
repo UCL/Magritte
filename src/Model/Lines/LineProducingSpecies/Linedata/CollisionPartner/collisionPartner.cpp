@@ -26,7 +26,6 @@ int CollisionPartner ::
 
   cout << "Reading collisionPartner" << endl;
 
-
   const string prefix_lc = prefix + std::to_string (l) + "/Linedata"
                            + "/CollisionPartner_" + std::to_string (c) + "/";
 
@@ -81,6 +80,9 @@ int CollisionPartner ::
 {
 
   cout << "Writing collisionPartner" << endl;
+  
+  cout << "(l, c) = " << l << ", " << c << endl;
+
 
 
   const string prefix_lc = prefix + std::to_string (l) + "/Linedata"

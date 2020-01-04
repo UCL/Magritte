@@ -17,5 +17,4 @@ Io ::
   : io_file (io_file)
 {
 
-
 }   // END OF CONSTRUCTOR

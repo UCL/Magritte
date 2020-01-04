@@ -121,10 +121,10 @@ def write_array (io_file, file_name, data):
     Write the contents to the data array.
     """
     with hp.File (io_file) as file:
-        #print (io_file, file_name)
+        # print (io_file, file_name)
         # Delete if dataset already exists
         try:
-            #print("deleting ", file_name)
+            # print("deleting ", file_name)
             del file[file_name]
         except:
             pass
@@ -134,7 +134,7 @@ def write_array (io_file, file_name, data):
         for g in file_name.split('/')[:-1]:
             group += f'/{g}'
             file.require_group (group)
-            #print("required ", group)
+            # print("required ", group)
         # Write dataset
         try:
             file.create_dataset (name=file_name, data=data)

@@ -22,7 +22,6 @@ IoText ::
   : Io (io_file)
 {
 
-
 }   // END OF CONSTRUCTOR
 
 
@@ -51,13 +50,11 @@ bool pathExist (
 int IoText ::
     read_length (
         const string file_name,
-              long  &length) const
+              long  &length    ) const
 {
-
   string fname = io_file + file_name;
 
   length = 0;
-
 
   if (pathExist (fname + ".txt"))
   {
@@ -81,9 +78,7 @@ int IoText ::
     }
   }
 
-
   return (0);
-
 }
 
 
@@ -100,11 +95,9 @@ int IoText ::
         const string file_name,
               long  &width     ) const
 {
-
   string fname = io_file + file_name;
 
   width = 0;
-
 
   if (pathExist (fname + ".txt"))
   {
@@ -136,9 +129,7 @@ int IoText ::
     }
   }
 
-
   return (0);
-
 }
 
 
@@ -154,16 +145,13 @@ int IoText ::
         const string file_name,
               long  &number    ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   file >> number;
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -179,7 +167,6 @@ int IoText ::
         const string file_name,
         const long  &number    ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -188,9 +175,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -206,16 +191,13 @@ int IoText ::
         const string  file_name,
               double &number    ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   file >> number;
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -231,7 +213,6 @@ int IoText ::
         const string  file_name,
         const double &number    ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -240,9 +221,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -258,16 +237,13 @@ int IoText ::
         const string  file_name,
               string &word      ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   file >> word;
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -283,16 +259,13 @@ int IoText ::
         const string  file_name,
         const string &word      ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << word;
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -308,18 +281,14 @@ int IoText ::
         const string file_name,
               bool  &value     ) const
 {
-
   // Treat booleans as text in io
-
   string word;
 
   read_word (file_name, word);
 
   value = word.compare("true");
 
-
   return (0);
-
 }
 
 
@@ -335,18 +304,14 @@ int IoText ::
         const string file_name,
         const bool  &value     ) const
 {
-
   // Treat booleans as text in io
-
   string word = "false";
 
   if (value) {word = "true";}
 
   write_word (file_name, word);
 
-
   return (0);
-
 }
 
 
@@ -362,7 +327,6 @@ int IoText ::
         const string file_name,
               Long1 &list      ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   long n = 0;
@@ -374,9 +338,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -392,7 +354,6 @@ int IoText ::
         const string file_name,
         const Long1 &list      ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -404,9 +365,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -422,7 +381,6 @@ int IoText ::
         const string   file_name,
               Double1 &list      ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
@@ -434,9 +392,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -452,7 +408,6 @@ int IoText ::
         const string   file_name,
         const Double1 &list      ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -464,9 +419,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -482,7 +435,6 @@ int IoText ::
         const string   file_name,
               String1 &list      ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
@@ -494,9 +446,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -512,7 +462,6 @@ int IoText ::
         const string   file_name,
         const String1 &list      ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -524,9 +473,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -542,11 +489,9 @@ int IoText ::
         const string   file_name,
               Long2   &array     ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   string line;
-
 
   for (long n1 = 0; n1 < array.size(); n1++)
   {
@@ -562,9 +507,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -580,7 +523,6 @@ int IoText ::
         const string   file_name,
         const Long2   &array     ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -597,9 +539,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -615,7 +555,6 @@ int IoText ::
         const string   file_name,
               Double2 &array     ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   string line;
@@ -634,9 +573,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -652,7 +589,6 @@ int IoText ::
         const string   file_name,
         const Double2 &array     ) const
 {
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
@@ -669,9 +605,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -691,7 +625,6 @@ int IoText ::
               Double1 &y,
               Double1 &z         ) const
 {
-
   std::ifstream file (io_file + file_name + ".txt");
 
   long   n = 0;
@@ -703,9 +636,7 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
 
 
@@ -725,23 +656,18 @@ int IoText ::
         const Double1 &y,
         const Double1 &z         ) const
 {
-
   const long length = x.size();
 
-
   // Check if all 3 vectors are the same size
-
   if (   (length != y.size())
       || (length != z.size()) )
   {
     return (-1);
   }
 
-
   std::ofstream file (io_file + file_name + ".txt");
 
   file << std::scientific << std::setprecision (16);
-
 
   for (long n = 0; n < length; n++)
   {
@@ -750,7 +676,5 @@ int IoText ::
 
   file.close();
 
-
   return (0);
-
 }
