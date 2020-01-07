@@ -53,17 +53,27 @@ int Cells ::
   io.read_list (prefix+"n_neighbors", n_neighbors);
 
 
-  // Resize the neighbors to appropriate sizes
+  const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
+                                                  n_neighbors.end  () );
+
+
+  // Resize the neighbors to rectangular size
   neighbors.resize (ncells);
 
   for (long p = 0; p < ncells; p++)
   {
-    neighbors[p].resize (n_neighbors[p]);
+    neighbors[p].resize (max_n_neighbors);
   }
-
 
   // Read nearest neighbors lists
   io.read_array (prefix+"neighbors", neighbors);
+
+
+  // Resize the neighbors to appropriate sizes
+  for (long p = 0; p < ncells; p++)
+  {
+    neighbors[p].resize (n_neighbors[p]);
+  }
 
 
   return (0);
