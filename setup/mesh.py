@@ -21,6 +21,7 @@ class Mesh:
         # Remove non-connected points
         non_point = self.get_non_point()
         while not (non_point is None):
+            print(non_point)
             self.del_non_point(non_point)
             non_point = self.get_non_point()
 
@@ -32,7 +33,7 @@ class Mesh:
         return np.array(list(edges))
 
     def get_non_point(self):
-        for p,nl in enumerate(self.neighbors):
+        for (p,nl) in enumerate(self.neighbors):
             if (len(nl) == 0):
                 return p
 
