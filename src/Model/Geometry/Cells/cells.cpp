@@ -106,6 +106,21 @@ int Cells ::
 
   io.write_list  (prefix+"n_neighbors", n_neighbors);
 
+
+  //// Resize the neighbors to rectangular size
+  //const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
+  //                                                n_neighbors.end  () );
+
+  //Long2 neighbors_buffer (ncells, Long1(max_n_neighbors));
+
+  //for (long p = 0; p < ncells; p++)
+  //{
+  //  for (long n = 0; n < n_neighbors[p]; n++)
+  //  {
+  //    neighbors_buffer[p][n] = neighbors[p][n];
+  //  }
+  //}
+
   io.write_array (prefix+"neighbors", neighbors);
 
 

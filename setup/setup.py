@@ -92,37 +92,64 @@ def model_name ():
 
 
 class Setup ():
-    """
-    Setup class for Magritte.
-    """
+
+    '''
+    Setup class for Magritte models.
+    '''
+
     def __init__ (self, dimension):
-        """
-        Constructor setting dimension.
-        """
+        '''
+        Constructor for setup.
+        '''
+        # Set (geometrical) dimension of the model
         self.dimension = dimension
         # Check validity of dimension
-        if not self.dimension in [1, 2, 3]:
-            raise ValueError ('Dimension should be 1, 2, or 3.')
+        if not self.dimension in [1, 3]:
+            raise ValueError ('Dimension should be 1 or 3 (for now).')
 
-    def rays_old (self, nrays):
-        """
-        Setup input for the Rays class.
-        """
-        # Check if nrays is a strictly positive integer
-        if not (nrays > 0):
-            raise ValueError ('nrays should be strictly positive.')
-        if not isinstance (nrays, int):
-            raise ValueError ('nrays should be an integer.')
-        # Create rays object
-        rays = Rays ()
-        # Define ray directions
-        (Rx, Ry, Rz) = rayVectors (dimension=self.dimension, nrays=nrays)
-        # Assign ray vectors
-        rays.x = Double1 (Rx)
-        rays.y = Double1 (Ry)
-        rays.z = Double1 (Rz)
-        # Done
-        return rays
+
+#    def rays_new (self, nrays, cells):
+#        """
+#        Setup input for the Rays class.
+#        """
+#        # Check if nrays is a strictly positive integer
+#        if not (nrays > 0):
+#            raise ValueError('nrays should be strictly positive.')
+#        if not isinstance (nrays, int):
+#            raise ValueError('nrays should be an integer.')
+#        # Set length
+#        ncells = len (cells.x)
+#        # Check lengths
+#        assert(ncells == len(cells.y))
+#        assert(ncells == len(cells.z))
+#        
+#        points = np.array([cells.x, cells.y, cells.z]).transpose()
+#        for point in points:
+#            rs = points - point
+#            # Compute the norms
+#            norms = np.linalg.norm(rs, axis=-1)
+#            # Normalize the vectors
+#            rs *= np.outer(1.0/norms, np.ones(3))
+#        
+#
+#        
+#        # Create rays object
+#        rays = Rays()
+#        # Create basis rays
+#        (bx, by, bz) = rayVectors (dimension=self.dimension, nrays=nbrays)
+#        # Define ray directions
+#        for i in range(ncells):
+#            rays.x.append(Double1([])))
+#            rays.y.append(Double1([])))
+#            rays.z.append(Double1([])))
+#        
+#        (Rx, Ry, Rz) = rayVectors (dimension=self.dimension, nrays=nrays)
+#        # Assign ray vectors
+#        rays.x = Double1(Rx)
+#        rays.y = Double1(Ry)
+#        rays.z = Double1(Rz)
+#        # Done
+#        return rays
 
     def rays (self, nrays, cells):
         """

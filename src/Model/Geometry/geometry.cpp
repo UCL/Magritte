@@ -18,46 +18,33 @@ int Geometry ::
         const Io         &io,
               Parameters &parameters)
 {
-
   cout << "Reading geometry" << endl;
 
-
-  cells.read    (io, parameters);
-
-  rays.read     (io, parameters);
-
+  cells   .read (io, parameters);
+  rays    .read (io, parameters);
   boundary.read (io, parameters);
-
 
   nrays = parameters.nrays();
 
-
   return (0);
-
 }
 
 
 
 
-///  write: write the dat astructure
-///  @param[in] io: io object
+///  write: write the dat a structure
+///    @param[in] io: io object
 ////////////////////////////////////////////////
 
 int Geometry ::
     write (
         const Io &io) const
 {
-
   cout << "Writing geometry" << endl;
 
-
-  cells.write    (io);
-
-  rays.write     (io);
-
+  cells.   write (io);
+  rays.    write (io);
   boundary.write (io);
 
-
   return (0);
-
 }

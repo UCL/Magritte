@@ -18,6 +18,13 @@
 struct RayPair
 {
 
+    Double1 dtaus;
+    Double1 dZs;
+    Double1 chis;
+    Long2   pre;
+    Long2   pos;
+
+
   public:
 
       long n_ar;       ///< number of points on the antipodal ray side

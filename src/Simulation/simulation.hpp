@@ -29,6 +29,11 @@ enum SpecDiscSetting {None, LineSet, ImageSet};
 
 struct Simulation : public Model
 {
+    Double2 dtaus;
+    Double2 dZs;
+    Double2 chis;
+    Long2   pre;
+    Long2   pos;
 
 # if (GPU_ACCELERATION)
     int handleCudaError (cudaError_t error);
@@ -67,7 +72,7 @@ struct Simulation : public Model
       const long     f,
             RayData &rayData_ar,
             RayData &rayData_r,
-            RayPair &rayPair    ) const;
+            RayPair &rayPair    ); // to append the dtaus etc const;
 
   inline void get_eta_and_chi (
       const vReal &freq_scaled,

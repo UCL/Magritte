@@ -189,7 +189,7 @@ inline void Simulation ::
         const long     f,
               RayData &rayData_ar,
               RayData &rayData_r,
-              RayPair &rayPair    ) const
+              RayPair &rayPair    ) // to append the dtaus etc const
 {
 
   vReal eta;
@@ -241,6 +241,15 @@ inline void Simulation ::
       //cout << "Got eta and chi     " << data.lnotch << endl;
       rayPair.set_term1_and_term2 (eta, chi,               index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index);
+
+
+      //dtaus[origin].push_back(rayPair.dtau[index]);
+      //dZs  [origin].push_back(data.dZ            );
+      //chis [origin].push_back(chi+chi_prev       );
+      //pre  [origin].push_back(data.crt           );
+      //pos  [origin].push_back(data.cellNr        );
+
+
       //cout << "Set terms and dtau " << endl;
 
       //tau_ar += rayPair.dtau[index];
@@ -296,6 +305,14 @@ inline void Simulation ::
 
       rayPair.set_term1_and_term2 (eta, chi,               index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index-1);
+
+
+      //dtaus[origin].push_back(rayPair.dtau[index]);
+      //dZs  [origin].push_back(data.dZ            );
+      //chis [origin].push_back(chi+chi_prev       );
+      //pre  [origin].push_back(data.crt           );
+      //pos  [origin].push_back(data.cellNr        );
+
 
       //tau_r += rayPair.dtau[index-1];
 

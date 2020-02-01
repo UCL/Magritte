@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Magritte"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\examples\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Magritte">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/cpuMagritte.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 Magritte"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Magritte/fast">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/cpuMagritte.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 Magritte/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_4_cpu.exe">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_4_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_4_cpu.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_4_cpu.exe/fast">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_4_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_4_cpu.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_5_cpu.exe">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_5_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_5_cpu.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_5_cpu.exe/fast">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_5_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_5_cpu.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_2_cpu.exe">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_2_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_2_cpu.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_2_cpu.exe/fast">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_2_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_2_cpu.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_1_cpu.exe">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_1_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_1_cpu.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_1_cpu.exe/fast">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_1_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_1_cpu.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_3_cpu.exe">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_3_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_3_cpu.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="example_3_cpu.exe/fast">
+				<Option output="/home/frederik/Dropbox/Astro/Magritte/bin/examples/example_3_cpu.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/frederik/Dropbox/Astro/Magritte/bin/examples"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/../dependencies"/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/.."/>
+					<Add directory="/home/frederik/Dropbox/Astro/Magritte/src/examples/../../dependencies"/>
+					<Add directory="/usr/include/c++/6"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/6"/>
+					<Add directory="/usr/include/c++/6/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 example_3_cpu.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/frederik/Dropbox/Astro/Magritte/cmake-build-debug/src/examples/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Functions/heapsort.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Functions/heapsort.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/cpp/io_cpp_text.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/cpp/io_cpp_text.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/io.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/io.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Chemistry/Species/species.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Chemistry/Species/species.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Chemistry/chemistry.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Chemistry/chemistry.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/Boundary/boundary.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/Boundary/boundary.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/Cells/cells.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/Cells/cells.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/Rays/rays.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/Rays/rays.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/geometry.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Geometry/geometry.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/Linedata/linedata.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/Linedata/linedata.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/Quadrature/quadrature.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/Quadrature/quadrature.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/LineProducingSpecies/lineProducingSpecies.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/lines.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Lines/lines.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Radiation/Frequencies/frequencies.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Radiation/Frequencies/frequencies.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Radiation/radiation.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Radiation/radiation.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Thermodynamics/Temperature/temperature.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Thermodynamics/Temperature/temperature.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Thermodynamics/Turbulence/turbulence.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Thermodynamics/Turbulence/turbulence.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Thermodynamics/thermodynamics.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Thermodynamics/thermodynamics.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/model.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/model.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/parameters.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/parameters.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Image/image.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Image/image.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Raypair/raypair.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Raypair/raypair.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/simulation.cpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/simulation.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/examples/example_1.cpp">
+			<Option target="example_1_cpu.exe"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/examples/example_2_cpu.cpp">
+			<Option target="example_2_cpu.exe"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/examples/example_3.cpp">
+			<Option target="example_3_cpu.exe"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/examples/example_4.cpp">
+			<Option target="example_4_cpu.exe"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/examples/example_5.cpp">
+			<Option target="example_5_cpu.exe"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/configure.hpp.in">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/examples/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\examples\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

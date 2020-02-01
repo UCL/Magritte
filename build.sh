@@ -48,8 +48,8 @@ elif [ "$1" == "performance_audit" ]; then
 
   SCOREP_WRAPPER=off                                \
   cmake                                             \
-    -DPERF_ANALYSIS=ON                              \
     -DCMAKE_C_COMPILER=$SCOREP_FOLDER/scorep-gcc    \
+    -DPERF_ANALYSIS=ON                              \
     -DCMAKE_CXX_COMPILER=$SCOREP_FOLDER/scorep-g++  \
     -DOMP_PARALLEL=OFF                              \
     -DMPI_PARALLEL=OFF                              \
