@@ -179,4 +179,24 @@ struct RayPair
 #include "raypair_lambda.tpp"
 
 
+
+class rayPair
+{
+
+  public:
+
+    const std::size_t ncells;
+    const std::size_t nfreqs;
+
+    rayPair(const std::size_t ncs, const std::size_t nfs);
+    ~rayPair();
+
+    virtual void setup() = 0;
+    virtual void solve() = 0;
+    virtual void store() = 0;
+
+
+
+};
+
 #endif // __RAYPAIR_HPP_INCLUDED__

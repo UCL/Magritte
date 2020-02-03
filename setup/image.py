@@ -79,4 +79,4 @@ class Image():
         # plt.xlabel('x [m]')
         # plt.ylabel('y [m]')
         # plt.tight_layout()
-        # plt.savefig(f'image_f-{f}_r-{self.r}.png')
+        # plt.savefig(f'image_f-{f:05}_r-{self.r:05}.png')
