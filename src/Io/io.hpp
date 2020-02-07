@@ -16,13 +16,10 @@
 
 struct Io
 {
-
   const string io_file;
 
-
   // Constructor
-  explicit Io (const string io_file);
-
+  Io (const string &io_file): io_file (io_file) {};
 
   virtual int  read_length   (const string fname,       long    &length) const = 0;
 
@@ -30,6 +27,9 @@ struct Io
 
   virtual int  read_number   (const string fname,       long    &number) const = 0;
   virtual int write_number   (const string fname, const long    &number) const = 0;
+
+  virtual int  read_number   (const string fname,       size_t  &number) const = 0;
+  virtual int write_number   (const string fname, const size_t  &number) const = 0;
 
   virtual int  read_number   (const string fname,       double  &number) const = 0;
   virtual int write_number   (const string fname, const double  &number) const = 0;

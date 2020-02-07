@@ -19,86 +19,72 @@ const string Lines::prefix = "Lines/";
 ///    @param[in] parameters : model parameters object
 //////////////////////////////////////////////////////
 
-int Lines ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Lines :: read (const Io &io, Parameters &parameters)
 {
+    cout << "Reading lines..." << endl;
 
-  cout << "Reading lines" << endl;
+    /// Read and set nlspecs
+    io.read_length (prefix+"LineProducingSpecies_", nlspecs);
+    parameters.set_nlspecs (nlspecs);
 
+    /// Read line producing species data
+    lineProducingSpecies.resize (nlspecs);
 
-  // Data
-
-  io.read_length (prefix+"LineProducingSpecies_", nlspecs);
-
-
-  parameters.set_nlspecs (nlspecs);
-
-
-  lineProducingSpecies.resize (nlspecs);
-
-  for (int l = 0; l < nlspecs; l++)
-  {
-    lineProducingSpecies[l].read (io, l, parameters);
-  }
-
-
-  nrad_cum.resize (nlspecs, 0);
-
-  for (int l = 1; l < nlspecs; l++)
-  {
-    nrad_cum[l] = nrad_cum[l-1] + lineProducingSpecies[l-1].linedata.nrad;
-  }
-
-
-
-
-  // Lines
-
-  nlines = 0;
-
-  for (int l = 0; l < nlspecs; l++)
-  {
-    nlines += lineProducingSpecies[l].linedata.nrad;
-  }
-
-
-  parameters.set_nlines (nlines);
-
-
-  line      .resize (nlines);
-  line_index.resize (nlines);
-
-  long index = 0;
-
-  for (int l = 0; l < nlspecs; l++)
-  {
-    const Linedata linedata = lineProducingSpecies[l].linedata;
-
-    for (int k = 0; k < linedata.nrad; k++)
+    for (size_t l = 0; l < nlspecs; l++)
     {
-      line      [index] = linedata.frequency[k];
-      line_index[index] = index;
-      index++;
+        lineProducingSpecies[l].read (io, l, parameters);
     }
-  }
 
-  // Sort line frequencies
-  heapsort (line, line_index);
-
-
-  ncells = parameters.ncells();
-
-
-  emissivity.resize (ncells*nlines);
-     opacity.resize (ncells*nlines);
-
-
-  return (0);
-
+    /// Setup
+    setup (parameters);
 }
 
+
+void Lines :: setup (Parameters &parameters)
+{
+    /// Set nrad_cum, a helper variable for determining indices
+    nrad_cum.resize (parameters.nlspecs(), 0);
+
+    for (size_t l = 1; l < parameters.nlspecs(); l++)
+    {
+        nrad_cum[l] = nrad_cum[l-1] + lineProducingSpecies[l-1].linedata.nrad;
+    }
+
+    /// Extract nlines
+    nlines = 0;
+
+    for (const LineProducingSpecies &lspec : lineProducingSpecies)
+    {
+        nlines += lspec.linedata.nrad;
+    }
+
+    parameters.set_nlines (nlines);
+
+
+    /// Set and sort lines and their indices
+    line      .resize (nlines);
+    line_index.resize (nlines);
+
+    size_t index = 0;
+
+    for (const LineProducingSpecies &lspec : lineProducingSpecies)
+    {
+        for (size_t k = 0; k < lspec.linedata.nrad; k++)
+        {
+            line      [index] = lspec.linedata.frequency[k];
+            line_index[index] = index;
+            index++;
+        }
+    }
+
+    heapsort (line, line_index);
+
+
+    ncells = parameters.ncells();
+
+    emissivity.resize (ncells*nlines);
+    opacity   .resize (ncells*nlines);
+}
 
 
 
@@ -106,22 +92,15 @@ int Lines ::
 ///    @param[in] io: io object to write with
 /////////////////////////////////////////////
 
-int Lines ::
-    write (
-        const Io &io) const
+void Lines :: write (const Io &io) const
 {
+  cout << "Writing lines..." << endl;
 
-  cout << "Writing lines" << endl;
 
-
-  for (int l = 0; l < lineProducingSpecies.size(); l++)
+  for (size_t l = 0; l < lineProducingSpecies.size(); l++)
   {
     lineProducingSpecies[l].write (io, l);
   }
-
-
-  return (0);
-
 }
 
 
@@ -158,10 +137,8 @@ int Lines ::
   for (LineProducingSpecies &lspec : lineProducingSpecies)
   {
     lspec.update_using_Ng_acceleration ();
-
-    lspec.check_for_convergence (pop_prec);
+    lspec.check_for_convergence        (pop_prec);
   }
-
 
   set_emissivity_and_opacity ();
 
@@ -185,10 +162,8 @@ int Lines ::
   for (LineProducingSpecies &lspec : lineProducingSpecies)
   {
     lspec.update_using_statistical_equilibrium (abundance, temperature);
-
-    lspec.check_for_convergence (pop_prec);
+    lspec.check_for_convergence                (pop_prec);
   }
-
 
   set_emissivity_and_opacity ();
 

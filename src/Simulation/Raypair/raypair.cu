@@ -320,7 +320,7 @@ void gpuRayPair :: extract_radiation_field (
     const long   r,
     const long   o                         )
 {
-  const double weight_ang = 2.0 * model.geometry.rays.weights[o][r];
+  const double weight_ang = 2.0 * model.geometry.rays.weights[r];
 
   const long i0 = model.radiation.index(o,0);
   const long j0 = I(n_ar,0);

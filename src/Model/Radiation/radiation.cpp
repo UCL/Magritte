@@ -33,16 +33,30 @@ int Radiation ::
 
   frequencies.read (io, parameters);
 
-
+  cout << "1" << endl;
   ncells     = parameters.ncells     ();
+  cout << "2" << endl;
   nrays      = parameters.nrays      ();
-  nfreqs     = parameters.nfreqs     ();
+    cout << "3" << endl;
+    nfreqs     = parameters.nfreqs     ();
+    cout << "4" << endl;
   nfreqs_red = parameters.nfreqs_red ();
+    cout << "5" << endl;
   nboundary  = parameters.nboundary  ();
+    cout << "6" << endl;
+
 
   use_scattering = parameters.use_scattering ();
 
-  cout << "use_scattering = " << use_scattering << endl;
+
+  if (use_scattering)
+  {
+      cout << "using scattering, make sure you have enough memory!" << endl;
+  }
+  else
+  {
+      cout << "Not using scattering!" << endl;
+  }
 
   nrays_red = MPI_length (nrays/2);
 

@@ -132,8 +132,8 @@ compute_radiation_field()
             // removes any systematic in the distribution of points
             for (long o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
             {
-                const long ar = geometry.rays.antipod[o][r];
-                const double weight_ang = geometry.rays.weights[o][r];
+                const long ar           = geometry.rays.antipod[r];
+                const double weight_ang = geometry.rays.weights[r];
                 const double dshift_max = get_dshift_max(o);
 
 
@@ -383,7 +383,7 @@ compute_and_write_image(
             {
                 cout << o << endl;
 
-                const long ar = geometry.rays.antipod[o][r];
+                const long           ar = geometry.rays.antipod[r];
                 const double dshift_max = get_dshift_max(o);
 
                 RayData rayData_r = geometry.trace_ray<Rest>(o, r, dshift_max);

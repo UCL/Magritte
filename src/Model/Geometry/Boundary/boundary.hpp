@@ -28,12 +28,8 @@ struct Boundary
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
   private:

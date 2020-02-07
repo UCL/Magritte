@@ -18,7 +18,7 @@
 
 IoText ::
     IoText (
-        const string io_file)
+        const string &io_file)
   : Io (io_file)
 {
 
@@ -130,6 +130,52 @@ int IoText ::
   }
 
   return (0);
+}
+
+
+
+
+///  Reader for a single (long integer) number from a text file
+///    @param[in]  file_name : path to the file containing the number
+///    @param[out] number    : number to be read
+/////////////////////////////////////////////////////////////////////
+
+int IoText ::
+read_number (
+        const string  file_name,
+              size_t &number    ) const
+{
+    std::ifstream file (io_file + file_name + ".txt");
+
+    file >> number;
+
+    file.close();
+
+    return (0);
+}
+
+
+
+
+///  Writer for a single (long integer) number to a text file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] number    : number to be written
+/////////////////////////////////////////////////////////////
+
+int IoText ::
+write_number (
+        const string  file_name,
+        const size_t &number    ) const
+{
+    std::ofstream file (io_file + file_name + ".txt");
+
+    file << std::scientific << std::setprecision (16);
+
+    file << number;
+
+    file.close();
+
+    return (0);
 }
 
 

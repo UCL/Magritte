@@ -17,34 +17,34 @@ const string Cells::prefix = "Geometry/Cells/";
 ///    @param[in] parameters : Parameters object of the model
 /////////////////////////////////////////////////////////////
 
-int Cells ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+int Cells :: read (const Io &io, Parameters &parameters)
 {
+    cout << "Reading cells..." << endl;
 
-  cout << "Reading cells" << endl;
+    /// Read and set ncells
+    io.read_length (prefix+"position", ncells);
+    parameters.set_ncells (ncells);
 
+    position.resize (ncells);
+    velocity.resize (ncells);
 
-  io.read_length (prefix+"cells", ncells);
+    Double2 position_array (position.size(), Double1(3));
+    Double2 velocity_array (velocity.size(), Double1(3));
 
-  parameters.set_ncells (ncells);
+    io.read_array(prefix+"position", position_array);
+    io.read_array(prefix+"velocity", velocity_array);
 
-  cout << "ncells = " << ncells << endl;
+    for (size_t p=0; p<position.size(); p++)
+    {
+        position[p] = {position_array[p][0], position_array[p][1], position_array[p][2]};
+    }
 
+    for (size_t p=0; p<velocity.size(); p++)
+    {
+        velocity[p] = {velocity_array[p][0], velocity_array[p][1], velocity_array[p][2]};
+    }
 
-  // Read cell centers and velocities
-  x.resize (ncells);
-  y.resize (ncells);
-  z.resize (ncells);
-
-  io.read_3_vector (prefix+"cells", x, y, z);
-
-  vx.resize (ncells);
-  vy.resize (ncells);
-  vz.resize (ncells);
-
-  io.read_3_vector (prefix+"velocities", vx, vy, vz);
+    // Read cell centers and velocities
 
 
   // Read number of neighbors
@@ -97,10 +97,26 @@ int Cells ::
 
   // Write cell centers and velocities
 
-  io.write_3_vector (prefix+"cells", x, y, z);
+//  io.write_3_vector (prefix+"cells", x, y, z);
 
-  io.write_3_vector (prefix+"velocities", vx, vy, vz);
+//  io.write_3_vector (prefix+"velocities", vx, vy, vz);
 
+    Double2 position_array (position.size(), Double1(3));
+    Double2 velocity_array (position.size(), Double1(3));
+
+
+    for (size_t p=0; p<position.size(); p++)
+    {
+        position_array[p] = {position[p][0], position[p][1], position[p][2]};
+    }
+
+    for (size_t p=0; p<velocity.size(); p++)
+    {
+        velocity_array[p] = {velocity[p][0], velocity[p][1], velocity[p][2]};
+    }
+
+    io.write_array(prefix+"position", position_array);
+    io.write_array(prefix+"velocity", velocity_array);
 
   // Write number of neighbors and neighbors lists
 

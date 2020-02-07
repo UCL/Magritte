@@ -503,7 +503,7 @@ Long1 Simulation ::
 
   OMP_FOR (o, parameters.ncells ())
   {
-    const long           ar = geometry.rays.antipod[o][r];
+    const long           ar = geometry.rays.antipod[r];
     const double dshift_max = get_dshift_max (o);
 
     RayData rayData_r  = geometry.trace_ray <frame> (o, r,  dshift_max);
@@ -610,7 +610,7 @@ inline void Simulation ::
         const long r,
         const long o                  )
 {
-  const double weight_ang = 2.0 * geometry.rays.weights[o][r];
+  const double weight_ang = 2.0 * geometry.rays.weights[r];
   const long            b = geometry.boundary.cell2boundary_nr[o];
 
   for (long f = 0; f < parameters.nfreqs_red(); f++)

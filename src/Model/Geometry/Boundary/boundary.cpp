@@ -16,55 +16,39 @@ const string Boundary::prefix = "Geometry/Boundary/";
 ///  @param[in] parameters: model parameters object
 ///////////////////////////////////////////////////
 
-int Boundary ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Boundary :: read (const Io &io, Parameters &parameters)
 {
-
-  cout << "Reading boundary" << endl;
-
+  cout << "Reading boundary..." << endl;
 
   ncells = parameters.ncells();
-
 
   // Resize boundary
   cell2boundary_nr.resize (ncells);
           boundary.resize (ncells);
 
-
   // Initialise
-  for (long p = 0; p < ncells; p++)
+  for (size_t p = 0; p < ncells; p++)
   {
     cell2boundary_nr[p] = ncells;
             boundary[p] = false;
   }
 
-
   // Read boundary list
   io.read_length (prefix+"boundary2cell_nr", nboundary);
-
   boundary2cell_nr.resize (nboundary);
-
   io.read_list   (prefix+"boundary2cell_nr", boundary2cell_nr);
-
 
   // Set model parameter
   parameters.set_nboundary (nboundary);
 
-
   // Set helper variables to identify the boundary
-  for (long b = 0; b < nboundary; b++)
+  for (size_t b = 0; b < nboundary; b++)
   {
     const long cell_nr = boundary2cell_nr[b];
 
     cell2boundary_nr[cell_nr] = b;
             boundary[cell_nr] = true;
   }
-
-
-  return (0);
-
 }
 
 
@@ -74,17 +58,9 @@ int Boundary ::
 ///  @param[in] io: io object
 ////////////////////////////////////////////////
 
-int Boundary ::
-    write (
-        const Io &io) const
+void Boundary :: write (const Io &io) const
 {
-
-  cout << "Writing boundary" << endl;
-
+  cout << "Writing boundary..." << endl;
 
   io.write_list (prefix+"boundary2cell_nr", boundary2cell_nr);
-
-
-  return (0);
-
 }

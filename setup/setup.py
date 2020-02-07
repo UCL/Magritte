@@ -14,8 +14,6 @@ from rays          import rayVectors
 # Magritte specific imports
 from magritte import Linedata, CollisionPartner, LineProducingSpecies
 from magritte import Rays
-from magritte import Long1,   Long2,   Long3
-from magritte import Double1, Double2, Double3
 from magritte import vCollisionPartner
 
 
@@ -156,18 +154,12 @@ class Setup ():
         Setup input for the Rays class.
         """
         # Check lengths
-        ncells = len (cells.x)
-        assert (ncells == len(cells.y))
-        assert (ncells == len(cells.z))
-        assert (ncells == len(cells.vx))
-        assert (ncells == len(cells.vy))
-        assert (ncells == len(cells.vz))
-        # Initialise arrays with some uniform rays
-        Rx = []
-        Ry = []
-        Rz = []
-        wt = []
+        ncells = len(cells.position)
+        # Check for consistency
+        assert (ncells == len(cells.velocity))
+
         if (self.dimension == 2):
+            raise ValueError('2D not supported')
             # Assign rays to each cell
             for p in range(ncells):
                 (rx, ry, rz) = get_rays (cells, p, ncells)
@@ -228,18 +220,19 @@ class Setup ():
                 #    Rz[p][r] = Rz[p][r] / length
                 #    wt[p][r] = wt[p][r] / sum(wt[p])
         else:
-            for _ in range(ncells):
-                Rx.append (rayVectors (dimension=self.dimension, nrays=nrays)[0])
-                Ry.append (rayVectors (dimension=self.dimension, nrays=nrays)[1])
-                Rz.append (rayVectors (dimension=self.dimension, nrays=nrays)[2])
-                wt.append ([1.0/nrays for r in range(nrays)])
+            Rx = rayVectors (dimension=self.dimension, nrays=nrays)[0]
+            Ry = rayVectors (dimension=self.dimension, nrays=nrays)[1]
+            Rz = rayVectors (dimension=self.dimension, nrays=nrays)[2]
+            wt = [1.0/nrays for r in range(nrays)]
         # Create rays object
         rays = Rays ()
         # Assign ray vectors
-        rays.x       = Double2([Double1(Rx[p]) for p in range(ncells)])
-        rays.y       = Double2([Double1(Ry[p]) for p in range(ncells)])
-        rays.z       = Double2([Double1(Rz[p]) for p in range(ncells)])
-        rays.weights = Double2([Double1(wt[p]) for p in range(ncells)])
+        # rays.x       = Double2([Double1(Rx[p]) for p in range(ncells)])
+        # rays.y       = Double2([Double1(Ry[p]) for p in range(ncells)])
+        # rays.z       = Double2([Double1(Rz[p]) for p in range(ncells)])
+        # rays.weights = Double2([Double1(wt[p]) for p in range(ncells)])
+        rays.rays    = np.array((Rx,Ry,Rz)).transpose()
+        rays.weights = wt
         # Done
         return rays
 
@@ -247,23 +240,20 @@ class Setup ():
         """
         Extract neighbor lists from cell centers assuming Voronoi tesselation
         """
-        # Check lengths
-        ncells = len(cells.x)
-        assert (ncells == len(cells.y))
-        assert (ncells == len(cells.z))
-        assert (ncells == len(cells.vx))
-        assert (ncells == len(cells.vy))
-        assert (ncells == len(cells.vz))
+        # Get length
+        ncells = len(cells.position)
+        # Check for consistency
+        assert (ncells == len(cells.velocity))
         # Find neighbors
         if   (self.dimension == 1):
             # For the middle points
-            cells.neighbors   = Long2 ([Long1 ([p-1, p+1]) for p in range(1,ncells-1)])
-            cells.n_neighbors = Long1 ([2                  for p in range(1,ncells-1)])
+            cells.neighbors   = [[p-1, p+1] for p in range(1,ncells-1)]
+            cells.n_neighbors = [ 2         for _ in range(1,ncells-1)]
             # For the first point
-            cells.neighbors.insert   (0, Long1 ([1]))
+            cells.neighbors.insert   (0, [1])
             cells.n_neighbors.insert (0, 1)
             # For the last point
-            cells.neighbors.append   (Long1 ([ncells-2]))
+            cells.neighbors.append   ([ncells-2])
             cells.n_neighbors.append (1)
 
         elif (self.dimension == 2):
@@ -277,22 +267,22 @@ class Setup ():
             ## Extract the number of neighbors for each point
             #cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
         elif (self.dimension == 3):
-            points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(ncells)]
+            #points  = [[cells.x[p], cells.y[p], cells.z[p]] for p in range(ncells)]
+            points = cells.position
             # Make a Delaulay triangulation
             delaunay = Delaunay (points)
             # Extract Delaunay vertices (= Voronoi neighbors)
             (indptr, indices) = delaunay.vertex_neighbor_vertices
-            cells.neighbors   = Long2 ([Long1 (indices[indptr[k]:indptr[k+1]]) for k in range(ncells)])
+            nbs = [indices[indptr[k]:indptr[k+1]] for k in range(ncells)]
             # Extract the number of neighbors for each point
-            cells.n_neighbors = Long1 ([len (nList) for nList in cells.neighbors])
-
+            n_nbs = [len (nb) for nb in nbs]
         # Change neighbors into a rectangular array (necessary for hdf5)
-        max_n_neighbors = max(cells.n_neighbors)
-        for p in range(ncells):
-            n_missing_entries = max_n_neighbors - cells.n_neighbors[p]
-            for w in range(n_missing_entries):
-                cells.neighbors[p].append (0)
-
+        nbs_rect = np.zeros((ncells, max(n_nbs)), dtype=int).tolist()
+        for p in range(len(nbs)):
+            for i,nb in enumerate(nbs[p]):
+                nbs_rect[p][i] = nb
+        cells.neighbors   = nbs_rect
+        cells.n_neighbors = n_nbs
         # Done
         return cells
 
@@ -357,10 +347,10 @@ class Reader ():
                     if type == 'str':
                         column.append (str  (line.split()[columnNr]))
                 lineNr += 1
-            if type == 'float':
-                column = Double1 (column)
-            if type == 'int':
-                column = Long1   (column)
+            # if type == 'float':
+            #     column = Double1 (column)
+            # if type == 'int':
+            #     column = Long1   (column)
         return column
 
     def extractCollisionPartner (self, line, species, elem):
@@ -383,88 +373,120 @@ def linedata_from_LAMDA_file (fileName, species):
     """
     Read line data in LAMDA format
     """
+    '''
+    Note: Do not use the Magritte objects ld etc. this will kill performance. Hence, the copies.
+    '''
+
+
     # Create Lindata object
-    ld = Linedata ()
+    ld = Linedata()
     # Create reader for data file
-    rd = Reader (fileName)
+    rd = Reader(fileName)
     # Read radiative data
-    ld.sym    = rd.readColumn(start= 1,         nElem=1,       columnNr=0, type='str')[0]
-    ld.num    = getSpeciesNumber (species, ld.sym)
-    mass      = rd.readColumn(start= 3,         nElem=1,       columnNr=0, type='float')[0]
-    ld.inverse_mass = float (1.0 / mass)
-    ld.nlev   = rd.readColumn(start= 5,         nElem=1,       columnNr=0, type='int')[0]
-    ld.energy = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=1, type='float')
-    ld.weight = rd.readColumn(start= 7,         nElem=ld.nlev, columnNr=2, type='float')
-    ld.nrad   = rd.readColumn(start= 8+ld.nlev, nElem=1,       columnNr=0, type='int')[0]
-    ld.irad   = rd.readColumn(start=10+ld.nlev, nElem=ld.nrad, columnNr=1, type='int')
-    ld.jrad   = rd.readColumn(start=10+ld.nlev, nElem=ld.nrad, columnNr=2, type='int')
-    ld.A      = rd.readColumn(start=10+ld.nlev, nElem=ld.nrad, columnNr=3, type='float')
-    # Start reading collisional data
-    nlr = ld.nlev + ld.nrad
-
-    ld.ncolpar = rd.readColumn(start=11+nlr, nElem=1,  columnNr=0, type='int')[0]
-    ind        = 13 + nlr
-
-    # Create list of CollisionPartners and cast to vCollisionPartner
-    ld.colpar = vCollisionPartner ([CollisionPartner() for _ in range(ld.ncolpar)])
-
-    # Loop over the collision partners
-    for c in range(ld.ncolpar):
-        ld.colpar[c].num_col_partner = rd.extractCollisionPartner(line=ind, species=species, elem=ld.sym)[0]
-        ld.colpar[c].orth_or_para_H2 = rd.extractCollisionPartner(line=ind, species=species, elem=ld.sym)[1]
-        ld.colpar[c].ncol =  rd.readColumn(start=ind+2, nElem=1,                 columnNr=0,   type='int')[0]
-        ld.colpar[c].ntmp =  rd.readColumn(start=ind+4, nElem=1,                 columnNr=0,   type='int')[0]
-        ld.colpar[c].icol =  rd.readColumn(start=ind+8, nElem=ld.colpar[c].ncol, columnNr=1,   type='int')
-        ld.colpar[c].jcol =  rd.readColumn(start=ind+8, nElem=ld.colpar[c].ncol, columnNr=2,   type='int')
-        tmp = []
-        Cd  = []
-        for t in range (ld.colpar[c].ntmp):
-            tmp.append (rd.readColumn(start=ind+6, nElem=1,                 columnNr=t,   type='float')[0])
-            Cd .append (rd.readColumn(start=ind+8, nElem=ld.colpar[c].ncol, columnNr=3+t, type='float'))
-        ld.colpar[c].tmp = Double1 (tmp)
-        ld.colpar[c].Cd  = Double2 (Cd)
-
-        ind += 9 + ld.colpar[c].ncol
+    sym          = rd.readColumn(start= 1,      nElem=1,    columnNr=0, type='str')[0]
+    num          = getSpeciesNumber(species, sym)
+    mass         = rd.readColumn(start= 3,      nElem=1,    columnNr=0, type='float')[0]
+    inverse_mass = float (1.0 / mass)
+    nlev         = rd.readColumn(start= 5,      nElem=1,    columnNr=0, type='int')[0]
+    energy       = rd.readColumn(start= 7,      nElem=nlev, columnNr=1, type='float')
+    weight       = rd.readColumn(start= 7,      nElem=nlev, columnNr=2, type='float')
+    nrad         = rd.readColumn(start= 8+nlev, nElem=1,    columnNr=0, type='int')[0]
+    irad         = rd.readColumn(start=10+nlev, nElem=nrad, columnNr=1, type='int')
+    jrad         = rd.readColumn(start=10+nlev, nElem=nrad, columnNr=2, type='int')
+    A            = rd.readColumn(start=10+nlev, nElem=nrad, columnNr=3, type='float')
 
     # Change index range from [1, nlev] to [0, nlev-1]
-    for k in range(ld.nrad):
-        ld.irad[k] = ld.irad[k] - 1
-        ld.jrad[k] = ld.jrad[k] - 1
-    for c, colpar in enumerate(ld.colpar):
-        for k in range(colpar.ncol):
-            ld.colpar[c].icol[k] = ld.colpar[c].icol[k] - 1
-            ld.colpar[c].jcol[k] = ld.colpar[c].jcol[k] - 1
+    for k in range(nrad):
+        irad[k] += -1
+        jrad[k] += -1
 
     # Convert to SI units
-    for i in range(ld.nlev):
+    for i in range(nlev):
         # Energy from [cm^-1] to [J]
-        ld.energy[i] = ld.energy[i] * 1.0E+2 * HH*CC
-    for c, colpar in enumerate(ld.colpar):
-        for t in range(colpar.ntmp):
-            for k in range(colpar.ncol):
+        energy[i] *= 1.0E+2*HH*CC
+
+    ld.sym          = sym
+    ld.num          = num
+    ld.inverse_mass = inverse_mass
+    ld.nlev         = nlev
+    ld.energy       = energy
+    ld.weight       = weight
+    ld.nrad         = nrad
+    ld.irad         = irad
+    ld.jrad         = jrad
+    ld.A            = A
+
+    # Start reading collisional data
+    nlr = nlev + nrad
+
+    ncolpar = rd.readColumn(start=11+nlr, nElem=1,  columnNr=0, type='int')[0]
+    ind     = 13 + nlr
+
+    ld.ncolpar = ncolpar
+
+    # Create list of CollisionPartners and cast to vCollisionPartner
+    ld.colpar = vCollisionPartner ([CollisionPartner() for _ in range(ncolpar)])
+
+    # Loop over the collision partners
+    for c in range(ncolpar):
+        num_col_partner = rd.extractCollisionPartner(line=ind, species=species, elem=sym)[0]
+        orth_or_para_H2 = rd.extractCollisionPartner(line=ind, species=species, elem=sym)[1]
+        ncol            = rd.readColumn(start=ind+2, nElem=1,    columnNr=0,   type='int')[0]
+        ntmp            = rd.readColumn(start=ind+4, nElem=1,    columnNr=0,   type='int')[0]
+        icol            = rd.readColumn(start=ind+8, nElem=ncol, columnNr=1,   type='int')
+        jcol            = rd.readColumn(start=ind+8, nElem=ncol, columnNr=2,   type='int')
+        # Change index range from [1, nlev] to [0, nlev-1]
+        for k in range(ncol):
+            icol[k] += -1
+            jcol[k] += -1
+        tmp = []
+        Cd  = []
+        for t in range (ntmp):
+            tmp.append (rd.readColumn(start=ind+6, nElem=1,    columnNr=t,   type='float')[0])
+            Cd .append (rd.readColumn(start=ind+8, nElem=ncol, columnNr=3+t, type='float'))
+        # Convert to SI units
+        for t in range(ntmp):
+            for k in range(ncol):
                 # Cd from [cm^3] to [m^3]
-                ld.colpar[c].Cd[t][k] = ld.colpar[c].Cd[t][k] * 1.0E-6
+                Cd[t][k] *= 1.0E-6
+
+        Ce = [[0.0 for _ in range(ncol)] for _ in range(ntmp)]
+        for t in range(ntmp):
+            for k in range(ncol):
+                i = icol[k]
+                j = jcol[k]
+                Ce[t][k] = Cd[t][k] * weight[i]/weight[j] * np.exp( -(energy[i]-energy[j]) / (KB*tmp[t]) )
+
+        ld.colpar[c].num_col_partner = num_col_partner
+        ld.colpar[c].orth_or_para_H2 = orth_or_para_H2
+        ld.colpar[c].ncol            = ncol
+        ld.colpar[c].ntmp            = ntmp
+        ld.colpar[c].icol            = icol
+        ld.colpar[c].jcol            = jcol
+        ld.colpar[c].tmp             = tmp
+        ld.colpar[c].Cd              = Cd
+        ld.colpar[c].Ce              = Ce
+
+        ind += 9 + ncol
 
     # Set derived quantities
-    ld.Bs        = Double1 ([0.0 for _ in range(ld.nrad)])
-    ld.Ba        = Double1 ([0.0 for _ in range(ld.nrad)])
-    ld.frequency = Double1 ([0.0 for _ in range(ld.nrad)])
-    for k in range(ld.nrad):
-        i = ld.irad[k]
-        j = ld.jrad[k]
-        ld.frequency[k] = (ld.energy[i]-ld.energy[j]) / HH
-        ld.Bs[k]        = ld.A[k] * CC**2 / (2.0*HH*(ld.frequency[k])**3)
-        ld.Ba[k]        = ld.weight[i] / ld.weight[j] * ld.Bs[k]
-    for c, colpar in enumerate(ld.colpar):
-        ld.colpar[c].Ce = Double2 ([Double1([0.0 for _ in range (colpar.ncol)]) for _ in range(colpar.ntmp)])
-        for t in range(colpar.ntmp):
-            for k in range(colpar.ncol):
-                i = colpar.icol[k]
-                j = colpar.jcol[k]
-                ld.colpar[c].Ce[t][k] = colpar.Cd[t][k] * ld.weight[i] / ld.weight[j] * np.exp(-(ld.energy[i]-ld.energy[j])/(KB * colpar.tmp[t]))
+    Bs        = [0.0 for _ in range(nrad)]
+    Ba        = [0.0 for _ in range(nrad)]
+    frequency = [0.0 for _ in range(nrad)]
+    for k in range(nrad):
+        i = irad[k]
+        j = jrad[k]
+        frequency[k] = (energy[i]-energy[j]) / HH
+        Bs[k]        = A[k] * CC**2 / (2.0*HH*(frequency[k])**3)
+        Ba[k]        = weight[i]/weight[j] * Bs[k]
+    ld.Bs        = Bs
+    ld.Ba        = Ba
+    ld.frequency = frequency
+
     # Create LineProducingSpecies object
-    lspec          = LineProducingSpecies ()
+    lspec          = LineProducingSpecies()
     lspec.linedata = ld
+
     # Done
     return lspec
 

@@ -18,16 +18,11 @@
 
 struct Rays
 {
+    public:
 
-  public:
-
-      Double2 x;         ///< x component of direction vector
-      Double2 y;         ///< y component of direction vector
-      Double2 z;         ///< z component of direction vector
-
-      Double2 weights;   ///< weights for angular integration
-
-      Long2 antipod;     ///< ray number of antipodal ray
+        vector<Vector3d> rays;      ///< direction vector
+        Double1          weights;   ///< weights for angular integration
+        Long1            antipod;   ///< ray number of antipodal ray
 
 
       // Io

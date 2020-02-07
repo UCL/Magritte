@@ -18,34 +18,33 @@ namespace py = pybind11;
 
 PYBIND11_MODULE (ioMagritte, module)
 {
+    // Module docstring
+    module.doc() = "Io module";
 
-  // Module docstring
-  module.doc() = "Io module";
+    // Io, base class
+    py::class_<Io> (module, "Io");
 
-
-  // Io
-  py::class_<Io> (module, "Io");
-
-
-  // IoText
-  py::class_<IoText, Io> (module, "IoText")
-      // attributes
-      .def_readonly ("io_file", &IoText::io_file)
-      // constructor
-      .def (py::init<const string &>());
+    // IoText
+    py::class_<IoText, Io> (module, "IoText")
+        // attributes
+        .def_readonly ("io_file", &IoText::io_file)
+        // constructor
+        .def (py::init<const string &>());
 
 
-#if (PYTHON_IO)
+#   if (PYTHON_IO)
 
-  // IoPython
-  py::class_<IoPython, Io> (module, "IoPython")
-      // attributes
-      .def_readonly ("implementation", &IoPython::implementation)
-      .def_readonly ("io_file",        &IoPython::io_file)
-      // constructor
-      .def (py::init<const string &, const string &>());
+    // IoPython
+    py::class_<IoPython, Io> (module, "IoPython")
+        // attributes
+        .def_readonly ("implementation", &IoPython::implementation)
+        .def_readonly ("io_file",        &IoPython::io_file)
+        // constructor
+        .def (py::init<const string &, const string &>())
+        .def ("read_number", (int (IoPython::*)(const string, size_t&) const) &IoPython::read_number);
+//    (long(Simulation::*)(const Io&))
 
-#endif
+#   endif
 
 
 }

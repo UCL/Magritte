@@ -19,35 +19,29 @@
 struct Cells
 {
 
-  public:
+public:
 
-      Double1  x;          ///< x coordinate of cell center [m]
-      Double1  y;          ///< y coordinate of cell center [m]
-      Double1  z;          ///< z coordinate of cell center [m]
+    vector<Vector3d> position;
+    vector<Vector3d> velocity;
 
-      Double1 vx;          ///< x component of velocity field (as fraction of C) [.]
-      Double1 vy;          ///< y component of velocity field (as fraction of C) [.]
-      Double1 vz;          ///< z component of velocity field (as fraction of C) [.]
-
-      Long1 n_neighbors;   ///< number of neighbors of each cell
-      Long2   neighbors;   ///< cell numbers of the neighbors of each cell
+    Long1 n_neighbors;   ///< number of neighbors of each cell
+    Long2   neighbors;   ///< cell numbers of the neighbors of each cell
 
 
-      // Io
+    // Io
 
-      int read (
-          const Io         &io,
-                Parameters &parameters);
+    int read(
+            const Io   &io,
+            Parameters &parameters);
 
-      int write (
-          const Io &io) const;
+    int write (const Io &io) const;
 
 
-  private:
+private:
 
-      long ncells;                  ///< number of cells
+    long ncells;                  ///< number of cells
 
-      static const string prefix;   ///< prefix to be used in io
+    static const string prefix;   ///< prefix to be used in io
 
 
 };

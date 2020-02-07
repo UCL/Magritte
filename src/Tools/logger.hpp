@@ -56,6 +56,13 @@ struct Logger
   }
 
   void write (
+      const string text,
+      const size_t number) const
+  {
+    write (text + std::to_string (number));
+  }
+
+  void write (
       const string text1,
       const long   number,
       const string text2  ) const
@@ -84,79 +91,6 @@ struct Logger
   }
 
 };
-
-
-//inline void write_to_log (
-//    const string text    )
-//{
-//  std::cout << text << std::endl;
-//
-//
-//  std::ofstream file (io_file + file_name + ".txt");
-//
-//  file << std::scientific << std::setprecision (16);
-//
-//  file << number;
-//
-//  file.close();
-//
-//}
-//
-//
-//inline void write_to_log (
-//    const double number  )
-//{
-//  std::cout << number << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text,
-//    const double number  )
-//{
-//  std::cout << text << number << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const double number,
-//    const string text    )
-//{
-//  std::cout << number << text << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text1,
-//    const double number1,
-//    const string text2,
-//    const double number2 )
-//{
-//  std::cout << text1 << number1 << text2 << number2 << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text1,
-//    const double number1,
-//    const string text2,
-//    const double number2,
-//    const string text3   )
-//{
-//  std::cout << text1 << number1 << text2 << number2 << text3 << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text1,
-//    const double number1,
-//    const string text2,
-//    const double number2,
-//    const string text3,
-//    const double number3 )
-//{
-//  std::cout << text1 << number1 << text2 << number2 << text3 << number3 << std::endl;
-//}
 
 
 #endif // __LOGGER_HPP_INCLUDED__

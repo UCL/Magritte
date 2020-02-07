@@ -232,13 +232,9 @@ inline long Geometry ::
 
   for (const long neighbor : cells.neighbors[current])
   {
-    const double x = cells.x[neighbor] - cells.x[origin];
-    const double y = cells.y[neighbor] - cells.y[origin];
-    const double z = cells.z[neighbor] - cells.z[origin];
+    const Vector3d R = cells.position[neighbor] - cells.position[origin];
 
-    const double Z_new =  x * rays.x[origin][ray]
-                        + y * rays.y[origin][ray]
-                        + z * rays.z[origin][ray];
+    const double Z_new = R.dot(rays.rays[ray]);
 
     ///////////////////////
     //if (Z_new > Z_new_max)
@@ -250,7 +246,7 @@ inline long Geometry ::
 
     if (Z_new > Z)
     {
-      const double distance_from_ray2 = (x*x + y*y + z*z) - Z_new*Z_new;
+      const double distance_from_ray2 = R.dot(R) - Z_new*Z_new;
 
       if (distance_from_ray2 < dmin)
       {
@@ -332,9 +328,7 @@ inline double Geometry ::
 
   if (frame == CoMoving)
   {
-    return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[origin][ray]
-                  + (cells.vy[current] - cells.vy[origin]) * rays.y[origin][ray]
-                  + (cells.vz[current] - cells.vz[origin]) * rays.z[origin][ray]);
+    return 1.0 - (cells.velocity[current]-cells.velocity[origin]).dot(rays.rays[ray]);
   }
 
   // Rest frame implementation
@@ -348,12 +342,10 @@ inline double Geometry ::
 
     if (ray >= nrays/2)
     {
-      ray_correct = rays.antipod[origin][ray];
+      ray_correct = rays.antipod[ray];
     }
 
-    return 1.0 - (  cells.vx[current] * rays.x[origin][ray_correct]
-                  + cells.vy[current] * rays.y[origin][ray_correct]
-                  + cells.vz[current] * rays.z[origin][ray_correct]);
+    return 1.0 - cells.velocity[current].dot(rays.rays[ray_correct]);
   }
 
 }

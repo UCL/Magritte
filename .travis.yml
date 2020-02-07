@@ -14,7 +14,7 @@ addons:
       - cmake
 
 script:
-  - bash configure.sh
+  - bash install.sh
   - bash build.sh minimal
   - cd tests
   - bash run_tests.sh

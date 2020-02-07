@@ -112,6 +112,5 @@ target_link_libraries (magritte ${PYTHON_LIBRARIES})
 # pybind11 command to create the python module in bin directory
 pybind11_add_module (ioMagritte
   ioBindings.cpp
-  ../Io/io.cpp
   ../Io/cpp/io_cpp_text.cpp
   ../Io/python/io_python.cpp)

@@ -96,7 +96,7 @@ def read_number (io_file, file_name):
     """
     Return the contents of the attribute
     """
-    return int(read_attribute(io_file, file_name))
+    return read_attribute(io_file, file_name)
 
 
 def write_number (io_file, file_name, data):

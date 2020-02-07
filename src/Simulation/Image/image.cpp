@@ -97,9 +97,9 @@ int Image ::
 
   OMP_PARALLEL_FOR (p, ncells)
   {
-    const double rx = geometry.rays.x[p][ray_nr];
-    const double ry = geometry.rays.y[p][ray_nr];
-    const double rz = geometry.rays.z[p][ray_nr];
+    const double rx = geometry.rays.rays[ray_nr].x();
+    const double ry = geometry.rays.rays[ray_nr].y();
+    const double rz = geometry.rays.rays[ray_nr].z();
 
     const double         denominator = sqrt (rx*rx + ry*ry);
     const double inverse_denominator = 1.0 / denominator;
@@ -112,12 +112,12 @@ int Image ::
     const double jz = -denominator;
 
 
-    ImX[p] =   ix * geometry.cells.x[p]
-             + iy * geometry.cells.y[p];
+    ImX[p] =   ix * geometry.cells.position[p].x()
+             + iy * geometry.cells.position[p].y();
 
-    ImY[p] =   jx * geometry.cells.x[p]
-             + jy * geometry.cells.y[p]
-             + jz * geometry.cells.z[p];
+    ImY[p] =   jx * geometry.cells.position[p].x()
+             + jy * geometry.cells.position[p].y()
+             + jz * geometry.cells.position[p].z();
   }
 
 

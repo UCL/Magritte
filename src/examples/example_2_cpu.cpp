@@ -102,8 +102,8 @@ int main (int argc, char **argv)
 
     OMP_FOR (o, simulation.parameters.ncells())
     {
-      const long           ar = simulation.geometry.rays.antipod[o][r];
-      const double weight_ang = simulation.geometry.rays.weights[o][r];
+      const long           ar = simulation.geometry.rays.antipod[r];
+      const double weight_ang = simulation.geometry.rays.weights[r];
       const double dshift_max = simulation.get_dshift_max (o);
 
 

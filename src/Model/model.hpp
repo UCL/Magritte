@@ -22,29 +22,22 @@
 
 struct Model
 {
-  
-  // Log file writer
-  Logger logger;
+    // Log file writer
+    Logger logger;
 
-  // Bookkeeping
-  Parameters parameters;
+    // Bookkeeping
+    Parameters parameters;
 
-  // Science
-  Geometry       geometry;
-  Chemistry      chemistry;
-  Lines          lines;
-  Thermodynamics thermodynamics;
-  Radiation      radiation;
+    // Science
+    Geometry       geometry;
+    Chemistry      chemistry;
+    Lines          lines;
+    Thermodynamics thermodynamics;
+    Radiation      radiation;
 
-
-  // Io
-  int read (
-      const Io &io);
-
-  int write (
-      const Io &io) const;
-
-
+    // Io
+    void read  (const Io &io);
+    void write (const Io &io) const;
 };
 
 

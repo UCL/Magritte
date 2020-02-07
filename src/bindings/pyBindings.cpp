@@ -17,17 +17,6 @@
 namespace py = pybind11;
 
 
-PYBIND11_MAKE_OPAQUE (Long1);
-PYBIND11_MAKE_OPAQUE (Long2);
-PYBIND11_MAKE_OPAQUE (Long3);
-PYBIND11_MAKE_OPAQUE (Long4);
-
-PYBIND11_MAKE_OPAQUE (Double1);
-PYBIND11_MAKE_OPAQUE (Double2);
-PYBIND11_MAKE_OPAQUE (Double3);
-
-PYBIND11_MAKE_OPAQUE (String1);
-
 PYBIND11_MAKE_OPAQUE (std::vector<LineProducingSpecies>);
 PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 
@@ -40,17 +29,6 @@ PYBIND11_MODULE (magritte, module)
 
 
   // Define vector types
-  py::bind_vector<Long1>   (module, "Long1");
-  py::bind_vector<Long2>   (module, "Long2");
-  py::bind_vector<Long3>   (module, "Long3");
-  py::bind_vector<Long4>   (module, "Long4");
-
-  py::bind_vector<Double1> (module, "Double1");
-  py::bind_vector<Double2> (module, "Double2");
-  py::bind_vector<Double3> (module, "Double3");
-
-  py::bind_vector<String1> (module, "String1");
-
   py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
   py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
 
@@ -82,10 +60,7 @@ PYBIND11_MODULE (magritte, module)
   py::class_<Parameters> (module, "Parameters")
       // constructor
       .def (py::init())
-      .def_readwrite ("r",          &Parameters::r)
-      .def_readwrite ("o",          &Parameters::o)
-      .def_readwrite ("f",          &Parameters::o)
-      .def_readwrite ("n_off_diag", &Parameters::n_off_diag)
+      .def_readwrite ("n_off_diag",         &Parameters::n_off_diag)
       .def_readwrite ("max_width_fraction", &Parameters::max_width_fraction)
       // setters
       .def ("set_ncells",           &Parameters::set_ncells        )
@@ -135,12 +110,14 @@ PYBIND11_MODULE (magritte, module)
   // Cells
   py::class_<Cells> (module, "Cells")
       // attributes
-      .def_readwrite ("x",           &Cells::x)
-      .def_readwrite ("y",           &Cells::y)
-      .def_readwrite ("z",           &Cells::z)
-      .def_readwrite ("vx",          &Cells::vx)
-      .def_readwrite ("vy",          &Cells::vy)
-      .def_readwrite ("vz",          &Cells::vz)
+      .def_readwrite ("position",    &Cells::position)
+      .def_readwrite ("velocity",    &Cells::velocity)
+//      .def_readwrite ("x",           &Cells::x)
+//      .def_readwrite ("y",           &Cells::y)
+//      .def_readwrite ("z",           &Cells::z)
+//      .def_readwrite ("vx",          &Cells::vx)
+//      .def_readwrite ("vy",          &Cells::vy)
+//      .def_readwrite ("vz",          &Cells::vz)
       .def_readwrite ("n_neighbors", &Cells::n_neighbors)
       .def_readwrite ("neighbors",   &Cells::neighbors)
       // constructor
@@ -153,9 +130,10 @@ PYBIND11_MODULE (magritte, module)
   // Rays
   py::class_<Rays> (module, "Rays")
       // attributes
-      .def_readwrite ("x",       &Rays::x)
-      .def_readwrite ("y",       &Rays::y)
-      .def_readwrite ("z",       &Rays::z)
+      .def_readwrite ("rays",    &Rays::rays)
+//      .def_readwrite ("x",       &Rays::x)
+//      .def_readwrite ("y",       &Rays::y)
+//      .def_readwrite ("z",       &Rays::z)
       .def_readwrite ("weights", &Rays::weights)
       .def_readwrite ("antipod", &Rays::antipod)
       // constructor
