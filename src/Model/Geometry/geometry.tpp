@@ -61,7 +61,7 @@ inline RayData Geometry ::
       if (nxt < 0)
       {
         cout << "--- ERROR ------------------------------------------" << endl;
-        cout << "nxt = " << nxtnxt << endl;
+        cout << "origin = " << origin << " nxt = " << nxtnxt << " ray = " << ray << endl;
         cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
         cout << "                                                    " << endl;
         cout << "----------------------------------------------------" << endl;

@@ -10,7 +10,7 @@ from scipy.spatial          import cKDTree
 from tqdm                   import tqdm
 
 
-def process_amrvac_input(config):
+def process_amrvac_input(config) -> dict:
 
     if (os.path.splitext(config['input file'])[1].lower() != '.vtu'):
         raise ValueError('Only .vtu AMRVAC files are currently supported.')
@@ -96,8 +96,13 @@ def process_amrvac_input(config):
     # tetras_v_z = np.array(tetras_v_z)
     centres    = np.array(centres)
 
-    (x_max, y_max, z_max) = 0.99999*np.max(centres, axis=0)
-    (x_min, y_min, z_min) = 0.99999*np.min(centres, axis=0)
+    print("Warning: we assume that the geometry to be a cube centred around the origin.")
+    print("Warning: we assume that there is (at least) one face of the cube that has not been refined (or that is completely covered by the coarsest elements that can be found on the boundary.).")
+    bound = 0.999*np.min(np.max(np.abs(centres), axis=0))
+    # (x_max, y_max, z_max) = 0.99999*np.max(centres, axis=0)
+    # (x_min, y_min, z_min) = 0.99999*np.min(centres, axis=0)
+    x_max = y_max = z_max =  bound
+    x_min = y_min = z_min = -bound
 
     print("Extracting boundary...")
     boundary = []
@@ -109,7 +114,12 @@ def process_amrvac_input(config):
     boundary = np.array(boundary)
 
     print("Extracting neighbours...")
-    neighbors = cKDTree(centres).query(centres, 26)[1]
+    # Assuming refinement causes a cubic cell to split in 8 subcells
+    # and assuming max one level of refinement increase form one cell to the next,
+    # max number of neighbours if all neighbours are refined, yields 6*4 + 12*2 + 8 = 56 neighbors.
+    neighbors = cKDTree(centres).query(centres, 57)[1]
+    # Closest point is point itself, execlude this
+    neighbors = neighbors[:,1:]
 
     data = {'position'  : centres,
             'velocity'  : velocity,
@@ -139,5 +149,31 @@ def process_amrvac_input(config):
     # meshio.write_points_cells(meshName, points=points, cells=cells, cell_data=cell_data)
     #
     # print(f"Created mesh file:\n{meshName}\n from the input amrvac file {config['input file']}.")
+
+    return data
+
+
+def process_mesher_input(config) -> dict:
+
+    raise NotImplementedError('Mesher input not implemented yet.')
+
+    # TODO: Implement this!
+
+    # if (os.path.splitext(config['input file'])[1].lower() != '.vtu'):
+    #     raise ValueError('Only .vtu AMRVAC files are currently supported.')
+    #
+    # if (config['line producing species'][0] != 'CO'):
+    #     raise NotImplementedError('amrvac input currently assumes that CO is the line producing species.')
+    #
+    # print("Reading mesher input...")
+    #
+    # data = {'position'  : mesh.points,
+    #         'velocity'  : velocity,
+    #         'boundary'  : boundary,
+    #         'neighbors' : neighbors,
+    #         'nH2'       : nH2,
+    #         'nl1'       : nCO,
+    #         'tmp'       : tmp,
+    #         'trb'       : trb      }
 
     return data

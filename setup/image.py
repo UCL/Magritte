@@ -21,6 +21,10 @@ class Image():
                 self.Ip = np.array (file.get(f'Simulation/Image/I_p_{r}'))
                 self.Xs = np.array (file.get(f'Simulation/Image/ImX_{r}'))
                 self.Ys = np.array (file.get(f'Simulation/Image/ImY_{r}'))
+                if (self.Im.shape[1] == self.Ip.shape[1]):
+                    self.nfreqs = self.Im.shape[1]
+                else:
+                    raise ValueError('Non matching nfreqs...')
         else:
             self.Im = np.loadtxt (f'{model_name}/Simulation/Image/I_m_{r}.txt')
             self.Ip = np.loadtxt (f'{model_name}/Simulation/Image/I_p_{r}.txt')
@@ -69,14 +73,18 @@ class Image():
 
     def plot (self, f):
         plt.figure(dpi=300)
-        # plt.title(f'r={self.r}, f={f}')
-        plt.tricontourf(self.Xs, self.Ys, self.Is[:,f], cmap='gray')
-        #self.bin_axis()
+        plt.title(f'r={self.r}, f={f}')
+        plt.tricontourf(self.Xs, self.Ys, self.Im[:,f], levels=100, cmap='gray')
+        # self.bin_axis()
         #plt.imshow(self.im_bin, cmap='gray')
         #plt.scatter(self.Xs, self.Ys)
-        # plt.colorbar().set_label('intensity [W/m^2]')
+        plt.colorbar().set_label(r'intensity [W/m$^2$]')
         plt.axes().set_aspect('equal')
-        # plt.xlabel('x [m]')
-        # plt.ylabel('y [m]')
-        # plt.tight_layout()
-        # plt.savefig(f'image_f-{f:05}_r-{self.r:05}.png')
+        plt.xlabel('x [m]')
+        plt.ylabel('y [m]')
+        plt.tight_layout()
+        plt.savefig(f'image_f-{f:05}_r-{self.r:05}.png')
+
+    def plot_all (self):
+        for f in range(self.nfreqs):
+            self.plot (f)

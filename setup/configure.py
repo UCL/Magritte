@@ -12,7 +12,7 @@ from magritte     import Simulation
 from setup        import Setup, linedata_from_LAMDA_file, make_file_structure
 from quadrature   import H_roots, H_weights
 from ioMagritte   import IoPython, IoText
-from amrvac_input import process_amrvac_input
+from input        import process_mesher_input, process_amrvac_input
 
 
 def read_config(config_file) -> dict:
@@ -66,7 +66,6 @@ def configure_simulation(config, data) -> Simulation():
     simulation.parameters.set_nspecs         (config['nspecs'    ])
     simulation.parameters.set_nlspecs        (config['nlspecs'   ])
     simulation.parameters.set_nquads         (config['nquads'    ])
-    print(config['scattering'], type(config['scattering']))
     simulation.parameters.set_use_scattering (config['scattering'])
     simulation.parameters.set_pop_prec       (config['pop_prec'  ])
     simulation.parameters.n_off_diag       = (config['n_off_diag'])
@@ -123,14 +122,16 @@ def configure_simulation(config, data) -> Simulation():
     else:
         raise ValueError('No valid model type was given (hdf5, ascii).')
     # Write the simulation data using the io interface
+    # (Writing and reading again is required to guarantee a proper setup)
     print("Writing out magritte model:", modelName)
     simulation.write(io)
+    # Remove old simulation object from memory
     del simulation
+    # Read the newly written simulation object
+    print("Reading in magritte model to extract simulation object.")
     simulation_new = Simulation()
     simulation_new.read(io)
     # Return the newly read simulation object
-    print("Reading in magritte model to extract simulation object.")
-    # (Writing and reading again is required to guarantee a proper setup)
     return simulation_new
 
 
@@ -145,7 +146,9 @@ def process_magritte_input (config) -> Simulation():
     else:
         raise ValueError('No valid model type was given (hdf5, ascii).')
     print("Reading in magritte model to extract simulation object.")
-    return Simulation().read(io)
+    simulation = Simulation()
+    simulation.read(io)
+    return simulation
 
 
 def configure(config) -> Simulation:
@@ -157,6 +160,8 @@ def configure(config) -> Simulation:
     # Check the input type
     if   (config['input type'].lower() == 'magritte'):
         return process_magritte_input(config)
+    elif (config['input type'].lower() == 'mesher'):
+        data = process_mesher_input(config)
     elif (config['input type'].lower() == 'amrvac'):
         data = process_amrvac_input(config)
     else:

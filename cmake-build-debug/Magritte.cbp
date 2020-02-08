@@ -370,12 +370,6 @@
 		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/cpp/io_cpp_text.hpp">
 			<Option target="Magritte"/>
 		</Unit>
-		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/io.cpp">
-			<Option target="Magritte"/>
-		</Unit>
-		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Io/io.hpp">
-			<Option target="Magritte"/>
-		</Unit>
 		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Model/Chemistry/Species/species.cpp">
 			<Option target="Magritte"/>
 		</Unit>

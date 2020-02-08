@@ -27,23 +27,16 @@ int Radiation ::
         const Io         &io,
               Parameters &parameters)
 {
-
-  cout << "Reading radiation" << endl;
+  cout << "Reading radiation..." << endl;
 
 
   frequencies.read (io, parameters);
 
-  cout << "1" << endl;
   ncells     = parameters.ncells     ();
-  cout << "2" << endl;
   nrays      = parameters.nrays      ();
-    cout << "3" << endl;
-    nfreqs     = parameters.nfreqs     ();
-    cout << "4" << endl;
+  nfreqs     = parameters.nfreqs     ();
   nfreqs_red = parameters.nfreqs_red ();
-    cout << "5" << endl;
   nboundary  = parameters.nboundary  ();
-    cout << "6" << endl;
 
 
   use_scattering = parameters.use_scattering ();
