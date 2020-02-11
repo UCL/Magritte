@@ -16,57 +16,42 @@ const string Species::prefix = "Chemistry/Species/";
 ///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
-int Species ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Species :: read (const Io &io, Parameters &parameters)
 {
+    cout << "Reading species..." << endl;
 
-  cout << "Reading species" << endl;
+    io.read_length (prefix+"species",   nspecs);
+    io.read_length (prefix+"abundance", ncells);
 
+    parameters.set_ncells (ncells);
+    parameters.set_nspecs (nspecs);
 
-  io.read_length (prefix+"species",   nspecs);
-  io.read_length (prefix+"abundance", ncells);
+     sym.resize (nspecs);
+    //mass.resize (nspecs);
 
+    abundance_init.resize (ncells);
+         abundance.resize (ncells);
 
-  parameters.set_ncells (ncells);
-  parameters.set_nspecs (nspecs);
+    for (size_t p = 0; p < ncells; p++)
+    {
+      abundance_init[p].resize (nspecs);
+           abundance[p].resize (nspecs);
+    }
 
+    //// Read the species
+    //io.read_list (prefix+"species", sym);
 
-   sym.resize (nspecs);
-  //mass.resize (nspecs);
-
-
-  abundance_init.resize (ncells);
-       abundance.resize (ncells);
-
-
-  for (long p = 0; p < ncells; p++)
-  {
-    abundance_init[p].resize (nspecs);
-         abundance[p].resize (nspecs);
-  }
-
-
-  //// Read the species
-  //io.read_list (prefix+"species", sym);
-
-  // Read the abundaces of each species in each cell
-  io.read_array (prefix+"abundance", abundance);
+    // Read the abundaces of each species in each cell
+    io.read_array (prefix+"abundance", abundance);
 
 
-  // Set initial abundances
-  abundance_init = abundance;
+    // Set initial abundances
+    abundance_init = abundance;
 
-
-  // Get and store species numbers of some inportant species
-  //io.read_number (prefix+".nr_e",  nr_e);
-  //io.read_number (prefix+".nr_H2", nr_H2);
-  //io.read_number (prefix+".nr_HD", nr_HD);
-
-
-  return (0);
-
+    // Get and store species numbers of some inportant species
+    //io.read_number (prefix+".nr_e",  nr_e);
+    //io.read_number (prefix+".nr_H2", nr_H2);
+    //io.read_number (prefix+".nr_HD", nr_HD);
 }
 
 
@@ -76,53 +61,16 @@ int Species ::
 ///  @param[in] io: io object
 /////////////////////////////////////////////////
 
-int Species ::
-    write (
-        const Io &io) const
+void Species :: write (const Io &io) const
 {
+    cout << "Writing species..." << endl;
 
-  cout << "Writing species" << endl;
+    Long1 dummy = Long1 (sym.size(), 0);
 
+    io.write_list  (prefix+"species",   dummy    );
+    io.write_array (prefix+"abundance", abundance);
 
-  Long1 dummy = Long1 (sym.size(), 0);
-
-  io.write_list  (prefix+"species",   dummy);
-  io.write_array (prefix+"abundance", abundance);
-
-  //io.write_number (prefix+".nr_e",  nr_e );
-  //io.write_number (prefix+".nr_H2", nr_H2);
-  //io.write_number (prefix+".nr_HD", nr_HD);
-
-
-  return (0);
-
+    //io.write_number (prefix+".nr_e",  nr_e );
+    //io.write_number (prefix+".nr_H2", nr_H2);
+    //io.write_number (prefix+".nr_HD", nr_HD);
 }
-
-
-
-//
-//long Species ::
-//    get_species_nr (
-//        const string name) const
-//{
-//
-//  // Chech which species corresponds to canonical name
-//
-//  for (int s = 0; s < nspecs; s++)
-//  {
-//    if (sym[s] == name)
-//    {
-//      return s;
-//    }
-//  }
-//
-//
-//  // Set not found species to be dummy (zeroth species)
-//
-//  int s = 0;
-//
-//
-//  return s;
-//
-//}
-//

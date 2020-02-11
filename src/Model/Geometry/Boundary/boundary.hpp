@@ -34,8 +34,8 @@ struct Boundary
 
   private:
 
-      long ncells;              ///< number of cells
-      long nboundary;           ///< number of boundary cells
+      size_t ncells;              ///< number of cells
+      size_t nboundary;           ///< number of boundary cells
 
       static const string prefix;
 

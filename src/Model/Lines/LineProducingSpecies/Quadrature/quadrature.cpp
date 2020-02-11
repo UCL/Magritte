@@ -16,34 +16,21 @@ const string Quadrature::prefix = "Lines/LineProducingSpecies_";
 ///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
-int Quadrature ::
-    read (
-        const Io         &io,
-        const int         l,
-              Parameters &parameters)
+void Quadrature :: read (const Io &io, const int l, Parameters &parameters)
 {
+    cout << "Reading quadrature..." << endl;
 
-  cout << "Reading quadrature" << endl;
+    const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
 
+    io.read_length (prefix_l+"weights", nquads);
 
-  const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
+    parameters.set_nquads (nquads);
 
+    weights.resize (nquads);
+    roots.resize   (nquads);
 
-  io.read_length (prefix_l+"weights", nquads);
-
-
-  parameters.set_nquads (nquads);
-
-
-  weights.resize (nquads);
-  roots.resize   (nquads);
-
-  io.read_list (prefix_l+"weights", weights);
-  io.read_list (prefix_l+"roots",   roots  );
-
-
-  return (0);
-
+    io.read_list (prefix_l+"weights", weights);
+    io.read_list (prefix_l+"roots",   roots  );
 }
 
 
@@ -53,22 +40,11 @@ int Quadrature ::
 ///    @param[in] io: io object
 ////////////////////////////////////
 
-int Quadrature ::
-    write (
-        const Io  &io,
-        const int  l  ) const
+void Quadrature :: write (const Io &io, const int l) const
 {
+    cout << "Writing quadrature..." << endl;
 
-  cout << "Writing quadrature" << endl;
+    const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
 
-
-  const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
-
-
-  io.write_list (prefix_l+"weights", weights);
-  io.write_list (prefix_l+"roots",   roots  );
-
-
-  return (0);
-
+    io.write_list (prefix_l+"weights", weights);
 }

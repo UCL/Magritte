@@ -55,7 +55,7 @@ void Model :: read (const Io &io)
 ///    @param[in] io : io object to write with
 //////////////////////////////////////////////
 
-void Model :: write (const Io &io) const
+void Model :: write (const Io &io)
 {
     if (MPI_comm_rank () == 0)
     {

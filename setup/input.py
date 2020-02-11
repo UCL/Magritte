@@ -4,10 +4,36 @@ import vtk
 import meshio
 import numpy as np
 
-from astropy                import constants
+from astropy                import units, constants
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
-from scipy.spatial          import cKDTree
+from scipy.spatial          import cKDTree, Delaunay
 from tqdm                   import tqdm
+
+
+def process_mesher_input(config) -> dict:
+
+    raise NotImplementedError('Mesher input not implemented yet.')
+
+    # TODO: Implement this!
+
+    # if (os.path.splitext(config['input file'])[1].lower() != '.vtu'):
+    #     raise ValueError('Only .vtu AMRVAC files are currently supported.')
+    #
+    # if (config['line producing species'][0] != 'CO'):
+    #     raise NotImplementedError('amrvac input currently assumes that CO is the line producing species.')
+    #
+    # print("Reading mesher input...")
+    #
+    # data = {'position'  : mesh.points,
+    #         'velocity'  : velocity,
+    #         'boundary'  : boundary,
+    #         'neighbors' : neighbors,
+    #         'nH2'       : nH2,
+    #         'nl1'       : nCO,
+    #         'tmp'       : tmp,
+    #         'trb'       : trb      }
+
+    return data
 
 
 def process_amrvac_input(config) -> dict:
@@ -153,27 +179,76 @@ def process_amrvac_input(config) -> dict:
     return data
 
 
-def process_mesher_input(config) -> dict:
+def process_phantom_input(config):
 
-    raise NotImplementedError('Mesher input not implemented yet.')
+    print("Warning this assumes gamma=1.2 and mu=2.381 as per Silke & Jolien's models.")
+    gamma = 1.2
+    mu    = 2.381
+    velocity_constant = 2.9784608e+06 * 1.0e-2
+    density_constant  = 5.9410314e-07
 
-    # TODO: Implement this!
+    print("Warning this assumes a constant H2 mass fraction of 1.6e-10 as per Frederik's guess.")
+    print("Warning this assumes a constant CO mass fraction of 7.8e-12 as per Frederik's guess.")
+    print("(Based on the average of a model of Ward.)")
+    nH2 = 1.6e-10
+    nCO = 7.8e-12
 
-    # if (os.path.splitext(config['input file'])[1].lower() != '.vtu'):
-    #     raise ValueError('Only .vtu AMRVAC files are currently supported.')
-    #
-    # if (config['line producing species'][0] != 'CO'):
-    #     raise NotImplementedError('amrvac input currently assumes that CO is the line producing species.')
-    #
-    # print("Reading mesher input...")
-    #
-    # data = {'position'  : mesh.points,
-    #         'velocity'  : velocity,
-    #         'boundary'  : boundary,
-    #         'neighbors' : neighbors,
-    #         'nH2'       : nH2,
-    #         'nl1'       : nCO,
-    #         'tmp'       : tmp,
-    #         'trb'       : trb      }
 
-    return data
+    if (os.path.splitext(config['input file'])[1].lower() != '.ascii'):
+        raise ValueError('Only .ascii PHANTOM files are currently supported.')
+
+    print("Reading phantom input...")
+
+    (x,y,z, mass, h, density, v_x,v_y,v_z, u, Tdust, alpha, div_v, itype) = np.loadtxt(config['input file'], skiprows=14, unpack=True)
+
+    ncells = len(x)
+
+    position = np.array((x,  y,  z  )).transpose()
+    position = position * constants.au.si.value
+    velocity = np.array((v_x,v_y,v_z)).transpose()
+    velocity = velocity * (velocity_constant / constants.c.si.value)
+
+    delaunay = Delaunay(position)
+
+    # Extract Delaunay vertices (= Voronoi neighbors)
+    (indptr, indices) = delaunay.vertex_neighbor_vertices
+    neighbors = [indices[indptr[k]:indptr[k+1]] for k in range(ncells)]
+
+    # Compute the indices of the boundary particles
+    boundary = set([])
+    for i in range(delaunay.neighbors.shape[0]):
+        m1  = (delaunay.neighbors[i] == -1)
+        nm1 = np.sum(m1)
+        if   (nm1 == 0):
+            pass
+        elif (nm1 == 1):
+            for b in delaunay.simplices[i][m1]:
+                boundary.add(b)
+        elif (nm1 >= 2):
+            for b in delaunay.simplices[i]:
+                boundary.add(b)
+    boundary = list(boundary)
+
+    # Convert to number densities [#/m^3]
+    nH2 = density * density_constant * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
+    nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+
+    tmp = mu * (gamma-1.0) * u * 1.00784 * (units.erg/units.g * constants.u/constants.k_B).to(units.K).value
+
+    trb = (150.0/constants.c.si.value)**2 * np.ones(ncells)
+
+    data = {'position'  : position,
+            'velocity'  : velocity,
+            'boundary'  : boundary,
+            'neighbors' : neighbors,
+            'nH2'       : nH2,
+            'nl1'       : nCO,
+            'tmp'       : tmp,
+            'trb'       : trb      }
+
+
+    for (key,value) in data.items():
+        name = f"{config['project folder']}{config['model name']}_{key}"
+        np.save(name, value, allow_pickle=True)
+
+    return

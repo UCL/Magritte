@@ -29,17 +29,13 @@ public:
 
 
     // Io
-
-    int read(
-            const Io   &io,
-            Parameters &parameters);
-
-    int write (const Io &io) const;
+    void read  (const Io &io, Parameters &parameters);
+    void write (const Io &io                        );
 
 
 private:
 
-    long ncells;                  ///< number of cells
+    size_t ncells;                ///< number of cells
 
     static const string prefix;   ///< prefix to be used in io
 

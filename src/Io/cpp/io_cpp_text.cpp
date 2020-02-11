@@ -43,7 +43,7 @@ bool pathExist (const string &path)
 ///    @param[out] length    : length to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText :: read_length (const string file_name, long &length) const
+int IoText :: read_length (const string file_name, size_t &length) const
 {
   string fname = io_file + file_name;
 
@@ -83,7 +83,7 @@ int IoText :: read_length (const string file_name, long &length) const
 ///    @param[out] width     : width to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText :: read_width (const string file_name, long &width) const
+int IoText :: read_width (const string file_name, size_t &width) const
 {
   string fname = io_file + file_name;
 

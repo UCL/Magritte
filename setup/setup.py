@@ -369,7 +369,7 @@ class Reader ():
         return [getSpeciesNumber (species, partner), orthoPara]
 
 
-def linedata_from_LAMDA_file (fileName, species):
+def linedata_from_LAMDA_file (fileName, species, config):
     """
     Read line data in LAMDA format
     """
@@ -468,6 +468,15 @@ def linedata_from_LAMDA_file (fileName, species):
         ld.colpar[c].Ce              = Ce
 
         ind += 9 + ncol
+
+
+    # Limit to the specified lines if required
+    if ('considered transitions' in config) and (len(config['considered transitions']) > 0):
+        nrad = len (config['considered transitions'])
+        irad = [irad[k] for k in config['considered transitions']]
+        jrad = [jrad[k] for k in config['considered transitions']]
+        A    = [   A[k] for k in config['considered transitions']]
+
 
     # Set derived quantities
     Bs        = [0.0 for _ in range(nrad)]

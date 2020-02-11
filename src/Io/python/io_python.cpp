@@ -38,9 +38,9 @@ IoPython :: IoPython (const string &imp, const string &io_file)
 ///    @param[out] length    : length to be read
 ///////////////////////////////////////////////////////////////
 
-int IoPython :: read_length (const string file_name, long &length) const
+int IoPython :: read_length (const string file_name, size_t &length) const
 {
-   return read_in_python <long> ("read_length", file_name, length);
+   return read_in_python <size_t> ("read_length", file_name, length);
 }
 
 
@@ -52,9 +52,9 @@ int IoPython :: read_length (const string file_name, long &length) const
 ///    @param[out] width     : width to be read
 ///////////////////////////////////////////////////////////////
 
-int IoPython :: read_width (const string file_name, long &length) const
+int IoPython :: read_width (const string file_name, size_t &length) const
 {
-    return read_in_python <long> ("read_width", file_name, length);
+    return read_in_python <size_t> ("read_width", file_name, length);
 }
 
 

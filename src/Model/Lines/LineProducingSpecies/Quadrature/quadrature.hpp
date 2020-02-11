@@ -23,19 +23,13 @@ struct Quadrature
 
 
       // Io
-      int read (
-          const Io         &io,
-          const int         l,
-                Parameters &parameters);
-
-      int write (
-          const Io &io,
-          const int l  ) const;
+      void read  (const Io &io, const int l, Parameters &parameters);
+      void write (const Io &io, const int l                        ) const;
 
 
   private:
 
-      long nquads;   ///< number frequency quadrature points
+      size_t nquads;   ///< number frequency quadrature points
 
       static const string prefix;
 

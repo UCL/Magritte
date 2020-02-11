@@ -22,9 +22,9 @@ struct IoText : public Io
     IoText (const string &io_file);
 
 
-    int  read_length   (const string fname,       long    &length) const override;
+    int  read_length   (const string fname,       size_t  &length) const override;
 
-    int  read_width    (const string fname,       long    &width ) const override;
+    int  read_width    (const string fname,       size_t  &width ) const override;
 
     int  read_number   (const string fname,       size_t  &number) const override;
     int write_number   (const string fname, const size_t  &number) const override;

@@ -21,12 +21,12 @@ struct Linedata
 
   public:
 
-      long   num;                              ///< number of line producing species
+      size_t num;                              ///< number of line producing species
       string sym;                              ///< symbol of line producing species
       double inverse_mass;                     ///< 1/mass of line producing species
 
-      long nlev;                               ///< number of levels
-      long nrad;                               ///< number of radiative transitions
+      size_t nlev;                               ///< number of levels
+      size_t nrad;                               ///< number of radiative transitions
 
       Long1 irad;                              ///< level index of radiative transition
       Long1 jrad;                              ///< level index of radiative transition
@@ -41,22 +41,17 @@ struct Linedata
       Double1 Bs;                              ///< Einstein Bs (stimulated emission)
 
 
-      long ncolpar;                            ///< number of collision partners
+      size_t ncolpar;                            ///< number of collision partners
 
       // Collision partners
       std::vector <CollisionPartner> colpar;   ///< Vector containing collision partner data
 
-      long ncol_tot;
+      size_t ncol_tot;
 
 
       // Io
-      int read (
-          const Io &io,
-          const int l  );
-
-      int write (
-          const Io &io,
-          const int l  ) const;
+      void read  (const Io &io, const int l);
+      void write (const Io &io, const int l) const;
 
 
   private:

@@ -39,12 +39,8 @@ struct Geometry
       long  max_npoints_on_rays = -1;
 
 
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        );
 
 
       // Inlined functions
@@ -79,7 +75,7 @@ struct Geometry
 
   private:
 
-      long nrays;   ///< number of rays
+      size_t nrays;   ///< number of rays
 
 };
 

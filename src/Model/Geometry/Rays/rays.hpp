@@ -26,18 +26,14 @@ struct Rays
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
   private:
 
-      long ncells;                 ///< number of cells
-      long nrays;                  ///< number of rays
+      size_t ncells;                 ///< number of cells
+      size_t nrays;                  ///< number of rays
 
 
       int setup ();

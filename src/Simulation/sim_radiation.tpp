@@ -303,16 +303,12 @@ compute_radiation_field()
 ///    @param[in] r  : number of the ray indicating the direction of the image
 //////////////////////////////////////////////////////////////////////////////
 
-int Simulation::
-compute_and_write_image(
-        const Io &io,
-        const long r)
+int Simulation :: compute_and_write_image (const Io &io, const long r)
 {
-
     // Check spectral discretisation setting
     if (specDiscSetting != ImageSet)
     {
-        logger.write("Error: Spectral discretisation was not set for Images!");
+        logger.write ("Error: Spectral discretisation was not set for Images!");
 
         return (-1);
     }
@@ -323,20 +319,20 @@ compute_and_write_image(
     cout << "Creating an image along ray " << r << "..." << endl;
 
     // Create image object
-    Image image(r, parameters);
+    Image image (r, parameters);
 
     // Get the number of available threads
-    const int nthrds = get_nthreads();
+    const int nthrds = get_nthreads ();
 
     // No need for the Lambda operator here
     const long n_off_diag = 0;
 
 
-    cout << "nthrds = " << nthrds << endl;
-    cout << "ncells = " << parameters.ncells() << endl;
+    cout << "nthrds = " << nthrds                << endl;
+    cout << "ncells = " << parameters.ncells()   << endl;
     cout << "noff_d = " << parameters.n_off_diag << endl;
 
-    const long max_npoints_on_ray = get_max_npoints_on_ray<Rest>(r);
+    const long max_npoints_on_ray = get_max_npoints_on_ray <Rest> (r);
 
     cout << "max_npoints_on_rays = " << max_npoints_on_ray << endl;
 
@@ -347,9 +343,9 @@ compute_and_write_image(
 //// See Issue #6 in Grid-SIMD.
     if (nthrds > MAX_NTHREADS)
     {
-        logger.write("ERROR !!!                                                ");
+        logger.write("!!! ERROR !!!                                            ");
         logger.write("MAX_NTHREADS = ", (long) MAX_NTHREADS, " which is too low");
-        logger.write("(MAX_NTHREADS is defined in Tools/constants.hpp");
+        logger.write("(MAX_NTHREADS is defined in Tools/constants.hpp)         ");
     }
 
     assert (nthrds <= MAX_NTHREADS);
@@ -369,35 +365,29 @@ compute_and_write_image(
     {
         const long R = r - MPI_start(parameters.nrays() / 2);
 
-#   pragma omp parallel default (shared)
+#       pragma omp parallel default (shared)
         {
             // Create a reference to the ray pair object for this thread.
             // Required to avoid calls to the Grid-SIMD allocator (AllignedAllocator)
             // inside of an OpenMP (omp) parallel region.
             RayPair &rayPair = rayPairs[omp_get_thread_num()];
 
-            //OMP_FOR (o, parameters.ncells())
-//    for (long o = 0; o < parameters.ncells(); o++)
-
             for (long o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
             {
-                cout << o << endl;
-
                 const long           ar = geometry.rays.antipod[r];
                 const double dshift_max = get_dshift_max(o);
 
-                RayData rayData_r = geometry.trace_ray<Rest>(o, r, dshift_max);
-                RayData rayData_ar = geometry.trace_ray<Rest>(o, ar, dshift_max);
+                RayData rayData_r  = geometry.trace_ray <Rest> (o, r,  dshift_max);
+                RayData rayData_ar = geometry.trace_ray <Rest> (o, ar, dshift_max);
 
                 rayPair.initialize(rayData_ar.size(), rayData_r.size());
-
 
                 if (rayPair.ndep > 1)
                 {
                     for (long f = 0; f < parameters.nfreqs_red(); f++)
                     {
                         rayPair.first = 0;
-                        rayPair.last = rayPair.ndep - 1;
+                        rayPair.last  = rayPair.ndep-1;
 
                         // Setup and solve the ray equations
                         setup(R, o, f, rayData_ar, rayData_r, rayPair);
@@ -406,8 +396,8 @@ compute_and_write_image(
                         rayPair.solve_for_image();
 
                         // Store solution of the radiation field
-                        image.I_m[o][f] = rayPair.get_Im_at_front(); // rayPair.get_Im ();
-                        image.I_p[o][f] = rayPair.get_Ip_at_end(); // rayPair.get_Ip ();
+                        image.I_m[o][f] = rayPair.get_Im_at_front (); // rayPair.get_Im ();
+                        image.I_p[o][f] = rayPair.get_Ip_at_end   (); // rayPair.get_Ip ();
                     }
                 }
 
@@ -421,20 +411,12 @@ compute_and_write_image(
                         image.I_p[o][f] = radiation.I_bdy[b][r][f];
                     }
                 }
-
-
             } // end of loop over cells
         }
-
     }
 
-
     image.set_coordinates(geometry);
-
-
     image.write(io);
 
-
     return (0);
-
 }

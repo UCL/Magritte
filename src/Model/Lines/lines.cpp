@@ -94,13 +94,12 @@ void Lines :: setup (Parameters &parameters)
 
 void Lines :: write (const Io &io) const
 {
-  cout << "Writing lines..." << endl;
+    cout << "Writing lines..." << endl;
 
-
-  for (size_t l = 0; l < lineProducingSpecies.size(); l++)
-  {
-    lineProducingSpecies[l].write (io, l);
-  }
+    for (size_t l = 0; l < lineProducingSpecies.size(); l++)
+    {
+        lineProducingSpecies[l].write (io, l);
+    }
 }
 
 

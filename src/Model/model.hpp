@@ -37,7 +37,7 @@ struct Model
 
     // Io
     void read  (const Io &io);
-    void write (const Io &io) const;
+    void write (const Io &io);
 };
 
 

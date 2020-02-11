@@ -12,7 +12,7 @@ from magritte     import Simulation
 from setup        import Setup, linedata_from_LAMDA_file, make_file_structure
 from quadrature   import H_roots, H_weights
 from ioMagritte   import IoPython, IoText
-from input        import process_mesher_input, process_amrvac_input
+from input        import process_mesher_input, process_amrvac_input, process_phantom_input
 
 
 def read_config(config_file) -> dict:
@@ -36,6 +36,15 @@ def read_config(config_file) -> dict:
         raise ValueError('nquads should be a positive integer.')
     if (config['nrays'  ] <= 0):
         raise ValueError('nrays should be a positive integer.')
+    if (config['ray mode'] == 'single'):
+        if (config['nrays'] != 1):
+            raise ValueError('If ray mode = single, nrays should be equal to 1.')
+        if (len(config['ray']) == 3):
+            config['ray'] = np.array(config['ray'])
+            # Normalize the ray vector
+            config['ray'] = config['ray'] / np.linalg.norm(config['ray'])
+        else:
+            raise ValueError('If ray mode = single, the ray vector should be specified as [n_x, n_y, n_z].')
     # Set currently not implemented defaults
     config['dimension'] = 3
     config['nspecs'   ] = 5
@@ -44,24 +53,22 @@ def read_config(config_file) -> dict:
     return config
 
 
-def configure_simulation(config, data) -> Simulation():
+def configure_simulation(config) -> Simulation():
     '''
     :param config:
     :param data:
     :return: configured simulation object
     '''
     print("Creating and configuring a Magritte simulation object...")
+    dataName = f"{config['project folder']}{config['model name']}_"
     # Define simulation and setup objects
     simulation = Simulation()
     setup      = Setup(dimension=config['dimension']) # TODO: Remove setup object
-    # Get ncells from the mesh
-    ncells = data['position'].shape[0]
     # Check the lengths of the data elements
     # for name, array in data.items():
     #     if (array.shape[0] != ncells):
     #         raise ValueError(f'Shape of {name} does not correspond to the number of points.')
     # Set parameters
-    simulation.parameters.set_ncells         (ncells)
     simulation.parameters.set_nrays          (config['nrays'     ])
     simulation.parameters.set_nspecs         (config['nspecs'    ])
     simulation.parameters.set_nlspecs        (config['nlspecs'   ])
@@ -70,25 +77,43 @@ def configure_simulation(config, data) -> Simulation():
     simulation.parameters.set_pop_prec       (config['pop_prec'  ])
     simulation.parameters.n_off_diag       = (config['n_off_diag'])
     # Set position and velocity
-    simulation.geometry.cells.position = data['position']
-    simulation.geometry.cells.velocity = data['velocity']
+    simulation.geometry.cells.position = np.load(dataName+'position.npy')
+    simulation.geometry.cells.velocity = np.load(dataName+'velocity.npy')
+    # Get ncells from the mesh
+    ncells = len(simulation.geometry.cells.position)
+    simulation.parameters.set_ncells (ncells)
     # Set neighbors (connections between points)
-    simulation.geometry.cells.n_neighbors = [len(nb) for nb in data['neighbors']]
-    simulation.geometry.cells.neighbors   =                    data['neighbors']
+    print("Setting the neighbors...")
+    # Make neighbors into a rectangular array (required for hdf5)
+    # Extract the number of neighbors for each point
+    neighbors = np.load(dataName+'neighbors.npy', allow_pickle=True)
+    n_nbs    = [len (nb) for nb in neighbors]
+    nbs_rect = np.zeros((ncells, np.max(n_nbs)), dtype=int).tolist()
+    for p in range(ncells):
+        for (i,nb) in enumerate(neighbors[p]):
+            nbs_rect[p][i] = nb
+    simulation.geometry.cells.n_neighbors = n_nbs
+    simulation.geometry.cells.neighbors   = nbs_rect
     # Set boundary
-    simulation.geometry.boundary.boundary2cell_nr = data['boundary']
+    print("Setting the boundary...")
+    simulation.geometry.boundary.boundary2cell_nr = np.load(dataName+'boundary.npy')
     # Set rays
-    simulation.geometry.rays = setup.rays (nrays=config['nrays'], cells=simulation.geometry.cells)
+    if (config['ray mode'] == 'single'):
+        simulation.geometry.rays.rays    = [np.array(config['ray'])]
+        simulation.geometry.rays.weights = [1.0]
+    else:
+        simulation.geometry.rays = setup.rays (nrays=config['nrays'], cells=simulation.geometry.cells)
     # Set thermodynamics
-    simulation.thermodynamics.temperature.gas   = data['tmp']
-    simulation.thermodynamics.turbulence.vturb2 = data['trb']
+    print("Setting temperature and turbulence...")
+    simulation.thermodynamics.temperature.gas   = np.load(dataName+'tmp.npy')
+    simulation.thermodynamics.turbulence.vturb2 = np.load(dataName+'trb.npy')
     # Set Chemistry
-    abundances = np.array((np.zeros(ncells), data['nl1'], data['nH2'], np.zeros(ncells), np.ones(ncells))).transpose()
-    simulation.chemistry.species.abundance = abundances
+    simulation.chemistry.species.abundance = np.array((np.zeros(ncells), np.load(dataName+'nl1.npy'), np.load(dataName+'nH2.npy'), np.zeros(ncells), np.ones(ncells))).transpose()
     simulation.chemistry.species.sym       = ['dummy0', config['line producing species'][0], 'H2', 'e-', 'dummy1']
 
+    dataFile = f"{config['data folder']}{config['line data files'][0]}"
     simulation.lines.lineProducingSpecies.append (
-        linedata_from_LAMDA_file (f"{config['data folder']}{config['line data files'][0]}", simulation.chemistry.species))
+        linedata_from_LAMDA_file (dataFile, simulation.chemistry.species, config))
 
     simulation.lines.lineProducingSpecies[0].quadrature.roots   = H_roots   (config['nquads'])
     simulation.lines.lineProducingSpecies[0].quadrature.weights = H_weights (config['nquads'])
@@ -164,10 +189,12 @@ def configure(config) -> Simulation:
         data = process_mesher_input(config)
     elif (config['input type'].lower() == 'amrvac'):
         data = process_amrvac_input(config)
+    elif (config['input type'].lower() == 'phantom'):
+        process_phantom_input(config)
     else:
-        ValueError('Please specify a valid input type (magritte, amrvac)')
+        raise ValueError('Please specify a valid input type (magritte, mesher, amrvac or phantom).')
     # return a configured simulation object
-    return configure_simulation(config=config, data=data)
+    return configure_simulation(config=config)
 
 
 if (__name__ == '__main__'):

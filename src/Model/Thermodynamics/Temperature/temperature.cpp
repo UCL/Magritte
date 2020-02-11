@@ -16,13 +16,9 @@ const string Temperature::prefix = "Thermodynamics/Temperature/";
 ///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
-int Temperature ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Temperature :: read (const Io &io, Parameters &parameters)
 {
-
-  cout << "Reading temperature" << endl;
+  cout << "Reading temperature..." << endl;
 
 
   // Get number of cells from length of temperature/gas file
@@ -39,10 +35,6 @@ int Temperature ::
 
   //    dust.resize (ncells);
   //gas_prev.resize (ncells);
-
-
-  return (0);
-
 }
 
 
@@ -52,18 +44,11 @@ int Temperature ::
 ///    @param[in] io: io object
 /////////////////////////////////
 
-int Temperature ::
-    write (
-        const Io &io) const
+void Temperature :: write (const Io &io) const
 {
-
-  cout << "Writing temperature" << endl;
+  cout << "Writing temperature..." << endl;
 
 
   // Read gas temperature file
   io.write_list (prefix+"gas", gas);
-
-
-  return (0);
-
 }

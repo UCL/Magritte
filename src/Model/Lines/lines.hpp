@@ -65,9 +65,9 @@ struct Lines
 
   private:
 
-      long ncells;
-      long nlines;
-      long nlspecs;
+      size_t ncells;
+      size_t nlines;
+      size_t nlspecs;
 
       Long1 nrad_cum;
 
