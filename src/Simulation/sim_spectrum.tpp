@@ -1,8 +1,16 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
+#include "Functions/heapsort.hpp"
+
+
 ///  Computer for spectral (=frequency) discretisation
 //////////////////////////////////////////////////////
 
-int Simulation ::
-    compute_spectral_discretisation ()
+int Simulation :: compute_spectral_discretisation ()
 {
 
   OMP_PARALLEL_FOR (p, parameters.ncells())
@@ -195,11 +203,8 @@ int Simulation ::
 ///    @param[in] width : corresponding line width for frequency bins
 /////////////////////////////////////////////////////////////////////
 
-int Simulation ::
-    compute_spectral_discretisation_image (
-        const double width                )
+int Simulation :: compute_spectral_discretisation_image (const double width)
 {
-
 
   OMP_PARALLEL_FOR (p, parameters.ncells())
   {

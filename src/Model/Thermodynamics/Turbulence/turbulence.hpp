@@ -22,17 +22,13 @@ struct Turbulence
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
   private:
 
-      long ncells;
+      size_t ncells;
 
       static const string prefix;
 

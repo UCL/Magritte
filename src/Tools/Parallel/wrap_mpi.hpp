@@ -22,8 +22,8 @@ using std::string;
 
   #define MPI_COMM_WORLD 1
 
-  inline int MPI_Comm_size (int dummy, int *comm_size) {*comm_size = 1;}
-  inline int MPI_Comm_rank (int dummy, int *comm_rank) {*comm_rank = 0;}
+  inline void MPI_Comm_size (int dummy, int *comm_size) {*comm_size = 1;}
+  inline void MPI_Comm_rank (int dummy, int *comm_rank) {*comm_rank = 0;}
 
 #endif
 
@@ -31,14 +31,12 @@ using std::string;
 /// MPI_comm_size: return size of communicator
 //////////////////////////////////////////////
 
-inline int MPI_comm_size ()
+inline size_t MPI_comm_size ()
 {
-
   int comm_size;
   MPI_Comm_size (MPI_COMM_WORLD, &comm_size);
 
   return comm_size;
-
 }
 
 
@@ -47,14 +45,12 @@ inline int MPI_comm_size ()
 /// MPI_comm_rank: return rank of communicator
 //////////////////////////////////////////////
 
-inline int MPI_comm_rank ()
+inline size_t MPI_comm_rank ()
 {
+    int comm_rank;
+    MPI_Comm_rank (MPI_COMM_WORLD, &comm_rank);
 
-  int comm_rank;
-  MPI_Comm_rank (MPI_COMM_WORLD, &comm_rank);
-
-  return comm_rank;
-
+    return comm_rank;
 }
 
 
@@ -65,9 +61,7 @@ inline int MPI_comm_rank ()
 
 inline string str_MPI_comm_rank ()
 {
-  
-  return std::to_string (MPI_comm_rank ());
-
+    return std::to_string (MPI_comm_rank ());
 }
 
 
@@ -83,10 +77,9 @@ inline string str_MPI_comm_rank ()
 ///    @param[in] total: length of the range
 ////////////////////////////////////////////
 
-inline long MPI_start (
-    const long total  )
+inline size_t MPI_start (const size_t total)
 {
-  return (MPI_comm_rank() * total) / MPI_comm_size();
+    return (MPI_comm_rank() * total) / MPI_comm_size();
 }
 
 
@@ -96,10 +89,9 @@ inline long MPI_start (
 ///    @param[in] total: length of the range
 ////////////////////////////////////////////
 
-inline long MPI_stop (
-    const long total )
+inline size_t MPI_stop (const size_t total)
 {
-  return ((MPI_comm_rank()+1) * total) / MPI_comm_size();
+    return ((MPI_comm_rank()+1) * total) / MPI_comm_size();
 }
 
 
@@ -109,10 +101,9 @@ inline long MPI_stop (
 ///    @param[in] total: length of the range
 /////////////////////////////////////////////////////////////
 
-inline long MPI_length (
-    const long total   )
+inline size_t MPI_length (const size_t total)
 {
-  return MPI_stop (total) - MPI_start (total);
+    return MPI_stop (total) - MPI_start (total);
 }
 
 
@@ -124,7 +115,7 @@ inline long MPI_length (
 ////////////////////////////////////////////////////////////////////////////////
 
 #define MPI_PARALLEL_FOR(index, total) \
-    for (long index = MPI_start (total); index < MPI_stop (total); index++)
+    for (size_t index = MPI_start (total); index < MPI_stop (total); index++)
 
 
 

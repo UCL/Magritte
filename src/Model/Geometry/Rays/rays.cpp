@@ -19,78 +19,39 @@ const string Rays::prefix = "Geometry/Rays/";
 ///  @param[in] parameters: model parameters object
 ///////////////////////////////////////////////////
 
-int Rays ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Rays :: read (const Io &io, Parameters &parameters)
 {
+    cout << "Reading rays..." << endl;
 
-  cout << "Reading rays" << endl;
+    io.read_length (prefix+"rays", nrays);
 
+    if (nrays < 2) {cout << "Warning: nrays should be greater than one!!!" << endl;}
 
-  long nrays_x, nrays_y, nrays_z;
+    parameters.set_nrays (nrays);
 
-  io.read_width (prefix+"rays_x", nrays_x);
-  io.read_width (prefix+"rays_y", nrays_y);
-  io.read_width (prefix+"rays_z", nrays_z);
-
-  if ( (nrays_x == nrays_y) && (nrays_y == nrays_z))
-  {
-    nrays = nrays_x;
-  }
-  else
-  {
-    return (-1);
-  }
+    ncells = parameters.ncells ();
 
 
-  parameters.set_nrays (nrays);
+    rays.   resize (nrays);
+    weights.resize (nrays);
+    antipod.resize (nrays);
 
 
-  ncells   = parameters.ncells   ();
-  ncameras = parameters.ncameras ();
+    // Read rays
+    Double2 rays_array (nrays, Double1(3));
 
-  ncells_plus_ncameras = ncells + ncameras;
+    io.read_array(prefix+"rays", rays_array);
 
+    for (size_t r = 0; r < nrays; r++)
+    {
+        rays[r] = {rays_array[r][0], rays_array[r][1], rays_array[r][2]};
+    }
 
-  // Resize all containers
-
-  x.resize (ncells_plus_ncameras);
-  y.resize (ncells_plus_ncameras);
-  z.resize (ncells_plus_ncameras);
-
-  weights.resize (ncells_plus_ncameras);
-  antipod.resize (ncells_plus_ncameras);
-
-  for (long p = 0; p < ncells_plus_ncameras; p++)
-  {
-    x[p].resize (nrays);
-    y[p].resize (nrays);
-    z[p].resize (nrays);
-
-    weights[p].resize (nrays);
-    antipod[p].resize (nrays);
-  }
+    io.read_list (prefix+"weights", weights);
 
 
-  // Read rays
-
-  //io.read_3_vector (prefix+"rays", x, y, z);
-
-  io.read_array (prefix+"rays_x", x);
-  io.read_array (prefix+"rays_y", y);
-  io.read_array (prefix+"rays_z", z);
-
-  io.read_array (prefix+"weights", weights);
-
-
-  // Setup rays
-
-  setup ();
-
-
-  return (0);
-
+    // Setup rays
+    setup ();
 }
 
 
@@ -100,25 +61,19 @@ int Rays ::
 ///  @param[in] io: io object
 /////////////////////////////////////////////////
 
-int Rays ::
-    write (
-        const Io &io) const
+void Rays :: write (const Io &io) const
 {
+    cout << "Writing rays..." << endl;
 
-  cout << "Writing rays" << endl;
+    Double2 rays_array (rays.size(), Double1(3));
 
+    for (size_t r = 0; r < rays.size(); r++)
+    {
+        rays_array[r] = {rays[r][0], rays[r][1], rays[r][2]};
+    }
 
-  //io.write_3_vector (prefix+"rays", x, y, z);
-
-  io.write_array (prefix+"rays_x", x);
-  io.write_array (prefix+"rays_y", y);
-  io.write_array (prefix+"rays_z", z);
-
-  io.write_array (prefix+"weights", weights);
-
-
-  return (0);
-
+    io.write_array (prefix+"rays",    rays_array);
+    io.write_list  (prefix+"weights", weights   );
 }
 
 
@@ -151,24 +106,21 @@ int Rays ::
 {
 
   // (!) HEALPix vectors are not perfectly antipodal, so a tolerance is given
-
   const double tolerance = 1.0E-9;
 
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    for (long r1 = 0; r1 < nrays; r1++)
+//  OMP_PARALLEL_FOR (p, ncells)
+//  {
+    for (size_t r1 = 0; r1 < nrays; r1++)
     {
-      for (long r2 = 0; r2 < nrays; r2++)
+      for (size_t r2 = 0; r2 < nrays; r2++)
       {
-        if (    (fabs(x[p][r1]+x[p][r2]) < tolerance)
-             && (fabs(y[p][r1]+y[p][r2]) < tolerance)
-             && (fabs(z[p][r1]+z[p][r2]) < tolerance) )
+        if ( (rays[r1] + rays[r2]).squaredNorm() < tolerance)
         {
-          antipod[p][r1] = r2;
+          antipod[r1] = r2;
         }
       }
     }
-  }
+//  }
 
   return (0);
 

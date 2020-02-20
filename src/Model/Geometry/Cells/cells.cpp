@@ -17,72 +17,73 @@ const string Cells::prefix = "Geometry/Cells/";
 ///    @param[in] parameters : Parameters object of the model
 /////////////////////////////////////////////////////////////
 
-int Cells ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Cells :: read (const Io &io, Parameters &parameters)
 {
+    cout << "Reading cells..." << endl;
 
-  cout << "Reading cells" << endl;
+    /// Read and set ncells
+    io.read_length (prefix+"position", ncells);
+    parameters.set_ncells (ncells);
 
+    position.resize (ncells);
+    velocity.resize (ncells);
 
-  io.read_length (prefix+"cells", ncells_plus_ncameras);
+    Double2 position_array (position.size(), Double1(3));
+    Double2 velocity_array (velocity.size(), Double1(3));
 
-  ncameras = parameters.ncameras ();
-  ncells   = ncells_plus_ncameras - ncameras;
+    io.read_array(prefix+"position", position_array);
+    io.read_array(prefix+"velocity", velocity_array);
 
-  cout << "ncells                = " << ncells << endl;
-  cout << "ncameras              = " << ncameras << endl;
-  cout << "ncells_plus_ncameras  = " << ncells_plus_ncameras << endl;
+    for (size_t p = 0; p < position.size(); p++)
+    {
+        position[p] = {position_array[p][0], position_array[p][1], position_array[p][2]};
+    }
 
-
-  parameters.set_ncells (ncells);
-
-
-  // Read cell centers and velocities
-  x.resize (ncells_plus_ncameras);
-  y.resize (ncells_plus_ncameras);
-  z.resize (ncells_plus_ncameras);
-
-  io.read_3_vector (prefix+"cells", x, y, z);
-
-  vx.resize (ncells_plus_ncameras);
-  vy.resize (ncells_plus_ncameras);
-  vz.resize (ncells_plus_ncameras);
-
-  io.read_3_vector (prefix+"velocities", vx, vy, vz);
+    for (size_t p = 0; p < velocity.size(); p++)
+    {
+        velocity[p] = {velocity_array[p][0], velocity_array[p][1], velocity_array[p][2]};
+    }
 
 
-  // Convert velocities in m/s to fractions for C
-  //for (long p = 0; p < ncells_plus_ncameras; p++)
-  //{
-  //  vx[p] /= CC;
-  //  vy[p] /= CC;
-  //  vz[p] /= CC;
-  //}
+    // Read number of neighbors
+    n_neighbors.resize (ncells);
+
+    io.read_list (prefix+"n_neighbors", n_neighbors);
 
 
-  // Read number of neighbors
-  n_neighbors.resize (ncells_plus_ncameras);
+    // Resize the neighbors to rectangular size
+//    const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
+//                                                    n_neighbors.end  () );
 
-  io.read_list (prefix+"n_neighbors", n_neighbors);
+    size_t tot_n_neighbors = 0;
+    for (size_t p = 0; p < ncells; p++)
+    {
+        tot_n_neighbors += n_neighbors[p];
+    }
+
+    neighbors.resize (ncells);
+
+    Long1 lin_neighbors;
+    lin_neighbors.reserve (tot_n_neighbors);
+
+//    for (size_t p = 0; p < ncells; p++)
+//    {
+//        neighbors[p].resize (max_n_neighbors);
+//    }
+
+    // Read nearest neighbors lists
+//    io.read_array (prefix+"neighbors", neighbors);
+    io.read_list (prefix+"neighbors", lin_neighbors);
 
 
-  // Resize the neighbors to appropriate sizes
-  neighbors.resize (ncells_plus_ncameras);
-
-  for (long p = 0; p < ncells_plus_ncameras; p++)
-  {
-    neighbors[p].resize (n_neighbors[p]);
-  }
-
-
-  // Read nearest neighbors lists
-  io.read_array (prefix+"neighbors", neighbors);
-
-
-  return (0);
-
+    // Resize the neighbors to appropriate sizes
+    Long1::iterator index = lin_neighbors.begin();
+    for (size_t p = 0; p < ncells; p++)
+    {
+        neighbors[p].reserve (n_neighbors[p]);
+        neighbors[p].insert  (neighbors[p].begin(), index, index+n_neighbors[p]);
+        index += n_neighbors[p];
+    }
 }
 
 
@@ -92,28 +93,64 @@ int Cells ::
 ///  @param[in] io : io object
 ///////////////////////////////////////////////
 
-int Cells ::
-    write (
-        const Io &io) const
+void Cells :: write (const Io &io)
 {
+    cout << "Writing cells..." << endl;
 
-  cout << "Writing cells" << endl;
+    // Write cell positions and velocities
+    Double2 position_array (position.size(), Double1(3));
+    Double2 velocity_array (position.size(), Double1(3));
+
+    for (size_t p = 0; p < position.size(); p++)
+    {
+        position_array[p] = {position[p][0], position[p][1], position[p][2]};
+    }
+
+    for (size_t p = 0; p < velocity.size(); p++)
+    {
+        velocity_array[p] = {velocity[p][0], velocity[p][1], velocity[p][2]};
+    }
+
+    io.write_array(prefix+"position", position_array);
+    io.write_array(prefix+"velocity", velocity_array);
+
+    size_t tot_n_neighbors = 0;
+
+    // Might not be initialized at this point, hence the resize!
+    n_neighbors.resize (neighbors.size());
+
+    // Make sure n_neighbours is properly set
+    for (size_t p = 0; p < neighbors.size(); p++)
+    {
+            n_neighbors[p]  =   neighbors[p].size();
+        tot_n_neighbors    += n_neighbors[p];
+    }
+
+    // Write number of neighbors and neighbors lists
+    io.write_list  (prefix+"n_neighbors", n_neighbors);
+
+    Long1 lin_neighbors;
+    lin_neighbors.reserve (tot_n_neighbors);
+
+      // Resize the neighbors to rectangular size
+//    const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
+//                                                    n_neighbors.end  () );
+
+//    cout << "max_n_neighbours = " << max_n_neighbors << endl;
+
+    for (size_t p = 0; p < neighbors.size(); p++)
+    {
+//        neighbors[p].resize (max_n_neighbors);
+        lin_neighbors.insert(lin_neighbors.end(), neighbors[p].begin(), neighbors[p].end());
+    }
 
 
-  // Write cell centers and velocities
+      io.write_list (prefix+"neighbors", lin_neighbors);
+//    io.write_array (prefix+"neighbors", neighbors);
 
-  io.write_3_vector (prefix+"cells", x, y, z);
-
-  io.write_3_vector (prefix+"velocities", vx, vy, vz);
-
-
-  // Write number of neighbors and neighbors lists
-
-  io.write_list  (prefix+"n_neighbors", n_neighbors);
-
-  io.write_array (prefix+"neighbors", neighbors);
-
-
-  return (0);
-
+    // Resize the neighbors to appropriate sizes
+//    for (size_t p = 0; p < neighbors.size(); p++)
+//    {
+//        neighbors[p].resize (n_neighbors[p]);
+//    }
 }

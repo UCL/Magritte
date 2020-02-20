@@ -29,7 +29,7 @@ inline RayData Geometry ::
 
   long nxt = get_next (origin, ray, origin, Z, dZ);
 
-  //cout << "nxt " << nxt << endl;
+  // cout << "nxt " << nxt << endl;
 
   if (nxt != -1)   // if we are not going out of grid
   {
@@ -40,7 +40,9 @@ inline RayData Geometry ::
 
     //cout << std::scientific << std::setprecision (16);
     //cout << "shift_crt " << shift_crt << endl;
+    //cout << "shift_nxt " << shift_nxt << endl;
     //cout << cells.vx[crt]*CC << "   " << cells.vy[crt]*CC << "   " << cells.vz[crt]*CC << endl;
+    //cout << cells.vx[nxt]*CC << "   " << cells.vy[nxt]*CC << "   " << cells.vz[nxt]*CC << endl;
 
     //cout << "----------------------------" << endl;
 
@@ -50,10 +52,29 @@ inline RayData Geometry ::
     while (!boundary.boundary[nxt])   // while we have not hit the boundary
     {
       shift_crt = shift_nxt;
-      nxt       = get_next                  (origin, ray, nxt, Z, dZ);
+
+      const long nxtnxt = nxt;
+
+      crt = nxt;
+      nxt = get_next (origin, ray, nxt, Z, dZ);
+
+      if (nxt < 0)
+      {
+        cout << "--- ERROR ------------------------------------------" << endl;
+        cout << "origin = " << origin << " nxt = " << nxtnxt << " ray = " << ray << endl;
+        cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
+        cout << "                                                    " << endl;
+        cout << "----------------------------------------------------" << endl;
+      }
+
       shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
 
-      //cout << "nxt " << nxt << endl;
+      // cout << "nxt " << nxt << endl;
+      //cout << std::scientific << std::setprecision (16);
+      //cout << "shift_crt " << shift_crt << endl;
+      //cout << "shift_nxt " << shift_nxt << endl;
+      //cout << cells.vx[crt]*CC << "   " << cells.vy[crt]*CC << "   " << cells.vz[crt]*CC << endl;
+      //cout << cells.vx[nxt]*CC << "   " << cells.vy[nxt]*CC << "   " << cells.vz[nxt]*CC << endl;
 
       set_data (crt, nxt, shift_crt, shift_nxt, dZ, dshift_max, rayData);
 
@@ -110,8 +131,10 @@ inline int Geometry ::
     if ( (n_interpl > 10000) ||
          (n_interpl <     0)    )
     {
-      // Too many (> 10000) interpolations needed!
-      // Or dshift_max is negative (probably due to overflow)
+      cout << "--- ERROR ------------------------------------------" << endl;
+      cout << "Too many (> 10000) interpolations needed!"            << endl;
+      cout << "or dshift_max is negative (probably due to overflow)" << endl;
+      cout << "----------------------------------------------------" << endl;
 
       return (-1);
     }
@@ -158,6 +181,7 @@ inline int Geometry ::
   {
     //cout << "else..." << endl;
 
+    data.crt    = crt;
     data.cellNr = nxt;
     data.shift  = shift_nxt;
     data.dZ     = dZ_loc;
@@ -199,31 +223,30 @@ inline long Geometry ::
   // Pick neighbor on "right side" closest to ray
 
   double dmin = std::numeric_limits<double>::max();   // Initialize to "infinity"
+  long   next = -1;                                   // return -1 when there is no next cell
 
-  long next = -1;   // return -1 when there is no next cell
+  ///////////////////////
+  //double Z_new_max = 0.0;
+  //long   n_new_max = 0;
+  ///////////////////////
 
-
-  for (long n = 0; n < cells.n_neighbors[current]; n++)
+  for (const long neighbor : cells.neighbors[current])
   {
-    long neighbor = cells.neighbors[current][n];
+    const Vector3d R = cells.position[neighbor] - cells.position[origin];
 
-    double position[3];
+    const double Z_new = R.dot(rays.rays[ray]);
 
-    position[0] = cells.x[neighbor] - cells.x[origin];
-    position[1] = cells.y[neighbor] - cells.y[origin];
-    position[2] = cells.z[neighbor] - cells.z[origin];
-
-    double Z_new =   position[0]*rays.x[origin][ray]
-                   + position[1]*rays.y[origin][ray]
-                   + position[2]*rays.z[origin][ray];
+    ///////////////////////
+    //if (Z_new > Z_new_max)
+    //{
+    //  Z_new_max = Z_new;
+    //  n_new_max = neighbor;
+    //}
+    ///////////////////////
 
     if (Z_new > Z)
     {
-      double distance_from_origin2 =   position[0]*position[0]
-                                     + position[1]*position[1]
-                                     + position[2]*position[2];
-
-      double distance_from_ray2 = distance_from_origin2 - Z_new*Z_new;
+      const double distance_from_ray2 = R.dot(R) - Z_new*Z_new;
 
       if (distance_from_ray2 < dmin)
       {
@@ -232,9 +255,47 @@ inline long Geometry ::
         dZ   = Z_new - Z;   // such that dZ > 0.0
       }
     }
+  }
 
-  } // end of n loop over neighbors
 
+  //////////////////////////////////////////////////
+  // Try to catch the error of no neighbors found.
+  //////////////////////////////////////////////////
+  //if (next == -1)
+  //{
+  //  cout << "Intervening!" << endl;
+  //  cout << "cell with nxt=-1 was : " << current << endl;
+
+  //  // Just do one try with the furthest points (largest Z)
+
+  //  for (const long neighbor : cells.neighbors[n_new_max])
+  //  {
+  //    if (neighbor != current)
+  //    {
+  //      const double x = cells.x[neighbor] - cells.x[origin];
+  //      const double y = cells.y[neighbor] - cells.y[origin];
+  //      const double z = cells.z[neighbor] - cells.z[origin];
+
+  //      const double Z_new =  x * rays.x[origin][ray]
+  //                          + y * rays.y[origin][ray]
+  //                          + z * rays.z[origin][ray];
+
+  //      if (Z_new > Z)
+  //      {
+  //        const double distance_from_ray2 = (x*x + y*y + z*z) - Z_new*Z_new;
+
+  //        if (distance_from_ray2 < dmin)
+  //        {
+  //          dmin = distance_from_ray2;
+  //          next = neighbor;
+  //          dZ   = Z_new - Z;   // such that dZ > 0.0
+  //        }
+  //      }
+  //    }
+  //  }
+
+  //}
+  //////////////////////////////////////////////////
 
   // Update distance along ray
 
@@ -267,9 +328,7 @@ inline double Geometry ::
 
   if (frame == CoMoving)
   {
-    return 1.0 - (  (cells.vx[current] - cells.vx[origin]) * rays.x[origin][ray]
-                  + (cells.vy[current] - cells.vy[origin]) * rays.y[origin][ray]
-                  + (cells.vz[current] - cells.vz[origin]) * rays.z[origin][ray]);
+    return 1.0 - (cells.velocity[current]-cells.velocity[origin]).dot(rays.rays[ray]);
   }
 
   // Rest frame implementation
@@ -283,12 +342,92 @@ inline double Geometry ::
 
     if (ray >= nrays/2)
     {
-      ray_correct = rays.antipod[origin][ray];
+      ray_correct = rays.antipod[ray];
     }
 
-    return 1.0 - (  cells.vx[current] * rays.x[origin][ray_correct]
-                  + cells.vy[current] * rays.y[origin][ray_correct]
-                  + cells.vz[current] * rays.z[origin][ray_correct]);
+    return 1.0 - cells.velocity[current].dot(rays.rays[ray_correct]);
   }
 
 }
+
+
+
+
+inline size_t get_required_npoints (
+        const double   shift_crt,
+        const double   shift_nxt,
+        const double   dshift_max  )
+{
+    const double dshift     = shift_nxt - shift_crt;
+    const double dshift_abs = fabs (dshift);
+
+    // If velocity gradient is not well-sampled enough
+    if (dshift_abs > dshift_max)
+    {
+        // Interpolate velocity gradient field
+        const size_t n_interpol = dshift_abs/dshift_max + 1;
+
+        if (n_interpol > 10000) {throw "Too many (> 10 000) interpolations needed!";}
+
+        return n_interpol;
+    }
+
+    else
+    {
+        return 1;
+    }
+}
+
+
+
+
+template <Frame frame>
+inline size_t Geometry :: get_npoints_on_ray (
+        const size_t origin,
+        const size_t ray,
+        const double dshift_max              ) const
+{
+    size_t npoints = 0;
+
+    // Find projected cells on ray
+    double  Z = 0.0;   // distance from origin (o)
+    double dZ = 0.0;   // last increment in Z
+
+    long nxt = get_next (origin, ray, origin, Z, dZ);
+
+    if (nxt != -1)   // if we are not going out of grid
+    {
+        double shift_crt = get_doppler_shift <frame> (origin, ray, origin);
+        double shift_nxt = get_doppler_shift <frame> (origin, ray, nxt   );
+
+        npoints += get_required_npoints (shift_crt, shift_nxt, dshift_max);
+
+        while (!boundary.boundary[nxt])   // while we have not hit the boundary
+        {
+            shift_crt = shift_nxt;
+
+            const long nxtnxt = nxt;
+
+            nxt = get_next (origin, ray, nxt, Z, dZ);
+
+            if (nxt < 0)
+            {
+                cout << "--- ERROR ------------------------------------------" << endl;
+                cout << "origin = " << origin << " nxt = " << nxtnxt << " ray = " << ray << endl;
+                cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
+                cout << "                                                    " << endl;
+                cout << "----------------------------------------------------" << endl;
+            }
+
+            shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
+
+            npoints += get_required_npoints (shift_crt, shift_nxt, dshift_max);
+        }
+    }
+
+    return npoints;
+}
+
+
+
+

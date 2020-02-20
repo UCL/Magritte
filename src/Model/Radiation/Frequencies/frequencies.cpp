@@ -21,14 +21,9 @@ const string Frequencies::prefix = "Radiation/Frequencies/";
 ///    @param[in] parameters : model parameters object
 //////////////////////////////////////////////////////
 
-int Frequencies ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+int Frequencies :: read (const Io &io, Parameters &parameters)
 {
-
-  cout << "Reading frequencies" << endl;
-
+  cout << "Reading frequencies..." << endl;
 
   ncells = parameters.ncells ();
   nlines = parameters.nlines ();

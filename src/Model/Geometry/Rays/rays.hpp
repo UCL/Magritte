@@ -18,33 +18,22 @@
 
 struct Rays
 {
+    public:
 
-  public:
-
-      Double2 x;         ///< x component of direction vector
-      Double2 y;         ///< y component of direction vector
-      Double2 z;         ///< z component of direction vector
-
-      Double2 weights;   ///< weights for angular integration
-
-      Long2 antipod;     ///< ray number of antipodal ray
+        vector<Vector3d> rays;      ///< direction vector
+        Double1          weights;   ///< weights for angular integration
+        Long1            antipod;   ///< ray number of antipodal ray
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
   private:
 
-      long ncells;                 ///< number of cells
-      long ncameras;               ///< number of cameras
-      long ncells_plus_ncameras;   ///< number of cells plus number of cameras
-      long nrays;                  ///< number of rays
+      size_t ncells;                 ///< number of cells
+      size_t nrays;                  ///< number of rays
 
 
       int setup ();

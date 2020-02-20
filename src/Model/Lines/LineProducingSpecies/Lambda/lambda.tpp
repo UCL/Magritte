@@ -62,30 +62,6 @@ inline int Lambda ::
 }
 
 
-//inline void Lambda ::
-//    add_entry (
-//        const double Ls_new,
-//        const long   nr_new )
-//{
-//
-//  for (long index = 0; index < nr.size(); index++)
-//  {
-//    if (nr[index] == nr_new)
-//    {
-//      Ls[index] += Ls_new;
-//
-//      return;
-//    }
-//  }
-//
-//  Ls.push_back (Ls_new);
-//  nr.push_back (nr_new);
-//
-//  return;
-//
-//}
-
-
 
 
 /// Index of the first element belonging to p and k

@@ -29,9 +29,13 @@ struct Logger
     file_name = "magritte_" + std::to_string (MPI_comm_rank()) + ".log";
 
     std::ofstream file (file_name);
+  }
 
-    file << "--- Log file for Magritte ---" << endl;
-    file << "_____________________________" << endl;
+  Logger (const string file_name_local)
+  {
+    file_name = file_name_local + ".log";
+
+    std::ofstream file (file_name);
   }
 
 
@@ -47,6 +51,13 @@ struct Logger
   void write (
       const string text,
       const long   number ) const
+  {
+    write (text + std::to_string (number));
+  }
+
+  void write (
+      const string text,
+      const size_t number) const
   {
     write (text + std::to_string (number));
   }
@@ -74,81 +85,12 @@ struct Logger
     write (text1 + std::to_string (number) + text2);
   }
 
+  void write_line (void)
+  {
+    write ("-------------------------------------------------");
+  }
 
 };
-
-
-//inline void write_to_log (
-//    const string text    )
-//{
-//  std::cout << text << std::endl;
-//
-//
-//  std::ofstream file (io_file + file_name + ".txt");
-//
-//  file << std::scientific << std::setprecision (16);
-//
-//  file << number;
-//
-//  file.close();
-//
-//}
-//
-//
-//inline void write_to_log (
-//    const double number  )
-//{
-//  std::cout << number << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text,
-//    const double number  )
-//{
-//  std::cout << text << number << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const double number,
-//    const string text    )
-//{
-//  std::cout << number << text << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text1,
-//    const double number1,
-//    const string text2,
-//    const double number2 )
-//{
-//  std::cout << text1 << number1 << text2 << number2 << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text1,
-//    const double number1,
-//    const string text2,
-//    const double number2,
-//    const string text3   )
-//{
-//  std::cout << text1 << number1 << text2 << number2 << text3 << std::endl;
-//}
-//
-//
-//inline void write_to_log (
-//    const string text1,
-//    const double number1,
-//    const string text2,
-//    const double number2,
-//    const string text3,
-//    const double number3 )
-//{
-//  std::cout << text1 << number1 << text2 << number2 << text3 << number3 << std::endl;
-//}
 
 
 #endif // __LOGGER_HPP_INCLUDED__

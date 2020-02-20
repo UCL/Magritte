@@ -16,14 +16,31 @@
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 
+#if (GPU_ACCELERATION)
+# include "Raypair/raypair.cuh"
+#endif
+
 
 enum SpecDiscSetting {None, LineSet, ImageSet};
+
 
 ///  Simulation:
 ////////////////
 
 struct Simulation : public Model
 {
+    Double2 dtaus;
+    Double2 dZs;
+    Double2 chis;
+    Long2   pre;
+    Long2   pos;
+
+# if (GPU_ACCELERATION)
+    int handleCudaError (cudaError_t error);
+    int gpu_get_device_properties   (void);
+    int gpu_compute_radiation_field (void);
+# endif
+
 
   Double1 error_max;
   Double1 error_mean;
@@ -33,20 +50,13 @@ struct Simulation : public Model
 
   //vReal tau_max = 10.0;
 
-  int compute_spectral_discretisation ();
-
-  int compute_spectral_discretisation_image (
-      const double width                    );
-
-
-  // In sim_radiation.cpp
-
-  int compute_boundary_intensities ();
-
-  int compute_radiation_field ();
+  int compute_spectral_discretisation       (void);
+  int compute_spectral_discretisation_image (const double width);
+  int compute_boundary_intensities          (void);
+  int compute_radiation_field               (void);
 
   inline double get_dshift_max (
-        const long o           );
+        const long o           ) const;
 
   inline void setup_using_scattering (
       const long     R,
@@ -62,7 +72,7 @@ struct Simulation : public Model
       const long     f,
             RayData &rayData_ar,
             RayData &rayData_r,
-            RayPair &rayPair    ) const;
+            RayPair &rayPair    ); // to append the dtaus etc const;
 
   inline void get_eta_and_chi (
       const vReal &freq_scaled,
@@ -84,24 +94,36 @@ struct Simulation : public Model
 
   int compute_LTE_level_populations ();
 
-  int compute_level_populations (
-      const Io &io              );
+  long compute_level_populations (
+      const Io &io               );
 
-  int compute_level_populations_opts (
+  long compute_level_populations (
       const Io   &io,
       const bool  use_Ng_acceleration,
       const long  max_niterations     );
 
   void calc_Jeff ();
 
-  int compute_number_of_points_on_rays () const;
+
+  template <Frame frame>
+  Long1 get_npoints_on_ray (
+      const long r         ) const;
+
+  template <Frame frame>
+  long get_max_npoints_on_ray (
+      const long r            ) const;
+
+  template <Frame frame>
+  Long2 get_npoints_on_rays () const;
+
+  template <Frame frame>
+  long get_max_npoints_on_rays ();
 
 
-  private:
-
-      //vReal freq_diff;      ///< helper variable;
-      //vReal line_profile;   ///< helper variable;
-
+  inline void get_radiation_field_from_boundary (
+      const long R,
+      const long r,
+      const long o                              );
 
 };
 

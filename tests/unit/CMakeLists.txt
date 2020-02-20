@@ -35,44 +35,63 @@ if    (MPI_PARALLEL)
   find_package (MPI REQUIRED)
   # Include headers
   include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL true)
+else  (MPI_PARALLEL)
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL false)
 endif (MPI_PARALLEL)
+
+# If GPU acceleration
+if    (GPU_ACCELERATION)
+  set (MAGRITTE_GPU_ACCELERATION true)
+else  (GPU_ACCELERATION)
+  set (MAGRITTE_GPU_ACCELERATION false)
+endif (GPU_ACCELERATION)
+
+# Write configuration file
+configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
+                ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
 
 
 # Create test executables
 #########################
 
 add_executable        (test_geometry.exe   Model/Geometry/test_geometry.cpp)
-target_link_libraries (test_geometry.exe   _Magritte   TestMain            )
+target_link_libraries (test_geometry.exe   Magritte   TestMain            )
 
 
 #add_executable (test_model.exe
 #  Model/test_model.cpp)
 #target_link_libraries (test_model.exe
-#  _Magritte
+#  Magritte
 #  TestMain
 #  PyIo)
 #
 #add_executable (test_parameters.exe
 #  Model/test_parameters.cpp)
 #target_link_libraries (test_parameters.exe
-#  _Magritte
+#  Magritte
 #  TestMain
 #  PyIo)
 
 add_executable        (test_simulation.exe  Simulation/test_simulation.cpp)
-target_link_libraries (test_simulation.exe   _Magritte   TestMain)
+target_link_libraries (test_simulation.exe   Magritte   TestMain)
 
 add_executable        (test_raypair.exe  Simulation/Raypair/test_raypair.cpp)
-target_link_libraries (test_raypair.exe   _Magritte   TestMain)
+target_link_libraries (test_raypair.exe   Magritte   TestMain)
+
+add_executable        (test_raypair_constr.exe  Simulation/Raypair/test_raypair_constr.cpp)
+target_link_libraries (test_raypair_constr.exe   Magritte   TestMain)
 
 add_executable        (test_lineProducingSpecies.exe   Model/Lines/LineProducingSpecies/test_lineProducingSpecies.cpp)
-target_link_libraries (test_lineProducingSpecies.exe   _Magritte   TestMain)
+target_link_libraries (test_lineProducingSpecies.exe   Magritte   TestMain)
 
 add_executable        (test_wrap_Grid.exe   Tools/Parallel/test_wrap_Grid.cpp)
-target_link_libraries (test_wrap_Grid.exe   _Magritte   TestMain)
+target_link_libraries (test_wrap_Grid.exe   Magritte   TestMain)
 
 add_executable        (test_radiation.exe   Model/Radiation/test_radiation.cpp)
-target_link_libraries (test_radiation.exe   _Magritte   TestMain)
+target_link_libraries (test_radiation.exe   Magritte   TestMain)
 
 # Link MPI libraries
 if    (MPI_PARALLEL)
@@ -84,7 +103,7 @@ endif (MPI_PARALLEL)
 #add_executable (test_lambda.exe
 #  Model/Lines/LineProducingSpecies/Lambda/test_lambda.cpp)
 #target_link_libraries (test_lambda.exe
-#  _Magritte
+#  Magritte
 #  TestMain)
 
 ## Create executable to test model

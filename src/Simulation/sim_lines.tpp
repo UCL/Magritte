@@ -1,3 +1,9 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
 ///  compute_LTE_level_populations: sets level populations to LTE values
 ////////////////////////////////////////////////////////////////////////
 
@@ -18,32 +24,37 @@ int Simulation ::
 
 
 
-///  compute_level_populations: computes level populations self-consistenly with
-///  the radiation field assuming statistical equilibrium
-////////////////////////////////////////////////////////////////////////////////
+///  computer for level populations self-consistenly with the radiation field
+///  assuming statistical equilibrium (detailed balance for the levels)
+///  @param[in] io : io object (for writing level populations)
+///  @return number of iteration done
+/////////////////////////////////////////////////////////////////////////////
 
-int Simulation ::
+long Simulation ::
     compute_level_populations (
         const Io   &io        )
 {
 
   const bool use_Ng_acceleration = true;
-  const long max_niterations     = 100;
+  const long max_niterations     = 1000;
 
-  compute_level_populations_opts (io, use_Ng_acceleration, max_niterations);
-
-  return (0);
+  return compute_level_populations (io, use_Ng_acceleration, max_niterations);
 
 }
 
 
 
 
-///  compute_level_populations
-//////////////////////////////
+///  computer for level populations self-consistenly with the radiation field
+///  assuming statistical equilibrium (detailed balance for the levels)
+///  @param[in] io                  : io object (for writing level populations)
+///  @param[in] use_Ng_acceleration : true if Ng acceleration has to be used
+///  @param[in] max_niterations     : maximum number of iterations
+///  @return number of iteration done
+///////////////////////////////////////////////////////////////////////////////
 
-int Simulation ::
-    compute_level_populations_opts (
+long Simulation ::
+    compute_level_populations (
         const Io   &io,
         const bool  use_Ng_acceleration,
         const long  max_niterations     )
@@ -75,7 +86,7 @@ int Simulation ::
 
   // Initialize errors
   error_mean.clear ();
-  error_max.clear ();
+  error_max .clear ();
 
   // Initialize some_not_converged
   bool some_not_converged = true;
@@ -122,7 +133,7 @@ int Simulation ::
     for (int l = 0; l < parameters.nlspecs(); l++)
     {
       error_mean.push_back (lines.lineProducingSpecies[l].relative_change_mean);
-      error_max.push_back  (lines.lineProducingSpecies[l].relative_change_max);
+      error_max .push_back (lines.lineProducingSpecies[l].relative_change_max);
 
       if (lines.lineProducingSpecies[l].fraction_not_converged > 0.005)
       {
@@ -146,7 +157,7 @@ int Simulation ::
   logger.write ("Converged after ", iteration, " iterations");
 
 
-  return (0);
+  return iteration;
 
 }
 

@@ -18,6 +18,13 @@
 struct RayPair
 {
 
+    Double1 dtaus;
+    Double1 dZs;
+    Double1 chis;
+    Long2   pre;
+    Long2   pos;
+
+
   public:
 
       long n_ar;       ///< number of points on the antipodal ray side
@@ -40,7 +47,11 @@ struct RayPair
       long n_off_diag = 0;   ///< number of off-diagonal rows on one side (default = 0)
 
 
-      RayPair (
+      //RayPair (
+      //    const long length,
+      //    const long n_off_diag);
+
+      int resize (
           const long length,
           const long n_off_diag);
 
@@ -160,7 +171,6 @@ struct RayPair
       vReal1 inverse_C;            ///< helper variable
 
 
-
 };
 
 
@@ -168,5 +178,25 @@ struct RayPair
 #include "raypair_solver.tpp"
 #include "raypair_lambda.tpp"
 
+
+
+class rayPair
+{
+
+  public:
+
+    const std::size_t ncells;
+    const std::size_t nfreqs;
+
+    rayPair(const std::size_t ncs, const std::size_t nfs);
+    ~rayPair();
+
+    virtual void setup() = 0;
+    virtual void solve() = 0;
+    virtual void store() = 0;
+
+
+
+};
 
 #endif // __RAYPAIR_HPP_INCLUDED__

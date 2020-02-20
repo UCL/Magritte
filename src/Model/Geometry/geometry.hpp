@@ -7,10 +7,10 @@
 #ifndef __GEOMETRY_HPP_INCLUDED__
 #define __GEOMETRY_HPP_INCLUDED__
 
+#include <exception>
 
 #include "Io/io.hpp"
 #include "Model/parameters.hpp"
-#include "Model/Geometry/Cameras/cameras.hpp"
 #include "Model/Geometry/Cells/cells.hpp"
 #include "Model/Geometry/Rays/rays.hpp"
 #include "Model/Geometry/Boundary/boundary.hpp"
@@ -34,20 +34,14 @@ struct Geometry
   public:
 
       Cells    cells;
-
       Rays     rays;
-
       Boundary boundary;
+      
+      long  max_npoints_on_rays = -1;
 
-      Cameras  cameras;
 
-
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        );
 
 
       // Inlined functions
@@ -56,6 +50,12 @@ struct Geometry
           const long   origin,
           const long   ray,
           const double dshift_max) const;
+
+    template <Frame frame>
+    inline size_t get_npoints_on_ray (
+            const size_t origin,
+            const size_t ray,
+            const double dshift_max  ) const;
 
       inline int set_data (
           const long     crt,
@@ -82,7 +82,7 @@ struct Geometry
 
   private:
 
-      long nrays;   ///< number of rays
+      size_t nrays;   ///< number of rays
 
 };
 

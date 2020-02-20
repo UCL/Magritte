@@ -13,55 +13,29 @@
 ///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
-int Geometry ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Geometry :: read (const Io &io, Parameters &parameters)
 {
+    cout << "Reading geometry..." << endl;
 
-  cout << "Reading geometry" << endl;
+    cells   .read (io, parameters);
+    rays    .read (io, parameters);
+    boundary.read (io, parameters);
 
-
-  cameras.read  (io, parameters);
-
-  cells.read    (io, parameters);
-
-  rays.read     (io, parameters);
-
-  boundary.read (io, parameters);
-
-
-  nrays = parameters.nrays();
-
-
-  return (0);
-
+    nrays = parameters.nrays();
 }
 
 
 
 
-///  write: write the dat astructure
-///  @param[in] io: io object
+///  write: write the dat a structure
+///    @param[in] io: io object
 ////////////////////////////////////////////////
 
-int Geometry ::
-    write (
-        const Io &io) const
+void Geometry :: write (const Io &io)
 {
+    cout << "Writing geometry..." << endl;
 
-  cout << "Writing geometry" << endl;
-
-
-  cameras.write  (io);
-
-  cells.write    (io);
-
-  rays.write     (io);
-
-  boundary.write (io);
-
-
-  return (0);
-
+    cells.   write (io);
+    rays.    write (io);
+    boundary.write (io);
 }

@@ -16,8 +16,6 @@ inline long search (
     const double   value)
 {
 
-  long middle;
-
   long start = 0;
   long stop  = x.size()-1;
 

@@ -18,37 +18,26 @@ const string LineProducingSpecies::prefix = "Lines/LineProducingSpecies_";
 ///    @param[in] parameters : model parameters object
 ////////////////////////////////////////////////////////////////
 
-int LineProducingSpecies ::
-    read (
-        const Io         &io,
-        const long        l,
-              Parameters &parameters)
+int LineProducingSpecies :: read (const Io &io, const long l, Parameters &parameters)
 {
+  cout << "Reading lineProducingSpecies..." << endl;
 
-  cout << "Reading lineProducingSpecies" << endl;
 
-
-  linedata.read (io, l);
-
+  linedata  .read (io, l            );
   quadrature.read (io, l, parameters);
 
 
-  ncells = parameters.ncells ();
+  ncells = parameters.ncells();
   nquads = parameters.nquads();
 
 
   lambda.initialize (parameters, linedata.nrad);
-  //lambda.     resize (ncells);
-  //lambda_size.resize (ncells);
 
   Jeff.resize (ncells);
   Jlin.resize (ncells);
 
-  for (long p = 0; p < ncells; p++)
+  for (size_t p = 0; p < ncells; p++)
   {
-    //lambda     [p].resize (linedata.nrad);
-    //lambda_size[p].resize (linedata.nrad);
-
     Jeff[p].resize (linedata.nrad);
     Jlin[p].resize (linedata.nrad);
   }
@@ -56,11 +45,11 @@ int LineProducingSpecies ::
 
   nr_line.resize (ncells);
 
-  for (long p = 0; p < ncells; p++)
+  for (size_t p = 0; p < ncells; p++)
   {
     nr_line[p].resize (linedata.nrad);
 
-    for (int k = 0; k < linedata.nrad; k++)
+    for (size_t k = 0; k < linedata.nrad; k++)
     {
       nr_line[p][k].resize (nquads);
     }
@@ -94,7 +83,7 @@ int LineProducingSpecies ::
 
   OMP_PARALLEL_FOR (p, ncells)
   {
-    for (long i = 0; i < linedata.nlev; i++)
+    for (size_t i = 0; i < linedata.nlev; i++)
     {
       if (err_prev1 == 0) {population_prev1 (index (p, i)) = pops_prev1[p][i];}
       if (err_prev2 == 0) {population_prev2 (index (p, i)) = pops_prev2[p][i];}
@@ -121,7 +110,7 @@ int LineProducingSpecies ::
         const long l  ) const
 {
 
-  cout << "Writing lineProducingSpecies" << endl;
+  cout << "Writing lineProducingSpecies..." << endl;
 
 
   linedata.write (io, l);
@@ -224,6 +213,7 @@ int LineProducingSpecies ::
 
   Double2 pops (ncells, Double1 (linedata.nlev));
 
+  cout << "Writing populations" << endl;
 
   OMP_PARALLEL_FOR (p, ncells)
   {
@@ -246,76 +236,13 @@ int LineProducingSpecies ::
 
 
 
-///  Initializer for the Lambda operator
-////////////////////////////////////////
+///  Print the levelpopulations to screen
+/////////////////////////////////////////
 
 int LineProducingSpecies ::
-    initialize_Lambda ()
+    print_populations () const
 {
-
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    for (long k = 0; k < linedata.nrad; k++)
-    {
-      lambda.Ls[p][k].clear();
-      lambda.nr[p][k].clear();
-    }
-  }
-
-
-  lambda.Lss.clear();
-  lambda.nrs.clear();
-
-  lambda.size.clear();
-
+  cout << population << endl;
 
   return (0);
-
-}
-
-
-
-
-///  Gatherer for the Lambda's from the MPI distributed processes
-/////////////////////////////////////////////////////////////////
-
-int LineProducingSpecies ::
-    gather_Lambda ()
-{
-
-  // Gather the sizes of the Lambda operators at each process
-
-  // OMP_PARALLEL_FOR (p, ncells)
-  // {
-  //   for (long k = 0; k < linedata.nrad; k++)
-  //   {
-  //     lambda_size[p][k] = lambda[p][k].size();
-  //   }
-  // }
-  //
-  //
-  //
-  // long  length =
-  // Long1 lengths (MPI_comm_size ());
-  //
-  //
-  //
-  //
-  // for (long p = 0; p < ncells; p++)
-  // {
-  //   for (long k = 0; k < linedata.nrad; k++)
-  //   {
-  //
-  //
-  //
-  //     for (long m = 0; m < lambda[p][k].nr.size(); m++)
-  //     {
-  //     }
-  //
-  //   }
-  // }
-
-
-  return (0);
-
 }

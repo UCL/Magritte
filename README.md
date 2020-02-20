@@ -38,4 +38,5 @@ magritte_conda_environment contains the default packages plus:
 * `CMake`, for building;
 * `Eigen`, for linear algebra;
 * `pybind11`, for interfacing with python;
-* `Grid_SIMD`, for vectorisation.
+* `Grid_SIMD`, for vectorisation;
+* `cuda`, for GPU acceleration.

@@ -25,6 +25,9 @@ inline void RayPair ::
 
   ndep = n_ar + n_r + 1;
 
+  first = 0;
+  last  = ndep-1;
+
   lnotch_at_origin = 0;
 
 

@@ -17,6 +17,7 @@
 struct ProjectedCellData
 {
 
+  long     crt;
   long  cellNr;
   double shift;
   double    dZ;

@@ -26,8 +26,6 @@ struct LineProducingSpecies
       Quadrature quadrature;           ///< data for integral over line
 
       Lambda lambda;                   ///< Approximate Lambda Operator (ALO)
-      //Lambda2 lambda;                  ///< Approximate Lambda Operator (ALO)
-      //Long2   lambda_size;             ///< Approximate Lambda Operator (ALO) size
 
       Double2 Jlin;                    ///< actual mean intensity in the line
       Double2 Jeff;                    ///< effective mean intensity in the line (actual - ALO)
@@ -94,10 +92,10 @@ struct LineProducingSpecies
 
       inline void update_using_Ng_acceleration ();
 
-
-      int initialize_Lambda ();
-
-      int gather_Lambda ();
+      /// For tests in python... ////
+      ///////////////////////////////
+      int print_populations () const;
+      ///////////////////////////////
 
 
       long ncells;

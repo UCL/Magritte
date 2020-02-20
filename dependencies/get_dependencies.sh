@@ -6,12 +6,23 @@ rm -rf pybind11
 rm -rf Grid-SIMD
 rm -rf scorep
 
-# Get Eigen
-wget http://bitbucket.org/eigen/eigen/get/3.3.7.tar.gz
+# # Get Eigen
+# wget http://bitbucket.org/eigen/eigen/get/3.3.7.tar.gz
+# # Extract only the Eigen headers
+# tar -zxvf 3.3.7.tar.gz eigen-eigen-323c052e1731/Eigen/ --directory Eigen --strip-components=1
+# # Remove tar ball
+# rm 3.3.7.tar.gz
+
+# Get latest Eigen (there is no stable release yet that works with latest CUDA)
+wget https://github.com/eigenteam/eigen-git-mirror/archive/master.zip
 # Extract only the Eigen headers
-tar -zxvf 3.3.7.tar.gz eigen-eigen-323c052e1731/Eigen/ --directory Eigen --strip-components=1
-# Remove tar ball
-rm 3.3.7.tar.gz
+unzip master.zip 'eigen-git-mirror-master/Eigen/*'
+# Rename folder
+mv eigen-git-mirror-master/Eigen/ Eigen/
+# Remove old folder
+rm -r eigen-git-mirror-master/
+# Remove zip file
+rm master.zip
 
 # Get pybind11
 wget https://github.com/pybind/pybind11/archive/v2.2.4.tar.gz

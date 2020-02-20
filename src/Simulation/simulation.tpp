@@ -1,3 +1,9 @@
+// Magritte: Multidimensional Accelerated General-purpose Radiative Transfer
+//
+// Developed by: Frederik De Ceuster - University College London & KU Leuven
+// _________________________________________________________________________
+
+
 #include "Tools/Parallel/wrap_Grid.hpp"
 
 
@@ -8,12 +14,12 @@
 
 inline double Simulation ::
     get_dshift_max (
-        const long o)
+        const long o) const
 {
 
   double dshift_max = std::numeric_limits<double>::max();   // Initialize to "infinity"
 
-  for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+  for (const LineProducingSpecies &lspec : lines.lineProducingSpecies)
   {
     const double inverse_mass   = lspec.linedata.inverse_mass;
     const double new_dshift_max = parameters.max_width_fraction
@@ -24,6 +30,7 @@ inline double Simulation ::
       dshift_max = new_dshift_max;
     }
   }
+
 
   return dshift_max;
 
@@ -182,7 +189,7 @@ inline void Simulation ::
         const long     f,
               RayData &rayData_ar,
               RayData &rayData_r,
-              RayPair &rayPair    ) const
+              RayPair &rayPair    ) // to append the dtaus etc const
 {
 
   vReal eta;
@@ -232,9 +239,17 @@ inline void Simulation ::
       get_eta_and_chi (freq_scaled, data.cellNr, data.lnotch, eta, chi);
 
       //cout << "Got eta and chi     " << data.lnotch << endl;
-
       rayPair.set_term1_and_term2 (eta, chi,               index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index);
+
+
+      //dtaus[origin].push_back(rayPair.dtau[index]);
+      //dZs  [origin].push_back(data.dZ            );
+      //chis [origin].push_back(chi+chi_prev       );
+      //pre  [origin].push_back(data.crt           );
+      //pos  [origin].push_back(data.cellNr        );
+
+
       //cout << "Set terms and dtau " << endl;
 
       //tau_ar += rayPair.dtau[index];
@@ -290,6 +305,14 @@ inline void Simulation ::
 
       rayPair.set_term1_and_term2 (eta, chi,               index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index-1);
+
+
+      //dtaus[origin].push_back(rayPair.dtau[index]);
+      //dZs  [origin].push_back(data.dZ            );
+      //chis [origin].push_back(chi+chi_prev       );
+      //pre  [origin].push_back(data.crt           );
+      //pos  [origin].push_back(data.cellNr        );
+
 
       //tau_r += rayPair.dtau[index-1];
 
@@ -457,4 +480,138 @@ inline void Simulation ::
 # endif
 
 
+}
+
+
+
+
+///  Getter for the number of points on a ray pair in each point
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+/////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+Long1 Simulation :: get_npoints_on_ray (const long r) const
+{
+  Long1 npoints (parameters.ncells ());
+
+  OMP_PARALLEL_FOR (o, parameters.ncells ())
+  {
+    const long           ar = geometry.rays.antipod[r];
+    const double dshift_max = get_dshift_max (o);
+
+    const size_t n_r  = geometry.get_npoints_on_ray <frame> (o, r,  dshift_max);
+    const size_t n_ar = geometry.get_npoints_on_ray <frame> (o, ar, dshift_max);
+
+    npoints[o] = n_ar + n_r + 1;
+  }
+
+  return npoints;
+}
+
+
+
+
+///  Getter for the maximum number of points on a ray pair
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+/////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+long Simulation :: get_max_npoints_on_ray (const long r) const
+{
+  const Long1 npoints_on_ray = get_npoints_on_ray <frame> (r);
+
+  return *std::max_element (npoints_on_ray.begin(), npoints_on_ray.end());
+}
+
+
+
+
+///  Getter for the number of points on each ray pair in each point
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+///////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+Long2 Simulation ::
+    get_npoints_on_rays () const
+{
+
+  Long2 npoints (parameters.nrays()/2);
+
+
+  MPI_PARALLEL_FOR (r, parameters.nrays()/2)
+  {
+    npoints[r] = get_max_npoints_on_ray <frame> (r);
+  }
+
+
+  return npoints;
+
+}
+
+
+
+
+///  Getter for the maximum number of points on a ray pair
+///    @param[in] frame : frame of reference (for velocities)
+///    ! Frame is required since different reference frames yield
+///      different interpolations of the velocities and hence
+///      differnet numbers of points along the ray pair
+///////////////////////////////////////////////////////////////////
+
+template <Frame frame>
+long Simulation :: get_max_npoints_on_rays ()
+{
+  long  maximum = 0;
+
+  MPI_PARALLEL_FOR (r, parameters.nrays()/2)
+  {
+    const long local_max = get_max_npoints_on_ray <frame> (r);
+
+    if (maximum < local_max) maximum = local_max;
+  }
+
+  // Set max_npoints_on_rays in geometry
+  geometry.max_npoints_on_rays = maximum;
+
+  return maximum;
+}
+
+
+
+
+inline void Simulation ::
+    get_radiation_field_from_boundary (
+        const long R,
+        const long r,
+        const long o                  )
+{
+  const double weight_ang = 2.0 * geometry.rays.weights[r];
+  const long            b = geometry.boundary.cell2boundary_nr[o];
+
+  for (long f = 0; f < parameters.nfreqs_red(); f++)
+  {
+    const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
+    const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
+
+    const long ind = radiation.index (o,f);
+
+    radiation.J[ind] += weight_ang * u;
+
+    if (parameters.use_scattering())
+    {
+      radiation.u[R][ind] = u;
+      radiation.v[R][ind] = v;
+    }
+  }
+
+  return;
 }

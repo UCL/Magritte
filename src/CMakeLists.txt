@@ -36,56 +36,101 @@ else  (GRID_SIMD)
   set (MAGRITTE_GRID_SIMD false)
 endif (GRID_SIMD)
 
+if    (GPU_ACCELERATION)
+  set (MAGRITTE_GPU_ACCELERATION true)
+else  (GPU_ACCELERATION)
+  set (MAGRITTE_GPU_ACCELERATION false)
+endif (GPU_ACCELERATION)
 
 # Write configuration file
 configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
-  ${CMAKE_SOURCE_DIR}/src/configure.hpp)
+                ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
 
 # Create Magritte library
-add_library (_Magritte
-  Io/io.cpp
-  Io/cpp/io_cpp_text.cpp
-  Model/model.cpp
-  Model/parameters.cpp
-  Model/Geometry/geometry.cpp
-  Model/Geometry/Cameras/cameras.cpp
-  Model/Geometry/Cells/cells.cpp
-  Model/Geometry/Rays/rays.cpp
-  Model/Geometry/Boundary/boundary.cpp
-  Model/Chemistry/chemistry.cpp
-  Model/Chemistry/Species/species.cpp
-  Model/Lines/lines.cpp
-  Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp
-  Model/Lines/LineProducingSpecies/Quadrature/quadrature.cpp
-  Model/Lines/LineProducingSpecies/Linedata/linedata.cpp
-  Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp
-  Model/Radiation/radiation.cpp
-  Model/Radiation/Frequencies/frequencies.cpp
-  Model/Thermodynamics/thermodynamics.cpp
-  Model/Thermodynamics/Temperature/temperature.cpp
-  Model/Thermodynamics/Turbulence/turbulence.cpp
-  Functions/heapsort.cpp
-  Simulation/simulation.cpp
-  Simulation/Raypair/raypair.cpp
-  Simulation/Image/image.cpp)
-
+if    (GPU_ACCELERATION)
+  # Add CUDA package
+  find_package (CUDA REQUIRED)
+  # Create the library
+  cuda_add_library (Magritte
+    Io/cpp/io_cpp_text.cpp
+    Model/model.cpp
+    Model/parameters.cpp
+    Model/Geometry/geometry.cpp
+    Model/Geometry/Cells/cells.cpp
+    Model/Geometry/Rays/rays.cpp
+    Model/Geometry/Boundary/boundary.cpp
+    Model/Chemistry/chemistry.cpp
+    Model/Chemistry/Species/species.cpp
+    Model/Lines/lines.cpp
+    Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp
+    Model/Lines/LineProducingSpecies/Quadrature/quadrature.cpp
+    Model/Lines/LineProducingSpecies/Linedata/linedata.cpp
+    Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp
+    Model/Radiation/radiation.cpp
+    Model/Radiation/Frequencies/frequencies.cpp
+    Model/Thermodynamics/thermodynamics.cpp
+    Model/Thermodynamics/Temperature/temperature.cpp
+    Model/Thermodynamics/Turbulence/turbulence.cpp
+    Functions/heapsort.cpp
+    Simulation/simulation.cpp
+    Simulation/simulation.cu
+    Simulation/Raypair/raypair.cpp
+    Simulation/Raypair/raypair.cu
+    Simulation/Image/image.cpp)
+  # Set library properties
+  set_target_properties (Magritte PROPERTIES PREFIX "gpu")
+else  (GPU_ACCELERATION)
+  add_library (Magritte
+    Io/cpp/io_cpp_text.cpp
+    Model/model.cpp
+    Model/parameters.cpp
+    Model/Geometry/geometry.cpp
+    Model/Geometry/Cells/cells.cpp
+    Model/Geometry/Rays/rays.cpp
+    Model/Geometry/Boundary/boundary.cpp
+    Model/Chemistry/chemistry.cpp
+    Model/Chemistry/Species/species.cpp
+    Model/Lines/lines.cpp
+    Model/Lines/LineProducingSpecies/lineProducingSpecies.cpp
+    Model/Lines/LineProducingSpecies/Quadrature/quadrature.cpp
+    Model/Lines/LineProducingSpecies/Linedata/linedata.cpp
+    Model/Lines/LineProducingSpecies/Linedata/CollisionPartner/collisionPartner.cpp
+    Model/Radiation/radiation.cpp
+    Model/Radiation/Frequencies/frequencies.cpp
+    Model/Thermodynamics/thermodynamics.cpp
+    Model/Thermodynamics/Temperature/temperature.cpp
+    Model/Thermodynamics/Turbulence/turbulence.cpp
+    Functions/heapsort.cpp
+    Simulation/simulation.cpp
+    Simulation/Raypair/raypair.cpp
+    Simulation/Image/image.cpp)
+  # Set library properties
+  set_target_properties (Magritte PROPERTIES PREFIX "cpu")
+endif (GPU_ACCELERATION)
 
 if    (GRID_SIMD)
-  target_link_libraries (_Magritte   GridSIMD)
+  target_link_libraries (Magritte   GridSIMD)
 endif (GRID_SIMD)
 
 if    (MPI_PARALLEL)
-  target_link_libraries (_Magritte   ${MPI_C_LIBRARIES})
+  target_link_libraries (Magritte   ${MPI_C_LIBRARIES})
 endif (MPI_PARALLEL)
-
 
 if    (PYTHON_IO)
   # Include pybind11
   include_directories (../dependencies/pybind11/include)
   # Create library for python io
-  add_library (PyIo
-    Io/io.cpp
-    Io/python/io_python.cpp)
+  add_library (PyIo Io/python/io_python.cpp)
   # Link embedding
-  target_link_libraries (PyIo PRIVATE   pybind11::embed)
+  target_link_libraries (PyIo PRIVATE pybind11::embed)
+  # Link into Magritte
+  target_link_libraries (Magritte   PyIo)
 endif (PYTHON_IO)
+
+# Add directory containing Magritte's Python bindings
+if    (PYTHON_BINDINGS)
+  add_subdirectory (bindings)
+endif (PYTHON_BINDINGS)
+
+# Add directory containing Magritte's examples
+add_subdirectory (examples)

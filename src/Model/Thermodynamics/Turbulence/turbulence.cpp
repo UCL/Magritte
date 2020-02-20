@@ -17,14 +17,9 @@ const string Turbulence::prefix = "Thermodynamics/Turbulence/";
 ///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
-int Turbulence ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Turbulence :: read (const Io &io, Parameters &parameters)
 {
-
-  cout << "Reading turbulence" << endl;
-
+  cout << "Reading turbulence..." << endl;
 
   // Get number of cells from length of temperature/gas file
   io.read_length (prefix+"vturb2", ncells);
@@ -38,10 +33,6 @@ int Turbulence ::
 
   // Read gas turbulence file
   io.read_list (prefix+"vturb2", vturb2);
-
-
-  return (0);
-
 }
 
 
@@ -51,18 +42,10 @@ int Turbulence ::
 ///    @param[in] io: io object
 /////////////////////////////////
 
-int Turbulence ::
-    write (
-        const Io &io) const
+void Turbulence :: write (const Io &io) const
 {
-
-  cout << "Writing turbulence" << endl;
-
+  cout << "Writing turbulence..." << endl;
 
   // Read gas turbulence file
   io.write_list (prefix+"vturb2", vturb2);
-
-
-  return (0);
-
 }

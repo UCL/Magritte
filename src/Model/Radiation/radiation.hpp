@@ -40,17 +40,9 @@ struct Radiation
       vReal3 I_bdy;     ///< intensity at the boundary (r,b,f)
 
 
-
-
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
-
-
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
     inline long index (
@@ -135,23 +127,22 @@ struct Radiation
 
 
     int initialize_J ();
-
     int MPI_reduce_J ();
-
     int calc_U_and_V ();
 
 
   private:
 
-      long ncells;                ///< number of cells
-      long nrays;                 ///< number of rays
-      long nrays_red;             ///< reduced number of rays
-      long nfreqs;                ///< number of frequencies
-      long nfreqs_red;            ///< reduced number of frequencies
-      long nboundary;             ///< number of boundary cells
+      size_t ncells;                ///< number of cells
+      size_t nrays;                 ///< number of rays
+      size_t nrays_red;             ///< reduced number of rays
+      size_t nfreqs;                ///< number of frequencies
+      size_t nfreqs_red;            ///< reduced number of frequencies
+      size_t nboundary;             ///< number of boundary cells
 
-      bool use_scattering;        ///< number of boundary cells
+      bool use_scattering;          ///< number of boundary cells
 
+      static const string prefix;
 
 };
 

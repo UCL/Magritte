@@ -15,6 +15,7 @@ using std::list;
 using std::string;
 using std::to_string;
 #include <Eigen/Core>
+using Eigen::Vector3d;
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 

@@ -14,23 +14,19 @@
 #include "Tools/Parallel/wrap_Grid.hpp"
 #include "Tools/logger.hpp"
 
+const string Radiation::prefix = "Radiation/";
+
 
 ///  read: read in data structure
 ///    @param[in] io: io object
 ///    @param[in] parameters: model parameters object
 /////////////////////////////////////////////////////
 
-int Radiation ::
-    read (
-        const Io         &io,
-              Parameters &parameters)
+void Radiation :: read (const Io &io, Parameters &parameters)
 {
-
-  cout << "Reading radiation" << endl;
-
+  cout << "Reading radiation..." << endl;
 
   frequencies.read (io, parameters);
-
 
   ncells     = parameters.ncells     ();
   nrays      = parameters.nrays      ();
@@ -38,12 +34,14 @@ int Radiation ::
   nfreqs_red = parameters.nfreqs_red ();
   nboundary  = parameters.nboundary  ();
 
+
   use_scattering = parameters.use_scattering ();
 
-  cout << "use_scattering = " << use_scattering << endl;
+
+  if (use_scattering) {cout << "using scattering, make sure you have enough memory!" << endl;}
+  else                {cout << "Not using scattering!"                               << endl;}
 
   nrays_red = MPI_length (nrays/2);
-
 
   parameters.set_nrays_red (nrays_red);
 
@@ -84,9 +82,6 @@ int Radiation ::
     }
   }
 
-
-  return (0);
-
 }
 
 
@@ -96,15 +91,24 @@ int Radiation ::
 ///    @param[in] io: io object
 /////////////////////////////////
 
-int Radiation ::
-    write (
-        const Io &io) const
+void Radiation :: write (const Io &io) const
 {
+    cout << "Writing radiation..." << endl;
 
-  cout << "Writing radiation" << endl;
+    frequencies.write (io);
 
+    Double2 JJ (ncells, Double1 (nfreqs));
 
-  frequencies.write (io);
+    OMP_PARALLEL_FOR (p, ncells)
+    {
+        for (size_t f = 0; f < nfreqs; f++)
+        {
+            JJ[p][f] = get_J (p,f);
+        }
+    }
+
+    io.write_array (prefix+"J", JJ);
+
 
   // Print all frequencies (nu)
 //# if (GRID_SIMD)
@@ -198,8 +202,6 @@ int Radiation ::
 //  }
 //
 //
-  return (0);
-
 }
 
 

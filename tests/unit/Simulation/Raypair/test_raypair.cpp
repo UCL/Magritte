@@ -14,7 +14,6 @@
 #include "Simulation/Raypair/raypair.hpp"
 #include "Model/Thermodynamics/thermodynamics.hpp"
 #include "Tools/logger.hpp"
-#include "Tools/logger.hpp"
 
 #define EPS 1.0E-15
 
@@ -34,7 +33,8 @@ TEST_CASE ("RayPair::solve")
 
   const long length = n_r + n_ar;
 
-  RayPair rayPair (length, 1);
+  RayPair rayPair;
+  rayPair.resize (length, 1);
 
 
   rayPair.initialize (n_ar, n_r);
@@ -178,7 +178,8 @@ TEST_CASE ("RayPair::get_L_diag")
 
   const long length = n_r + n_ar;
 
-  RayPair rayPair (length, 1);
+  RayPair rayPair;
+  rayPair.resize (length, 1);
 
   rayPair.initialize (n_ar, n_r);
 

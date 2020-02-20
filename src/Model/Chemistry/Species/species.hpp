@@ -40,23 +40,14 @@ struct Species
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
-
-
-    // Helper function
-    long get_species_nr (
-        const string name) const;
+      void read  (const Io &io, Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
   private:
 
-      long ncells;   ///< number of cells
-      long nspecs;   ///< number of chemical species
+      size_t ncells;   ///< number of cells
+      size_t nspecs;   ///< number of chemical species
 
       static const string prefix;
 

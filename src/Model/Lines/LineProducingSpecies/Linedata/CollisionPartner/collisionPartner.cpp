@@ -17,15 +17,9 @@ const string CollisionPartner::prefix = "Lines/LineProducingSpecies_";
 ///    @param[in] io: io object
 /////////////////////////////////////////
 
-int CollisionPartner ::
-    read (
-        const Io &io,
-        const int l,
-        const int c  )
+void CollisionPartner :: read (const Io &io, const int l, const int c)
 {
-
-  cout << "Reading collisionPartner" << endl;
-
+  cout << "Reading collisionPartner..." << endl;
 
   const string prefix_lc = prefix + std::to_string (l) + "/Linedata"
                            + "/CollisionPartner_" + std::to_string (c) + "/";
@@ -48,7 +42,7 @@ int CollisionPartner ::
   Ce.resize (ntmp);
   Cd.resize (ntmp);
 
-  for (long t = 0; t < ntmp; t++)
+  for (size_t t = 0; t < ntmp; t++)
   {
     Ce[t].resize (ncol);
     Cd[t].resize (ncol);
@@ -60,10 +54,6 @@ int CollisionPartner ::
 
   Ce_intpld.resize (ncol);
   Cd_intpld.resize (ncol);
-
-
-  return (0);
-
 }
 
 
@@ -73,19 +63,13 @@ int CollisionPartner ::
 ///    @param[in] io: io object
 //////////////////////////////////////////
 
-int CollisionPartner ::
-    write (
-        const Io &io,
-        const int l,
-        const int c  ) const
+void CollisionPartner :: write (const Io &io, const int l, const int c) const
 {
-
-  cout << "Writing collisionPartner" << endl;
-
+  cout << "Writing collisionPartner..." << endl;
+  cout << "(l, c) = " << l << ", " << c << endl;
 
   const string prefix_lc = prefix + std::to_string (l) + "/Linedata"
                            + "/CollisionPartner_" + std::to_string (c) + "/";
-
 
   io.write_number (prefix_lc+".num_col_partner", num_col_partner);
   io.write_word   (prefix_lc+".orth_or_para_H2", orth_or_para_H2);
@@ -97,8 +81,4 @@ int CollisionPartner ::
 
   io.write_array (prefix_lc+"Ce", Ce);
   io.write_array (prefix_lc+"Cd", Cd);
-
-
-  return (0);
-
 }
