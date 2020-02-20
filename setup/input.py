@@ -1,7 +1,6 @@
 import os
 import sys
 import vtk
-import meshio
 import numpy as np
 
 from astropy                import units, constants
@@ -9,34 +8,58 @@ from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 from scipy.spatial          import cKDTree, Delaunay
 from tqdm                   import tqdm
 
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}")
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../bin/")
 
-def process_mesher_input(config) -> dict:
-
-    raise NotImplementedError('Mesher input not implemented yet.')
-
-    # TODO: Implement this!
-
-    # if (os.path.splitext(config['input file'])[1].lower() != '.vtu'):
-    #     raise ValueError('Only .vtu AMRVAC files are currently supported.')
-    #
-    # if (config['line producing species'][0] != 'CO'):
-    #     raise NotImplementedError('amrvac input currently assumes that CO is the line producing species.')
-    #
-    # print("Reading mesher input...")
-    #
-    # data = {'position'  : mesh.points,
-    #         'velocity'  : velocity,
-    #         'boundary'  : boundary,
-    #         'neighbors' : neighbors,
-    #         'nH2'       : nH2,
-    #         'nl1'       : nCO,
-    #         'tmp'       : tmp,
-    #         'trb'       : trb      }
-
-    return data
+from mesher     import Mesh
+from magritte   import Model
+from ioMagritte import IoPython, IoText
 
 
-def process_amrvac_input(config) -> dict:
+
+def process_mesher_input(config):
+
+    # TODO: Maybe replace the save to numpy by vaex structures to reduce memory costs?
+
+    if (os.path.splitext(config['input file'])[1].lower() != '.vtk'):
+        raise ValueError('Only .vtk mesher files are currently supported.')
+
+    # try:
+    modelName = f"{config['project folder']}{config['original model name']}"
+    # Choose the io interface corresponding to the model type
+    if   (config['original model type'].lower() in ['hdf5', 'h5']):
+        io = IoPython('hdf5', f"{modelName}.hdf5")
+    elif (config['original model type'].lower() in ['text', 'txt', 'ascii']):
+        io = IoText(f"{modelName}/")
+    else:
+         raise ValueError('No valid model type was given (hdf5, ascii).')
+    # except:
+
+        # raise RuntimeError('Failed to open original Magritte model.')
+
+    model = Model()
+    model.read(io)
+
+    mesh = Mesh(config['input file'])
+
+    tree = cKDTree(np.array(model.geometry.cells.position))
+    corresp_points = tree.query(mesh.points)[1]
+
+    name = f"{config['project folder']}{config['model name']}"
+
+    np.save(f"{name}_position",  mesh.points                                                      )
+    np.save(f"{name}_boundary",  mesh.boundary                                                    )
+    np.save(f"{name}_neighbors", mesh.neighbors                                                   )
+    np.save(f"{name}_velocity",  np.array(model.geometry.cells.velocity)          [corresp_points])
+    np.save(f"{name}_nl1",       np.array(model.chemistry.species.abundance)[:,1] [corresp_points])
+    np.save(f"{name}_nH2",       np.array(model.chemistry.species.abundance)[:,2] [corresp_points])
+    np.save(f"{name}_tmp",       np.array(model.thermodynamics.temperature.gas)   [corresp_points])
+    np.save(f"{name}_trb",       np.array(model.thermodynamics.turbulence.vturb2) [corresp_points])
+
+    return
+
+
+def process_amrvac_input(config):
 
     if (os.path.splitext(config['input file'])[1].lower() != '.vtu'):
         raise ValueError('Only .vtu AMRVAC files are currently supported.')
@@ -156,6 +179,10 @@ def process_amrvac_input(config) -> dict:
             'tmp'       : tmp,
             'trb'       : trb      }
 
+    for (key,value) in data.items():
+        name = f"{config['project folder']}{config['model name']}_{key}"
+        np.save(name, value, allow_pickle=True)
+
     # cells     = {'tetra' : tetras}
     # cell_data = {'tetra' : {'rho' : tetras_rho,
     #                         'abn' : tetras_abn,
@@ -176,16 +203,23 @@ def process_amrvac_input(config) -> dict:
     #
     # print(f"Created mesh file:\n{meshName}\n from the input amrvac file {config['input file']}.")
 
-    return data
+    return
 
 
 def process_phantom_input(config):
+
+    print("Reading phantom input...")
+
+    if (config['line producing species'][0] != 'CO'):
+        raise NotImplementedError('amrvac input currently assumes that CO is the line producing species.')
 
     print("Warning this assumes gamma=1.2 and mu=2.381 as per Silke & Jolien's models.")
     gamma = 1.2
     mu    = 2.381
     velocity_constant = 2.9784608e+06 * 1.0e-2
     density_constant  = 5.9410314e-07
+    energy_constant   = 8.8712277e+12
+
 
     print("Warning this assumes a constant H2 mass fraction of 1.6e-10 as per Frederik's guess.")
     print("Warning this assumes a constant CO mass fraction of 7.8e-12 as per Frederik's guess.")
@@ -201,12 +235,27 @@ def process_phantom_input(config):
 
     (x,y,z, mass, h, density, v_x,v_y,v_z, u, Tdust, alpha, div_v, itype) = np.loadtxt(config['input file'], skiprows=14, unpack=True)
 
+    x       = x       [h>0.0]
+    y       = y       [h>0.0]
+    z       = z       [h>0.0]
+    mass    = mass    [h>0.0]
+    density = density [h>0.0]
+    v_x     = v_x     [h>0.0]
+    v_y     = v_y     [h>0.0]
+    v_z     = v_z     [h>0.0]
+    u       = u       [h>0.0]
+    Tdust   = Tdust   [h>0.0]
+    alpha   = alpha   [h>0.0]
+    div_v   = div_v   [h>0.0]
+    itype   = itype   [h>0.0]
+    h       = h       [h>0.0]
+
     ncells = len(x)
 
     position = np.array((x,  y,  z  )).transpose()
     position = position * constants.au.si.value
     velocity = np.array((v_x,v_y,v_z)).transpose()
-    velocity = velocity * (velocity_constant / constants.c.si.value)
+    velocity = velocity * (1.0e-2 * velocity_constant / constants.c.si.value)
 
     delaunay = Delaunay(position)
 
@@ -229,11 +278,18 @@ def process_phantom_input(config):
                 boundary.add(b)
     boundary = list(boundary)
 
+    bdy = np.array(boundary)
+
+    b_nms = np.linalg.norm(position[bdy], axis=1)
+    p_nms = np.linalg.norm(position,      axis=1)
+
+    boundary = [i[0] for i in np.argwhere(p_nms >= np.min(b_nms))]
+
     # Convert to number densities [#/m^3]
     nH2 = density * density_constant * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
     nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
 
-    tmp = mu * (gamma-1.0) * u * 1.00784 * (units.erg/units.g * constants.u/constants.k_B).to(units.K).value
+    tmp = mu * (gamma-1.0) * u * energy_constant * 1.00784 * (units.erg/units.g * constants.u/constants.k_B).to(units.K).value
 
     trb = (150.0/constants.c.si.value)**2 * np.ones(ncells)
 
@@ -245,7 +301,6 @@ def process_phantom_input(config):
             'nl1'       : nCO,
             'tmp'       : tmp,
             'trb'       : trb      }
-
 
     for (key,value) in data.items():
         name = f"{config['project folder']}{config['model name']}_{key}"

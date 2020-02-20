@@ -493,28 +493,22 @@ inline void Simulation ::
 /////////////////////////////////////////////////////////////////
 
 template <Frame frame>
-Long1 Simulation ::
-    get_npoints_on_ray (
-        const long r   ) const
+Long1 Simulation :: get_npoints_on_ray (const long r) const
 {
-
   Long1 npoints (parameters.ncells ());
 
-
-  OMP_FOR (o, parameters.ncells ())
+  OMP_PARALLEL_FOR (o, parameters.ncells ())
   {
     const long           ar = geometry.rays.antipod[r];
     const double dshift_max = get_dshift_max (o);
 
-    RayData rayData_r  = geometry.trace_ray <frame> (o, r,  dshift_max);
-    RayData rayData_ar = geometry.trace_ray <frame> (o, ar, dshift_max);
+    const size_t n_r  = geometry.get_npoints_on_ray <frame> (o, r,  dshift_max);
+    const size_t n_ar = geometry.get_npoints_on_ray <frame> (o, ar, dshift_max);
 
-    npoints[o] = rayData_ar.size() + rayData_r.size() + 1;
+    npoints[o] = n_ar + n_r + 1;
   }
 
-
   return npoints;
-
 }
 
 
@@ -528,15 +522,11 @@ Long1 Simulation ::
 /////////////////////////////////////////////////////////////////
 
 template <Frame frame>
-long Simulation ::
-    get_max_npoints_on_ray (
-        const long r       ) const
+long Simulation :: get_max_npoints_on_ray (const long r) const
 {
-
   const Long1 npoints_on_ray = get_npoints_on_ray <frame> (r);
 
   return *std::max_element (npoints_on_ray.begin(), npoints_on_ray.end());
-
 }
 
 
@@ -578,12 +568,9 @@ Long2 Simulation ::
 ///////////////////////////////////////////////////////////////////
 
 template <Frame frame>
-long Simulation ::
-    get_max_npoints_on_rays ()
+long Simulation :: get_max_npoints_on_rays ()
 {
-
   long  maximum = 0;
-
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
@@ -592,13 +579,10 @@ long Simulation ::
     if (maximum < local_max) maximum = local_max;
   }
 
-
   // Set max_npoints_on_rays in geometry
   geometry.max_npoints_on_rays = maximum;
 
-
   return maximum;
-
 }
 
 

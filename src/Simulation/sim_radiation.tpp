@@ -16,13 +16,13 @@ int Simulation::
 compute_boundary_intensities()
 {
 
-    for (long r = 0; r < parameters.nrays_red(); r++)
+    for (size_t r = 0; r < parameters.nrays_red(); r++)
     {
         OMP_PARALLEL_FOR (b, parameters.nboundary())
         {
-            const long p = geometry.boundary.boundary2cell_nr[b];
+            const size_t p = geometry.boundary.boundary2cell_nr[b];
 
-            for (long f = 0; f < parameters.nfreqs_red(); f++)
+            for (size_t f = 0; f < parameters.nfreqs_red(); f++)
             {
                 radiation.I_bdy[r][b][f] = planck(T_CMB, radiation.frequencies.nu[p][f]);
             }
@@ -361,7 +361,8 @@ int Simulation :: compute_and_write_image (const Io &io, const long r)
 
 
     // if the ray is in this MPI process
-    if ((r >= MPI_start(parameters.nrays() / 2)) && (r < MPI_stop(parameters.nrays() / 2)))
+    if ( (r >= MPI_start (parameters.nrays() / 2)) &&
+         (r <  MPI_stop  (parameters.nrays() / 2))   )
     {
         const long R = r - MPI_start(parameters.nrays() / 2);
 
@@ -408,11 +409,16 @@ int Simulation :: compute_and_write_image (const Io &io, const long r)
                     for (long f = 0; f < parameters.nfreqs_red(); f++)
                     {
                         image.I_m[o][f] = radiation.I_bdy[b][ar][f];
-                        image.I_p[o][f] = radiation.I_bdy[b][r][f];
+                        image.I_p[o][f] = radiation.I_bdy[b][r ][f];
                     }
                 }
             } // end of loop over cells
         }
+    }
+
+    else
+    {
+        logger.write("This rank is not computing an image.");
     }
 
     image.set_coordinates(geometry);

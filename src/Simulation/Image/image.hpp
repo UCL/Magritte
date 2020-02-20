@@ -37,12 +37,10 @@ struct Image
           const Parameters &parameters);
 
 
-      int write (
-          const Io &io) const;
+      void write (const Io &io) const;
 
 
-      int set_coordinates (
-          const Geometry &geometry);
+      void set_coordinates (const Geometry &geometry);
 
 
   private:

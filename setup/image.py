@@ -11,6 +11,7 @@ class Image():
         :param r: number of the ray along which the image is taken
         '''
         self.r = r
+        self.modelName = model_name
         self.load(model_name, self.r)
 
     def load (self, model_name, r):
@@ -71,20 +72,20 @@ class Image():
 
         self.im_bin = self.im_bin / self.im_bin_nr
 
-    def plot (self, f):
+    def plot (self, f, name):
         plt.figure(dpi=300)
         plt.title(f'r={self.r}, f={f}')
-        plt.tricontourf(self.Xs, self.Ys, self.Im[:,f], levels=100, cmap='gray')
+        plt.tricontourf(self.Xs, self.Ys, self.Im[:,f], levels=100, cmap='inferno')
         # self.bin_axis()
         #plt.imshow(self.im_bin, cmap='gray')
         #plt.scatter(self.Xs, self.Ys)
-        plt.colorbar().set_label(r'intensity [W/m$^2$]')
+        plt.colorbar().set_label(r'intensity [J/m$^2$]')
         plt.axes().set_aspect('equal')
         plt.xlabel('x [m]')
         plt.ylabel('y [m]')
         plt.tight_layout()
-        plt.savefig(f'image_f-{f:05}_r-{self.r:05}.png')
+        plt.savefig(f'image_{name}_f-{f:05}_r-{self.r:05}.png')
 
-    def plot_all (self):
+    def plot_all (self, name):
         for f in range(self.nfreqs):
-            self.plot (f)
+            self.plot (f, name)

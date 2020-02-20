@@ -120,10 +120,11 @@ if    (PYTHON_IO)
   # Include pybind11
   include_directories (../dependencies/pybind11/include)
   # Create library for python io
-  add_library (PyIo
-    Io/python/io_python.cpp)
+  add_library (PyIo Io/python/io_python.cpp)
   # Link embedding
   target_link_libraries (PyIo PRIVATE pybind11::embed)
+  # Link into Magritte
+  target_link_libraries (Magritte   PyIo)
 endif (PYTHON_IO)
 
 # Add directory containing Magritte's Python bindings

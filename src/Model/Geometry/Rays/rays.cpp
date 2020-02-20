@@ -25,6 +25,8 @@ void Rays :: read (const Io &io, Parameters &parameters)
 
     io.read_length (prefix+"rays", nrays);
 
+    if (nrays < 2) {cout << "Warning: nrays should be greater than one!!!" << endl;}
+
     parameters.set_nrays (nrays);
 
     ncells = parameters.ncells ();

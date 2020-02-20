@@ -27,7 +27,7 @@ void Quadrature :: read (const Io &io, const int l, Parameters &parameters)
     parameters.set_nquads (nquads);
 
     weights.resize (nquads);
-    roots.resize   (nquads);
+    roots  .resize (nquads);
 
     io.read_list (prefix_l+"weights", weights);
     io.read_list (prefix_l+"roots",   roots  );
@@ -47,4 +47,5 @@ void Quadrature :: write (const Io &io, const int l) const
     const string prefix_l = prefix + std::to_string (l) + "/Quadrature/";
 
     io.write_list (prefix_l+"weights", weights);
+    io.write_list (prefix_l+"roots",   roots  );
 }

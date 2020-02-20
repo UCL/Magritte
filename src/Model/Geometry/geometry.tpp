@@ -349,3 +349,85 @@ inline double Geometry ::
   }
 
 }
+
+
+
+
+inline size_t get_required_npoints (
+        const double   shift_crt,
+        const double   shift_nxt,
+        const double   dshift_max  )
+{
+    const double dshift     = shift_nxt - shift_crt;
+    const double dshift_abs = fabs (dshift);
+
+    // If velocity gradient is not well-sampled enough
+    if (dshift_abs > dshift_max)
+    {
+        // Interpolate velocity gradient field
+        const size_t n_interpol = dshift_abs/dshift_max + 1;
+
+        if (n_interpol > 10000) {throw "Too many (> 10 000) interpolations needed!";}
+
+        return n_interpol;
+    }
+
+    else
+    {
+        return 1;
+    }
+}
+
+
+
+
+template <Frame frame>
+inline size_t Geometry :: get_npoints_on_ray (
+        const size_t origin,
+        const size_t ray,
+        const double dshift_max              ) const
+{
+    size_t npoints = 0;
+
+    // Find projected cells on ray
+    double  Z = 0.0;   // distance from origin (o)
+    double dZ = 0.0;   // last increment in Z
+
+    long nxt = get_next (origin, ray, origin, Z, dZ);
+
+    if (nxt != -1)   // if we are not going out of grid
+    {
+        double shift_crt = get_doppler_shift <frame> (origin, ray, origin);
+        double shift_nxt = get_doppler_shift <frame> (origin, ray, nxt   );
+
+        npoints += get_required_npoints (shift_crt, shift_nxt, dshift_max);
+
+        while (!boundary.boundary[nxt])   // while we have not hit the boundary
+        {
+            shift_crt = shift_nxt;
+
+            const long nxtnxt = nxt;
+
+            nxt = get_next (origin, ray, nxt, Z, dZ);
+
+            if (nxt < 0)
+            {
+                cout << "--- ERROR ------------------------------------------" << endl;
+                cout << "origin = " << origin << " nxt = " << nxtnxt << " ray = " << ray << endl;
+                cout << " (nxt<0) No proper neighbor found inside the mesh!  " << endl;
+                cout << "                                                    " << endl;
+                cout << "----------------------------------------------------" << endl;
+            }
+
+            shift_nxt = get_doppler_shift <frame> (origin, ray, nxt);
+
+            npoints += get_required_npoints (shift_crt, shift_nxt, dshift_max);
+        }
+    }
+
+    return npoints;
+}
+
+
+
+

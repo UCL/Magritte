@@ -411,10 +411,6 @@ def linedata_from_LAMDA_file (fileName, species, config):
     ld.nlev         = nlev
     ld.energy       = energy
     ld.weight       = weight
-    ld.nrad         = nrad
-    ld.irad         = irad
-    ld.jrad         = jrad
-    ld.A            = A
 
     # Start reading collisional data
     nlr = nlev + nrad
@@ -471,11 +467,16 @@ def linedata_from_LAMDA_file (fileName, species, config):
 
 
     # Limit to the specified lines if required
-    if ('considered transitions' in config) and (len(config['considered transitions']) > 0):
-        nrad = len (config['considered transitions'])
-        irad = [irad[k] for k in config['considered transitions']]
-        jrad = [jrad[k] for k in config['considered transitions']]
-        A    = [   A[k] for k in config['considered transitions']]
+    if ('considered transitions' in config) and (config['considered transitions'] is not None):
+        if not isinstance(config['considered transitions'], list):
+            config['considered transitions'] = [config['considered transitions']]
+        if (len(config['considered transitions']) > 0):
+            print('Not considering all radiative transitions on the data file but only the specified ones!')
+            nrad = len (config['considered transitions'])
+            irad = [irad[k] for k in config['considered transitions']]
+            jrad = [jrad[k] for k in config['considered transitions']]
+            A    = [   A[k] for k in config['considered transitions']]
+
 
 
     # Set derived quantities
@@ -488,6 +489,11 @@ def linedata_from_LAMDA_file (fileName, species, config):
         frequency[k] = (energy[i]-energy[j]) / HH
         Bs[k]        = A[k] * CC**2 / (2.0*HH*(frequency[k])**3)
         Ba[k]        = weight[i]/weight[j] * Bs[k]
+
+    ld.nrad      = nrad
+    ld.irad      = irad
+    ld.jrad      = jrad
+    ld.A         = A
     ld.Bs        = Bs
     ld.Ba        = Ba
     ld.frequency = frequency

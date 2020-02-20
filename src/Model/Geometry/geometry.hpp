@@ -7,6 +7,7 @@
 #ifndef __GEOMETRY_HPP_INCLUDED__
 #define __GEOMETRY_HPP_INCLUDED__
 
+#include <exception>
 
 #include "Io/io.hpp"
 #include "Model/parameters.hpp"
@@ -49,6 +50,12 @@ struct Geometry
           const long   origin,
           const long   ray,
           const double dshift_max) const;
+
+    template <Frame frame>
+    inline size_t get_npoints_on_ray (
+            const size_t origin,
+            const size_t ray,
+            const double dshift_max  ) const;
 
       inline int set_data (
           const long     crt,

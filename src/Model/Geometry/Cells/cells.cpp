@@ -52,25 +52,37 @@ void Cells :: read (const Io &io, Parameters &parameters)
 
 
     // Resize the neighbors to rectangular size
-    const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
-                                                    n_neighbors.end  () );
+//    const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
+//                                                    n_neighbors.end  () );
 
+    size_t tot_n_neighbors = 0;
+    for (size_t p = 0; p < ncells; p++)
+    {
+        tot_n_neighbors += n_neighbors[p];
+    }
 
     neighbors.resize (ncells);
 
-    for (size_t p = 0; p < ncells; p++)
-    {
-        neighbors[p].resize (max_n_neighbors);
-    }
+    Long1 lin_neighbors;
+    lin_neighbors.reserve (tot_n_neighbors);
+
+//    for (size_t p = 0; p < ncells; p++)
+//    {
+//        neighbors[p].resize (max_n_neighbors);
+//    }
 
     // Read nearest neighbors lists
-    io.read_array (prefix+"neighbors", neighbors);
+//    io.read_array (prefix+"neighbors", neighbors);
+    io.read_list (prefix+"neighbors", lin_neighbors);
 
 
     // Resize the neighbors to appropriate sizes
+    Long1::iterator index = lin_neighbors.begin();
     for (size_t p = 0; p < ncells; p++)
     {
-        neighbors[p].resize (n_neighbors[p]);
+        neighbors[p].reserve (n_neighbors[p]);
+        neighbors[p].insert  (neighbors[p].begin(), index, index+n_neighbors[p]);
+        index += n_neighbors[p];
     }
 }
 
@@ -102,24 +114,43 @@ void Cells :: write (const Io &io)
     io.write_array(prefix+"position", position_array);
     io.write_array(prefix+"velocity", velocity_array);
 
+    size_t tot_n_neighbors = 0;
+
+    // Might not be initialized at this point, hence the resize!
+    n_neighbors.resize (neighbors.size());
+
+    // Make sure n_neighbours is properly set
+    for (size_t p = 0; p < neighbors.size(); p++)
+    {
+            n_neighbors[p]  =   neighbors[p].size();
+        tot_n_neighbors    += n_neighbors[p];
+    }
+
     // Write number of neighbors and neighbors lists
     io.write_list  (prefix+"n_neighbors", n_neighbors);
 
-    // Resize the neighbors to rectangular size
-    const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
-                                                    n_neighbors.end  () );
+    Long1 lin_neighbors;
+    lin_neighbors.reserve (tot_n_neighbors);
 
-    for (size_t p = 0; p < ncells; p++)
+      // Resize the neighbors to rectangular size
+//    const long max_n_neighbors = *std::max_element (n_neighbors.begin(),
+//                                                    n_neighbors.end  () );
+
+//    cout << "max_n_neighbours = " << max_n_neighbors << endl;
+
+    for (size_t p = 0; p < neighbors.size(); p++)
     {
-        neighbors[p].resize (max_n_neighbors);
+//        neighbors[p].resize (max_n_neighbors);
+        lin_neighbors.insert(lin_neighbors.end(), neighbors[p].begin(), neighbors[p].end());
     }
 
-    io.write_array (prefix+"neighbors", neighbors);
 
+      io.write_list (prefix+"neighbors", lin_neighbors);
+//    io.write_array (prefix+"neighbors", neighbors);
 
     // Resize the neighbors to appropriate sizes
-    for (size_t p = 0; p < ncells; p++)
-    {
-        neighbors[p].resize (n_neighbors[p]);
-    }
+//    for (size_t p = 0; p < neighbors.size(); p++)
+//    {
+//        neighbors[p].resize (n_neighbors[p]);
+//    }
 }
