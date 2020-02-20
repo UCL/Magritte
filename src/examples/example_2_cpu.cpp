@@ -7,7 +7,7 @@
 
 #include "configure.hpp"
 #include "Io/cpp/io_cpp_text.hpp"
-//#include "Io/python/io_python.hpp"
+#include "Io/python/io_python.hpp"
 #include "Simulation/simulation.hpp"
 #include "Tools/Parallel/wrap_mpi.hpp"
 #include "Tools/Parallel/wrap_omp.hpp"
@@ -51,13 +51,22 @@ int main (int argc, char **argv)
   Timer timer2("solve");
   Timer timer3("set_L");
 
-  //IoPython io ("hdf5", modelName);
-  IoText io (modelName);
 
-  Simulation simulation;
+//  if (modelName.substr(modelName.find_last_of(".")+1) == "hdf5")
+//  {
+//  }
+//  else
+//  {
+//  }
 
-  simulation.parameters.set_pop_prec       (1.0E-6);
-  simulation.parameters.set_use_scattering (false);
+    IoPython io ("hdf5", modelName);
+//    IoText   io (        modelName);
+
+
+    Simulation simulation;
+
+//  simulation.parameters.set_pop_prec       (1.0E-6);
+//  simulation.parameters.set_use_scattering (false);
 
   simulation.read (io);
 
@@ -79,7 +88,7 @@ int main (int argc, char **argv)
   // The resizing of the RayPair objects is left out of the RayPair constructor
   // since it (in some cases) yielded "General Protection Faults".
   // See Issue #6 in Grid-SIMD.
-  for (int t = 0; t < rayPairs.size(); t++)
+  for (size_t t = 0; t < rayPairs.size(); t++)
   {
     rayPairs[t].resize (simulation.geometry.max_npoints_on_rays, 0);
   }
@@ -92,7 +101,7 @@ int main (int argc, char **argv)
     logger.write ("ray = ", r);
 
 
-#    pragma omp parallel default (shared)
+#   pragma omp parallel default (shared)
     {
     // Create a reference to the ray pair object for this thread.
     // Required to avoid calls to the Grid-SIMD allocator (AllignedAllocator)
@@ -102,8 +111,8 @@ int main (int argc, char **argv)
 
     OMP_FOR (o, simulation.parameters.ncells())
     {
-      const long           ar = simulation.geometry.rays.antipod[o][r];
-      const double weight_ang = simulation.geometry.rays.weights[o][r];
+      const long           ar = simulation.geometry.rays.antipod[r];
+      const double weight_ang = simulation.geometry.rays.weights[r];
       const double dshift_max = simulation.get_dshift_max (o);
 
 

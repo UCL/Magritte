@@ -52,7 +52,6 @@ if    (GPU_ACCELERATION)
   find_package (CUDA REQUIRED)
   # Create the library
   cuda_add_library (Magritte
-    Io/io.cpp
     Io/cpp/io_cpp_text.cpp
     Model/model.cpp
     Model/parameters.cpp
@@ -82,7 +81,6 @@ if    (GPU_ACCELERATION)
   set_target_properties (Magritte PROPERTIES PREFIX "gpu")
 else  (GPU_ACCELERATION)
   add_library (Magritte
-    Io/io.cpp
     Io/cpp/io_cpp_text.cpp
     Model/model.cpp
     Model/parameters.cpp
@@ -122,11 +120,11 @@ if    (PYTHON_IO)
   # Include pybind11
   include_directories (../dependencies/pybind11/include)
   # Create library for python io
-  add_library (PyIo
-    Io/io.cpp
-    Io/python/io_python.cpp)
+  add_library (PyIo Io/python/io_python.cpp)
   # Link embedding
   target_link_libraries (PyIo PRIVATE pybind11::embed)
+  # Link into Magritte
+  target_link_libraries (Magritte   PyIo)
 endif (PYTHON_IO)
 
 # Add directory containing Magritte's Python bindings

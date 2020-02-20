@@ -97,8 +97,8 @@ int main (int argc, char **argv)
     for (long o = 0; o < simulation.parameters.ncells(); o++)
     {
       const double dshift_max = simulation.get_dshift_max (o);
-      const double weight_ang = simulation.geometry.rays.weights[o][r];
-      const long           ar = simulation.geometry.rays.antipod[o][r];
+      const double weight_ang = simulation.geometry.rays.weights[r];
+      const long           ar = simulation.geometry.rays.antipod[r];
 
       /// Trace ray pair (and time it)
       timer2.start();

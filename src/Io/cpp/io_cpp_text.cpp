@@ -16,10 +16,7 @@
 ///    @param[in] io_file : file to read from and write to
 //////////////////////////////////////////////////////////
 
-IoText ::
-    IoText (
-        const string io_file)
-  : Io (io_file)
+IoText :: IoText (const string &io_file) : Io (io_file)
 {
 
 }   // END OF CONSTRUCTOR
@@ -31,8 +28,7 @@ IoText ::
 ///    @param[in] path : path to check
 //////////////////////////////////////
 
-bool pathExist (
-    const string &path)
+bool pathExist (const string &path)
 {
   struct stat buffer;
 
@@ -47,10 +43,7 @@ bool pathExist (
 ///    @param[out] length    : length to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_length (
-        const string file_name,
-              long  &length    ) const
+int IoText :: read_length (const string file_name, size_t &length) const
 {
   string fname = io_file + file_name;
 
@@ -90,10 +83,7 @@ int IoText ::
 ///    @param[out] width     : width to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_width (
-        const string file_name,
-              long  &width     ) const
+int IoText :: read_width (const string file_name, size_t &width) const
 {
   string fname = io_file + file_name;
 
@@ -140,18 +130,20 @@ int IoText ::
 ///    @param[out] number    : number to be read
 /////////////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_number (
-        const string file_name,
-              long  &number    ) const
+int IoText :: read_number (const string file_name, size_t &number) const
 {
-  std::ifstream file (io_file + file_name + ".txt");
+    std::ifstream file (io_file + file_name + ".txt");
 
-  file >> number;
+    if (file.is_open())
+    {
+        file >> number;
 
-  file.close();
-
-  return (0);
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
 }
 
 
@@ -162,20 +154,70 @@ int IoText ::
 ///    @param[out] number    : number to be written
 /////////////////////////////////////////////////////////////
 
-int IoText ::
-    write_number (
-        const string file_name,
-        const long  &number    ) const
+int IoText :: write_number (const string file_name, const size_t &number) const
 {
-  std::ofstream file (io_file + file_name + ".txt");
+    std::ofstream file (io_file + file_name + ".txt");
 
-  file << std::scientific << std::setprecision (16);
+    if (file.is_open())
+    {
+        file << std::scientific << std::setprecision(16);
+        file << number;
 
-  file << number;
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
+}
 
-  file.close();
 
-  return (0);
+
+
+///  Reader for a single (long integer) number from a text file
+///    @param[in]  file_name : path to the file containing the number
+///    @param[out] number    : number to be read
+/////////////////////////////////////////////////////////////////////
+
+int IoText :: read_number (const string file_name, long &number) const
+{
+    std::ifstream file (io_file + file_name + ".txt");
+
+    if (file.is_open())
+    {
+        file >> number;
+
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
+}
+
+
+
+
+///  Writer for a single (long integer) number to a text file
+///    @param[in]  file_name : path to the file to be written
+///    @param[out] number    : number to be written
+/////////////////////////////////////////////////////////////
+
+int IoText :: write_number (const string file_name, const long &number) const
+{
+    std::ofstream file (io_file + file_name + ".txt");
+
+    if (file.is_open())
+    {
+        file << std::scientific << std::setprecision (16);
+        file << number;
+
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
 }
 
 
@@ -186,18 +228,20 @@ int IoText ::
 ///    @param[out] number    : number to be read
 /////////////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_number (
-        const string  file_name,
-              double &number    ) const
+int IoText :: read_number (const string file_name, double &number) const
 {
-  std::ifstream file (io_file + file_name + ".txt");
+    std::ifstream file (io_file + file_name + ".txt");
 
-  file >> number;
+    if (file.is_open())
+    {
+        file >> number;
 
-  file.close();
-
-  return (0);
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
 }
 
 
@@ -208,20 +252,21 @@ int IoText ::
 ///    @param[out] number    : number to be written
 /////////////////////////////////////////////////////////////
 
-int IoText ::
-    write_number (
-        const string  file_name,
-        const double &number    ) const
+int IoText :: write_number (const string file_name, const double &number) const
 {
-  std::ofstream file (io_file + file_name + ".txt");
+    std::ofstream file (io_file + file_name + ".txt");
 
-  file << std::scientific << std::setprecision (16);
+    if (file.is_open())
+    {
+        file << std::scientific << std::setprecision (16);
+        file << number;
 
-  file << number;
-
-  file.close();
-
-  return (0);
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
 }
 
 
@@ -232,18 +277,20 @@ int IoText ::
 ///    @param[out] word      : string to be read
 /////////////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_word (
-        const string  file_name,
-              string &word      ) const
+int IoText :: read_word (const string file_name, string &word) const
 {
-  std::ifstream file (io_file + file_name + ".txt");
+    std::ifstream file (io_file + file_name + ".txt");
 
-  file >> word;
+    if (file.is_open())
+    {
+        file >> word;
 
-  file.close();
-
-  return (0);
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
 }
 
 
@@ -254,18 +301,20 @@ int IoText ::
 ///    @param[out] word      : string to be written
 /////////////////////////////////////////////////////////////
 
-int IoText ::
-    write_word (
-        const string  file_name,
-        const string &word      ) const
+int IoText :: write_word (const string file_name, const string &word) const
 {
-  std::ofstream file (io_file + file_name + ".txt");
+    std::ofstream file (io_file + file_name + ".txt");
 
-  file << word;
+    if (file.is_open())
+    {
+        file << word;
 
-  file.close();
-
-  return (0);
+        return ( 0);
+    }
+    else
+    {
+        return (-1);
+    }
 }
 
 
@@ -276,19 +325,18 @@ int IoText ::
 ///    @param[out] value     : value to be read
 //////////////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_bool (
-        const string file_name,
-              bool  &value     ) const
+int IoText :: read_bool (const string file_name, bool &value) const
 {
-  // Treat booleans as text in io
-  string word;
+    // Treat booleans as text in io
+    string word;
 
-  read_word (file_name, word);
+    int err = read_word (file_name, word);
 
-  value = word.compare("true");
+    if      (word.compare("true" ) == 0) {value = true; }
+    else if (word.compare("false") == 0) {value = false;}
+    else                                 {  err = -1;   }
 
-  return (0);
+    return err;
 }
 
 
@@ -299,19 +347,14 @@ int IoText ::
 ///    @param[out] value     : value to be written
 /////////////////////////////////////////////////////////////
 
-int IoText ::
-    write_bool (
-        const string file_name,
-        const bool  &value     ) const
+int IoText :: write_bool (const string file_name, const bool &value) const
 {
   // Treat booleans as text in io
   string word = "false";
 
   if (value) {word = "true";}
 
-  write_word (file_name, word);
-
-  return (0);
+  return write_word (file_name, word);
 }
 
 
@@ -322,10 +365,7 @@ int IoText ::
 ///     @param[in] list      : list to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_list (
-        const string file_name,
-              Long1 &list      ) const
+int IoText :: read_list (const string file_name, Long1 &list) const
 {
   std::ifstream file (io_file + file_name + ".txt");
 
@@ -349,10 +389,7 @@ int IoText ::
 ///    @param[in] list      : list to be written
 ////////////////////////////////////////////////////////
 
-int IoText ::
-    write_list (
-        const string file_name,
-        const Long1 &list      ) const
+int IoText :: write_list (const string file_name, const Long1 &list) const
 {
   std::ofstream file (io_file + file_name + ".txt");
 
@@ -376,10 +413,7 @@ int IoText ::
 ///    @param[in] list      : list to be read
 //////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_list (
-        const string   file_name,
-              Double1 &list      ) const
+int IoText :: read_list (const string file_name, Double1 &list) const
 {
   std::ifstream file (io_file + file_name + ".txt");
 
@@ -403,10 +437,7 @@ int IoText ::
 ///    @param[in] list      : list to be written
 ////////////////////////////////////////////////////////
 
-int IoText ::
-    write_list (
-        const string   file_name,
-        const Double1 &list      ) const
+int IoText :: write_list (const string file_name, const Double1 &list) const
 {
   std::ofstream file (io_file + file_name + ".txt");
 
@@ -430,10 +461,7 @@ int IoText ::
 ///    @param[in] list      : list to be read
 //////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_list (
-        const string   file_name,
-              String1 &list      ) const
+int IoText :: read_list (const string file_name, String1 &list) const
 {
   std::ifstream file (io_file + file_name + ".txt");
 
@@ -457,10 +485,7 @@ int IoText ::
 ///    @param[in] list      : list to be written
 ////////////////////////////////////////////////////////
 
-int IoText ::
-    write_list (
-        const string   file_name,
-        const String1 &list      ) const
+int IoText :: write_list (const string file_name, const String1 &list) const
 {
   std::ofstream file (io_file + file_name + ".txt");
 
@@ -484,10 +509,7 @@ int IoText ::
 ///    @param[in] array     : array to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_array (
-        const string   file_name,
-              Long2   &array     ) const
+int IoText :: read_array (const string file_name, Long2 &array) const
 {
   std::ifstream file (io_file + file_name + ".txt");
 
@@ -518,10 +540,7 @@ int IoText ::
 ///    @param[in] array     : array to be written
 ////////////////////////////////////////////////////////
 
-int IoText ::
-    write_array (
-        const string   file_name,
-        const Long2   &array     ) const
+int IoText :: write_array (const string file_name, const Long2 &array) const
 {
   std::ofstream file (io_file + file_name + ".txt");
 
@@ -550,10 +569,7 @@ int IoText ::
 ///    @param[in] array     : array to be read
 ///////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_array (
-        const string   file_name,
-              Double2 &array     ) const
+int IoText :: read_array (const string file_name, Double2 &array) const
 {
   std::ifstream file (io_file + file_name + ".txt");
 
@@ -584,10 +600,7 @@ int IoText ::
 ///    @param[in] array     : array to be written
 ////////////////////////////////////////////////////////
 
-int IoText ::
-    write_array (
-        const string   file_name,
-        const Double2 &array     ) const
+int IoText :: write_array (const string file_name, const Double2 &array) const
 {
   std::ofstream file (io_file + file_name + ".txt");
 
@@ -618,8 +631,7 @@ int IoText ::
 ///    @param[in] z         : z component of the vector to be read
 //////////////////////////////////////////////////////////////////
 
-int IoText ::
-    read_3_vector (
+int IoText :: read_3_vector (
         const string   file_name,
               Double1 &x,
               Double1 &y,
@@ -649,8 +661,7 @@ int IoText ::
 ///    @param[in] z         : z component of the vector to be written
 /////////////////////////////////////////////////////////////////////
 
-int IoText ::
-    write_3_vector (
+int IoText :: write_3_vector (
         const string   file_name,
         const Double1 &x,
         const Double1 &y,

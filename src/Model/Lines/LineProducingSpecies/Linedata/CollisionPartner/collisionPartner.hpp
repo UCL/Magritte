@@ -15,11 +15,11 @@
 struct CollisionPartner
 {
 
-  long    num_col_partner;   ///< species number corresponding to collision partner
+  size_t  num_col_partner;   ///< species number corresponding to collision partner
   string  orth_or_para_H2;   ///< stores whether it is ortho or para (if it is H2)
 
-  long ntmp;                 ///< number of defined temperatures
-  long ncol;                 ///< number of collisional transitions
+  size_t ntmp;               ///< number of defined temperatures
+  size_t ncol;               ///< number of collisional transitions
 
   Long1 icol;                ///< level index of collisional transition
   Long1 jcol;                ///< level index of collisional transition
@@ -34,15 +34,8 @@ struct CollisionPartner
 
 
   // Io
-  int read (
-      const Io &io,
-      const int l,
-      const int c  );
-
-  int write (
-      const Io &io,
-      const int l,
-      const int c  ) const;
+  void read  (const Io &io, const int l, const int c);
+  void write (const Io &io, const int l, const int c) const;
 
   // Inlined functions
   inline void adjust_abundance_for_ortho_or_para (

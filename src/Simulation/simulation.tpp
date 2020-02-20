@@ -189,7 +189,7 @@ inline void Simulation ::
         const long     f,
               RayData &rayData_ar,
               RayData &rayData_r,
-              RayPair &rayPair    ) const
+              RayPair &rayPair    ) // to append the dtaus etc const
 {
 
   vReal eta;
@@ -241,6 +241,15 @@ inline void Simulation ::
       //cout << "Got eta and chi     " << data.lnotch << endl;
       rayPair.set_term1_and_term2 (eta, chi,               index);
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index);
+
+
+      //dtaus[origin].push_back(rayPair.dtau[index]);
+      //dZs  [origin].push_back(data.dZ            );
+      //chis [origin].push_back(chi+chi_prev       );
+      //pre  [origin].push_back(data.crt           );
+      //pos  [origin].push_back(data.cellNr        );
+
+
       //cout << "Set terms and dtau " << endl;
 
       //tau_ar += rayPair.dtau[index];
@@ -296,6 +305,14 @@ inline void Simulation ::
 
       rayPair.set_term1_and_term2 (eta, chi,               index  );
       rayPair.set_dtau            (chi, chi_prev, data.dZ, index-1);
+
+
+      //dtaus[origin].push_back(rayPair.dtau[index]);
+      //dZs  [origin].push_back(data.dZ            );
+      //chis [origin].push_back(chi+chi_prev       );
+      //pre  [origin].push_back(data.crt           );
+      //pos  [origin].push_back(data.cellNr        );
+
 
       //tau_r += rayPair.dtau[index-1];
 
@@ -476,28 +493,22 @@ inline void Simulation ::
 /////////////////////////////////////////////////////////////////
 
 template <Frame frame>
-Long1 Simulation ::
-    get_npoints_on_ray (
-        const long r   ) const
+Long1 Simulation :: get_npoints_on_ray (const long r) const
 {
-
   Long1 npoints (parameters.ncells ());
 
-
-  OMP_FOR (o, parameters.ncells ())
+  OMP_PARALLEL_FOR (o, parameters.ncells ())
   {
-    const long           ar = geometry.rays.antipod[o][r];
+    const long           ar = geometry.rays.antipod[r];
     const double dshift_max = get_dshift_max (o);
 
-    RayData rayData_r  = geometry.trace_ray <frame> (o, r,  dshift_max);
-    RayData rayData_ar = geometry.trace_ray <frame> (o, ar, dshift_max);
+    const size_t n_r  = geometry.get_npoints_on_ray <frame> (o, r,  dshift_max);
+    const size_t n_ar = geometry.get_npoints_on_ray <frame> (o, ar, dshift_max);
 
-    npoints[o] = rayData_ar.size() + rayData_r.size() + 1;
+    npoints[o] = n_ar + n_r + 1;
   }
 
-
   return npoints;
-
 }
 
 
@@ -511,15 +522,11 @@ Long1 Simulation ::
 /////////////////////////////////////////////////////////////////
 
 template <Frame frame>
-long Simulation ::
-    get_max_npoints_on_ray (
-        const long r       ) const
+long Simulation :: get_max_npoints_on_ray (const long r) const
 {
-
   const Long1 npoints_on_ray = get_npoints_on_ray <frame> (r);
 
   return *std::max_element (npoints_on_ray.begin(), npoints_on_ray.end());
-
 }
 
 
@@ -561,12 +568,9 @@ Long2 Simulation ::
 ///////////////////////////////////////////////////////////////////
 
 template <Frame frame>
-long Simulation ::
-    get_max_npoints_on_rays ()
+long Simulation :: get_max_npoints_on_rays ()
 {
-
   long  maximum = 0;
-
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
@@ -575,13 +579,10 @@ long Simulation ::
     if (maximum < local_max) maximum = local_max;
   }
 
-
   // Set max_npoints_on_rays in geometry
   geometry.max_npoints_on_rays = maximum;
 
-
   return maximum;
-
 }
 
 
@@ -593,7 +594,7 @@ inline void Simulation ::
         const long r,
         const long o                  )
 {
-  const double weight_ang = 2.0 * geometry.rays.weights[o][r];
+  const double weight_ang = 2.0 * geometry.rays.weights[r];
   const long            b = geometry.boundary.cell2boundary_nr[o];
 
   for (long f = 0; f < parameters.nfreqs_red(); f++)

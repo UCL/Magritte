@@ -29,12 +29,9 @@ struct Lines
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      void read  (const Io &io, Parameters &parameters);
+      void setup (              Parameters &parameters);
+      void write (const Io &io                        ) const;
 
 
       int iteration_using_LTE (
@@ -68,9 +65,9 @@ struct Lines
 
   private:
 
-      long ncells;
-      long nlines;
-      long nlspecs;
+      size_t ncells;
+      size_t nlines;
+      size_t nlspecs;
 
       Long1 nrad_cum;
 

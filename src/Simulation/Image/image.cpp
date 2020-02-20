@@ -15,30 +15,24 @@ const string Image::prefix = "Simulation/Image/";
 ///  Constructor for Image
 //////////////////////////
 
-Image ::
-Image (
-    const long        ray_nr,
-    const Parameters &parameters)
+Image :: Image (const long ray_nr, const Parameters &parameters)
   : ray_nr     (ray_nr)
   , ncells     (parameters.ncells())
   , nfreqs     (parameters.nfreqs())
   , nfreqs_red (parameters.nfreqs_red())
 {
+    // Size and initialize
+    ImX.resize (ncells);
+    ImY.resize (ncells);
 
-  // Size and initialize Ip_out and Im_out
+    I_p.resize (ncells);
+    I_m.resize (ncells);
 
-  ImX.resize (ncells);
-  ImY.resize (ncells);
-
-  I_p.resize (ncells);
-  I_m.resize (ncells);
-
-  for (long c = 0; c < ncells; c++)
-  {
-    I_p[c].resize (nfreqs_red);
-    I_m[c].resize (nfreqs_red);
-  }
-
+    for (size_t c = 0; c < ncells; c++)
+    {
+        I_p[c].resize (nfreqs_red);
+        I_m[c].resize (nfreqs_red);
+    }
 
 }   // END OF CONSTRUCTOR
 
@@ -49,38 +43,37 @@ Image (
 ///    @param[in] io: io object
 ////////////////////////////////
 
-int Image ::
-    write (
-        const Io &io) const
+void Image :: write (const Io &io) const
 {
+    cout << "Writing image..." << endl;
 
-  cout << "Writing image" << endl;
+    const string str_ray_nr = std::to_string (ray_nr);
 
-  const string str_ray_nr = std::to_string (ray_nr);
+    io.write_list  (prefix+"ImX_"+str_ray_nr, ImX);
+    io.write_list  (prefix+"ImY_"+str_ray_nr, ImY);
 
-  io.write_list  (prefix+"ImX_"+str_ray_nr, ImX);
-  io.write_list  (prefix+"ImY_"+str_ray_nr, ImY);
+    // Create one intensity variable and reuse for I_m and I_p to save memory.
+    Double2 intensity (ncells, Double1 (nfreqs));
 
-
-  Double2 intensity_m (ncells, Double1 (nfreqs));
-  Double2 intensity_p (ncells, Double1 (nfreqs));
-
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    for (long f = 0; f < nfreqs; f++)
+    OMP_PARALLEL_FOR (p, ncells)
     {
-      intensity_m[p][f] = get (I_m[p], f);
-      intensity_p[p][f] = get (I_p[p], f);
+        for (size_t f = 0; f < nfreqs; f++)
+        {
+            intensity[p][f] = get (I_m[p], f);
+        }
     }
-  }
 
+    io.write_array (prefix+"I_m_"+str_ray_nr, intensity);
 
-  io.write_array (prefix+"I_m_"+str_ray_nr, intensity_m);
-  io.write_array (prefix+"I_p_"+str_ray_nr, intensity_p);
+    OMP_PARALLEL_FOR (p, ncells)
+    {
+        for (size_t f = 0; f < nfreqs; f++)
+        {
+            intensity[p][f] = get (I_p[p], f);
+        }
+    }
 
-
-  return (0);
-
+    io.write_array (prefix+"I_p_"+str_ray_nr, intensity);
 }
 
 
@@ -90,16 +83,11 @@ int Image ::
 /////////////////////////////////////////////////////////
 
 
-int Image ::
-    set_coordinates (
-        const Geometry &geometry)
+void Image :: set_coordinates (const Geometry &geometry)
 {
-
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    const double rx = geometry.rays.x[p][ray_nr];
-    const double ry = geometry.rays.y[p][ray_nr];
-    const double rz = geometry.rays.z[p][ray_nr];
+    const double rx = geometry.rays.rays[ray_nr].x();
+    const double ry = geometry.rays.rays[ray_nr].y();
+    const double rz = geometry.rays.rays[ray_nr].z();
 
     const double         denominator = sqrt (rx*rx + ry*ry);
     const double inverse_denominator = 1.0 / denominator;
@@ -111,16 +99,26 @@ int Image ::
     const double jy =  ry * rz * inverse_denominator;
     const double jz = -denominator;
 
+    if (denominator != 0.0)
+    {
+        OMP_PARALLEL_FOR (p, ncells)
+        {
+            ImX[p] =   ix * geometry.cells.position[p].x()
+                     + iy * geometry.cells.position[p].y();
 
-    ImX[p] =   ix * geometry.cells.x[p]
-             + iy * geometry.cells.y[p];
+            ImY[p] =   jx * geometry.cells.position[p].x()
+                     + jy * geometry.cells.position[p].y()
+                     + jz * geometry.cells.position[p].z();
+        }
+    }
 
-    ImY[p] =   jx * geometry.cells.x[p]
-             + jy * geometry.cells.y[p]
-             + jz * geometry.cells.z[p];
-  }
+    else
+    {
+        OMP_PARALLEL_FOR (p, ncells)
+        {
+            ImX[p] = geometry.cells.position[p].x();
 
-
-  return (0);
-
+            ImY[p] = geometry.cells.position[p].y();
+        }
+    }
 }

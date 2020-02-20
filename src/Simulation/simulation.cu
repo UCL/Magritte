@@ -80,8 +80,8 @@ int Simulation :: gpu_compute_radiation_field (void)
 
     for (long o = 0; o < parameters.ncells(); o++)
     {
-      const long           ar = geometry.rays.antipod[o][r];
-      const double weight_ang = geometry.rays.weights[o][r];
+      const long           ar = geometry.rays.antipod[r];
+      const double weight_ang = geometry.rays.weights[r];
       const double dshift_max = get_dshift_max (o);
 
 
