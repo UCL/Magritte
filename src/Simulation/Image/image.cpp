@@ -45,7 +45,9 @@ Image :: Image (const long ray_nr, const Parameters &parameters)
 
 void Image :: write (const Io &io) const
 {
-    cout << "Writing image..." << endl;
+    cout << "Writing image..."    << endl;
+    cout << "nfreqs = " << nfreqs << endl;
+    cout << "ncells = " << ncells << endl;
 
     const string str_ray_nr = std::to_string (ray_nr);
 
@@ -53,27 +55,29 @@ void Image :: write (const Io &io) const
     io.write_list  (prefix+"ImY_"+str_ray_nr, ImY);
 
     // Create one intensity variable and reuse for I_m and I_p to save memory.
-    Double2 intensity (ncells, Double1 (nfreqs));
+    Double2 intensity_m (ncells, Double1 (nfreqs));
+    Double2 intensity_p (ncells, Double1 (nfreqs));
 
     OMP_PARALLEL_FOR (p, ncells)
     {
         for (size_t f = 0; f < nfreqs; f++)
         {
-            intensity[p][f] = get (I_m[p], f);
+            intensity_m[p][f] = get (I_m[p], f);
+            intensity_p[p][f] = get (I_p[p], f);
         }
     }
 
-    io.write_array (prefix+"I_m_"+str_ray_nr, intensity);
+    io.write_array (prefix+"I_m_"+str_ray_nr, intensity_m);
+    io.write_array (prefix+"I_p_"+str_ray_nr, intensity_p);
 
-    OMP_PARALLEL_FOR (p, ncells)
-    {
-        for (size_t f = 0; f < nfreqs; f++)
-        {
-            intensity[p][f] = get (I_p[p], f);
-        }
-    }
+//    OMP_PARALLEL_FOR (p, ncells)
+//    {
+//        for (size_t f = 0; f < nfreqs; f++)
+//        {
+//            intensity[p][f] = get (I_p[p], f);
+//        }
+//    }
 
-    io.write_array (prefix+"I_p_"+str_ray_nr, intensity);
 }
 
 

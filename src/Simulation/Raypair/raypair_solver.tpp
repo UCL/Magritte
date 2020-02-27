@@ -386,6 +386,35 @@ inline void RayPair ::
   }
 
 
+//  if (isnan(Su[n_ar]))
+//  {
+//      cout << "fC" << C[first] << endl;
+//      cout << "BC" << B0_min_C0 << endl;
+//
+//      cout << "B0" << B0 << endl;
+//
+//      cout << "fS" << Su[first] << endl;
+//
+//
+//      for (long n = first+1; n < last; n++)
+//      {
+//          cout << "iA" << inverse_A[n] << endl;
+//          cout << "iC" << inverse_C[n] << endl;
+//          cout << "nS" << Su[n]        << endl;
+//      }
+//
+//      cout << "lA" << A[last] << endl;
+//      cout << "BA" << Bd_min_Ad << endl;
+//
+//      cout << "Bd" << Bd << endl;
+//
+//      cout << "lS" << Su[last] << endl;
+//
+//      cout << "I0" << I_bdy_0 << endl;
+//      cout << "In" << I_bdy_n << endl;
+//  }
+
+
 }
 
 

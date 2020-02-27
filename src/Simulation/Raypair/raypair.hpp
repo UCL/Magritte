@@ -67,6 +67,8 @@ struct RayPair
 
       //inline void solve_ndep_is_1 ();
 
+      inline void setup ();
+
       // setters
       inline void set_term1_and_term2 (
           const vReal &eta,

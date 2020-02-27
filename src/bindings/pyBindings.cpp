@@ -327,6 +327,7 @@ PYBIND11_MODULE (magritte, module)
       .def_readwrite ("frequencies", &Radiation::frequencies)
       .def_readwrite ("u",           &Radiation::u)
       .def_readwrite ("v",           &Radiation::v)
+      .def_readwrite ("I_bdy",       &Radiation::I_bdy)
       .def_readwrite ("J",           &Radiation::J)
       // constructor
       .def (py::init())

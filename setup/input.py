@@ -233,22 +233,18 @@ def process_phantom_input(config):
 
     print("Reading phantom input...")
 
-    (x,y,z, mass, h, density, v_x,v_y,v_z, u, Tdust, alpha, div_v, itype) = np.loadtxt(config['input file'], skiprows=14, unpack=True)
+    (x,y,z, h, density, v_x,v_y,v_z, u) = np.loadtxt(config['input file'], skiprows=14, usecols=(0,1,2,4,5,6,7,8,9), unpack=True)
 
     x       = x       [h>0.0]
     y       = y       [h>0.0]
     z       = z       [h>0.0]
-    mass    = mass    [h>0.0]
     density = density [h>0.0]
     v_x     = v_x     [h>0.0]
     v_y     = v_y     [h>0.0]
     v_z     = v_z     [h>0.0]
     u       = u       [h>0.0]
-    Tdust   = Tdust   [h>0.0]
-    alpha   = alpha   [h>0.0]
-    div_v   = div_v   [h>0.0]
-    itype   = itype   [h>0.0]
-    h       = h       [h>0.0]
+
+    density[density < 1.0e-50] = 1.0e-50
 
     ncells = len(x)
 
@@ -290,6 +286,7 @@ def process_phantom_input(config):
     nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
 
     tmp = mu * (gamma-1.0) * u * energy_constant * 1.00784 * (units.erg/units.g * constants.u/constants.k_B).to(units.K).value
+    tmp[tmp < 2.725] = 2.725
 
     trb = (150.0/constants.c.si.value)**2 * np.ones(ncells)
 

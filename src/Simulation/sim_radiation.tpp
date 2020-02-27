@@ -40,8 +40,7 @@ compute_boundary_intensities()
 ///  Computer for the radiation field
 /////////////////////////////////////
 
-int Simulation::
-compute_radiation_field()
+int Simulation:: compute_radiation_field()
 {
     dtaus.resize(parameters.ncells());
     dZs.resize(parameters.ncells());
