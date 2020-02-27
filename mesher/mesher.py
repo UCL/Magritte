@@ -100,8 +100,14 @@ class Mesh:
 
     def get_boundary(self):
         boundary = set([])
-        for line in self.mesh.cells['triangle']:
-            for p in line:
+        for elem in self.mesh.cells['triangle']:
+            for p in elem:
+                boundary.add(p)
+        for elem in self.mesh.cells['line']:
+            for p in elem:
+                boundary.add(p)
+        for elem in self.mesh.cells['vertex']:
+            for p in elem:
                 boundary.add(p)
         boundary = list(boundary)
         return boundary
@@ -168,6 +174,25 @@ def boundary_cuboid (minVec, maxVec):
                Y_MAX = maxVec[1],
                Z_MIN = minVec[2],
                Z_MAX = maxVec[2] )
+
+
+def boundary_sphere (centre=np.zeros(3), radius=1.0):
+    """
+    Create the gmsh script for a cuboid element.
+    :param minVec: lower cuboid vector.
+    :param maxVec: upper cuboid vector.
+    :return: gmsh script string.
+    """
+    # Get the path to this folder
+    thisFolder = os.path.dirname(os.path.abspath(__file__))
+    with open(f'{thisFolder}/templates/sphere.template', 'r') as file:
+        sphere = Template(file.read())
+    return sphere.substitute(
+               I      = 1,
+               CX     = centre[0],
+               CY     = centre[1],
+               CZ     = centre[2],
+               RADIUS = radius    )
 
 
 def create_mesh_from_background(meshName, boundary, scale_min, scale_max):

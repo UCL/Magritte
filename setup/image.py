@@ -22,15 +22,16 @@ class Image():
                 self.Ip = np.array (file.get(f'Simulation/Image/I_p_{r}'))
                 self.Xs = np.array (file.get(f'Simulation/Image/ImX_{r}'))
                 self.Ys = np.array (file.get(f'Simulation/Image/ImY_{r}'))
-                if (self.Im.shape[1] == self.Ip.shape[1]):
-                    self.nfreqs = self.Im.shape[1]
-                else:
-                    raise ValueError('Non matching nfreqs...')
         else:
             self.Im = np.loadtxt (f'{model_name}/Simulation/Image/I_m_{r}.txt')
             self.Ip = np.loadtxt (f'{model_name}/Simulation/Image/I_p_{r}.txt')
             self.Xs = np.loadtxt (f'{model_name}/Simulation/Image/ImX_{r}.txt')
             self.Ys = np.loadtxt (f'{model_name}/Simulation/Image/ImY_{r}.txt')
+
+        # if (self.Im.shape[1] == self.Ip.shape[1]):
+        #     self.nfreqs = self.Im.shape[1]
+        # else:
+        #     raise ValueError('Non matching nfreqs...')
 
     #     def crop (self):
     #         Xs_cropped = []

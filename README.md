@@ -1,40 +1,46 @@
 # Magritte
 ----------
-
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
-
-
-## Install
 ----------
+This is the repository of the Magritte main library. Magritte is a modern open-source software library for 3D radiative transfer. It is a deterministic ray-tracer using a formal solver that currently focusses on line radiative transfer. See our first Magritte paper ([arXiv](https://arxiv.org/pdf/1912.08445.pdf), [MNRAS](https://doi.org/10.1093/mnras/stz3557)) for more details.
 
+## Installation
+---------------
 First, download the dependencies and configure Magritte using
-```
-$ bash configure.sh
+```bash
+$ bash install.sh
 ```
 Then, create an anaconda environment from the environment file with
-```
+```bash
 $ conda env create -f magritte_conda_environment.yml
 ```
 Afterwards, activate the environment you just created with
-```
+```bash
 $ conda activate magritte_env
 ```
 Now Magritte can be build using
-```
+```bash
 $ bash build.sh
 ```
+This builds the library in the `/bin` folder. Note that if you try to build Magritte from outside the `magritte_env` conda environment compilation might fail or the generated library might not work in python due to version mismatches. Therefore as a general rule: **always build and use Magritte from within the magritte_env conda environment**. To use Magritte's python interface, you should include the binary folder folder in your pathon path e.g. by including
+```python
+from sys import path
+path.append("path/to/Magritte/bin")
+```
+To use the setup tools and the mesher, you should also include
+```python
+path.append("path/to/Magritte/setup")
+path.append("path/to/Magritte/mesher")
+```
 
+You can have a look at the `build.sh` script for further configuration options.
 
-magritte_conda_environment contains the default packages plus:
-* `healpy`, for uniform discretisations of a sphere (to create uniform rays);
-* `h5py`, for reading and writing HDF5 files;
-* `bokeh`, for visualusations;
-* `jupyter`, for working in notebooks.
-
+## Issues
+---------
+Please report any issues [here](https://github.com/UCL/Magritte/issues).
 
 ### Dependencies
 ----------------
-
 * `CMake`, for building;
 * `Eigen`, for linear algebra;
 * `pybind11`, for interfacing with python;

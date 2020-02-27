@@ -42,13 +42,13 @@ mv Grid-SIMD-master Grid-SIMD
 # Remove zip file
 rm master.zip
 
-# Get Score-P
-wget https://www.vi-hps.org/cms/upload/packages/scorep/scorep-5.0.tar.gz
-# Extract the whole directory
-tar -zxvf scorep-5.0.tar.gz
-# Create scorep folder
-mkdir scorep
-# Rename the folder
-mv scorep-5.0 scorep
-# Remove zip file
-rm scorep-5.0.tar.gz
+## Get Score-P
+#wget https://www.vi-hps.org/cms/upload/packages/scorep/scorep-5.0.tar.gz
+## Extract the whole directory
+#tar -zxvf scorep-5.0.tar.gz
+## Create scorep folder
+#mkdir scorep
+## Rename the folder
+#mv scorep-5.0 scorep
+## Remove zip file
+#rm scorep-5.0.tar.gz
