@@ -136,9 +136,7 @@ inline void RayPair ::
         const double  dZ,
         const long    n        )
 {
-
   dtau[n] = 0.5 * (chi + chi_prev) * dZ;
-
 }
 
 

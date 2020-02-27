@@ -87,7 +87,6 @@ inline int search_with_notch (
 
   notch = n_simd_lanes*vec.size()-1;
 
-
   return (1);
 
 }
@@ -102,6 +101,9 @@ inline int search_with_notch (
 
     notch++;
   }
+
+
+  notch = vec.size()-1;
 
   return (1);
 

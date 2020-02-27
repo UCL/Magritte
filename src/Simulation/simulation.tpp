@@ -249,7 +249,6 @@ inline void Simulation ::
       //pre  [origin].push_back(data.crt           );
       //pos  [origin].push_back(data.cellNr        );
 
-
       //cout << "Set terms and dtau " << endl;
 
       //tau_ar += rayPair.dtau[index];
@@ -312,7 +311,6 @@ inline void Simulation ::
       //chis [origin].push_back(chi+chi_prev       );
       //pre  [origin].push_back(data.crt           );
       //pos  [origin].push_back(data.cellNr        );
-
 
       //tau_r += rayPair.dtau[index-1];
 
