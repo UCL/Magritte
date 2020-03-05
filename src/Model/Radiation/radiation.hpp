@@ -25,9 +25,7 @@ struct Radiation
   public:
 
       Frequencies frequencies;
-
       Scattering  scattering;
-
 
       vReal2 u;         ///< u intensity             (r, index(p,f))
       vReal2 v;         ///< v intensity             (r, index(p,f))

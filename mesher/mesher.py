@@ -195,6 +195,29 @@ def boundary_sphere (centre=np.zeros(3), radius=1.0):
                RADIUS = radius    )
 
 
+def boundary_sphere_in_sphere (centre_in =np.zeros(3), radius_in =1.0,
+                               centre_out=np.zeros(3), radius_out=1.0 ):
+    """
+    Create the gmsh script for a cuboid element.
+    :param minVec: lower cuboid vector.
+    :param maxVec: upper cuboid vector.
+    :return: gmsh script string.
+    """
+    # Get the path to this folder
+    thisFolder = os.path.dirname(os.path.abspath(__file__))
+    with open(f'{thisFolder}/templates/sphere_in_sphere.template', 'r') as file:
+        sphere = Template(file.read())
+    return sphere.substitute(
+               CX_IN      = centre_in[0],
+               CY_IN      = centre_in[1],
+               CZ_IN      = centre_in[2],
+               RADIUS_IN  = radius_in,
+               CX_OUT     = centre_out[0],
+               CY_OUT     = centre_out[1],
+               CZ_OUT     = centre_out[2],
+               RADIUS_OUT = radius_out    )
+
+
 def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
     # create the mesh generating gmsh script file
     meshing_script = f'{meshName}.geo'
@@ -202,9 +225,9 @@ def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
     resulting_mesh = f'{meshName}.vtk'
     # Get the path to this folder
     thisFolder = os.path.dirname(os.path.abspath(__file__))
-    with open(f'{thisFolder}/templates/mesh_using_bckgnd.template', 'r') as file:
+    with open(f'{thisFolder}/templates/mesh_from_background.template', 'r') as file:
         template = Template(file.read())
-    with open(meshing_script,                                       'w') as file:
+    with open(meshing_script,                                          'w') as file:
         file.write(template.substitute(
             BOUNDARY   = boundary,
             SCALE_MIN  = scale_min,
@@ -214,3 +237,25 @@ def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
     run(f'gmsh {meshing_script} -3 -saveall -o {resulting_mesh}')
     # Remove the script file
     os.remove(meshing_script)
+
+
+
+
+def create_mesh_from_function(meshName, boundary, scale_min, scale_max, scale_function):
+    # create the mesh generating gmsh script file
+    meshing_script = f'{meshName}.geo'
+    resulting_mesh = f'{meshName}.vtk'
+    # Get the path to this folder
+    thisFolder = os.path.dirname(os.path.abspath(__file__))
+    with open(f'{thisFolder}/templates/mesh_from_function.template', 'r') as file:
+        template = Template(file.read())
+    with open(meshing_script,                                        'w') as file:
+        file.write(template.substitute(
+            BOUNDARY       = boundary,
+            SCALE_MIN      = scale_min,
+            SCALE_MAX      = scale_max,
+            SCALE_FUNCTION = scale_function ))
+    # run gmsh in a subprocess to generate the mesh from the background
+    run(f'gmsh {meshing_script} -3 -saveall -o {resulting_mesh}')
+    # Remove the script file
+    # os.remove(meshing_script)

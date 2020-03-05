@@ -18,6 +18,7 @@
 
 #if (GPU_ACCELERATION)
 # include "Raypair/raypair.cuh"
+# include "Raypair/rayblock.cuh"
 #endif
 
 
@@ -37,8 +38,9 @@ struct Simulation : public Model
 
 # if (GPU_ACCELERATION)
     int handleCudaError (cudaError_t error);
-    int gpu_get_device_properties   (void);
-    int gpu_compute_radiation_field (void);
+    int gpu_get_device_properties     ();
+    int gpu_compute_radiation_field   ();
+    int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize);
 # endif
 
 

@@ -2,9 +2,11 @@ import numpy as np
 
 
 # Physical constants
-c  = 2.99792458E+8    # [m/s] speed of light
-h  = 6.62607004E-34   # [J*s] Planck's constant
-kb = 1.38064852E-23   # [J/K] Boltzmann's constant
+c     = 2.99792458E+08   # [m/s] speed of light
+h     = 6.62607004E-34   # [J*s] Planck's constant
+kb    = 1.38064852E-23   # [J/K] Boltzmann's constant
+amu   = 1.66053904E-27   # [kg] atomic mass unit
+T_CMB = 2.72548000E+00   # [K] CMB temperature
 
 
 def LTEpop (linedata, temperature):
@@ -58,3 +60,26 @@ def planck (temperature, frequency):
     Planck function for thermal radiation.
     '''
     return 2.0*h/c**2 * np.power(frequency,3) / np.expm1(h*frequency/(kb*temperature))
+
+
+
+def dnu (nu_ij, inverse_mass, temp, turb):
+    """
+    :param nu_ij: line centre frequency
+    :param inverse_mass: inverse mass of the line producing species
+    :param temp: temperature
+    :param turb: turbulent velocity
+    :return: line width of the line profile function.
+    """
+    return nu_ij/c * np.sqrt(2.0*kb*temp/amu*inverse_mass + turb**2)
+
+def profile (nu_ij, inverse_mass, temp, turb, nu):
+    """
+    :param nu_ij: line centre frequency
+    :param inverse_mass: inverse mass of the line producing species
+    :param temp: temperature
+    :param turb: turbulent velocity
+    :param nu: frequency at which to evaluate
+    :return: Gaussian profile function evaluated at frequency nu.
+    """
+    return np.exp(-((nu-nu_ij)/dnu(nu_ij, inverse_mass, temp, turb))**2) / (np.sqrt(np.pi) * dnu(nu_ij, inverse_mass, temp, turb))
