@@ -11,8 +11,9 @@
 
 #if (DEBUG)
 
-  #include <iostream>
-  using namespace std;
+    #include <iostream>
+    using std::cout;
+    using std::endl;
 
 #endif
 

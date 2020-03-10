@@ -369,6 +369,7 @@ PYBIND11_MODULE (magritte, module)
 #     if (GPU_ACCELERATION)
       .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)
       .def ("gpu_compute_radiation_field",           &Simulation::gpu_compute_radiation_field)
+      .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
 #     endif
       // functions
       .def ("compute_spectral_discretisation",       &Simulation::compute_spectral_discretisation)
@@ -380,11 +381,11 @@ PYBIND11_MODULE (magritte, module)
       .def ("compute_level_populations",             (long(Simulation::*)(const Io&))
                                                      &Simulation::compute_level_populations)
       .def ("compute_level_populations",             (long(Simulation::*)(const Io&, const bool, const long))
-                                                     &Simulation::compute_level_populations);
-      //.def ("compute_level_populations",             &Simulation::compute_level_populations)
-      //.def ("compute_level_populations_opts",        &Simulation::compute_level_populations_opts);
+                                                     &Simulation::compute_level_populations)
+      .def("get_npoints_on_rays_comoving",           &Simulation::get_npoints_on_rays<CoMoving>)
+      .def("get_npoints_on_rays_rest",               &Simulation::get_npoints_on_rays<Rest>);
 
-  // RayPair
+// RayPair
   py::class_<RayPair> (module, "RayPair")
       // constructor
       .def (py::init<>())
@@ -411,23 +412,35 @@ PYBIND11_MODULE (magritte, module)
       .def ("set_dtau",          &RayPair::set_dtau)
       .def ("solve",             &RayPair::solve);
 
-  // Image
-  py::class_<Image> (module, "Image")
-      // attributes
-      .def_readonly ("ImX", &Image::ImX)
-      .def_readonly ("ImY", &Image::ImY)
-      .def_readonly ("I_p", &Image::I_p)
-      .def_readonly ("I_m", &Image::I_m)
-      // constructor
-      .def (py::init<const long, const Parameters &>())
-      // functions
-      .def ("write", &Image::write);
+
+//    // RayBlock
+//    py::class_<RayBlock> (module, "RayBlock")
+//        // constructor
+//        .def (py::init<>());
+//
+//    // ProtoRayBlock
+//    py::class_<ProtoRayBlock> (module, "ProtoRayBlock")
+//        // constructor
+//        .def (py::init<>());
+//
+//    // RayQueue
+//    py::class_<RayQueue> (module, "RayQueue")
+//        // constructor
+//        .def (py::init<>());
 
 
-  //py::class_<vReal> (module, "vReal")
-  //    // attributes
-  //    // constructor
-  //    .def (py::init<const double&>());
-  //    // functions
+// Image
+py::class_<Image> (module, "Image")
+        // attributes
+        .def_readonly ("ImX", &Image::ImX)
+        .def_readonly ("ImY", &Image::ImY)
+        .def_readonly ("I_p", &Image::I_p)
+        .def_readonly ("I_m", &Image::I_m)
+        // constructor
+        .def (py::init<const long, const Parameters &>())
+        // functions
+        .def ("write", &Image::write);
+
+
 
 }

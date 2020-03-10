@@ -1,0 +1,10 @@
+-------------------------------------------------
+   Magritte   (GPU)
+-------------------------------------------------
+Performance tests for setup and solver functions.
+( Only for GPU and single node use, i.e. no MPI )
+-------------------------------------------------
+Running model: /home/frederik/Magritte_all/Models/MeshTests/gpu_test_0.hdf5
+-------------------------------------------------
+nraypairs = 64
+-------------------------------------------------

@@ -12,7 +12,7 @@ from magritte     import Simulation
 from setup        import Setup, linedata_from_LAMDA_file, make_file_structure
 from quadrature   import H_roots, H_weights
 from ioMagritte   import IoPython, IoText
-from input        import process_mesher_input, process_amrvac_input, process_phantom_input
+from input        import *
 
 
 config_default = {
@@ -225,6 +225,10 @@ def configure(config) -> Simulation:
     # Check the input type
     if   (config['input type'].lower() == 'magritte'):
         return process_magritte_input(config)
+    elif (config['input type'].lower() == 'analytic'):
+        process_analytic_input(config)
+    elif (config['input type'].lower() == 'analytic geometry'):
+        process_analytic_input_with_geometry(config)
     elif (config['input type'].lower() == 'mesher'):
         process_mesher_input(config)
     elif (config['input type'].lower() == 'amrvac'):

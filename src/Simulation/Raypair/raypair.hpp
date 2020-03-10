@@ -30,6 +30,9 @@ struct RayPair
       long n_ar;       ///< number of points on the antipodal ray side
       long n_r;        ///< number of points on the ray side
 
+//      size_t n_ar;     ///< number of points on the antipodal ray side
+//      size_t n_rr;     ///< number of points on the ray side
+
       long first;      ///< index of the first used element
       long last;       ///< index of the last used element
 
@@ -67,7 +70,24 @@ struct RayPair
 
       //inline void solve_ndep_is_1 ();
 
-      inline void setup ();
+
+      inline void setFrequencies (
+          const Double1 &frequencies,
+          const double   scale,
+          const size_t   index       );
+
+      inline void setup (
+          const Model &model,
+          const RayData &raydata1,
+          const RayData &raydata2,
+          const size_t   R,
+          const size_t   o        );
+
+      inline void store (
+          Model        &model,
+          const size_t  R,
+          const size_t  r,
+          const size_t  o     );
 
       // setters
       inline void set_term1_and_term2 (
@@ -172,6 +192,8 @@ struct RayPair
       vReal1 inverse_A;            ///< helper variable
       vReal1 inverse_C;            ///< helper variable
 
+//      size_t nfreqs;
+//      double reverse;
 
 };
 

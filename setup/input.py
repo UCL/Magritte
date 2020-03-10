@@ -18,13 +18,16 @@ from ioMagritte import IoPython, IoText
 
 
 def process_mesher_input(config):
+    """
+    Script to process mesher input based on another Magritte model to create a new Magritte model.
+    :param config: configuration dict
+    """
 
     # TODO: Maybe replace the save to numpy by vaex structures to reduce memory costs?
 
     if (os.path.splitext(config['input file'])[1].lower() != '.vtk'):
         raise ValueError('Only .vtk mesher files are currently supported.')
 
-    # try:
     modelName = f"{config['project folder']}{config['original model name']}"
     # Choose the io interface corresponding to the model type
     if   (config['original model type'].lower() in ['hdf5', 'h5']):
@@ -33,9 +36,6 @@ def process_mesher_input(config):
         io = IoText(f"{modelName}/")
     else:
          raise ValueError('No valid model type was given (hdf5, ascii).')
-    # except:
-
-        # raise RuntimeError('Failed to open original Magritte model.')
 
     model = Model()
     model.read(io)
@@ -55,6 +55,56 @@ def process_mesher_input(config):
     np.save(f"{name}_nH2",       np.array(model.chemistry.species.abundance)[:,2] [corresp_points])
     np.save(f"{name}_tmp",       np.array(model.thermodynamics.temperature.gas)   [corresp_points])
     np.save(f"{name}_trb",       np.array(model.thermodynamics.turbulence.vturb2) [corresp_points])
+
+    return
+
+
+
+
+def process_analytic_input(config):
+    """
+    Script to process mesher input based on analytic functions to create a Magritte model.
+    :param config: configuration dict
+    """
+    # TODO: Maybe replace the save to numpy by vaex structures to reduce memory costs?
+    if (os.path.splitext(config['input file'])[1].lower() != '.vtk'):
+        raise ValueError('Only .vtk mesher files are currently supported.')
+
+    mesh = Mesh(config['input file'])
+
+    name = f"{config['project folder']}{config['model name']}"
+
+    np.save(f"{name}_position",  mesh.points                              )
+    np.save(f"{name}_boundary",  mesh.boundary                            )
+    np.save(f"{name}_neighbors", mesh.neighbors                           )
+    np.save(f"{name}_velocity",  config['functions']['velocity'   ](mesh.points))
+    np.save(f"{name}_nl1",       config['functions']['nl1'        ](mesh.points))
+    np.save(f"{name}_nH2",       config['functions']['nH2'        ](mesh.points))
+    np.save(f"{name}_tmp",       config['functions']['temperature'](mesh.points))
+    np.save(f"{name}_trb",       config['functions']['turbulence' ](mesh.points))
+
+    return
+
+
+
+
+def process_analytic_input_with_geometry(config):
+    """
+    Script to process mesher input based on analytic functions to create a Magritte model.
+    :param config: configuration dict
+    """
+    # TODO: Maybe replace the save to numpy by vaex structures to reduce memory costs?
+
+    name = f"{config['project folder']}{config['model name']}"
+
+    np.save(f"{name}_position",  config['geometry' ]['position'   ])
+    np.save(f"{name}_boundary",  config['geometry' ]['boundary'   ])
+    np.save(f"{name}_neighbors", config['geometry' ]['neighbors'  ])
+    np.save(f"{name}_velocity",  config['functions']['velocity'   ](config['geometry']['position']))
+    np.save(f"{name}_nl1",       config['functions']['nl1'        ](config['geometry']['position']))
+    np.save(f"{name}_nH2",       config['functions']['nH2'        ](config['geometry']['position']))
+    np.save(f"{name}_tmp",       config['functions']['temperature'](config['geometry']['position']))
+    np.save(f"{name}_trb",       config['functions']['turbulence' ](config['geometry']['position']))
 
     return
 

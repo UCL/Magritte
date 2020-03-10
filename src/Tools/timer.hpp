@@ -8,11 +8,14 @@
 #define __TIMER_HPP_INCLUDED__
 
 #include <iostream>
+using std::cout;
+using std::endl;
 #include <fstream>
 #include <string>
+using std::string;
 #include <vector>
+using std::vector;
 #include <chrono>
-using namespace std;
 
 #include "Tools/Parallel/wrap_mpi.hpp"
 
@@ -27,12 +30,12 @@ class Timer
 
     string name;
 
-    vector <chrono::high_resolution_clock::time_point> starts;
-    vector <chrono::high_resolution_clock::time_point> stops;
+    vector <std::chrono::high_resolution_clock::time_point> starts;
+    vector <std::chrono::high_resolution_clock::time_point> stops;
 
-    vector <chrono::duration <double>> intervals;
+    vector <std::chrono::duration <double>> intervals;
 
-    chrono::duration <double> total;
+    std::chrono::duration <double> total;
 
 
   public:
@@ -41,10 +44,9 @@ class Timer
 	  ///  Constructor for TIMER
 	  //////////////////////////
 
-	  Timer (
-        const string timer_name)
+	  Timer (const string timer_name)
 	  {
-      name = timer_name;
+	      name = timer_name;
 	  }
 
 
@@ -53,7 +55,7 @@ class Timer
 
     void start ()
     {
-      starts.push_back (chrono::high_resolution_clock::now());
+      starts.push_back (std::chrono::high_resolution_clock::now());
     }
 
 
@@ -62,9 +64,9 @@ class Timer
 
     void stop ()
     {
-      stops.push_back (chrono::high_resolution_clock::now());
+      stops.push_back (std::chrono::high_resolution_clock::now());
 
-      const chrono::duration <double> interval = stops.back()-starts.back();
+      const std::chrono::duration <double> interval = stops.back()-starts.back();
 
       intervals.push_back (interval);
 

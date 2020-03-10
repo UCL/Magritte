@@ -76,6 +76,7 @@ if    (GPU_ACCELERATION)
     Simulation/simulation.cu
     Simulation/Raypair/raypair.cpp
     Simulation/Raypair/raypair.cu
+    Simulation/Raypair/rayblock.cu
     Simulation/Image/image.cpp)
   # Set library properties
   set_target_properties (Magritte PROPERTIES PREFIX "gpu")

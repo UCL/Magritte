@@ -541,18 +541,14 @@ template <Frame frame>
 Long2 Simulation ::
     get_npoints_on_rays () const
 {
-
   Long2 npoints (parameters.nrays()/2);
-
 
   MPI_PARALLEL_FOR (r, parameters.nrays()/2)
   {
-    npoints[r] = get_max_npoints_on_ray <frame> (r);
+    npoints[r] = get_npoints_on_ray <frame> (r);
   }
 
-
   return npoints;
-
 }
 
 

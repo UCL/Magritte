@@ -110,6 +110,20 @@ void Radiation :: write (const Io &io) const
     io.write_array (prefix+"J", JJ);
 
 
+//    Double2 I_bdy_buffer (I_bdy.size(), Double1 (I_bdy[0].size()*I_bdy[0][0].size()));
+//
+//    for (long r = 0; r < nrays_red; r++)
+//    {
+//        OMP_PARALLEL_FOR (p, ncells)
+//        {
+//            for (size_t f = 0; f < nfreqs; f++)
+//            {
+//                I_bdy_buffer[r][p + f] = get_J (p,f);
+//            }
+//        }
+//    }
+
+
   // Print all frequencies (nu)
 //# if (GRID_SIMD)
 //
