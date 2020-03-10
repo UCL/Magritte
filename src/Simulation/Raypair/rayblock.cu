@@ -10,7 +10,7 @@
 ///    @param[in] depth     : number of points along the ray pairs
 //////////////////////////////////////////////////////////////////
 
-__host__
+CUDA_HOST
 RayBlock ::  RayBlock (
     const Size ncells,
     const Size nfreqs,
@@ -87,7 +87,7 @@ RayBlock ::  RayBlock (
 ///  Destructor for gpuRayPair
 //////////////////////////////
 
-__host__
+CUDA_HOST
 RayBlock :: ~RayBlock ()
 {
     cudaFree (n1);
@@ -146,6 +146,7 @@ RayBlock :: ~RayBlock ()
 ///    @param[in] model : model from which to copy
 /////////////////////////////////////////////////////////////
 
+CUDA_HOST
 void RayBlock :: copy_model_data (const Model &model)
 {
     cudaMemcpy (line,
@@ -184,7 +185,7 @@ void RayBlock :: copy_model_data (const Model &model)
 
 
 
-//__host__
+//CUDA_HOST
 //void RayBlock :: setFrequencies (
 //        const Double1 &frequencies,
 //        const Real     scale,
@@ -229,15 +230,13 @@ void RayBlock :: copy_model_data (const Model &model)
 
 
 
-__host__
+CUDA_HOST
 void RayBlock :: setup (
         const Model           &model,
         const Size             R,
         const Size             r,
         const ProtoRayBlock   &prb   )
 {
-    timer0.start();
-
     /// Set the ray direction indices
     RR = R;
     rr = r;
@@ -290,7 +289,6 @@ void RayBlock :: setup (
         Size bdy_0 = model.geometry.boundary.cell2boundary_nr[o];
         Size bdy_n = model.geometry.boundary.cell2boundary_nr[o];
 
-        timer2.start();
         /// Set ray 1
         if (n1[rp] > 0)
         {
@@ -326,14 +324,12 @@ void RayBlock :: setup (
             bdy_n = model.geometry.boundary.cell2boundary_nr[raydata2.back().cellNr];
             lst   = index-1;
         }
-        timer2.stop();
 
         /// Set n1_min, first and last
         if (n1[rp] < n1_min) n1_min = n1[rp];
         if (fst    < first ) first  = fst;
         if (lst    > last  ) last   = lst;
 
-//        timer3.start();
 //        /// Copy boundary intensities
 //        cudaMemcpy (&I_bdy_0_presc[V(rp,0)],
 //                    model.radiation.I_bdy[RR][bdy_0].data(),
@@ -343,17 +339,21 @@ void RayBlock :: setup (
 //                    model.radiation.I_bdy[RR][bdy_n].data(),
 //                    model.radiation.I_bdy[RR][bdy_n].size()*sizeof(double),
 //                    cudaMemcpyHostToDevice                                 );
-//        timer3.stop();
     }
 
-    timer0.stop();
 
+}
+
+CUDA_DEVICE
+inline Real my_fma (const Real a, const Real b, const Real c)
+{
+    return fma (a, b, c);
+//    return a * b + c;
 }
 
 
 
-
-__global__
+CUDA_GLOBAL
 void feautrierKernel (RayBlock &rayblock)
 {
     const Size index  = blockIdx.x * blockDim.x + threadIdx.x;
@@ -368,7 +368,7 @@ void feautrierKernel (RayBlock &rayblock)
 
 
 
-__host__
+CUDA_HOST
 void RayBlock :: solve ()
 {
     const Size blockSize = gpuBlockSize;
@@ -383,7 +383,7 @@ void RayBlock :: solve ()
 
 
 
-__host__
+CUDA_HOST
 void RayBlock :: store (Model &model) const
 {
     const double weight_ang = 2.0 * model.geometry.rays.weights[rr];
@@ -410,6 +410,66 @@ void RayBlock :: store (Model &model) const
 }
 
 
+//__device__
+//inline Real my_expm1 (const Real x)
+//{
+//    const Real inverse_index[40] = {    0.,     1., 1./ 2., 1./ 3., 1./ 4., 1./ 5., 1./ 6, 1./ 7, 1./ 8., 1./ 9.,
+//                                        1./10., 1./11., 1./12., 1./13., 1./14., 1./15., 1./16, 1./17, 1./18., 1./19.,
+//                                        1./20., 1./21., 1./22., 1./23., 1./24., 1./25., 1./26, 1./27, 1./28., 1./29.,
+//                                        1./30., 1./31., 1./32., 1./33., 1./34., 1./35., 1./36, 1./37, 1./38., 1./39. };
+//    const int n = 21;
+
+//    Real result = 1.0;
+
+//    for (int i = n; i > 1; i--)
+//    {
+//        result = 1.0 + x * result * inverse_index[i];
+//    }
+
+//    return x*result;
+//}
+
+
+__device__
+inline Real my_exp_minus (const Real x)
+{
+//    Real result = my_fma (x,  0.058823529411764705, 1.0);
+      Real result = my_fma (x,  0.100000000000000000, 1.0);
+//
+//    result = my_fma (result, x*0.06250000000000000, 1.0);
+//    result = my_fma (result, x*0.06666666666666667, 1.0);
+//    result = my_fma (result, x*0.07142857142857142, 1.0);
+//    result = my_fma (result, x*0.07142857142857142, 1.0);
+//    result = my_fma (result, x*0.07692307692307693, 1.0);
+//    result = my_fma (result, x*0.08333333333333333, 1.0);
+//    result = my_fma (result, x*0.09090909090909091, 1.0);
+//    result = my_fma (result, x*0.10000000000000000, 1.0);
+    result = my_fma (result, x*0.11111111111111111, 1.0);
+    result = my_fma (result, x*0.12500000000000000, 1.0);
+    result = my_fma (result, x*0.14285714285714285, 1.0);
+    result = my_fma (result, x*0.16666666666666666, 1.0);
+    result = my_fma (result, x*0.20000000000000000, 1.0);
+    result = my_fma (result, x*0.25000000000000000, 1.0);
+    result = my_fma (result, x*0.33333333333333333, 1.0);
+    result = my_fma (result, x*0.50000000000000000, 1.0);
+
+    return 1.0 / my_fma (result, x, 1.0);
+}
+
+
+//__device__
+//inline Real my_exp (const Real x)
+//{
+//    return 1.0 + my_expm1 (x);
+//}
+
+
+//__device__
+//inline Real my_exp_minus (const Real x)
+//{
+//    return 1.0 / my_exp (x);
+//}
+
 
 
 ///  Gaussian line profile function
@@ -418,14 +478,16 @@ void RayBlock :: store (Model &model) const
 ///    @return profile function evaluated with this frequency difference
 ////////////////////////////////////////////////////////////////////////
 
-__device__
+CUDA_DEVICE
 inline Real gaussian (const Real width, const Real diff)
 {
     const Real inverse_width = 1.0 / width;
     const Real sqrtExponent  = inverse_width * diff;
     const Real     exponent  = -sqrtExponent * sqrtExponent;
+//    const Real     exponent  = sqrtExponent * sqrtExponent;
 
-    return inverse_width * INVERSE_SQRT_PI * expf (exponent);
+    return inverse_width * INVERSE_SQRT_PI * __expf (exponent);
+//    return inverse_width * INVERSE_SQRT_PI * my_exp_minus (exponent);
 }
 
 
@@ -437,10 +499,11 @@ inline Real gaussian (const Real width, const Real diff)
 ///    @return Planck function evaluated at this frequency
 ///////////////////////////////////////////////////////////////////////////
 
-__device__
+CUDA_DEVICE
 inline Real planck (const Real temperature, const Real frequency)
 {
-    return TWO_HH_OVER_CC_SQUARED * (frequency*frequency*frequency) / expm1(HH_OVER_KB*frequency/temperature);
+    return TWO_HH_OVER_CC_SQUARED * (frequency*frequency*frequency) / expm1 (HH_OVER_KB*frequency/temperature);
+//    return TWO_HH_OVER_CC_SQUARED * (frequency*frequency*frequency) / my_expm1 (HH_OVER_KB*frequency/temperature);
 }
 
 
@@ -454,27 +517,48 @@ inline Real planck (const Real temperature, const Real frequency)
 ///    @param[out]    chi         : opacity
 /////////////////////////////////////////////////////////////////////////////////
 
-__device__
-void RayBlock :: get_eta_and_chi (const Size d, const Size w, const Size rp, const Real frequency)
+CUDA_DEVICE
+void RayBlock :: get_eta_and_chi (const Size In, const Size Dn, const Real frequency)
 {
-    const Size idw              = I(d, w);
-    const Real frequency_scaled = frequency * shifts[D(rp, d)];
+    const Real frequency_scaled = frequency * shifts[Dn];
 
     /// Initialize
-    eta[idw] = 0.0E+00;
-    chi[idw] = 0.0E+00; //1.0E-26;
+    eta[In] = 0.0E+00;
+    chi[In] = 0.0E+00; //1.0E-26;
 
     /// Set line emissivity and opacity
     for (Size l = 0; l < nlines; l++)
     {
-      const Size lnl     = L(nrs[D(rp, d)], l);
+      const Size lnl     = L(nrs[Dn], l);
       const Real diff    = frequency_scaled - line[l];
       const Real profile = frequency_scaled * gaussian (line_width[lnl], diff);
 
-      eta[idw] = fma (profile, line_emissivity[lnl], eta[idw]);
-      chi[idw] = fma (profile, line_opacity   [lnl], chi[idw]);
+      eta[In] = my_fma (profile, line_emissivity[lnl], eta[In]);
+      chi[In] = my_fma (profile, line_opacity   [lnl], chi[In]);
     }
 }
+
+//CUDA_DEVICE
+//void RayBlock :: get_eta_and_chi (const Size d, const Size w, const Size rp, const Real frequency)
+//{
+//    const Size idw              = I(d, w);
+//    const Real frequency_scaled = frequency * shifts[D(rp, d)];
+//
+//    /// Initialize
+//    eta[idw] = 0.0E+00;
+//    chi[idw] = 0.0E+00; //1.0E-26;
+//
+//    /// Set line emissivity and opacity
+//    for (Size l = 0; l < nlines; l++)
+//    {
+//        const Size lnl     = L(nrs[D(rp, d)], l);
+//        const Real diff    = frequency_scaled - line[l];
+//        const Real profile = frequency_scaled * gaussian (line_width[lnl], diff);
+//
+//        eta[idw] = my_fma (profile, line_emissivity[lnl], eta[idw]);
+//        chi[idw] = my_fma (profile, line_opacity   [lnl], chi[idw]);
+//    }
+//}
 
 
 ///  Interpolator over frequency space
@@ -483,7 +567,7 @@ void RayBlock :: get_eta_and_chi (const Size d, const Size w, const Size rp, con
 ///    @return interpolated value of Vs at index f
 //////////////////////////////////////////////////////////////
 
-//__device__
+//CUDA_DEVICE
 //Real RayBlock :: frequency_interpolate (const Real *Vs, const Size i, const Size w)
 //{
 //    const Size iw = I(i,w);
@@ -491,7 +575,7 @@ void RayBlock :: get_eta_and_chi (const Size d, const Size w, const Size rp, con
 //    const Size fu = freqs_upper[iw];
 //    const Real tt = (freqs_scaled[iw]-freqs[fl]) / (freqs[fu]-freqs[fl]);
 
-//    return fma(tt, Vs[fu], fma(-tt, Vs[fl], Vs[fl]));
+//    return my_fma(tt, Vs[fu], my_fma(-tt, Vs[fl], Vs[fl]));
 //}
 
 
@@ -499,155 +583,167 @@ void RayBlock :: get_eta_and_chi (const Size d, const Size w, const Size rp, con
 ///    @param[in] w : width index
 /////////////////////////////////////////////////////////
 
-__device__
+CUDA_DEVICE
 void RayBlock :: solve_Feautrier (const Size w)
 {
+    TIMER_TIC (t1)
 
-    // printf("Inside solve_Feautrier\n");
     const Size rp        = w / nfreqs;
     const Size f         = w % nfreqs;
     const Real frequency = frequencies[V(origins[rp], f)];
 
-    /// SETUP FEAUTRIER RECURSION RELATION
-    //////////////////////////////////////
-
-
-    TIMER_TIC (t1)
-    /// Determine emissivities, opacities and optical depth increments
-    for (Size n = first; n <= last; n++)
-    {
-        get_eta_and_chi (n, w, rp, frequency);
-    }
-    TIMER_TOC (t1, "get_eta_and_chi")
-
 
     TIMER_TIC (t2)
-    for (Size n = first; n <= last; n++)
-    {
-        term1[I(n,w)] = eta[I(n,w)] / chi[I(n,w)];
-//         printf("term1 = %le\n", term1[I(n,w)]);
-    }
 
-    for (Size n = first; n <  last; n++)
-    {
-        dtau[I(n,w)] = 0.5 * (chi[I(n,w)] + chi[I(n+1,w)]) * dZs[D(rp,n)];
-//        printf("%d : term1 = %le, dtau = %le, shift = %le, freq = %le, origin =%d, f=%ld\n", n, term1[I(n,w)], dtau[I(n,w)], shifts[D(rp, n)], frequency, origins[rp], w);
-    }
-    TIMER_TOC (t2, "set_term_&_dtau")
+    const Size If   = I(first,    w);
+    const Size Ifp1 = I(first+1,  w);
+    const Size Df   = D(rp, first);
 
+    get_eta_and_chi (If,   Df,   frequency);
+    get_eta_and_chi (Ifp1, Df+1, frequency);
 
-    TIMER_TIC (t3)
+//    Real chi_prev = chi[If];
+//    Real chi      = chi[Ifp1];
+
+    term1[If]   = eta[If]   / chi[If];
+    term1[Ifp1] = eta[Ifp1] / chi[Ifp1];
+
+     dtau[If]   = 0.5 * (chi[If] + chi[Ifp1]) * dZs[Df];
+
+//    Real dtau_crt = dtau[If];
+//    Real dtau_prv = dtau[If];
 
     /// Set boundary conditions
-    const Real inverse_dtau0 = 1.0 / dtau[I(first, w)];
-    const Real inverse_dtaud = 1.0 / dtau[I(last-1,w)];
-
-    C[I(first,w)] = 2.0 * inverse_dtau0 * inverse_dtau0;
-    A[I(last, w)] = 2.0 * inverse_dtaud * inverse_dtaud;
-
-    const Real B0_min_C0 = fma (2.0, inverse_dtau0, 1.0);
-    const Real Bd_min_Ad = fma (2.0, inverse_dtaud, 1.0);
-
-    const Real B0 = B0_min_C0 + C[I(first,w)];
-    const Real Bd = Bd_min_Ad + A[I(last, w)];
+    const Real inverse_dtau0 = 1.0 / dtau[If];
+                       C[If] = 2.0 * inverse_dtau0 * inverse_dtau0;
+    const Real B0_min_C0     = my_fma (2.0, inverse_dtau0, 1.0);
+    const Real B0            = B0_min_C0 + C[If];
 
     const Real inverse_B0 = 1.0 / B0;
 
-//    const Real I_bdy_0 = frequency_interpolate (I_bdy_0_presc, first, w);
-//    const Real I_bdy_n = frequency_interpolate (I_bdy_n_presc, last,  w);
+    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+    Su[If] = my_fma (2.0*I_bdy_0, inverse_dtau0, term1[If]);
+    Su[If] = Su[If] * inverse_B0;
 
-    TIMER_TIC (t13)
-    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[D(rp, first)]);
-    const Real I_bdy_n = planck (T_CMB, frequency*shifts[D(rp, last )]);
-    TIMER_TOC (t13, "planck         ")
-
-    // printf ("I_bdy_0 = %le\n", I_bdy_0);
-    // printf ("I_bdy_n = %le\n", I_bdy_n);
-
-    Su[I(first,w)] = fma (2.0*I_bdy_0, inverse_dtau0, term1[I(first,w)]);
-    Su[I(last, w)] = fma (2.0*I_bdy_n, inverse_dtaud, term1[I(last, w)]);
+    // F[0] = (B[0] - C[0]) / C[0];
+    F[If] = 0.5 * B0_min_C0 * dtau[If] * dtau[If];
+    inverse_one_plus_F[If] = 1.0 / (1.0 + F[If]);
 
 
+    TIMER_TIC (t3)
     /// Set body of Feautrier matrix
     for (Size n = first+1; n < last; n++)
     {
-        inverse_A[I(n,w)] = 0.5 * (dtau[I(n-1,w)] + dtau[I(n,w)]) * dtau[I(n-1,w)];
-        inverse_C[I(n,w)] = 0.5 * (dtau[I(n-1,w)] + dtau[I(n,w)]) * dtau[I(n,  w)];
+        TIMER_TIC (t5)
+        TIMER_TIC (t11)
+        const Size Inp1 = I(n+1, w);
+        const Size In   = I(n,   w);
+        const Size Inm1 = I(n-1, w);
+        const Size Dn   = D(rp,  n);
+        TIMER_TOC (t11, "indices           ")
 
-        A[I(n,w)] = 1.0 / inverse_A[I(n,w)];
-        C[I(n,w)] = 1.0 / inverse_C[I(n,w)];
+        TIMER_TIC (t12)
+        get_eta_and_chi (Inp1, Dn+1, frequency);
+        TIMER_TOC (t12, "get eta and chi   ")
 
-        Su[I(n,w)] = term1[I(n,w)];
+        TIMER_TIC (t13)
+
+        dtau[In  ] = 0.5 * (chi[In] + chi[Inp1]) * dZs[Dn];
+//        const Real dtau_crt = 0.5 * (chi[In] + chi[Inp1]) * dZs[Dn];
+//        const Real  eta_crt = eta[Inp1];
+//        const Real  chi_crt = chi[Inp1];
+//
+//        if (dtau_crt > dtau_max)
+//        {
+//            const Size n_interpl = dtau_crt / dtau_max + 1;
+//            const Real inverse_n = 1.0 / n_interpl;
+//
+//            (dtau_crt - dtau[In]) * inverse_n;
+//            ( eta_crt -  eta[In]) * inverse_n;
+//            ( chi_crt -  chi[In]) * inverse_n;
+//
+//
+//
+//        }
+
+        term1[Inp1] = eta[Inp1] / chi[Inp1];
+
+
+        Su[In] = term1[In];
+        TIMER_TOC (t13, "term1 and Su      ")
+
+        TIMER_TIC (t14)
+        const Real dtau_av = 0.5 * (dtau[Inm1] + dtau[In]);
+
+        inverse_A[In] = dtau_av * dtau[Inm1];
+                A[In] = 1.0 / inverse_A[In];
+//                A[In] = __ddiv_ru (1.0, inverse_A[In]);
+        inverse_C[In] = dtau_av * dtau[In];
+                C[In] = 1.0 / inverse_C[In];
+//                C[In] = __ddiv_ru (1.0, inverse_C[In]);
+        TIMER_TOC (t14, "As and Cs         ")
+
+        TIMER_TIC (t15)
+                         F[In] = my_fma (A[In]*F[Inm1], inverse_one_plus_F[Inm1], 1.0) * inverse_C[In];
+        inverse_one_plus_F[In] = 1.0 / (1.0 + F[In]);
+
+        Su[In] = my_fma (A[In], Su[Inm1], Su[In]) * inverse_one_plus_F[In] * inverse_C[In];
+        TIMER_TOC (t15, "final part        ")
+        TIMER_TOC (t5, "elimination loop  ")
     }
+    TIMER_TOC (t3, "elimination loop  ")
 
-    TIMER_TOC (t3, "set_up         ")
+    const Size Il   = I(last,   w);
+    const Size Ilm1 = I(last-1, w);
+    const Size Dl   = D(rp, last);
 
+    const Real inverse_dtaud = 1.0 / dtau[Ilm1];
+                       A[Il] = 2.0 * inverse_dtaud * inverse_dtaud;
+    const Real Bd_min_Ad     = my_fma (2.0, inverse_dtaud, 1.0);
+    const Real Bd            = Bd_min_Ad + A[Il];
 
-    /// SOLVE FEAUTRIER RECURSION RELATION
-    //////////////////////////////////////
+    const Real denominator = 1.0 / my_fma (Bd, F[Ilm1], Bd_min_Ad);
 
+    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+    Su[Il] = my_fma (2.0*I_bdy_n, inverse_dtaud, term1[Il]);
+    Su[Il] = my_fma (A[Il], Su[Ilm1], Su[Il]) * (1.0 + F[Ilm1]) * denominator;
 
-    /// ELIMINATION STEP
-    ////////////////////
+    TIMER_TOC (t2, "elimination step  ")
+
 
     TIMER_TIC (t4)
 
-    Su[I(first,w)] = Su[I(first,w)] * inverse_B0;
-
-    // F[0] = (B[0] - C[0]) / C[0];
-                     F[I(first,w)] = 0.5 * B0_min_C0 * dtau[I(first,w)] * dtau[I(first,w)];
-    inverse_one_plus_F[I(first,w)] = 1.0 / (1.0 + F[I(first,w)]);
-
-    for (Size n = first+1; n < last; n++)
-    {
-                         F[I(n,w)] = (1.0 + A[I(n,w)]*F[I(n-1,w)]*inverse_one_plus_F[I(n-1,w)]) * inverse_C[I(n,w)];
-        inverse_one_plus_F[I(n,w)] = 1.0 / (1.0 + F[I(n,w)]);
-
-        Su[I(n,w)] = (Su[I(n,w)] + A[I(n,w)]*Su[I(n-1,w)]) * inverse_one_plus_F[I(n,w)] * inverse_C[I(n,w)];
-    }
-
-    const Real denominator = 1.0 / fma (Bd, F[I(last-1,w)], Bd_min_Ad);
-
-    Su[I(last,w)] = fma (A[I(last,w)], Su[I(last-1,w)], Su[I(last,w)]) * (1.0 + F[I(last-1,w)]) * denominator;
-
-
-    /// BACK SUBSTITUTION
-    /////////////////////
-
-    if (n1_min < last)
-    {
+//    if (n1_min < last)
+//    {
         // G[ndep-1] = (B[ndep-1] - A[ndep-1]) / A[ndep-1];
-                        G[I(last,w)] = 0.5 * Bd_min_Ad * dtau[I(last-1,w)] * dtau[I(last-1,w)];
-        G_over_one_plus_G[I(last,w)] = G[I(last,w)] / (1.0 + G[I(last,w)]);
+                        G[Il] = 0.5 * Bd_min_Ad * dtau[Ilm1] * dtau[Ilm1];
+        G_over_one_plus_G[Il] = G[Il] / (1.0 + G[Il]);
 
         for (Size n = last-1; n > n1_min; n--)
         {
-            Su[I(n,w)] = fma (Su[I(n+1,w)], inverse_one_plus_F[I(n,w)], Su[I(n,w)]);
+            const Size Inp1 = I(n+1, w);
+            const Size In   = I(n,   w);
 
-                            G[I(n,w)] = (1.0 + C[I(n,w)]*G_over_one_plus_G[I(n+1,w)]) * inverse_A[I(n,w)];
-            G_over_one_plus_G[I(n,w)] = G[I(n,w)] / (1.0 + G[I(n,w)]);
+                           Su[In] = my_fma (Su[Inp1], inverse_one_plus_F[In], Su[In]);
+
+                            G[In] = my_fma (C[In], G_over_one_plus_G[Inp1], 1.0) * inverse_A[In];
+            G_over_one_plus_G[In] = G[In] / (1.0 + G[In]);
         }
 
-        Su[I(n1_min,w)] = fma (Su[I(n1_min+1,w)], inverse_one_plus_F[I(n1_min,w)], Su[I(n1_min,w)]);
 
-        // printf("Su (n_ar) = %le\n", Su[I(n_ar,f)]);
+        const Size In1   = I(n1_min,  w);
+        const Size In1p1 = I(n1_min+1,w);
 
-        L_diag[I(n1_min,w)] = inverse_C[I(n1_min,w)] / (F[I(n1_min,w)] + G_over_one_plus_G[I(n1_min+1,w)]);
-    }
-    else
-    {
-        L_diag[I(last,w)] = (1.0 + F[I(last-1,w)]) / fma (Bd, F[I(last-1,w)], Bd_min_Ad);
-    }
+            Su[In1] = my_fma (Su[In1p1], inverse_one_plus_F[In1], Su[In1]);
+        L_diag[In1] = inverse_C[In1] / (F[In1] + G_over_one_plus_G[In1p1]);
+//    }
+//    else
+//    {
+//        L_diag[Il] = (1.0 + F[Ilm1]) / my_fma (Bd, F[Ilm1], Bd_min_Ad);
+//    }
 
-    TIMER_TOC (t4, "solve          ")
+    TIMER_TOC (t4, "back substitution ")
+    TIMER_TOC (t1, "total time solver ")
     PRINTLINE;
 
-
-//    if (isnan(Su[I(n1_min,w)]))
-//    {
-//      for (long n = first; n <  last; n++)
-//      {
-//        printf("term1 = %le,  dtau = %le,  eta = %le,  chi = %le\n", term1[I(n,w)], dtau[I(n,w)], eta[I(n,w)], chi[I(n,w)]);
-//      }
-//    }
 }

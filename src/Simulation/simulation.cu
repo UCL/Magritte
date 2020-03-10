@@ -154,8 +154,6 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
 
         RayQueue rayqueue (nraypairs);
 
-        vector<RayData> raydata1;
-        vector<RayData> raydata2;
 
         logger.write ("ray = ", rr);
 

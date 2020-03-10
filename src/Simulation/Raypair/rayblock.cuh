@@ -15,6 +15,7 @@
 # define CUDA_HOST_DEVICE __host__ __device__
 # define CUDA_HOST        __host__
 # define CUDA_DEVICE      __device__
+# define CUDA_GLOBAL      __global__
 #else
 # define CUDA_HOST_DEVICE
 # define CUDA_HOST
@@ -26,7 +27,6 @@ typedef double Real;
 typedef size_t Size;
 
 
-
 struct ProtoRayBlock
 {
     const Size depth;
@@ -35,10 +35,7 @@ struct ProtoRayBlock
     vector<RayData> rays_rr;   ///< data for the regular ray
     vector<Size>    origins;   ///< origin of the ray
 
-    ProtoRayBlock (
-        const RayData &ray_ar,
-        const RayData &ray_rr,
-        const Size     origin )
+    ProtoRayBlock (const RayData &ray_ar, const RayData &ray_rr, const Size origin)
         : depth (ray_ar.size() + ray_rr.size() + 1)
     {
        rays_ar.push_back (ray_ar);
@@ -47,10 +44,7 @@ struct ProtoRayBlock
     }
 
 
-    inline void add (
-        const RayData &ray_ar,
-        const RayData &ray_rr,
-        const Size     origin )
+    inline void add (const RayData &ray_ar, const RayData &ray_rr, const Size origin)
     {
         assert (depth == ray_ar.size() + ray_rr.size() + 1);
 
@@ -271,10 +265,15 @@ class RayBlock : public Managed
 
       /// Getter
       CUDA_DEVICE void get_eta_and_chi (
-          const Size d,
-          const Size f,
-          const Size rp,
+          const Size In,
+          const Size Dn,
           const Real frequency         );
+
+//    CUDA_DEVICE void get_eta_and_chi (
+//            const Size d,
+//            const Size f,
+//            const Size rp,
+//            const Real frequency         );
 
       /// Interpolator
 //      CUDA_DEVICE Real frequency_interpolate (

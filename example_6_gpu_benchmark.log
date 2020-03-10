@@ -6,7 +6,5 @@ Performance tests for setup and solver functions.
 -------------------------------------------------
 Running model: /home/frederik/Magritte_all/Models/MeshTests/gpu_test_0.hdf5
 -------------------------------------------------
-nraypairs = 128
+nraypairs = 64
 -------------------------------------------------
-ray = 0
---- Magritte example 6 GPU benchmark is done.

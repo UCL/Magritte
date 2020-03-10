@@ -84,26 +84,19 @@ int main (int argc, char **argv)
     timer0.stop();
 
 
+
     /// Create a gpuRayPair object
-    RayBlock **rayblocks = new RayBlock*[get_nthreads()];
+    RayBlock *rayblock = new RayBlock(simulation.parameters.ncells(),
+                                      simulation.parameters.nfreqs(),
+                                      simulation.parameters.nlines(),
+                                      nraypairs,
+                                      simulation.geometry.max_npoints_on_rays);
 
-    for (int i = 0; i < get_nthreads(); i++)
-    {
-        rayblocks[i] = new RayBlock(simulation.parameters.ncells(),
-                                    simulation.parameters.nfreqs(),
-                                    simulation.parameters.nlines(),
-                                    nraypairs,
-                                    simulation.geometry.max_npoints_on_rays);
+    /// Set GPU block size
+    rayblock->gpuBlockSize = gpuBlockSize;
 
-        /// Set GPU block size
-        rayblocks[i]->gpuBlockSize = gpuBlockSize;
-
-        /// Set model data
-        rayblocks[i]->copy_model_data(simulation);
-    }
-
-
-
+    /// Set model data
+    rayblock->copy_model_data(simulation);
 
 
     for (size_t rr = 0; rr < simulation.parameters.nrays() / 2; rr++)
@@ -114,101 +107,86 @@ int main (int argc, char **argv)
 
         RayQueue rayqueue(nraypairs);
 
+        logger.write("ray = ", rr);
+
         timer5.start();
 
-
-#       pragma omp parallel default (shared)
+        for (size_t o = 0; o < simulation.parameters.ncells(); o++)
         {
-            RayBlock *rayblock = rayblocks[omp_get_thread_num()];
+            timer1.start();
+            const double dshift_max = simulation.get_dshift_max(o);
 
-            logger.write("ray = ", rr);
+            // Trace ray pair
+            const RayData raydata_ar = simulation.geometry.trace_ray<CoMoving>(o, ar, dshift_max);
+            const RayData raydata_rr = simulation.geometry.trace_ray<CoMoving>(o, rr, dshift_max);
 
+            const size_t depth = raydata_ar.size() + raydata_rr.size() + 1;
+            timer1.stop();
 
-//            for (size_t o = 0; o < simulation.parameters.ncells(); o++)
-            for (long o = omp_get_thread_num(); o < simulation.parameters.ncells(); o += omp_get_num_threads())
+            if (depth > 1)
             {
-                timer1.start();
-                const double dshift_max = simulation.get_dshift_max(o);
+                /// Add ray pair to queue
+                rayqueue.add(raydata_ar, raydata_rr, o, depth);
 
-                // Trace ray pair
-                const RayData raydata_ar = simulation.geometry.trace_ray<CoMoving>(o, ar, dshift_max);
-                const RayData raydata_rr = simulation.geometry.trace_ray<CoMoving>(o, rr, dshift_max);
-
-                const size_t depth = raydata_ar.size() + raydata_rr.size() + 1;
-                timer1.stop();
-
-                if (depth > 1)
+                if (rayqueue.complete)
                 {
-                    /// Add ray pair to queue
-                    rayqueue.add(raydata_ar, raydata_rr, o, depth);
+                    timer2.start();
+                    rayblock->setup(simulation, RR, rr, rayqueue.get_complete_block());
+                    timer2.stop();
 
-                    if (rayqueue.complete)
-                    {
-                        timer2.start();
-                        rayblock->setup(simulation, RR, rr, rayqueue.get_complete_block());
-                        timer2.stop();
+                    timer3.start();
+                    rayblock->solve();
+                    timer3.stop();
 
-                        timer3.start();
-                        rayblock->solve();
-                        timer3.stop();
-                        timer3.print();
-
-                        timer4.start();
-                        rayblock->store(simulation);
-                        timer4.stop();
-                    }
-                }
-                else
-                {
-                    /// Extract radiation field from boundary
-                    simulation.get_radiation_field_from_boundary(RR, rr, o);
+                    timer4.start();
+                    rayblock->store(simulation);
+                    timer4.stop();
                 }
             }
-            timer5.stop();
-
-            /// Compute the unfinished rays in the queue
-            timer9.start();
-            for (const ProtoRayBlock &prb : rayqueue.queue)
+            else
             {
-                rayblock->nraypairs = prb.nraypairs();
-                rayblock->width = prb.nraypairs() * simulation.parameters.nfreqs();
-
-                timer6.start();
-                rayblock->setup(simulation, RR, rr, prb);
-                timer6.stop();
-
-                timer7.start();
-                rayblock->solve();
-                timer7.stop();
-                timer7.print();
-
-                timer8.start();
-                rayblock->store(simulation);
-                timer8.stop();
+                /// Extract radiation field from boundary
+                simulation.get_radiation_field_from_boundary(RR, rr, o);
             }
-            timer9.stop();
         }
+        timer5.stop();
+
+        /// Compute the unfinished rays in the queue
+        timer9.start();
+        for (const ProtoRayBlock &prb : rayqueue.queue)
+        {
+            rayblock->nraypairs = prb.nraypairs();
+            rayblock->width = prb.nraypairs() * simulation.parameters.nfreqs();
+
+            timer6.start();
+            rayblock->setup(simulation, RR, rr, prb);
+            timer6.stop();
+
+            timer7.start();
+            rayblock->solve();
+            timer7.stop();
+            timer7.print();
+
+            timer8.start();
+            rayblock->store(simulation);
+            timer8.stop();
+        }
+        timer9.stop();
     }
 
-//    rayblock->timer0.print_total();
-//    rayblock->timer1.print_total();
-//    rayblock->timer2.print_total();
-//    rayblock->timer3.print_total();
+    rayblock->timer0.print_total();
+    rayblock->timer1.print_total();
+    rayblock->timer2.print_total();
+    rayblock->timer3.print_total();
 
 
 
     /// Delete ray block
-
-
-    for (int i = 0; i < get_nthreads(); i++)
-    {
-        delete rayblocks[i];
-    }
-    delete rayblocks;
+    delete rayblock;
 
 
     /// Write output
-//    simulation.write (io);
+    simulation.write (io);
 
     /// Print final timers
     timer0.print_total();

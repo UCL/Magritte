@@ -4,7 +4,7 @@
 
 #include <cuda_runtime.h>
 
- #define USETIMERS
+// #define USETIMERS
 
 
 #ifdef USETIMERS
