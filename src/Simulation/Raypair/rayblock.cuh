@@ -213,8 +213,8 @@ class RayBlock : public Managed
 
       double *frequencies;
 
-      Real *I_bdy_0_presc;        ///< boundary intensity at the first ray element
-      Real *I_bdy_n_presc;        ///< boundary intensity at the final ray element
+//      Real *I_bdy_0_presc;        ///< boundary intensity at the first ray element
+//      Real *I_bdy_n_presc;        ///< boundary intensity at the final ray element
 
       Size *nrs;                  ///< cell number corresponding to point along the ray
       Real *shifts;               ///< Doppler shift scale factors along the ray

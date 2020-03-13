@@ -6,7 +6,8 @@
 
 #include "configure.hpp"
 #include "Tools/types.hpp"
-#include "Tools/Parallel/wrap_Grid.hpp"
+#include "Io/cpp/io_cpp_text.hpp"
+#include "Io/python/io_python.hpp"
 #include "Model/model.hpp"
 #include "Simulation/simulation.hpp"
 
@@ -24,41 +25,62 @@ PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 PYBIND11_MODULE (magritte, module)
 {
 
-  // Module docstring
-  module.doc() = "Magritte module";
+    // Module docstring
+    module.doc() = "Magritte module";
 
 
-  // Define vector types
-  py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
-  py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
+    // Define vector types
+    py::bind_vector<std::vector<LineProducingSpecies>> (module, "vLineProducingSpecies");
+    py::bind_vector<std::vector<CollisionPartner>>     (module, "vCollisionPartner");
 
 
-  // Grid wrapper
-  module.def("vreal",  &vreal,  "Pack a number into a vReal vector");
-  module.def("pack",   &pack,   "Pack a vector into a vector of Grid-SIMD vectors.");
-  module.def("unpack", &unpack, "Unpack a vector of Grid-SIMD vectors into a vector.");
+    // Grid wrapper
+//    module.def("vreal",  &vreal,  "Pack a number into a vReal vector");
+//    module.def("pack",   &pack,   "Pack a vector into a vector of Grid-SIMD vectors.");
+//    module.def("unpack", &unpack, "Unpack a vector of Grid-SIMD vectors into a vector.");
 
 
+    // Io, base class
+    py::class_<Io> (module, "Io");
 
-  // Model
-  py::class_<Model> (module, "Model")
-      // attributes
-      .def_readwrite ("parameters",     &Model::parameters)
-      .def_readwrite ("geometry",       &Model::geometry)
-      .def_readwrite ("chemistry",      &Model::chemistry)
-      .def_readwrite ("lines",          &Model::lines)
-      .def_readwrite ("thermodynamics", &Model::thermodynamics)
-      .def_readwrite ("radiation",      &Model::radiation)
-      // constructor
-      .def (py::init())
-      // functions
-      .def ("read",                     &Model::read)
-      .def ("write",                    &Model::write);
+    // IoText
+    py::class_<IoText, Io> (module, "IoText")
+        // attributes
+        .def_readonly ("io_file", &IoText::io_file)
+        // constructor
+        .def (py::init<const string &>());
+
+#   if (PYTHON_IO)
+        // IoPython
+        py::class_<IoPython, Io> (module, "IoPython")
+            // attributes
+            .def_readonly ("implementation", &IoPython::implementation)
+            .def_readonly ("io_file",        &IoPython::io_file)
+            // constructor
+            .def (py::init<const string &, const string &>())
+            .def ("read_number", (int (IoPython::*)(const string, size_t&) const) &IoPython::read_number);
+#   endif
 
 
-  // Parameters
-  py::class_<Parameters> (module, "Parameters")
-      // constructor
+    // Model
+    py::class_<Model> (module, "Model")
+        // attributes
+        .def_readwrite ("parameters",     &Model::parameters)
+        .def_readwrite ("geometry",       &Model::geometry)
+        .def_readwrite ("chemistry",      &Model::chemistry)
+        .def_readwrite ("lines",          &Model::lines)
+        .def_readwrite ("thermodynamics", &Model::thermodynamics)
+        .def_readwrite ("radiation",      &Model::radiation)
+        // constructor
+        .def (py::init())
+        // functions
+        .def ("read",                     &Model::read)
+        .def ("write",                    &Model::write);
+
+
+    // Parameters
+    py::class_<Parameters> (module, "Parameters")
+        // constructor
       .def (py::init())
       .def_readwrite ("n_off_diag",         &Parameters::n_off_diag)
       .def_readwrite ("max_width_fraction", &Parameters::max_width_fraction)
@@ -368,10 +390,11 @@ PYBIND11_MODULE (magritte, module)
       //.def_readonly ("rayPair",                      &Simulation::rayPair)
 #     if (GPU_ACCELERATION)
       .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)
-      .def ("gpu_compute_radiation_field",           &Simulation::gpu_compute_radiation_field)
+//      .def ("gpu_compute_radiation_field",           &Simulation::gpu_compute_radiation_field)
       .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
 #     endif
-      // functions
+      .def ("cpu_compute_radiation_field_2",         &Simulation::cpu_compute_radiation_field_2)
+// functions
       .def ("compute_spectral_discretisation",       &Simulation::compute_spectral_discretisation)
       .def ("compute_spectral_discretisation_image", &Simulation::compute_spectral_discretisation_image)
       .def ("compute_boundary_intensities",          &Simulation::compute_boundary_intensities)

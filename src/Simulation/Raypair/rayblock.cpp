@@ -1,4 +1,4 @@
-#include "rayblock.cuh"
+#include "rayblock.hpp"
 #include "Simulation/simulation.hpp"
 
 
@@ -10,7 +10,7 @@
 ///    @param[in] depth     : number of points along the ray pairs
 //////////////////////////////////////////////////////////////////
 
-CUDA_HOST
+DEF_HOST
 RayBlock ::  RayBlock (
     const Size ncells,
     const Size nfreqs,
@@ -29,114 +29,114 @@ RayBlock ::  RayBlock (
     const size_t nraypairs_size = nraypairs_max*sizeof(Size);
     const size_t nraypairs_real = nraypairs_max*sizeof(Real);
 
-    cudaMallocManaged (&n1,     nraypairs_size);
-    cudaMallocManaged (&n2,     nraypairs_size);
+    n1 = (Size*) my_malloc (nraypairs_size);
+    n2 = (Size*) my_malloc (nraypairs_size);
 
-    cudaMallocManaged (&origins, nraypairs_size);
-    cudaMallocManaged (&reverse, nraypairs_real);
+    origins = (Size*) my_malloc (nraypairs_size);
+    reverse = (Real*) my_malloc (nraypairs_real);
 
-    cudaMallocManaged (&nrs,    depth_max*nraypairs_max*sizeof(Size));
-    cudaMallocManaged (&shifts, depth_max*nraypairs_max*sizeof(Real));
-    cudaMallocManaged (&dZs,    depth_max*nraypairs_max*sizeof(Real));
+    nrs    = (Size*) my_malloc (depth_max*nraypairs_max*sizeof(Size));
+    shifts = (Real*) my_malloc (depth_max*nraypairs_max*sizeof(Real));
+    dZs    = (Real*) my_malloc (depth_max*nraypairs_max*sizeof(Real));
 
-    cudaMallocManaged (&line,                   nlines*sizeof(double));
-    cudaMallocManaged (&line_emissivity, ncells*nlines*sizeof(double));
-    cudaMallocManaged (&line_opacity,    ncells*nlines*sizeof(double));
-    cudaMallocManaged (&line_width,      ncells*nlines*sizeof(double));
+    line            = (double*) my_malloc (       nlines*sizeof(double));
+    line_emissivity = (double*) my_malloc (ncells*nlines*sizeof(double));
+    line_opacity    = (double*) my_malloc (ncells*nlines*sizeof(double));
+    line_width      = (double*) my_malloc (ncells*nlines*sizeof(double));
 
-    cudaMallocManaged (&frequencies,     ncells*nfreqs*sizeof(double));
+    frequencies     = (double*) my_malloc (ncells*nfreqs*sizeof(double));
 
     const size_t width_real = width_max*sizeof(Real);
 
-//    cudaMallocManaged (&I_bdy_0_presc, width_real);
-//    cudaMallocManaged (&I_bdy_n_presc, width_real);
+//    I_bdy_0_presc = (Real*) my_malloc (width_real);
+//    I_bdy_n_presc = (Real*) my_malloc (width_real);
 
     const size_t area_real = depth_max*width_max*sizeof(Real);
     const size_t area_size = depth_max*width_max*sizeof(Size);
 
-//    cudaMallocManaged (&freqs,              area_real);
-//    cudaMallocManaged (&freqs_scaled,       area_real);
-//    cudaMallocManaged (&freqs_lower,        area_size);
-//    cudaMallocManaged (&freqs_upper,        area_size);
+//    freqs              =  (Real*) my_malloc (area_real);
+//    freqs_scaled       =  (Real*) my_malloc (area_real);
+//    freqs_lower        =  (Size*) my_malloc (area_size);
+//    freqs_upper        =  (Size*) my_malloc (area_size);
 
-    cudaMallocManaged (&term1,              area_real);
-    cudaMallocManaged (&term2,              area_real);
+    term1              =  (Real*) my_malloc (area_real);
+    term2              =  (Real*) my_malloc (area_real);
 
-    cudaMallocManaged (&eta,                area_real);
-    cudaMallocManaged (&chi,                area_real);
+    eta                =  (Real*) my_malloc (area_real);
+    chi                =  (Real*) my_malloc (area_real);
 
-    cudaMallocManaged (&A,                  area_real);
-    cudaMallocManaged (&C,                  area_real);
-    cudaMallocManaged (&F,                  area_real);
-    cudaMallocManaged (&G,                  area_real);
+    A                  =  (Real*) my_malloc (area_real);
+    C                  =  (Real*) my_malloc (area_real);
+    F                  =  (Real*) my_malloc (area_real);
+    G                  =  (Real*) my_malloc (area_real);
 
-    cudaMallocManaged (&inverse_A,          area_real);
-    cudaMallocManaged (&inverse_C,          area_real);
-    cudaMallocManaged (&inverse_one_plus_F, area_real);
-    cudaMallocManaged (&inverse_one_plus_G, area_real);
-    cudaMallocManaged (& G_over_one_plus_G, area_real);
+    inverse_A          =  (Real*) my_malloc (area_real);
+    inverse_C          =  (Real*) my_malloc (area_real);
+    inverse_one_plus_F =  (Real*) my_malloc (area_real);
+    inverse_one_plus_G =  (Real*) my_malloc (area_real);
+     G_over_one_plus_G =  (Real*) my_malloc (area_real);
 
-    cudaMallocManaged (&Su,                 area_real);
-    cudaMallocManaged (&Sv,                 area_real);
-    cudaMallocManaged (&dtau,               area_real);
+    Su                 =  (Real*) my_malloc (area_real);
+    Sv                 =  (Real*) my_malloc (area_real);
+    dtau               =  (Real*) my_malloc (area_real);
 
-    cudaMallocManaged (&L_diag,             area_real);
+    L_diag             =  (Real*) my_malloc (area_real);
 }
 
 
 ///  Destructor for gpuRayPair
 //////////////////////////////
 
-CUDA_HOST
+DEF_HOST
 RayBlock :: ~RayBlock ()
 {
-    cudaFree (n1);
-    cudaFree (n2);
+    my_free (n1);
+    my_free (n2);
 
-    cudaFree (origins);
-    cudaFree (reverse);
+    my_free (origins);
+    my_free (reverse);
 
-    cudaFree (nrs);
-    cudaFree (shifts);
-    cudaFree (dZs);
+    my_free (nrs);
+    my_free (shifts);
+    my_free (dZs);
 
-    cudaFree (line);
-    cudaFree (line_emissivity);
-    cudaFree (line_opacity);
-    cudaFree (line_width);
+    my_free (line);
+    my_free (line_emissivity);
+    my_free (line_opacity);
+    my_free (line_width);
 
-    cudaFree (frequencies);
+    my_free (frequencies);
 
-//    cudaFree (I_bdy_0_presc);
-//    cudaFree (I_bdy_n_presc);
+//    my_free (I_bdy_0_presc);
+//    my_free (I_bdy_n_presc);
 
-//    cudaFree (freqs);
-//    cudaFree (freqs_scaled);
-//    cudaFree (freqs_lower);
-//    cudaFree (freqs_upper);
+//    my_free (freqs);
+//    my_free (freqs_scaled);
+//    my_free (freqs_lower);
+//    my_free (freqs_upper);
 
-    cudaFree (term1);
-    cudaFree (term2);
+    my_free (term1);
+    my_free (term2);
 
-    cudaFree (eta);
-    cudaFree (chi);
+    my_free (eta);
+    my_free (chi);
 
-    cudaFree (A);
-    cudaFree (C);
-    cudaFree (F);
-    cudaFree (G);
+    my_free (A);
+    my_free (C);
+    my_free (F);
+    my_free (G);
 
-    cudaFree (inverse_A);
-    cudaFree (inverse_C);
-    cudaFree (inverse_one_plus_F);
-    cudaFree (inverse_one_plus_G);
-    cudaFree ( G_over_one_plus_G);
+    my_free (inverse_A);
+    my_free (inverse_C);
+    my_free (inverse_one_plus_F);
+    my_free (inverse_one_plus_G);
+    my_free ( G_over_one_plus_G);
 
-    cudaFree (Su);
-    cudaFree (Sv);
-    cudaFree (dtau);
+    my_free (Su);
+    my_free (Sv);
+    my_free (dtau);
 
-    cudaFree (L_diag);
+    my_free (L_diag);
 }
 
 
@@ -146,21 +146,18 @@ RayBlock :: ~RayBlock ()
 ///    @param[in] model : model from which to copy
 /////////////////////////////////////////////////////////////
 
-CUDA_HOST
+DEF_HOST
 void RayBlock :: copy_model_data (const Model &model)
 {
-    cudaMemcpy (line,
-                model.lines.line.data(),
-                model.lines.line.size()*sizeof(double),
-                cudaMemcpyHostToDevice  );
-    cudaMemcpy (line_emissivity,
-                model.lines.emissivity.data(),
-                model.lines.emissivity.size()*sizeof(double),
-                cudaMemcpyHostToDevice  );
-    cudaMemcpy (line_opacity,
-                model.lines.opacity.data(),
-                model.lines.opacity.size()*sizeof(double),
-                cudaMemcpyHostToDevice  );
+    memcpy (line,
+            model.lines.line.data(),
+            model.lines.line.size()*sizeof(double));
+    memcpy (line_emissivity,
+            model.lines.emissivity.data(),
+            model.lines.emissivity.size()*sizeof(double));
+    memcpy (line_opacity,
+            model.lines.opacity.data(),
+            model.lines.opacity.size()*sizeof(double));
 
 
     for (Size p = 0; p < ncells; p++)
@@ -230,7 +227,7 @@ void RayBlock :: copy_model_data (const Model &model)
 
 
 
-CUDA_HOST
+DEF_HOST
 void RayBlock :: setup (
         const Model           &model,
         const Size             R,
@@ -344,20 +341,19 @@ void RayBlock :: setup (
 
 }
 
-CUDA_DEVICE
-inline Real my_fma (const Real a, const Real b, const Real c)
-{
-    return fma (a, b, c);
-//    return a * b + c;
-}
 
 
 
-CUDA_GLOBAL
+DEF_GLOBAL
 void feautrierKernel (RayBlock &rayblock)
 {
-    const Size index  = blockIdx.x * blockDim.x + threadIdx.x;
-    const Size stride =  gridDim.x * blockDim.x;
+#   ifdef __CUDACC__
+        const Size index  = blockIdx.x * blockDim.x + threadIdx.x;
+        const Size stride =  gridDim.x * blockDim.x;
+#    else
+        const Size index  = 0;
+        const Size stride = 1;
+#    endif
 
     for (Size w = index; w < rayblock.width; w += stride)
     {
@@ -368,13 +364,17 @@ void feautrierKernel (RayBlock &rayblock)
 
 
 
-CUDA_HOST
+DEF_HOST
 void RayBlock :: solve ()
 {
     const Size blockSize = gpuBlockSize;
     const Size numBlocks = (width + blockSize-1) / blockSize;
 
-    feautrierKernel <<<numBlocks, blockSize>>> (*this);
+#   ifdef __CUDACC__
+        feautrierKernel <<<numBlocks, blockSize>>> (*this);
+#   else
+        feautrierKernel                            (*this);
+#   endif
 
     // Wait for GPU to finish and get possible error
     HANDLE_ERROR (cudaDeviceSynchronize());
@@ -383,7 +383,7 @@ void RayBlock :: solve ()
 
 
 
-CUDA_HOST
+DEF_HOST
 void RayBlock :: store (Model &model) const
 {
     const double weight_ang = 2.0 * model.geometry.rays.weights[rr];
@@ -410,7 +410,7 @@ void RayBlock :: store (Model &model) const
 }
 
 
-//__device__
+//DEF_DEVICE
 //inline Real my_expm1 (const Real x)
 //{
 //    const Real inverse_index[40] = {    0.,     1., 1./ 2., 1./ 3., 1./ 4., 1./ 5., 1./ 6, 1./ 7, 1./ 8., 1./ 9.,
@@ -430,7 +430,7 @@ void RayBlock :: store (Model &model) const
 //}
 
 
-__device__
+DEF_DEVICE
 inline Real my_exp_minus (const Real x)
 {
 //    Real result = my_fma (x,  0.058823529411764705, 1.0);
@@ -478,7 +478,7 @@ inline Real my_exp_minus (const Real x)
 ///    @return profile function evaluated with this frequency difference
 ////////////////////////////////////////////////////////////////////////
 
-CUDA_DEVICE
+DEF_DEVICE
 inline Real gaussian (const Real width, const Real diff)
 {
     const Real inverse_width = 1.0 / width;
@@ -486,7 +486,7 @@ inline Real gaussian (const Real width, const Real diff)
     const Real     exponent  = -sqrtExponent * sqrtExponent;
 //    const Real     exponent  = sqrtExponent * sqrtExponent;
 
-    return inverse_width * INVERSE_SQRT_PI * __expf (exponent);
+    return inverse_width * INVERSE_SQRT_PI * expf (exponent);
 //    return inverse_width * INVERSE_SQRT_PI * my_exp_minus (exponent);
 }
 
@@ -499,7 +499,7 @@ inline Real gaussian (const Real width, const Real diff)
 ///    @return Planck function evaluated at this frequency
 ///////////////////////////////////////////////////////////////////////////
 
-CUDA_DEVICE
+DEF_DEVICE
 inline Real planck (const Real temperature, const Real frequency)
 {
     return TWO_HH_OVER_CC_SQUARED * (frequency*frequency*frequency) / expm1 (HH_OVER_KB*frequency/temperature);
@@ -517,7 +517,6 @@ inline Real planck (const Real temperature, const Real frequency)
 ///    @param[out]    chi         : opacity
 /////////////////////////////////////////////////////////////////////////////////
 
-CUDA_DEVICE
 void RayBlock :: get_eta_and_chi (const Size In, const Size Dn, const Real frequency)
 {
     const Real frequency_scaled = frequency * shifts[Dn];
@@ -583,7 +582,7 @@ void RayBlock :: get_eta_and_chi (const Size In, const Size Dn, const Real frequ
 ///    @param[in] w : width index
 /////////////////////////////////////////////////////////
 
-CUDA_DEVICE
+DEF_DEVICE
 void RayBlock :: solve_Feautrier (const Size w)
 {
     TIMER_TIC (t1)
@@ -680,10 +679,8 @@ void RayBlock :: solve_Feautrier (const Size w)
 
         inverse_A[In] = dtau_av * dtau[Inm1];
                 A[In] = 1.0 / inverse_A[In];
-//                A[In] = __ddiv_ru (1.0, inverse_A[In]);
         inverse_C[In] = dtau_av * dtau[In];
                 C[In] = 1.0 / inverse_C[In];
-//                C[In] = __ddiv_ru (1.0, inverse_C[In]);
         TIMER_TOC (t14, "As and Cs         ")
 
         TIMER_TIC (t15)

@@ -8,10 +8,10 @@ import yaml
 import numpy as np
 
 from shutil       import rmtree
-from magritte     import Simulation
+from magritte     import Simulation, IoPython, IoText
 from setup        import Setup, linedata_from_LAMDA_file, make_file_structure
 from quadrature   import H_roots, H_weights
-from ioMagritte   import IoPython, IoText
+# from ioMagritte   import IoPython, IoText
 from input        import *
 
 

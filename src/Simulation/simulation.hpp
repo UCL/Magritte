@@ -15,10 +15,11 @@
 #include "Model/model.hpp"
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
+#include "Raypair/rayblock.hpp"
 
 #if (GPU_ACCELERATION)
-# include "Raypair/raypair.cuh"
-# include "Raypair/rayblock.cuh"
+//# include "Raypair/raypair.cuh"
+#   include <cuda_runtime.h>
 #endif
 
 
@@ -39,9 +40,11 @@ struct Simulation : public Model
 # if (GPU_ACCELERATION)
     int handleCudaError (cudaError_t error);
     int gpu_get_device_properties     ();
-    int gpu_compute_radiation_field   ();
+//    int gpu_compute_radiation_field   ();
     int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize);
 # endif
+
+    int cpu_compute_radiation_field_2 (const size_t nraypairs);
 
 
   Double1 error_max;
