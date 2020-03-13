@@ -72,8 +72,8 @@ if    (GPU_ACCELERATION)
   cuda_add_executable   (example_1_gpu.exe example_1.cpp    )
   target_link_libraries (example_1_gpu.exe Magritte         )
 
-  cuda_add_executable   (example_2_gpu.exe example_2_gpu.cpp)
-  target_link_libraries (example_2_gpu.exe Magritte         )
+#  cuda_add_executable   (example_2_gpu.exe example_2_gpu.cpp)
+#  target_link_libraries (example_2_gpu.exe Magritte         )
 
   cuda_add_executable   (example_3_gpu.exe example_3.cpp    )
   target_link_libraries (example_3_gpu.exe Magritte         )

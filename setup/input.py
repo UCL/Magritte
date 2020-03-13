@@ -12,8 +12,8 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}")
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../bin/")
 
 from mesher     import Mesh
-from magritte   import Model
-from ioMagritte import IoPython, IoText
+from magritte   import Model, IoPython, IoText
+# from ioMagritte import IoPython, IoText
 
 
 

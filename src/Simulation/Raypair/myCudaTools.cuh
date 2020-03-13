@@ -51,35 +51,34 @@ struct Managed
   {
     cudaDeviceSynchronize ();
     cudaFree (ptr);
-    return;
   }
 };
 
 
-/// Vector operations on CUDA's double3 vectors
-///////////////////////////////////////////////
-
-inline double3 operator+ (const double3 &a, const double3 &b)
-{
-  return make_double3 (a.x+b.x, a.y+b.y, a.z+b.z);
-}
-
-inline double3 operator- (const double3 &a, const double3 &b)
-{
-  return make_double3 (a.x-b.x, a.y-b.y, a.z-b.z);
-}
-
-inline double dot (const double3 &a, const double3 &b)
-{
-  // return a.x*b.x + a.y*b.y + a.z*b.z;
-  return fma(a.x, b.x, fma(a.y, b.y, a.z*b.z));
-}
-
-inline double infinity (void)
-{
-	const unsigned long long ieee754inf =  0x7ff0000000000000;
-
-	return 1.0E+250;//__longlong_as_double (ieee754inf);
-}
+///// Vector operations on CUDA's double3 vectors
+/////////////////////////////////////////////////
+//
+//inline double3 operator+ (const double3 &a, const double3 &b)
+//{
+//  return make_double3 (a.x+b.x, a.y+b.y, a.z+b.z);
+//}
+//
+//inline double3 operator- (const double3 &a, const double3 &b)
+//{
+//  return make_double3 (a.x-b.x, a.y-b.y, a.z-b.z);
+//}
+//
+//inline double dot (const double3 &a, const double3 &b)
+//{
+//  // return a.x*b.x + a.y*b.y + a.z*b.z;
+//  return fma(a.x, b.x, fma(a.y, b.y, a.z*b.z));
+//}
+//
+//inline double infinity (void)
+//{
+//	const unsigned long long ieee754inf =  0x7ff0000000000000;
+//
+//	return 1.0E+250;//__longlong_as_double (ieee754inf);
+//}
 
 #endif // __MYCUDATOOLS_CUH_INCLUDED__
