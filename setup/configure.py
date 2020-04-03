@@ -7,23 +7,25 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../bin/")
 import yaml
 import numpy as np
 
-from shutil       import rmtree
-from magritte     import Simulation, IoPython, IoText
-from setup        import Setup, linedata_from_LAMDA_file, make_file_structure
-from quadrature   import H_roots, H_weights
-# from ioMagritte   import IoPython, IoText
-from input        import *
+from shutil     import rmtree
+from magritte   import Simulation, IoPython, IoText
+from setup      import Setup, linedata_from_LAMDA_file, make_file_structure
+from quadrature import H_roots, H_weights
+from input      import *
+from rays       import setup_rays_spherical_symmetry
 
 
 config_default = {
-    'overwrite files' : True,        # Overwrite output files or not
-    'solver mode'     : 'CPU',       # Use CPU or GPU solver
-    'nquads'          : 5,           # number of (Gauss-Hermite) quadrature points
-    'nrays'           : 108,         # number of rays originating form each point (nrays = 12*n^2)
-    'ray mode'        : 'uniform',   # ray distributions
-    'scattering'      : False,       # use scattering (hence store the complete radiation field)
-    'pop_prec'        : 1.0E-6,      # convergence criterion for level populations (max relative change)
-    'n_off_diag'      : 0,           # width of the Approximated Lambda Operator (ALO)}
+    'project folder'     : '',          # Use current folder as project folder
+    'data folder'        : '',          # Use current folder as data folder
+    'overwrite files'    : True,        # Overwrite output files or not
+    'solver mode'        : 'CPU',       # Use CPU or GPU solver
+    'nquads'             : 5,           # number of (Gauss-Hermite) quadrature points
+    'nrays'              : 108,         # number of rays originating form each point (nrays = 12*n^2)
+    'ray mode'           : 'uniform',   # ray distributions
+    'scattering'         : False,       # use scattering (hence store the complete radiation field)
+    'pop_prec'           : 1.0E-6,      # convergence criterion for level populations (max relative change)
+    'n_off_diag'         : 0,           # width of the Approximated Lambda Operator (ALO)}
 }
 
 
@@ -64,12 +66,13 @@ def configure_simulation(config) -> Simulation():
     simulation = Simulation()
     setup      = Setup(dimension=config['dimension']) # TODO: Remove setup object
     # Set parameters
-    simulation.parameters.set_nspecs         (config['nspecs'    ])
-    simulation.parameters.set_nlspecs        (config['nlspecs'   ])
-    simulation.parameters.set_nquads         (config['nquads'    ])
-    simulation.parameters.set_use_scattering (config['scattering'])
-    simulation.parameters.set_pop_prec       (config['pop_prec'  ])
-    simulation.parameters.n_off_diag       = (config['n_off_diag'])
+    simulation.parameters.set_nspecs             (config['nspecs'    ])
+    simulation.parameters.set_nlspecs            (config['nlspecs'   ])
+    simulation.parameters.set_nquads             (config['nquads'    ])
+    simulation.parameters.set_use_scattering     (config['scattering'])
+    simulation.parameters.set_pop_prec           (config['pop_prec'  ])
+    simulation.parameters.set_spherical_symmetry (config['input type'] == 'spherically symmetric')
+    simulation.parameters.n_off_diag           = (config['n_off_diag'])
     # Set position and velocity
     simulation.geometry.cells.position = np.load(dataName+'position.npy')
     simulation.geometry.cells.velocity = np.load(dataName+'velocity.npy')
@@ -89,7 +92,10 @@ def configure_simulation(config) -> Simulation():
         simulation.geometry.rays.weights = [0.5, 0.5]
     else:
         simulation.parameters.set_nrays (config['nrays'])
-        simulation.geometry.rays = setup.rays (nrays=config['nrays'], cells=simulation.geometry.cells)
+        if (config['input type'] == 'spherically symmetric'):
+            simulation.geometry.rays = setup_rays_spherical_symmetry(nextra=config['nrays']//2-1)
+        else:
+            simulation.geometry.rays = setup.rays (nrays=config['nrays'], cells=simulation.geometry.cells)
     # Set thermodynamics
     print("Setting temperature and turbulence...")
     simulation.thermodynamics.temperature.gas   = np.load(dataName+'tmp.npy')
@@ -143,6 +149,8 @@ def configure_simulation(config) -> Simulation():
     # Non valid model type
     else:
         raise ValueError('No valid model type was given (hdf5, ascii).')
+    # Set io used to create model as default
+    config['default io'] = io
     # Write the simulation data using the io interface
     # (Writing and reading again is required to guarantee a proper setup)
     print("Writing out magritte model:", modelName)
@@ -167,6 +175,8 @@ def process_magritte_input (config) -> Simulation():
         io = IoText(f"{modelName}/")
     else:
         raise ValueError('No valid model type was given (hdf5, ascii).')
+    # Set io used to create model as default
+    config['default io'] = io
     print("Reading in magritte model to extract simulation object.")
     simulation = Simulation()
     simulation.read(io)
@@ -235,6 +245,8 @@ def configure(config) -> Simulation:
         process_amrvac_input(config)
     elif (config['input type'].lower() == 'phantom'):
         process_phantom_input(config)
+    elif (config['input type'].lower() == 'spherically symmetric'):
+        process_spherically_symmetric_input(config)
     else:
         raise ValueError('Please specify a valid input type (magritte, mesher, amrvac or phantom).')
     # return a configured simulation object

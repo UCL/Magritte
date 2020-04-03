@@ -3,8 +3,11 @@ import numpy     as np
 import meshio    as mio
 import itertools as itt
 
-from string     import Template
-from subprocess import Popen, PIPE
+from string                  import Template
+from subprocess              import Popen, PIPE
+from healpy                  import pixelfunc
+from scipy.spatial           import Delaunay
+from scipy.spatial.transform import Rotation
 
 # Add this to the path to ensure the templates can be found.
 
@@ -15,6 +18,8 @@ def relocate_indices(arr, p):
             if (arr[i][j] > p):
                 arr[i][j] -= 1
     return arr
+
+
 
 
 class Mesh:
@@ -113,6 +118,8 @@ class Mesh:
         return boundary
 
 
+
+
 def run(command):
     """
     Run command in shell and continuously print its output.
@@ -129,6 +136,8 @@ def run(command):
             break
         else:
             print(line.decode("utf-8"))
+
+
 
 
 def convert_msh_to_pos(meshName, replace: bool = False):
@@ -155,6 +164,7 @@ def convert_msh_to_pos(meshName, replace: bool = False):
 
 
 
+
 def boundary_cuboid (minVec, maxVec):
     """
     Create the gmsh script for a cuboid element.
@@ -176,6 +186,8 @@ def boundary_cuboid (minVec, maxVec):
                Z_MAX = maxVec[2] )
 
 
+
+
 def boundary_sphere (centre=np.zeros(3), radius=1.0):
     """
     Create the gmsh script for a cuboid element.
@@ -193,6 +205,8 @@ def boundary_sphere (centre=np.zeros(3), radius=1.0):
                CY     = centre[1],
                CZ     = centre[2],
                RADIUS = radius    )
+
+
 
 
 def boundary_sphere_in_sphere (centre_in =np.zeros(3), radius_in =1.0,
@@ -216,6 +230,8 @@ def boundary_sphere_in_sphere (centre_in =np.zeros(3), radius_in =1.0,
                CY_OUT     = centre_out[1],
                CZ_OUT     = centre_out[2],
                RADIUS_OUT = radius_out    )
+
+
 
 
 def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
@@ -259,3 +275,27 @@ def create_mesh_from_function(meshName, boundary, scale_min, scale_max, scale_fu
     run(f'gmsh {meshing_script} -3 -saveall -o {resulting_mesh}')
     # Remove the script file
     # os.remove(meshing_script)
+
+
+
+def generate_background_from_1D_data(meshName, R, data):
+
+    nsides = 8
+    sphere = np.array(pixelfunc.pix2vec(nsides, range(12*nsides**2))).transpose()
+    points = []
+    data_s = []
+
+    for (i,r) in enumerate(R):
+        for s in Rotation.random().apply(sphere):
+            points.append(r*s)
+            data_s.append(data[i])
+
+    delaunay = Delaunay(points)
+
+    mio.write_points_cells(
+        filename   = f'{meshName}.msh',
+        points     =             delaunay.points,
+        cells      = {'tetra'  : delaunay.simplices},
+        point_data = {'weights': np.array(data_s)}   )
+
+

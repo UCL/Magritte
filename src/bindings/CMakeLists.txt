@@ -50,7 +50,8 @@ if    (GPU_ACCELERATION)
     ../Simulation/simulation.cu
     ../Simulation/Raypair/raypair.cpp
 #    ../Simulation/Raypair/raypair.cu
-    ../Simulation/Raypair/rayblock.cpp
+#    ../Simulation/Raypair/rayblock.cpp
+    ../Simulation/Raypair/rayblock.cu
     ../Simulation/Image/image.cpp)
   # Set library properties
   set_target_properties (magritte PROPERTIES PREFIX "")
@@ -100,7 +101,7 @@ else  (GPU_ACCELERATION)
     ../Functions/heapsort.cpp
     ../Simulation/simulation.cpp
     ../Simulation/Raypair/raypair.cpp
-    ../Simulation/Raypair/rayblock.cpp
+#    ../Simulation/Raypair/rayblock.cpp
     ../Simulation/Image/image.cpp)
   # Link GRID_SIMD libraries if required
   if    (GRID_SIMD)
@@ -114,9 +115,3 @@ endif (GPU_ACCELERATION)
 # Link Python libraries
 target_link_libraries (magritte ${PYTHON_LIBRARIES})
 
-
-# pybind11 command to create the python module in bin directory
-#pybind11_add_module (ioMagritte
-#  ioBindings.cpp
-#  ../Io/cpp/io_cpp_text.cpp
-#  ../Io/python/io_python.cpp)

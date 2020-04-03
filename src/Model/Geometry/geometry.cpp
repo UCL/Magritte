@@ -17,6 +17,8 @@ void Geometry :: read (const Io &io, Parameters &parameters)
 {
     cout << "Reading geometry..." << endl;
 
+    spherical_symmetry = parameters.spherical_symmetry();
+
     cells   .read (io, parameters);
     rays    .read (io, parameters);
     boundary.read (io, parameters);

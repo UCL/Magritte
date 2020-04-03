@@ -11,6 +11,8 @@ from healpy                  import pixelfunc
 from numba                   import jit
 from multiprocessing         import Pool, cpu_count
 
+from magritte import Rays
+
 
 def nRays (nsides):
     '''
@@ -170,13 +172,74 @@ def get_rays(uni, points, i):
     return (points, weights)
 
 
-class Rays():
-    def __init__(self, uni, points):
-        self.uni    = uni
-        self.points = points
-    def get(self, i):
-        get_rays(self.uni, self.points, i)
+# class Rays():
+#     def __init__(self, uni, points):
+#         self.uni    = uni
+#         self.points = points
+#     def get(self, i):
+#         get_rays(self.uni, self.points, i)
+#
+# def mp_get_rays(rays):
+#     with Pool(processes=cpu_count()) as pool:
+#         result = pool.map(rays.get, range(rays.points.shape[0]), chunksize=1)
 
-def mp_get_rays(rays):
-    with Pool(processes=cpu_count()) as pool:
-        result = pool.map(rays.get, range(rays.points.shape[0]), chunksize=1)
+
+def setup_rays_spherical_symmetry(nextra, points=[]):
+
+    nrays = 2*(1 + len(points) + nextra)
+
+    # for i, ri in enumerate(points):
+
+    Rx = [1.0]
+    Ry = [0.0]
+    Rz = [0.0]
+
+    for j, rj in enumerate(points):
+       Rx.append(ri / np.sqrt(ri**2 + rj**2))
+       Ry.append(rj / np.sqrt(ri**2 + rj**2))
+       Rz.append(0.0)
+
+    angle_max   = np.arctan(Ry[-1] / Rx[-1])
+    angle_extra = (0.5*np.pi - angle_max) / nextra
+
+    for k in range(1, nextra):
+        Rx.append(np.cos(angle_max + k*angle_extra))
+        Ry.append(np.sin(angle_max + k*angle_extra))
+        Rz.append(0.0)
+
+    Rx.append(0.0)
+    Ry.append(1.0)
+    Rz.append(0.0)
+
+    Wt = []
+    for n in range(nrays//2):
+        if   (n == 0):
+            upper_x, upper_y = 0.5*(Rx[n]+Rx[n+1]), 0.5*(Ry[n]+Ry[n+1])
+            lower_x, lower_y = Rx[ 0], Ry[ 0]
+        elif (n == nrays/2-1):
+            upper_x, upper_y = Rx[-1], Ry[-1]
+            lower_x, lower_y = 0.5*(Rx[n]+Rx[n-1]), 0.5*(Ry[n]+Ry[n-1])
+        else:
+            upper_x, upper_y = 0.5*(Rx[n]+Rx[n+1]), 0.5*(Ry[n]+Ry[n+1])
+            lower_x, lower_y = 0.5*(Rx[n]+Rx[n-1]), 0.5*(Ry[n]+Ry[n-1])
+
+        Wt.append(  lower_x / np.sqrt(lower_x**2 + lower_y**2)
+                  - upper_x / np.sqrt(upper_x**2 + upper_y**2) )
+
+    inverse_double_total = 1.0 / (2.0 * sum(Wt))
+
+    for n in range(nrays//2):
+        Wt[n] = Wt[n] * inverse_double_total
+
+    # Append the antipodal rays
+    for n in range(nrays//2):
+        Rx.append(-Rx[n])
+        Ry.append(-Ry[n])
+        Rz.append(-Rz[n])
+        Wt.append( Wt[n])
+
+    rays = Rays()
+    rays.rays    = np.array((Rx,Ry,Rz)).transpose()
+    rays.weights = np.array(Wt)
+
+    return rays

@@ -11,9 +11,47 @@ from tqdm                   import tqdm
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}")
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../bin/")
 
-from mesher     import Mesh
-from magritte   import Model, IoPython, IoText
-# from ioMagritte import IoPython, IoText
+from mesher   import Mesh
+from magritte import Model, IoPython, IoText
+
+
+def process_spherically_symmetric_input(config):
+    """
+    Script to process mesher input based on analytic functions to create a Magritte model.
+    :param config: configuration dict
+    """
+    # TODO: Maybe replace the save to numpy by vaex structures to reduce memory costs?
+
+    if 'points' not in config:
+        raise ValueError('"Points should be specified when assuming spherical symmetry".')
+    else:
+        points = config['points']
+
+    neighbors = [[] for _ in range(len(points))]
+    for i in range(len(points)-1):
+        neighbors[i+1].append(i+0)
+        neighbors[i+0].append(i+1)
+
+    name = f"{config['project folder']}{config['model name']}"
+
+    np.save(f"{name}_position",  points                      )
+    np.save(f"{name}_boundary",  np.array([0, len(points)-1]))
+    np.save(f"{name}_neighbors", np.array(neighbors)         )
+
+    if 'functions' in config:
+        np.save(f"{name}_velocity", config['functions']['velocity'   ](points))
+        np.save(f"{name}_nl1",      config['functions']['nl1'        ](points))
+        np.save(f"{name}_nH2",      config['functions']['nH2'        ](points))
+        np.save(f"{name}_tmp",      config['functions']['temperature'](points))
+        np.save(f"{name}_trb",      config['functions']['turbulence' ](points))
+    elif 'data' in config:
+        np.save(f"{name}_velocity", config['data']     ['velocity'   ])
+        np.save(f"{name}_nl1",      config['data']     ['nl1'        ])
+        np.save(f"{name}_nH2",      config['data']     ['nH2'        ])
+        np.save(f"{name}_tmp",      config['data']     ['temperature'])
+        np.save(f"{name}_trb",      config['data']     ['turbulence' ])
+
+    return
 
 
 

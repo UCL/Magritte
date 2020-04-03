@@ -50,10 +50,12 @@ void Parameters :: read (const Io &io)
     {
         bool b;
 
-        if   (io.read_bool (".use_scattering"      , b) == 0) {set_use_scattering      (b);}
-        else                                                  {cout << "Failed read use_scattering!"      << endl;}
-        if   (io.read_bool (".use_Ng_acceeleration", b) == 0) {set_use_Ng_acceleration (b);}
-        else                                                  {cout << "Failed read use_Ng_acceleration!" << endl;}
+        if   (io.read_bool (".use_scattering",      b) == 0) {set_use_scattering      (b);}
+        else                                                 {cout << "Failed read use_scattering!"      << endl;}
+        if   (io.read_bool (".use_Ng_acceleration", b) == 0) {set_use_Ng_acceleration (b);}
+        else                                                 {cout << "Failed read use_Ng_acceleration!" << endl;}
+        if   (io.read_bool (".spherical_symmetry",  b) == 0) {set_spherical_symmetry  (b);}
+        else                                                 {cout << "Failed read spherical_symmetry!"  << endl;}
     }
 }
 
@@ -92,4 +94,6 @@ void Parameters :: write (const Io &io) const
     catch (...) {cout << "Failed write use_scattering!"                  << endl;}
     try         {io.write_bool (".use_Ng_acceleration", use_Ng_acceleration () );}
     catch (...) {cout << "Failed write use_Ng_acceleration!"             << endl;}
+    try         {io.write_bool (".spherical_symmetry",  spherical_symmetry  () );}
+    catch (...) {cout << "Failed write spherical_symmetry!"              << endl;}
 }
