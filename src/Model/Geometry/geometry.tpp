@@ -301,7 +301,7 @@ inline long Geometry :: get_next_spherical_symmetry (
     // Update distance along ray
     Z = Z + dZ;
 
-    cout << "r = " << ray << "   o = " << origin << "   c = " << current << "   n = " << next << endl;
+//    cout << "r = " << ray << "   o = " << origin << "   c = " << current << "   n = " << next << endl;
 
     return next;
 }
