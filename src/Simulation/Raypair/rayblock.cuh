@@ -264,10 +264,16 @@ class RayBlock : public Managed
 //          const Size     rp          );
 
       /// Getter
-      CUDA_DEVICE void get_eta_and_chi (
-          const Size In,
-          const Size Dn,
-          const Real frequency         );
+//      CUDA_DEVICE void get_eta_and_chi (
+//          const Size In,
+//          const Size Dn,
+//          const Real frequency         );
+
+    CUDA_DEVICE void get_eta_and_chi (
+            const Size  Dn,
+            const Real  frequency,
+                  Real &eta,
+                  Real &chi          );
 
 //    CUDA_DEVICE void get_eta_and_chi (
 //            const Size d,

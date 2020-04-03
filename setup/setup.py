@@ -247,14 +247,14 @@ class Setup ():
         # Find neighbors
         if   (self.dimension == 1):
             # For the middle points
-            cells.neighbors   = [[p-1, p+1] for p in range(1,ncells-1)]
-            cells.n_neighbors = [ 2         for _ in range(1,ncells-1)]
+            nbs   = [[p-1, p+1] for p in range(1,ncells-1)]
+            n_nbs = [ 2         for _ in range(1,ncells-1)]
             # For the first point
-            cells.neighbors.insert   (0, [1])
-            cells.n_neighbors.insert (0, 1)
+            nbs.insert   (0, [1])
+            n_nbs.insert (0, 1)
             # For the last point
-            cells.neighbors.append   ([ncells-2])
-            cells.n_neighbors.append (1)
+            nbs.append   ([ncells-2])
+            n_nbs.append (1)
 
         elif (self.dimension == 2):
             raise ValueError ('Dimension = 2 is not supported.')
@@ -369,7 +369,7 @@ class Reader ():
         return [getSpeciesNumber (species, partner), orthoPara]
 
 
-def linedata_from_LAMDA_file (fileName, species, config):
+def linedata_from_LAMDA_file (fileName, species, config={}):
     """
     Read line data in LAMDA format
     """

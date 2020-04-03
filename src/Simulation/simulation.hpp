@@ -15,11 +15,12 @@
 #include "Model/model.hpp"
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
-#include "Raypair/rayblock.hpp"
+//#include "Raypair/rayblock.hpp"
 
 #if (GPU_ACCELERATION)
-//# include "Raypair/raypair.cuh"
 #   include <cuda_runtime.h>
+#   include "Raypair/raypair.cuh"
+#   include "Raypair/rayblock.cuh"
 #endif
 
 
@@ -58,6 +59,7 @@ struct Simulation : public Model
   int compute_spectral_discretisation       (void);
   int compute_spectral_discretisation_image (const double width);
   int compute_boundary_intensities          (void);
+  int compute_boundary_intensities          (const Double1 &temperatures);
   int compute_radiation_field               (void);
 
   inline double get_dshift_max (

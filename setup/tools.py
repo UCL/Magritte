@@ -63,23 +63,24 @@ def planck (temperature, frequency):
 
 
 
-def dnu (nu_ij, inverse_mass, temp, turb):
+def dnu (linedata, k, temp, vturb2):
     """
-    :param nu_ij: line centre frequency
-    :param inverse_mass: inverse mass of the line producing species
+    :param linedata: Magritte linedata object
+    :param k: transition number
     :param temp: temperature
     :param turb: turbulent velocity
     :return: line width of the line profile function.
     """
-    return nu_ij/c * np.sqrt(2.0*kb*temp/amu*inverse_mass + turb**2)
+    return linedata.frequency[k] * np.sqrt(2.0*kb*temp/(amu*c**2)*linedata.inverse_mass + vturb2)
 
-def profile (nu_ij, inverse_mass, temp, turb, nu):
+def profile (linedata, k, temp, vturb2, nu):
     """
-    :param nu_ij: line centre frequency
-    :param inverse_mass: inverse mass of the line producing species
+    :param linedata: Magritte linedata object
+    :param k: transition number
     :param temp: temperature
     :param turb: turbulent velocity
     :param nu: frequency at which to evaluate
     :return: Gaussian profile function evaluated at frequency nu.
     """
-    return np.exp(-((nu-nu_ij)/dnu(nu_ij, inverse_mass, temp, turb))**2) / (np.sqrt(np.pi) * dnu(nu_ij, inverse_mass, temp, turb))
+    x = (nu - linedata.frequency[k]) / dnu(linedata, k, temp, vturb2)
+    return np.exp(-x**2) / (np.sqrt(np.pi) * dnu(linedata, k, temp, vturb2))

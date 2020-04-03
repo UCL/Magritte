@@ -31,58 +31,73 @@ enum Frame {CoMoving, Rest};
 struct Geometry
 {
 
-  public:
+public:
 
-      Cells    cells;
-      Rays     rays;
-      Boundary boundary;
-      
-      long  max_npoints_on_rays = -1;
+    Cells    cells;
+    Rays     rays;
+    Boundary boundary;
 
-
-      void read  (const Io &io, Parameters &parameters);
-      void write (const Io &io                        );
+    bool spherical_symmetry  = false;
+    long max_npoints_on_rays = -1;
 
 
-      // Inlined functions
-      template <Frame frame>
-      inline RayData trace_ray (
-          const long   origin,
-          const long   ray,
-          const double dshift_max) const;
+    void read  (const Io &io, Parameters &parameters);
+    void write (const Io &io                        );
+
+
+    // Inlined functions
+    template <Frame frame>
+    inline RayData trace_ray (
+        const long   origin,
+        const long   ray,
+        const double dshift_max) const;
 
     template <Frame frame>
     inline size_t get_npoints_on_ray (
-            const size_t origin,
-            const size_t ray,
-            const double dshift_max  ) const;
+          const size_t origin,
+          const size_t ray,
+          const double dshift_max  ) const;
 
-      inline int set_data (
-          const long     crt,
-          const long     nxt,
-          const double   shift_crt,
-          const double   shift_nxt,
-          const double   dZ_loc,
-          const double   dshift_max,
-                RayData &rayData    ) const;
+    inline int set_data (
+        const long     crt,
+        const long     nxt,
+        const double   shift_crt,
+        const double   shift_nxt,
+        const double   dZ_loc,
+        const double   dshift_max,
+              RayData &rayData    ) const;
 
-      inline long get_next (
-          const long    origin,
-          const long    ray,
-          const long    current,
-                double &Z,
-                double &dZ      ) const;
+    inline long get_next (
+        const long    origin,
+        const long    ray,
+        const long    current,
+              double &Z,
+              double &dZ      ) const;
 
-      template <Frame frame>
-      inline double get_doppler_shift (
+    template <Frame frame>
+    inline double get_doppler_shift (
+        const long  origin,
+        const long  r,
+        const long  current         ) const;
+
+
+private:
+
+    size_t nrays;   ///< number of rays
+
+    inline long get_next_spherical_symmetry (
           const long  origin,
-          const long  r,
-          const long  current         ) const;
+          const long  ray,
+          const long  current,
+          double     &Z,
+          double     &dZ                    ) const;
 
-
-  private:
-
-      size_t nrays;   ///< number of rays
+    inline long get_next_general (
+          const long  origin,
+          const long  ray,
+          const long  current,
+          double     &Z,
+          double     &dZ         ) const;
 
 };
 

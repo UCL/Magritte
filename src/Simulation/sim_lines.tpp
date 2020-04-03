@@ -7,18 +7,12 @@
 ///  compute_LTE_level_populations: sets level populations to LTE values
 ////////////////////////////////////////////////////////////////////////
 
-int Simulation ::
-    compute_LTE_level_populations ()
+int Simulation :: compute_LTE_level_populations ()
 {
-
   // Initialize levels, emissivities and opacities with LTE values
-  lines.iteration_using_LTE (
-      chemistry.species.abundance,
-      thermodynamics.temperature.gas);
-
+  lines.iteration_using_LTE (chemistry.species.abundance, thermodynamics.temperature.gas);
 
   return (0);
-
 }
 
 
@@ -30,16 +24,12 @@ int Simulation ::
 ///  @return number of iteration done
 /////////////////////////////////////////////////////////////////////////////
 
-long Simulation ::
-    compute_level_populations (
-        const Io   &io        )
+long Simulation :: compute_level_populations (const Io &io)
 {
-
   const bool use_Ng_acceleration = true;
   const long max_niterations     = 1000;
 
   return compute_level_populations (io, use_Ng_acceleration, max_niterations);
-
 }
 
 
@@ -53,15 +43,12 @@ long Simulation ::
 ///  @return number of iteration done
 ///////////////////////////////////////////////////////////////////////////////
 
-long Simulation ::
-    compute_level_populations (
+long Simulation :: compute_level_populations (
         const Io   &io,
         const bool  use_Ng_acceleration,
         const long  max_niterations     )
 {
-
   // Check spectral discretisation setting
-
   if (specDiscSetting != LineSet)
   {
     logger.write ("Error: Spectral discretisation was not set for Lines!");

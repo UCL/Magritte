@@ -20,6 +20,7 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
 
+
 // Definitions for short notation of vector of vectors of...
 // The number in the type name indicates the number of indices
 

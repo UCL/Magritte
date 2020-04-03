@@ -212,7 +212,7 @@ inline vReal RayPair ::
 inline vReal RayPair ::
     get_Ip_at_end () const
 {
-  return Su[ndep-1] - I_bdy_n;
+  return 2.0*Su[ndep-1] - I_bdy_n;
 }
 
 
@@ -225,7 +225,7 @@ inline vReal RayPair ::
 inline vReal RayPair ::
     get_Im_at_front () const
 {
-  return Su[0] - I_bdy_0;
+  return 2.0*Su[0] - I_bdy_0;
 }
 
 

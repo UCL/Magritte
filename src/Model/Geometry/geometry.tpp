@@ -5,6 +5,7 @@
 
 
 #include <limits>
+#include <Eigen/Geometry>
 
 #include "Tools/logger.hpp"
 #include "Tools/constants.hpp"
@@ -204,15 +205,122 @@ inline int Geometry ::
 
 ///  Getter for the number of the next cell on ray and its distance along ray
 ///    @param[in]     origin  : number of cell from which the ray originates
-///    @param[in]     r       : number of the ray along which we are looking
+///    @param[in]     ray     : number of the ray along which we are looking
 ///    @param[in]     current : number of the cell put last on the ray
-///    @param[in/out] Z       : reference to the current distance along the ray
+///    @param[in/out]  Z      : reference to the current distance along the ray
+///    @param[out]    dZ      : reference to the distance increment to the next ray
+///    @return number of the next cell on the ray after the current cell
+///////////////////////////////////////////////////////////////////////////////////
+
+inline long Geometry :: get_next (
+    const long  origin,
+    const long  ray,
+    const long  current,
+    double     &Z,
+    double     &dZ               ) const
+{
+    if (spherical_symmetry)
+    {
+        return get_next_spherical_symmetry (origin, ray, current, Z, dZ);
+    }
+    else
+    {
+        return get_next_general            (origin, ray, current, Z, dZ);
+    }
+}
+
+
+
+
+///  Getter for the number of the next cell on ray and its distance along ray when
+///  assuming spherical symmetry and such that the positions are in ascending order!
+///    @param[in]     origin  : number of cell from which the ray originates
+///    @param[in]     ray     : number of the ray along which we are looking
+///    @param[in]     current : number of the cell put last on the ray
+///    @param[in/out]  Z      : reference to the current distance along the ray
+///    @param[out]    dZ      : reference to the distance increment to the next ray
+///    @return number of the next cell on the ray after the current cell
+///////////////////////////////////////////////////////////////////////////////////
+
+inline long Geometry :: get_next_spherical_symmetry (
+    const long  origin,
+    const long  ray,
+    const long  current,
+    double     &Z,
+    double     &dZ                                  ) const
+{
+    // Pick neighbor on "right side" closest to ray
+    long next;
+
+    const double Rsin = cells.position[origin].cross(rays.rays[ray]).z();
+    const double Rcos = cells.position[origin].dot  (rays.rays[ray]);
+
+//    if (Rcos == 0)
+//    {
+//        if (Rsin > 0)
+//        {
+//            if (current == cells.position.size()-1) return (-1);
+//            next = current + 1;
+//            dZ   = cells.position[next].x() - cells.position[current].x();
+//        }
+//        else
+//        {
+//            if (current == 0) return (-1);
+//            next = current - 1;
+//            dZ   = cells.position[current].x() - cells.position[next].x();
+//        }
+//    }
+//    else
+//    {
+        const double Rsin2       = Rsin * Rsin;
+        const double Rcos_plus_Z = Rcos + Z;
+
+        if (Z < -Rcos)
+        {
+            if (current <= 0 ) return (-1);
+
+            if (cells.position[current-1].squaredNorm() >= Rsin2)
+            {
+                next = current - 1;
+                dZ   = -sqrt(cells.position[next].squaredNorm() - Rsin2) - Rcos_plus_Z;
+            }
+            else
+            {
+                next = current;
+                dZ   = - 2.0 * Rcos_plus_Z;
+            }
+        }
+        else
+        {
+            if (current >= cells.position.size()-1) return (-1);
+            next = current + 1;
+            dZ   = +sqrt(cells.position[next].squaredNorm() - Rsin2) - Rcos_plus_Z;
+        }
+//    }
+
+    // Update distance along ray
+    Z = Z + dZ;
+
+    cout << "r = " << ray << "   o = " << origin << "   c = " << current << "   n = " << next << endl;
+
+    return next;
+}
+
+
+
+
+///  Getter for the number of the next cell on ray and its distance along ray in
+///  the general case without any further assumptions
+///    @param[in]     origin  : number of cell from which the ray originates
+///    @param[in]     ray       : number of the ray along which we are looking
+///    @param[in]     current : number of the cell put last on the ray
+///    @param[in/out]  Z      : reference to the current distance along the ray
 ///    @param[out]    dZ      : reference to the distance increment to the next ray
 ///    @return number of the next cell on the ray after the current cell
 ///////////////////////////////////////////////////////////////////////////////////
 
 inline long Geometry ::
-    get_next (
+    get_next_general (
         const long    origin,
         const long    ray,
         const long    current,

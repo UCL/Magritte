@@ -19,16 +19,16 @@ Peak Memory Bandwidth (GB/s) : 112.128000
 -------------------------------------------
   Model read, parameters:                  
 -------------------------------------------
-  ncells     = 512
+  ncells     = 10
   nrays      = 2
   nrays_red  = 1
   nboundary  = 2
-  nfreqs     = 16
-  nfreqs_red = 16
+  nfreqs     = 1
+  nfreqs_red = 1
   nspecs     = 5
   nlspecs    = 1
   nlines     = 1
-  nquads     = 16
+  nquads     = 1
 -------------------------------------------
                                            
                                            

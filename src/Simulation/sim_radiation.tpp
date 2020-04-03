@@ -12,9 +12,16 @@
 ///  Computer for boundary intensities (setting the boundary conditions for RT)
 ///////////////////////////////////////////////////////////////////////////////
 
-int Simulation::
-compute_boundary_intensities()
+
+
+int Simulation :: compute_boundary_intensities (const Double1 &temperatures)
 {
+    if (temperatures.size() != parameters.nboundary())
+    {
+        cout << "ERROR : temperatures.size() != nboundary";
+
+        return(-1);
+    }
 
     for (size_t r = 0; r < parameters.nrays_red(); r++)
     {
@@ -24,14 +31,20 @@ compute_boundary_intensities()
 
             for (size_t f = 0; f < parameters.nfreqs_red(); f++)
             {
-                radiation.I_bdy[r][b][f] = planck(T_CMB, radiation.frequencies.nu[p][f]);
+                radiation.I_bdy[r][b][f] = planck(temperatures[b], radiation.frequencies.nu[p][f]);
             }
         }
     }
 
-
     return (0);
+}
 
+
+int Simulation :: compute_boundary_intensities ()
+{
+    const Double1 temperatures (parameters.nboundary(), T_CMB);
+
+    return compute_boundary_intensities (temperatures);
 }
 
 
@@ -304,6 +317,8 @@ int Simulation:: compute_radiation_field()
 
 int Simulation :: compute_and_write_image (const Io &io, const long r)
 {
+    cout << "In here" << endl;
+
     // Check spectral discretisation setting
     if (specDiscSetting != ImageSet)
     {
@@ -403,13 +418,19 @@ int Simulation :: compute_and_write_image (const Io &io, const long r)
 
                 else
                 {
+                    cout << "too short a ray" << endl;
+
                     const long b = geometry.boundary.cell2boundary_nr[o];
+
+                    cout << "b = " << b << "   r = " << r << "   ar = " << ar <<  endl;
 
                     for (long f = 0; f < parameters.nfreqs_red(); f++)
                     {
-                        image.I_m[o][f] = radiation.I_bdy[b][ar][f];
-                        image.I_p[o][f] = radiation.I_bdy[b][r ][f];
+                        image.I_m[o][f] = radiation.I_bdy[R][b][f];
+                        image.I_p[o][f] = radiation.I_bdy[R][b][f];
                     }
+
+                    cout << "bound   " << endl;
                 }
             } // end of loop over cells
         }

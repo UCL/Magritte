@@ -28,10 +28,10 @@ class Image():
             self.Xs = np.loadtxt (f'{model_name}/Simulation/Image/ImX_{r}.txt')
             self.Ys = np.loadtxt (f'{model_name}/Simulation/Image/ImY_{r}.txt')
 
-        # if (self.Im.shape[1] == self.Ip.shape[1]):
-        #     self.nfreqs = self.Im.shape[1]
-        # else:
-        #     raise ValueError('Non matching nfreqs...')
+        if (self.Im.shape[1] == self.Ip.shape[1]):
+            self.nfreqs = self.Im.shape[1]
+        else:
+            raise ValueError('Non matching nfreqs...')
 
     #     def crop (self):
     #         Xs_cropped = []

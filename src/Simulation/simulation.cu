@@ -1,6 +1,6 @@
 #include "Simulation/simulation.hpp"
 #include "Raypair/raypair.cuh"
-#include "Raypair/rayblock.hpp"
+#include "Raypair/rayblock.cuh"
 
 
 int Simulation :: handleCudaError (cudaError_t error)

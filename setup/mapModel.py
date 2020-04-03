@@ -7,7 +7,7 @@
 import numpy as np
 
 from healpy   import pixelfunc
-from magritte import Model, Long1
+from magritte import Model
 from setup    import Setup
 from rays     import rayVectors
 
@@ -34,22 +34,18 @@ def sphericalXDscalar (fr, ndirs, f):
 #            f.append (fr)
 
 
-def sphericalXDvector(Vr, dimension, ndirs, Vx, Vy, Vz):
+def sphericalXDvector(Vr, dimension, ndirs, V):
     '''
     Copy 1D model scalar data over shell in XD model
     '''
     if (ndirs == 0):
-        Vx.append (Vr)
-        Vy.append (Vr)
-        Vz.append (Vr)
+        V.append(np.array([Vr, Vr, Vr]))
     else:
         # Create ray directions
         (Rx, Ry, Rz) = rayVectors(dimension, ndirs, randomize=True)
         # Extend vectors
         for r in range (ndirs):
-            Vx.append (Vr*Rx[r])
-            Vy.append (Vr*Ry[r])
-            Vz.append (Vr*Rz[r])
+            V.append(Vr*np.array([Rx[r], Ry[r], Rz[r]]))
 
 
 def mapToXD (model1D, dimension, nrays, cellsInShell):
@@ -59,20 +55,34 @@ def mapToXD (model1D, dimension, nrays, cellsInShell):
     # Create model and setup objects
     model = Model ()
     setup = Setup (dimension = dimension)
+
+    position    = []
+    velocity    = []
+    abundance   = []
+    temperature = []
+    turbulence  = []
+
     # Add shells
     for s in range (model1D.parameters.ncells()):
         ndirs = len (cellsInShell[s])
-        sphericalXDvector(model1D.geometry.cells.x[s],  dimension,     ndirs, model.geometry.cells.x,  model.geometry.cells.y,  model.geometry.cells.z)
-        sphericalXDvector(model1D.geometry.cells.vx[s], dimension,     ndirs, model.geometry.cells.vx, model.geometry.cells.vy, model.geometry.cells.vz)
-        sphericalXDscalar(model1D.chemistry.species.abundance[s],      ndirs, model.chemistry.species.abundance)
-        sphericalXDscalar(model1D.thermodynamics.temperature.gas[s],   ndirs, model.thermodynamics.temperature.gas)
-        sphericalXDscalar(model1D.thermodynamics.turbulence.vturb2[s], ndirs, model.thermodynamics.turbulence.vturb2)
+        sphericalXDvector(model1D.geometry.cells.position[s][0], dimension, ndirs, position)
+        sphericalXDvector(model1D.geometry.cells.velocity[s][0], dimension, ndirs, velocity)
+        sphericalXDscalar(model1D.chemistry.species.abundance[s],           ndirs, abundance)
+        sphericalXDscalar(model1D.thermodynamics.temperature.gas[s],        ndirs, temperature)
+        sphericalXDscalar(model1D.thermodynamics.turbulence.vturb2[s],      ndirs, turbulence)
+
+    model.geometry.cells.position          = position
+    model.geometry.cells.velocity          = velocity
+    model.chemistry.species.abundance      = abundance
+    model.thermodynamics.temperature.gas   = temperature
+    model.thermodynamics.turbulence.vturb2 = turbulence
+
     # Extract number of cells
     ncells = 0
     for shell in cellsInShell:
         ncells += len (shell)
     # Extract boundary
-    model.geometry.boundary.boundary2cell_nr = Long1 (cellsInShell[-1])
+    model.geometry.boundary.boundary2cell_nr = cellsInShell[-1]
     # Add rays
     model.geometry.rays = setup.rays (nrays=nrays, cells=model.geometry.cells)
     # Set ncells
@@ -83,5 +93,10 @@ def mapToXD (model1D, dimension, nrays, cellsInShell):
     model.lines = model1D.lines
     # Add chemical species
     model.chemistry.species.sym = model1D.chemistry.species.sym
+    # Set other parameters
+    model.parameters.set_nrays  (nrays)
+    model.parameters.set_nspecs (model1D.parameters.nspecs())
+    model.parameters.set_nlspecs(model1D.parameters.nlspecs())
+    model.parameters.set_nquads (model1D.parameters.nquads())
     # Done
     return model
