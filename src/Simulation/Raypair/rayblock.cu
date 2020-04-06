@@ -794,7 +794,7 @@ void RayBlock :: solve_Feautrier (const Size w)
     const Size Ifp1 = I(first+1,  w);
     const Size Df   = D(rp, first);
 
-    const Real inverse_dtau_max = 1.0 / 0.2;
+//    const Real inverse_dtau_max = 1.0 / 0.05;
           Size n1_local = n1[rp];
 
     Real eta_n, eta_1;

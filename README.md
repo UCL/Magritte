@@ -12,11 +12,11 @@ $ bash install.sh
 ```
 Then, create an anaconda environment from the environment file with
 ```bash
-$ conda env create -f magritte_conda_environment.yml
+$ conda env create -f magritte_conda_env.yml
 ```
 Afterwards, activate the environment you just created with
 ```bash
-$ conda activate magritte_env
+$ conda activate magritte
 ```
 Now Magritte can be build using
 ```bash

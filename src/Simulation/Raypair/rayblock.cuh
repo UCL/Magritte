@@ -137,6 +137,8 @@ class RayBlock : public Managed
 
   public:
 
+      Real inverse_dtau_max = 1.0;
+
       Timer timer0 = Timer("total");
       Timer timer1 = Timer("set_frq");
       Timer timer2 = Timer("run_u-d");
