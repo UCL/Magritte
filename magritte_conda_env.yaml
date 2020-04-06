@@ -1,6 +1,6 @@
 name: magritte
 channels:
-  - http://conda.binstar.org/erik
+  - conda-forge
   - defaults
 dependencies:
   - python=3.7
@@ -19,5 +19,3 @@ dependencies:
   - pyyaml
   - tqdm
   - basemap
-prefix: /home/frederik/software/Anaconda3/installation/envs/magritte
-
