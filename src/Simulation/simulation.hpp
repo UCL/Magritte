@@ -42,7 +42,7 @@ struct Simulation : public Model
     int handleCudaError (cudaError_t error);
     int gpu_get_device_properties     ();
 //    int gpu_compute_radiation_field   ();
-    int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize);
+    int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const double inverse_dtau_max);
 # endif
 
     int cpu_compute_radiation_field_2 (const size_t nraypairs);

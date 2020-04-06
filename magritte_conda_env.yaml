@@ -1,0 +1,21 @@
+name: magritte
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - meshio
+  - h5py
+  - healpy
+  - jupyterlab
+  - vtk
+  - nodejs
+  - ipympl
+  - yt
+  - scipy
+  - numba
+  - mpi4py
+  - yaml
+  - pyyaml
+  - tqdm
+  - basemap
