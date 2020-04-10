@@ -3,6 +3,7 @@
 // Developed by: Frederik De Ceuster - University College London & KU Leuven
 // _________________________________________________________________________
 
+
 #ifndef __PROTO_RAYBLOCK_HPP_INCLUDED__
 #define __PROTO_RAYBLOCK_HPP_INCLUDED__
 

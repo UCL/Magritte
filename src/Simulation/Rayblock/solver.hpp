@@ -1,8 +1,19 @@
-//
-// Created by frederik on 09/04/2020.
-//
+#ifndef __SOLVER_HPP_INCLUDED__
+#define __SOLVER_HPP_INCLUDED__
 
-#ifndef MAGRITTE_SOLVER_HPP
-#define MAGRITTE_SOLVER_HPP
 
-#endif //MAGRITTE_SOLVER_HPP
+enum Device   { CPU,   GPU};
+enum Order    {   2,     4};
+enum Adaptive {True, False};
+
+
+
+struct Solver : public RayBlock
+{
+
+    Solver();
+
+};
+
+
+#endif // __SOLVER_HPP_INCLUDED__

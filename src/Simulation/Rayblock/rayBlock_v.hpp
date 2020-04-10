@@ -4,30 +4,18 @@
 // _________________________________________________________________________
 
 
-#ifndef __RAYBLOCK_CUH_INCLUDED__
-#define __RAYBLOCK_CUH_INCLUDED__
+#ifndef __RAYBLOCK_V_HPP_INCLUDED__
+#define __RAYBLOCK_V_HPP_INCLUDED__
 
 #include "Model/model.hpp"
-#include "myCudaTools.cuh"
 #include "Tools/timer.hpp"
-
-#ifdef __CUDACC__
-# define CUDA_HOST_DEVICE __host__ __device__
-# define CUDA_HOST        __host__
-# define CUDA_DEVICE      __device__
-# define CUDA_GLOBAL      __global__
-#else
-# define CUDA_HOST_DEVICE
-# define CUDA_HOST
-# define CUDA_DEVICE
-#endif
 
 
 typedef double Real;
 typedef size_t Size;
 
 
-struct ProtoRayBlock
+struct ProtoRayBlock_v
 {
     const Size depth;
 
@@ -35,12 +23,12 @@ struct ProtoRayBlock
     vector<RayData> rays_rr;   ///< data for the regular ray
     vector<Size>    origins;   ///< origin of the ray
 
-    ProtoRayBlock (const RayData &ray_ar, const RayData &ray_rr, const Size origin)
-        : depth (ray_ar.size() + ray_rr.size() + 1)
+    ProtoRayBlock_v (const RayData &ray_ar, const RayData &ray_rr, const Size origin)
+            : depth (ray_ar.size() + ray_rr.size() + 1)
     {
-       rays_ar.push_back (ray_ar);
-       rays_rr.push_back (ray_rr);
-       origins.push_back (origin);
+        rays_ar.push_back (ray_ar);
+        rays_rr.push_back (ray_rr);
+        origins.push_back (origin);
     }
 
 
@@ -64,102 +52,35 @@ struct ProtoRayBlock
 };
 
 
+///  RayBlock_v: data structure for a pair of rays
+//////////////////////////////////////////////////
 
-
-struct RayQueue
-{
-    const Size                    desired_nraypairs;   ///< desired number of ray pairs in a block
-    list<ProtoRayBlock>           queue;               ///< list containing the queued proto ray blocks
-    list<ProtoRayBlock>::iterator complete_it;         ///< iterator to the complete proto ray block
-    bool                          complete = false;    ///< indicates whether there is a complete prb
-
-    RayQueue (const Size nraypairs): desired_nraypairs (nraypairs) {};
-
-    inline void add (
-        const RayData &ray_ar,
-        const RayData &ray_rr,
-        const Size origin,
-        const Size depth      )
-    {
-        for (auto it = queue.begin(); it != queue.end(); it++)
-        {
-            auto &prb = *it;
-
-            if (prb.depth == depth)
-            {
-                prb.add (ray_ar, ray_rr, origin);
-
-                if (prb.nraypairs() == desired_nraypairs)
-                {
-                    complete_it = it;
-                    complete    = true;
-                }
-
-                return;
-            }
-        }
-
-        queue.push_back (ProtoRayBlock (ray_ar, ray_rr, origin));
-
-        if (queue.back().nraypairs() == desired_nraypairs)
-        {
-            auto last = queue.end();
-            last--;
-
-            complete_it = last;
-            complete    = true;
-        }
-
-        return;
-    }
-
-
-    inline ProtoRayBlock get_complete_block ()
-    {
-        const ProtoRayBlock complete_block = *complete_it;
-
-        queue.erase (complete_it);
-
-        complete = false;
-
-        return complete_block;
-    }
-};
-
-
-
-
-///  Raypair: data structure for a pair of rays
-///////////////////////////////////////////////
-
-class RayBlock : public Managed
+class RayBlock_v
 {
 
-  public:
+public:
 
-      Real inverse_dtau_max = 1.0;
+    Real inverse_dtau_max = 1.0;
 
-      Timer timer0 = Timer("total");
-      Timer timer1 = Timer("set_frq");
-      Timer timer2 = Timer("run_u-d");
-      Timer timer3 = Timer("mem_cpy");
+    Timer timer0 = Timer("total");
+    Timer timer1 = Timer("set_frq");
+    Timer timer2 = Timer("run_u-d");
+    Timer timer3 = Timer("mem_cpy");
 
-      Size gpuBlockSize = 32;
+    const Size ncells;           ///< total number of cells
+    const Size nfreqs;           ///< total number of frequency bins
+    const Size nlines;           ///< total number of lines
 
-      const Size ncells;           ///< total number of cells
-      const Size nfreqs;           ///< total number of frequency bins
-      const Size nlines;           ///< total number of lines
+    const Size nraypairs_max;    ///< maximum number or ray pairs in the ray block
+          Size nraypairs;        ///< number or ray pairs in the ray block
 
-      const Size nraypairs_max;    ///< maximum number or ray pairs in the ray block
-            Size nraypairs;        ///< number or ray pairs in the ray block
-
-      const Size depth_max;        ///< maximum depth of the ray block (lengths of the ray pairs)
-      const Size width_max;        ///< maximum width of the ray block (nraypairs_max * nfreqs)
-            Size width;            ///< width of the ray block (nraypairs * nfreqs)
+    const Size depth_max;        ///< maximum depth of the ray block (lengths of the ray pairs)
+    const Size width_max;        ///< maximum width of the ray block (nraypairs_max * nfreqs)
+          Size width;            ///< width of the ray block (nraypairs * nfreqs)
 
 
     /// Constructor
-      CUDA_HOST  RayBlock (
+    RayBlock_v (
           const Size ncells,
           const Size nfreqs,
           const Size nlines,
@@ -167,27 +88,27 @@ class RayBlock : public Managed
           const Size depth     );
 
     /// Destructor
-      CUDA_HOST ~RayBlock ();
-
-      /// Setup
-      CUDA_HOST void copy_model_data (const Model &model);
-
-      CUDA_HOST void setup (
-          const Model         &model,
-          const Size           R,
-          const Size           r,
-          const ProtoRayBlock &prb   );
-
-      CUDA_HOST void solve ();
-
-      CUDA_HOST void store (Model &model) const;
+    ~RayBlock_v ();
 
 
-      CUDA_DEVICE void solve_Feautrier (const Size w);
+    /// Setup
+    void copy_model_data (const Model &model);
+
+    void setup (
+        const Model           &model,
+        const Size             R,
+        const Size             r,
+        const ProtoRayBlock_v &prb   );
+
+    void solve ();
+
+    void store (Model &model) const;
 
 
-  private:
+    void solve_Feautrier (const Size w);
 
+
+private:
 
       Size n_off_diag = 0;   ///< number of off-diagonal rows on one side (default = 0)
 
@@ -215,17 +136,9 @@ class RayBlock : public Managed
 
       double *frequencies;
 
-//      Real *I_bdy_0_presc;        ///< boundary intensity at the first ray element
-//      Real *I_bdy_n_presc;        ///< boundary intensity at the final ray element
-
       Size *nrs;                  ///< cell number corresponding to point along the ray
       Real *shifts;               ///< Doppler shift scale factors along the ray
       Real *dZs;                  ///< distance increments corresponding to point along the ray
-
-//      Real *freqs;
-//      Real *freqs_scaled;
-//      Size *freqs_lower;
-//      Size *freqs_upper;
 
       Real *term1;                ///< effective source for u along the ray
       Real *term2;                ///< effective source for v along the ray
@@ -255,10 +168,10 @@ class RayBlock : public Managed
       // vReal2 L_lower;   ///< lower-half of L matrix
 
       /// Indices
-      CUDA_HOST_DEVICE inline Size I (const Size i, const Size w) const {return w + i*width;    };
-      CUDA_HOST_DEVICE inline Size D (const Size i, const Size d) const {return d + i*depth_max;};
-      CUDA_HOST_DEVICE inline Size L (const Size i, const Size l) const {return l + i*nlines;   };
-      CUDA_HOST_DEVICE inline Size V (const Size i, const Size f) const {return f + i*nfreqs;   };
+      inline Size I (const Size i, const Size w) const {return w + i*width;    };
+      inline Size D (const Size i, const Size d) const {return d + i*depth_max;};
+      inline Size L (const Size i, const Size l) const {return l + i*nlines;   };
+      inline Size V (const Size i, const Size f) const {return f + i*nfreqs;   };
 
     /// Setters
 //      CUDA_HOST void setFrequencies (
@@ -273,11 +186,11 @@ class RayBlock : public Managed
 //          const Size Dn,
 //          const Real frequency         );
 
-    CUDA_DEVICE void get_eta_and_chi (
-            const Size  Dn,
-            const Real  frequency,
-                  Real &eta,
-                  Real &chi          );
+    void get_eta_and_chi (
+        const Size  Dn,
+        const Real  frequency,
+              Real &eta,
+              Real &chi          );
 
 //    CUDA_DEVICE void get_eta_and_chi (
 //            const Size d,
@@ -322,4 +235,4 @@ class RayBlock : public Managed
 };
 
 
-#endif // __RAYBLOCK_CUH_INCLUDED__
+#endif // __RAYBLOCK_V_HPP_INCLUDED__

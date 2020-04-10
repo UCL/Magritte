@@ -149,12 +149,10 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
 
     for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
     {
-        const size_t         RR = rr - MPI_start (parameters.nrays()/2);
-        const size_t         ar = geometry.rays.antipod[rr];
-        const double weight_ang = geometry.rays.weights[rr];
+        const size_t RR = rr - MPI_start (parameters.nrays()/2);
+        const size_t ar = geometry.rays.antipod[rr];
 
         RayQueue rayqueue (nraypairs);
-
 
         logger.write ("ray = ", rr);
 
@@ -188,7 +186,6 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
         }
 
         /// Compute the unfinished rays in the queue
-        long s = 0;
         for (const ProtoRayBlock &prb : rayqueue.queue)
         {
             rayblock->nraypairs = prb.nraypairs();
@@ -197,9 +194,6 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
             rayblock->setup (*this, RR, rr, prb);
             rayblock->solve ();
             rayblock->store (*this);
-
-            cout << s << ":  o = " << prb.origins[0] << ", nraypairs = " << prb.nraypairs() << endl;
-            s++;
         }
     }
 

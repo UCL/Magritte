@@ -82,10 +82,10 @@ void Image :: write (const Io &io) const
 
 
 
+
 ///  Setter for the coordinates on the image axes
 ///    @param[in] geometry : geometry object of the model
 /////////////////////////////////////////////////////////
-
 
 void Image :: set_coordinates (const Geometry &geometry)
 {

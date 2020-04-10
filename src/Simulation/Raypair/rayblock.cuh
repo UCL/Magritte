@@ -234,7 +234,9 @@ class RayBlock : public Managed
       Real *chi;                  ///< opacities
 
       Real *A;                    ///< A coefficient in Feautrier recursion relation
+      Real *a;                    ///< a coefficient in Feautrier recursion relation
       Real *C;                    ///< C coefficient in Feautrier recursion relation
+      Real *c;                    ///< c coefficient in Feautrier recursion relation
       Real *F;                    ///< helper variable from Rybicki & Hummer (1991)
       Real *G;                    ///< helper variable from Rybicki & Hummer (1991)
 

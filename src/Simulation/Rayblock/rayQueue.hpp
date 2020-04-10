@@ -7,6 +7,9 @@
 #define __RAYQUEUE_HPP_INCLUDED__
 
 
+#include "protoRayBlock.hpp"
+
+
 ///  Structure to store protorayblocks while they are being completed
 /////////////////////////////////////////////////////////////////////
 

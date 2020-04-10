@@ -484,6 +484,15 @@
 		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Image/image.hpp">
 			<Option target="Magritte"/>
 		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Rayblock/protoRayBlock.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Rayblock/rayQueue.hpp">
+			<Option target="Magritte"/>
+		</Unit>
+		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Rayblock/solver.hpp">
+			<Option target="Magritte"/>
+		</Unit>
 		<Unit filename="/home/frederik/Dropbox/Astro/Magritte/src/Simulation/Raypair/raypair.cpp">
 			<Option target="Magritte"/>
 		</Unit>

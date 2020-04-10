@@ -45,7 +45,8 @@ struct Simulation : public Model
     int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const double inverse_dtau_max);
 # endif
 
-    int cpu_compute_radiation_field_2 (const size_t nraypairs);
+//    int cpu_compute_radiation_field_2 (const size_t nraypairs);
+    int cpu_compute_radiation_field (const double inverse_dtau_max);
 
 
   Double1 error_max;
