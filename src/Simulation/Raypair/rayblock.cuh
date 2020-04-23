@@ -145,8 +145,9 @@ class RayBlock : public Managed
       Timer timer3 = Timer("mem_cpy");
 
       Size gpuBlockSize = 32;
+      Size gpuNumBlocks = 32;
 
-      const Size ncells;           ///< total number of cells
+    const Size ncells;           ///< total number of cells
       const Size nfreqs;           ///< total number of frequency bins
       const Size nlines;           ///< total number of lines
 

@@ -97,6 +97,7 @@ void Radiation :: write (const Io &io) const
 
     frequencies.write (io);
 
+
     Double2 JJ (ncells, Double1 (nfreqs));
 
     OMP_PARALLEL_FOR (p, ncells)
@@ -108,6 +109,23 @@ void Radiation :: write (const Io &io) const
     }
 
     io.write_array (prefix+"J", JJ);
+
+
+    Double2 uu (nrays_red, Double1 (ncells*nfreqs));
+
+    for (size_t R = 0; R < nrays_red; R++)
+    {
+        OMP_PARALLEL_FOR (p, ncells)
+        {
+            for (size_t f = 0; f < nfreqs; f++)
+            {
+                uu[R][index(p,f)] = get_u (R,p,f);
+            }
+        }
+    }
+
+    io.write_array (prefix+"u", uu);
+
 
 
 //    Double2 I_bdy_buffer (I_bdy.size(), Double1 (I_bdy[0].size()*I_bdy[0][0].size()));

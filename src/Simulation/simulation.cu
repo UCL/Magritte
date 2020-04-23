@@ -116,8 +116,16 @@ int Simulation :: gpu_get_device_properties (void)
 
 
 
-int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const double inverse_dtau_max)
+int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs,
+                                                 const size_t gpuBlockSize,
+                                                 const size_t gpuNumBlocks,
+                                                 const double inverse_dtau_max)
 {
+    // Set timers
+    Timer timer("GPU compute radiation field");
+    timer.start();
+
+
     // Initialisations
     for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
@@ -141,6 +149,7 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
 
     /// Set GPU block size
     rayblock->gpuBlockSize     = gpuBlockSize;
+    rayblock->gpuNumBlocks     = gpuNumBlocks;
     rayblock->inverse_dtau_max = inverse_dtau_max;
 
     /// Set model data
@@ -199,6 +208,10 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
 
     /// Delete ray block
     delete rayblock;
+
+    // Stop timer and print results
+    timer.stop();
+    timer.print();
 
     return (0);
 }

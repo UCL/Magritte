@@ -8,6 +8,7 @@ import yaml
 import numpy as np
 
 from shutil     import rmtree
+from copy       import deepcopy
 from magritte   import Simulation, IoPython, IoText
 from setup      import Setup, linedata_from_LAMDA_file, make_file_structure
 from quadrature import H_roots, H_weights
@@ -47,10 +48,14 @@ def read_config(config_file) -> dict:
     :param config_file: configuration file.
     :returns a config dict.
     """
-    print("Reading the config file...")
+    # Initialize with the default config
+    config = deepcopy(config_default)
     # Read the yaml configuration file
     with open(config_file, 'r') as file:
-        config = yaml.load(file, Loader=yaml.Loader)
+        config_new = yaml.load(file, Loader=yaml.Loader)
+    # Overwrite the defaults with the new values
+    for key in config_new:
+        config[key] = config_new[key]
     # Return config dict
     return config
 

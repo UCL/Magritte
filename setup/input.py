@@ -1,6 +1,7 @@
 import os
 import sys
 import vtk
+import meshio
 import numpy as np
 
 from astropy                import units, constants
@@ -66,6 +67,8 @@ def process_mesher_input(config):
     if (os.path.splitext(config['input file'])[1].lower() != '.vtk'):
         raise ValueError('Only .vtk mesher files are currently supported.')
 
+    print(' --- original model type:', config['original model type'])
+
     modelName = f"{config['project folder']}{config['original model name']}"
     # Choose the io interface corresponding to the model type
     if   (config['original model type'].lower() in ['hdf5', 'h5']):
@@ -93,6 +96,13 @@ def process_mesher_input(config):
     np.save(f"{name}_nH2",       np.array(model.chemistry.species.abundance)[:,2] [corresp_points])
     np.save(f"{name}_tmp",       np.array(model.thermodynamics.temperature.gas)   [corresp_points])
     np.save(f"{name}_trb",       np.array(model.thermodynamics.turbulence.vturb2) [corresp_points])
+
+
+    # Create a .vtk file containing the mesh
+    meshio.write_points_cells(
+        filename = f"{config['project folder']}{config['model name']}.vtk",
+        points   = np.array(mesh.points),
+        cells    = {'tetra' : mesh.tetras}                                 )
 
     return
 
@@ -342,6 +352,14 @@ def process_phantom_input(config):
     velocity = velocity * (1.0e-2 * velocity_constant / constants.c.si.value)
 
     delaunay = Delaunay(position)
+
+
+    # Create a .vtk file containing the mesh
+    meshio.write_points_cells(
+        filename = f"{config['project folder']}{config['model name']}.vtk",
+        points   = position,
+        cells    = {'tetra' : delaunay.simplices} )
+
 
     # Extract Delaunay vertices (= Voronoi neighbors)
     (indptr, indices) = delaunay.vertex_neighbor_vertices

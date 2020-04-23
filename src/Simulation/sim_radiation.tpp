@@ -61,6 +61,9 @@ int Simulation:: compute_radiation_field()
     pre.resize(parameters.ncells());
     pos.resize(parameters.ncells());
 
+    // Set timers
+    Timer timer("CPU compute radiation field");
+    timer.start();
 
     // Initialisations
     cout << "Initializing..." << endl;
@@ -302,6 +305,9 @@ int Simulation:: compute_radiation_field()
         radiation.calc_U_and_V();
     }
 
+    // Stop timer and print results
+    timer.stop();
+    timer.print();
 
     return (0);
 
