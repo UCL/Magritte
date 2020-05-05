@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="Magritte" targetName="Magritte" />
+      <config projectName="Magritte" targetName="example_1_cpu.exe" />
+      <config projectName="Magritte" targetName="example_3_cpu.exe" />
+      <config projectName="Magritte" targetName="example_4_cpu.exe" />
+      <config projectName="Magritte" targetName="example_5_cpu.exe" />
+      <config projectName="Magritte" targetName="example_2_cpu.exe" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c190ce3f-c439-4431-a103-0b8e819046f5" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1Whlkiq3ki3bohk5dzGhCLBg7cq" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="full.screen.before.presentation.mode" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Simulation/Rayblock" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="MTConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mesher" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/Simulation/Rayblock" />
+      <recent name="$PROJECT_DIR$/src/Simulation/Raypair" />
+      <recent name="$PROJECT_DIR$/src/examples" />
+      <recent name="$PROJECT_DIR$/mesher/templates" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="ls" />
+    </option>
+  </component>
+  <component name="RunManager" selected="CMake Application.Magritte">
+    <configuration default="true" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$/bin/tests" PASS_PARENT_ENVS_2="true" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Magritte" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Magritte" TARGET_NAME="Magritte" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="example_1_cpu.exe" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Magritte" TARGET_NAME="example_1_cpu.exe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Magritte" RUN_TARGET_NAME="example_1_cpu.exe">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="example_2_cpu.exe" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Magritte" TARGET_NAME="example_2_cpu.exe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Magritte" RUN_TARGET_NAME="example_2_cpu.exe">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="example_3_cpu.exe" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Magritte" TARGET_NAME="example_3_cpu.exe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Magritte" RUN_TARGET_NAME="example_3_cpu.exe">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="example_4_cpu.exe" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Magritte" TARGET_NAME="example_4_cpu.exe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Magritte" RUN_TARGET_NAME="example_4_cpu.exe">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="example_5_cpu.exe" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Magritte" TARGET_NAME="example_5_cpu.exe" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Magritte" RUN_TARGET_NAME="example_5_cpu.exe">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.Magritte" />
+      <item itemvalue="CMake Application.example_1_cpu.exe" />
+      <item itemvalue="CMake Application.example_2_cpu.exe" />
+      <item itemvalue="CMake Application.example_3_cpu.exe" />
+      <item itemvalue="CMake Application.example_4_cpu.exe" />
+      <item itemvalue="CMake Application.example_5_cpu.exe" />
+    </list>
+  </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c190ce3f-c439-4431-a103-0b8e819046f5" name="Default Changelist" comment="" />
+      <created>1579609852290</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1579609852290</updated>
+      <workItem from="1579609858087" duration="3565000" />
+      <workItem from="1579893815220" duration="12301000" />
+      <workItem from="1580395772224" duration="8758000" />
+      <workItem from="1580498734118" duration="17098000" />
+      <workItem from="1580730937435" duration="23050000" />
+      <workItem from="1580822480692" duration="4662000" />
+      <workItem from="1580977359950" duration="26367000" />
+      <workItem from="1581067427406" duration="37208000" />
+      <workItem from="1581148400904" duration="11917000" />
+      <workItem from="1581173789082" duration="177000" />
+      <workItem from="1581174977424" duration="51494000" />
+      <workItem from="1581508226457" duration="53018000" />
+      <workItem from="1581863486658" duration="11604000" />
+      <workItem from="1582016135208" duration="13869000" />
+      <workItem from="1582187739558" duration="4545000" />
+      <workItem from="1582210963294" duration="1876000" />
+      <workItem from="1582571752169" duration="2273000" />
+      <workItem from="1582619758099" duration="3413000" />
+      <workItem from="1582652236100" duration="21668000" />
+      <workItem from="1582794685832" duration="7564000" />
+      <workItem from="1582817435290" duration="17908000" />
+      <workItem from="1582919638355" duration="606000" />
+      <workItem from="1582921562343" duration="34348000" />
+      <workItem from="1582987440504" duration="31389000" />
+      <workItem from="1583090463436" duration="18255000" />
+      <workItem from="1583225299689" duration="59000" />
+      <workItem from="1583225375220" duration="5117000" />
+      <workItem from="1583231697539" duration="8186000" />
+      <workItem from="1583262052814" duration="7660000" />
+      <workItem from="1583309443844" duration="16918000" />
+      <workItem from="1583344269698" duration="23636000" />
+      <workItem from="1583484267337" duration="22516000" />
+      <workItem from="1583665651985" duration="117000" />
+      <workItem from="1583670572768" duration="13438000" />
+      <workItem from="1583760555784" duration="6507000" />
+      <workItem from="1583835462255" duration="8918000" />
+      <workItem from="1583914850032" duration="3374000" />
+      <workItem from="1583920482075" duration="941000" />
+      <workItem from="1583944942477" duration="1278000" />
+      <workItem from="1584000105740" duration="27417000" />
+      <workItem from="1584108936241" duration="16922000" />
+      <workItem from="1584696625792" duration="6550000" />
+      <workItem from="1584979119657" duration="5726000" />
+      <workItem from="1585047023754" duration="20128000" />
+      <workItem from="1585124083612" duration="21631000" />
+      <workItem from="1585160978830" duration="19024000" />
+      <workItem from="1585305414983" duration="30000" />
+      <workItem from="1585305460062" duration="32546000" />
+      <workItem from="1585635808121" duration="35254000" />
+      <workItem from="1585927499305" duration="691000" />
+      <workItem from="1585930475958" duration="1264000" />
+      <workItem from="1586159170776" duration="689000" />
+      <workItem from="1586162309164" duration="51647000" />
+      <workItem from="1586424528216" duration="15416000" />
+      <workItem from="1587024774009" duration="5062000" />
+      <workItem from="1587114317955" duration="12157000" />
+      <workItem from="1587487093830" duration="22748000" />
+      <workItem from="1587728984001" duration="17177000" />
+      <workItem from="1587974597095" duration="22123000" />
+      <workItem from="1588064357238" duration="79000" />
+      <workItem from="1588064447011" duration="12903000" />
+      <workItem from="1588254176710" duration="4392000" />
+      <workItem from="1588682164773" duration="4841000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.template" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="578" y="323" width="808" height="401" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1588694949986">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="578" y="323" width="753" height="403" key="#com.intellij.fileTypes.FileTypeChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1588694949986" />
+    <state x="2691" y="405" width="808" height="401" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1582880228966" />
+    <state x="643" y="242" width="624" height="566" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1584019897621">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="643" y="242" width="624" height="566" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1584019897621" />
+    <state x="2020" y="127" width="2360" height="1213" key="DiffContextDialog" timestamp="1582794797728">
+      <screen x="1920" y="0" width="2560" height="1440" />
+    </state>
+    <state x="2020" y="127" width="2360" height="1213" key="DiffContextDialog/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1582794797728" />
+    <state x="780" y="428" key="FileChooserDialogImpl" timestamp="1583680362381">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="780" y="428" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1583680362380" />
+    <state x="780" y="596" key="FileChooserDialogImpl/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1581613225741" />
+    <state x="2960" y="548" key="FileChooserDialogImpl/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1580396109906" />
+    <state width="1870" height="303" key="GridCell.Tab.0.bottom" timestamp="1580318142236">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142236" />
+    <state width="1870" height="303" key="GridCell.Tab.0.center" timestamp="1580318142235">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142235" />
+    <state width="1870" height="303" key="GridCell.Tab.0.left" timestamp="1580318142235">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142235" />
+    <state width="1870" height="303" key="GridCell.Tab.0.right" timestamp="1580318142236">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142236" />
+    <state width="1870" height="303" key="GridCell.Tab.1.bottom" timestamp="1580318142237">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142237" />
+    <state width="1870" height="303" key="GridCell.Tab.1.center" timestamp="1580318142237">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142237" />
+    <state width="1870" height="303" key="GridCell.Tab.1.left" timestamp="1580318142236">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142236" />
+    <state width="1870" height="303" key="GridCell.Tab.1.right" timestamp="1580318142237">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1870" height="303" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142237" />
+    <state x="167" y="203" width="1920" height="1053" key="SettingsEditor" timestamp="1588064672137">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="167" y="203" width="1748" height="834" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1588064672137" />
+    <state x="1920" y="126" width="2560" height="1092" key="SettingsEditor/0.27.4480.1413@0.27.4480.1413" timestamp="1583225217696" />
+    <state x="0" y="86" width="1920" height="1053" key="SettingsEditor/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1585305611612" />
+    <state x="707" y="309" width="1054" height="737" key="SettingsEditor/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1580491890021" />
+    <state x="118" y="340" width="1732" height="933" key="SettingsEditor/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1583915082723" />
+    <state x="2020" y="127" width="2360" height="1213" key="ShowDiffWithBranchDialog" timestamp="1582794773932">
+      <screen x="1920" y="0" width="2560" height="1440" />
+    </state>
+    <state x="2020" y="127" width="2360" height="1213" key="ShowDiffWithBranchDialog/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1582794773932" />
+    <state x="100" y="131" width="1683" height="949" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587992066708">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="100" y="131" width="1683" height="949" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1587992066708" />
+    <state x="1920" y="192" width="2560" height="1199" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.27.4480.1413@0.27.4480.1413" timestamp="1583420585535" />
+    <state x="0" y="27" width="1920" height="1053" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1581581614470" />
+    <state x="2053" y="168" width="2350" height="1220" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1581677452835" />
+    <state x="2602" y="410" key="com.intellij.ide.util.TipDialog" timestamp="1585160984235">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="682" y="427" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1584108941319" />
+    <state x="1920" y="563" key="com.intellij.ide.util.TipDialog/0.27.4480.1413@0.27.4480.1413" timestamp="1581067430861" />
+    <state x="2602" y="410" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1585160984235" />
+    <state x="682" y="674" key="com.intellij.ide.util.TipDialog/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1583914851122" />
+    <state x="682" y="674" key="com.intellij.ide.util.TipDialog/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1583944943249" />
+    <state x="575" y="202" width="676" height="762" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1588694957794">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="575" y="202" width="760" height="646" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1588694957794" />
+    <state x="1920" y="262" width="530" height="693" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.4480.1413@0.27.4480.1413" timestamp="1583423594158" />
+    <state x="2495" y="179" width="676" height="762" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1586345928863" />
+    <state x="575" y="301" width="790" height="779" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1581850067884" />
+    <state x="2687" y="239" width="768" height="644" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1582016389178" />
+    <state x="696" y="441" width="527" height="171" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1580498867741">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="696" y="441" width="527" height="171" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1580498867741" />
+    <state x="2638" y="145" width="1202" height="854" key="find.popup" timestamp="1584978433680">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="718" y="168" width="1202" height="832" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1584106583649" />
+    <state x="2149" y="216" width="2201" height="1115" key="find.popup/0.27.4480.1413@0.27.4480.1413" timestamp="1583407759410" />
+    <state x="2638" y="145" width="1202" height="854" key="find.popup/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1584978433680" />
+    <state x="573" y="228" width="943" height="852" key="find.popup/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1580491672378" />
+    <state x="3148" y="193" width="1258" height="1137" key="find.popup/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1583238276625" />
+    <state x="2887" y="363" width="615" height="747" key="git4idea.branch.GitSmartOperationDialog" timestamp="1582796578026">
+      <screen x="1920" y="0" width="2560" height="1440" />
+    </state>
+    <state x="2887" y="363" width="615" height="747" key="git4idea.branch.GitSmartOperationDialog/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1582796578026" />
+    <state x="624" y="236" width="672" height="677" key="run.anything.popup" timestamp="1587740329248">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="624" y="236" width="672" height="677" key="run.anything.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1587740329248" />
+    <state x="2752" y="286" width="896" height="926" key="run.anything.popup/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1581696142272" />
+    <state x="707" y="282" width="687" height="496" key="search.everywhere.popup" timestamp="1588261689134">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="707" y="282" width="687" height="496" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1588261689134" />
+    <state x="2454" y="398" width="1178" height="666" key="search.everywhere.popup/0.27.4480.1413@0.27.4480.1413" timestamp="1583421516695" />
+    <state x="707" y="321" width="687" height="509" key="search.everywhere.popup/1920.0.1920.1080/0.59.1920.1080@0.59.1920.1080" timestamp="1585919673025" />
+    <state x="2627" y="262" width="687" height="509" key="search.everywhere.popup/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1586437166582" />
+    <state x="707" y="526" width="673" height="509" key="search.everywhere.popup/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1582825880216" />
+    <state x="2862" y="349" width="687" height="678" key="search.everywhere.popup/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1583836772057" />
+  </component>
+</project>
