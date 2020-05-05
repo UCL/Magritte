@@ -17,8 +17,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c190ce3f-c439-4431-a103-0b8e819046f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/LICENCE" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/magritte_conda_env.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/conda_environment.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,7 +220,7 @@
       <workItem from="1588064357238" duration="79000" />
       <workItem from="1588064447011" duration="12903000" />
       <workItem from="1588254176710" duration="4392000" />
-      <workItem from="1588682164773" duration="3649000" />
+      <workItem from="1588682164773" duration="4441000" />
     </task>
     <servers />
   </component>
@@ -242,22 +243,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="596" y="243" width="718" height="564" key="#Magritte" timestamp="1580035036283">
+    <state x="578" y="323" width="808" height="401" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1588694949986">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="596" y="243" width="718" height="564" key="#Magritte/0.27.1920.1053@0.27.1920.1053" timestamp="1580035036283" />
-    <state x="417" y="178" width="1104" height="686" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580034769356">
-      <screen x="0" y="27" width="1920" height="1053" />
-    </state>
-    <state x="417" y="178" width="1104" height="686" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1580034769356" />
-    <state x="594" y="228" width="721" height="594" key="#com.intellij.featureStatistics.actions.ShowFeatureUsageStatisticsDialog" timestamp="1579896849370">
-      <screen x="0" y="27" width="1920" height="1053" />
-    </state>
-    <state x="594" y="228" width="721" height="594" key="#com.intellij.featureStatistics.actions.ShowFeatureUsageStatisticsDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1579896849370" />
-    <state x="2691" y="405" width="808" height="401" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1582880228966">
-      <screen x="1920" y="0" width="2560" height="1440" />
-    </state>
-    <state x="578" y="323" width="753" height="403" key="#com.intellij.fileTypes.FileTypeChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1580579422631" />
+    <state x="578" y="323" width="753" height="403" key="#com.intellij.fileTypes.FileTypeChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1588694949986" />
     <state x="2691" y="405" width="808" height="401" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1582880228966" />
     <state x="643" y="242" width="624" height="566" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1584019897621">
       <screen x="0" y="27" width="1920" height="1053" />
@@ -305,14 +294,6 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state width="1870" height="303" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1580318142237" />
-    <state x="706" y="231" width="497" height="587" key="RollbackChangesDialog" timestamp="1579896668926">
-      <screen x="0" y="27" width="1920" height="1053" />
-    </state>
-    <state x="706" y="231" width="497" height="587" key="RollbackChangesDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1579896668926" />
-    <state width="258" height="198" key="RunAnythingAction_Filter_Popup" timestamp="1579895926915">
-      <screen x="0" y="27" width="1920" height="1053" />
-    </state>
-    <state width="258" height="198" key="RunAnythingAction_Filter_Popup/0.27.1920.1053@0.27.1920.1053" timestamp="1579895926915" />
     <state x="167" y="203" width="1920" height="1053" key="SettingsEditor" timestamp="1588064672137">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -340,10 +321,10 @@
     <state x="2602" y="410" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1585160984235" />
     <state x="682" y="674" key="com.intellij.ide.util.TipDialog/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1583914851122" />
     <state x="682" y="674" key="com.intellij.ide.util.TipDialog/1920.0.2560.1440/0.264.1920.1080@1920.0.2560.1440" timestamp="1583944943249" />
-    <state x="575" y="202" width="676" height="762" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1587143206356">
+    <state x="575" y="202" width="676" height="762" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1588694957794">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="575" y="202" width="760" height="646" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1587143206356" />
+    <state x="575" y="202" width="760" height="646" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1920.1053@0.27.1920.1053" timestamp="1588694957794" />
     <state x="1920" y="262" width="530" height="693" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.4480.1413@0.27.4480.1413" timestamp="1583423594158" />
     <state x="2495" y="179" width="676" height="762" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.1920.1080/0.59.1920.1080@1920.0.1920.1080" timestamp="1586345928863" />
     <state x="575" y="301" width="790" height="779" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.2560.1440/0.264.1920.1080@0.264.1920.1080" timestamp="1581850067884" />
