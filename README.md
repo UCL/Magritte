@@ -12,7 +12,7 @@ $ bash install.sh
 ```
 Then, create an anaconda environment from the environment file with
 ```bash
-$ conda env create -f magritte_conda_env.yml
+$ conda env create -f magritte_conda_env.yaml
 ```
 Afterwards, activate the environment you just created with
 ```bash

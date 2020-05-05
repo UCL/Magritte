@@ -75,6 +75,7 @@ if    (GPU_ACCELERATION)
     Simulation/simulation.cpp
     Simulation/simulation.cu
     Simulation/Raypair/raypair.cpp
+    Simulation/Rayblock/rayBlock_v.cpp
 #    Simulation/Raypair/rayblock.cpp
     Simulation/Raypair/raypair.cu
     Simulation/Raypair/rayblock.cu
@@ -105,8 +106,9 @@ else  (GPU_ACCELERATION)
     Functions/heapsort.cpp
     Simulation/simulation.cpp
     Simulation/Raypair/raypair.cpp
+    Simulation/Rayblock/rayBlock_v.cpp
 #    Simulation/Raypair/rayblock.cpp
-    Simulation/Image/image.cpp)
+    Simulation/Image/image.cpp Simulation/Rayblock/protoRayBlock.hpp Simulation/Rayblock/rayQueue.hpp Simulation/Rayblock/solver.hpp)
   # Set library properties
   set_target_properties (Magritte PROPERTIES PREFIX "cpu")
 endif (GPU_ACCELERATION)

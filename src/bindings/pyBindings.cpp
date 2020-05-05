@@ -381,6 +381,7 @@ PYBIND11_MODULE (magritte, module)
         .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
 #       endif
 //        .def ("cpu_compute_radiation_field_2",         &Simulation::cpu_compute_radiation_field_2)
+        .def ("cpu_compute_radiation_field",           &Simulation::cpu_compute_radiation_field)
         // functions
         .def ("compute_spectral_discretisation",       &Simulation::compute_spectral_discretisation)
         .def ("compute_spectral_discretisation_image", &Simulation::compute_spectral_discretisation_image)

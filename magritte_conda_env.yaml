@@ -10,7 +10,6 @@ dependencies:
   - jupyterlab
   - vtk
   - nodejs
-  - ipympl
   - yt
   - scipy
   - numba
@@ -18,4 +17,3 @@ dependencies:
   - yaml
   - pyyaml
   - tqdm
-  - basemap

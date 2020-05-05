@@ -18,12 +18,18 @@
 #define MAX_NTHREADS 99
 /////////////////////////////////////////
 
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 // Numerical constants
 
-const double PI              = 3.141592653589;    // pi
-const double FOUR_PI         = 12.56637061436;    // 4*pi
-const double INVERSE_SQRT_PI = 0.5641895835478;   // 1/sqrt(pi)
+const double PI              =     M_PI;         // pi
+const double FOUR_PI         = 4.0*M_PI;         // 4*pi
+const double INVERSE_SQRT_PI = 0.5*M_2_SQRTPI;   // 1/sqrt(pi)
+
+const double ONE_THIRD       = 1.0/3.0;
+const double TWO_THIRDS      = 2.0/3.0;
+const double ONE_SIXTH       = 1.0/6.0;
 
 const double CC    = 2.99792458E+8;    // [m/s] speed of light
 const double HH    = 6.62607004E-34;   // [J*s] Planck's constant

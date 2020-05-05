@@ -64,11 +64,11 @@ elif [ "$1" == "performance_audit" ]; then
   exit 0
 
 
-else
+elif [ "$1" == "binder" ]; then
 
 
-   echo "Building Magritte..."
-   echo "--------------------"
+   echo "Building Magritte for Binder..."
+   echo "-------------------------------"
    mkdir build
    cd build
 
@@ -86,6 +86,39 @@ else
      -DMPI_PARALLEL=OFF                              \
      -DGRID_SIMD=OFF                                 \
      -DGPU_ACCELERATION=OFF                          \
+     $DIR
+
+   make -j4
+
+   cd ..
+
+  echo "----"
+  echo "Done"
+  exit 0
+
+
+else
+
+
+   echo "Building Magritte..."
+   echo "--------------------"
+   mkdir build
+   cd build
+
+   PYTHON_EXECUTABLE=$(which python)
+
+   CC_FLAG=$(which gcc-7)
+   CXX_FLAG=$(which g++-7)
+
+   CC=$CC_FLAG CXX=$CXX_FLAG                         \
+   cmake                                             \
+     -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE \
+     -DPYTHON_IO=ON                                  \
+     -DPYTHON_BINDINGS=ON                            \
+     -DOMP_PARALLEL=ON                               \
+     -DMPI_PARALLEL=OFF                              \
+     -DGRID_SIMD=OFF                                 \
+     -DGPU_ACCELERATION=ON                           \
      $DIR
 
    make -j4

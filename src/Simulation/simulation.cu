@@ -116,8 +116,15 @@ int Simulation :: gpu_get_device_properties (void)
 
 
 
-int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const double inverse_dtau_max)
+int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs,
+                                                 const size_t gpuBlockSize,
+                                                 const size_t gpuNumBlocks,
+                                                 const double inverse_dtau_max)
 {
+    // Set timers
+    Timer timer("GPU compute radiation field");
+    timer.start();
+
     // Initialisations
     for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
@@ -132,79 +139,104 @@ int Simulation :: gpu_compute_radiation_field_2 (const size_t nraypairs, const s
         get_max_npoints_on_rays <CoMoving> ();
     }
 
-    /// Create a gpuRayPair object
-    RayBlock *rayblock = new RayBlock (parameters.ncells(),
-                                       parameters.nfreqs(),
-                                       parameters.nlines(),
-                                       nraypairs,
-                                       geometry.max_npoints_on_rays);
+    // Get number of threads
+    const size_t nthreads = get_nthreads();
 
-    /// Set GPU block size
-    rayblock->gpuBlockSize     = gpuBlockSize;
-    rayblock->inverse_dtau_max = inverse_dtau_max;
+    vector<RayBlock*> rayblocks (nthreads);
 
-    /// Set model data
-    rayblock->copy_model_data (*this);
+    for (auto &rayblock : rayblocks)
+    {
+        // Create a RayBlock object
+        rayblock = new RayBlock (parameters.ncells(),
+                                 parameters.nfreqs(),
+                                 parameters.nlines(),
+                                 nraypairs,
+                                 geometry.max_npoints_on_rays);
+
+        /// Set GPU block size
+        rayblock->gpuBlockSize     = gpuBlockSize;
+        rayblock->gpuNumBlocks     = gpuNumBlocks;
+        rayblock->inverse_dtau_max = inverse_dtau_max;
+
+        /// Set model data
+        rayblock->copy_model_data (*this);
+    }
 
 
     for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
     {
-        const size_t         RR = rr - MPI_start (parameters.nrays()/2);
-        const size_t         ar = geometry.rays.antipod[rr];
-        const double weight_ang = geometry.rays.weights[rr];
+        const size_t RR = rr - MPI_start (parameters.nrays()/2);
+        const size_t ar = geometry.rays.antipod[rr];
 
         RayQueue rayqueue (nraypairs);
+
+//        cout << "complete = ";
+//        if (rayqueue.complete()) {cout << "True"  << endl;}
+//        else                     {cout << "False" << endl;}
 
 
         logger.write ("ray = ", rr);
 
-        for (size_t o = 0; o < parameters.ncells(); o++)
+//#       pragma omp parallel default (shared)
         {
-            const double dshift_max = get_dshift_max (o);
+//            const size_t t = omp_get_thread_num();
+            auto &rayblock = rayblocks[omp_get_thread_num()];
 
-            // Trace ray pair
-            const RayData ray_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
-            const RayData ray_rr = geometry.trace_ray <CoMoving> (o, rr, dshift_max);
 
-            const size_t depth = ray_ar.size() + ray_rr.size() + 1;
-
-            if (depth > 1)
+            for (size_t o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
             {
-                /// Add ray pair to queue
-                rayqueue.add (ray_ar, ray_rr, o, depth);
+                const double dshift_max = get_dshift_max (o);
 
-                if (rayqueue.complete)
+                // Trace ray pair
+                const RayData ray_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+                const RayData ray_rr = geometry.trace_ray <CoMoving> (o, rr, dshift_max);
+
+                const size_t depth = ray_ar.size() + ray_rr.size() + 1;
+
+                if (depth > 1)
                 {
-                    rayblock->setup (*this, RR, rr, rayqueue.get_complete_block());
-                    rayblock->solve ();
-                    rayblock->store (*this);
+#                   pragma omp critical (add_to_queue)
+                    {
+                        /// Add ray pair to queue
+                        rayqueue.add (ray_ar, ray_rr, o, depth);
+                    }
+
+#                   pragma omp critical (offload_to_gpu)
+                    {
+                        if (rayqueue.some_are_completed())
+                        {
+                            rayblock->solve_cpu (rayqueue.get_complete_block(), RR, rr, *this);
+                        }
+                    }
                 }
-            }
-            else
-            {
-                /// Extract radiation field from boundary
-                get_radiation_field_from_boundary (RR, rr, o);
+                else
+                {
+                    /// Extract radiation field from boundary
+                    get_radiation_field_from_boundary (RR, rr, o);
+                }
             }
         }
 
         /// Compute the unfinished rays in the queue
-        long s = 0;
+//        for (long s = omp_get_thread_num(); s < rayqueue.queue.size(); s += omp_get_num_threads())
         for (const ProtoRayBlock &prb : rayqueue.queue)
         {
-            rayblock->nraypairs = prb.nraypairs();
-            rayblock->width     = prb.nraypairs() * parameters.nfreqs();
+//            const ProtoRayBlock &prb = rayqueue.queue[s];
 
-            rayblock->setup (*this, RR, rr, prb);
-            rayblock->solve ();
-            rayblock->store (*this);
+            rayblocks[0]->nraypairs = prb.nraypairs();
+            rayblocks[0]->width     = prb.nraypairs() * parameters.nfreqs();
 
-            cout << s << ":  o = " << prb.origins[0] << ", nraypairs = " << prb.nraypairs() << endl;
-            s++;
+            rayblocks[0]->solve_cpu (prb, RR, rr, *this);
         }
     }
 
-    /// Delete ray block
-    delete rayblock;
+
+    /// Delete ray blocks
+    for (auto &rayblock : rayblocks) {delete rayblock;}
+
+    // Stop timer and print results
+    timer.stop();
+    timer.print();
 
     return (0);
 }
