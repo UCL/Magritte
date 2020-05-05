@@ -17,25 +17,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c190ce3f-c439-4431-a103-0b8e819046f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Magritte.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Magritte.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/frederik.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Magritte.cbp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/magritte_conda_env.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/magritte_conda_env.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup/input.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup/input.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Simulation/Raypair/rayblock.cu" beforeDir="false" afterPath="$PROJECT_DIR$/src/Simulation/Raypair/rayblock.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Simulation/Raypair/rayblock.cuh" beforeDir="false" afterPath="$PROJECT_DIR$/src/Simulation/Raypair/rayblock.cuh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Simulation/simulation.cu" beforeDir="false" afterPath="$PROJECT_DIR$/src/Simulation/simulation.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/example_6_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/example_6_gpu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/examples/example_7_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/examples/example_7_gpu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/performance/example_2_cpu_benchmark.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/performance/example_2_gpu_benchmark.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/performance/magritte_0.log" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENCE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -236,7 +219,7 @@
       <workItem from="1588064357238" duration="79000" />
       <workItem from="1588064447011" duration="12903000" />
       <workItem from="1588254176710" duration="4392000" />
-      <workItem from="1588682164773" duration="1637000" />
+      <workItem from="1588682164773" duration="3649000" />
     </task>
     <servers />
   </component>
