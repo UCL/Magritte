@@ -43,6 +43,7 @@ configure.hpp
 
 *~
 *.swp
+*.idea/*
 
 
 # Python related cache
