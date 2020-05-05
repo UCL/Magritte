@@ -189,6 +189,68 @@ void RayBlock :: copy_model_data (const Model &model)
 
 
 
+CUDA_GLOBAL
+void feautrierKernel (RayBlock &rayblock)
+{
+    const Size index  = blockIdx.x * blockDim.x + threadIdx.x;
+    const Size stride =  gridDim.x * blockDim.x;
+
+    for (Size w = index; w < rayblock.width; w += stride)
+    {
+        rayblock.solve_Feautrier (w);
+    }
+}
+
+
+
+CUDA_HOST
+void RayBlock :: solve_gpu (
+    const ProtoRayBlock &prb,
+    const Size           R,
+    const Size           r,
+          Model         &model    )
+{
+    /// Setup the ray block with the proto rayblock data
+    setup (model, R, r, prb);
+
+    const Size blockSize = gpuBlockSize;
+    const Size numBlocks = gpuNumBlocks;
+
+    /// Execute the Feautrier kernel on the GPU
+    feautrierKernel <<<numBlocks, blockSize>>> (*this);
+
+    /// Wait for GPU to finish and get possible error
+    HANDLE_ERROR (cudaDeviceSynchronize());
+
+    /// Store the result back in the model
+    store (model);
+}
+
+
+
+
+CUDA_HOST
+void RayBlock :: solve_cpu (
+    const ProtoRayBlock &prb,
+    const Size           R,
+    const Size           r,
+          Model         &model    )
+{
+    /// Setup the ray block with the proto rayblock data
+    setup (model, R, r, prb);
+
+    /// Execute the Feautrier kernel on the CPU
+    for (Size w = 0; w < width; w++)
+    {
+        solve_Feautrier (w);
+    }
+
+    /// Store the result back in the model
+    store (model);
+}
+
+
+
 //CUDA_HOST
 //void RayBlock :: setFrequencies (
 //        const Double1 &frequencies,
@@ -348,42 +410,17 @@ void RayBlock :: setup (
 
 }
 
-CUDA_DEVICE
+
+
+CUDA_HOST_DEVICE
 inline Real my_fma (const Real a, const Real b, const Real c)
 {
     return fma (a, b, c);
-//    return a * b + c;
-}
-
-
-
-CUDA_GLOBAL
-void feautrierKernel (RayBlock &rayblock)
-{
-    const Size index  = blockIdx.x * blockDim.x + threadIdx.x;
-    const Size stride =  gridDim.x * blockDim.x;
-
-    for (Size w = index; w < rayblock.width; w += stride)
-    {
-        rayblock.solve_Feautrier (w);
-    }
 }
 
 
 
 
-CUDA_HOST
-void RayBlock :: solve ()
-{
-    const Size blockSize = gpuBlockSize;
-    const Size numBlocks = gpuNumBlocks;
-//    const Size numBlocks = (width + blockSize-1) / blockSize;
-
-    feautrierKernel <<<numBlocks, blockSize>>> (*this);
-
-    // Wait for GPU to finish and get possible error
-    HANDLE_ERROR (cudaDeviceSynchronize());
-}
 
 
 
@@ -483,7 +520,7 @@ inline Real my_exp_minus (const Real x)
 ///    @return profile function evaluated with this frequency difference
 ////////////////////////////////////////////////////////////////////////
 
-CUDA_DEVICE
+CUDA_HOST_DEVICE
 inline Real gaussian (const Real width, const Real diff)
 {
     const Real inverse_width = 1.0 / width;
@@ -491,7 +528,7 @@ inline Real gaussian (const Real width, const Real diff)
     const Real     exponent  = -sqrtExponent * sqrtExponent;
 //    const Real     exponent  = sqrtExponent * sqrtExponent;
 
-    return inverse_width * INVERSE_SQRT_PI * __expf (exponent);
+    return inverse_width * INVERSE_SQRT_PI * expf (exponent);
 //    return inverse_width * INVERSE_SQRT_PI * my_exp_minus (exponent);
 }
 
@@ -504,7 +541,7 @@ inline Real gaussian (const Real width, const Real diff)
 ///    @return Planck function evaluated at this frequency
 ///////////////////////////////////////////////////////////////////////////
 
-CUDA_DEVICE
+CUDA_HOST_DEVICE
 inline Real planck (const Real temperature, const Real frequency)
 {
     return TWO_HH_OVER_CC_SQUARED * (frequency*frequency*frequency) / expm1 (HH_OVER_KB*frequency/temperature);
@@ -544,7 +581,7 @@ inline Real planck (const Real temperature, const Real frequency)
 //}
 
 
-CUDA_DEVICE
+CUDA_HOST_DEVICE
 void RayBlock :: get_eta_and_chi (const Size Dn, const Real frequency, Real &eta, Real &chi)
 {
     const Real frequency_scaled = frequency * shifts[Dn];
@@ -956,7 +993,7 @@ void RayBlock :: get_eta_and_chi (const Size Dn, const Real frequency, Real &eta
 ///    @param[in] w : width index
 /////////////////////////////////////////////////////////
 
-CUDA_DEVICE
+CUDA_HOST_DEVICE
 void RayBlock :: solve_Feautrier (const Size w)
 {
     const Size rp        = w / nfreqs;

@@ -128,19 +128,11 @@ int main (int argc, char **argv)
                 /// Add ray pair to queue
                 rayqueue.add(raydata_ar, raydata_rr, o, depth);
 
-                if (rayqueue.complete)
+                if (rayqueue.some_are_completed())
                 {
-                    timer2.start();
-                    rayblock->setup(simulation, RR, rr, rayqueue.get_complete_block());
-                    timer2.stop();
-
                     timer3.start();
-                    rayblock->solve();
+                    rayblock->solve_gpu(rayqueue.get_complete_block(), RR, rr, simulation);
                     timer3.stop();
-
-                    timer4.start();
-                    rayblock->store(simulation);
-                    timer4.stop();
                 }
             }
             else
@@ -158,18 +150,10 @@ int main (int argc, char **argv)
             rayblock->nraypairs = prb.nraypairs();
             rayblock->width = prb.nraypairs() * simulation.parameters.nfreqs();
 
-            timer6.start();
-            rayblock->setup(simulation, RR, rr, prb);
-            timer6.stop();
-
             timer7.start();
-            rayblock->solve();
+            rayblock->solve_gpu(prb, RR, rr, simulation);
             timer7.stop();
             timer7.print();
-
-            timer8.start();
-            rayblock->store(simulation);
-            timer8.stop();
         }
         timer9.stop();
     }

@@ -16,6 +16,8 @@ from mesher   import Mesh
 from magritte import Model, IoPython, IoText
 
 
+
+
 def process_spherically_symmetric_input(config):
     """
     Script to process mesher input based on analytic functions to create a Magritte model.
@@ -67,35 +69,49 @@ def process_mesher_input(config):
     if (os.path.splitext(config['input file'])[1].lower() != '.vtk'):
         raise ValueError('Only .vtk mesher files are currently supported.')
 
-    print(' --- original model type:', config['original model type'])
-
-    modelName = f"{config['project folder']}{config['original model name']}"
-    # Choose the io interface corresponding to the model type
-    if   (config['original model type'].lower() in ['hdf5', 'h5']):
-        io = IoPython('hdf5', f"{modelName}.hdf5")
-    elif (config['original model type'].lower() in ['text', 'txt', 'ascii']):
-        io = IoText(f"{modelName}/")
-    else:
-         raise ValueError('No valid model type was given (hdf5, ascii).')
-
-    model = Model()
-    model.read(io)
-
+    # Get the mesh form the mesher
     mesh = Mesh(config['input file'])
-
-    tree = cKDTree(np.array(model.geometry.cells.position))
-    corresp_points = tree.query(mesh.points)[1]
 
     name = f"{config['project folder']}{config['model name']}"
 
     np.save(f"{name}_position",  mesh.points                                                      )
     np.save(f"{name}_boundary",  mesh.boundary                                                    )
     np.save(f"{name}_neighbors", mesh.neighbors                                                   )
-    np.save(f"{name}_velocity",  np.array(model.geometry.cells.velocity)          [corresp_points])
-    np.save(f"{name}_nl1",       np.array(model.chemistry.species.abundance)[:,1] [corresp_points])
-    np.save(f"{name}_nH2",       np.array(model.chemistry.species.abundance)[:,2] [corresp_points])
-    np.save(f"{name}_tmp",       np.array(model.thermodynamics.temperature.gas)   [corresp_points])
-    np.save(f"{name}_trb",       np.array(model.thermodynamics.turbulence.vturb2) [corresp_points])
+
+    if 'original model name' in config:
+
+        modelName = f"{config['project folder']}{config['original model name']}"
+        # Choose the io interface corresponding to the model type
+        if   (config['original model type'].lower() in ['hdf5', 'h5']):
+            io = IoPython('hdf5', f"{modelName}.hdf5")
+        elif (config['original model type'].lower() in ['text', 'txt', 'ascii']):
+            io = IoText(f"{modelName}/")
+        else:
+             raise ValueError('No valid model type was given (hdf5, ascii).')
+        model = Model()
+        model.read(io)
+
+        corresp_points = cKDTree(np.array(model.geometry.cells.position)).query(mesh.points)[1]
+
+        np.save(f"{name}_velocity", np.array(model.geometry.cells.velocity)          [corresp_points])
+        np.save(f"{name}_nl1",      np.array(model.chemistry.species.abundance)[:,1] [corresp_points])
+        np.save(f"{name}_nH2",      np.array(model.chemistry.species.abundance)[:,2] [corresp_points])
+        np.save(f"{name}_tmp",      np.array(model.thermodynamics.temperature.gas)   [corresp_points])
+        np.save(f"{name}_trb",      np.array(model.thermodynamics.turbulence.vturb2) [corresp_points])
+
+    elif 'functions' in config:
+        np.save(f"{name}_velocity", config['functions']['velocity'   ](mesh.points))
+        np.save(f"{name}_nl1",      config['functions']['nl1'        ](mesh.points))
+        np.save(f"{name}_nH2",      config['functions']['nH2'        ](mesh.points))
+        np.save(f"{name}_tmp",      config['functions']['temperature'](mesh.points))
+        np.save(f"{name}_trb",      config['functions']['turbulence' ](mesh.points))
+
+    elif 'data' in config:
+        np.save(f"{name}_velocity", config['data']     ['velocity'   ])
+        np.save(f"{name}_nl1",      config['data']     ['nl1'        ])
+        np.save(f"{name}_nH2",      config['data']     ['nH2'        ])
+        np.save(f"{name}_tmp",      config['data']     ['temperature'])
+        np.save(f"{name}_trb",      config['data']     ['turbulence' ])
 
 
     # Create a .vtk file containing the mesh
@@ -267,6 +283,16 @@ def process_amrvac_input(config):
     neighbors = cKDTree(centres).query(centres, 57)[1]
     # Closest point is point itself, execlude this
     neighbors = neighbors[:,1:]
+
+
+    delaunay = Delaunay(centres)
+
+    # Create a .vtk file containing the mesh
+    meshio.write_points_cells(
+        filename = f"{config['project folder']}{config['model name']}.vtk",
+        points   = centres,
+        cells    = {'tetra' : delaunay.simplices} )
+
 
     data = {'position'  : centres,
             'velocity'  : velocity,

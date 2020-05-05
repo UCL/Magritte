@@ -15,8 +15,9 @@ set (MAGRITTE_VERSION_MINOR 0)
 set (CMAKE_BUILD_TYPE Release)
 #set (CMAKE_BUILD_TYPE Relwithdebinfo)
 #set (CMAKE_BUILD_TYPE Debug)
-#set (CUDA_NVCC_FLAGS " -g -G")
-set (CUDA_NVCC_FLAGS "-x cu -O5")
+#set (CUDA_NVCC_FLAGS " -g -G -x cu -O5") WARNING -G cfr issue:#112
+#set (CUDA_NVCC_FLAGS " -g -x cu -O5")
+set (CUDA_NVCC_FLAGS "-O5")
 
 # Build options
 option (PYTHON_IO        "Handling all io through python (slow)" OFF)
@@ -57,10 +58,10 @@ set (CMAKE_C_FLAGS          "${CMAKE_C_FLAGS}          -std=c++11")
 set (CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS}        -std=c++11")
 set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -std=c++11")
 
-# Set large memory model
-set (CMAKE_C_FLAGS          "${CMAKE_C_FLAGS}          -mcmodel=large")
-set (CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS}        -mcmodel=large")
-set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcmodel=large")
+# Set large memory model (see issue: #113)
+#set (CMAKE_C_FLAGS          "${CMAKE_C_FLAGS}          -mcmodel=large")
+#set (CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS}        -mcmodel=large")
+#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mcmodel=large")
 
 # Add OpenMP if required
 if    (OMP_PARALLEL)
