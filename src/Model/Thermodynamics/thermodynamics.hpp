@@ -22,17 +22,12 @@ struct Thermodynamics
   public:
 
       Temperature temperature;
-
       Turbulence  turbulence;
 
 
       // Io
-      int read (
-          const Io         &io,
-                Parameters &parameters);
-
-      int write (
-          const Io &io) const;
+      int read  (const Io &io, Parameters &parameters);
+      int write (const Io &io                        ) const;
 
       // Functions
       inline vReal profile (
