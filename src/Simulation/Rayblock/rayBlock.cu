@@ -10,21 +10,14 @@
 ///    @param[in] depth     : number of points along the ray pairs
 //////////////////////////////////////////////////////////////////
 
-CUDA_HOST
-RayBlock ::  RayBlock (
+__host__
+CUDARayBlock ::  RayBlock (
     const Size ncells,
     const Size nfreqs,
     const Size nlines,
     const Size nraypairs,
     const Size depth     )
-    : ncells        (ncells)
-    , nfreqs        (nfreqs)
-    , nlines        (nlines)
-    , nraypairs_max (nraypairs)
-    , nraypairs     (nraypairs)
-    , depth_max     (depth)
-    , width_max     (nraypairs * nfreqs)
-    , width         (nraypairs * nfreqs)
+    : RayBlock(ncells, nfreqs, nlines, nraypairs, depth);
 {
     const size_t nraypairs_size = nraypairs_max*sizeof(Size);
     const size_t nraypairs_real = nraypairs_max*sizeof(Real);

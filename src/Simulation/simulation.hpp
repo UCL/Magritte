@@ -38,41 +38,42 @@ struct Simulation : public Model
     Long2   pre;
     Long2   pos;
 
-# if (GPU_ACCELERATION)
-    int handleCudaError (cudaError_t error);
-    int gpu_get_device_properties     ();
-//    int gpu_compute_radiation_field   ();
-    int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
+
+#   if (GPU_ACCELERATION)
+        int handleCudaError           (cudaError_t error);
+        int gpu_get_device_properties     ();
+//      int gpu_compute_radiation_field   ();
+        int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
 # endif
 
-//    int cpu_compute_radiation_field_2 (const size_t nraypairs);
+//  int cpu_compute_radiation_field_2 (const size_t nraypairs);
     int cpu_compute_radiation_field (const double inverse_dtau_max);
 
 
-  Double1 error_max;
-  Double1 error_mean;
+    Double1 error_max;
+    Double1 error_mean;
 
-  SpecDiscSetting specDiscSetting = None;
+    SpecDiscSetting specDiscSetting = None;
 
 
-  //vReal tau_max = 10.0;
+    vReal tau_max = 10.0;
 
-  int compute_spectral_discretisation       (void);
-  int compute_spectral_discretisation_image (const double width);
-  int compute_boundary_intensities          (void);
-  int compute_boundary_intensities          (const Double1 &temperatures);
-  int compute_radiation_field               (void);
+    int compute_spectral_discretisation       (void);
+    int compute_spectral_discretisation_image (const double width);
+    int compute_boundary_intensities          (void);
+    int compute_boundary_intensities          (const Double1 &temperatures);
+    int compute_radiation_field               (void);
 
-  inline double get_dshift_max (
+    inline double get_dshift_max (
         const long o           ) const;
 
-  inline void setup_using_scattering (
-      const long     R,
-      const long     origin,
-      const long     f,
-            RayData &rayData_ar,
-            RayData &rayData_r,
-            RayPair &rayPair    ) const;
+    inline void setup_using_scattering (
+        const long     R,
+        const long     origin,
+        const long     f,
+              RayData &rayData_ar,
+              RayData &rayData_r,
+              RayPair &rayPair         ) const;
 
   inline void setup (
       const long     R,

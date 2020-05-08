@@ -16,6 +16,8 @@ from input      import *
 from rays       import setup_rays_spherical_symmetry
 
 
+
+
 config_default = {
     'project folder'     : '',          # Use current folder as project folder
     'data folder'        : '',          # Use current folder as data folder
@@ -30,6 +32,8 @@ config_default = {
 }
 
 
+
+
 def write_config(config):
     """
     Write the Magritte config file.
@@ -40,6 +44,8 @@ def write_config(config):
     with open(config_file, 'w') as file:
         file.writelines(yaml.dump(config, Dumper=yaml.Dumper))
     return
+
+
 
 
 def read_config(config_file) -> dict:
@@ -58,6 +64,8 @@ def read_config(config_file) -> dict:
         config[key] = config_new[key]
     # Return config dict
     return config
+
+
 
 
 def configure_simulation(config) -> Simulation():
@@ -116,16 +124,6 @@ def configure_simulation(config) -> Simulation():
     simulation.lines.lineProducingSpecies[0].quadrature.roots   = H_roots   (config['nquads'])
     simulation.lines.lineProducingSpecies[0].quadrature.weights = H_weights (config['nquads'])
 
-    # Remove the data
-    os.remove(dataName+'position.npy')
-    os.remove(dataName+'velocity.npy')
-    os.remove(dataName+'neighbors.npy')
-    os.remove(dataName+'boundary.npy')
-    os.remove(dataName+'tmp.npy')
-    os.remove(dataName+'trb.npy')
-    os.remove(dataName+'nl1.npy')
-    os.remove(dataName+'nH2.npy')
-
     # Define the model name
     modelName = name = f"{config['project folder']}{config['model name']}"
     # Change the model name if we do not want to overwrite
@@ -164,10 +162,41 @@ def configure_simulation(config) -> Simulation():
     del simulation
     # Read the newly written simulation object
     print("Reading in magritte model to extract simulation object.")
-    simulation_new = Simulation()
-    simulation_new.read(io)
+    try:
+        simulation_new = Simulation()
+        simulation_new.read(io)
+    except:
+        print("Failed to read simulation!")
+        simulation_new = Simulation()
+
+    # Remove the data
+    os.remove(dataName+'position.npy')
+    os.remove(dataName+'velocity.npy')
+    os.remove(dataName+'neighbors.npy')
+    os.remove(dataName+'boundary.npy')
+    os.remove(dataName+'tmp.npy')
+    os.remove(dataName+'trb.npy')
+    os.remove(dataName+'nl1.npy')
+    os.remove(dataName+'nH2.npy')
+
     # Return the newly read simulation object
     return simulation_new
+
+def get_io(model_name):
+    # Extract the file extension (all lowercase)
+    extension = os.path.splitext(model_name)[1].lower()
+    # Determine the io based on the extension
+    if extension in ['hdf5', 'h5']:
+        return IoPython('hdf5', model_name)
+    elif extension in ['text', 'txt', 'ascii']:
+        return IoText(model_name)
+    else:
+        raise ValueError('No valid model type was given (valid types ars: hdf5 and ascii).')
+
+
+def get_simulation(model_name) -> Simulation():
+    simulation = Simulation()
+    return simulation.read(get_io(model_name))
 
 
 def process_magritte_input (config) -> Simulation():
@@ -188,10 +217,10 @@ def process_magritte_input (config) -> Simulation():
     return simulation
 
 
-def configure(config) -> Simulation:
+def preconfig(config) -> dict:
     """
     :param config: a config dict extracted from a configuration file
-    :return: a configured Magritte simulation object
+    :returns a preconfigured configuration dict
     """
     # Check the validity of the configuration file
     if (config['line data files'] is None) or (len(config['line data files']) == 0):
@@ -236,7 +265,20 @@ def configure(config) -> Simulation:
         config['original model name'] = name
         config['original model type'] = extension[1:]
 
+    # Done
+    return config
+
+
+
+
+def configure(config) -> Simulation:
+    """
+    :param config: a config dict extracted from a configuration file
+    :return: a configured Magritte simulation object
+    """
     print("Configuring Magritte...")
+    # Run preconfig
+    config = preconfig(config)
     # Check the input type
     if   (config['input type'].lower() == 'magritte'):
         return process_magritte_input(config)
@@ -256,6 +298,8 @@ def configure(config) -> Simulation:
         raise ValueError('Please specify a valid input type (magritte, mesher, amrvac or phantom).')
     # return a configured simulation object
     return configure_simulation(config=config)
+
+
 
 
 if (__name__ == '__main__'):
