@@ -184,7 +184,7 @@ def configure_simulation(config) -> Simulation():
 
 def get_io(model_name):
     # Extract the file extension (all lowercase)
-    extension = os.path.splitext(model_name)[1].lower()
+    extension = os.path.splitext(model_name)[1][1:].lower()
     # Determine the io based on the extension
     if extension in ['hdf5', 'h5']:
         return IoPython('hdf5', model_name)
@@ -196,7 +196,8 @@ def get_io(model_name):
 
 def get_simulation(model_name) -> Simulation():
     simulation = Simulation()
-    return simulation.read(get_io(model_name))
+    simulation.read(get_io(model_name))
+    return simulation
 
 
 def process_magritte_input (config) -> Simulation():
