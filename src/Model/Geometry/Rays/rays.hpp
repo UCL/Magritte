@@ -12,37 +12,79 @@
 #include "Tools/types.hpp"
 #include "Model/parameters.hpp"
 
+#include "Tools/logger.hpp"
+
 
 ///  RAYS: data struct containing directional discretization info
 /////////////////////////////////////////////////////////////////
 
 struct Rays
 {
+
     public:
 
-        vector<Vector3d> rays;      ///< direction vector
-        Double1          weights;   ///< weights for angular integration
-        Long1            antipod;   ///< ray number of antipodal ray
+        bool adaptive_ray_tracing = false;   ///< true when using adaptive ray-tracing
+        size_t half_nrays;                   ///< half the number of rays
+        size_t nrays;                        ///< number of rays
 
 
-      // Io
-      void read  (const Io &io, Parameters &parameters);
-      void write (const Io &io                        ) const;
+        /// Pre-defined rays
+        ////////////////////
+
+        Vector3d1 rays;      ///< direction vector
+        Double1   weights;   ///< weights for angular integration
 
 
-  private:
+        /// Adaptive rays
+        /////////////////
 
-      size_t ncells;                 ///< number of cells
-      size_t nrays;                  ///< number of rays
+        Vector3d2 dir;
+        Double1   wgt;
+
+        vector<vector<unsigned short int>> order;
+        vector<vector<unsigned short int>> pixel;
+
+        inline int get_order (const size_t o, const size_t r) const {return order[o][r];}
+        inline int get_pixel (const size_t o, const size_t r) const {return pixel[o][r];}
 
 
-      int setup ();
+        inline Vector3d ray (const size_t o, const size_t r) const
+        {
+            if (adaptive_ray_tracing)
+            {
+                if (r < half_nrays) {return  dir[order[o][r           ]][pixel[o][r           ]];}
+                else                {return -dir[order[o][r-half_nrays]][pixel[o][r-half_nrays]];}
+            }
+            else return rays[r];
+        }
 
-      // Helper functions
-      int setup_antipodal_rays ();
+        inline double weight (const size_t o, const size_t r) const
+        {
+            if (adaptive_ray_tracing)
+            {
+                if (r < half_nrays) {return wgt[order[o][r           ]];}
+                else                {return wgt[order[o][r-half_nrays]];}
+            }
+            else return weights[r];
+        }
 
 
-      static const string prefix;
+        Size1 antipod;   ///< ray number of antipodal ray
+
+
+        // Io
+        void read  (const Io &io, Parameters &parameters);
+        void write (const Io &io                        ) const;
+
+        void setup ();
+
+
+    private:
+
+        // Helper functions
+        void setup_antipodal_rays ();
+
+        static const string prefix;
 
 };
 

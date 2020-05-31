@@ -5,6 +5,7 @@ rm -rf Eigen
 rm -rf pybind11
 rm -rf Grid-SIMD
 rm -rf scorep
+rm -rf healpix
 
 # # Get Eigen
 # wget http://bitbucket.org/eigen/eigen/get/3.3.7.tar.gz
@@ -52,3 +53,12 @@ rm master.zip
 #mv scorep-5.0 scorep
 ## Remove zip file
 #rm scorep-5.0.tar.gz
+
+## Get HEALPix
+#wget https://sourceforge.net/projects/healpix/files/latest/download
+## Extract the whole directory
+#unzip download
+# Rename the directory
+#mv Healpix_* healpix
+## Remove zip file
+#rm download

@@ -25,17 +25,11 @@ void Rays :: read (const Io &io, Parameters &parameters)
 
     io.read_length (prefix+"rays", nrays);
 
-    if (nrays < 2) {cout << "Warning: nrays should be greater than one!!!" << endl;}
-
     parameters.set_nrays (nrays);
-
-    ncells = parameters.ncells ();
-
 
     rays.   resize (nrays);
     weights.resize (nrays);
     antipod.resize (nrays);
-
 
     // Read rays
     Double2 rays_array (nrays, Double1(3));
@@ -82,17 +76,9 @@ void Rays :: write (const Io &io) const
 ///  setup: setup data structure
 ////////////////////////////////
 
-int Rays ::
-    setup ()
+void Rays :: setup ()
 {
-
-  setup_antipodal_rays ();
-
-  //setup_image_axis ();
-
-
-  return (0);
-
+    setup_antipodal_rays ();
 }
 
 
@@ -101,53 +87,17 @@ int Rays ::
 ///  setup_antipodal_rays: identify which rays are each others antipodes
 ////////////////////////////////////////////////////////////////////////
 
-int Rays ::
-    setup_antipodal_rays ()
+void Rays :: setup_antipodal_rays ()
 {
+    // (!) HEALPix vectors are not perfectly antipodal, so a tolerance is given
+    const double tolerance = 1.0E-9;
 
-  // (!) HEALPix vectors are not perfectly antipodal, so a tolerance is given
-  const double tolerance = 1.0E-9;
-
-//  OMP_PARALLEL_FOR (p, ncells)
-//  {
     for (size_t r1 = 0; r1 < nrays; r1++)
     {
-      for (size_t r2 = 0; r2 < nrays; r2++)
-      {
-        if ( (rays[r1] + rays[r2]).squaredNorm() < tolerance)
+        for (size_t r2 = 0; r2 < nrays; r2++)
         {
-          antipod[r1] = r2;
+            if ((rays[r1] + rays[r2]).squaredNorm() < tolerance) {antipod[r1] = r2;}
         }
-      }
     }
-//  }
-
-  return (0);
 
 }
-
-
-
-
-// int Rays ::
-//     setup_mirror_rays ()
-// {
-//
-//   // Find mirror rays about xz-plane
-//
-//   for (long r1 = 0; r1 < Nrays; r1++)
-//   {
-//     for (long r2 = 0; r2 < Nrays; r2++)
-//     {
-//       if (    (fabs(x[r1]-x[r2]) < tolerance)
-//            && (fabs(y[r1]+y[r2]) < tolerance)
-//            && (fabs(z[r1]-z[r2]) < tolerance) )
-//       {
-//         mirror_xz[r1] = r2;
-//       }
-//     }
-//   }
-//
-//   return (0);
-//
-// }

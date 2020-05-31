@@ -200,10 +200,10 @@ def process_amrvac_input(config):
         array = cellData.GetArray(i)
         if (array.GetName() == 'rho'):
             rho = vtk_to_numpy(array)
-        if (array.GetName() == 'CO'):
-            nCO = vtk_to_numpy(array)
-        if (array.GetName() == 'H2'):
-            nH2 = vtk_to_numpy(array)
+        # if (array.GetName() == 'CO'):
+        #     nCO = vtk_to_numpy(array)
+        # if (array.GetName() == 'H2'):
+        #     nH2 = vtk_to_numpy(array)
         if (array.GetName() == 'temperature'):
             tmp = vtk_to_numpy(array)
         if (array.GetName() == 'v1'):
@@ -214,8 +214,12 @@ def process_amrvac_input(config):
             v_z = vtk_to_numpy(array)
 
     # Convert to number densities [#/m^3]
-    nH2 = rho * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
-    nCO = rho * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+    # nH2 = rho * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
+    # nCO = rho * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+
+    nH2 = rho * 1.0e+6 * constants.N_A.si.value / 2.02
+    nCO = nH2 * 1.0e-4
+
 
     # Convert to fractions of the speed of light
     velocity = 1.0e-2 / constants.c.si.value * np.array((v_x, v_y, v_z)).transpose()
@@ -345,8 +349,8 @@ def process_phantom_input(config):
     energy_constant   = 8.8712277e+12
 
 
-    print("Warning this assumes a constant H2 mass fraction of 1.6e-10 as per Frederik's guess.")
-    print("Warning this assumes a constant CO mass fraction of 7.8e-12 as per Frederik's guess.")
+    print("Warning this assumes a constant H2 mass fraction of 1 as per Frederik's guess.")
+    print("Warning this assumes a constant CO number fraction of 7.8e-12 as per Frederik's guess.")
     print("(Based on the average of a model of Ward.)")
     nH2 = 1.6e-10
     nCO = 7.8e-12
@@ -414,8 +418,11 @@ def process_phantom_input(config):
     boundary = [i[0] for i in np.argwhere(p_nms >= np.min(b_nms))]
 
     # Convert to number densities [#/m^3]
-    nH2 = density * density_constant * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
-    nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+    # nH2 = density * density_constant * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
+    # nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+
+    nH2 = density * density_constant * 1.0e+6 * constants.N_A.si.value / 2.02
+    nCO = nH2 * 1.0e-4
 
     tmp = mu * (gamma-1.0) * u * energy_constant * 1.00784 * (units.erg/units.g * constants.u/constants.k_B).to(units.K).value
     tmp[tmp < 2.725] = 2.725
