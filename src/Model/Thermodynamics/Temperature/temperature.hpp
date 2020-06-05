@@ -15,12 +15,11 @@
 
 struct Temperature
 {
-
   public:
 
       Double1 gas;        ///< [K] gas temperature
-      //Double1 dust;       ///< [K] dust temparature
-      //Double1 gas_prev;   ///< [K] gas temperature in previous iteration
+//      Double1 dust;       ///< [K] dust temparature
+//      Double1 gas_prev;   ///< [K] gas temperature in previous iteration
 
 
       // Io
@@ -33,7 +32,6 @@ struct Temperature
       size_t ncells;
 
       static const string prefix;
-
 
 };
 

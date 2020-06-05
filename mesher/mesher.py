@@ -20,8 +20,6 @@ def relocate_indices(arr, p):
     return arr
 
 
-
-
 class Mesh:
 
     def __init__(self, meshFile):
@@ -118,8 +116,6 @@ class Mesh:
         return boundary
 
 
-
-
 def run(command):
     """
     Run command in shell and continuously print its output.
@@ -136,8 +132,6 @@ def run(command):
             break
         else:
             print(line.decode("utf-8"))
-
-
 
 
 def convert_msh_to_pos(meshName, replace: bool = False):
@@ -163,8 +157,6 @@ def convert_msh_to_pos(meshName, replace: bool = False):
         os.remove(f"{meshName}.msh")
 
 
-
-
 def boundary_cuboid (minVec, maxVec):
     """
     Create the gmsh script for a cuboid element.
@@ -186,13 +178,11 @@ def boundary_cuboid (minVec, maxVec):
                Z_MAX = maxVec[2] )
 
 
-
-
 def boundary_sphere (centre=np.zeros(3), radius=1.0):
     """
-    Create the gmsh script for a cuboid element.
-    :param minVec: lower cuboid vector.
-    :param maxVec: upper cuboid vector.
+    Create the gmsh script for a sphere element.
+    :param centre: centre of the sphere.
+    :param radius: radius of the sphere.
     :return: gmsh script string.
     """
     # Get the path to this folder
@@ -207,14 +197,14 @@ def boundary_sphere (centre=np.zeros(3), radius=1.0):
                RADIUS = radius    )
 
 
-
-
 def boundary_sphere_in_sphere (centre_in =np.zeros(3), radius_in =1.0,
                                centre_out=np.zeros(3), radius_out=1.0 ):
     """
     Create the gmsh script for a cuboid element.
-    :param minVec: lower cuboid vector.
-    :param maxVec: upper cuboid vector.
+    :param centre_in  : centre of the inner sphere.
+    :param radius_in  : radius of the inner sphere.
+    :param centre_out : centre of the outer sphere.
+    :param radius_out : radius of the outer sphere.
     :return: gmsh script string.
     """
     # Get the path to this folder
@@ -232,6 +222,31 @@ def boundary_sphere_in_sphere (centre_in =np.zeros(3), radius_in =1.0,
                RADIUS_OUT = radius_out    )
 
 
+def boundary_sphere_in_cuboid (centre_in=np.zeros(3), radius_in=1.0,
+                               minVec   =np.zeros(3), maxVec   =np.ones(3)):
+    """
+    Create the gmsh script for a cuboid element.
+    :param centre_in : centre of the inner sphere.
+    :param radius_in : radius of the inner sphere.
+    :param minVec    : lower cuboid vector.
+    :param maxVec    : upper cuboid vector.
+    :return: gmsh script string.
+    """
+    # Get the path to this folder
+    thisFolder = os.path.dirname(os.path.abspath(__file__))
+    with open(f'{thisFolder}/templates/sphere_in_cuboid.template', 'r') as file:
+        sphere = Template(file.read())
+    return sphere.substitute(
+        CX_IN      = centre_in[0],
+        CY_IN      = centre_in[1],
+        CZ_IN      = centre_in[2],
+        RADIUS_IN  = radius_in,
+        X_MIN      = minVec[0],
+        X_MAX      = maxVec[0],
+        Y_MIN      = minVec[1],
+        Y_MAX      = maxVec[1],
+        Z_MIN      = minVec[2],
+        Z_MAX      = maxVec[2]   )
 
 
 def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
@@ -255,8 +270,6 @@ def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
     os.remove(meshing_script)
 
 
-
-
 def create_mesh_from_function(meshName, boundary, scale_min, scale_max, scale_function):
     # create the mesh generating gmsh script file
     meshing_script = f'{meshName}.geo'
@@ -275,7 +288,6 @@ def create_mesh_from_function(meshName, boundary, scale_min, scale_max, scale_fu
     run(f'gmsh {meshing_script} -3 -saveall -o {resulting_mesh}')
     # Remove the script file
     # os.remove(meshing_script)
-
 
 
 def generate_background_from_1D_data(meshName, R, data):
@@ -297,5 +309,3 @@ def generate_background_from_1D_data(meshName, R, data):
         points     =             delaunay.points,
         cells      = {'tetra'  : delaunay.simplices},
         point_data = {'weights': np.array(data_s)}   )
-
-

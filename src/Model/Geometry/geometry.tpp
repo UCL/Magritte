@@ -5,11 +5,17 @@
 
 
 #include <limits>
+#include <random>
+#include <numeric>
+#include <iomanip>
 #include <Eigen/Geometry>
 
 #include "Tools/logger.hpp"
 #include "Tools/constants.hpp"
-#include <iomanip>
+#include "Tools/Parallel/wrap_omp.hpp"
+#include "Functions/sort.hpp"
+
+#include "healpix.hpp"
 
 
 template <Frame frame>
@@ -252,8 +258,8 @@ inline long Geometry :: get_next_spherical_symmetry (
     // Pick neighbor on "right side" closest to ray
     long next;
 
-    const double Rsin = cells.position[origin].cross(rays.rays[ray]).z();
-    const double Rcos = cells.position[origin].dot  (rays.rays[ray]);
+    const double Rsin = cells.position[origin].cross(rays.ray(origin, ray)).z();
+    const double Rcos = cells.position[origin].dot  (rays.ray(origin, ray));
 
 //    if (Rcos == 0)
 //    {
@@ -342,7 +348,7 @@ inline long Geometry ::
   {
     const Vector3d R = cells.position[neighbor] - cells.position[origin];
 
-    const double Z_new = R.dot(rays.rays[ray]);
+    const double Z_new = R.dot(rays.ray(origin, ray));
 
     ///////////////////////
     //if (Z_new > Z_new_max)
@@ -436,7 +442,7 @@ inline double Geometry ::
 
   if (frame == CoMoving)
   {
-    return 1.0 - (cells.velocity[current]-cells.velocity[origin]).dot(rays.rays[ray]);
+    return 1.0 - (cells.velocity[current]-cells.velocity[origin]).dot(rays.ray(origin, ray));
   }
 
   // Rest frame implementation
@@ -453,7 +459,7 @@ inline double Geometry ::
       ray_correct = rays.antipod[ray];
     }
 
-    return 1.0 - cells.velocity[current].dot(rays.rays[ray_correct]);
+    return 1.0 - cells.velocity[current].dot(rays.ray(origin, ray_correct));
   }
 
 }
@@ -537,5 +543,158 @@ inline size_t Geometry :: get_npoints_on_ray (
 }
 
 
+///  set_adaptive_rays: generates a set of rays for each cell distributed following
+///  the directions of the other cells w.r.t. the current cell using HEALPix.
+///    @param[in] order_min   : lowest  refinement order (npix_min = 12*4^order_min)
+///    @param[in] order_max   : highest refinement order (npix_max = 12*4^order_max)
+///    @param[in] sample_size : size of the sample of "other points" to use.
+////////////////////////////////////////////////////////////////////////////////////
 
+inline int Geometry :: set_adaptive_rays (
+    const size_t order_min,
+    const size_t order_max,
+    const size_t sample_size             )
+{
+    // Set adaptive ray-tracing
+    rays.adaptive_ray_tracing = true;
 
+    // Get largest size_t value
+    const size_t max = std::numeric_limits<size_t>::max();
+
+    // Set local parameters
+    const size_t nside_max     = pow(2, order_max);
+    const size_t npix_max      = 12 * pow(nside_max, 2);
+    const size_t half_npix_max = npix_max / 2;
+    const size_t norder        = order_max - order_min + 1;
+
+    // Create a random number generator to sample the cells
+    std::default_random_engine             generator;
+    std::uniform_int_distribution <size_t> distribution (0, cells.position.size()-1);
+    auto random_index = std::bind (distribution, generator);
+    Size1 random_indices (sample_size);
+
+    // Identify the antipodal pairs for HEALPix pixels at order max
+    Size1 antipode (npix_max);
+
+    // (!) HEALPix vectors are not perfectly antipodal, so a tolerance is given
+    const double tolerance = 1.0E-9;
+
+    for (size_t n = 0; n < half_npix_max; n++)
+    {
+        const Vector3d vec_n = pix2vec_nest (nside_max, n);
+
+        for (size_t m = half_npix_max; m < npix_max; m++)
+        {
+            const Vector3d vec_m = pix2vec_nest (nside_max, m);
+
+            if ((vec_n + vec_m).squaredNorm() < tolerance) {antipode[n] = m; antipode[m] = n; break;}
+        }
+    }
+
+    // Helper variables for the orders and the number of rays at each order
+    Size1 order (norder);
+    for (size_t i = 0; i < norder; i++) {order[i] = order_min + i;}
+    Size1 nrays (norder);
+    for (size_t i = 0; i < norder; i++) {nrays[i] = 6 * pow(2, order[i]);}
+
+    // Total number of rays assigned to each cell
+    rays.half_nrays = std::accumulate (nrays.begin(), nrays.end(), nrays.back());
+    rays.nrays      = 2 * rays.half_nrays;
+
+    // Store the directions and weights of the rays
+    rays.dir.resize (norder);
+    rays.wgt.resize (norder);
+
+    for (size_t i = 0; i < norder; i++)
+    {
+        const size_t nside = pow(2, order[i]);
+        const size_t npix  = 12 * pow(nside, 2);
+
+        rays.dir[i].resize (npix);
+        for (size_t k = 0; k < npix; k++) {rays.dir[i][k] = pix2vec_nest (nside, k);}
+
+        rays.wgt[i] = 1.0 / npix;
+    }
+
+    // Reserve memory for the ray data
+    rays.order.resize (cells.position.size());
+    for (auto &ord : rays.order) {ord.reserve (rays.half_nrays);}
+    rays.pixel.resize (cells.position.size());
+    for (auto &pix : rays.pixel) {pix.reserve (rays.half_nrays);}
+
+#   pragma omp parallel default (shared)
+    {
+        // Create and allocate memory for the distributions
+        Size2 distr (norder);
+        for (size_t i = 0; i < norder; i++) {distr[i].resize(6*pow(4, order[i]));}
+
+        OMP_FOR (o, cells.position.size())
+        {
+            // Index for the rays
+            size_t r = 0;
+
+            // Initialize the distributions
+            for (size_t &d : distr.back()) {d = 0;}
+
+            // Create a random sample of indices
+            for (size_t &id : random_indices) {id = random_index();}
+
+            // Collect the distribution of the points w.r.t. the origin, at order max
+            for (size_t &id : random_indices) if (id != o)
+            {
+                const long ipix = vec2pix_nest (nside_max, cells.position[id]-cells.position[o]);
+
+                if (ipix < half_npix_max) {distr.back()[         ipix ]++;}
+                else                      {distr.back()[antipode[ipix]]++;}
+            }
+
+            // Collect the distribution of the points w.r.t. the origin, at the other orders
+            for (size_t i = norder-1; i > 0; i--)
+            {
+               for (size_t k = 0; k < distr[i-1].size(); k++)
+               {
+                   distr[i-1][k] = distr[i][4*k] + distr[i][4*k+1] + distr[i][4*k+2] + distr[i][4*k+3];
+               }
+            }
+
+            // At each order, remove least populated pixels, collect their directions
+            for (size_t i = 0; i < norder-1; i++)
+            {
+                // Sort the indices and get the first half (these will not be refined)
+                Size1 sorted_indices = sort_indices<size_t> (distr[i]);
+                sorted_indices.resize(nrays[i]);
+
+                for (size_t k : sorted_indices)
+                {
+                    rays.order[o][r  ] = i;
+                    rays.pixel[o][r++] = k;
+
+                    for (size_t l = 0; l < 4; l++) {distr[i+1][4*k+l] = max;}
+                }
+
+                for (size_t k = 0; k < distr[i].size(); k++) if (distr[i][k] == max)
+                {
+                    for (size_t l = 0; l < 4; l++) {distr[i+1][4*k+l] = max;}
+                }
+            }
+
+            // Add the last set of rays that were never kicked out refinement
+            for (size_t k = 0; k < distr.back().size(); k++) if (distr.back()[k] != max)
+            {
+                rays.order[o][r  ] = norder-1;
+                rays.pixel[o][r++] = k;
+            }
+        }
+    }
+
+    // Set antipod as map to the antipodal rays
+    rays.antipod.resize (rays.nrays);
+
+    for (size_t r = 0; r < rays.half_nrays; r++)
+    {
+        rays.antipod[                  r] = rays.half_nrays + r;
+        rays.antipod[rays.half_nrays + r] = r;
+    }
+
+    return (0);
+}

@@ -110,7 +110,6 @@ int main (int argc, char **argv)
     {
         const size_t RR = rr - MPI_start(simulation.parameters.nrays() / 2);
         const size_t ar = simulation.geometry.rays.antipod[rr];
-        const double weight_ang = simulation.geometry.rays.weights[rr];
 
         RayQueue rayqueue(nraypairs);
 

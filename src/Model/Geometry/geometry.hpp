@@ -37,7 +37,8 @@ public:
     Rays     rays;
     Boundary boundary;
 
-    bool spherical_symmetry  = false;
+    bool spherical_symmetry   = false;
+    bool adaptive_ray_tracing = false;
     long max_npoints_on_rays = -1;
 
 
@@ -79,6 +80,11 @@ public:
         const long  origin,
         const long  r,
         const long  current         ) const;
+
+    inline int set_adaptive_rays (
+        const size_t order_min,
+        const size_t order_max,
+        const size_t sample_size );
 
 
 private:

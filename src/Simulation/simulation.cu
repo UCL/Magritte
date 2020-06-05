@@ -116,71 +116,71 @@ int Simulation :: gpu_get_device_properties (void)
 
 int Simulation :: cpu_compute_radiation_field (const double inverse_dtau_max)
 {
-    // Initialisations
-    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
-    {
-        lspec.lambda.clear ();
-    }
+//    // Initialisations
+//    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+//    {
+//        lspec.lambda.clear ();
+//    }
 
-    radiation.initialize_J ();
+//    radiation.initialize_J ();
 
-    /// Set maximum number of points along a ray, if not set yet
-    if (geometry.max_npoints_on_rays == -1)
-    {
-        get_max_npoints_on_rays <CoMoving> ();
-    }
+//    /// Set maximum number of points along a ray, if not set yet
+//    if (geometry.max_npoints_on_rays == -1)
+//    {
+//        get_max_npoints_on_rays <CoMoving> ();
+//    }
 
-    const long nraypairs = 1;
+//    const long nraypairs = 1;
 
-    /// Create a gpuRayPair object
-    RayBlock_v *rayblock = new RayBlock_v (parameters.ncells(),
-                                           parameters.nfreqs(),
-                                           parameters.nlines(),
-                                           nraypairs,
-                                           geometry.max_npoints_on_rays);
+//    /// Create a gpuRayPair object
+//    RayBlock_v *rayblock = new RayBlock_v (parameters.ncells(),
+//                                           parameters.nfreqs(),
+//                                           parameters.nlines(),
+//                                           nraypairs,
+//                                           geometry.max_npoints_on_rays);
 
-    /// Set inverse maximum optical depth increment
-    rayblock->inverse_dtau_max = inverse_dtau_max;
+//    /// Set inverse maximum optical depth increment
+//    rayblock->inverse_dtau_max = inverse_dtau_max;
 
-    /// Set model data
-    rayblock->copy_model_data (*this);
+//    /// Set model data
+//    rayblock->copy_model_data (*this);
 
 
-    for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
-    {
-        const size_t RR = rr - MPI_start (parameters.nrays()/2);
-        const size_t ar = geometry.rays.antipod[rr];
+//    for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
+//    {
+//        const size_t RR = rr - MPI_start (parameters.nrays()/2);
+//        const size_t ar = geometry.rays.antipod[rr];
 
-        logger.write ("ray = ", rr);
+//        logger.write ("ray = ", rr);
 
-        for (size_t o = 0; o < parameters.ncells(); o++)
-        {
-            const double dshift_max = get_dshift_max (o);
+//        for (size_t o = 0; o < parameters.ncells(); o++)
+//        {
+//            const double dshift_max = get_dshift_max (o);
 
-            // Trace ray pair
-            const RayData ray_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
-            const RayData ray_rr = geometry.trace_ray <CoMoving> (o, rr, dshift_max);
+//            // Trace ray pair
+//            const RayData ray_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+//            const RayData ray_rr = geometry.trace_ray <CoMoving> (o, rr, dshift_max);
 
-            const size_t depth = ray_ar.size() + ray_rr.size() + 1;
+//            const size_t depth = ray_ar.size() + ray_rr.size() + 1;
 
-            if (depth > 1)
-            {
-                const ProtoRayBlock_v prb (ray_ar, ray_rr, o);
+//            if (depth > 1)
+//            {
+//                const ProtoRayBlock_v prb (ray_ar, ray_rr, o);
 
-                rayblock->setup (*this, RR, rr, ProtoRayBlock_v (ray_ar, ray_rr, o));
-                rayblock->solve ();
-                rayblock->store (*this);
-            }
-            else
-            {
-                /// Extract radiation field from boundary
-                get_radiation_field_from_boundary (RR, rr, o);
-            }
-        }
-    }
+//                rayblock->setup (*this, RR, rr, ProtoRayBlock_v (ray_ar, ray_rr, o));
+//                rayblock->solve ();
+//                rayblock->store (*this);
+//            }
+//            else
+//            {
+//                /// Extract radiation field from boundary
+//                get_radiation_field_from_boundary (RR, rr, o);
+//            }
+//        }
+//    }
 
-    /// Delete ray block
-    delete rayblock;
+//    /// Delete ray block
+//    delete rayblock;
 
     return (0);
 }

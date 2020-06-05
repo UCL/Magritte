@@ -103,7 +103,6 @@ int main (int argc, char **argv)
     {
         const size_t RR = rr - MPI_start(simulation.parameters.nrays() / 2);
         const size_t ar = simulation.geometry.rays.antipod[rr];
-        const double weight_ang = simulation.geometry.rays.weights[rr];
 
         RayQueue rayqueue(nraypairs);
 
@@ -115,6 +114,7 @@ int main (int argc, char **argv)
         {
             timer1.start();
             const double dshift_max = simulation.get_dshift_max(o);
+            const double weight_ang = simulation.geometry.rays.weight(o, rr);
 
             // Trace ray pair
             const RayData raydata_ar = simulation.geometry.trace_ray<CoMoving>(o, ar, dshift_max);

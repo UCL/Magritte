@@ -17,11 +17,27 @@ void Geometry :: read (const Io &io, Parameters &parameters)
 {
     cout << "Reading geometry..." << endl;
 
-    spherical_symmetry = parameters.spherical_symmetry();
+    spherical_symmetry   = parameters.spherical_symmetry  ();
+    adaptive_ray_tracing = parameters.adaptive_ray_tracing();
 
-    cells   .read (io, parameters);
-    rays    .read (io, parameters);
-    boundary.read (io, parameters);
+    cells   .read(io, parameters);
+    boundary.read(io, parameters);
+
+    if (parameters.adaptive_ray_tracing())
+    {
+        cout << "Setting adaptive rays..." << endl;
+
+        size_t sample_size = 10000;
+        if (sample_size > parameters.ncells()) sample_size = parameters.ncells()/2;
+
+        set_adaptive_rays(parameters.order_min(), parameters.order_max(), sample_size);
+
+        parameters.set_nrays(rays.nrays);
+    }
+    else
+    {
+        rays.read(io, parameters);
+    }
 
     nrays = parameters.nrays();
 }

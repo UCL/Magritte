@@ -121,12 +121,14 @@ def write_array (io_file, file_name, data):
     Write the contents to the data array.
     """
     with hp.File (io_file) as file:
+        # print ('Writing array to HDF5 file...')
         # print (io_file, file_name)
         # Delete if dataset already exists
         try:
             # print("deleting ", file_name)
             del file[file_name]
         except:
+            # print("Nothing to delete")
             pass
         # Make sure all groups exists, if not create them
         # NOTE: ASSUMES THAT DATA IS WRITTEN TO A DATASET
@@ -137,6 +139,7 @@ def write_array (io_file, file_name, data):
             # print("required ", group)
         # Write dataset
         try:
+            # print('Creating dataset...')
             file.create_dataset (name=file_name, data=data)
         except:
             print ("failed to write ", file_name)

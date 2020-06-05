@@ -67,18 +67,18 @@ void Radiation :: read (const Io &io, Parameters &parameters)
   if (use_scattering)
   {
     u.resize (nrays_red);
-    v.resize (nrays_red);
+//    v.resize (nrays_red);
 
-    U.resize (nrays_red);
-    V.resize (nrays_red);
+//    U.resize (nrays_red);
+//    V.resize (nrays_red);
 
     for (long r = 0; r < nrays_red; r++)
     {
       u[r].resize (ncells*nfreqs_red);
-      v[r].resize (ncells*nfreqs_red);
+//      v[r].resize (ncells*nfreqs_red);
 
-      U[r].resize (ncells*nfreqs_red);
-      V[r].resize (ncells*nfreqs_red);
+//      U[r].resize (ncells*nfreqs_red);
+//      V[r].resize (ncells*nfreqs_red);
     }
   }
 
@@ -98,34 +98,41 @@ void Radiation :: write (const Io &io) const
     frequencies.write (io);
 
 
-    Double2 JJ (ncells, Double1 (nfreqs));
+//    Double2 JJ (ncells, Double1 (nfreqs));
+//
+//    OMP_PARALLEL_FOR (p, ncells)
+//    {
+//        for (size_t f = 0; f < nfreqs; f++)
+//        {
+//            JJ[p][f] = get_J (p,f);
+//        }
+//    }
+//
+//    io.write_array (prefix+"J", JJ);
 
-    OMP_PARALLEL_FOR (p, ncells)
-    {
-        for (size_t f = 0; f < nfreqs; f++)
-        {
-            JJ[p][f] = get_J (p,f);
-        }
-    }
-
-    io.write_array (prefix+"J", JJ);
+//    io.write_list (prefix+"J", J);
 
 
-    Double2 uu (nrays_red, Double1 (ncells*nfreqs));
+//    Double2 uu (nrays_red, Double1 (ncells*nfreqs));
+//
+//    for (size_t R = 0; R < nrays_red; R++)
+//    {
+//        OMP_PARALLEL_FOR (p, ncells)
+//        {
+//            for (size_t f = 0; f < nfreqs; f++)
+//            {
+//                uu[R][index(p,f)] = get_u (R,p,f);
+//            }
+//        }
+//    }
+//
+//    io.write_array (prefix+"u", uu);
 
-    for (size_t R = 0; R < nrays_red; R++)
-    {
-        OMP_PARALLEL_FOR (p, ncells)
-        {
-            for (size_t f = 0; f < nfreqs; f++)
-            {
-                uu[R][index(p,f)] = get_u (R,p,f);
-            }
-        }
-    }
+    cout << "Writing u's..." << endl;
 
-    io.write_array (prefix+"u", uu);
+    io.write_array (prefix+"u", (Double2) u);
 
+    cout << "u's written..." << endl;
 
 
 //    Double2 I_bdy_buffer (I_bdy.size(), Double1 (I_bdy[0].size()*I_bdy[0][0].size()));

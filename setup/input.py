@@ -189,9 +189,15 @@ def process_amrvac_input(config):
 
     grid = reader.GetOutput()
 
-    print("Extracting point data...")
-    points = [grid.GetPoint(p) for p in tqdm(range(grid.GetNumberOfPoints()), file=sys.stdout)]
-    points = np.array(points)
+    # print("Extracting point data...")
+    # points = [grid.GetPoint(p) for p in tqdm(range(grid.GetNumberOfPoints()), file=sys.stdout)]
+    # points = np.array(points)
+
+    # Convert [cm] to [m]
+    # points *= 1.0e-2
+
+    # r_max = np.max(np.linalg.norm(points, axis=1)) / constants.au.si.value
+    # print('r_max =', r_max, 'AU. Does that look right?')
 
     print("Extracting cell data...")
     cellData = grid.GetCellData()
@@ -200,10 +206,10 @@ def process_amrvac_input(config):
         array = cellData.GetArray(i)
         if (array.GetName() == 'rho'):
             rho = vtk_to_numpy(array)
-        if (array.GetName() == 'CO'):
-            nCO = vtk_to_numpy(array)
-        if (array.GetName() == 'H2'):
-            nH2 = vtk_to_numpy(array)
+        # if (array.GetName() == 'CO'):
+        #     nCO = vtk_to_numpy(array)
+        # if (array.GetName() == 'H2'):
+        #     nH2 = vtk_to_numpy(array)
         if (array.GetName() == 'temperature'):
             tmp = vtk_to_numpy(array)
         if (array.GetName() == 'v1'):
@@ -214,11 +220,15 @@ def process_amrvac_input(config):
             v_z = vtk_to_numpy(array)
 
     # Convert to number densities [#/m^3]
-    nH2 = rho * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
-    nCO = rho * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+    # nH2 = rho * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
+    # nCO = rho * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+
+    nH2 = rho * 1.0e+6 * constants.N_A.si.value / 2.02
+    nCO = nH2 * 1.0e-4
+
 
     # Convert to fractions of the speed of light
-    velocity = 1.0e-2 / constants.c.si.value * np.array((v_x, v_y, v_z)).transpose()
+    velocity = np.array((v_x, v_y, v_z)).transpose() / constants.c.cgs.value
 
     trb = (150.0/constants.c.si.value)**2 * np.ones(grid.GetNumberOfCells())
 
@@ -258,6 +268,11 @@ def process_amrvac_input(config):
     # tetras_v_y = np.array(tetras_v_y)
     # tetras_v_z = np.array(tetras_v_z)
     centres    = np.array(centres)
+
+    centres    *= 1.0e-2   # convert [cm] to [m]
+
+    r_max = np.max(np.linalg.norm(centres, axis=1)) / constants.au.si.value
+    print('r_max =', r_max, 'AU. Does that look right?')
 
     print("Warning: we assume that the geometry to be a cube centred around the origin.")
     print("Warning: we assume that there is (at least) one face of the cube that has not been refined (or that is completely covered by the coarsest elements that can be found on the boundary.).")
@@ -345,8 +360,8 @@ def process_phantom_input(config):
     energy_constant   = 8.8712277e+12
 
 
-    print("Warning this assumes a constant H2 mass fraction of 1.6e-10 as per Frederik's guess.")
-    print("Warning this assumes a constant CO mass fraction of 7.8e-12 as per Frederik's guess.")
+    print("Warning this assumes a constant H2 mass fraction of 1 as per Frederik's guess.")
+    print("Warning this assumes a constant CO number fraction of 7.8e-12 as per Frederik's guess.")
     print("(Based on the average of a model of Ward.)")
     nH2 = 1.6e-10
     nCO = 7.8e-12
@@ -375,7 +390,7 @@ def process_phantom_input(config):
     position = np.array((x,  y,  z  )).transpose()
     position = position * constants.au.si.value
     velocity = np.array((v_x,v_y,v_z)).transpose()
-    velocity = velocity * (1.0e-2 * velocity_constant / constants.c.si.value)
+    velocity = velocity * (velocity_constant / constants.c.cgs.value)
 
     delaunay = Delaunay(position)
 
@@ -414,8 +429,11 @@ def process_phantom_input(config):
     boundary = [i[0] for i in np.argwhere(p_nms >= np.min(b_nms))]
 
     # Convert to number densities [#/m^3]
-    nH2 = density * density_constant * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
-    nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+    # nH2 = density * density_constant * nH2 * 1.0e+6 * constants.N_A.si.value /  2.02
+    # nCO = density * density_constant * nCO * 1.0e+6 * constants.N_A.si.value / 28.01
+
+    nH2 = density * density_constant * 1.0e+6 * constants.N_A.si.value / 2.02
+    nCO = nH2 * 1.0e-4
 
     tmp = mu * (gamma-1.0) * u * energy_constant * 1.00784 * (units.erg/units.g * constants.u/constants.k_B).to(units.K).value
     tmp[tmp < 2.725] = 2.725

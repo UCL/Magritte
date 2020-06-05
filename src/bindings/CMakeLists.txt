@@ -56,6 +56,8 @@ if    (GPU_ACCELERATION)
     ../Simulation/Image/image.cpp)
   # Set library properties
   set_target_properties (magritte PROPERTIES PREFIX "")
+  # Link Python libraries
+  #target_link_libraries (magritte ${PYTHON_LIBRARIES})
 
 else  (GPU_ACCELERATION)
 
@@ -77,7 +79,7 @@ else  (GPU_ACCELERATION)
   configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
                   ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
   # pybind11 command to create the python module in bin directory
-  add_library (magritte SHARED
+  pybind11_add_module (magritte SHARED
     pyBindings.cpp
     ../Io/cpp/io_cpp_text.cpp
     ../Io/python/io_python.cpp
@@ -103,7 +105,7 @@ else  (GPU_ACCELERATION)
     ../Simulation/simulation.cpp
     ../Simulation/Raypair/raypair.cpp
     ../Simulation/Rayblock/rayBlock_v.cpp
-#    ../Simulation/Raypair/rayblock.cpp
+    #    ../Simulation/Raypair/rayblock.cpp
     ../Simulation/Image/image.cpp)
   # Link GRID_SIMD libraries if required
   if    (GRID_SIMD)
@@ -114,6 +116,4 @@ else  (GPU_ACCELERATION)
 
 endif (GPU_ACCELERATION)
 
-# Link Python libraries
-target_link_libraries (magritte ${PYTHON_LIBRARIES})
 

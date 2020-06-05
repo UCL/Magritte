@@ -79,48 +79,55 @@ PYBIND11_MODULE (magritte, module)
         .def_readwrite ("n_off_diag",         &Parameters::n_off_diag)
         .def_readwrite ("max_width_fraction", &Parameters::max_width_fraction)
         // setters
-        .def ("set_ncells",                   &Parameters::set_ncells            )
-        .def ("set_nrays",                    &Parameters::set_nrays             )
-        .def ("set_nrays",                    &Parameters::set_nrays_red         )
-        .def ("set_nboundary",                &Parameters::set_nboundary         )
-        .def ("set_nfreqs",                   &Parameters::set_nfreqs            )
-        .def ("set_nfreqs_red",               &Parameters::set_nfreqs_red        )
-        .def ("set_nspecs",                   &Parameters::set_nspecs            )
-        .def ("set_nlspecs",                  &Parameters::set_nlspecs           )
-        .def ("set_nlines",                   &Parameters::set_nlines            )
-        .def ("set_nquads",                   &Parameters::set_nquads            )
-        .def ("set_pop_prec",                 &Parameters::set_pop_prec          )
-        .def ("set_use_scattering",           &Parameters::set_use_scattering    )
-        .def ("set_spherical_symmetry",       &Parameters::set_spherical_symmetry)
+        .def ("set_ncells",                   &Parameters::set_ncells              )
+        .def ("set_nrays",                    &Parameters::set_nrays               )
+        .def ("set_nrays_red",                &Parameters::set_nrays_red           )
+        .def ("set_order_min",                &Parameters::set_order_min           )
+        .def ("set_order_max",                &Parameters::set_order_max           )
+        .def ("set_nboundary",                &Parameters::set_nboundary           )
+        .def ("set_nfreqs",                   &Parameters::set_nfreqs              )
+        .def ("set_nfreqs_red",               &Parameters::set_nfreqs_red          )
+        .def ("set_nspecs",                   &Parameters::set_nspecs              )
+        .def ("set_nlspecs",                  &Parameters::set_nlspecs             )
+        .def ("set_nlines",                   &Parameters::set_nlines              )
+        .def ("set_nquads",                   &Parameters::set_nquads              )
+        .def ("set_pop_prec",                 &Parameters::set_pop_prec            )
+        .def ("set_use_scattering",           &Parameters::set_use_scattering      )
+        .def ("set_spherical_symmetry",       &Parameters::set_spherical_symmetry  )
+        .def ("set_adaptive_ray_tracing",     &Parameters::set_adaptive_ray_tracing)
         // getters
-        .def ("ncells",                       &Parameters::ncells            )
-        .def ("nrays",                        &Parameters::nrays             )
-        .def ("nrays_red",                    &Parameters::nrays_red         )
-        .def ("nboundary",                    &Parameters::nboundary         )
-        .def ("nfreqs",                       &Parameters::nfreqs            )
-        .def ("nfreqs_red",                   &Parameters::nfreqs_red        )
-        .def ("nspecs",                       &Parameters::nspecs            )
-        .def ("nlspecs",                      &Parameters::nlspecs           )
-        .def ("nlines",                       &Parameters::nlines            )
-        .def ("nquads",                       &Parameters::nquads            )
-        .def ("pop_prec",                     &Parameters::pop_prec          )
-        .def ("use_scattering",               &Parameters::use_scattering    )
-        .def ("spherical_symmetry",           &Parameters::spherical_symmetry)
+        .def ("ncells",                       &Parameters::ncells              )
+        .def ("nrays",                        &Parameters::nrays               )
+        .def ("nrays_red",                    &Parameters::nrays_red           )
+        .def ("order_min",                    &Parameters::order_min           )
+        .def ("order_max",                    &Parameters::order_max           )
+        .def ("nboundary",                    &Parameters::nboundary           )
+        .def ("nfreqs",                       &Parameters::nfreqs              )
+        .def ("nfreqs_red",                   &Parameters::nfreqs_red          )
+        .def ("nspecs",                       &Parameters::nspecs              )
+        .def ("nlspecs",                      &Parameters::nlspecs             )
+        .def ("nlines",                       &Parameters::nlines              )
+        .def ("nquads",                       &Parameters::nquads              )
+        .def ("pop_prec",                     &Parameters::pop_prec            )
+        .def ("use_scattering",               &Parameters::use_scattering      )
+        .def ("spherical_symmetry",           &Parameters::spherical_symmetry  )
+        .def ("adaptive_ray_tracing",         &Parameters::adaptive_ray_tracing)
         // functions
-        .def ("read",                         &Parameters::read      )
-        .def ("write",                        &Parameters::write     );
+        .def ("read",                         &Parameters::read                )
+        .def ("write",                        &Parameters::write               );
 
 
 
     // Geometry
     py::class_<Geometry> (module, "Geometry")
         // attributes
-        .def_readwrite ("cells",              &Geometry::cells)
-        .def_readwrite ("rays",               &Geometry::rays)
-        .def_readwrite ("boundary",           &Geometry::boundary)
+        .def_readwrite ("cells",    &Geometry::cells)
+        .def_readwrite ("rays",     &Geometry::rays)
+        .def_readwrite ("boundary", &Geometry::boundary)
         // constructor
         .def (py::init())
         // functions
+        .def ("set_adaptive_rays",  &Geometry::set_adaptive_rays)
         .def ("read",               &Geometry::read)
         .def ("write",              &Geometry::write);
 
@@ -142,14 +149,22 @@ PYBIND11_MODULE (magritte, module)
     // Rays
     py::class_<Rays> (module, "Rays")
         // attributes
-        .def_readwrite ("rays",    &Rays::rays)
-        .def_readwrite ("weights", &Rays::weights)
-        .def_readwrite ("antipod", &Rays::antipod)
+        .def_readwrite ("rays",       &Rays::rays)
+        .def_readwrite ("weights",    &Rays::weights)
+        .def_readwrite ("antipod",    &Rays::antipod)
+        .def_readwrite ("nrays",      &Rays::nrays)
+        .def_readwrite ("half_nrays", &Rays::half_nrays)
+        .def_readwrite ("dir",        &Rays::dir)
+        .def_readwrite ("wgt",        &Rays::wgt)
         // constructor
         .def (py::init())
         // functions
-        .def ("read",              &Rays::read)
-        .def ("write",             &Rays::write);
+        .def ("ray",                  &Rays::ray)
+        .def ("weight",               &Rays::weight)
+        .def ("get_order",            &Rays::get_order)
+        .def ("get_pixel",            &Rays::get_pixel)
+        .def ("read",                 &Rays::read)
+        .def ("write",                &Rays::write);
 
 
     // Boundary
@@ -378,7 +393,7 @@ PYBIND11_MODULE (magritte, module)
 #       if (GPU_ACCELERATION)
         .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)
 //        .def ("gpu_compute_radiation_field",           &Simulation::gpu_compute_radiation_field)
-        .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
+//        .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
 #       endif
 //        .def ("cpu_compute_radiation_field_2",         &Simulation::cpu_compute_radiation_field_2)
 //        .def ("cpu_compute_radiation_field",           &Simulation::cpu_compute_radiation_field)

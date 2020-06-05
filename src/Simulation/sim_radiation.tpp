@@ -148,7 +148,7 @@ int Simulation:: compute_radiation_field()
             for (long o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
             {
                 const long ar           = geometry.rays.antipod[r];
-                const double weight_ang = geometry.rays.weights[r];
+                const double weight_ang = geometry.rays.weight(o, r);
                 const double dshift_max = get_dshift_max(o);
 
 
@@ -228,12 +228,12 @@ int Simulation:: compute_radiation_field()
                             if (rayData_r.size() > rayData_ar.size())
                             {
                                 radiation.u[R][ind] = +u;
-                                radiation.v[R][ind] = -v;
+//                                radiation.v[R][ind] = -v;
                             }
                             else
                             {
                                 radiation.u[R][ind] = u;
-                                radiation.v[R][ind] = v;
+//                                radiation.v[R][ind] = v;
                             }
                         }
 
@@ -258,7 +258,7 @@ int Simulation:: compute_radiation_field()
                         if (parameters.use_scattering())
                         {
                             radiation.u[R][ind] = u;
-                            radiation.v[R][ind] = v;
+//                            radiation.v[R][ind] = v;
                         }
                     }
                 }
@@ -302,7 +302,7 @@ int Simulation:: compute_radiation_field()
 
     if (parameters.use_scattering())
     {
-        radiation.calc_U_and_V();
+//        radiation.calc_U_and_V();
     }
 
     // Stop timer and print results

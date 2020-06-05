@@ -291,10 +291,10 @@ void RayBlock_v :: solve ()
 
 void RayBlock_v :: store (Model &model) const
 {
-    const double weight_ang = 2.0 * model.geometry.rays.weights[rr];
-
     for (Size rp = 0; rp < nraypairs; rp++)
     {
+        const double weight_ang = 2.0 * model.geometry.rays.weight(origins[rp], rr);
+
         const Size i0 = model.radiation.index(origins[rp], 0);
         const Size j0 = I(n1[rp], V(rp, 0));
 
