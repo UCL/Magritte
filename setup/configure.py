@@ -100,10 +100,12 @@ def configure_simulation(config) -> Simulation():
     simulation.geometry.boundary.boundary2cell_nr = np.load(dataName+'boundary.npy')
     # Set rays
     if   (config['ray mode'] == 'single'):
+        simulation.parameters.set_adaptive_ray_tracing(False)
         simulation.parameters.set_nrays    (2)
         simulation.geometry.rays.rays    = [np.array(config['ray']), -np.array(config['ray'])]
         simulation.geometry.rays.weights = [0.5, 0.5]
     elif (config['ray mode'] == 'uniform'):
+        simulation.parameters.set_adaptive_ray_tracing(False)
         simulation.parameters.set_nrays (config['nrays'])
         if (config['input type'] == 'spherically symmetric'):
             simulation.geometry.rays = setup_rays_spherical_symmetry(nextra=config['nrays']//2-1)

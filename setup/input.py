@@ -189,9 +189,15 @@ def process_amrvac_input(config):
 
     grid = reader.GetOutput()
 
-    print("Extracting point data...")
-    points = [grid.GetPoint(p) for p in tqdm(range(grid.GetNumberOfPoints()), file=sys.stdout)]
-    points = np.array(points)
+    # print("Extracting point data...")
+    # points = [grid.GetPoint(p) for p in tqdm(range(grid.GetNumberOfPoints()), file=sys.stdout)]
+    # points = np.array(points)
+
+    # Convert [cm] to [m]
+    # points *= 1.0e-2
+
+    # r_max = np.max(np.linalg.norm(points, axis=1)) / constants.au.si.value
+    # print('r_max =', r_max, 'AU. Does that look right?')
 
     print("Extracting cell data...")
     cellData = grid.GetCellData()
@@ -222,7 +228,7 @@ def process_amrvac_input(config):
 
 
     # Convert to fractions of the speed of light
-    velocity = 1.0e-2 / constants.c.si.value * np.array((v_x, v_y, v_z)).transpose()
+    velocity = np.array((v_x, v_y, v_z)).transpose() / constants.c.cgs.value
 
     trb = (150.0/constants.c.si.value)**2 * np.ones(grid.GetNumberOfCells())
 
@@ -262,6 +268,11 @@ def process_amrvac_input(config):
     # tetras_v_y = np.array(tetras_v_y)
     # tetras_v_z = np.array(tetras_v_z)
     centres    = np.array(centres)
+
+    centres    *= 1.0e-2   # convert [cm] to [m]
+
+    r_max = np.max(np.linalg.norm(centres, axis=1)) / constants.au.si.value
+    print('r_max =', r_max, 'AU. Does that look right?')
 
     print("Warning: we assume that the geometry to be a cube centred around the origin.")
     print("Warning: we assume that there is (at least) one face of the cube that has not been refined (or that is completely covered by the coarsest elements that can be found on the boundary.).")
@@ -379,7 +390,7 @@ def process_phantom_input(config):
     position = np.array((x,  y,  z  )).transpose()
     position = position * constants.au.si.value
     velocity = np.array((v_x,v_y,v_z)).transpose()
-    velocity = velocity * (1.0e-2 * velocity_constant / constants.c.si.value)
+    velocity = velocity * (velocity_constant / constants.c.cgs.value)
 
     delaunay = Delaunay(position)
 

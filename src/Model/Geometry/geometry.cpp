@@ -27,7 +27,10 @@ void Geometry :: read (const Io &io, Parameters &parameters)
     {
         cout << "Setting adaptive rays..." << endl;
 
-        set_adaptive_rays(parameters.order_min(), parameters.order_max(), 10000);
+        size_t sample_size = 10000;
+        if (sample_size > parameters.ncells()) sample_size = parameters.ncells()/2;
+
+        set_adaptive_rays(parameters.order_min(), parameters.order_max(), sample_size);
 
         parameters.set_nrays(rays.nrays);
     }

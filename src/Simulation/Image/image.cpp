@@ -89,9 +89,9 @@ void Image :: write (const Io &io) const
 
 void Image :: set_coordinates (const Geometry &geometry)
 {
-    const double rx = geometry.rays.rays[ray_nr].x();
-    const double ry = geometry.rays.rays[ray_nr].y();
-    const double rz = geometry.rays.rays[ray_nr].z();
+    const double rx = geometry.rays.ray(0, ray_nr).x();
+    const double ry = geometry.rays.ray(0, ray_nr).y();
+    const double rz = geometry.rays.ray(0, ray_nr).z();
 
     const double         denominator = sqrt (rx*rx + ry*ry);
     const double inverse_denominator = 1.0 / denominator;

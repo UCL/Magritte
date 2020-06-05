@@ -588,7 +588,7 @@ inline void Simulation ::
         const long r,
         const long o                  )
 {
-  const double weight_ang = 2.0 * geometry.rays.weights[r];
+  const double weight_ang = 2.0 * geometry.rays.weight(o, r);
   const long            b = geometry.boundary.cell2boundary_nr[o];
 
   for (long f = 0; f < parameters.nfreqs_red(); f++)

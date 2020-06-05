@@ -258,8 +258,8 @@ inline long Geometry :: get_next_spherical_symmetry (
     // Pick neighbor on "right side" closest to ray
     long next;
 
-    const double Rsin = cells.position[origin].cross(rays.rays[ray]).z();
-    const double Rcos = cells.position[origin].dot  (rays.rays[ray]);
+    const double Rsin = cells.position[origin].cross(rays.ray(origin, ray)).z();
+    const double Rcos = cells.position[origin].dot  (rays.ray(origin, ray));
 
 //    if (Rcos == 0)
 //    {
@@ -348,7 +348,7 @@ inline long Geometry ::
   {
     const Vector3d R = cells.position[neighbor] - cells.position[origin];
 
-    const double Z_new = R.dot(rays.rays[ray]);
+    const double Z_new = R.dot(rays.ray(origin, ray));
 
     ///////////////////////
     //if (Z_new > Z_new_max)
@@ -442,7 +442,7 @@ inline double Geometry ::
 
   if (frame == CoMoving)
   {
-    return 1.0 - (cells.velocity[current]-cells.velocity[origin]).dot(rays.rays[ray]);
+    return 1.0 - (cells.velocity[current]-cells.velocity[origin]).dot(rays.ray(origin, ray));
   }
 
   // Rest frame implementation
@@ -459,7 +459,7 @@ inline double Geometry ::
       ray_correct = rays.antipod[ray];
     }
 
-    return 1.0 - cells.velocity[current].dot(rays.rays[ray_correct]);
+    return 1.0 - cells.velocity[current].dot(rays.ray(origin, ray_correct));
   }
 
 }
