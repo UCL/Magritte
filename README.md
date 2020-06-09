@@ -1,4 +1,5 @@
-<img src="docs/Images/Magritte_logo.png" alt="logo" width="300" align="center" />
+<center><img src="docs/Images/Magritte_logo.png" alt="logo" width="300"/></center>
+
 ---
 ## **Magritte**: a modern software library for 3D radiative transfer
 [![Documentation Status](https://readthedocs.org/projects/magritte/badge/?version=latest)](https://magritte.readthedocs.io/en/latest/?badge=latest)
