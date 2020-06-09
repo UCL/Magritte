@@ -16,11 +16,13 @@
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 //#include "Raypair/rayblock.hpp"
+#include "Simulation/Solver/cpu/cpu_solver.hpp"
 
 #if (GPU_ACCELERATION)
 #   include <cuda_runtime.h>
-#   include "Raypair/raypair.cuh"
-#   include "Raypair/rayblock.cuh"
+#   include "Simulation/Solver/gpu/gpu_solver.cuh"
+//#   include "Raypair/raypair.cuh"
+//#   include "Raypair/rayblock.cuh"
 #endif
 
 
@@ -46,8 +48,10 @@ struct Simulation : public Model
         int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
 # endif
 
+    int cpu_compute_radiation_field (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
+
 //  int cpu_compute_radiation_field_2 (const size_t nraypairs);
-    int cpu_compute_radiation_field (const double inverse_dtau_max);
+//    int cpu_compute_radiation_field (const double inverse_dtau_max);
 
 
     Double1 error_max;

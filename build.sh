@@ -10,8 +10,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 if [ "$1" == "clean" ]; then
 
 
-  echo "Removing entire build directory..."
+  echo "Removing entire build/ and bin/ directories..."
   rm -rf build/
+  rm -rf bin/
   echo "Done."
   exit 0
 
@@ -100,8 +101,8 @@ elif [ "$1" == "binder" ]; then
 elif [ "$1" == "gpu" ]; then
 
 
-   echo "Building Magritte for Binder..."
-   echo "-------------------------------"
+   echo "Building Magritte with GPU support..."
+   echo "-------------------------------------"
    mkdir build
    cd build
 

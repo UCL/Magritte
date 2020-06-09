@@ -1,4 +1,7 @@
-# **Magritte**: a modern software library for 3D radiative transfer
+<img src="docs/Images/Magritte_logo.png" alt="logo" width="300" align="center" />
+---
+## **Magritte**: a modern software library for 3D radiative transfer
+[![Documentation Status](https://readthedocs.org/projects/magritte/badge/?version=latest)](https://magritte.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 
 This is the repository of the Magritte main library. Magritte is a modern open-source software library for 3D radiative transfer. It is a deterministic ray-tracer using a formal solver that currently focusses on line radiative transfer. See our first Magritte paper ([arXiv](https://arxiv.org/pdf/1912.08445.pdf), [MNRAS](https://doi.org/10.1093/mnras/stz3557)) for more details.
