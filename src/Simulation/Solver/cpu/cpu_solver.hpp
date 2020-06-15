@@ -41,7 +41,7 @@
 ///  Raypair: data structure for a pair of rays
 ///////////////////////////////////////////////
 
-struct cpuSolver : public Solver
+struct cpuSolver : public Solver<double>
 {
 
     Size gpuBlockSize = 32;
@@ -54,7 +54,8 @@ struct cpuSolver : public Solver
         const Size nfreqs,
         const Size nlines,
         const Size nraypairs,
-        const Size depth     );
+        const Size depth,
+        const Size n_off_diag);
 
     // Destructor
     ~cpuSolver();
@@ -67,5 +68,10 @@ struct cpuSolver : public Solver
         const Size        R,
         const Size        r,
               Model      &model) override;
+
+
+    // Invert the data layout. DOES NOT WORK, DOES NOT OVERRIDE BASE CLASS FUNCTION!!!
+//    HOST_DEVICE
+//    Size I (const Size i, const Size w) const {return i + w*depth_max;};
 
 };

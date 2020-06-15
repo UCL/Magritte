@@ -4,10 +4,7 @@
 // _________________________________________________________________________
 
 
-inline int Lambda ::
-    initialize (
-      const Parameters &parameters,
-      const long        nrad_new   )
+inline int Lambda :: initialize (const Parameters &parameters, const long nrad_new)
 {
 
   ncells = parameters.ncells();
@@ -43,8 +40,7 @@ inline int Lambda ::
 
 
 
-inline int Lambda ::
-    clear ()
+inline int Lambda :: clear ()
 {
 
   OMP_PARALLEL_FOR (p, ncells)
@@ -69,10 +65,7 @@ inline int Lambda ::
 ///    @param[in] k : index of the line transition
 ///////////////////////////////////////////////////
 
-inline long Lambda ::
-    index_first (
-        const long p,
-        const long k ) const
+inline long Lambda :: index_first (const long p, const long k) const
 {
   return k + nrad * p;
 }
@@ -85,10 +78,7 @@ inline long Lambda ::
 ///    @param[in] k : index of the line transition
 //////////////////////////////////////////////////
 
-inline long Lambda ::
-    index_last (
-        const long p,
-        const long k ) const
+inline long Lambda :: index_last (const long p, const long k) const
 {
   return index_first(p,k) + get_size(p,k) - 1;
 }
@@ -102,11 +92,7 @@ inline long Lambda ::
 ///    @param[in] index  : index of the ALO element
 ///////////////////////////////////////////////////////
 
-inline double Lambda ::
-    get_Ls (
-        const long p,
-        const long k,
-        const long index ) const
+inline double Lambda :: get_Ls (const long p, const long k, const long index) const
 {
   //return Ls[index_first(p,k) + index];
   return Ls[p][k][index];
@@ -159,12 +145,11 @@ inline long Lambda ::
 ///    @param[in] Ls_new : new element of the ALO
 ///////////////////////////////////////////////////////
 
-inline void Lambda ::
-    add_element (
-        const long   p,
-        const long   k,
-        const long   nr_new,
-        const double Ls_new )
+inline void Lambda :: add_element (
+    const long   p,
+    const long   k,
+    const long   nr_new,
+    const double Ls_new           )
 {
 
   for (long index = 0; index < nr[p][k].size(); index++)
@@ -188,8 +173,7 @@ inline void Lambda ::
 
 
 
-inline int Lambda ::
-    linearize_data ()
+inline int Lambda :: linearize_data ()
 {
 
   int size_total = 0;

@@ -326,6 +326,8 @@ int Simulation :: gpu_compute_radiation_field_2 (
     Timer timer("GPU compute radiation field");
     timer.start();
 
+    const size_t n_off_diag = 0;
+
     // Initialisations
     for (auto &lspec : lines.lineProducingSpecies)
     {
@@ -353,7 +355,8 @@ int Simulation :: gpu_compute_radiation_field_2 (
                                 parameters.nfreqs(),
                                 parameters.nlines(),
                                 nraypairs,
-                                geometry.max_npoints_on_rays);
+                                geometry.max_npoints_on_rays,
+                                n_off_diag);
 
         /// Set GPU block size
         solver->gpuBlockSize     = gpuBlockSize;
@@ -401,10 +404,10 @@ int Simulation :: gpu_compute_radiation_field_2 (
                     {
                         /// Add ray pair to queue
                         queue.add (ray_ar, ray_rr, o, depth);
-                    }
-
-#                   pragma omp critical (offload_to_gpu)
-                    {
+//                    }
+//
+//#                   pragma omp critical (offload_to_gpu)
+//                    {
                         if (queue.some_are_completed())
                         {
                             solver->solve (queue.get_complete_block(), RR, rr, *this);

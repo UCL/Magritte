@@ -582,30 +582,28 @@ long Simulation :: get_max_npoints_on_rays ()
 
 
 
-inline void Simulation ::
-    get_radiation_field_from_boundary (
-        const long R,
-        const long r,
-        const long o                  )
+inline void Simulation :: get_radiation_field_from_boundary (
+    const size_t R,
+    const size_t r,
+    const size_t o                                          )
 {
   const double weight_ang = 2.0 * geometry.rays.weight(o, r);
-  const long            b = geometry.boundary.cell2boundary_nr[o];
+  const size_t          b = geometry.boundary.cell2boundary_nr[o];
 
-  for (long f = 0; f < parameters.nfreqs_red(); f++)
+  for (size_t f = 0; f < parameters.nfreqs_red(); f++)
   {
     const vReal u = 0.5 * (radiation.I_bdy[R][b][f] + radiation.I_bdy[R][b][f]);
     const vReal v = 0.5 * (radiation.I_bdy[R][b][f] - radiation.I_bdy[R][b][f]);
 
-    const long ind = radiation.index (o,f);
+    const size_t ind = radiation.index (o,f);
 
     radiation.J[ind] += weight_ang * u;
 
     if (parameters.use_scattering())
     {
       radiation.u[R][ind] = u;
-      radiation.v[R][ind] = v;
+//      radiation.v[R][ind] = v;
     }
   }
 
-  return;
 }

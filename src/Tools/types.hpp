@@ -19,6 +19,9 @@ using Eigen::Vector3d;
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
+// Slightly more convenient name
+typedef size_t Size;
+
 
 // Definitions for short notation of vector of vectors of...
 // The number in the type name indicates the number of indices

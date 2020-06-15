@@ -48,6 +48,7 @@ if    (GPU_ACCELERATION)
     ../Functions/heapsort.cpp
     ../Simulation/simulation.cpp
     ../Simulation/Solver/cpu/cpu_solver.cpp
+#    ../Simulation/Solver/simd/simd_solver.cpp
     ../Simulation/Solver/gpu/gpu_solver.cu
     ../Simulation/simulation.cu
     ../Simulation/Raypair/raypair.cpp
@@ -106,6 +107,7 @@ else  (GPU_ACCELERATION)
     ../Functions/heapsort.cpp
     ../Simulation/simulation.cpp
     ../Simulation/Solver/cpu/cpu_solver.cpp
+#    ../Simulation/Solver/simd/simd_solver.cpp
     ../Simulation/Raypair/raypair.cpp
 #    ../Simulation/Rayblock/rayBlock_v.cpp
     #    ../Simulation/Raypair/rayblock.cpp

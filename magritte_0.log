@@ -1,0 +1,22 @@
+                                           
+-------------------------------------------
+  Reading Model...                         
+-------------------------------------------
+ model file = /home/frederik/Magritte_all/Models/MeshTests/gpu_test_0.hdf5
+-------------------------------------------
+                                           
+-------------------------------------------
+  Model read, parameters:                  
+-------------------------------------------
+  ncells     = 500
+  nrays      = 48
+  nrays_red  = 24
+  nboundary  = 2
+  nfreqs     = 20
+  nfreqs_red = 20
+  nspecs     = 5
+  nlspecs    = 1
+  nlines     = 1
+  nquads     = 20
+-------------------------------------------
+                                           

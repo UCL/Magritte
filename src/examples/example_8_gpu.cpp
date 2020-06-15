@@ -37,6 +37,7 @@ int main (int argc, char **argv)
     const long gpuBlockSize = std::atol(argv[3]);
     const long gpuNumBlocks = std::atol(argv[4]);
     const double inverse_dtau_max = 1.0;
+    const size_t n_off_diag = 0;
 
     logger.write_line (                                                   );
     logger.write      ("   Magritte   (GPU)"                              );
@@ -67,7 +68,7 @@ int main (int argc, char **argv)
     Simulation simulation;
 
     /// Write gpu properties
-    simulation.gpu_get_device_properties();
+//    simulation.gpu_get_device_properties();
 
     /// Read model data
     simulation.read (io);
@@ -105,7 +106,8 @@ int main (int argc, char **argv)
                                 simulation.parameters.nfreqs(),
                                 simulation.parameters.nlines(),
                                 nraypairs,
-                                simulation.geometry.max_npoints_on_rays);
+                                simulation.geometry.max_npoints_on_rays,
+                                n_off_diag);
 
         /// Set GPU block size
         solver->gpuBlockSize     = gpuBlockSize;
@@ -131,7 +133,7 @@ int main (int argc, char **argv)
 
         logger.write ("ray = ", rr);
 
-#       pragma omp parallel default (shared)
+//#       pragma omp parallel default (shared)
         {
 //            const size_t t = omp_get_thread_num();
             auto &solver = solvers[omp_get_thread_num()];
@@ -149,18 +151,21 @@ int main (int argc, char **argv)
 
                 if (depth > 1)
                 {
-#                   pragma omp critical (add_to_queue)
+                    bool       completed;
+                    ProtoBlock complete_block;
+
+#                   pragma omp critical
                     {
-                        /// Add ray pair to queue
                         queue.add (ray_ar, ray_rr, o, depth);
-//                    }
-//
-//#                   pragma omp critical (offload_to_gpu)
-//                    {
-                        if (queue.some_are_completed())
-                        {
-                            solver->solve (queue.get_complete_block(), RR, rr, simulation);
-                        }
+
+                        completed = queue.some_are_completed();
+
+                        if (completed) complete_block = queue.get_complete_block();
+                    }
+
+                    if (completed)
+                    {
+                        solver->solve (complete_block, RR, rr, simulation);
                     }
                 }
                 else
@@ -205,7 +210,7 @@ int main (int argc, char **argv)
     timer9.print_total();
 
     /// Write exit message
-    logger.write ("--- Magritte example 6 GPU benchmark is done.");
+    logger.write ("--- Magritte example 8 GPU benchmark is done.");
 
     return (0);
 }

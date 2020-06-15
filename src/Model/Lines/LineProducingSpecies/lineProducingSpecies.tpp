@@ -4,14 +4,6 @@
 // _________________________________________________________________________
 
 
-#include <Eigen/SparseLU>
-using Eigen::SparseLU;
-#include <Eigen/SparseCore>
-using Eigen::SparseMatrix;
-using Eigen::SparseVector;
-using Eigen::Triplet;
-using Eigen::COLAMDOrdering;
-
 //#include <Eigen/IterativeLinearSolvers>
 //#include <Eigen/SparseCholesky>
 
@@ -186,8 +178,7 @@ inline void LineProducingSpecies ::
 ///    by C.P. Dullemond which are based on Olson, Auer and Buchler (1985).
 ///////////////////////////////////////////////////////////////////////////
 
-void LineProducingSpecies ::
-    update_using_Ng_acceleration ()
+void LineProducingSpecies :: update_using_Ng_acceleration ()
 {
 
   VectorXd Wt (ncells*linedata.nlev);
@@ -261,232 +252,230 @@ inline void LineProducingSpecies ::
         const Double1 &temperature       )
 {
 
-  const long non_zeros = ncells * (    linedata.nlev
-                                   + 6*linedata.nrad
-                                   + 4*linedata.ncol_tot );
+    const long non_zeros = ncells * (    linedata.nlev
+                                     + 6*linedata.nrad
+                                     + 4*linedata.ncol_tot );
 
 
-  population_prev3 = population_prev2;
-  population_prev2 = population_prev1;
-  population_prev1 = population;
+    population_prev3 = population_prev2;
+    population_prev2 = population_prev1;
+    population_prev1 = population;
 
 
-  SparseMatrix<double> RT (ncells*linedata.nlev, ncells*linedata.nlev);
+//    SparseMatrix<double> RT (ncells*linedata.nlev, ncells*linedata.nlev);
 
-  VectorXd y = VectorXd::Zero (ncells*linedata.nlev);
+    VectorXd y = VectorXd::Zero (ncells*linedata.nlev);
 
-  vector<Triplet<double, int>> triplets;
+    vector<Triplet<double, int>> triplets;
+    vector<Triplet<double, int>> triplets_L;
 
-  triplets.reserve (non_zeros);
+    triplets  .reserve (non_zeros);
+    triplets_L.reserve (non_zeros);
 
-  // !!! push_back is not thread safe !!!
-
-  //OMP_PARALLEL_FOR (p, ncells)
-  for (long p = 0; p < ncells; p++)
-  {
-
-    // Radiative transitions
-
-    for (long k = 0; k < linedata.nrad; k++)
+    for (long p = 0; p < ncells; p++) // !!! no OMP because push_back is not thread safe !!!
     {
-      //cout<<"Jeff["<<p<<"]["<<k<<"] = "<<Jeff[p][k]<<endl;
-      //cout<<"Jlin["<<p<<"]["<<k<<"] = "<<Jlin[p][k]<<endl;
 
-      const double v_IJ = linedata.A[k] + linedata.Bs[k] * Jeff[p][k];
-      const double v_JI =                 linedata.Ba[k] * Jeff[p][k];
+        // Radiative transitions
+
+        for (long k = 0; k < linedata.nrad; k++)
+        {
+            //cout<<"Jeff["<<p<<"]["<<k<<"] = "<<Jeff[p][k]<<endl;
+            //cout<<"Jlin["<<p<<"]["<<k<<"] = "<<Jlin[p][k]<<endl;
+
+            const double v_IJ = linedata.A[k] + linedata.Bs[k] * Jeff[p][k];
+            const double v_JI =                 linedata.Ba[k] * Jeff[p][k];
 
 
-      // Note: we define our transition matrix as the transpose of R in the paper.
+            // Note: we define our transition matrix as the transpose of R in the paper.
+            const long I = index (p, linedata.irad[k]);
+            const long J = index (p, linedata.jrad[k]);
 
-      const long I = index (p, linedata.irad[k]);
-      const long J = index (p, linedata.jrad[k]);
+            if (linedata.jrad[k] != linedata.nlev-1)
+            {
+                triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
+                triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+            }
 
-      if (linedata.jrad[k] != linedata.nlev-1)
-      {
-        triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
-        triplets.push_back (Triplet<double, int> (J, J, -v_JI));
-      }
+            if (linedata.irad[k] != linedata.nlev-1)
+            {
+                triplets.push_back (Triplet<double, int> (I, J, +v_JI));
+                triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+            }
+        }
 
-      if (linedata.irad[k] != linedata.nlev-1)
-      {
-        triplets.push_back (Triplet<double, int> (I, J, +v_JI));
-        triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
-      }
+
+        // Approximated Lambda operator
+
+        for (long k = 0; k < linedata.nrad; k++)
+        {
+            for (long m = 0; m < lambda.get_size(p,k); m++)
+            {
+                const double v_IJ = -get_opacity(p, k) * lambda.get_Ls(p, k, m);
+
+                // Note: we define our transition matrix as the transpose of R in the paper.
+                const long I = index (lambda.get_nr(p, k, m), linedata.irad[k]);
+                const long J = index (p,                      linedata.jrad[k]);
+
+                if (linedata.jrad[k] != linedata.nlev-1)
+                {
+                    triplets  .push_back (Triplet<double, int> (J, I, +v_IJ));
+                    triplets_L.push_back (Triplet<double, int> (J, I, +v_IJ));
+                }
+
+                if (linedata.irad[k] != linedata.nlev-1)
+                {
+                    triplets  .push_back (Triplet<double, int> (I, I, -v_IJ));
+                    triplets_L.push_back (Triplet<double, int> (I, I, -v_IJ));
+                }
+            }
+        }
+
+
+
+        // Collisional transitions
+
+        for (CollisionPartner &colpar : linedata.colpar)
+        {
+            double abn = abundance[p][colpar.num_col_partner];
+            double tmp = temperature[p];
+
+            colpar.adjust_abundance_for_ortho_or_para (tmp, abn);
+            colpar.interpolate_collision_coefficients (tmp);
+
+
+            for (long k = 0; k < colpar.ncol; k++)
+            {
+                const double v_IJ = colpar.Cd_intpld[k] * abn;
+                const double v_JI = colpar.Ce_intpld[k] * abn;
+
+                // Note: we define our transition matrix as the transpose of R in the paper.
+                const long I = index (p, colpar.icol[k]);
+                const long J = index (p, colpar.jcol[k]);
+
+                if (colpar.jcol[k] != linedata.nlev-1)
+                {
+                    triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
+                    triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+                }
+
+                if (colpar.icol[k] != linedata.nlev-1)
+                {
+                    triplets.push_back (Triplet<double, int> (I, J, +v_JI));
+                    triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+                }
+            }
+        }
+
+
+        for (long i = 0; i < linedata.nlev; i++)
+        {
+            const long I = index (p, linedata.nlev-1);
+            const long J = index (p, i);
+
+            triplets.push_back (Triplet<double, int> (I, J, 1.0));
+        }
+
+        //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
+        y[index (p, linedata.nlev-1)] = population_tot[p];
+        //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
+
+    } // for all cells
+
+
+    RT        .setFromTriplets (triplets  .begin(), triplets  .end());
+    LambdaStar.setFromTriplets (triplets_L.begin(), triplets_L.end());
+
+
+    //cout << "Compressing RT" << endl;
+
+    //RT.makeCompressed ();
+
+
+    //Eigen::BiCGSTAB <SparseMatrix<double>> solver;
+
+    //cout << "Try compute" << endl;
+
+    //solver.compute (RT);
+
+    //if (solver.info() != Eigen::Success)
+    //{
+    //  cout << "Decomposition failed" << endl;
+    //  //assert(false);
+    //}
+
+
+    //for (int tel=0; tel<5; tel++)
+    //{
+    //  //Eigen::Gues x0 = population;
+
+    //  population = solver.solveWithGuess (y, population);
+    //  std::cout << "#iterations:     " << solver.iterations() << std::endl;
+    //  std::cout << "estimated error: " << solver.error()      << std::endl;
+    //}
+
+    //assert (false);
+
+
+    SparseLU <SparseMatrix<double>, COLAMDOrdering<int>> solver;
+    //Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+
+
+    cout << "Analyzing system of rate equations..."      << endl;
+
+    solver.analyzePattern (RT);
+
+    cout << "Factorizing system of rate equations..."    << endl;
+
+    solver.factorize (RT);
+
+    if (solver.info() != Eigen::Success)
+    {
+        cout << "Factorization failed with error message:" << endl;
+        cout << solver.lastErrorMessage()                  << endl;
+        assert (false);
     }
 
 
-    // Approximated Lambda operator
+    //cout << "Try compute" << endl;
 
-    for (long k = 0; k < linedata.nrad; k++)
+    //solver.compute (RT);
+
+    //if (solver.info() != Eigen::Success)
+    //{
+    //  cout << "Decomposition failed" << endl;
+    //  //assert(false);
+    //}
+
+
+    cout << "Solving rate equations for the level populations..." << endl;
+
+    population = solver.solve (y);
+
+    if (solver.info() != Eigen::Success)
     {
-      for (long m = 0; m < lambda.get_size (p,k); m++)
-      {
-        const double v_IJ = -get_opacity (p, k) * lambda.get_Ls (p, k, m);
-
-        // Note: we define our transition matrix as the transpose of R in the paper.
-
-        const long I = index (lambda.get_nr (p, k, m), linedata.irad[k]);
-        const long J = index (p,                       linedata.jrad[k]);
-
-        if (linedata.jrad[k] != linedata.nlev-1)
-        {
-          triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
-        }
-
-        if (linedata.irad[k] != linedata.nlev-1)
-        {
-          triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
-        }
-      }
+        cout << "Solving failed with error:" << endl;
+        cout << solver.lastErrorMessage()    << endl;
+        assert (false);
     }
 
+    cout << "Succesfully solved for the level populations!"       << endl;
 
 
-    // Collisional transitions
+    //OMP_PARALLEL_FOR (p, ncells)
+    //{
+    //
+    //  for (long i = 0; i < linedata.nlev; i++)
+    //  {
+    //    const long I = index (p, i);
 
-    for (CollisionPartner &colpar : linedata.colpar)
-    {
-      double abn = abundance[p][colpar.num_col_partner];
-      double tmp = temperature[p];
+    //    population[I] = population_prev1[I];
 
-      colpar.adjust_abundance_for_ortho_or_para (tmp, abn);
-      colpar.interpolate_collision_coefficients (tmp);
-
-
-      for (long k = 0; k < colpar.ncol; k++)
-      {
-        const double v_IJ = colpar.Cd_intpld[k] * abn;
-        const double v_JI = colpar.Ce_intpld[k] * abn;
-
-
-        // Note: we define our transition matrix as the transpose of R in the paper.
-
-        const long I = index (p, colpar.icol[k]);
-        const long J = index (p, colpar.jcol[k]);
-
-        if (colpar.jcol[k] != linedata.nlev-1)
-        {
-          triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
-          triplets.push_back (Triplet<double, int> (J, J, -v_JI));
-        }
-
-        if (colpar.icol[k] != linedata.nlev-1)
-        {
-          triplets.push_back (Triplet<double, int> (I, J, +v_JI));
-          triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
-        }
-      }
-    }
-
-
-    for (long i = 0; i < linedata.nlev; i++)
-    {
-      const long I = index (p, linedata.nlev-1);
-      const long J = index (p, i);
-
-      triplets.push_back (Triplet<double, int> (I, J, 1.0));
-    }
-
-    //y.insert (index (p, linedata.nlev-1)) = population_tot[p];
-    y[index (p, linedata.nlev-1)] = population_tot[p];
-    //y.insert (index (p, linedata.nlev-1)) = 1.0;//population_tot[p];
-
-  } // for all cells
-
-
-  RT.setFromTriplets (triplets.begin(), triplets.end());
-
-
-  //cout << "Compressing RT" << endl;
-
-  //RT.makeCompressed ();
-
-
-  //Eigen::BiCGSTAB <SparseMatrix<double>> solver;
-
-  //cout << "Try compute" << endl;
-
-  //solver.compute (RT);
-
-  //if (solver.info() != Eigen::Success)
-  //{
-  //  cout << "Decomposition failed" << endl;
-  //  //assert(false);
-  //}
-
-
-  //for (int tel=0; tel<5; tel++)
-  //{
-  //  //Eigen::Gues x0 = population;
-
-  //  population = solver.solveWithGuess (y, population);
-  //  std::cout << "#iterations:     " << solver.iterations() << std::endl;
-  //  std::cout << "estimated error: " << solver.error()      << std::endl;
-  //}
-
-  //assert (false);
-
-
-  SparseLU <SparseMatrix<double>, COLAMDOrdering<int>> solver;
-  //Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
-
-
-  cout << "Analyzing system of rate equations..."      << endl;
-
-  solver.analyzePattern (RT);
-
-  cout << "Factorizing system of rate equations..."    << endl;
-
-  solver.factorize (RT);
-
-  if (solver.info() != Eigen::Success)
-  {
-    cout << "Factorization failed with error message:" << endl;
-    cout << solver.lastErrorMessage()                  << endl;
-    assert (false);
-  }
-
-
-  //cout << "Try compute" << endl;
-
-  //solver.compute (RT);
-
-  //if (solver.info() != Eigen::Success)
-  //{
-  //  cout << "Decomposition failed" << endl;
-  //  //assert(false);
-  //}
-
-
-  cout << "Solving rate equations for the level populations..." << endl;
-
-  population = solver.solve (y);
-
-  if (solver.info() != Eigen::Success)
-  {
-    cout << "Solving failed with error:" << endl;
-    cout << solver.lastErrorMessage()    << endl;
-    assert (false);
-  }
-
-  cout << "Succesfully solved for the level populations!"       << endl;
-
-
-  //OMP_PARALLEL_FOR (p, ncells)
-  //{
-  //
-  //  for (long i = 0; i < linedata.nlev; i++)
-  //  {
-  //    const long I = index (p, i);
-
-  //    population[I] = population_prev1[I];
-
-  //    //if (population[I] < 1.0E-50)
-  //    //{
-  //    //  population[I] = 1.0E-50;
-  //    //}
-  //  }
-  //}
+    //    //if (population[I] < 1.0E-50)
+    //    //{
+    //    //  population[I] = 1.0E-50;
+    //    //}
+    //  }
+    //}
 
 
 }

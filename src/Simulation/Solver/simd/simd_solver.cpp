@@ -1,4 +1,4 @@
-#include "cpu_solver.hpp"
+#include "simd_solver.hpp"
 #include "Simulation/simulation.hpp"
 
 
@@ -10,15 +10,20 @@
 ///    @param[in] depth     : number of points along the ray pairs
 //////////////////////////////////////////////////////////////////
 
-cpuSolver :: cpuSolver (
+simdSolver :: simdSolver (
     const Size ncells,
     const Size nfreqs,
     const Size nlines,
     const Size nraypairs,
     const Size depth,
     const Size n_off_diag )
-    : Solver (ncells, nfreqs, nfreqs, nlines, nraypairs, depth, n_off_diag)
+    : Solver (ncells, nfreqs, reduced(nfreqs), nlines, nraypairs, depth, n_off_diag)
 {
+    cout << endl << "############################" << endl << endl;
+    cout << "nsimd = " << n_simd_lanes << endl;
+    cout << endl << "############################" << endl << endl;
+
+
     n1 = new size_t[nraypairs_max];
     n2 = new size_t[nraypairs_max];
 
@@ -36,39 +41,39 @@ cpuSolver :: cpuSolver (
     line_opacity    = new double[ncells*nlines];
     line_width      = new double[ncells*nlines];
 
-    frequencies = new double[ncells*nfreqs_red];
+    frequencies = new vReal[ncells*nfreqs_red];
 
-    const Size area = depth_max*width_max;
+    const Size area = 10*depth_max*width_max;
 
-    term1              = new double[area];
-    term2              = new double[area];
+    term1              = new vReal[area];
+    term2              = new vReal[area];
 
-    eta                = new double[area];
-    chi                = new double[area];
+    eta                = new vReal[area];
+    chi                = new vReal[area];
 
-    A                  = new double[area];
-    a                  = new double[area];
-    C                  = new double[area];
-    c                  = new double[area];
-    F                  = new double[area];
-    G                  = new double[area];
+    A                  = new vReal[area];
+    a                  = new vReal[area];
+    C                  = new vReal[area];
+    c                  = new vReal[area];
+    F                  = new vReal[area];
+    G                  = new vReal[area];
 
-    inverse_A          = new double[area];
-    inverse_C          = new double[area];
-    inverse_one_plus_F = new double[area];
-    inverse_one_plus_G = new double[area];
-     G_over_one_plus_G = new double[area];
+    inverse_A          = new vReal[area];
+    inverse_C          = new vReal[area];
+    inverse_one_plus_F = new vReal[area];
+    inverse_one_plus_G = new vReal[area];
+     G_over_one_plus_G = new vReal[area];
 
-    Su                 = new double[area];
-    Sv                 = new double[area];
-    dtau               = new double[area];
+    Su                 = new vReal[area];
+    Sv                 = new vReal[area];
+    dtau               = new vReal[area];
 
-    L_diag             = new double[area];
+    L_diag             = new vReal[area];
 
     if (n_off_diag > 0)
     {
-        L_upper = new double[n_off_diag*area];
-        L_lower = new double[n_off_diag*area];
+        L_upper = new vReal[n_off_diag*area];
+        L_lower = new vReal[n_off_diag*area];
     }
 }
 
@@ -76,7 +81,7 @@ cpuSolver :: cpuSolver (
 ///  Destructor for cpuSolver
 /////////////////////////////
 
-cpuSolver :: ~cpuSolver ()
+simdSolver :: ~simdSolver ()
 {
     delete[] n1;
     delete[] n2;
@@ -121,12 +126,6 @@ cpuSolver :: ~cpuSolver ()
     delete[] dtau;
 
     delete[] L_diag;
-
-    if (n_off_diag > 0)
-    {
-        delete[] L_upper;
-        delete[] L_lower;
-    }
 }
 
 
@@ -136,7 +135,7 @@ cpuSolver :: ~cpuSolver ()
 ///    @param[in] model : model from which to copy
 /////////////////////////////////////////////////////////////
 
-void cpuSolver :: copy_model_data (const Model &model)
+void simdSolver :: copy_model_data (const Model &model)
 {
     memcpy (line,
             model.lines.line.data(),
@@ -160,9 +159,14 @@ void cpuSolver :: copy_model_data (const Model &model)
             line_width[L(p,l)] = model.thermodynamics.profile_width (invr_mass, p, model.lines.line[l]);
         }
 
-        for (Size f = 0; f < nfreqs; f++)
+        for (Size f = 0; f < nfreqs_red; f++)
         {
-            frequencies[V(p,f)] = model.radiation.frequencies.nu[p][f];
+            for (size_t lane = 0; lane < n_simd_lanes; lane++)
+            {
+                const size_t ind = f*n_simd_lanes + lane;
+
+                frequencies[V(p,f)].putlane(model.radiation.frequencies.nu[p][ind], lane);
+            }
         }
     }
 
@@ -171,7 +175,7 @@ void cpuSolver :: copy_model_data (const Model &model)
 
 
 
-void cpuSolver :: solve (
+void simdSolver :: solve (
     const ProtoBlock &prb,
     const Size        R,
     const Size        r,
@@ -188,4 +192,46 @@ void cpuSolver :: solve (
 
     /// Store the result back in the model
     store (model);
+}
+
+
+
+
+///  Store the result of the solver in the model
+///    @param[in/out] model : model object under consideration
+//////////////////////////////////////////////////////////////
+
+inline void simdSolver :: store (Model &model) const
+{
+    for (Size rp = 0; rp < nraypairs; rp++)
+    {
+        const double weight_ang = 2.0 * model.geometry.rays.weight(origins[rp], rr);
+
+        const Size i0 = model.radiation.index(origins[rp], 0);
+        const Size j0 = I(n1[rp], V(rp, 0));
+
+        for (Size f = 0; f < nfreqs_red; f++)
+        {
+            for (size_t lane = 0; lane < n_simd_lanes; lane++)
+            {
+                const size_t ind = i0 + f*n_simd_lanes + lane;
+
+                model.radiation.J[ind] += weight_ang * Su[j0+f].getlane(lane);
+            }
+        }
+
+        if (model.parameters.use_scattering())
+        {
+            for (Size f = 0; f < nfreqs_red; f++)
+            {
+                for (size_t lane = 0; lane < n_simd_lanes; lane++)
+                {
+                    const size_t ind = i0 + f*n_simd_lanes + lane;
+
+                    model.radiation.u[RR][ind] = Su[j0+f].getlane(lane);
+//                model.radiation.v[RR][i0+f] = Sv[j0+f] * reverse[rp];
+                }
+            }
+        }
+    }
 }

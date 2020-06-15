@@ -10,6 +10,8 @@
 #include "Tools/timer.hpp"
 
 
+#include <Grid/Grid.h>
+
 
 #ifdef USETIMERS
 
@@ -41,23 +43,33 @@
 ///  Raypair: data structure for a pair of rays
 ///////////////////////////////////////////////
 
-struct cpuSolver : public Solver
+//struct simdSolver : public Solver<double>
+struct simdSolver : public Solver<Grid::vRealD>
 {
+    typedef Grid::vRealD vReal;
+
+    static const size_t n_simd_lanes = vReal::Nsimd();
+
+    static inline size_t reduced (const size_t number)
+    {
+        return (number + n_simd_lanes - 1) / n_simd_lanes;
+    }
 
     Size gpuBlockSize = 32;
     Size gpuNumBlocks = 32;
 
 
     /// Constructor
-    cpuSolver (
+    simdSolver (
         const Size ncells,
         const Size nfreqs,
         const Size nlines,
         const Size nraypairs,
-        const Size depth     );
+        const Size depth,
+        const Size n_off_diag);
 
     // Destructor
-    ~cpuSolver();
+    ~simdSolver();
 
 
     void copy_model_data (const Model &model) override;
@@ -67,5 +79,14 @@ struct cpuSolver : public Solver
         const Size        R,
         const Size        r,
               Model      &model) override;
+
+
+    inline void store (Model &model) const;
+
+
+    inline vReal fma (const vReal a, const vReal b, const vReal c) const
+    {
+        return a*b + c;
+    }
 
 };

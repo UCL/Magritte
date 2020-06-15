@@ -16,67 +16,67 @@ gpuSolver :: gpuSolver (
     const Size nfreqs,
     const Size nlines,
     const Size nraypairs,
-    const Size depth     )
-    : Solver (ncells, nfreqs, nlines, nraypairs, depth)
+    const Size depth,
+    const Size n_off_diag )
+    : Solver (ncells, nfreqs, nfreqs, nlines, nraypairs, depth, n_off_diag)
 {
-    const size_t nraypairs_size = nraypairs_max*sizeof(Size);
-    const size_t nraypairs_real = nraypairs_max*sizeof(Real);
+    const Size nraypairs_size = nraypairs_max*sizeof(size_t);
+    const Size nraypairs_real = nraypairs_max*sizeof(double);
 
-    cudaMallocManaged (&n1,     nraypairs_size);
-    cudaMallocManaged (&n2,     nraypairs_size);
+    cudaMallocManaged (&n1,      nraypairs_size);
+    cudaMallocManaged (&n2,      nraypairs_size);
+
+    cudaMallocManaged (&n_tot,   nraypairs_size);
 
     cudaMallocManaged (&origins, nraypairs_size);
     cudaMallocManaged (&reverse, nraypairs_real);
 
-    cudaMallocManaged (&nrs,    depth_max*nraypairs_max*sizeof(Size));
-    cudaMallocManaged (&shifts, depth_max*nraypairs_max*sizeof(Real));
-    cudaMallocManaged (&dZs,    depth_max*nraypairs_max*sizeof(Real));
+    cudaMallocManaged (&nrs,    depth_max*nraypairs_max*sizeof(size_t));
+    cudaMallocManaged (&shifts, depth_max*nraypairs_max*sizeof(double));
+    cudaMallocManaged (&dZs,    depth_max*nraypairs_max*sizeof(double));
 
     cudaMallocManaged (&line,                   nlines*sizeof(double));
     cudaMallocManaged (&line_emissivity, ncells*nlines*sizeof(double));
     cudaMallocManaged (&line_opacity,    ncells*nlines*sizeof(double));
     cudaMallocManaged (&line_width,      ncells*nlines*sizeof(double));
 
-    cudaMallocManaged (&frequencies,     ncells*nfreqs*sizeof(double));
+    cudaMallocManaged (&frequencies, ncells*nfreqs_red*sizeof(double));
 
-    const size_t width_real = width_max*sizeof(Real);
+    const Size area = depth_max*width_max*sizeof(double);
 
-//    cudaMallocManaged (&I_bdy_0_presc, width_real);
-//    cudaMallocManaged (&I_bdy_n_presc, width_real);
+    cudaMallocManaged (&term1,              area);
+    cudaMallocManaged (&term2,              area);
 
-    const size_t area_real = 10*depth_max*width_max*sizeof(Real);
-    const size_t area_size = 10*depth_max*width_max*sizeof(Size);
+    cudaMallocManaged (&eta,                area);
+    cudaMallocManaged (&chi,                area);
 
-//    cudaMallocManaged (&freqs,              area_real);
-//    cudaMallocManaged (&freqs_scaled,       area_real);
-//    cudaMallocManaged (&freqs_lower,        area_size);
-//    cudaMallocManaged (&freqs_upper,        area_size);
+    cudaMallocManaged (&A,                  area);
+    cudaMallocManaged (&a,                  area);
+    cudaMallocManaged (&C,                  area);
+    cudaMallocManaged (&c,                  area);
+    cudaMallocManaged (&F,                  area);
+    cudaMallocManaged (&G,                  area);
 
-    cudaMallocManaged (&term1,              area_real);
-    cudaMallocManaged (&term2,              area_real);
+    cudaMallocManaged (&inverse_A,          area);
+    cudaMallocManaged (&inverse_C,          area);
+    cudaMallocManaged (&inverse_one_plus_F, area);
+    cudaMallocManaged (&inverse_one_plus_G, area);
+    cudaMallocManaged (& G_over_one_plus_G, area);
 
-    cudaMallocManaged (&eta,                area_real);
-    cudaMallocManaged (&chi,                area_real);
+    cudaMallocManaged (&Su,                 area);
+    cudaMallocManaged (&Sv,                 area);
+    cudaMallocManaged (&dtau,               area);
 
-    cudaMallocManaged (&A,                  area_real);
-    cudaMallocManaged (&a,                  area_real);
-    cudaMallocManaged (&C,                  area_real);
-    cudaMallocManaged (&c,                  area_real);
-    cudaMallocManaged (&F,                  area_real);
-    cudaMallocManaged (&G,                  area_real);
+    cudaMallocManaged (&L_diag,             area);
 
-    cudaMallocManaged (&inverse_A,          area_real);
-    cudaMallocManaged (&inverse_C,          area_real);
-    cudaMallocManaged (&inverse_one_plus_F, area_real);
-    cudaMallocManaged (&inverse_one_plus_G, area_real);
-    cudaMallocManaged (& G_over_one_plus_G, area_real);
-
-    cudaMallocManaged (&Su,                 area_real);
-    cudaMallocManaged (&Sv,                 area_real);
-    cudaMallocManaged (&dtau,               area_real);
-
-    cudaMallocManaged (&L_diag,             area_real);
+    if (n_off_diag > 0)
+    {
+        cudaMallocManaged(&L_upper, n_off_diag*area);
+        cudaMallocManaged(&L_lower, n_off_diag*area);
+    }
 }
+
+
 
 
 ///  Destructor for gpuSolver
@@ -87,6 +87,8 @@ gpuSolver :: ~gpuSolver ()
 {
     cudaFree (n1);
     cudaFree (n2);
+
+    cudaFree (n_tot);
 
     cudaFree (origins);
     cudaFree (reverse);
@@ -101,14 +103,6 @@ gpuSolver :: ~gpuSolver ()
     cudaFree (line_width);
 
     cudaFree (frequencies);
-
-//    cudaFree (I_bdy_0_presc);
-//    cudaFree (I_bdy_n_presc);
-
-//    cudaFree (freqs);
-//    cudaFree (freqs_scaled);
-//    cudaFree (freqs_lower);
-//    cudaFree (freqs_upper);
 
     cudaFree (term1);
     cudaFree (term2);
@@ -134,6 +128,12 @@ gpuSolver :: ~gpuSolver ()
     cudaFree (dtau);
 
     cudaFree (L_diag);
+
+    if (n_off_diag > 0)
+    {
+        cudaFree (L_upper);
+        cudaFree (L_lower);
+    }
 }
 
 
@@ -164,9 +164,9 @@ void gpuSolver :: copy_model_data (const Model &model)
     {
         for (Size l = 0; l < nlines; l++)
         {
-            const Size         f = model.lines.line_index[l];
-            const Size     lspec = model.radiation.frequencies.corresponding_l_for_spec[f];
-            const Real invr_mass = model.lines.lineProducingSpecies[lspec].linedata.inverse_mass;
+            const Size           f = model.lines.line_index[l];
+            const Size       lspec = model.radiation.frequencies.corresponding_l_for_spec[f];
+            const double invr_mass = model.lines.lineProducingSpecies[lspec].linedata.inverse_mass;
 
             line_width[L(p,l)] = model.thermodynamics.profile_width (invr_mass, p, model.lines.line[l]);
         }
@@ -193,6 +193,7 @@ void feautrierKernel (gpuSolver &solver)
         solver.solve_Feautrier (w);
     }
 }
+
 
 
 
