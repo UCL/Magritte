@@ -119,7 +119,7 @@ elif [ "$1" == "gpu" ]; then
      -DOMP_PARALLEL=ON                               \
      -DMPI_PARALLEL=OFF                              \
      -DGRID_SIMD=OFF                                 \
-     -DGPU_ACCELERATION=ON                           \
+     -DGPU_ACCELERATION=OFF                          \
      $DIR
 
    make -j4

@@ -38,8 +38,6 @@ cpuSolver :: cpuSolver (
 
     frequencies = new double[ncells*nfreqs_red];
 
-    const Size area = depth_max*width_max;
-
     term1              = new double[area];
     term2              = new double[area];
 
@@ -184,6 +182,7 @@ void cpuSolver :: solve (
     for (Size w = 0; w < width; w++)
     {
         solve_Feautrier (w);
+//        check_L         (w);
     }
 
     /// Store the result back in the model

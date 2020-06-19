@@ -364,11 +364,11 @@ inline void RayPair :: solve (void)
     for (long n = last-1; n >= first+1; n--)
     {
       L_diag[n] = inverse_C[n] / (F[n] + G[n+1] * inverse_one_plus_G[n+1]);
-      printf("L(n=%ld) = %le\n", n, L_diag[n]);
+//      printf("L(n=%ld) = %le\n", n, L_diag[n]);
     }
 
     L_diag[first] = (vOne + G[first+1]) / (B0_min_C0 + B0*G[first+1]);
-    printf("L(n=%ld) = %le\n", first, L_diag[first]);
+//    printf("L(n=%ld) = %le\n", first, L_diag[first]);
 
     for (long n = last-1; n >= first; n--) /// CHANGED !!!
     {

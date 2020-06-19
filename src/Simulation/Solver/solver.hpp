@@ -36,6 +36,8 @@ struct Solver
     const Size width_max;        ///< maximum width of the ray block (nraypairs_max * nfreqs)
           Size width;            ///< width of the ray block (nraypairs * nfreqs)
 
+    const Size area;             ///< depth_max * width_max
+
     const Size n_off_diag;       ///< number of off-diagonal rows on one side in L operator
 
 
@@ -57,6 +59,7 @@ struct Solver
     , depth_max     (depth)
     , width_max     (nraypairs * nfreqs_red)
     , width         (nraypairs * nfreqs_red)
+    , area          (depth_max * width_max)
     , n_off_diag    (n_off_diag) {};
 
     /// Copier for model data to solver (virtual)
@@ -145,7 +148,7 @@ struct Solver
     HOST_DEVICE
     inline Size V (const Size i, const Size f) const {return f + i*nfreqs_red;};
     HOST_DEVICE
-    inline Size M (const Size m, const Size i) const {return i + m*n_off_diag;};
+    inline Size M (const Size m, const Size i) const {return i + m*area;      };
 
 
     void setup (
@@ -174,7 +177,7 @@ struct Solver
         const Size            f,
         const Size            k,
         const Size            m,
-              Lambda         &lambda     ) const;
+              Lambda         &lambda     ) ;//const;
 
     inline void add_L_upper (
         const Thermodynamics &thermodyn,
@@ -187,10 +190,10 @@ struct Solver
         const Size            m,
               Lambda         &lambda     ) const;
 
-    inline void update_Lambda (Model &model) const;
+    inline void update_Lambda (Model &model) ;//const;
 
 
-    inline void store (Model &model) const;
+    inline void store (Model &model) ;//const;
 
     HOST_DEVICE
     inline void get_eta_and_chi (
@@ -224,33 +227,17 @@ struct Solver
     inline void solve_4th_order_Feautrier_adaptive     (const Size w);
 
 
-    //    inline double get_L_diag (
-    //        const Thermodynamics &thermodynamics,
-    //        const double          inverse_mass,
-    //        const double          freq_line,
-    //        const int             lane           ) const;
+    // Helper variables for tests
+    MatrixXd test_T;   ///< tridiagonal T matrix
+    MatrixXd test_L;   ///< matrix representation of L operator
+    VectorXd test_s;   ///< effective source function
+    VectorXd test_u;   ///< solution u
 
-    //    inline double get_L_lower (
-    //        const Thermodynamics &thermodynamics,
-    //        const double          inverse_mass,
-    //        const double          freq_line,
-    //        const int             lane,
-    //        const long            m              ) const;
+    inline void setup_T (const Size w);
+    inline void setup_L (const Size w);
 
-    //    inline double get_L_upper (
-    //        const Thermodynamics &thermodynamics,
-    //        const double          inverse_mass,
-    //        const double          freq_line,
-    //        const int             lane,
-    //        const long            m              ) const;
+    inline Real check_L (const Size w);
 
-    //    inline void update_Lambda (
-    //        const Frequencies    &frequencies,
-    //        const Thermodynamics &thermodynamics,
-    //        const long            p,
-    //        const long            f,
-    //        const double          weight_angular,
-    //              Lines          &lines          ) const;
 
 private:
 
@@ -278,6 +265,7 @@ private:
 
 
 #include "solver.tpp"
+#include "tests.tpp"
 
 
 #endif //MAGRITTE_SOLVER_HPP

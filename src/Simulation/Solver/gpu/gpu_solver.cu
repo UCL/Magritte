@@ -42,37 +42,37 @@ gpuSolver :: gpuSolver (
 
     cudaMallocManaged (&frequencies, ncells*nfreqs_red*sizeof(double));
 
-    const Size area = depth_max*width_max*sizeof(double);
+    const Size area_real = area*sizeof(double);
 
-    cudaMallocManaged (&term1,              area);
-    cudaMallocManaged (&term2,              area);
+    cudaMallocManaged (&term1,              area_real);
+    cudaMallocManaged (&term2,              area_real);
 
-    cudaMallocManaged (&eta,                area);
-    cudaMallocManaged (&chi,                area);
+    cudaMallocManaged (&eta,                area_real);
+    cudaMallocManaged (&chi,                area_real);
 
-    cudaMallocManaged (&A,                  area);
-    cudaMallocManaged (&a,                  area);
-    cudaMallocManaged (&C,                  area);
-    cudaMallocManaged (&c,                  area);
-    cudaMallocManaged (&F,                  area);
-    cudaMallocManaged (&G,                  area);
+    cudaMallocManaged (&A,                  area_real);
+    cudaMallocManaged (&a,                  area_real);
+    cudaMallocManaged (&C,                  area_real);
+    cudaMallocManaged (&c,                  area_real);
+    cudaMallocManaged (&F,                  area_real);
+    cudaMallocManaged (&G,                  area_real);
 
-    cudaMallocManaged (&inverse_A,          area);
-    cudaMallocManaged (&inverse_C,          area);
-    cudaMallocManaged (&inverse_one_plus_F, area);
-    cudaMallocManaged (&inverse_one_plus_G, area);
-    cudaMallocManaged (& G_over_one_plus_G, area);
+    cudaMallocManaged (&inverse_A,          area_real);
+    cudaMallocManaged (&inverse_C,          area_real);
+    cudaMallocManaged (&inverse_one_plus_F, area_real);
+    cudaMallocManaged (&inverse_one_plus_G, area_real);
+    cudaMallocManaged (& G_over_one_plus_G, area_real);
 
-    cudaMallocManaged (&Su,                 area);
-    cudaMallocManaged (&Sv,                 area);
-    cudaMallocManaged (&dtau,               area);
+    cudaMallocManaged (&Su,                 area_real);
+    cudaMallocManaged (&Sv,                 area_real);
+    cudaMallocManaged (&dtau,               area_real);
 
-    cudaMallocManaged (&L_diag,             area);
+    cudaMallocManaged (&L_diag,             area_real);
 
     if (n_off_diag > 0)
     {
-        cudaMallocManaged(&L_upper, n_off_diag*area);
-        cudaMallocManaged(&L_lower, n_off_diag*area);
+        cudaMallocManaged(&L_upper, n_off_diag*area_real);
+        cudaMallocManaged(&L_lower, n_off_diag*area_real);
     }
 }
 

@@ -1,3 +1,6 @@
+
+#include <math.h>
+
 template <typename Real>
 inline void Solver<Real> :: setup (
         const Model        &model,
@@ -168,6 +171,12 @@ inline void Solver<Real> :: add_L_diag (
 
     const Real L = constante * fsc * phi * L_diag[In] / chi[In];
 
+    if(isnan(L)) {printf("!!! L d is nan %le, %le\n", L_diag[In], chi[In]);}
+
+//    printf("eta / eta = %le", HH_OVER_FOUR_PI * constante * fsc * phi / eta[In]);
+
+//    const Real L = eta[In] * L_diag[In] / (HH_OVER_FOUR_PI * chi[In]);
+
 //    printf("L = %le\n", L);
 
 
@@ -187,7 +196,7 @@ inline void Solver<Real> :: add_L_lower (
     const Size            f,
     const Size            k,
     const Size            m,
-          Lambda         &lambda        ) const
+          Lambda         &lambda        ) //const
 {
     const Size In = I(n1[rp]-m, V(rp, f));
     const Size Dn = D(rp      , n1[rp]-m);
@@ -196,6 +205,17 @@ inline void Solver<Real> :: add_L_lower (
     const Real phi = thermodyn.profile (invr_mass, nrs[Dn], freq_line, fsc);
 
     const Real L = constante * fsc * phi * L_lower[M(m,In)] / chi[In];
+
+    if(isnan(L))
+    {
+        for (Size w = 0; w < width; w++) {check_L(w);}
+
+        printf("!!! L l is nan %le, %ld, %ld\n", L_lower[M(m,In)], In, m);
+    }
+
+//    printf("eta / eta = %le", HH_OVER_FOUR_PI * constante * fsc * phi / eta[In]);
+
+//    const Real L = eta[In] * L_lower[M(m,In)] / (HH_OVER_FOUR_PI * chi[In]);
 
     lambda.add_element(origins[rp], k, nrs[Dn], L);
 }
@@ -223,12 +243,18 @@ inline void Solver<Real> :: add_L_upper (
 
     const Real L = constante * fsc * phi * L_upper[M(m,In)] / chi[In];
 
+    if(isnan(L)) {printf("!!! L u is nan %le, %le\n", L_upper[M(m,In)], chi[In]);}
+
+//    printf("eta / eta = %le", HH_OVER_FOUR_PI * constante * fsc * phi / eta[In]);
+
+//    const Real L = eta[In] * L_upper[M(m,In)] / (HH_OVER_FOUR_PI * chi[In]);
+
     lambda.add_element(origins[rp], k, nrs[Dn], L);
 }
 
 
 template <typename Real>
-inline void Solver<Real> :: update_Lambda (Model &model) const
+inline void Solver<Real> :: update_Lambda (Model &model) //const
 {
     const Frequencies    &freqs     = model.radiation.frequencies;
     const Thermodynamics &thermodyn = model.thermodynamics;
@@ -251,7 +277,7 @@ inline void Solver<Real> :: update_Lambda (Model &model) const
 
             add_L_diag (thermodyn, invr_mass, freq_line, constante, rp, f, k, lspec.lambda);
 
-            for (long m = 1; m < n_off_diag; m++)
+            for (long m = 1; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
             {
                 if (n1[rp]>= m)   // n1[rp]-m >= 0
                 {
@@ -274,7 +300,7 @@ inline void Solver<Real> :: update_Lambda (Model &model) const
 //////////////////////////////////////////////////////////////
 
 template <typename Real>
-inline void Solver<Real> :: store (Model &model) const
+inline void Solver<Real> :: store (Model &model) //const
 {
     for (Size rp = 0; rp < nraypairs; rp++)
     {
@@ -537,7 +563,9 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
 
                 Su[In1] = my_fma (Su[In1p1], inverse_one_plus_F[In1], Su[In1]);
             L_diag[In1] = inverse_C[In1] / (F[In1] + G_over_one_plus_G[In1p1]);
-            printf("L(n=%ld, f=%ld) = %le\n", n1_min, f, L_diag[In1]);
+
+//            printf("- Solver: first %ld, last %ld, n_tot %ld, r %ld\n", first, last, n_tot[rp], rr);
+//            printf("L(n=%ld, f=%ld) = %le\n", n1_min, f, L_diag[In1]);
         }
         else
         {
@@ -545,7 +573,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
             const Size In1m1 = I(n1_min-1, w);
 
             L_diag[In1] = (one + F[In1m1]) / (Bd_min_Ad + Bd*F[In1m1]);
-            printf("L(n=%ld, f=%ld) = %le\n", n1_min, f, L_diag[In1]);
+//            printf("- Solver: first %ld, last %ld, n_tot %ld, r %ld\n", first, last, n_tot[rp], rr);
+//            printf("L(n=%ld, f=%ld) = %le\n", n1_min, f, L_diag[In1]);
         }
     }
     else
@@ -569,14 +598,14 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
              G_over_one_plus_G[In] = G[In] * inverse_one_plus_G[In];
 
             L_diag[In] = inverse_C[In] / (F[In] + G_over_one_plus_G[Inp1]);
-            printf("L(n=%ld, f=%ld) = %le\n", n, f, L_diag[In]);
+//            printf("L(n=%ld, f=%ld) = %le\n", n, f, L_diag[In]);
         }
 
             Su[If] = my_fma(Su[Ifp1], inverse_one_plus_F[If], Su[If]);
         L_diag[If] = (one + G[Ifp1]) / (B0_min_C0 + B0*G[Ifp1]);
 
-        printf("first G[Ifp1] = %le\n", G[Ifp1]);
-        printf("L(n=%ld, f=%ld) = %le\n", first, f, L_diag[If]);
+//        printf("first G[Ifp1] = %le\n", G[Ifp1]);
+//        printf("L(n=%ld, f=%ld) = %le\n", first, f, L_diag[If]);
 
 
         for (long n = last-1; n >= first; n--) // use long in reverse loops!
@@ -586,9 +615,12 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
 
             L_upper[M(0,In)] = L_diag[Inp1] * inverse_one_plus_F[In  ];
             L_lower[M(0,In)] = L_diag[In  ] * inverse_one_plus_G[Inp1];
+
+//            printf("L_u(0, %ld) = %le\n", In, L_upper[M(0,In)]);
+//            printf("L_l(0, %ld) = %le\n", In, L_lower[M(0,In)]);
         }
 
-        for (Size m = 1; m < n_off_diag; m++)
+        for (Size m = 1; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
         {
             for (long n = last-1-m; n >= first; n--) // use long in reverse loops!
             {
@@ -598,8 +630,20 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
 
                 L_upper[M(m,In)] = L_upper[M(m-1,Inp1)] * inverse_one_plus_F[In    ];
                 L_lower[M(m,In)] = L_lower[M(m-1,In  )] * inverse_one_plus_G[Inpmp1];
+
+//                printf("L_u(%ld, %ld)[%ld] = %le\n", m, In, M(m,In), L_upper[M(m,In)]);
+//                printf("L_l(%ld, %ld)[%ld] = %le\n", m, In, M(m,In), L_lower[M(m,In)]);
             }
         }
+
+//        for (long n = last-1; n >= first; n--) // use long in reverse loops!
+//        {
+//            const Size Inp1 = I(n+1, w);
+//            const Size In   = I(n,   w);
+//
+//            printf("check L_u(0, %ld)[%ld] = %le\n", In, M(0,In), L_upper[M(0,In)]);
+//            printf("check L_l(0, %ld)[%ld] = %le\n", In, M(0,In), L_lower[M(0,In)]);
+//        }
     }
 
 }
@@ -770,7 +814,7 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
          G_over_one_plus_G[Il] = G[Il] * inverse_one_plus_G[Il];
 
         L_diag[Il] = (one + F[Ilm1]) / (Bd_min_Ad + Bd*F[Ilm1]);
-        
+
         for (long n = last-1; n > first; n--) // use long in reverse loops!
         {
             const Size Inp1 = I(n+1, w);
@@ -809,7 +853,7 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
             L_lower[M(0,In)] = L_diag[In  ] * inverse_one_plus_G[Inp1];
         }
 
-        for (Size m = 1; m < n_off_diag; m++)
+        for (Size m = 1; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
         {
             for (long n = last-1-m; n >= first; n--) // use long in reverse loops!
             {

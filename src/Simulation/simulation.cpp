@@ -247,26 +247,26 @@ int Simulation :: cpu_compute_radiation_field (
     timer_compute.print();
 
 
-    Ld.clear();
-    for (int n = 0; n < parameters.ncells(); n++)
-    {
-        Ld.push_back(solvers[0]->L_diag[n]);
-    }
-
-    Lu.resize(solvers[0]->n_off_diag);
-    Ll.resize(solvers[0]->n_off_diag);
-
-    for (int m = 0; m < solvers[0]->n_off_diag; m++)
-    {
-        Lu[m].clear();
-        Ll[m].clear();
-
-        for (int n = 0; n < parameters.ncells(); n++)
-        {
-            Lu[m].push_back(solvers[0]->L_upper[solvers[0]->M(m,n)]);
-            Ll[m].push_back(solvers[0]->L_lower[solvers[0]->M(m,n)]);
-        }
-    }
+//    Ld.clear();
+//    for (int n = 0; n < parameters.ncells(); n++)
+//    {
+//        Ld.push_back(solvers[0]->L_diag[n]);
+//    }
+//
+//    Lu.resize(solvers[0]->n_off_diag);
+//    Ll.resize(solvers[0]->n_off_diag);
+//
+//    for (int m = 0; (m < solvers[0]->n_off_diag; m++)
+//    {
+//        Lu[m].clear();
+//        Ll[m].clear();
+//
+//        for (int n = 0; n < parameters.ncells(); n++)
+//        {
+//            Lu[m].push_back(solvers[0]->L_upper[solvers[0]->M(m,n)]);
+//            Ll[m].push_back(solvers[0]->L_lower[solvers[0]->M(m,n)]);
+//        }
+//    }
 
 
     /// Delete solvers

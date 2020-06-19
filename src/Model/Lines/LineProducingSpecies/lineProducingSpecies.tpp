@@ -6,7 +6,7 @@
 
 //#include <Eigen/IterativeLinearSolvers>
 //#include <Eigen/SparseCholesky>
-
+#include <math.h>
 #include <Eigen/Core>
 
 #include "Tools/Parallel/wrap_omp.hpp"
@@ -290,6 +290,9 @@ inline void LineProducingSpecies ::
             const long I = index (p, linedata.irad[k]);
             const long J = index (p, linedata.jrad[k]);
 
+            if (isnan(v_IJ)) {cout << "R is nan at " << I << " " << J << "   Jeff = " << Jeff[p][k] << endl;}
+            if (isnan(v_JI)) {cout << "R is nan at " << J << " " << I << "   Jeff = " << Jeff[p][k] << endl;}
+
             if (linedata.jrad[k] != linedata.nlev-1)
             {
                 triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
@@ -315,6 +318,8 @@ inline void LineProducingSpecies ::
                 // Note: we define our transition matrix as the transpose of R in the paper.
                 const long I = index (lambda.get_nr(p, k, m), linedata.irad[k]);
                 const long J = index (p,                      linedata.jrad[k]);
+
+                if (isnan(v_IJ)) {cout << "L is nan at " << I << " " << J << "   op = " << get_opacity(p, k) << "   L = " << lambda.get_Ls(p, k, m) << endl;}
 
                 if (linedata.jrad[k] != linedata.nlev-1)
                 {
@@ -348,9 +353,13 @@ inline void LineProducingSpecies ::
                 const double v_IJ = colpar.Cd_intpld[k] * abn;
                 const double v_JI = colpar.Ce_intpld[k] * abn;
 
+
                 // Note: we define our transition matrix as the transpose of R in the paper.
                 const long I = index (p, colpar.icol[k]);
                 const long J = index (p, colpar.jcol[k]);
+
+                if (isnan(v_IJ)) {cout << "C is nan at " << I << " " << J << endl;}
+                if (isnan(v_JI)) {cout << "C is nan at " << J << " " << I << endl;}
 
                 if (colpar.jcol[k] != linedata.nlev-1)
                 {
@@ -432,6 +441,9 @@ inline void LineProducingSpecies ::
     {
         cout << "Factorization failed with error message:" << endl;
         cout << solver.lastErrorMessage()                  << endl;
+
+        cout << endl << RT << endl;
+
         assert (false);
     }
 

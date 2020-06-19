@@ -270,26 +270,26 @@ int Simulation:: compute_radiation_field()
 
     } // end of loop over ray pairs
 
-    Ld.clear();
-    for (int n = 0; n < parameters.ncells(); n++)
-    {
-        Ld.push_back(rayPairs[0].L_diag[n]);
-    }
-
-    Lu.resize(rayPairs[0].n_off_diag);
-    Ll.resize(rayPairs[0].n_off_diag);
-
-    for (int m = 0; m < rayPairs[0].n_off_diag; m++)
-    {
-        Lu[m].clear();
-        Ll[m].clear();
-
-        for (int n = 0; n < parameters.ncells(); n++)
-        {
-            Lu[m].push_back(rayPairs[0].L_upper[m][n]);
-            Ll[m].push_back(rayPairs[0].L_lower[m][n]);
-        }
-    }
+//    Ld.clear();
+//    for (int n = 0; n < parameters.ncells(); n++)
+//    {
+//        Ld.push_back(rayPairs[0].L_diag[n]);
+//    }
+//
+//    Lu.resize(rayPairs[0].n_off_diag);
+//    Ll.resize(rayPairs[0].n_off_diag);
+//
+//    for (int m = 0; m < rayPairs[0].n_off_diag; m++)
+//    {
+//        Lu[m].clear();
+//        Ll[m].clear();
+//
+//        for (int n = 0; n < parameters.ncells(); n++)
+//        {
+//            Lu[m].push_back(rayPairs[0].L_upper[m][n]);
+//            Ll[m].push_back(rayPairs[0].L_lower[m][n]);
+//        }
+//    }
 
 
     // Collect all dtaus

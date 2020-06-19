@@ -175,8 +175,11 @@ long Simulation :: compute_level_populations (
 
 void Simulation :: compute_Jeff ()
 {
+
     for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
+        Lambda = MatrixXd::Zero (lspec.population.size(), lspec.population.size());
+
         OMP_PARALLEL_FOR (p, parameters.ncells())
         {
             for (size_t k = 0; k < lspec.linedata.nrad; k++)
@@ -184,7 +187,6 @@ void Simulation :: compute_Jeff ()
                 const Long1 freq_nrs = lspec.nr_line[p][k];
 
                 // Initialize values
-                lspec.Jeff[p][k] = 0.0;
                 lspec.Jlin[p][k] = 0.0;
 
                 // Integrate over the line
@@ -192,23 +194,25 @@ void Simulation :: compute_Jeff ()
                 {
                     const double JJ = radiation.get_J (p,freq_nrs[z]);
 
-                    lspec.Jeff[p][k] += lspec.quadrature.weights[z] * JJ;
                     lspec.Jlin[p][k] += lspec.quadrature.weights[z] * JJ;
                 }
+
+
+                double diff = 0.0;
 
                 // Subtract the approximated part
                 for (size_t m = 0; m < lspec.lambda.get_size(p,k); m++)
                 {
                     const long I = lspec.index(lspec.lambda.get_nr(p,k,m), lspec.linedata.irad[k]);
+                    const long J = lspec.index(p,                          lspec.linedata.irad[k]);
 
-                    lspec.Jeff[p][k] -= HH_OVER_FOUR_PI * lspec.lambda.get_Ls(p,k,m)
-                                                        * lspec.population[I];
+                    diff += lspec.lambda.get_Ls(p,k,m) * lspec.population[I];
 
-//                    cout << "L in Jeff = " << lspec.lambda.get_Ls(p,k,m) << endl;
-//                    cout << "E in Jeff = " << HH_OVER_FOUR_PI * lspec.lambda.get_Ls(p,k,m)
-//                                              * lspec.population[I] << endl;
-//                    cout << "Jlin & - & Jeff = " << lspec.Jlin[p][k] << "  " << HH_OVER_FOUR_PI * lspec.lambda.get_Ls(p,k,m) * lspec.population[I] << "  " << lspec.Jeff[p][k] << endl;
+
+                    Lambda(I,J) = lspec.lambda.get_Ls(p,k,m);
                 }
+
+                lspec.Jeff[p][k] = lspec.Jlin[p][k] - HH_OVER_FOUR_PI * diff;
             }
         }
     }

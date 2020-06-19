@@ -58,6 +58,8 @@ struct Simulation : public Model
     Double2 Lu;
     Double2 Ll;
 
+    MatrixXd Lambda;
+
 
 #   if (GPU_ACCELERATION)
         int handleCudaError           (cudaError_t error);

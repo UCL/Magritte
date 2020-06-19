@@ -43,8 +43,6 @@ simdSolver :: simdSolver (
 
     frequencies = new vReal[ncells*nfreqs_red];
 
-    const Size area = 10*depth_max*width_max;
-
     term1              = new vReal[area];
     term2              = new vReal[area];
 

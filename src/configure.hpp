@@ -17,4 +17,4 @@
 #define GRID_SIMD false
 
 // GPU acceleration
-#define GPU_ACCELERATION true
+#define GPU_ACCELERATION false

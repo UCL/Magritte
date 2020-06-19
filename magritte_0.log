@@ -8,15 +8,21 @@
 -------------------------------------------
   Model read, parameters:                  
 -------------------------------------------
-  ncells     = 500
-  nrays      = 48
-  nrays_red  = 24
+  ncells     = 5
+  nrays      = 2
+  nrays_red  = 1
   nboundary  = 2
-  nfreqs     = 20
-  nfreqs_red = 20
+  nfreqs     = 1
+  nfreqs_red = 1
   nspecs     = 5
   nlspecs    = 1
   nlines     = 1
-  nquads     = 20
+  nquads     = 1
 -------------------------------------------
                                            
+ray = 0
+ray = 0
+ray = 0
+ray = 0
+ray = 0
+ray = 0

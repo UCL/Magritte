@@ -16,11 +16,7 @@
 ///    @param[in] k : index of the line transition
 ////////////////////////////////////////////////////////////////////
 
-inline long Lines ::
-    index (
-        const long p,
-        const int  l,
-        const int  k) const
+inline long Lines :: index (const long p, const int l, const int k) const
 {
   return k + nrad_cum[l] + p * nlines;
 }
@@ -32,10 +28,7 @@ inline long Lines ::
 ///    @param[in] line_index : index of the line
 ////////////////////////////////////////////////
 
-inline long Lines ::
-    index (
-        const long p,
-        const long line_index) const
+inline long Lines :: index (const long p, const long line_index) const
 {
   return line_index + p * nlines;
 }
@@ -48,24 +41,20 @@ inline long Lines ::
 ///    @param[in] l : index of the line producing species
 /////////////////////////////////////////////////////////
 
-inline void Lines ::
-    set_emissivity_and_opacity ()
+inline void Lines :: set_emissivity_and_opacity ()
 {
-
-
-  OMP_PARALLEL_FOR (p, ncells)
-  {
-    for (int l = 0; l < nlspecs; l++)
+    OMP_PARALLEL_FOR (p, ncells)
     {
-      for (int k = 0; k < lineProducingSpecies[l].linedata.nrad; k++)
-      {
-        const long ind = index (p,l,k);
+        for (size_t l = 0; l < nlspecs; l++)
+        {
+            for (size_t k = 0; k < lineProducingSpecies[l].linedata.nrad; k++)
+            {
+                const size_t ind = index (p,l,k);
 
-        emissivity[ind] = lineProducingSpecies[l].get_emissivity (p, k);
-           opacity[ind] = lineProducingSpecies[l].get_opacity    (p, k);
-      }
+                emissivity[ind] = lineProducingSpecies[l].get_emissivity (p, k);
+                   opacity[ind] = lineProducingSpecies[l].get_opacity    (p, k);
+            }
+        }
     }
-  }
-
 
 }
