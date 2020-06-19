@@ -188,7 +188,7 @@ struct Solver
         const Size            f,
         const Size            k,
         const Size            m,
-              Lambda         &lambda     ) const;
+              Lambda         &lambda     ) ;//const;
 
     inline void update_Lambda (Model &model) ;//const;
 

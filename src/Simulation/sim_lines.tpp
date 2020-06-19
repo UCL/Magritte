@@ -206,13 +206,24 @@ void Simulation :: compute_Jeff ()
                     const long I = lspec.index(lspec.lambda.get_nr(p,k,m), lspec.linedata.irad[k]);
                     const long J = lspec.index(p,                          lspec.linedata.irad[k]);
 
+                    const double diff_perv = diff;
+
                     diff += lspec.lambda.get_Ls(p,k,m) * lspec.population[I];
+
+                    if(isnan(diff))
+                    {
+                        cout << "diff prev = " << diff_perv << "  L = " << lspec.lambda.get_Ls(p,k,m) << "  pop = " << lspec.population[I]  << endl;
+                    }
 
 
                     Lambda(I,J) = lspec.lambda.get_Ls(p,k,m);
                 }
 
                 lspec.Jeff[p][k] = lspec.Jlin[p][k] - HH_OVER_FOUR_PI * diff;
+
+                if(isnan(lspec.Jeff[p][k])) {
+                    cout << "Jeff is nan   Jlin = " << lspec.Jlin[p][k] << "  diff =" << diff << endl;
+                }
             }
         }
     }

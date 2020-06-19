@@ -171,7 +171,7 @@ inline void Solver<Real> :: add_L_diag (
 
     const Real L = constante * fsc * phi * L_diag[In] / chi[In];
 
-    if(isnan(L)) {printf("!!! L d is nan %le, %le\n", L_diag[In], chi[In]);}
+//    if(isnan(L)) {printf("!!! L d is nan %le, %le\n", L_diag[In], chi[In]);}
 
 //    printf("eta / eta = %le", HH_OVER_FOUR_PI * constante * fsc * phi / eta[In]);
 
@@ -198,20 +198,20 @@ inline void Solver<Real> :: add_L_lower (
     const Size            m,
           Lambda         &lambda        ) //const
 {
-    const Size In = I(n1[rp]-m, V(rp, f));
-    const Size Dn = D(rp      , n1[rp]-m);
+    const Size In = I(n1[rp]-m-1, V(rp, f));
+    const Size Dn = D(rp      , n1[rp]-m-1);
 
     const Real fsc = frequencies[V(nrs[Dn], f)] * shifts[Dn];
     const Real phi = thermodyn.profile (invr_mass, nrs[Dn], freq_line, fsc);
 
     const Real L = constante * fsc * phi * L_lower[M(m,In)] / chi[In];
 
-    if(isnan(L))
-    {
-        for (Size w = 0; w < width; w++) {check_L(w);}
-
-        printf("!!! L l is nan %le, %ld, %ld\n", L_lower[M(m,In)], In, m);
-    }
+//    if(isnan(L))
+//    {
+//        for (Size w = 0; w < width; w++) {check_L(w);}
+//
+//        printf("!!! L l is nan, M(%ld, %ld) = %ld, n_off_diag = %ld, last = %ld, n_tot = %ld\n", m, In, M(m,In), n_off_diag, last, n_tot[rp]);
+//    }
 
 //    printf("eta / eta = %le", HH_OVER_FOUR_PI * constante * fsc * phi / eta[In]);
 
@@ -233,17 +233,22 @@ inline void Solver<Real> :: add_L_upper (
     const Size            f,
     const Size            k,
     const Size            m,
-          Lambda         &lambda        ) const
+          Lambda         &lambda        ) //const
 {
-    const Size In = I(n1[rp]+m, V(rp, f));
-    const Size Dn = D(rp      , n1[rp]+m);
+    const Size In = I(n1[rp]+m+1, V(rp, f));
+    const Size Dn = D(rp      , n1[rp]+m+1);
 
     const Real fsc = frequencies[V(nrs[Dn], f)] * shifts[Dn];
     const Real phi = thermodyn.profile (invr_mass, nrs[Dn], freq_line, fsc);
 
     const Real L = constante * fsc * phi * L_upper[M(m,In)] / chi[In];
 
-    if(isnan(L)) {printf("!!! L u is nan %le, %le\n", L_upper[M(m,In)], chi[In]);}
+//    if(isnan(L)) {
+//
+//        for (Size w = 0; w < width; w++) {check_L(w);}
+//
+//        printf("!!! L u is nan, M(%ld, %ld) = %ld, n_off_diag = %ld, last = %ld, n_tot = %ld\n", m, In, M(m,In), n_off_diag, last, n_tot[rp]);
+//    }
 
 //    printf("eta / eta = %le", HH_OVER_FOUR_PI * constante * fsc * phi / eta[In]);
 
@@ -277,14 +282,14 @@ inline void Solver<Real> :: update_Lambda (Model &model) //const
 
             add_L_diag (thermodyn, invr_mass, freq_line, constante, rp, f, k, lspec.lambda);
 
-            for (long m = 1; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
+            for (long m = 0; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
             {
-                if (n1[rp]>= m)   // n1[rp]-m >= 0
+                if (n1[rp] >= m+1)   // n1[rp]-m-1 >= 0
                 {
                     add_L_lower (thermodyn, invr_mass, freq_line, constante, rp, f, k, m, lspec.lambda);
                 }
 
-                if (n1[rp]+m+m < n_tot[rp])   // n1[rp]+m < n_tot[rp]-m
+                if (n1[rp]+m+2+m < n_tot[rp])   // n1[rp]+m+1 < n_tot[rp]-1-m
                 {
                     add_L_upper (thermodyn, invr_mass, freq_line, constante, rp, f, k, m, lspec.lambda);
                 }
