@@ -209,7 +209,7 @@ int Simulation :: cpu_compute_radiation_field (
                     bool       completed;
                     ProtoBlock complete_block;
 
-#                   pragma omp critical
+#                   pragma omp critical (update_queue)
                     {
                         queue.add (ray_ar, ray_rr, o, depth);
                         completed = queue.some_are_completed();
@@ -220,7 +220,13 @@ int Simulation :: cpu_compute_radiation_field (
                     if (completed)
                     {
                         solver->solve (complete_block, RR, rr, *this);
+
+#                       pragma omp critical (update_Lambda)
+                        {
+                            solver->update_Lambda (*this);
+                        }
                     }
+
                 }
                 else
                 {

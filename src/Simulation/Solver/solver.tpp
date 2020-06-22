@@ -332,8 +332,6 @@ inline void Solver<Real> :: store (Model &model) //const
             }
         }
     }
-
-    update_Lambda (model);
 }
 
 
