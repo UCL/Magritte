@@ -279,9 +279,6 @@ inline void LineProducingSpecies ::
 
         for (long k = 0; k < linedata.nrad; k++)
         {
-            //cout<<"Jeff["<<p<<"]["<<k<<"] = "<<Jeff[p][k]<<endl;
-            //cout<<"Jlin["<<p<<"]["<<k<<"] = "<<Jlin[p][k]<<endl;
-
             const double v_IJ = linedata.A[k] + linedata.Bs[k] * Jeff[p][k];
             const double v_JI =                 linedata.Ba[k] * Jeff[p][k];
 
@@ -313,13 +310,12 @@ inline void LineProducingSpecies ::
         {
             for (long m = 0; m < lambda.get_size(p,k); m++)
             {
-                const double v_IJ = -get_opacity(p, k) * lambda.get_Ls(p, k, m);
+                const size_t nr = lambda.get_nr(p, k, m);
+                const double v_IJ = -get_opacity(nr, k) * lambda.get_Ls(p, k, m);
 
                 // Note: we define our transition matrix as the transpose of R in the paper.
-                const long I = index (lambda.get_nr(p, k, m), linedata.irad[k]);
-                const long J = index (p,                      linedata.jrad[k]);
-
-                if (isnan(v_IJ)) {cout << "L is nan at " << I << " " << J << "   op = " << get_opacity(p, k) << "   L = " << lambda.get_Ls(p, k, m) << endl;}
+                const long J = index (nr, linedata.irad[k]);
+                const long I = index (p,  linedata.jrad[k]);
 
                 if (linedata.jrad[k] != linedata.nlev-1)
                 {

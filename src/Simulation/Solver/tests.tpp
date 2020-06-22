@@ -41,8 +41,8 @@ inline void Solver<Real> :: setup_L (const Size w)
     {
         for (Size n = 0; n < N-m-1; n++)
         {
-            test_L(n,n+m+1) = L_upper[M(m,I(n,w))];
-            test_L(n+m+1,n) = L_lower[M(m,I(n,w))];
+            test_L(n,n+m+1) = L_upper[M(m,I(n+m+1,w))];
+            test_L(n+m+1,n) = L_lower[M(m,I(n    ,w))];
         }
     }
 }

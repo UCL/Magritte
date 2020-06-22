@@ -280,17 +280,22 @@ inline void Solver<Real> :: update_Lambda (Model &model) //const
             const double invr_mass = lspec.linedata.inverse_mass;
             const double constante = lspec.linedata.A[k] * lspec.quadrature.weights[z] * w_ang;
 
+//            printf("---- Adding diag\n");
             add_L_diag (thermodyn, invr_mass, freq_line, constante, rp, f, k, lspec.lambda);
 
             for (long m = 0; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
             {
+//                printf("??? n1(%ld) >= m+1(%ld)\n", n1[rp], m+1);
                 if (n1[rp] >= m+1)   // n1[rp]-m-1 >= 0
                 {
+//                    printf("Adding lower: m = %ld\n", m);
                     add_L_lower (thermodyn, invr_mass, freq_line, constante, rp, f, k, m, lspec.lambda);
                 }
 
-                if (n1[rp]+m+2+m < n_tot[rp])   // n1[rp]+m+1 < n_tot[rp]-1-m
+//                printf("??? n1+m+1(%ld) < n_tot(%ld)\n", n1[rp]+m+1, n_tot[rp]);
+                if (n1[rp]+m+1 < n_tot[rp])   // n1[rp]+m+1 < n_tot[rp]
                 {
+//                    printf("Adding upper: m = %ld\n", m);
                     add_L_upper (thermodyn, invr_mass, freq_line, constante, rp, f, k, m, lspec.lambda);
                 }
             }
@@ -618,8 +623,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
             const Size Inp1 = I(n+1, w);
             const Size In   = I(n,   w);
 
-            L_upper[M(0,In)] = L_diag[Inp1] * inverse_one_plus_F[In  ];
-            L_lower[M(0,In)] = L_diag[In  ] * inverse_one_plus_G[Inp1];
+            L_upper[M(0,Inp1)] = L_diag[Inp1] * inverse_one_plus_F[In  ];
+            L_lower[M(0,In  )] = L_diag[In  ] * inverse_one_plus_G[Inp1];
 
 //            printf("L_u(0, %ld) = %le\n", In, L_upper[M(0,In)]);
 //            printf("L_l(0, %ld) = %le\n", In, L_lower[M(0,In)]);
@@ -631,10 +636,11 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
             {
                 const Size Inp1   = I(n+1,   w);
                 const Size Inpmp1 = I(n+m+1, w);
+                const Size Inpmp2 = I(n+m+2, w);
                 const Size In     = I(n,     w);
 
-                L_upper[M(m,In)] = L_upper[M(m-1,Inp1)] * inverse_one_plus_F[In    ];
-                L_lower[M(m,In)] = L_lower[M(m-1,In  )] * inverse_one_plus_G[Inpmp1];
+                L_upper[M(m,Inpmp1)] = L_upper[M(m-1,Inpmp1)] * inverse_one_plus_F[In    ];
+                L_lower[M(m,In    )] = L_lower[M(m-1,In    )] * inverse_one_plus_G[Inpmp1];
 
 //                printf("L_u(%ld, %ld)[%ld] = %le\n", m, In, M(m,In), L_upper[M(m,In)]);
 //                printf("L_l(%ld, %ld)[%ld] = %le\n", m, In, M(m,In), L_lower[M(m,In)]);
@@ -854,8 +860,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
 //            cout << "iopF    = " << inverse_one_plus_F[In]   << endl;
 //            cout << "iopG    = " << inverse_one_plus_G[Inp1] << endl;
 
-            L_upper[M(0,In)] = L_diag[Inp1] * inverse_one_plus_F[In  ];
-            L_lower[M(0,In)] = L_diag[In  ] * inverse_one_plus_G[Inp1];
+            L_upper[M(0,Inp1)] = L_diag[Inp1] * inverse_one_plus_F[In  ];
+            L_lower[M(0,In  )] = L_diag[In  ] * inverse_one_plus_G[Inp1];
         }
 
         for (Size m = 1; (m < n_off_diag) && (m < n_tot[rp]-1); m++)
@@ -864,10 +870,11 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
             {
                 const Size Inp1   = I(n+1,   w);
                 const Size Inpmp1 = I(n+m+1, w);
+                const Size Inpmp2 = I(n+m+2, w);
                 const Size In     = I(n,     w);
 
-                L_upper[M(m,In)] = L_upper[M(m-1,Inp1)] * inverse_one_plus_F[In    ];
-                L_lower[M(m,In)] = L_lower[M(m-1,In  )] * inverse_one_plus_G[Inpmp1];
+                L_upper[M(m,Inpmp1)] = L_upper[M(m-1,Inpmp1)] * inverse_one_plus_F[In    ];
+                L_lower[M(m,In    )] = L_lower[M(m-1,In    )] * inverse_one_plus_G[Inpmp1];
             }
         }
     }
