@@ -22,8 +22,7 @@ path.insert (0, '../../bin/')
 # In[2]:
 
 
-from magritte import Model, Long1, Long2, Double1, Double2, String1
-from setup    import Setup, linedata_from_LAMDA_file
+from magritte.setup import Setup, linedata_from_LAMDA_file
 
 
 # ## 1) Read the input file

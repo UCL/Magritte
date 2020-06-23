@@ -30,8 +30,8 @@ sysPath.insert (0, f'{magritteFolder}bin/')
 # In[2]:
 
 
-from magritte import Model, Long1, Long2, Double1, Double2, String1
-from setup    import Setup, linedata_from_LAMDA_file
+from magritte import Model, Long1, Double1, Double2, String1
+from magritte.setup import Setup, linedata_from_LAMDA_file
 
 
 # ## 1) Define model
@@ -173,7 +173,7 @@ model.lines.lineProducingSpecies[0].quadrature.weights = Double1 (quadrature.H_w
 #from ioMagritte import IoPython
 from ioMagritte import IoText
 #from os         import remove
-from setup      import make_file_structure
+from magritte.setup import make_file_structure
 from shutil     import rmtree
 
 

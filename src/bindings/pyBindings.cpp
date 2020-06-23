@@ -22,11 +22,11 @@ PYBIND11_MAKE_OPAQUE (std::vector<LineProducingSpecies>);
 PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 
 
-PYBIND11_MODULE (magritte, module)
+PYBIND11_MODULE (core, module)
 {
 
     // Module docstring
-    module.doc() = "Magritte module";
+    module.doc() = "Magritte core module containing the C++ library.";
 
 
     // Define vector types

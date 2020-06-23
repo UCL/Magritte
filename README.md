@@ -4,7 +4,13 @@
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 ---
 
-This is the repository of the Magritte main library. Magritte is a modern open-source software library for 3D radiative transfer. It is a deterministic ray-tracer using a formal solver that currently focusses on line radiative transfer. See our first Magritte paper ([arXiv](https://arxiv.org/pdf/1912.08445.pdf), [MNRAS](https://doi.org/10.1093/mnras/stz3557)) for more details.
+This is the repository of the Magritte main library. Magritte is a modern open-source
+software library for 3D radiative transfer. It is a deterministic ray-tracer using a
+formal solver that currently focusses on line radiative transfer. See our first
+Magritte paper ([arXiv](https://arxiv.org/pdf/1912.08445.pdf),
+[MNRAS](https://doi.org/10.1093/mnras/stz3557)) for more details.
+
+Magritte can either be used as a C++ library or as a Python package.
 
 ## Installation
 First, download the dependencies and configure Magritte using

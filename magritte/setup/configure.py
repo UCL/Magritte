@@ -1,19 +1,16 @@
 import os
 import sys
-
-sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}")
-sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../bin/")
-
 import yaml
 import numpy as np
 
 from shutil     import rmtree
 from copy       import deepcopy
-from magritte   import Simulation, IoPython, IoText
-from setup      import Setup, linedata_from_LAMDA_file, make_file_structure
-from quadrature import H_roots, H_weights
-from input      import *
-from rays       import setup_rays_spherical_symmetry
+
+from magritte.core             import Simulation, IoPython, IoText
+from magritte.setup.setup      import Setup, linedata_from_LAMDA_file, make_file_structure
+from magritte.setup.quadrature import H_roots, H_weights
+from magritte.setup.input      import *
+from magritte.setup.rays       import setup_rays_spherical_symmetry
 
 
 

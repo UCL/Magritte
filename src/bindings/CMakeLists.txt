@@ -1,6 +1,9 @@
 # CMakeLists.txt for Python Python Bindings
 ###########################################
 
+# Write the python library to the magritte python package
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY}/../magritte)
+
 # Add Python package
 find_package (PythonLibs REQUIRED)
 
@@ -23,7 +26,7 @@ if    (GPU_ACCELERATION)
   # Add CUDA package
   find_package (CUDA REQUIRED)
   # Add CUDA library
-  cuda_add_library (magritte SHARED
+  cuda_add_library (core SHARED
     pyBindings.cpp
     ../Io/cpp/io_cpp_text.cpp
     ../Io/python/io_python.cpp
@@ -58,9 +61,9 @@ if    (GPU_ACCELERATION)
 #    ../Simulation/Raypair/rayblock.cu
     ../Simulation/Image/image.cpp)
   # Set library properties
-  set_target_properties (magritte PROPERTIES PREFIX "")
+  set_target_properties (core PROPERTIES PREFIX "")
   # Link Python libraries
-  #target_link_libraries (magritte ${PYTHON_LIBRARIES})
+  #target_link_libraries (core ${PYTHON_LIBRARIES})
 
 else  (GPU_ACCELERATION)
 
@@ -82,7 +85,7 @@ else  (GPU_ACCELERATION)
   configure_file (${CMAKE_SOURCE_DIR}/src/configure.hpp.in
                   ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
   # pybind11 command to create the python module in bin directory
-  pybind11_add_module (magritte SHARED
+  pybind11_add_module (core SHARED
     pyBindings.cpp
     ../Io/cpp/io_cpp_text.cpp
     ../Io/python/io_python.cpp
@@ -114,10 +117,11 @@ else  (GPU_ACCELERATION)
     ../Simulation/Image/image.cpp)
   # Link GRID_SIMD libraries if required
   if    (GRID_SIMD)
-    target_link_libraries (magritte PRIVATE GridSIMD)
+    target_link_libraries (core PRIVATE GridSIMD)
   endif (GRID_SIMD)
   # Set library properties
-  set_target_properties (magritte PROPERTIES PREFIX "")
+  set_target_properties (core PROPERTIES PREFIX "")
+#  set_target_properties (core PROPERTIES SUFFIX ".so")
 
 endif (GPU_ACCELERATION)
 

@@ -30,8 +30,8 @@ sysPath.insert (0, f'{magritteFolder}bin/')
 # In[3]:
 
 
-from magritte import Model, Long1, Long2, Double1, Double2, String1
-from setup    import Setup, linedata_from_LAMDA_file
+from magritte import Model, Long1, Double1, Double2, String1
+from magritte.setup import Setup, linedata_from_LAMDA_file
 
 
 # ## 1) Define model
