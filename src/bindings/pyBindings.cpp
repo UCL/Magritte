@@ -22,11 +22,11 @@ PYBIND11_MAKE_OPAQUE (std::vector<LineProducingSpecies>);
 PYBIND11_MAKE_OPAQUE (std::vector<CollisionPartner>);
 
 
-PYBIND11_MODULE (magritte, module)
+PYBIND11_MODULE (core, module)
 {
 
     // Module docstring
-    module.doc() = "Magritte module";
+    module.doc() = "Magritte core module containing the C++ library.";
 
 
     // Define vector types
@@ -258,7 +258,7 @@ PYBIND11_MODULE (magritte, module)
         // attributes
         .def_readwrite ("linedata",         &LineProducingSpecies::linedata)
         .def_readwrite ("quadrature",       &LineProducingSpecies::quadrature)
-        .def_readwrite ("Lambda",           &LineProducingSpecies::lambda)
+        .def_readwrite ("lambda",           &LineProducingSpecies::lambda)
         .def_readwrite ("Jeff",             &LineProducingSpecies::Jeff)
         .def_readwrite ("Jlin",             &LineProducingSpecies::Jlin)
         .def_readwrite ("nr_line",          &LineProducingSpecies::nr_line)
@@ -268,6 +268,8 @@ PYBIND11_MODULE (magritte, module)
         .def_readwrite ("population_prev2", &LineProducingSpecies::population_prev2)
         .def_readwrite ("population_prev3", &LineProducingSpecies::population_prev3)
         .def_readwrite ("ncells",           &LineProducingSpecies::ncells)
+        .def_readwrite ("RT",               &LineProducingSpecies::RT)
+        .def_readwrite ("LambdaStar",       &LineProducingSpecies::LambdaStar)
         // constructor
         .def (py::init<>())
         // functions
@@ -375,6 +377,13 @@ PYBIND11_MODULE (magritte, module)
         .def ("get_nu",       &Frequencies::get_nu);
 
 
+//    // Solver
+//    py::class_<Solver> (module, "Solver");
+//
+//    // gpuSolver
+//    py::class_<gpuSolver, Solver> (module, "gpuSolver")
+//    // constructor
+//    .def (py::init<const Size &, const Size &, const Size &, const Size &, const Size &>());
 
 
     // Simulation
@@ -389,14 +398,21 @@ PYBIND11_MODULE (magritte, module)
         .def_readonly ("chis",                         &Simulation::chis)
         .def_readonly ("pre",                          &Simulation::pre)
         .def_readonly ("pos",                          &Simulation::pos)
+        .def_readonly ("Ld",                           &Simulation::Ld)
+        .def_readonly ("Lu",                           &Simulation::Lu)
+        .def_readonly ("Ll",                           &Simulation::Ll)
+        .def_readonly ("Lambda",                       &Simulation::Lambda)
         //.def_readonly ("rayPair",                      &Simulation::rayPair)
 #       if (GPU_ACCELERATION)
         .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)
 //        .def ("gpu_compute_radiation_field",           &Simulation::gpu_compute_radiation_field)
-//        .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
+        .def ("gpu_compute_radiation_field_2",         &Simulation::gpu_compute_radiation_field_2)
 #       endif
 //        .def ("cpu_compute_radiation_field_2",         &Simulation::cpu_compute_radiation_field_2)
-//        .def ("cpu_compute_radiation_field",           &Simulation::cpu_compute_radiation_field)
+        .def ("cpu_compute_radiation_field",           &Simulation::cpu_compute_radiation_field)
+        .def ("compute_radiation_field_cpu",           &Simulation::compute_radiation_field_cpu)
+        .def ("compute_Jeff",                          &Simulation::compute_Jeff)
+        .def ("compute_level_populations_from_stateq", &Simulation::compute_level_populations_from_stateq)
         // functions
         .def ("compute_spectral_discretisation",       &Simulation::compute_spectral_discretisation)
         .def ("compute_spectral_discretisation_image", &Simulation::compute_spectral_discretisation_image)
@@ -414,32 +430,32 @@ PYBIND11_MODULE (magritte, module)
         .def("get_npoints_on_rays_comoving",           &Simulation::get_npoints_on_rays<CoMoving>)
         .def("get_npoints_on_rays_rest",               &Simulation::get_npoints_on_rays<Rest>);
 
-    // RayPair
-    py::class_<RayPair> (module, "RayPair")
-        // constructor
-        .def (py::init<>())
-        // attributes
-        .def_readwrite ("I_bdy_0", &RayPair::I_bdy_0)
-        .def_readwrite ("I_bdy_n", &RayPair::I_bdy_n)
-        .def_readonly ("n_ar",     &RayPair::n_ar)
-        .def_readonly ("n_r",      &RayPair::n_r)
-        .def_readonly ("ndep",     &RayPair::ndep)
-        .def_readonly ("A",        &RayPair::A)
-        .def_readonly ("C",        &RayPair::C)
-        .def_readonly ("Su",       &RayPair::Su)
-        .def_readonly ("Sv",       &RayPair::Sv)
-        .def_readonly ("dtau",     &RayPair::dtau)
-        .def_readonly ("L_diag",   &RayPair::L_diag)
-        .def_readonly ("L_upper",  &RayPair::L_upper)
-        .def_readonly ("L_lower",  &RayPair::L_lower)
-        // functions
-        .def ("resize",            &RayPair::resize)
-        .def ("initialize",        &RayPair::initialize)
-        .def ("set_term1_and_term2",
-              (void (RayPair::*)(const vReal&, const vReal&, const long))
-                                   &RayPair::set_term1_and_term2)
-        .def ("set_dtau",          &RayPair::set_dtau)
-        .def ("solve",             &RayPair::solve);
+//    // RayPair
+//    py::class_<RayPair> (module, "RayPair")
+//        // constructor
+//        .def (py::init<>())
+//        // attributes
+//        .def_readwrite ("I_bdy_0", &RayPair::I_bdy_0)
+//        .def_readwrite ("I_bdy_n", &RayPair::I_bdy_n)
+//        .def_readonly ("n_ar",     &RayPair::n_ar)
+//        .def_readonly ("n_r",      &RayPair::n_r)
+//        .def_readonly ("ndep",     &RayPair::ndep)
+//        .def_readonly ("A",        &RayPair::A)
+//        .def_readonly ("C",        &RayPair::C)
+//        .def_readonly ("Su",       &RayPair::Su)
+//        .def_readonly ("Sv",       &RayPair::Sv)
+//        .def_readonly ("dtau",     &RayPair::dtau)
+//        .def_readonly ("L_diag",   &RayPair::L_diag)
+//        .def_readonly ("L_upper",  &RayPair::L_upper)
+//        .def_readonly ("L_lower",  &RayPair::L_lower)
+//        // functions
+//        .def ("resize",            &RayPair::resize)
+//        .def ("initialize",        &RayPair::initialize)
+//        .def ("set_term1_and_term2",
+//              (void (RayPair::*)(const vReal&, const vReal&, const long))
+//                                   &RayPair::set_term1_and_term2)
+//        .def ("set_dtau",          &RayPair::set_dtau)
+//        .def ("solve",             &RayPair::solve);
 
 
 //    // RayBlock
@@ -447,14 +463,16 @@ PYBIND11_MODULE (magritte, module)
 //        // constructor
 //        .def (py::init<>());
 //
-//    // ProtoRayBlock
+
+
+    // ProtoRayBlock
 //    py::class_<ProtoRayBlock> (module, "ProtoRayBlock")
-//        // constructor
+        // constructor
 //        .def (py::init<>());
-//
-//    // RayQueue
+
+    // RayQueue
 //    py::class_<RayQueue> (module, "RayQueue")
-//        // constructor
+        // constructor
 //        .def (py::init<>());
 
 

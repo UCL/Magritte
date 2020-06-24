@@ -17,63 +17,40 @@
 
 struct Lambda
 {
+  Double3 Ls;    ///< values
+  Long3   nr;    ///< position indices
 
-  Double3 Ls;
-  Long3   nr;
-
-  Double1 Lss;
-  Long1   nrs;
+  Double1 Lss;   ///< linearized values
+  Long1   nrs;   ///< linearized position indices
 
   Long1   size;
 
 
-  inline int initialize (
-      const Parameters &parameters,
-      const long        nrad_new   );
+  inline void initialize (const Parameters &parameters, const size_t nrad_new);
 
-  inline int clear ();
+  inline void clear ();
 
-  inline int linearize_data ();
+  inline void linearize_data ();
 
   inline int MPI_gather ();
 
 
-  inline long index_first (
-      const long p,
-      const long k        ) const;
-
-  inline long index_last (
-      const long p,
-      const long k       ) const;
+  inline size_t index_first (const size_t p, const size_t k) const;
+  inline size_t index_last  (const size_t p, const size_t k) const;
 
 
-  inline double get_Ls (
-      const long p,
-      const long k,
-      const long index ) const;
+  inline double get_Ls (const size_t p, const size_t k, const size_t index) const;
+  inline size_t get_nr (const size_t p, const size_t k, const size_t index) const;
 
-  inline long get_nr (
-      const long p,
-      const long k,
-      const long index ) const;
+  inline size_t get_size (const size_t p, const size_t k) const;
 
-  inline long get_size (
-      const long p,
-      const long k     ) const;
-
-
-  inline void add_element (
-      const long   p,
-      const long   k,
-      const long   nr,
-      const double Ls     );
+  inline void add_element (const size_t p, const size_t k, const size_t nr, const double Ls);
 
 
   private:
 
-      long ncells;
-      long nrad;
-
+      size_t ncells;
+      size_t nrad;
 
 };
 

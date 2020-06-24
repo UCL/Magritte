@@ -197,8 +197,7 @@ inline void RayPair ::
 
 /// if no scattering
 
-inline void RayPair ::
-    solve (void)
+inline void RayPair :: solve (void)
 
 {
 
@@ -365,11 +364,13 @@ inline void RayPair ::
     for (long n = last-1; n >= first+1; n--)
     {
       L_diag[n] = inverse_C[n] / (F[n] + G[n+1] * inverse_one_plus_G[n+1]);
+//      printf("L(n=%ld) = %le\n", n, L_diag[n]);
     }
 
     L_diag[first] = (vOne + G[first+1]) / (B0_min_C0 + B0*G[first+1]);
+//    printf("L(n=%ld) = %le\n", first, L_diag[first]);
 
-    for (long n = last; n >= first; n--)
+    for (long n = last-1; n >= first; n--) /// CHANGED !!!
     {
       L_upper[0][n] = L_diag[n+1] * inverse_one_plus_F[n  ];
       L_lower[0][n] = L_diag[n  ] * inverse_one_plus_G[n+1];

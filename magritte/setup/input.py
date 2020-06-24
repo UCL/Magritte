@@ -5,15 +5,12 @@ import meshio
 import numpy as np
 
 from astropy                import units, constants
-from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
+from vtk.util.numpy_support import vtk_to_numpy
 from scipy.spatial          import cKDTree, Delaunay
 from tqdm                   import tqdm
 
-sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}")
-sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../bin/")
-
-from mesher   import Mesh
-from magritte import Model, IoPython, IoText
+from magritte.mesher.mesher import Mesh
+from magritte.core          import Model, IoPython, IoText
 
 
 

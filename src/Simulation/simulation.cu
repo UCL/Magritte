@@ -1,6 +1,7 @@
 #include "Simulation/simulation.hpp"
-#include "Raypair/raypair.cuh"
-#include "Raypair/rayblock.cuh"
+#include "Simulation/Solver/gpu/gpu_solver.cuh"
+//#include "Raypair/raypair.cuh"
+//#include "Raypair/rayblock.cuh"
 
 
 int Simulation :: handleCudaError (cudaError_t error)
@@ -114,8 +115,8 @@ int Simulation :: gpu_get_device_properties (void)
 //}
 
 
-int Simulation :: cpu_compute_radiation_field (const double inverse_dtau_max)
-{
+//int Simulation :: cpu_compute_radiation_field (const double inverse_dtau_max)
+//{
 //    // Initialisations
 //    for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
 //    {
@@ -182,8 +183,8 @@ int Simulation :: cpu_compute_radiation_field (const double inverse_dtau_max)
 //    /// Delete ray block
 //    delete rayblock;
 
-    return (0);
-}
+//    return (0);
+//}
 
 
 
@@ -315,3 +316,132 @@ int Simulation :: cpu_compute_radiation_field (const double inverse_dtau_max)
 //}
 
 
+int Simulation :: gpu_compute_radiation_field_2 (
+        const size_t nraypairs,
+        const size_t gpuBlockSize,
+        const size_t gpuNumBlocks,
+        const double inverse_dtau_max           )
+{
+    // Set timers
+    Timer timer("GPU compute radiation field");
+    timer.start();
+
+    const size_t n_off_diag = 0;
+
+    // Initialisations
+    for (auto &lspec : lines.lineProducingSpecies)
+    {
+        lspec.lambda.clear ();
+    }
+
+    radiation.initialize_J ();
+
+    /// Set maximum number of points along a ray, if not set yet
+    if (geometry.max_npoints_on_rays == -1)
+    {
+        get_max_npoints_on_rays <CoMoving> ();
+    }
+
+    // Get number of threads
+    const size_t nthreads = get_nthreads();
+
+    /// Create and initialize a solver fo each thread
+    vector<gpuSolver*> solvers (nthreads);
+
+    for (auto &solver : solvers)
+    {
+        // Create a sover object
+        solver = new gpuSolver (parameters.ncells(),
+                                parameters.nfreqs(),
+                                parameters.nlines(),
+                                nraypairs,
+                                geometry.max_npoints_on_rays,
+                                n_off_diag);
+
+        /// Set GPU block size
+        solver->gpuBlockSize     = gpuBlockSize;
+        solver->gpuNumBlocks     = gpuNumBlocks;
+        solver->inverse_dtau_max = inverse_dtau_max;
+
+        /// Set model data
+        solver->copy_model_data (*this);
+    }
+
+
+    for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
+    {
+        const size_t RR = rr - MPI_start (parameters.nrays()/2);
+        const size_t ar = geometry.rays.antipod[rr];
+
+        Queue queue (nraypairs);
+
+//        cout << "complete = ";
+//        if (rayqueue.complete()) {cout << "True"  << endl;}
+//        else                     {cout << "False" << endl;}
+
+
+        logger.write ("ray = ", rr);
+
+//#       pragma omp parallel default (shared)
+        {
+//            const size_t t = omp_get_thread_num();
+            auto &solver = solvers[omp_get_thread_num()];
+
+
+            for (size_t o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
+            {
+                const double dshift_max = get_dshift_max (o);
+
+                // Trace ray pair
+                const RayData ray_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+                const RayData ray_rr = geometry.trace_ray <CoMoving> (o, rr, dshift_max);
+
+                const size_t depth = ray_ar.size() + ray_rr.size() + 1;
+
+                if (depth > 1)
+                {
+#                   pragma omp critical (add_to_queue)
+                    {
+                        /// Add ray pair to queue
+                        queue.add (ray_ar, ray_rr, o, depth);
+//                    }
+//
+//#                   pragma omp critical (offload_to_gpu)
+//                    {
+                        if (queue.some_are_completed())
+                        {
+                            solver->solve (queue.get_complete_block(), RR, rr, *this);
+                        }
+                    }
+                }
+                else
+                {
+                    /// Extract radiation field from boundary
+                    get_radiation_field_from_boundary (RR, rr, o);
+                }
+            }
+        }
+
+        /// Compute the unfinished rays in the queue
+//        for (long s = omp_get_thread_num(); s < rayqueue.queue.size(); s += omp_get_num_threads())
+        for (const ProtoBlock &prb : queue.queue)
+        {
+//            const ProtoRayBlock &prb = rayqueue.queue[s];
+
+            solvers[0]->nraypairs = prb.nraypairs();
+            solvers[0]->width     = prb.nraypairs() * parameters.nfreqs();
+
+            solvers[0]->solve (prb, RR, rr, *this);
+        }
+    }
+
+
+    /// Delete solvers
+    for (auto &solver : solvers) {delete solver;}
+
+    // Stop timer and print results
+    timer.stop();
+    timer.print();
+
+    return (0);
+}

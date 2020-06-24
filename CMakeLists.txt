@@ -16,7 +16,7 @@ set (CMAKE_BUILD_TYPE Release)
 #set (CMAKE_BUILD_TYPE Relwithdebinfo)
 #set (CMAKE_BUILD_TYPE Debug)
 #set (CUDA_NVCC_FLAGS " -g -G -x cu -O5") WARNING -G cfr issue:#112
-#set (CUDA_NVCC_FLAGS " -g -x cu -O5")
+#set (CUDA_NVCC_FLAGS " -g")
 set (CUDA_NVCC_FLAGS "-O5")
 
 # Build options

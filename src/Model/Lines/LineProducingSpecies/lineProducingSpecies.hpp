@@ -8,6 +8,15 @@
 #define __LINEPRODUCINGSPECIES_HPP_INCLUDED__
 
 
+#include <Eigen/SparseLU>
+using Eigen::SparseLU;
+#include <Eigen/SparseCore>
+using Eigen::SparseMatrix;
+using Eigen::SparseVector;
+using Eigen::Triplet;
+using Eigen::COLAMDOrdering;
+
+
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
 #include "Model/parameters.hpp"
@@ -45,25 +54,16 @@ struct LineProducingSpecies
       VectorXd population_prev3;       ///< level populations 3 iterations back
 
 
-      // Io
-      int read (
-          const Io         &io,
-          const long        l,
-                Parameters &parameters);
+      SparseMatrix<double> RT;
+      SparseMatrix<double> LambdaStar;
 
-      int write (
-          const Io  &io,
-          const long l  ) const;
 
-      int read_populations (
-          const Io     &io,
-          const long    l,
-          const string  tag );
+    // Io
+      int read  (const Io &io, const long l, Parameters &parameters);
+      int write (const Io &io, const long l                        ) const;
 
-      int write_populations (
-          const Io     &io,
-          const long    l,
-          const string  tag ) const;
+      int read_populations  (const Io &io, const long l, const string tag);
+      int write_populations (const Io &io, const long l, const string tag) const;
 
 
       // Inline functions
@@ -94,7 +94,7 @@ struct LineProducingSpecies
 
       /// For tests in python... ////
       ///////////////////////////////
-      int print_populations () const;
+      void print_populations() const;
       ///////////////////////////////
 
 

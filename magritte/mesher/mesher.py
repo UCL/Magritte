@@ -140,6 +140,8 @@ def convert_msh_to_pos(meshName, replace: bool = False):
     :param modelName: path to the .msh file to convert.
     :param replace: remove the original .msh file if True.
     """
+    # Remove extension from meshName
+    meshName, extension = os.path.splitext(meshName)
     # create the converision gmsh script file
     conversion_script = f'{meshName}_convert_to_pos.geo'
     # Get the path to this folder
@@ -250,6 +252,8 @@ def boundary_sphere_in_cuboid (centre_in=np.zeros(3), radius_in=1.0,
 
 
 def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
+    # Remove extension from meshName
+    meshName, extension = os.path.splitext(meshName)
     # create the mesh generating gmsh script file
     meshing_script = f'{meshName}.geo'
     background     = f'{meshName}.pos'
@@ -271,6 +275,8 @@ def create_mesh_from_background(meshName, boundary, scale_min, scale_max):
 
 
 def create_mesh_from_function(meshName, boundary, scale_min, scale_max, scale_function):
+    # Remove extension from meshName
+    meshName, extension = os.path.splitext(meshName)
     # create the mesh generating gmsh script file
     meshing_script = f'{meshName}.geo'
     resulting_mesh = f'{meshName}.vtk'
@@ -291,6 +297,9 @@ def create_mesh_from_function(meshName, boundary, scale_min, scale_max, scale_fu
 
 
 def generate_background_from_1D_data(meshName, R, data):
+
+    # Remove extension from meshName
+    meshName, extension = os.path.splitext(meshName)
 
     nsides = 8
     sphere = np.array(pixelfunc.pix2vec(nsides, range(12*nsides**2))).transpose()

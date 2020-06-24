@@ -71,8 +71,8 @@ void Parameters :: write (const Io &io) const
     catch (...) {cout << "Failed write ncells!"         << endl;}
     try         {io.write_number (".nrays",      nrays     () );}
     catch (...) {cout << "Failed write nrays!"          << endl;}
-    try         {io.write_number (".nrays_red",  nrays_red () );}
-    catch (...) {cout << "Failed write nrays_red!"      << endl;}
+//    try         {io.write_number (".nrays_red",  nrays_red () );}   // nrays_red depends on nprocs,
+//    catch (...) {cout << "Failed write nrays_red!"      << endl;}   // so should be allowed to vary
     try         {io.write_number (".order_min",  order_min () );}
     catch (...) {cout << "Failed write order_min!"      << endl;}
     try         {io.write_number (".order_max",  order_max () );}

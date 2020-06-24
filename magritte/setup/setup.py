@@ -9,12 +9,10 @@ import time
 import re
 
 from scipy.spatial import Delaunay
-from rays          import rayVectors
 
 # Magritte specific imports
-from magritte import Linedata, CollisionPartner, LineProducingSpecies
-from magritte import Rays
-from magritte import vCollisionPartner
+from magritte.core import Linedata, CollisionPartner, LineProducingSpecies, Rays, vCollisionPartner
+from magritte.setup.rays import rayVectors
 
 
 # Physical constants

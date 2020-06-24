@@ -14,10 +14,10 @@
 
 struct DoubleSetException : public std::exception
 {
-	const char * what () const throw ()
-  {
-    	return "Tried to overwrite SetOnce object with another value.";
-  }
+	const char* what () const throw ()
+    {
+	    return "Tried to overwrite SetOnce object with another value.";
+    }
 };
 
 
@@ -25,10 +25,10 @@ struct DoubleSetException : public std::exception
 
 struct GetBeforeSetException : public std::exception
 {
-	const char * what () const throw ()
-  {
+	const char* what () const throw ()
+    {
     	return "Tried to get SetOnce object before setting it.";
-  }
+    }
 };
 
 

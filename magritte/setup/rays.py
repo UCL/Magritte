@@ -11,7 +11,7 @@ from healpy                  import pixelfunc
 from numba                   import jit
 from multiprocessing         import Pool, cpu_count
 
-from magritte import Rays
+from magritte.core import Rays
 
 
 def nRays (nsides):

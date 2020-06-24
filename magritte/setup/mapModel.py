@@ -8,7 +8,7 @@ import numpy as np
 
 from healpy   import pixelfunc
 from magritte import Model
-from setup    import Setup
+from magritte.setup import Setup
 from rays     import rayVectors
 
 def sphericalXDscalar (fr, ndirs, f):

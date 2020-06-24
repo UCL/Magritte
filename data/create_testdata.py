@@ -10,7 +10,7 @@ dir_path = ospath.dirname(ospath.realpath(__file__))
 syspath.insert (0, f'{dir_path}/../bin')
 syspath.insert (0, f'{dir_path}/../setup')
 
-from setup import make_file_structure
+from magritte.setup import make_file_structure
 
 import   magritte
 import ioMagritte

@@ -270,6 +270,27 @@ int Simulation:: compute_radiation_field()
 
     } // end of loop over ray pairs
 
+//    Ld.clear();
+//    for (int n = 0; n < parameters.ncells(); n++)
+//    {
+//        Ld.push_back(rayPairs[0].L_diag[n]);
+//    }
+//
+//    Lu.resize(rayPairs[0].n_off_diag);
+//    Ll.resize(rayPairs[0].n_off_diag);
+//
+//    for (int m = 0; m < rayPairs[0].n_off_diag; m++)
+//    {
+//        Lu[m].clear();
+//        Ll[m].clear();
+//
+//        for (int n = 0; n < parameters.ncells(); n++)
+//        {
+//            Lu[m].push_back(rayPairs[0].L_upper[m][n]);
+//            Ll[m].push_back(rayPairs[0].L_lower[m][n]);
+//        }
+//    }
+
 
     // Collect all dtaus
     //for (int t = 0; t < nthrds; t++)
@@ -282,7 +303,6 @@ int Simulation:: compute_radiation_field()
 
 
     // Gather and reduce results of all MPI processes to get Lambda and J
-
 # if (MPI_PARALLEL)
 
     logger.write ("Gathering Lambda operators...");
@@ -304,6 +324,10 @@ int Simulation:: compute_radiation_field()
     {
 //        radiation.calc_U_and_V();
     }
+
+
+
+
 
     // Stop timer and print results
     timer.stop();

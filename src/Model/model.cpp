@@ -10,6 +10,43 @@
 #include "Tools/Parallel/wrap_mpi.hpp"
 
 
+///  Constructor for Model
+//////////////////////////
+
+Model :: Model ()
+{
+    cout << "Constructing" << endl;
+
+    logger.write("Constructing model.");
+#   if (MPI_PARALLEL)
+        if (!MPI_initialized())
+        {
+            MPI_Init (NULL, NULL);
+            logger.write("MPI initialized.");
+        }
+#   endif
+}
+
+
+
+
+///  Destructor for Model
+/////////////////////////
+
+//Model :: ~Model ()
+//{
+//#   if (MPI_PARALLEL)
+//        if (MPI_initialized())
+//        {
+//            MPI_Finalize ();
+//            logger.write("MPI finalized.");
+//        }
+//#   endif
+//}
+
+
+
+
 ///  Reader for the Model data
 ///    @param[in] io : io object to read with
 /////////////////////////////////////////////

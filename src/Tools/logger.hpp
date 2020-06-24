@@ -21,74 +21,65 @@ using std::endl;
 struct Logger
 {
 
-  string file_name;
+    string file_name;
 
 
-  Logger ()
-  {
-    file_name = "magritte_" + std::to_string (MPI_comm_rank()) + ".log";
+    Logger ()
+    {
+#       if (MPI_PARALLEL)
+            if (!MPI_initialized()) MPI_Init (NULL, NULL);
+#       endif
 
-    std::ofstream file (file_name);
-  }
+        file_name = "magritte_" + str_MPI_comm_rank() + ".log";
 
-  Logger (const string file_name_local)
-  {
-    file_name = file_name_local + ".log";
+        std::ofstream file (file_name);
+    }
 
-    std::ofstream file (file_name);
-  }
+    Logger (const string file_name_local)
+    {
+        file_name = file_name_local + ".log";
+
+        std::ofstream file (file_name);
+    }
 
 
-  void write (
-      const string log_line ) const
-  {
-    std::ofstream file (file_name, std::ios_base::app);
+    void write (const string log_line) const
+    {
+        std::ofstream file (file_name, std::ios_base::app);
 
-    file << log_line << endl;
-    cout << log_line << endl;
-  }
+        file << log_line << endl;
+        cout << log_line << endl;
+    }
 
-  void write (
-      const string text,
-      const long   number ) const
-  {
-    write (text + std::to_string (number));
-  }
+    void write (const string text, const long number) const
+    {
+        write (text + std::to_string (number));
+    }
 
-  void write (
-      const string text,
-      const size_t number) const
-  {
-    write (text + std::to_string (number));
-  }
+    void write (const string text, const size_t number) const
+    {
+        write (text + std::to_string (number));
+    }
 
-  void write (
-      const string text1,
-      const long   number,
-      const string text2  ) const
-  {
-    write (text1 + std::to_string (number) + text2);
-  }
+    void write (const string text1, const long number, const string text2) const
+    {
+        write (text1 + std::to_string (number) + text2);
+    }
 
-  void write (
-      const string text,
-      const double number ) const
-  {
-    write (text + std::to_string (number));
-  }
+    void write (const string text, const double number) const
+    {
+        write (text + std::to_string (number));
+    }
 
-  void write (
-      const string text1,
-      const double number,
-      const string text2  ) const
-  {
-    write (text1 + std::to_string (number) + text2);
-  }
+    void write (const string text1, const double number, const string text2) const
+    {
+        write (text1 + std::to_string (number) + text2);
+    }
 
-  void write_line (void)
-  {
-    write ("-------------------------------------------------");
-  }
+    void write_line (void)
+    {
+        write ("-------------------------------------------------");
+    }
 
 };
 

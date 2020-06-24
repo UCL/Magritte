@@ -120,8 +120,8 @@ inline void RayPair ::
 
       double L = factor * get_L_diag (thermodynamics, invr_mass, freq_line, lane);
 
-      const long i   = lines.lineProducingSpecies[l].linedata.irad[k];
-      const long ind = lines.lineProducingSpecies[l].index (nrs[n_ar], i);
+//      const long i   = lines.lineProducingSpecies[l].linedata.irad[k];
+//      const long ind = lines.lineProducingSpecies[l].index (nrs[n_ar], i);
 
       lines.lineProducingSpecies[l].lambda.add_element (p, k, nrs[n_ar], L);
 

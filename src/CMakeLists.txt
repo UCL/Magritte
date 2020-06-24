@@ -73,12 +73,15 @@ if    (GPU_ACCELERATION)
     Model/Thermodynamics/Turbulence/turbulence.cpp
     Functions/heapsort.cpp
     Simulation/simulation.cpp
+    Simulation/Solver/gpu/gpu_solver.cu
+    Simulation/Solver/cpu/cpu_solver.cpp
+#    Simulation/Solver/simd/simd_solver.cpp
     Simulation/simulation.cu
     Simulation/Raypair/raypair.cpp
-    Simulation/Rayblock/rayBlock_v.cpp
+#    Simulation/Rayblock/rayBlock_v.cpp
 #    Simulation/Raypair/rayblock.cpp
-    Simulation/Raypair/raypair.cu
-    Simulation/Raypair/rayblock.cu
+#    Simulation/Raypair/raypair.cu
+#    Simulation/Raypair/rayblock.cu
     Simulation/Image/image.cpp)
   # Set library properties
   set_target_properties (Magritte PROPERTIES PREFIX "gpu")
@@ -105,10 +108,15 @@ else  (GPU_ACCELERATION)
     Model/Thermodynamics/Turbulence/turbulence.cpp
     Functions/heapsort.cpp
     Simulation/simulation.cpp
+    Simulation/Solver/cpu/cpu_solver.cpp
+#    Simulation/Solver/simd/simd_solver.cpp
     Simulation/Raypair/raypair.cpp
-    Simulation/Rayblock/rayBlock_v.cpp
+#    Simulation/Rayblock/rayBlock_v.cpp
 #    Simulation/Raypair/rayblock.cpp
-    Simulation/Image/image.cpp Simulation/Rayblock/protoRayBlock.hpp Simulation/Rayblock/rayQueue.hpp Simulation/Rayblock/solver.hpp)
+    Simulation/Image/image.cpp)
+#    Simulation/Rayblock/protoRayBlock.hpp
+#    Simulation/Rayblock/rayQueue.hpp
+#    Simulation/Rayblock/solver.hpp)
   # Set library properties
   set_target_properties (Magritte PROPERTIES PREFIX "cpu")
 endif (GPU_ACCELERATION)

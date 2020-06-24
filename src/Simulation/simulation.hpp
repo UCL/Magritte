@@ -8,6 +8,8 @@
 #define __SIMULATION_HPP_INCLUDED__
 
 
+#include <exception>
+
 #include "Io/io.hpp"
 #include "Tools/types.hpp"
 #include "Tools/timer.hpp"
@@ -16,15 +18,29 @@
 #include "Image/image.hpp"
 #include "Raypair/raypair.hpp"
 //#include "Raypair/rayblock.hpp"
+#include "Simulation/Solver/cpu/cpu_solver.hpp"
+//#include "Simulation/Solver/simd/simd_solver.hpp"
 
 #if (GPU_ACCELERATION)
 #   include <cuda_runtime.h>
-#   include "Raypair/raypair.cuh"
-#   include "Raypair/rayblock.cuh"
+#   include "Simulation/Solver/gpu/gpu_solver.cuh"
+//#   include "Raypair/raypair.cuh"
+//#   include "Raypair/rayblock.cuh"
 #endif
 
 
 enum SpecDiscSetting {None, LineSet, ImageSet};
+
+
+struct WrongSpecDiscException : public std::exception
+{
+    const char* what () const throw ()
+    {
+        return "Wrong spectral discretization is set for this action.";
+    }
+};
+
+
 
 
 ///  Simulation:
@@ -38,6 +54,12 @@ struct Simulation : public Model
     Long2   pre;
     Long2   pos;
 
+    Double1 Ld;
+    Double2 Lu;
+    Double2 Ll;
+
+    MatrixXd Lambda;
+
 
 #   if (GPU_ACCELERATION)
         int handleCudaError           (cudaError_t error);
@@ -46,8 +68,10 @@ struct Simulation : public Model
         int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
 # endif
 
+    int cpu_compute_radiation_field (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
+
 //  int cpu_compute_radiation_field_2 (const size_t nraypairs);
-    int cpu_compute_radiation_field (const double inverse_dtau_max);
+//    int cpu_compute_radiation_field (const double inverse_dtau_max);
 
 
     Double1 error_max;
@@ -58,11 +82,12 @@ struct Simulation : public Model
 
     vReal tau_max = 10.0;
 
-    int compute_spectral_discretisation       (void);
+    int compute_spectral_discretisation       ();
     int compute_spectral_discretisation_image (const double width);
-    int compute_boundary_intensities          (void);
+    int compute_boundary_intensities          ();
     int compute_boundary_intensities          (const Double1 &temperatures);
-    int compute_radiation_field               (void);
+    int compute_radiation_field               ();
+    int compute_radiation_field_cpu           ();
 
     inline double get_dshift_max (
         const long o           ) const;
@@ -111,7 +136,9 @@ struct Simulation : public Model
       const bool  use_Ng_acceleration,
       const long  max_niterations     );
 
-  void calc_Jeff ();
+  void compute_Jeff ();
+
+  void compute_level_populations_from_stateq ();
 
 
   template <Frame frame>
@@ -130,9 +157,9 @@ struct Simulation : public Model
 
 
   inline void get_radiation_field_from_boundary (
-      const long R,
-      const long r,
-      const long o                              );
+      const size_t R,
+      const size_t r,
+      const size_t o                            );
 
 };
 
