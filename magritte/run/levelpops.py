@@ -47,9 +47,15 @@ def run_iterations(model_name, n_off_diag=0, iterations=50):
 if (__name__ == "__main__"):
 
     # Run iterations for the input model
-    if (len(sys.argv) != 2):
-        print('Please provide (only) a model file.')
+    if (len(sys.argv) < 2):
+        print('Please provide a model file.')
+    elif (len(sys.argv) == 3):
+        # Extract model name
+        model_name = str(sys.argv[1])
+        # Extract the ALO bandwidth
+        n_off_diag = int(sys.argv[2])
+        run_iterations(model_name, n_off_diag=n_off_diag)
     else:
         # Extract model name
-        model_name = sys.argv[1]
+        model_name = str(sys.argv[1])
         run_iterations(model_name)
