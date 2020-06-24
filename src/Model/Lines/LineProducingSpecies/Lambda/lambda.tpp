@@ -205,129 +205,124 @@ inline int Lambda :: MPI_gather ()
 
 {
 
-  this->linearize_data();
+    this->linearize_data();
 
-  int size_total = Lss.size();
-
-
-  // Gather the lengths of the linearized vectors of each process
-  Int1 buffer_lengths (MPI_comm_size(), 0);
-  Int1 displacements  (MPI_comm_size(), 0);
+    int size_total = Lss.size();
 
 
-  int ierr_l =	MPI_Allgather (
-                    &size_total,             // pointer to data to be send
-                    1,                       // number of elements in the send buffer
-                    MPI_INT,                 // type of the send data
-                    buffer_lengths.data(),   // pointer to the data to be received
-                    1,                       // number of elements in receive buffer
-                    MPI_INT,                 // type of the received data
-                    MPI_COMM_WORLD);
-
-  assert (ierr_l == 0);
+    // Gather the lengths of the linearized vectors of each process
+    Int1 buffer_lengths (MPI_comm_size(), 0);
+    Int1 displacements  (MPI_comm_size(), 0);
 
 
+    int ierr_l =	MPI_Allgather (
+                      &size_total,             // pointer to data to be send
+                      1,                       // number of elements in the send buffer
+                      MPI_INT,                 // type of the send data
+                      buffer_lengths.data(),   // pointer to the data to be received
+                      1,                       // number of elements in receive buffer
+                      MPI_INT,                 // type of the received data
+                      MPI_COMM_WORLD);
 
-  for (int w = 1; w < MPI_comm_size(); w++)
-  {
-    displacements[w] = buffer_lengths[w-1];
-
-    cout << "buffer_lengths [w] = " << buffer_lengths[w-1] << endl;
-  }
-
-  //cout << "buffer_lengths [f] = " << buffer_lengths[MPI_comm_size()-1] << endl;
-
-
-  Double1 Lss_total;
-  Long1   nrs_total;
-  Long1   szs_total;
+    assert (ierr_l == 0);
 
 
-  long total_buffer_length = 0;
 
-  for (long length : buffer_lengths) {total_buffer_length += length;}
-
-  Lss_total.resize (total_buffer_length);
-  nrs_total.resize (total_buffer_length);
-  szs_total.resize (MPI_comm_size()*ncells*nrad);
-
-
-  int ierr_ls =	MPI_Allgatherv (
-                    Lss.data(),              // pointer to data to be send
-                    size_total,              // number of elements in the send buffer
-                    MPI_DOUBLE,              // type of the send data
-                    Lss_total.data(),        // pointer to the data to be received
-                    buffer_lengths.data(),   // list of numbers of elements in receive buffer
-                    displacements.data(),    // displacements between data blocks
-	                  MPI_DOUBLE,              // type of the received data
-                    MPI_COMM_WORLD);
-
-  assert (ierr_ls == 0);
-
-
-  int ierr_nr =	MPI_Allgatherv (
-                    nrs.data(),              // pointer to data to be send
-                    size_total,              // number of elements in the send buffer
-                    MPI_LONG,                // type of the send data
-                    nrs_total.data(),        // pointer to the data to be received
-                    buffer_lengths.data(),   // list of numbers of elements in receive buffer
-                    displacements.data(),    // displacements between data blocks
-	                  MPI_LONG,                // type of the received data
-                    MPI_COMM_WORLD);
-
-  assert (ierr_nr == 0);
-
-
-  int ierr_sz =	MPI_Allgather (
-                    size.data(),             // pointer to data to be send
-                    ncells*nrad,             // number of elements in the send buffer
-                    MPI_LONG,                // type of the send data
-                    szs_total.data(),        // pointer to the data to be received
-                    ncells*nrad,             // number of elements in receive buffer
-                    MPI_LONG,                // type of the received data
-                    MPI_COMM_WORLD);
-
-  assert (ierr_sz == 0);
-
-
-  this->clear();
-
-
-  long index = 0;
-
-
-  for (int w = 0; w < MPI_comm_size(); w++)
-  {
-    for (long p = 0; p < ncells; p++)
+    for (int w = 1; w < MPI_comm_size(); w++)
     {
-      for (long k = 0; k < nrad; k++)
-      {
-        for (long m = 0; m < szs_total[index]; m++)
-        {
-          add_element (p, k, nrs_total[index+m], Lss_total[index+m]);
+        displacements[w] = buffer_lengths[w-1];
 
-          if (MPI_comm_rank () == 0)
-          {
-            cout << p << " " << k << " " << nrs_total[index+m] << " " << Lss_total[index+m] << endl;
-          }
-        }
-
-        index++;
-      }
+//        cout << "buffer_lengths [w] = " << buffer_lengths[w-1] << endl;
     }
-  }
+
+    //cout << "buffer_lengths [f] = " << buffer_lengths[MPI_comm_size()-1] << endl;
 
 
-  return (0);
+    Double1 Lss_total;
+    Long1   nrs_total;
+    Long1   szs_total;
 
+
+    long total_buffer_length = 0;
+
+    for (long length : buffer_lengths) {total_buffer_length += length;}
+
+    Lss_total.resize (total_buffer_length);
+    nrs_total.resize (total_buffer_length);
+    szs_total.resize (MPI_comm_size()*ncells*nrad);
+
+
+    int ierr_ls =	MPI_Allgatherv (
+                      Lss.data(),              // pointer to data to be send
+                      size_total,              // number of elements in the send buffer
+                      MPI_DOUBLE,              // type of the send data
+                      Lss_total.data(),        // pointer to the data to be received
+                      buffer_lengths.data(),   // list of numbers of elements in receive buffer
+                      displacements.data(),    // displacements between data blocks
+  	                  MPI_DOUBLE,              // type of the received data
+                      MPI_COMM_WORLD);
+
+    assert (ierr_ls == 0);
+
+
+    int ierr_nr =	MPI_Allgatherv (
+                      nrs.data(),              // pointer to data to be send
+                      size_total,              // number of elements in the send buffer
+                      MPI_LONG,                // type of the send data
+                      nrs_total.data(),        // pointer to the data to be received
+                      buffer_lengths.data(),   // list of numbers of elements in receive buffer
+                      displacements.data(),    // displacements between data blocks
+  	                  MPI_LONG,                // type of the received data
+                      MPI_COMM_WORLD);
+
+    assert (ierr_nr == 0);
+
+
+    int ierr_sz =	MPI_Allgather (
+                      size.data(),             // pointer to data to be send
+                      ncells*nrad,             // number of elements in the send buffer
+                      MPI_LONG,                // type of the send data
+                      szs_total.data(),        // pointer to the data to be received
+                      ncells*nrad,             // number of elements in receive buffer
+                      MPI_LONG,                // type of the received data
+                      MPI_COMM_WORLD);
+
+    assert (ierr_sz == 0);
+
+
+    this->clear();
+
+
+    long index = 0;
+
+    for (int w = 0; w < MPI_comm_size(); w++)
+    {
+        for (long p = 0; p < ncells; p++)
+        {
+            for (long k = 0; k < nrad; k++)
+            {
+                for (long m = 0; m < szs_total[index]; m++)
+                {
+                    add_element (p, k, nrs_total[index+m], Lss_total[index+m]);
+
+//                    if (MPI_comm_rank () == 0)
+//                    {
+//                      cout << p << " " << k << " " << nrs_total[index+m] << " " << Lss_total[index+m] << endl;
+//                    }
+                }
+
+                index++;
+            }
+        }
+    }
+
+    return (0);
 }
 
 #else
 
 {
-
-  return (0);
-
+    return (0);
 }
 
 #endif

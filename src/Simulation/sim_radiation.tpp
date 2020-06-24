@@ -303,7 +303,6 @@ int Simulation:: compute_radiation_field()
 
 
     // Gather and reduce results of all MPI processes to get Lambda and J
-
 # if (MPI_PARALLEL)
 
     logger.write ("Gathering Lambda operators...");

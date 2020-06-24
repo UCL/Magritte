@@ -29,17 +29,16 @@ Now Magritte can be build using
 ```bash
 bash build.sh
 ```
-This builds the library in the `/bin` folder. Note that if you try to build Magritte from outside the `magritte_env` conda environment compilation might fail or the generated library might not work in python due to version mismatches. Therefore as a general rule: **always build and use Magritte from within the magritte_env conda environment**. To use Magritte's python interface, you should include the binary folder folder in your python path e.g. by including
+This builds the library in the `/bin` folder. Note that if you try to build Magritte
+from outside the `magritte_env` conda environment compilation might fail or the
+generated library might not work in python due to version mismatches. Therefore as a
+general rule: **always build and use Magritte from within the magritte_env conda
+environment**. To use Magritte's python interface, you should include the package
+folder in your python path e.g. by including
 ```python
 from sys import path
-path.append("path/to/Magritte/bin")
+path.append("path/to/Magritte")
 ```
-To use the setup tools and the mesher, you should also include
-```python
-path.append("path/to/Magritte/setup")
-path.append("path/to/Magritte/mesher")
-```
-
 You can have a look at the `build.sh` script for further configuration options.
 
 ## Issues

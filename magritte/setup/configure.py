@@ -3,8 +3,9 @@ import sys
 import yaml
 import numpy as np
 
-from shutil     import rmtree
-from copy       import deepcopy
+from shutil import rmtree
+from copy   import deepcopy
+from mpi4py import MPI
 
 from magritte.core             import Simulation, IoPython, IoText
 from magritte.setup.setup      import Setup, linedata_from_LAMDA_file, make_file_structure

@@ -267,10 +267,10 @@ inline void LineProducingSpecies ::
     VectorXd y = VectorXd::Zero (ncells*linedata.nlev);
 
     vector<Triplet<double, int>> triplets;
-    vector<Triplet<double, int>> triplets_L;
+//    vector<Triplet<double, int>> triplets_L;
 
     triplets  .reserve (non_zeros);
-    triplets_L.reserve (non_zeros);
+//    triplets_L.reserve (non_zeros);
 
     for (long p = 0; p < ncells; p++) // !!! no OMP because push_back is not thread safe !!!
     {
@@ -320,13 +320,13 @@ inline void LineProducingSpecies ::
                 if (linedata.jrad[k] != linedata.nlev-1)
                 {
                     triplets  .push_back (Triplet<double, int> (J, I, +v_IJ));
-                    triplets_L.push_back (Triplet<double, int> (J, I, +v_IJ));
+//                    triplets_L.push_back (Triplet<double, int> (J, I, +v_IJ));
                 }
 
                 if (linedata.irad[k] != linedata.nlev-1)
                 {
                     triplets  .push_back (Triplet<double, int> (I, I, -v_IJ));
-                    triplets_L.push_back (Triplet<double, int> (I, I, -v_IJ));
+//                    triplets_L.push_back (Triplet<double, int> (I, I, -v_IJ));
                 }
             }
         }
@@ -388,7 +388,7 @@ inline void LineProducingSpecies ::
 
 
     RT        .setFromTriplets (triplets  .begin(), triplets  .end());
-    LambdaStar.setFromTriplets (triplets_L.begin(), triplets_L.end());
+//    LambdaStar.setFromTriplets (triplets_L.begin(), triplets_L.end());
 
 
     //cout << "Compressing RT" << endl;

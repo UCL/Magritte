@@ -38,7 +38,7 @@ print(magritteFolder)
 
 from magritte import Model, Long1, Long2, Double1, Double2, String1
 
-from magritte.setup import Setup, linedata_from_LAMDA_file
+from setup import Setup, linedata_from_LAMDA_file
 
 
 # ## 1) Define model
@@ -272,7 +272,7 @@ print('ncells =', model.parameters.ncells())
 #from ioMagritte import IoPython
 from ioMagritte import IoText
 #from os         import remove
-from magritte.setup import make_file_structure
+from setup      import make_file_structure
 from shutil     import rmtree
 
 

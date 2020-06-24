@@ -178,7 +178,7 @@ void Simulation :: compute_Jeff ()
 
     for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
     {
-        Lambda = MatrixXd::Zero (lspec.population.size(), lspec.population.size());
+//        Lambda = MatrixXd::Zero (lspec.population.size(), lspec.population.size());
 
         OMP_PARALLEL_FOR (p, parameters.ncells())
         {
@@ -208,7 +208,7 @@ void Simulation :: compute_Jeff ()
 
                     diff += lspec.lambda.get_Ls(p,k,m) * lspec.population[I];
 
-                    Lambda(I,J) = lspec.lambda.get_Ls(p,k,m);
+//                    Lambda(I,J) = lspec.lambda.get_Ls(p,k,m);
                 }
 
                 lspec.Jeff[p][k] = lspec.Jlin[p][k] - HH_OVER_FOUR_PI * diff;

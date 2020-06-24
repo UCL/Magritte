@@ -109,6 +109,26 @@ inline size_t MPI_length (const size_t total)
 
 
 
+///  MPI_initialized: indicates whether MPI_Init has been called
+////////////////////////////////////////////////////////////////
+
+inline bool MPI_initialized ()
+#if (MPI_PARALLEL)
+{
+    int flag;
+    MPI_Initialized (&flag);
+
+    return flag;
+}
+#else
+{
+    return false;
+}
+#endif
+
+
+
+
 ///  MPI_PARALLEL_FOR: abstraction for an MPI loop with index ranging over total
 ///    @param[in] index: index of the for loop
 ///    @param[in] total: total range of the for loop

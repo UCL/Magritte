@@ -13,8 +13,20 @@ include_directories (../../dependencies)
 include_directories (../../dependencies/pybind11/include)
 include_directories (${PYTHON_INCLUDE_DIRS})
 
-# Set variables in configuration file
-set (MAGRITTE_MPI_PARALLEL false)
+# If MPI is used
+if    (MPI_PARALLEL)
+  message (STATUS "Getting ready for MPI...")
+  # Look for package
+  find_package (MPI REQUIRED)
+  # Include headers
+  include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL true)
+else  (MPI_PARALLEL)
+  message (STATUS "NOT ready for MPI...")
+  # Set variable in configuration file
+  set (MAGRITTE_MPI_PARALLEL false)
+endif (MPI_PARALLEL)
 
 # Add CUDA raypair solver
 if    (GPU_ACCELERATION)
@@ -60,8 +72,6 @@ if    (GPU_ACCELERATION)
 #    ../Simulation/Raypair/rayblock.cpp
 #    ../Simulation/Raypair/rayblock.cu
     ../Simulation/Image/image.cpp)
-  # Set library properties
-  set_target_properties (core PROPERTIES PREFIX "")
   # Link Python libraries
   #target_link_libraries (core ${PYTHON_LIBRARIES})
 
@@ -119,10 +129,16 @@ else  (GPU_ACCELERATION)
   if    (GRID_SIMD)
     target_link_libraries (core PRIVATE GridSIMD)
   endif (GRID_SIMD)
-  # Set library properties
-  set_target_properties (core PROPERTIES PREFIX "")
-#  set_target_properties (core PROPERTIES SUFFIX ".so")
 
 endif (GPU_ACCELERATION)
 
+# Set library properties
+set_target_properties (core PROPERTIES PREFIX "")
+set_target_properties (core PROPERTIES SUFFIX ".so")
+
+# Link MPI libraries
+if    (MPI_PARALLEL)
+  target_link_libraries (core PRIVATE ${MPI_C_LIBRARIES})
+#  target_link_libraries (core PRIVATE mpi)
+endif (MPI_PARALLEL)
 

@@ -174,7 +174,7 @@ int Simulation :: cpu_compute_radiation_field (
     Timer timer_compute("--- compute");
     timer_compute.start();
 
-    for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
+    MPI_PARALLEL_FOR (rr, parameters.nrays()/2)
     {
         const size_t RR = rr - MPI_start (parameters.nrays()/2);
         const size_t ar = geometry.rays.antipod[rr];
@@ -248,6 +248,25 @@ int Simulation :: cpu_compute_radiation_field (
             solvers[0]->solve (prb, RR, rr, *this);
         }
     }
+
+
+    // Gather and reduce results of all MPI processes to get Lambda and J
+#   if (MPI_PARALLEL)
+        logger.write ("Gathering Lambda operators...");
+        for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
+        {
+            lspec.lambda.MPI_gather ();
+        }
+        logger.write ("Reducing the mean intensities (J's)...");
+        radiation.MPI_reduce_J ();
+#   endif
+
+
+    if (parameters.use_scattering())
+    {
+//        radiation.calc_U_and_V();
+    }
+
 
     timer_compute.stop();
     timer_compute.print();
