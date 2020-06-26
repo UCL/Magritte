@@ -157,8 +157,8 @@ int Simulation :: cpu_compute_radiation_field (
     {
         // Create a sover object
         solver = new cpuSolver (parameters.ncells(), parameters.nfreqs(),
-                                parameters.nlines(), nraypairs,
-                                geometry.max_npoints_on_rays,
+                                parameters.nlines(), parameters.nboundary(),
+                                nraypairs,           geometry.max_npoints_on_rays,
                                 parameters.n_off_diag);
 
         /// Set GPU block size
@@ -169,10 +169,6 @@ int Simulation :: cpu_compute_radiation_field (
         /// Set model data
         solver->copy_model_data (*this);
     }
-
-
-    Timer timer_compute("--- compute");
-    timer_compute.start();
 
     MPI_PARALLEL_FOR (rr, parameters.nrays()/2)
     {
@@ -255,10 +251,10 @@ int Simulation :: cpu_compute_radiation_field (
         logger.write ("Gathering Lambda operators...");
         for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
         {
-            lspec.lambda.MPI_gather ();
+//            lspec.lambda.MPI_gather ();
         }
         logger.write ("Reducing the mean intensities (J's)...");
-        radiation.MPI_reduce_J ();
+//        radiation.MPI_reduce_J ();
 #   endif
 
 
@@ -266,10 +262,6 @@ int Simulation :: cpu_compute_radiation_field (
     {
 //        radiation.calc_U_and_V();
     }
-
-
-    timer_compute.stop();
-    timer_compute.print();
 
 
 //    Ld.clear();

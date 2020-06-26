@@ -38,8 +38,9 @@ struct LineProducingSpecies
 
       Double2 Jlin;                    ///< actual mean intensity in the line
       Double2 Jeff;                    ///< effective mean intensity in the line (actual - ALO)
+      Double2 Jdif;                    ///< effective mean intensity in the line (actual - ALO)
 
-      Long3 nr_line;                   ///< frequency number corresponing to line (p,k,z)
+    Long3 nr_line;                   ///< frequency number corresponing to line (p,k,z)
 
       double relative_change_mean;     ///< mean    relative change
       double relative_change_max;      ///< maximum relative change
@@ -55,6 +56,7 @@ struct LineProducingSpecies
 
 
       SparseMatrix<double> RT;
+      SparseMatrix<double> LambdaTest;
       SparseMatrix<double> LambdaStar;
 
 

@@ -23,9 +23,14 @@ def run_iterations(model_name, n_off_diag=0, iterations=50):
     simulation.compute_spectral_discretisation()    # Initialize frequency bins
     simulation.compute_LTE_level_populations()      # Set all levels to LTE value
 
+    for _ in range(5):
+        # Compute radiation field and resulting populations
+        simulation.compute_radiation_field_cpu()
+        simulation.compute_Jeff()
+        simulation.compute_level_populations_from_stateq()
+
     pop = np.copy(simulation.lines.lineProducingSpecies[0].population)
 
-    print('Doing ', iterations, 'iterations')
     for iteration in range(iterations):
         # Compute radiation field and resulting populations
         simulation.compute_radiation_field_cpu()
@@ -55,6 +60,14 @@ if (__name__ == "__main__"):
         # Extract the ALO bandwidth
         n_off_diag = int(sys.argv[2])
         run_iterations(model_name, n_off_diag=n_off_diag)
+    elif (len(sys.argv) == 4):
+        # Extract model name
+        model_name = str(sys.argv[1])
+        # Extract the ALO bandwidth
+        n_off_diag = int(sys.argv[2])
+        # Extract max number of iterations
+        iterations = int(sys.argv[3])
+        run_iterations(model_name, n_off_diag=n_off_diag, iterations=iterations)
     else:
         # Extract model name
         model_name = str(sys.argv[1])

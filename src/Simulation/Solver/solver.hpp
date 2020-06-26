@@ -28,6 +28,7 @@ struct Solver
     const Size nfreqs;           ///< total number of frequency bins
     const Size nfreqs_red;       ///< total number of reduced frequency bins
     const Size nlines;           ///< total number of lines
+    const Size nboundary;        ///< total number of cells on the boundary
 
     const Size nraypairs_max;    ///< maximum number or ray pairs in the ray block
           Size nraypairs;        ///< number or ray pairs in the ray block
@@ -47,6 +48,7 @@ struct Solver
         const Size nfreqs,
         const Size nfreqs_red,
         const Size nlines,
+        const Size nboundary,
         const Size nraypairs,
         const Size depth,
         const Size n_off_diag )
@@ -54,6 +56,7 @@ struct Solver
     , nfreqs        (nfreqs)
     , nfreqs_red    (nfreqs_red)
     , nlines        (nlines)
+    , nboundary     (nboundary)
     , nraypairs_max (nraypairs)
     , nraypairs     (nraypairs)
     , depth_max     (depth)
@@ -91,6 +94,8 @@ struct Solver
     Size   *origins;               ///< origins of the ray pairs in the ray block
     double *reverse;               ///< 1.0 if ray_ar is longer than ray_r (-1.0 otherwise)
 
+    Size *bdy_0;                   ///< boundary index of first point on the ray
+    Size *bdy_n;                   ///< boundary index of last point on the ray
 
 
     /// Pointers to model data
@@ -100,6 +105,10 @@ struct Solver
     double *line_width;
 
     Real   *frequencies;
+
+    BoundaryCondition *boundary_condition;
+    double            *boundary_temperature;
+
 
     Size   *nrs;                ///< cell nr corresp to point along ray
     double *shifts;             ///< Doppler shift scale factors along ray
@@ -225,6 +234,9 @@ struct Solver
     inline void solve_4th_order_Feautrier_non_adaptive (const Size w);
     HOST_DEVICE
     inline void solve_4th_order_Feautrier_adaptive     (const Size w);
+
+    // Boundary conditions
+    inline Real boundary_intensity (const Size bdy_nr, const Real frequency) const;
 
 
     // Helper variables for tests

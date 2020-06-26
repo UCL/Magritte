@@ -116,6 +116,7 @@ int main (int argc, char **argv)
 //        solver = new cpuSolver (simulation.parameters.ncells(),
 //                                simulation.parameters.nfreqs(),
 //                                simulation.parameters.nlines(),
+//                                simulation.parameters.nboundary(),
 //                                nraypairs,
 //                                simulation.geometry.max_npoints_on_rays,
 //                                n_off_diag);

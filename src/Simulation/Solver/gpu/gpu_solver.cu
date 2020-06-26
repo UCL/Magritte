@@ -15,10 +15,11 @@ gpuSolver :: gpuSolver (
     const Size ncells,
     const Size nfreqs,
     const Size nlines,
+    const Size nboundary,
     const Size nraypairs,
     const Size depth,
     const Size n_off_diag )
-    : Solver (ncells, nfreqs, nfreqs, nlines, nraypairs, depth, n_off_diag)
+    : Solver (ncells, nfreqs, nfreqs, nlines, nboundary, nraypairs, depth, n_off_diag)
 {
     const Size nraypairs_size = nraypairs_max*sizeof(size_t);
     const Size nraypairs_real = nraypairs_max*sizeof(double);
@@ -27,6 +28,9 @@ gpuSolver :: gpuSolver (
     cudaMallocManaged (&n2,      nraypairs_size);
 
     cudaMallocManaged (&n_tot,   nraypairs_size);
+
+    cudaMallocManaged (&bdy_0,   nraypairs_size);
+    cudaMallocManaged (&bdy_n,   nraypairs_size);
 
     cudaMallocManaged (&origins, nraypairs_size);
     cudaMallocManaged (&reverse, nraypairs_real);
@@ -41,6 +45,9 @@ gpuSolver :: gpuSolver (
     cudaMallocManaged (&line_width,      ncells*nlines*sizeof(double));
 
     cudaMallocManaged (&frequencies, ncells*nfreqs_red*sizeof(double));
+
+    cudaMallocManaged (&boundary_condition,   nboundary*sizeof(BoundaryCondition));
+    cudaMallocManaged (&boundary_temperature, nboundary*sizeof(double));
 
     const Size area_real = area*sizeof(double);
 
@@ -89,6 +96,9 @@ gpuSolver :: ~gpuSolver ()
     cudaFree (n2);
 
     cudaFree (n_tot);
+
+    cudaFree (bdy_0);
+    cudaFree (bdy_n);
 
     cudaFree (origins);
     cudaFree (reverse);
@@ -149,15 +159,23 @@ void gpuSolver :: copy_model_data (const Model &model)
     cudaMemcpy (line,
                 model.lines.line.data(),
                 model.lines.line.size()*sizeof(double),
-                cudaMemcpyHostToDevice  );
+                cudaMemcpyHostToDevice );
     cudaMemcpy (line_emissivity,
                 model.lines.emissivity.data(),
                 model.lines.emissivity.size()*sizeof(double),
-                cudaMemcpyHostToDevice  );
+                cudaMemcpyHostToDevice );
     cudaMemcpy (line_opacity,
                 model.lines.opacity.data(),
                 model.lines.opacity.size()*sizeof(double),
-                cudaMemcpyHostToDevice  );
+                cudaMemcpyHostToDevice );
+    cudaMemcpy (boundary_condition,
+                model.geometry.boundary.boundary_condition.data(),
+                model.geometry.boundary.boundary_condition.size()*sizeof(BoundaryCondition),
+                cudaMemcpyHostToDevice );
+    cudaMemcpy (boundary_temperature,
+                model.geometry.boundary.boundary_temperature.data(),
+                model.geometry.boundary.boundary_temperature.size()*sizeof(double),
+                cudaMemcpyHostToDevice );
 
 
     for (Size p = 0; p < ncells; p++)

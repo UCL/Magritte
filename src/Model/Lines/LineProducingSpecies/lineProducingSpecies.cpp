@@ -30,16 +30,19 @@ int LineProducingSpecies :: read (const Io &io, const long l, Parameters &parame
 
     RT        .resize (ncells*linedata.nlev, ncells*linedata.nlev);
     LambdaStar.resize (ncells*linedata.nlev, ncells*linedata.nlev);
+    LambdaTest.resize (ncells*linedata.nlev, ncells*linedata.nlev);
 
     lambda.initialize (parameters, linedata.nrad);
 
     Jeff.resize (ncells);
     Jlin.resize (ncells);
+    Jdif.resize (ncells);
 
     for (size_t p = 0; p < ncells; p++)
     {
         Jeff[p].resize (linedata.nrad);
         Jlin[p].resize (linedata.nrad);
+        Jdif[p].resize (linedata.nrad);
     }
 
     nr_line.resize (ncells);

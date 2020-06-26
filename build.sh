@@ -117,7 +117,7 @@ elif [ "$1" == "gpu" ]; then
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
      -DOMP_PARALLEL=ON                               \
-     -DMPI_PARALLEL=ON                               \
+     -DMPI_PARALLEL=OFF                              \
      -DGRID_SIMD=OFF                                 \
      -DGPU_ACCELERATION=OFF                          \
      $DIR

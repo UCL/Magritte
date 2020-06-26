@@ -152,9 +152,7 @@ inline void Lambda :: add_element (const size_t p, const size_t k, const size_t 
 
 inline void Lambda :: linearize_data ()
 {
-
-    int size_total = 0;
-
+    size_t size_total = 0;
 
 #   pragma omp parallel for reduction (+: size_total)
     for (size_t p = 0; p < ncells; p++)
@@ -204,7 +202,6 @@ inline int Lambda :: MPI_gather ()
 #if (MPI_PARALLEL)
 
 {
-
     this->linearize_data();
 
     int size_total = Lss.size();
@@ -215,27 +212,25 @@ inline int Lambda :: MPI_gather ()
     Int1 displacements  (MPI_comm_size(), 0);
 
 
-    int ierr_l =	MPI_Allgather (
-                      &size_total,             // pointer to data to be send
-                      1,                       // number of elements in the send buffer
-                      MPI_INT,                 // type of the send data
-                      buffer_lengths.data(),   // pointer to the data to be received
-                      1,                       // number of elements in receive buffer
-                      MPI_INT,                 // type of the received data
-                      MPI_COMM_WORLD);
-
+    int ierr_l = MPI_Allgather (
+                     &size_total,             // pointer to data to be send
+                     1,                       // number of elements in the send buffer
+                     MPI_INT,                 // type of the send data
+                     buffer_lengths.data(),   // pointer to the data to be received
+                     1,                       // number of elements in receive buffer
+                     MPI_INT,                 // type of the received data
+                     MPI_COMM_WORLD        );
     assert (ierr_l == 0);
-
 
 
     for (int w = 1; w < MPI_comm_size(); w++)
     {
         displacements[w] = buffer_lengths[w-1];
 
-//        cout << "buffer_lengths [w] = " << buffer_lengths[w-1] << endl;
+        cout << "buffer_lengths [w] = " << buffer_lengths[w-1] << endl;
     }
 
-    //cout << "buffer_lengths [f] = " << buffer_lengths[MPI_comm_size()-1] << endl;
+    cout << "buffer_lengths [f] = " << buffer_lengths[MPI_comm_size()-1] << endl;
 
 
     Double1 Lss_total;

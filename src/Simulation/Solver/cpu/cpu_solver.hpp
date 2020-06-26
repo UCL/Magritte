@@ -53,6 +53,7 @@ struct cpuSolver : public Solver<double>
         const Size ncells,
         const Size nfreqs,
         const Size nlines,
+        const Size nboundary,
         const Size nraypairs,
         const Size depth,
         const Size n_off_diag);

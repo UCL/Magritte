@@ -167,17 +167,26 @@ PYBIND11_MODULE (core, module)
         .def ("write",                &Rays::write);
 
 
+    py::enum_<BoundaryCondition>(module, "BoundaryCondition")
+        .value("Zero",    Zero)
+        .value("Thermal", Thermal)
+        .value("CMB",     CMB)
+        .export_values();
+
+
     // Boundary
     py::class_<Boundary> (module, "Boundary")
         // attributes
-        .def_readwrite ("boundary2cell_nr", &Boundary::boundary2cell_nr)
-        .def_readwrite ("cell2boundary_nr", &Boundary::cell2boundary_nr)
-        .def_readwrite ("boundary",         &Boundary::boundary)
+        .def_readwrite ("boundary2cell_nr",     &Boundary::boundary2cell_nr)
+        .def_readwrite ("cell2boundary_nr",     &Boundary::cell2boundary_nr)
+        .def_readwrite ("boundary",             &Boundary::boundary)
+        .def_readwrite ("boundary_condition",   &Boundary::boundary_condition)
+        .def_readwrite ("boundary_temperature", &Boundary::boundary_temperature)
         // constructor
         .def (py::init())
         // functions
-        .def ("read",                       &Boundary::read)
-        .def ("write",                      &Boundary::write);
+        .def ("read",                           &Boundary::read)
+        .def ("write",                          &Boundary::write);
 
 
     // Thermodynamics
@@ -270,6 +279,7 @@ PYBIND11_MODULE (core, module)
         .def_readwrite ("ncells",           &LineProducingSpecies::ncells)
         .def_readwrite ("RT",               &LineProducingSpecies::RT)
         .def_readwrite ("LambdaStar",       &LineProducingSpecies::LambdaStar)
+        .def_readwrite ("LambdaTest",       &LineProducingSpecies::LambdaTest)
         // constructor
         .def (py::init<>())
         // functions

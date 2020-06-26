@@ -7,7 +7,7 @@ from shutil import rmtree
 from copy   import deepcopy
 from mpi4py import MPI
 
-from magritte.core             import Simulation, IoPython, IoText
+from magritte.core             import Simulation, IoPython, IoText, BoundaryCondition
 from magritte.setup.setup      import Setup, linedata_from_LAMDA_file, make_file_structure
 from magritte.setup.quadrature import H_roots, H_weights
 from magritte.setup.input      import *
@@ -73,9 +73,11 @@ def configure_simulation(config) -> Simulation():
     """
     print("Creating and configuring a Magritte simulation object...")
     dataName = f"{config['project folder']}{config['model name']}_"
+
     # Define simulation and setup objects
     simulation = Simulation()
     setup      = Setup(dimension=config['dimension']) # TODO: Remove setup object
+
     # Set parameters
     simulation.parameters.set_nspecs             (config['nspecs'    ])
     simulation.parameters.set_nlspecs            (config['nlspecs'   ])
@@ -84,18 +86,25 @@ def configure_simulation(config) -> Simulation():
     simulation.parameters.set_pop_prec           (config['pop_prec'  ])
     simulation.parameters.set_spherical_symmetry (config['input type'] == 'spherically symmetric')
     simulation.parameters.n_off_diag           = (config['n_off_diag'])
+
     # Set position and velocity
     simulation.geometry.cells.position = np.load(dataName+'position.npy')
     simulation.geometry.cells.velocity = np.load(dataName+'velocity.npy')
+
     # Get ncells from the mesh
     ncells = len(simulation.geometry.cells.position)
     simulation.parameters.set_ncells (ncells)
+
     # Set neighbors (connections between points)
     print("Setting the neighbors...")
     simulation.geometry.cells.neighbors = np.load(dataName+'neighbors.npy', allow_pickle=True)
+
     # Set boundary
     print("Setting the boundary...")
-    simulation.geometry.boundary.boundary2cell_nr = np.load(dataName+'boundary.npy')
+    boundary = np.load(dataName+'boundary.npy')
+    simulation.geometry.boundary.boundary2cell_nr = boundary
+    simulation.geometry.boundary.boundary_condition = [BoundaryCondition.CMB] * len(boundary)
+
     # Set rays
     if   (config['ray mode'] == 'single'):
         simulation.parameters.set_adaptive_ray_tracing(False)
@@ -115,29 +124,33 @@ def configure_simulation(config) -> Simulation():
         simulation.parameters.order_max(config['order max'])
     else:
         raise ValueError('Please specify a valid ray mode (single | uniform | adaptive).')
+
     # Set thermodynamics
     print("Setting temperature and turbulence...")
     simulation.thermodynamics.temperature.gas   = np.load(dataName+'tmp.npy')
     simulation.thermodynamics.turbulence.vturb2 = np.load(dataName+'trb.npy')
+
     # Set Chemistry
     simulation.chemistry.species.abundance = np.array((np.zeros(ncells), np.load(dataName+'nl1.npy'), np.load(dataName+'nH2.npy'), np.zeros(ncells), np.ones(ncells))).transpose()
     simulation.chemistry.species.sym       = ['dummy0', config['line producing species'][0], 'H2', 'e-', 'dummy1']
 
+    # Set line data
     dataFile = f"{config['data folder']}{config['line data files'][0]}"
     simulation.lines.lineProducingSpecies.append (
         linedata_from_LAMDA_file (dataFile, simulation.chemistry.species, config))
-
     simulation.lines.lineProducingSpecies[0].quadrature.roots   = H_roots   (config['nquads'])
     simulation.lines.lineProducingSpecies[0].quadrature.weights = H_weights (config['nquads'])
 
     # Define the model name
     modelName = name = f"{config['project folder']}{config['model name']}"
+
     # Change the model name if we do not want to overwrite
     if not config['overwrite files']:
         nr = 1
         while os.path.exists(modelName):
             modelName = f"{name}_{nr}"
             nr += 1
+
     # Setup for writing hdf5 output
     if   (config['model type'].lower() in ['hdf5', 'h5']):
         modelName = f"{modelName}.hdf5"
@@ -146,6 +159,7 @@ def configure_simulation(config) -> Simulation():
         except:
             pass
         io = IoPython('hdf5', modelName)
+
     # Setup for writing ascii output
     elif (config['model type'].lower() in ['text', 'txt', 'ascii']):
         modelName = f"{modelName}/"
@@ -155,17 +169,22 @@ def configure_simulation(config) -> Simulation():
             pass
         io = IoText(modelName)
         make_file_structure (model=simulation, modelName=modelName)
+
     # Non valid model type
     else:
         raise ValueError('No valid model type was given (hdf5, ascii).')
+
     # Set io used to create model as default
     config['default io'] = io
+
     # Write the simulation data using the io interface
     # (Writing and reading again is required to guarantee a proper setup)
     print("Writing out magritte model:", modelName)
     simulation.write(io)
+
     # Remove old simulation object from memory
     del simulation
+
     # Read the newly written simulation object
     print("Reading in magritte model to extract simulation object.")
     try:
@@ -187,6 +206,7 @@ def configure_simulation(config) -> Simulation():
 
     # Return the newly read simulation object
     return simulation_new
+
 
 def get_io(model_name):
     # Extract the file extension (all lowercase)

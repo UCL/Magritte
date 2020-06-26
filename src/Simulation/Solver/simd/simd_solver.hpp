@@ -64,6 +64,7 @@ struct simdSolver : public Solver<Grid::vRealD>
         const Size ncells,
         const Size nfreqs,
         const Size nlines,
+        const Size nboundary,
         const Size nraypairs,
         const Size depth,
         const Size n_off_diag);
