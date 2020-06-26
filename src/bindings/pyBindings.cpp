@@ -167,17 +167,26 @@ PYBIND11_MODULE (core, module)
         .def ("write",                &Rays::write);
 
 
+    py::enum_<BoundaryCondition>(module, "BoundaryCondition")
+        .value("Zero",    Zero)
+        .value("Thermal", Thermal)
+        .value("CMB",     CMB)
+        .export_values();
+
+
     // Boundary
     py::class_<Boundary> (module, "Boundary")
         // attributes
-        .def_readwrite ("boundary2cell_nr", &Boundary::boundary2cell_nr)
-        .def_readwrite ("cell2boundary_nr", &Boundary::cell2boundary_nr)
-        .def_readwrite ("boundary",         &Boundary::boundary)
+        .def_readwrite ("boundary2cell_nr",     &Boundary::boundary2cell_nr)
+        .def_readwrite ("cell2boundary_nr",     &Boundary::cell2boundary_nr)
+        .def_readwrite ("boundary",             &Boundary::boundary)
+        .def_readwrite ("boundary_condition",   &Boundary::boundary_condition)
+        .def_readwrite ("boundary_temperature", &Boundary::boundary_temperature)
         // constructor
         .def (py::init())
         // functions
-        .def ("read",                       &Boundary::read)
-        .def ("write",                      &Boundary::write);
+        .def ("read",                           &Boundary::read)
+        .def ("write",                          &Boundary::write);
 
 
     // Thermodynamics
@@ -258,7 +267,7 @@ PYBIND11_MODULE (core, module)
         // attributes
         .def_readwrite ("linedata",         &LineProducingSpecies::linedata)
         .def_readwrite ("quadrature",       &LineProducingSpecies::quadrature)
-        .def_readwrite ("lambda",           &LineProducingSpecies::lambda)
+        .def_readwrite ("Lambda",           &LineProducingSpecies::lambda) // "lambda" is invalid in Python, use "Lambda"
         .def_readwrite ("Jeff",             &LineProducingSpecies::Jeff)
         .def_readwrite ("Jlin",             &LineProducingSpecies::Jlin)
         .def_readwrite ("nr_line",          &LineProducingSpecies::nr_line)
@@ -270,6 +279,7 @@ PYBIND11_MODULE (core, module)
         .def_readwrite ("ncells",           &LineProducingSpecies::ncells)
         .def_readwrite ("RT",               &LineProducingSpecies::RT)
         .def_readwrite ("LambdaStar",       &LineProducingSpecies::LambdaStar)
+        .def_readwrite ("LambdaTest",       &LineProducingSpecies::LambdaTest)
         // constructor
         .def (py::init<>())
         // functions
@@ -285,13 +295,17 @@ PYBIND11_MODULE (core, module)
         .def_readwrite ("Ls",   &Lambda::Ls)
         .def_readwrite ("nr",   &Lambda::nr)
         .def_readwrite ("size", &Lambda::size)
+        .def_readwrite ("Lss",  &Lambda::Lss)
+        .def_readwrite ("nrs",  &Lambda::nrs)
         // constructor
         .def (py::init<>())
         // functions
-        .def ("add_element",    &Lambda::add_element);
+        .def ("add_element",    &Lambda::add_element)
+        .def ("linearize_data", &Lambda::linearize_data)
+        .def ("MPI_gather",    &Lambda::MPI_gather);
 
 
-    // Quadrature
+// Quadrature
     py::class_<Quadrature> (module, "Quadrature")
         // attributes
         .def_readwrite ("roots",   &Quadrature::roots)
@@ -398,10 +412,10 @@ PYBIND11_MODULE (core, module)
         .def_readonly ("chis",                         &Simulation::chis)
         .def_readonly ("pre",                          &Simulation::pre)
         .def_readonly ("pos",                          &Simulation::pos)
-        .def_readonly ("Ld",                           &Simulation::Ld)
-        .def_readonly ("Lu",                           &Simulation::Lu)
-        .def_readonly ("Ll",                           &Simulation::Ll)
-        .def_readonly ("Lambda",                       &Simulation::Lambda)
+//        .def_readonly ("Ld",                           &Simulation::Ld)
+//        .def_readonly ("Lu",                           &Simulation::Lu)
+//        .def_readonly ("Ll",                           &Simulation::Ll)
+//        .def_readonly ("Lambda",                       &Simulation::Lambda)
         //.def_readonly ("rayPair",                      &Simulation::rayPair)
 #       if (GPU_ACCELERATION)
         .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)

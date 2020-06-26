@@ -13,6 +13,9 @@
 #include "Model/parameters.hpp"
 
 
+enum BoundaryCondition {Zero, Thermal, CMB};
+
+
 ///  Boundary: data structure containing boundary data
 //////////////////////////////////////////////////////
 
@@ -25,6 +28,9 @@ struct Boundary
       Long1 cell2boundary_nr;   ///< cell number of boundary
 
       Bool1 boundary;           ///< true if boundary cell
+
+      vector<BoundaryCondition> boundary_condition;
+      Double1                   boundary_temperature;
 
 
       // Io

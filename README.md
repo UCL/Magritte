@@ -1,5 +1,6 @@
 <img src="docs/Images/Magritte_logo.png" alt="logo" width="360"/>
 
+---
 [![Documentation Status](https://readthedocs.org/projects/magritte/badge/?version=latest)](https://magritte.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/UCL/Magritte.svg?token=j3NNTbFLxGaJNsSoKgCz&branch=master)](https://travis-ci.com/UCL/Magritte)
 ---

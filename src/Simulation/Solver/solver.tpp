@@ -60,8 +60,8 @@ inline void Solver<Real> :: setup (
         shifts[D(rp,index)] = 1.0;
 
         /// Temporary boundary numbers
-        Size bdy_0 = model.geometry.boundary.cell2boundary_nr[o];
-        Size bdy_n = model.geometry.boundary.cell2boundary_nr[o];
+        bdy_0[rp] = model.geometry.boundary.cell2boundary_nr[o];
+        bdy_n[rp] = model.geometry.boundary.cell2boundary_nr[o];
 
         /// Set ray 1
         if (n1[rp] > 0)
@@ -77,8 +77,8 @@ inline void Solver<Real> :: setup (
                 index--;
             }
 
-            bdy_0 = model.geometry.boundary.cell2boundary_nr[raydata1.back().cellNr];
-            fst   = index+1;
+            bdy_0[rp] = model.geometry.boundary.cell2boundary_nr[raydata1.back().cellNr];
+            fst       = index+1;
         }
 
         /// Set ray 2
@@ -95,8 +95,8 @@ inline void Solver<Real> :: setup (
                 index++;
             }
 
-            bdy_n = model.geometry.boundary.cell2boundary_nr[raydata2.back().cellNr];
-            lst   = index-1;
+            bdy_n[rp] = model.geometry.boundary.cell2boundary_nr[raydata2.back().cellNr];
+            lst       = index-1;
         }
 
         /// Set n1_min, first and last
@@ -372,6 +372,20 @@ inline Real Solver<Real> :: planck (const Real temperature, const Real frequency
 }
 
 
+template <typename Real>
+HOST_DEVICE
+inline Real Solver<Real> :: boundary_intensity (const Size bdy_id, const Real frequency) const
+{
+    switch (boundary_condition[bdy_id])
+    {
+        case Zero    : return 0.0;
+        case Thermal : return planck (boundary_temperature[bdy_id], frequency);
+        default      : return planck (T_CMB, frequency);
+    }
+}
+
+
+
 
 
 ///  Getter for the emissivity (eta) and the opacity (chi)
@@ -479,7 +493,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
     const Real B0_min_C0 = my_fma (2.0, inverse_dtau0, one);
     const Real B0        = B0_min_C0 + C[If];
 
-    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+//    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+    const Real I_bdy_0 = boundary_intensity (bdy_0[rp], frequency*shifts[Df]);
 
     Su[If] = term1[If] + 2.0 * I_bdy_0 * inverse_dtau0;
 
@@ -541,7 +556,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
 
     const Real denominator = one / my_fma (Bd, F[Ilm1], Bd_min_Ad);
 
-    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+//    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+    const Real I_bdy_n = boundary_intensity (bdy_n[rp], frequency*shifts[Df]);
 
     Su[Il] = term1[Il] + 2.0 * I_bdy_n * inverse_dtaud;
     Su[Il] = my_fma (A[Il], Su[Ilm1], Su[Il]) * (one + F[Ilm1]) * denominator;
@@ -705,7 +721,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
     const Real B0_min_C0 = my_fma (2.0, inverse_dtau0, one);
     const Real B0        = B0_min_C0 + C[If];
 
-    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+//    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+    const Real I_bdy_0 = boundary_intensity (bdy_0[rp], frequency*shifts[Df]);
 
     Su[If] = tm1_n + 2.0 * I_bdy_0 * inverse_dtau0;
 
@@ -776,7 +793,8 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
 
     const Real denominator = one / my_fma (Bd, F[Ilm1], Bd_min_Ad);
 
-    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+//    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+    const Real I_bdy_n = boundary_intensity (bdy_n[rp], frequency*shifts[Df]);
 
     Su[Il] = tm1_1 + 2.0 * I_bdy_n * inverse_dtaud;
     Su[Il] = my_fma (A[Il], Su[Ilm1], Su[Il]) * (one + F[Ilm1]) * denominator;
@@ -924,7 +942,8 @@ inline void Solver<Real> :: solve_4th_order_Feautrier_non_adaptive (const Size w
     const Real B0_min_C0 = my_fma (2.0, inverse_dtau0, one);
     const Real B0        = B0_min_C0 + C[If];
 
-    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+//    const Real I_bdy_0 = planck (T_CMB, frequency*shifts[Df]);
+    const Real I_bdy_0 = boundary_intensity (bdy_0[rp], frequency*shifts[Df]);
 
     Su[If] = 2.0 * I_bdy_0 * inverse_dtau0;
     Su[If] = my_fma (ONE_THIRD,  tm1_1, Su[If]);
@@ -1010,7 +1029,8 @@ inline void Solver<Real> :: solve_4th_order_Feautrier_non_adaptive (const Size w
 
     const Real denominator = one / my_fma (Bd, F[Ilm1], Bd_min_Ad);
 
-    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+//    const Real I_bdy_n = planck (T_CMB, frequency*shifts[Dl]);
+    const Real I_bdy_n = boundary_intensity (bdy_n[rp], frequency*shifts[Df]);
 
     Su[Il] = 2.0 * I_bdy_n * inverse_dtaud;
     Su[Il] = my_fma (ONE_THIRD,  tm1_n, Su[Il]);

@@ -354,6 +354,7 @@ int Simulation :: gpu_compute_radiation_field_2 (
         solver = new gpuSolver (parameters.ncells(),
                                 parameters.nfreqs(),
                                 parameters.nlines(),
+                                parameters.nboundary(),
                                 nraypairs,
                                 geometry.max_npoints_on_rays,
                                 n_off_diag);

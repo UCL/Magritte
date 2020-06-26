@@ -157,8 +157,8 @@ int Simulation :: cpu_compute_radiation_field (
     {
         // Create a sover object
         solver = new cpuSolver (parameters.ncells(), parameters.nfreqs(),
-                                parameters.nlines(), nraypairs,
-                                geometry.max_npoints_on_rays,
+                                parameters.nlines(), parameters.nboundary(),
+                                nraypairs,           geometry.max_npoints_on_rays,
                                 parameters.n_off_diag);
 
         /// Set GPU block size
@@ -169,10 +169,6 @@ int Simulation :: cpu_compute_radiation_field (
         /// Set model data
         solver->copy_model_data (*this);
     }
-
-
-    Timer timer_compute("--- compute");
-    timer_compute.start();
 
     MPI_PARALLEL_FOR (rr, parameters.nrays()/2)
     {
@@ -262,14 +258,10 @@ int Simulation :: cpu_compute_radiation_field (
 #   endif
 
 
-    if (parameters.use_scattering())
-    {
-//        radiation.calc_U_and_V();
-    }
-
-
-    timer_compute.stop();
-    timer_compute.print();
+//    if (parameters.use_scattering())
+//    {
+//        radiation.calc_U_and_V(); // v, U, and V are not available.
+//    }
 
 
 //    Ld.clear();

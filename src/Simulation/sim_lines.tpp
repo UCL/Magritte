@@ -204,7 +204,7 @@ void Simulation :: compute_Jeff ()
                 for (size_t m = 0; m < lspec.lambda.get_size(p,k); m++)
                 {
                     const long I = lspec.index(lspec.lambda.get_nr(p,k,m), lspec.linedata.irad[k]);
-                    const long J = lspec.index(p,                          lspec.linedata.jrad[k]);
+//                    const long J = lspec.index(p,                          lspec.linedata.jrad[k]);
 
                     diff += lspec.lambda.get_Ls(p,k,m) * lspec.population[I];
 
@@ -212,6 +212,7 @@ void Simulation :: compute_Jeff ()
                 }
 
                 lspec.Jeff[p][k] = lspec.Jlin[p][k] - HH_OVER_FOUR_PI * diff;
+                lspec.Jdif[p][k] = HH_OVER_FOUR_PI * diff;
             }
         }
     }

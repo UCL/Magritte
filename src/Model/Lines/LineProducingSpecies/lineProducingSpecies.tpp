@@ -252,9 +252,9 @@ inline void LineProducingSpecies ::
         const Double1 &temperature       )
 {
 
-    const long non_zeros = ncells * (    linedata.nlev
-                                     + 6*linedata.nrad
-                                     + 4*linedata.ncol_tot );
+    const size_t non_zeros = ncells * (      linedata.nlev
+                                       + 6 * linedata.nrad
+                                       + 4 * linedata.ncol_tot );
 
 
     population_prev3 = population_prev2;
@@ -267,66 +267,77 @@ inline void LineProducingSpecies ::
     VectorXd y = VectorXd::Zero (ncells*linedata.nlev);
 
     vector<Triplet<double, int>> triplets;
-//    vector<Triplet<double, int>> triplets_L;
+    vector<Triplet<double, int>> triplets_LT;
+    vector<Triplet<double, int>> triplets_LS;
 
-    triplets  .reserve (non_zeros);
-//    triplets_L.reserve (non_zeros);
+    triplets   .reserve (non_zeros);
+    triplets_LT.reserve (non_zeros);
+    triplets_LS.reserve (non_zeros);
 
-    for (long p = 0; p < ncells; p++) // !!! no OMP because push_back is not thread safe !!!
+    for (size_t p = 0; p < ncells; p++) // !!! no OMP because push_back is not thread safe !!!
     {
 
         // Radiative transitions
 
-        for (long k = 0; k < linedata.nrad; k++)
+        for (size_t k = 0; k < linedata.nrad; k++)
         {
             const double v_IJ = linedata.A[k] + linedata.Bs[k] * Jeff[p][k];
             const double v_JI =                 linedata.Ba[k] * Jeff[p][k];
 
+            const double t_IJ = linedata.Bs[k] * Jdif[p][k];
+            const double t_JI = linedata.Ba[k] * Jdif[p][k];
+
 
             // Note: we define our transition matrix as the transpose of R in the paper.
-            const long I = index (p, linedata.irad[k]);
-            const long J = index (p, linedata.jrad[k]);
+            const size_t I = index (p, linedata.irad[k]);
+            const size_t J = index (p, linedata.jrad[k]);
 
             if (isnan(v_IJ)) {cout << "R is nan at " << I << " " << J << "   Jeff = " << Jeff[p][k] << endl;}
             if (isnan(v_JI)) {cout << "R is nan at " << J << " " << I << "   Jeff = " << Jeff[p][k] << endl;}
 
             if (linedata.jrad[k] != linedata.nlev-1)
             {
-                triplets.push_back (Triplet<double, int> (J, I, +v_IJ));
-                triplets.push_back (Triplet<double, int> (J, J, -v_JI));
+                triplets   .push_back (Triplet<double, int> (J, I, +v_IJ));
+                triplets   .push_back (Triplet<double, int> (J, J, -v_JI));
+
+                triplets_LS.push_back (Triplet<double, int> (J, I, +t_IJ));
+                triplets_LS.push_back (Triplet<double, int> (J, J, -t_JI));
             }
 
             if (linedata.irad[k] != linedata.nlev-1)
             {
-                triplets.push_back (Triplet<double, int> (I, J, +v_JI));
-                triplets.push_back (Triplet<double, int> (I, I, -v_IJ));
+                triplets   .push_back (Triplet<double, int> (I, J, +v_JI));
+                triplets   .push_back (Triplet<double, int> (I, I, -v_IJ));
+
+                triplets_LS.push_back (Triplet<double, int> (I, J, +t_JI));
+                triplets_LS.push_back (Triplet<double, int> (I, I, -t_IJ));
             }
         }
 
 
         // Approximated Lambda operator
 
-        for (long k = 0; k < linedata.nrad; k++)
+        for (size_t k = 0; k < linedata.nrad; k++)
         {
-            for (long m = 0; m < lambda.get_size(p,k); m++)
+            for (size_t m = 0; m < lambda.get_size(p,k); m++)
             {
-                const size_t nr = lambda.get_nr(p, k, m);
-                const double v_IJ = -get_opacity(nr, k) * lambda.get_Ls(p, k, m);
+                const size_t   nr =  lambda.get_nr(p, k, m);
+                const double v_IJ = -lambda.get_Ls(p, k, m) * get_opacity(p, k);
 
                 // Note: we define our transition matrix as the transpose of R in the paper.
-                const long J = index (nr, linedata.irad[k]);
-                const long I = index (p,  linedata.jrad[k]);
+                const size_t I = index (nr, linedata.irad[k]);
+                const size_t J = index (p,  linedata.jrad[k]);
 
                 if (linedata.jrad[k] != linedata.nlev-1)
                 {
-                    triplets  .push_back (Triplet<double, int> (J, I, +v_IJ));
-//                    triplets_L.push_back (Triplet<double, int> (J, I, +v_IJ));
+                    triplets   .push_back (Triplet<double, int> (J, I, +v_IJ));
+                    triplets_LT.push_back (Triplet<double, int> (J, I, +v_IJ));
                 }
 
                 if (linedata.irad[k] != linedata.nlev-1)
                 {
-                    triplets  .push_back (Triplet<double, int> (I, I, -v_IJ));
-//                    triplets_L.push_back (Triplet<double, int> (I, I, -v_IJ));
+                    triplets   .push_back (Triplet<double, int> (I, I, -v_IJ));
+                    triplets_LT.push_back (Triplet<double, int> (I, I, -v_IJ));
                 }
             }
         }
@@ -344,15 +355,15 @@ inline void LineProducingSpecies ::
             colpar.interpolate_collision_coefficients (tmp);
 
 
-            for (long k = 0; k < colpar.ncol; k++)
+            for (size_t k = 0; k < colpar.ncol; k++)
             {
                 const double v_IJ = colpar.Cd_intpld[k] * abn;
                 const double v_JI = colpar.Ce_intpld[k] * abn;
 
 
                 // Note: we define our transition matrix as the transpose of R in the paper.
-                const long I = index (p, colpar.icol[k]);
-                const long J = index (p, colpar.jcol[k]);
+                const size_t I = index (p, colpar.icol[k]);
+                const size_t J = index (p, colpar.jcol[k]);
 
                 if (isnan(v_IJ)) {cout << "C is nan at " << I << " " << J << endl;}
                 if (isnan(v_JI)) {cout << "C is nan at " << J << " " << I << endl;}
@@ -372,7 +383,7 @@ inline void LineProducingSpecies ::
         }
 
 
-        for (long i = 0; i < linedata.nlev; i++)
+        for (size_t i = 0; i < linedata.nlev; i++)
         {
             const long I = index (p, linedata.nlev-1);
             const long J = index (p, i);
@@ -387,8 +398,9 @@ inline void LineProducingSpecies ::
     } // for all cells
 
 
-    RT        .setFromTriplets (triplets  .begin(), triplets  .end());
-//    LambdaStar.setFromTriplets (triplets_L.begin(), triplets_L.end());
+    RT        .setFromTriplets (triplets   .begin(), triplets   .end());
+    LambdaStar.setFromTriplets (triplets_LS.begin(), triplets_LS.end());
+    LambdaTest.setFromTriplets (triplets_LT.begin(), triplets_LT.end());
 
 
     //cout << "Compressing RT" << endl;

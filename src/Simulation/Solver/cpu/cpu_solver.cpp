@@ -14,15 +14,19 @@ cpuSolver :: cpuSolver (
     const Size ncells,
     const Size nfreqs,
     const Size nlines,
+    const Size nboundary,
     const Size nraypairs,
     const Size depth,
     const Size n_off_diag )
-    : Solver (ncells, nfreqs, nfreqs, nlines, nraypairs, depth, n_off_diag)
+    : Solver (ncells, nfreqs, nfreqs, nlines, nboundary, nraypairs, depth, n_off_diag)
 {
     n1 = new size_t[nraypairs_max];
     n2 = new size_t[nraypairs_max];
 
     n_tot = new size_t[nraypairs_max];
+
+    bdy_0 = new size_t[nraypairs_max];
+    bdy_n = new size_t[nraypairs_max];
 
     origins = new size_t[nraypairs_max];
     reverse = new double[nraypairs_max];
@@ -37,6 +41,9 @@ cpuSolver :: cpuSolver (
     line_width      = new double[ncells*nlines];
 
     frequencies = new double[ncells*nfreqs_red];
+
+    boundary_condition   = new BoundaryCondition[nboundary];
+    boundary_temperature = new double           [nboundary];
 
     term1              = new double[area];
     term2              = new double[area];
@@ -81,6 +88,9 @@ cpuSolver :: ~cpuSolver ()
 
     delete[] n_tot;
 
+    delete[] bdy_0;
+    delete[] bdy_n;
+
     delete[] origins;
     delete[] reverse;
 
@@ -94,6 +104,9 @@ cpuSolver :: ~cpuSolver ()
     delete[] line_width;
 
     delete[] frequencies;
+
+    delete[] boundary_condition;
+    delete[] boundary_temperature;
 
     delete[] term1;
     delete[] term2;
@@ -145,6 +158,12 @@ void cpuSolver :: copy_model_data (const Model &model)
     memcpy (line_opacity,
             model.lines.opacity.data(),
             model.lines.opacity.size()*sizeof(double));
+    memcpy (boundary_condition,
+            model.geometry.boundary.boundary_condition.data(),
+            model.geometry.boundary.boundary_condition.size()*sizeof(BoundaryCondition));
+    memcpy (boundary_temperature,
+            model.geometry.boundary.boundary_temperature.data(),
+            model.geometry.boundary.boundary_temperature.size()*sizeof(double));
 
 
     for (Size p = 0; p < ncells; p++)
