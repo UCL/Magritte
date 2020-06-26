@@ -368,7 +368,7 @@ int Radiation :: calc_U_and_V ()
                     for (size_t f = 0; f < nfreqs_red; f++)
               	    {
                         U_local[index(p,f)] += u[R2][index(p,f)] ;//* scattering.phase[r1][r2][f];
-//                        V_local[index(p,f)] += v[R2][index(p,f)] ;//* scattering.phase[r1][r2][f];
+                        V_local[index(p,f)] += v[R2][index(p,f)] ;//* scattering.phase[r1][r2][f];
                     }
                 }
             } // end of r2 loop over raypairs2
@@ -383,15 +383,15 @@ int Radiation :: calc_U_and_V ()
                            MPI_COMM_WORLD);
             assert (ierr_u == 0);
 
-//            int ierr_v = MPI_Reduce (
-//                           V_local.data(),     // pointer to the data to be reduced
-//                           V[R1].data(),       // pointer to the data to be received
-//                           ncells*nfreqs_red,  // size of the data to be received
-//                           MPI_VREAL,          // type of the reduced data
-//                           MPI_VSUM,           // reduction operation
-//                           w,                  // rank of root to which we reduce
-//                           MPI_COMM_WORLD);
-//            assert (ierr_v == 0);
+            int ierr_v = MPI_Reduce (
+                           V_local.data(),     // pointer to the data to be reduced
+                           V[R1].data(),       // pointer to the data to be received
+                           ncells*nfreqs_red,  // size of the data to be received
+                           MPI_VREAL,          // type of the reduced data
+                           MPI_VSUM,           // reduction operation
+                           w,                  // rank of root to which we reduce
+                           MPI_COMM_WORLD);
+            assert (ierr_v == 0);
         }
     }
 

@@ -86,7 +86,6 @@ inline size_t Lambda :: index_last (const size_t p, const size_t k) const
 
 inline double Lambda :: get_Ls (const size_t p, const size_t k, const size_t index) const
 {
-    //return Ls[index_first(p,k) + index];
     return Ls[p][k][index];
 }
 
@@ -101,7 +100,6 @@ inline double Lambda :: get_Ls (const size_t p, const size_t k, const size_t ind
 
 inline size_t Lambda :: get_nr (const size_t p, const size_t k, const size_t index ) const
 {
-    //return nr[index_first(p,k) + index];
     return nr[p][k][index];
 }
 
@@ -117,7 +115,6 @@ inline size_t Lambda :: get_nr (const size_t p, const size_t k, const size_t ind
 inline size_t Lambda :: get_size (const size_t p, const size_t k ) const
 {
     return nr[p][k].size();
-    //return size[index_first(p,k)];
 }
 
 
@@ -143,8 +140,6 @@ inline void Lambda :: add_element (const size_t p, const size_t k, const size_t 
 
     Ls[p][k].push_back (Ls_new);
     nr[p][k].push_back (nr_new);
-
-    return;
 }
 
 
@@ -166,22 +161,24 @@ inline void Lambda :: linearize_data ()
         }
     }
 
-    cout << "Size total = " << size_total << endl;
+//    cout << "Size total = " << size_total << endl;
 
     Lss.resize (size_total);
     nrs.resize (size_total);
 
 
-    OMP_PARALLEL_FOR (p, ncells)
+    size_t index = 0;
+
+    for (size_t p = 0; p < ncells; p++)
     {
         for (size_t k = 0; k < nrad; k++)
         {
-            const size_t index = index_first (p,k);
-
-            for (size_t m = 0; m < size[index]; m++)
+            for (size_t m = 0; m < size[index_first(p,k)]; m++)
             {
-                Lss[index+m] = Ls[p][k][m];
-                nrs[index+m] = nr[p][k][m];
+                Lss[index] = Ls[p][k][m];
+                nrs[index] = nr[p][k][m];
+
+                index++;
             }
         }
     }
@@ -191,17 +188,12 @@ inline void Lambda :: linearize_data ()
 
 
 
-
-
-
-
-
-
 inline int Lambda :: MPI_gather ()
 
 #if (MPI_PARALLEL)
 
 {
+    // Linearize the Lambda operator data
     this->linearize_data();
 
     int size_total = Lss.size();
@@ -227,10 +219,12 @@ inline int Lambda :: MPI_gather ()
     {
         displacements[w] = buffer_lengths[w-1];
 
-        cout << "buffer_lengths [w] = " << buffer_lengths[w-1] << endl;
+//        cout << "buffer_lengths [w] = " << buffer_lengths[w-1] << endl;
+//        cout << "displacements  [w] = " << displacements [w-1] << endl;
     }
 
-    cout << "buffer_lengths [f] = " << buffer_lengths[MPI_comm_size()-1] << endl;
+//    cout << "buffer_lengths [f] = " << buffer_lengths[MPI_comm_size()-1] << endl;
+//    cout << "displacements  [f] = " << displacements [MPI_comm_size()-1] << endl;
 
 
     Double1 Lss_total;
@@ -247,7 +241,7 @@ inline int Lambda :: MPI_gather ()
     szs_total.resize (MPI_comm_size()*ncells*nrad);
 
 
-    int ierr_ls =	MPI_Allgatherv (
+    int ierr_ls = MPI_Allgatherv (
                       Lss.data(),              // pointer to data to be send
                       size_total,              // number of elements in the send buffer
                       MPI_DOUBLE,              // type of the send data
@@ -256,11 +250,10 @@ inline int Lambda :: MPI_gather ()
                       displacements.data(),    // displacements between data blocks
   	                  MPI_DOUBLE,              // type of the received data
                       MPI_COMM_WORLD);
-
     assert (ierr_ls == 0);
 
 
-    int ierr_nr =	MPI_Allgatherv (
+    int ierr_nr = MPI_Allgatherv (
                       nrs.data(),              // pointer to data to be send
                       size_total,              // number of elements in the send buffer
                       MPI_LONG,                // type of the send data
@@ -269,11 +262,10 @@ inline int Lambda :: MPI_gather ()
                       displacements.data(),    // displacements between data blocks
   	                  MPI_LONG,                // type of the received data
                       MPI_COMM_WORLD);
-
     assert (ierr_nr == 0);
 
 
-    int ierr_sz =	MPI_Allgather (
+    int ierr_sz = MPI_Allgather (
                       size.data(),             // pointer to data to be send
                       ncells*nrad,             // number of elements in the send buffer
                       MPI_LONG,                // type of the send data
@@ -281,32 +273,34 @@ inline int Lambda :: MPI_gather ()
                       ncells*nrad,             // number of elements in receive buffer
                       MPI_LONG,                // type of the received data
                       MPI_COMM_WORLD);
-
     assert (ierr_sz == 0);
 
 
     this->clear();
 
 
-    long index = 0;
+    size_t index_1 = 0;
+    size_t index_2 = 0;
 
-    for (int w = 0; w < MPI_comm_size(); w++)
+    for (size_t w = 0; w < MPI_comm_size(); w++)
     {
-        for (long p = 0; p < ncells; p++)
+        for (size_t p = 0; p < ncells; p++)
         {
-            for (long k = 0; k < nrad; k++)
+            for (size_t k = 0; k < nrad; k++)
             {
-                for (long m = 0; m < szs_total[index]; m++)
+                for (size_t m = 0; m < szs_total[index_1]; m++)
                 {
-                    add_element (p, k, nrs_total[index+m], Lss_total[index+m]);
+                    add_element (p, k, nrs_total[index_2], Lss_total[index_2]);
 
 //                    if (MPI_comm_rank () == 0)
 //                    {
-//                      cout << p << " " << k << " " << nrs_total[index+m] << " " << Lss_total[index+m] << endl;
+//                      cout << p << " " << k << " " << nrs_total[index_2] << " " << Lss_total[index_2] << endl;
 //                    }
+
+                    index_2++;
                 }
 
-                index++;
+                index_1++;
             }
         }
     }

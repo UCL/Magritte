@@ -54,11 +54,11 @@ struct Simulation : public Model
     Long2   pre;
     Long2   pos;
 
-    Double1 Ld;
-    Double2 Lu;
-    Double2 Ll;
+//    Double1 Ld;
+//    Double2 Lu;
+//    Double2 Ll;
 
-    MatrixXd Lambda;
+//    MatrixXd Lambda;
 
 
 #   if (GPU_ACCELERATION)

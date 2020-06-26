@@ -251,17 +251,17 @@ int Simulation :: cpu_compute_radiation_field (
         logger.write ("Gathering Lambda operators...");
         for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
         {
-//            lspec.lambda.MPI_gather ();
+            lspec.lambda.MPI_gather ();
         }
         logger.write ("Reducing the mean intensities (J's)...");
-//        radiation.MPI_reduce_J ();
+        radiation.MPI_reduce_J ();
 #   endif
 
 
-    if (parameters.use_scattering())
-    {
-//        radiation.calc_U_and_V();
-    }
+//    if (parameters.use_scattering())
+//    {
+//        radiation.calc_U_and_V(); // v, U, and V are not available.
+//    }
 
 
 //    Ld.clear();

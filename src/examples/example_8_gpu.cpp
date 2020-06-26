@@ -22,6 +22,14 @@
 
 int main (int argc, char **argv)
 {
+
+#   if (MPI_PARALLEL)
+
+    MPI_Init (NULL, NULL);
+
+#   endif
+
+
     /// Create a logger
     Logger logger ("example_8_gpu_benchmark");
 
@@ -77,15 +85,15 @@ int main (int argc, char **argv)
     simulation.compute_boundary_intensities    ();
 
 
-    for (long n = 10; n < 1.0e+7; n=10*n)
-    {
-        simulation.parameters.n_off_diag = n;
+//    for (long n = 10; n < 1.0e+7; n=10*n)
+//    {
+        simulation.parameters.n_off_diag = 2;
         simulation.compute_LTE_level_populations   ();
 
         simulation.compute_radiation_field_cpu          ();
         simulation.compute_Jeff                         ();
         simulation.compute_level_populations_from_stateq();
-    }
+//    }
 
 
 
@@ -223,6 +231,14 @@ int main (int argc, char **argv)
 //
 //    /// Write exit message
 //    logger.write ("--- Magritte example 8 GPU benchmark is done.");
+
+
+#   if (MPI_PARALLEL)
+
+    MPI_Finalize ();
+
+#   endif
+
 
     return (0);
 }

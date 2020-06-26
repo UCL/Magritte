@@ -322,9 +322,7 @@ inline void LineProducingSpecies ::
             for (size_t m = 0; m < lambda.get_size(p,k); m++)
             {
                 const size_t   nr =  lambda.get_nr(p, k, m);
-
                 const double v_IJ = -lambda.get_Ls(p, k, m) * get_opacity(p, k);
-                const double v_JI = -lambda.get_Ls(p, k, m) * get_opacity(p, k);
 
                 // Note: we define our transition matrix as the transpose of R in the paper.
                 const size_t I = index (nr, linedata.irad[k]);
@@ -338,8 +336,8 @@ inline void LineProducingSpecies ::
 
                 if (linedata.irad[k] != linedata.nlev-1)
                 {
-                    triplets   .push_back (Triplet<double, int> (I, I, -v_JI));
-                    triplets_LT.push_back (Triplet<double, int> (I, I, -v_JI));
+                    triplets   .push_back (Triplet<double, int> (I, I, -v_IJ));
+                    triplets_LT.push_back (Triplet<double, int> (I, I, -v_IJ));
                 }
             }
         }

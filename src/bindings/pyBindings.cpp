@@ -267,7 +267,7 @@ PYBIND11_MODULE (core, module)
         // attributes
         .def_readwrite ("linedata",         &LineProducingSpecies::linedata)
         .def_readwrite ("quadrature",       &LineProducingSpecies::quadrature)
-        .def_readwrite ("lambda",           &LineProducingSpecies::lambda)
+        .def_readwrite ("Lambda",           &LineProducingSpecies::lambda) // "lambda" is invalid in Python, use "Lambda"
         .def_readwrite ("Jeff",             &LineProducingSpecies::Jeff)
         .def_readwrite ("Jlin",             &LineProducingSpecies::Jlin)
         .def_readwrite ("nr_line",          &LineProducingSpecies::nr_line)
@@ -295,13 +295,17 @@ PYBIND11_MODULE (core, module)
         .def_readwrite ("Ls",   &Lambda::Ls)
         .def_readwrite ("nr",   &Lambda::nr)
         .def_readwrite ("size", &Lambda::size)
+        .def_readwrite ("Lss",  &Lambda::Lss)
+        .def_readwrite ("nrs",  &Lambda::nrs)
         // constructor
         .def (py::init<>())
         // functions
-        .def ("add_element",    &Lambda::add_element);
+        .def ("add_element",    &Lambda::add_element)
+        .def ("linearize_data", &Lambda::linearize_data)
+        .def ("MPI_gather",    &Lambda::MPI_gather);
 
 
-    // Quadrature
+// Quadrature
     py::class_<Quadrature> (module, "Quadrature")
         // attributes
         .def_readwrite ("roots",   &Quadrature::roots)
@@ -408,10 +412,10 @@ PYBIND11_MODULE (core, module)
         .def_readonly ("chis",                         &Simulation::chis)
         .def_readonly ("pre",                          &Simulation::pre)
         .def_readonly ("pos",                          &Simulation::pos)
-        .def_readonly ("Ld",                           &Simulation::Ld)
-        .def_readonly ("Lu",                           &Simulation::Lu)
-        .def_readonly ("Ll",                           &Simulation::Ll)
-        .def_readonly ("Lambda",                       &Simulation::Lambda)
+//        .def_readonly ("Ld",                           &Simulation::Ld)
+//        .def_readonly ("Lu",                           &Simulation::Lu)
+//        .def_readonly ("Ll",                           &Simulation::Ll)
+//        .def_readonly ("Lambda",                       &Simulation::Lambda)
         //.def_readonly ("rayPair",                      &Simulation::rayPair)
 #       if (GPU_ACCELERATION)
         .def ("gpu_get_device_properties",             &Simulation::gpu_get_device_properties)
