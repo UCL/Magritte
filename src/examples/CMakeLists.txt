@@ -92,8 +92,8 @@ if    (GPU_ACCELERATION)
 #  cuda_add_executable   (example_7_gpu.exe example_7_gpu.cpp)
 #  target_link_libraries (example_7_gpu.exe Magritte         )
 
-  cuda_add_executable   (example_8_gpu.exe example_8_gpu.cpp)
-  target_link_libraries (example_8_gpu.exe Magritte         )
+#  cuda_add_executable   (example_8_gpu.exe example_8_gpu.cpp)
+#  target_link_libraries (example_8_gpu.exe Magritte         )
 
 endif (GPU_ACCELERATION)
 
@@ -104,5 +104,5 @@ if    (MPI_PARALLEL)
 #  target_link_libraries (example_2_cpu.exe   ${MPI_C_LIBRARIES})
 #  target_link_libraries (example_3_cpu.exe   ${MPI_C_LIBRARIES})
 #  target_link_libraries (example_4_cpu.exe   ${MPI_C_LIBRARIES})
-  target_link_libraries (example_8_gpu.exe   ${MPI_C_LIBRARIES})
+#  target_link_libraries (example_8_gpu.exe   ${MPI_C_LIBRARIES})
 endif (MPI_PARALLEL)

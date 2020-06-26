@@ -119,7 +119,7 @@ elif [ "$1" == "gpu" ]; then
      -DOMP_PARALLEL=ON                               \
      -DMPI_PARALLEL=ON                               \
      -DGRID_SIMD=OFF                                 \
-     -DGPU_ACCELERATION=OFF                          \
+     -DGPU_ACCELERATION=ON                           \
      $DIR
 
    make -j4
@@ -150,7 +150,7 @@ else
      -DPYTHON_IO=ON                                  \
      -DPYTHON_BINDINGS=ON                            \
      -DOMP_PARALLEL=ON                               \
-     -DMPI_PARALLEL=OFF                              \
+     -DMPI_PARALLEL=ON                               \
      -DGRID_SIMD=OFF                                 \
      -DGPU_ACCELERATION=OFF                          \
      $DIR

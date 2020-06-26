@@ -4,14 +4,11 @@
 # Write the python library to the magritte python package
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY}/../magritte)
 
-# Add Python package
-find_package (PythonLibs REQUIRED)
 
 # Include directories
 include_directories (../)
 include_directories (../../dependencies)
 include_directories (../../dependencies/pybind11/include)
-include_directories (${PYTHON_INCLUDE_DIRS})
 
 # If MPI is used
 if    (MPI_PARALLEL)
@@ -37,6 +34,12 @@ if    (GPU_ACCELERATION)
                   ${CMAKE_SOURCE_DIR}/src/configure.hpp   )
   # Add CUDA package
   find_package (CUDA REQUIRED)
+
+  # Add Python package separately
+  find_package (PythonLibs REQUIRED)
+  # Add python dirs separately
+  include_directories (${PYTHON_INCLUDE_DIRS})
+
   # Add CUDA library
   cuda_add_library (core SHARED
     pyBindings.cpp
@@ -73,7 +76,11 @@ if    (GPU_ACCELERATION)
 #    ../Simulation/Raypair/rayblock.cu
     ../Simulation/Image/image.cpp)
   # Link Python libraries
-  #target_link_libraries (core ${PYTHON_LIBRARIES})
+  target_link_libraries (core ${PYTHON_LIBRARIES})
+  # Link MPI libraries
+  if    (MPI_PARALLEL)
+    target_link_libraries (core ${MPI_C_LIBRARIES})
+  endif (MPI_PARALLEL)
 
 else  (GPU_ACCELERATION)
 
@@ -129,6 +136,10 @@ else  (GPU_ACCELERATION)
   if    (GRID_SIMD)
     target_link_libraries (core PRIVATE GridSIMD)
   endif (GRID_SIMD)
+  # Link MPI libraries
+  if    (MPI_PARALLEL)
+    target_link_libraries (core PRIVATE ${MPI_C_LIBRARIES})
+  endif (MPI_PARALLEL)
 
 endif (GPU_ACCELERATION)
 
@@ -136,9 +147,4 @@ endif (GPU_ACCELERATION)
 set_target_properties (core PROPERTIES PREFIX "")
 set_target_properties (core PROPERTIES SUFFIX ".so")
 
-# Link MPI libraries
-if    (MPI_PARALLEL)
-  target_link_libraries (core PRIVATE ${MPI_C_LIBRARIES})
-#  target_link_libraries (core PRIVATE mpi)
-endif (MPI_PARALLEL)
 
