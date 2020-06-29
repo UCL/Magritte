@@ -22,8 +22,10 @@ before_install:
   # see https://github.com/travis-ci/travis-ci/issues/8613N
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
 
-script:
+install:
   - bash install.sh
   - bash build.sh
-#  - cd tests
-#  - bash run_tests.sh
+
+script:
+  - cd tests
+  - echo "Kind of done..."
