@@ -53,10 +53,10 @@ inline void Solver<Real> :: setup_L (const Size w)
 template <typename Real>
 inline Real abs_rel_diff (const MatrixXd A, const MatrixXd B, const Size i, const Size j)
 {
-    if (isnan(A(i,j)) || isnan(B(i,j)))
-    {
-        return 1.0e+99;
-    }
+//    if (isnan(A(i,j)) || isnan(B(i,j)))
+//    {
+//        return 1.0e+99;
+//    }
 
     return fabs (2.0 * (A(i,j) - B(i,j)) / (A(i,j) + B(i,j)));
 }

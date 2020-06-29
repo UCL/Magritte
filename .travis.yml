@@ -17,6 +17,11 @@ addons:
     packages:
       - cmake
 
+before_install:
+  # needed for OPENMP support on Travis
+  # see https://github.com/travis-ci/travis-ci/issues/8613N
+  - export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
+
 script:
   - bash install.sh
   - bash build.sh
