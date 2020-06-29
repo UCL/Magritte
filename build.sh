@@ -9,16 +9,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ "$1" == "clean" ]; then
 
-
   echo "Removing entire build/ and bin/ directories..."
   rm -rf build/
   rm -rf bin/
   echo "Done."
-  exit 0
-
 
 elif [ "$1" == "minimal" ]; then
-
 
   echo "Building Magrite with minimal options..."
   mkdir build
@@ -32,11 +28,6 @@ elif [ "$1" == "minimal" ]; then
     -DGRID_SIMD=OFF       \
 
   make -j4
-
-  cd ..
-  echo "Done."
-  exit 0
-
 
 elif [ "$1" == "performance_audit" ]; then
 
@@ -57,16 +48,9 @@ elif [ "$1" == "performance_audit" ]; then
     -DGRID_SIMD=OFF                                 \
     $DIR
 
-  make
-
-  cd ..
-  echo "-----"
-  echo "Done."
-  exit 0
-
+  make -j4
 
 elif [ "$1" == "binder" ]; then
-
 
    echo "Building Magritte for Binder..."
    echo "-------------------------------"
@@ -91,15 +75,7 @@ elif [ "$1" == "binder" ]; then
 
    make -j4
 
-   cd ..
-
-  echo "----"
-  echo "Done"
-  exit 0
-
-
 elif [ "$1" == "gpu" ]; then
-
 
    echo "Building Magritte with GPU support..."
    echo "-------------------------------------"
@@ -124,15 +100,7 @@ elif [ "$1" == "gpu" ]; then
 
    make -j4
 
-   cd ..
-
-  echo "----"
-  echo "Done"
-  exit 0
-
-
 else
-
 
    echo "Building Magritte..."
    echo "--------------------"
@@ -156,12 +124,5 @@ else
      $DIR
 
    make -j4
-
-   cd ..
-
-  echo "----"
-  echo "Done"
-  exit 0
-
 
 fi
