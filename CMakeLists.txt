@@ -93,5 +93,8 @@ endif (PYTHON_BINDINGS OR PYTHON_IO)
 # Add directory containing Magritte's source
 add_subdirectory (src)
 
+# Add directory containing Magritte's source
+add_subdirectory (benchmarks)
+
 # Add directory containing Magritte's tests
 # add_subdirectory (tests/unit)

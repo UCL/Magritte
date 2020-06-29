@@ -1,13 +1,17 @@
 # Configuration file for Travis-CI
 ##################################
 
+os:
+  - osx
+  - linux
+
 language:
   - cpp
   - python
   - bash
 
 python:
-  - "3"
+  - "3.7"
 
 addons:
     packages:
@@ -15,6 +19,6 @@ addons:
 
 script:
   - bash install.sh
-  - bash build.sh minimal
-  - cd tests
-  - bash run_tests.sh
+  - bash build.sh
+#  - cd tests
+#  - bash run_tests.sh

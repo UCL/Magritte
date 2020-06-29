@@ -292,9 +292,6 @@ inline void LineProducingSpecies ::
             const size_t I = index (p, linedata.irad[k]);
             const size_t J = index (p, linedata.jrad[k]);
 
-            if (isnan(v_IJ)) {cout << "R is nan at " << I << " " << J << "   Jeff = " << Jeff[p][k] << endl;}
-            if (isnan(v_JI)) {cout << "R is nan at " << J << " " << I << "   Jeff = " << Jeff[p][k] << endl;}
-
             if (linedata.jrad[k] != linedata.nlev-1)
             {
                 triplets   .push_back (Triplet<double, int> (J, I, +v_IJ));
@@ -364,9 +361,6 @@ inline void LineProducingSpecies ::
                 // Note: we define our transition matrix as the transpose of R in the paper.
                 const size_t I = index (p, colpar.icol[k]);
                 const size_t J = index (p, colpar.jcol[k]);
-
-                if (isnan(v_IJ)) {cout << "C is nan at " << I << " " << J << endl;}
-                if (isnan(v_JI)) {cout << "C is nan at " << J << " " << I << endl;}
 
                 if (colpar.jcol[k] != linedata.nlev-1)
                 {
