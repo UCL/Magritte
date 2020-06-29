@@ -36,9 +36,10 @@ before_install:
         brew cask uninstall oclint
         brew install ccache
         export PATH="/usr/local/opt/ccache/libexec:$PATH"
-  # needed for OPENMP support on Travis
-  # see https://github.com/travis-ci/travis-ci/issues/8613N
-  - export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
+        # needed for OPENMP support on Travis
+        # see https://github.com/travis-ci/travis-ci/issues/8613N
+        export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
+    fi
   - PYTHON_EXECUTABLE=$(which python)
   - BUILD_FLAGS="-DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE -DPYTHON_IO=ON -DPYTHON_BINDINGS=ON -DOMP_PARALLEL=ON"
 
