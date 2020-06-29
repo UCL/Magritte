@@ -16,15 +16,35 @@ python:
 addons:
     packages:
       - cmake
+      - python3-dev
+      - python3-numpy
+      - python3-pytest
+      - libgomp1
+      - g++-6
+
+matrix:
+  include:
+    - os: osx
+      python: 3
+      env: CC=gcc-6 CXX=g++-6
+    - os: linux
+      python: 3
+      env: CC=gcc-6 CXX=g++-6
+
 
 before_install:
   # needed for OPENMP support on Travis
   # see https://github.com/travis-ci/travis-ci/issues/8613N
   - export LD_LIBRARY_PATH=/usr/local/clang/lib:$LD_LIBRARY_PATH
+  - PYTHON_EXECUTABLE=$(which python)
+  - BUILD_FLAGS="-DPYTHON_EXECUTABLE:FILEPATH=$PYTHON_EXECUTABLE -DPYTHON_IO=ON -DPYTHON_BINDINGS=ON -DOMP_PARALLEL=ON"
 
 install:
   - bash install.sh
-  - bash build.sh
+  - mkdir build
+  - cd build
+  - cmake $BUILD_FLAGS ..
+  - make -j4
 
 script:
   - cd tests
