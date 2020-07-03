@@ -6,35 +6,35 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${BINARY_DIRECTORY}/benchmarks)
 
 # If Grid-SIMD is used
 if    (GRID_SIMD)
-  # Include headers
-  include_directories (../dependencies/Grid-SIMD/include)
-  # Set compiler flags
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_COMPILER_FLAGS}")
-  # Set variable in configuration file
-  set (MAGRITTE_GRID_SIMD true)
+    # Include headers
+    include_directories (../dependencies/Grid-SIMD/include)
+    # Set compiler flags
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GRID_COMPILER_FLAGS}")
+    # Set variable in configuration file
+    set (MAGRITTE_GRID_SIMD true)
 else  (GRID_SIMD)
-  # Set variable in configuration file
-  set (MAGRITTE_GRID_SIMD false)
+    # Set variable in configuration file
+    set (MAGRITTE_GRID_SIMD false)
 endif (GRID_SIMD)
 
 # If MPI is used
 if    (MPI_PARALLEL)
-  # Look for package
-  find_package (MPI REQUIRED)
-  # Include headers
-  include_directories (SYSTEM ${MPI_INCLUDE_PATH})
-  # Set variable in configuration file
-  set (MAGRITTE_MPI_PARALLEL true)
+    # Look for package
+    find_package (MPI REQUIRED)
+    # Include headers
+    include_directories (SYSTEM ${MPI_INCLUDE_PATH})
+    # Set variable in configuration file
+    set (MAGRITTE_MPI_PARALLEL true)
 else  (MPI_PARALLEL)
-  # Set variable in configuration file
-  set (MAGRITTE_MPI_PARALLEL false)
+    # Set variable in configuration file
+    set (MAGRITTE_MPI_PARALLEL false)
 endif (MPI_PARALLEL)
 
 # If GPU acceleration
 if    (GPU_ACCELERATION)
-  set (MAGRITTE_GPU_ACCELERATION true)
+    set (MAGRITTE_GPU_ACCELERATION true)
 else  (GPU_ACCELERATION)
-  set (MAGRITTE_GPU_ACCELERATION false)
+    set (MAGRITTE_GPU_ACCELERATION false)
 endif (GPU_ACCELERATION)
 
 # Write configuration file
@@ -47,14 +47,42 @@ include_directories (../dependencies)
 
 # Create executable for examples
 
-add_executable (bm1_radiation bm1_radiation.cpp)
-add_executable (bm2_levelpops bm2_levelpops.cpp)
+if    (GPU_ACCELERATION)
 
-target_link_libraries (bm1_radiation Magritte)
-target_link_libraries (bm2_levelpops Magritte)
+    find_package (CUDA REQUIRED)
 
-# Link MPI libraries
-if    (MPI_PARALLEL)
-  target_link_libraries (bm1_radiation ${MPI_C_LIBRARIES})
-  target_link_libraries (bm2_levelpops ${MPI_C_LIBRARIES})
-endif (MPI_PARALLEL)
+    cuda_add_executable (bm1_radiation     bm1_radiation.cpp)
+    cuda_add_executable (bm1_radiation_cpu bm1_radiation_cpu.cpp)
+    cuda_add_executable (bm1_radiation_gpu bm1_radiation_gpu.cpp)
+    cuda_add_executable (bm2_levelpops     bm2_levelpops.cpp)
+
+    target_link_libraries (bm1_radiation     Magritte)
+    target_link_libraries (bm1_radiation_cpu Magritte)
+    target_link_libraries (bm1_radiation_gpu Magritte)
+    target_link_libraries (bm2_levelpops     Magritte)
+
+    if    (MPI_PARALLEL)
+        target_link_libraries (bm1_radiation     ${MPI_C_LIBRARIES})
+        target_link_libraries (bm1_radiation_cpu ${MPI_C_LIBRARIES})
+        target_link_libraries (bm1_radiation_gpu ${MPI_C_LIBRARIES})
+        target_link_libraries (bm2_levelpops     ${MPI_C_LIBRARIES})
+    endif (MPI_PARALLEL)
+
+else  (GPU_ACCELERATION)
+
+    add_executable (bm1_radiation     bm1_radiation.cpp)
+    add_executable (bm1_radiation_cpu bm1_radiation_cpu.cpp)
+    add_executable (bm2_levelpops     bm2_levelpops.cpp)
+
+    target_link_libraries (bm1_radiation     Magritte)
+    target_link_libraries (bm1_radiation_cpu Magritte)
+    target_link_libraries (bm2_levelpops     Magritte)
+
+    if    (MPI_PARALLEL)
+        target_link_libraries (bm1_radiation     ${MPI_C_LIBRARIES})
+        target_link_libraries (bm1_radiation_cpu ${MPI_C_LIBRARIES})
+        target_link_libraries (bm2_levelpops     ${MPI_C_LIBRARIES})
+    endif (MPI_PARALLEL)
+
+endif (GPU_ACCELERATION)
+

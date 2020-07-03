@@ -23,6 +23,33 @@ using std::vector;
 /// TIMER: class for precise process timing
 ///////////////////////////////////////////
 
+class singleTimer
+{
+
+private:
+
+    std::chrono::high_resolution_clock::time_point start_ = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point stop_  = std::chrono::high_resolution_clock::now();
+
+public:
+
+    inline void start () {start_ = std::chrono::high_resolution_clock::now();}
+    inline void stop  () {stop_  = std::chrono::high_resolution_clock::now();}
+
+    inline double get_interval () const
+    {
+        std::chrono::duration<double> interval = stop_ - start_;
+
+        return interval.count();
+    }
+};
+
+
+
+
+/// TIMER: class for precise process timing
+///////////////////////////////////////////
+
 class Timer
 {
 
@@ -95,24 +122,22 @@ class Timer
 
     string get_print_string ()
     {
-      return "T   | " + name + " : " + to_string(intervals.back().count()) + " seconds";
+      return ("T   | " + name + " : " + to_string(intervals.back().count()) + " seconds");
     }
 
     string get_print_total_string ()
     {
-      return "Tot | " + name + " : " + to_string(total.count()           ) + " seconds";
+      return ("Tot | " + name + " : " + to_string(total.count()           ) + " seconds");
     }
 
     void print ()
     {
       cout << get_print_string () << endl;
-      // cout << "T  | " << name << " : " << intervals.back().count() << " seconds" << endl;
     }
 
     void print_total ()
     {
       cout << get_print_total_string () << endl;
-      // cout << "Tot| " << name << " : " << total.count()            << " seconds" << endl;
     }
 
 };

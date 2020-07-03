@@ -3,6 +3,7 @@
 
 
 #include "Model/model.hpp"
+#include "Tools/timer.hpp"
 #include "queue.hpp"
 
 
@@ -76,7 +77,7 @@ struct Solver
               Model      &model ) = 0;
 
 
-    Real inverse_dtau_max = 1.0;   ///< inverse of maximal allowed optical depth increment
+    Real inverse_dtau_max = 100;   ///< inverse of maximal allowed optical depth increment
 
     Size RR;                       ///< absolute index of the ray direction
     Size rr;                       ///< relative index of the ray direction
@@ -249,6 +250,9 @@ struct Solver
     inline void setup_L (const Size w);
 
     inline Real check_L (const Size w);
+
+
+    singleTimer timer;
 
 
 private:

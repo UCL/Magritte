@@ -326,15 +326,12 @@ int Simulation :: gpu_compute_radiation_field_2 (
     Timer timer("GPU compute radiation field");
     timer.start();
 
-    const size_t n_off_diag = 0;
 
     // Initialisations
-    for (auto &lspec : lines.lineProducingSpecies)
-    {
-        lspec.lambda.clear ();
-    }
+    for (auto &lspec : lines.lineProducingSpecies) {lspec.lambda.clear ();}
 
     radiation.initialize_J ();
+
 
     /// Set maximum number of points along a ray, if not set yet
     if (geometry.max_npoints_on_rays == -1)
@@ -345,24 +342,42 @@ int Simulation :: gpu_compute_radiation_field_2 (
     // Get number of threads
     const size_t nthreads = get_nthreads();
 
-    /// Create and initialize a solver fo each thread
-    vector<gpuSolver*> solvers (nthreads);
+    size_t ngpu = 0;
+    size_t ncpu;
+    if (nthreads > ngpu) ncpu = nthreads - ngpu;
+    else                 ncpu = 0;
 
-    for (auto &solver : solvers)
+    /// Create and initialize a solver for each thread
+    vector<gpuSolver*> gpuSolvers (ngpu);
+    vector<cpuSolver*> cpuSolvers (ncpu);
+
+    for (auto &solver : gpuSolvers)
     {
         // Create a sover object
-        solver = new gpuSolver (parameters.ncells(),
-                                parameters.nfreqs(),
-                                parameters.nlines(),
-                                parameters.nboundary(),
-                                nraypairs,
-                                geometry.max_npoints_on_rays,
-                                n_off_diag);
+        solver = new gpuSolver (parameters.ncells(), parameters.nfreqs(),
+                                parameters.nlines(), parameters.nboundary(),
+                                nraypairs,           geometry.max_npoints_on_rays,
+                                parameters.n_off_diag);
 
         /// Set GPU block size
         solver->gpuBlockSize     = gpuBlockSize;
         solver->gpuNumBlocks     = gpuNumBlocks;
-        solver->inverse_dtau_max = inverse_dtau_max;
+
+        /// Set model data
+        solver->copy_model_data (*this);
+    }
+
+    for (auto &solver : cpuSolvers)
+    {
+        // Create a sover object
+        solver = new cpuSolver (parameters.ncells(), parameters.nfreqs(),
+                                parameters.nlines(), parameters.nboundary(),
+                                nraypairs,           geometry.max_npoints_on_rays,
+                                parameters.n_off_diag);
+
+        /// Set GPU block size
+        solver->gpuBlockSize     = gpuBlockSize;
+        solver->gpuNumBlocks     = gpuNumBlocks;
 
         /// Set model data
         solver->copy_model_data (*this);
@@ -371,8 +386,10 @@ int Simulation :: gpu_compute_radiation_field_2 (
 
     for (size_t rr = 0; rr < parameters.nrays()/2; rr++)
     {
-        const size_t RR = rr - MPI_start (parameters.nrays()/2);
-        const size_t ar = geometry.rays.antipod[rr];
+        logger.write ("ray = ", rr);
+
+        const size_t RR = rr - MPI_start (parameters.nrays()/2); // index ray
+        const size_t ar = geometry.rays.antipod[rr];             // index antipod
 
         Queue queue (nraypairs);
 
@@ -380,13 +397,14 @@ int Simulation :: gpu_compute_radiation_field_2 (
 //        if (rayqueue.complete()) {cout << "True"  << endl;}
 //        else                     {cout << "False" << endl;}
 
-
-        logger.write ("ray = ", rr);
-
-//#       pragma omp parallel default (shared)
+#       pragma omp parallel default (shared)
         {
-//            const size_t t = omp_get_thread_num();
-            auto &solver = solvers[omp_get_thread_num()];
+            // gpu solvers first, then cpu solvers
+            const size_t t = omp_get_thread_num();
+
+            Solver<double> *solver;
+            if (t < ngpu) solver = gpuSolvers[t     ];   // It's a gpu solver
+            else          solver = cpuSolvers[t-ngpu];   // It's a cpu solver
 
 
             for (size_t o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
@@ -401,17 +419,24 @@ int Simulation :: gpu_compute_radiation_field_2 (
 
                 if (depth > 1)
                 {
-#                   pragma omp critical (add_to_queue)
+                    bool       completed;
+                    ProtoBlock complete_block;
+
+                    #pragma omp critical (update_queue)
                     {
-                        /// Add ray pair to queue
                         queue.add (ray_ar, ray_rr, o, depth);
-//                    }
-//
-//#                   pragma omp critical (offload_to_gpu)
-//                    {
-                        if (queue.some_are_completed())
+                        completed = queue.some_are_completed();
+
+                        if (completed) complete_block = queue.get_complete_block();
+                    }
+
+                    if (completed)
+                    {
+                        solver->solve (complete_block, RR, rr, *this);
+
+                        #pragma omp critical (update_Lambda)
                         {
-                            solver->solve (queue.get_complete_block(), RR, rr, *this);
+                            solver->update_Lambda (*this);
                         }
                     }
                 }
@@ -429,20 +454,241 @@ int Simulation :: gpu_compute_radiation_field_2 (
         {
 //            const ProtoRayBlock &prb = rayqueue.queue[s];
 
-            solvers[0]->nraypairs = prb.nraypairs();
-            solvers[0]->width     = prb.nraypairs() * parameters.nfreqs();
+            cpuSolvers[0]->nraypairs = prb.nraypairs();
+            cpuSolvers[0]->width     = prb.nraypairs() * parameters.nfreqs();
 
-            solvers[0]->solve (prb, RR, rr, *this);
+            cpuSolvers[0]->solve (prb, RR, rr, *this);
         }
     }
 
 
+    // Gather and reduce results of all MPI processes to get Lambda and J
+#   if (MPI_PARALLEL)
+        logger.write ("Gathering Lambda operators...");
+        for (auto &lspec : lines.lineProducingSpecies) {lspec.lambda.MPI_gather ();}
+        logger.write ("Reducing the mean intensities (J's)...");
+        radiation.MPI_reduce_J ();
+#   endif
+
+
     /// Delete solvers
-    for (auto &solver : solvers) {delete solver;}
+    for (auto &solver : gpuSolvers) {delete solver;}
+    for (auto &solver : cpuSolvers) {delete solver;}
 
     // Stop timer and print results
     timer.stop();
     timer.print();
+
+    return (0);
+}
+
+
+
+
+int Simulation :: compute_radiation_field_gpu ()
+{
+    const size_t nraypairs        =   0;     // Not used
+    const size_t gpuBlockSize     = 512;
+    const size_t gpuNumBlocks     =   1;     // Not used
+    const double inverse_dtau_max = 100.0;   // Not used
+
+    return gpu_compute_radiation_field (1, 1, 1, 1.0);
+}
+
+
+
+
+int Simulation :: gpu_compute_radiation_field (
+        const size_t nraypairs,
+        const size_t gpuBlockSize,
+        const size_t gpuNumBlocks,
+        const double inverse_dtau_max         )
+{
+    const size_t ncells = parameters.ncells();
+    const size_t hnrays = parameters.nrays()/2;
+
+    // Set timers
+    Timer timer_overall("GPU compute radiation field -- overall");
+    Timer timer_compute("GPU compute radiation field -- compute");
+
+    timer_overall.start();
+
+    timings.resize (hnrays);
+    nrpairs.resize (hnrays);
+    depths .resize (hnrays);
+
+    for (size_t i = 0; i < hnrays; i++)
+    {
+        timings[i].resize (ncells);
+        nrpairs[i].resize (ncells);
+        depths [i].resize (ncells);
+    }
+
+    // Initialisations
+    for (auto &lspec : lines.lineProducingSpecies) {lspec.lambda.clear ();}
+
+    radiation.initialize_J ();
+
+    /// Set maximum number of points along a ray, if not set yet
+    if (geometry.max_npoints_on_rays == -1)
+    {
+        get_max_npoints_on_rays <CoMoving> ();
+    }
+
+    // Get number of threads
+    const size_t nthreads = get_nthreads();
+
+    size_t ngpu = 1;
+    size_t ncpu;
+    if (nthreads > ngpu) ncpu = nthreads - ngpu;
+    else                 ncpu = 0;
+
+    /// Create and initialize a solver for each thread
+    vector<gpuSolver*> gpuSolvers (ngpu);
+    vector<cpuSolver*> cpuSolvers (ncpu);
+
+    for (auto &solver : gpuSolvers)
+    {
+        // Create a solver object
+        solver = new gpuSolver (parameters.ncells(), parameters.nfreqs(),
+                                parameters.nlines(), parameters.nboundary(),
+                                parameters.ncells(), geometry.max_npoints_on_rays,
+                                parameters.n_off_diag);
+
+        /// Set GPU block size
+        solver->gpuBlockSize     = gpuBlockSize;
+        solver->gpuNumBlocks     = gpuNumBlocks;
+
+        /// Set model data
+        solver->copy_model_data (*this);
+    }
+
+    for (auto &solver : cpuSolvers)
+    {
+        // Create a solver object
+        solver = new cpuSolver (parameters.ncells(), parameters.nfreqs(),
+                                parameters.nlines(), parameters.nboundary(),
+                                parameters.ncells(), geometry.max_npoints_on_rays,
+                                parameters.n_off_diag);
+
+        /// Set GPU block size
+        solver->gpuBlockSize     = gpuBlockSize;
+        solver->gpuNumBlocks     = gpuNumBlocks;
+
+        /// Set model data
+        solver->copy_model_data (*this);
+    }
+
+
+    for (size_t rr = 0; rr < hnrays; rr++)
+    {
+        logger.write ("ray = ", rr);
+
+        const size_t RR = rr - MPI_start (hnrays);     // index ray
+        const size_t ar = geometry.rays.antipod[rr];   // index antipod
+
+        Queue queue (nraypairs);
+
+        Size index = 0;
+
+        #pragma omp parallel default (shared)
+        {
+            const Size thread_num = omp_get_thread_num();
+            const bool gpu_thread = (thread_num < ngpu);
+
+            Solver<double> *solver;
+            if (gpu_thread) solver = gpuSolvers[thread_num     ];
+            else            solver = cpuSolvers[thread_num-ngpu];
+
+            while ((index < ncells) || !queue.queue.empty())
+            {
+                bool trace = false;
+                Size o;
+
+//                if (!gpu_thread)
+                {
+                    #pragma omp critical (update_queue)
+                    {
+                        trace = (index < ncells) && queue.is_not_full();
+
+                        if (trace)
+                        {
+                            o = index++;
+                        }
+                    }
+                }
+
+
+                if (trace)
+                {
+                    const double dshift_max = get_dshift_max (o);
+
+                    const RayData ray_ar = geometry.trace_ray <CoMoving> (o, ar, dshift_max);
+                    const RayData ray_rr = geometry.trace_ray <CoMoving> (o, rr, dshift_max);
+
+                    const size_t depth = ray_ar.size() + ray_rr.size() + 1;
+
+                    if (depth > 1)
+                    {
+                        #pragma omp critical (update_queue)
+                        {
+                            queue.ordered_add (ray_ar, ray_rr, o, depth);
+                        }
+                    }
+                    else
+                    {
+                        get_radiation_field_from_boundary (RR, rr, o);
+                    }
+                }
+                else // solve
+                {
+                    bool       avail;   // True if a block is available to solve
+                    ProtoBlock block;   // Available block to solve
+
+                    #pragma omp critical (update_queue)
+                    {
+                        queue.get_block (gpu_thread, block, avail);
+                    }
+
+                    if (avail)
+                    {
+                        solver->nraypairs = block.nraypairs();
+                        solver->width     = block.nraypairs() * parameters.nfreqs();
+
+                        timer_compute.start();
+                        solver->solve (block, RR, rr, *this);
+                        timer_compute.stop();
+
+                        timings[rr][solver->origins[0]] = solver->timer.get_interval();
+                        nrpairs[rr][solver->origins[0]] = solver->nraypairs;
+                        depths [rr][solver->origins[0]] = solver->n_tot[0];
+
+                        #pragma omp critical (update_Lambda)
+                        {
+                            solver->update_Lambda (*this);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Gather and reduce results of all MPI processes to get Lambda and J
+#   if (MPI_PARALLEL)
+        logger.write ("Gathering Lambda operators...");
+        for (auto &lspec : lines.lineProducingSpecies) {lspec.lambda.MPI_gather ();}
+        logger.write ("Reducing the mean intensities (J's)...");
+        radiation.MPI_reduce_J ();
+#   endif
+
+    /// Delete solvers
+    for (auto &solver : gpuSolvers) {delete solver;}
+    for (auto &solver : cpuSolvers) {delete solver;}
+
+    // Stop timer and print results
+    timer_overall.stop();
+    timer_compute.print();
+    timer_overall.print();
 
     return (0);
 }

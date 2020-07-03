@@ -1,0 +1,11 @@
+----------------------------------
+ Magritte Benchmark 1 (radiation) 
+----------------------------------
+ Running model: /home/frederik/Magritte_all/Models/MeshTests/gpu_test_0.hdf5
+----------------------------------
+MPI comm size = 1
+MPI comm rank = 0
+OMP # threads = 8
+----------------------------------
+Tot | calcs : 33.587738 seconds
+Tot | total : 34.113516 seconds

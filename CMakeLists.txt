@@ -17,7 +17,7 @@ set (CMAKE_BUILD_TYPE Release)
 #set (CMAKE_BUILD_TYPE Debug)
 #set (CUDA_NVCC_FLAGS " -g -G -x cu -O5") WARNING -G cfr issue:#112
 #set (CUDA_NVCC_FLAGS " -g")
-set (CUDA_NVCC_FLAGS "-O5")
+set (CUDA_NVCC_FLAGS "-O5 -use_fast_math")
 
 # Build options
 option (PYTHON_IO        "Handling all io through python (slow)" OFF)

@@ -2,6 +2,7 @@
 #define MAGRITTE_QUEUE_HPP
 
 
+#include <algorithm>
 #include "Model/model.hpp"
 
 
@@ -104,6 +105,91 @@ struct Queue
     inline bool some_are_completed ()
     {
         return (completed.size() > 0);
+    }
+
+
+    inline bool is_not_full () const
+    {
+        Size area = 0;
+
+        for (auto &prb : queue)
+        {
+            area += prb.nraypairs();
+        }
+
+        return true;//(area < 50);
+    }
+
+
+    inline ProtoBlock get_block ()
+    {
+        const ProtoBlock block = queue.front();
+
+        queue.pop_front();
+
+        return block;
+    }
+
+
+    inline void get_block (ProtoBlock &block, bool &avail)
+    {
+        avail = !queue.empty();
+
+        if (avail)
+        {
+            block = queue.front(); // Copy!
+
+            queue.pop_front();
+        }
+    }
+
+
+    inline void ordered_add (
+            const RayData &ray_ar,
+            const RayData &ray_rr,
+            const size_t origin,
+            const size_t depth    )
+    {
+        // A raipair is more likely to end up in a block with more raypairs
+        // (since the queue is a sample of the distribution of raypairs).
+        // Store blocks with more raypairs first, so they can be inserted faster.
+
+        for (auto it = queue.begin(); it != queue.end(); it++) if (it->depth == depth)
+        {
+            it->add (ray_ar, ray_rr, origin);
+
+            while ((it != queue.begin()) && (it->nraypairs() > prev(it)->nraypairs()))
+            {
+                std::swap (*it, *prev(it));
+                it--;
+            }
+
+            return;
+        }
+
+        queue.push_back (ProtoBlock (ray_ar, ray_rr, origin));
+
+        return;
+    }
+
+
+    inline void get_block (const bool gpu_thread, ProtoBlock &block, bool &avail)
+    {
+        avail = !queue.empty();
+
+        if (avail)
+        {
+            if (gpu_thread)
+            {
+                block = queue.front(); // Copy!
+                queue.pop_front();
+            }
+            else
+            {
+                block = queue.back(); // Copy!
+                queue.pop_back();
+            }
+        }
     }
 
 };

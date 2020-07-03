@@ -6,6 +6,7 @@
 ///    @param[in] ncells    : number of cells
 ///    @param[in] nfreqs    : number of frequency bins
 ///    @param[in] nlines    : number of lines
+///    @param[in] nboundary : number of boundary cells
 ///    @param[in] nraypairs : number of ray pairs
 ///    @param[in] depth     : number of points along the ray pairs
 //////////////////////////////////////////////////////////////////

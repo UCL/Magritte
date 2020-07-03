@@ -305,6 +305,7 @@ inline void Solver<Real> :: update_Lambda (Model &model) //const
 
 
 
+
 ///  Store the result of the solver in the model
 ///    @param[in/out] model : model object under consideration
 //////////////////////////////////////////////////////////////
