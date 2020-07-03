@@ -58,7 +58,11 @@ int main (int argc, char **argv)
     simulation.compute_spectral_discretisation ();
     simulation.compute_boundary_intensities    ();
     simulation.compute_LTE_level_populations   ();
-    simulation.compute_radiation_field_gpu     ();
+
+    for (int i = 0; i < 100; i++)
+    {
+        simulation.compute_radiation_field_gpu     ();
+    }
 
     timer_calcs.stop ();
 

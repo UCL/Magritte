@@ -1,12 +1,12 @@
 
 #include <math.h>
 
-template <typename Real>
-inline void Solver<Real> :: setup (
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: setup (
         const Model        &model,
         const Size          R,
         const Size          r,
-        const ProtoBlock   &prb    )
+        const ProtoBlock   &prb                )
 {
     /// Set the ray direction indices
     RR = R;
@@ -108,9 +108,9 @@ inline void Solver<Real> :: setup (
 }
 
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline Real Solver<Real> :: my_fma (const Real a, const Real b, const Real c) const
+inline Real Solver<Real, DataLayout> :: my_fma (const Real a, const Real b, const Real c) const
 {
 //    return fma (a, b, c);
     return a*b + c;
@@ -152,8 +152,8 @@ inline Real Solver<Real> :: my_fma (const Real a, const Real b, const Real c) co
 
 
 
-template <typename Real>
-inline void Solver<Real> :: add_L_diag (
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: add_L_diag (
     const Thermodynamics &thermodyn,
     const double          invr_mass,
     const double          freq_line,
@@ -186,8 +186,8 @@ inline void Solver<Real> :: add_L_diag (
 
 
 
-template <typename Real>
-inline void Solver<Real> :: add_L_lower (
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: add_L_lower (
     const Thermodynamics &thermodyn,
     const double          invr_mass,
     const double          freq_line,
@@ -223,8 +223,8 @@ inline void Solver<Real> :: add_L_lower (
 
 
 
-template <typename Real>
-inline void Solver<Real> :: add_L_upper (
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: add_L_upper (
     const Thermodynamics &thermodyn,
     const double          invr_mass,
     const double          freq_line,
@@ -258,8 +258,8 @@ inline void Solver<Real> :: add_L_upper (
 }
 
 
-template <typename Real>
-inline void Solver<Real> :: update_Lambda (Model &model) //const
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: update_Lambda (Model &model) //const
 {
     const Frequencies    &freqs     = model.radiation.frequencies;
     const Thermodynamics &thermodyn = model.thermodynamics;
@@ -310,8 +310,8 @@ inline void Solver<Real> :: update_Lambda (Model &model) //const
 ///    @param[in/out] model : model object under consideration
 //////////////////////////////////////////////////////////////
 
-template <typename Real>
-inline void Solver<Real> :: store (Model &model) //const
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: store (Model &model) //const
 {
     for (Size rp = 0; rp < nraypairs; rp++)
     {
@@ -344,9 +344,9 @@ inline void Solver<Real> :: store (Model &model) //const
 ///    @return profile function evaluated with this frequency difference
 ////////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline Real Solver<Real> :: gaussian (const Real width, const Real diff) const
+inline Real Solver<Real, DataLayout> :: gaussian (const Real width, const Real diff) const
 {
     const Real inverse_width = 1.0 / width;
     const Real sqrtExponent  = inverse_width * diff;
@@ -364,18 +364,18 @@ inline Real Solver<Real> :: gaussian (const Real width, const Real diff) const
 ///    @return Planck function evaluated at this frequency
 ///////////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline Real Solver<Real> :: planck (const Real temperature, const Real frequency) const
+inline Real Solver<Real, DataLayout> :: planck (const Real temperature, const Real frequency) const
 {
     return TWO_HH_OVER_CC_SQUARED * (frequency*frequency*frequency)
            / expm1 (HH_OVER_KB*frequency/temperature);
 }
 
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline Real Solver<Real> :: boundary_intensity (const Size bdy_id, const Real frequency) const
+inline Real Solver<Real, DataLayout> :: boundary_intensity (const Size bdy_id, const Real frequency) const
 {
     switch (boundary_condition[bdy_id])
     {
@@ -397,9 +397,9 @@ inline Real Solver<Real> :: boundary_intensity (const Size bdy_id, const Real fr
 ///    @param[out]    chi         : opacity
 /////////////////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline void Solver<Real> :: get_eta_and_chi (const Size Dn, const Real frequency, Real &eta, Real &chi)
+inline void Solver<Real, DataLayout> :: get_eta_and_chi (const Size Dn, const Real frequency, Real &eta, Real &chi)
 {
     const Real frequency_scaled = frequency * shifts[Dn];
 
@@ -430,9 +430,9 @@ inline void Solver<Real> :: get_eta_and_chi (const Size Dn, const Real frequency
 ///    @param[out]    chi         : opacity
 /////////////////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline void Solver<Real> :: get_eta_and_chi (const Size In, const Size Dn, const Real frequency)
+inline void Solver<Real, DataLayout> :: get_eta_and_chi (const Size In, const Size Dn, const Real frequency)
 {
     const Real frequency_scaled = frequency * shifts[Dn];
 
@@ -460,9 +460,9 @@ inline void Solver<Real> :: get_eta_and_chi (const Size In, const Size Dn, const
 ///    @param[in] w : width index
 ///////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w)
+inline void Solver<Real, DataLayout> :: solve_2nd_order_Feautrier_non_adaptive (const Size w)
 {
     // Get indices of the block
     const Size rp = w / nfreqs_red;   // raypair index
@@ -684,9 +684,9 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_non_adaptive (const Size w
 ///   NOT PROPERLY IMPLEMENTED YET!!!
 ///////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
+inline void Solver<Real, DataLayout> :: solve_2nd_order_Feautrier_adaptive (const Size w)
 {
     // Get indices of the block
     const Size rp = w / nfreqs_red;   // raypair index
@@ -906,9 +906,9 @@ inline void Solver<Real> :: solve_2nd_order_Feautrier_adaptive (const Size w)
 ///    @param[in] w : width index
 ////////////////////////////////////////////////////////////////////////
 
-template <typename Real>
+template <typename Real, typename DataLayout>
 HOST_DEVICE
-inline void Solver<Real> :: solve_4th_order_Feautrier_non_adaptive (const Size w)
+inline void Solver<Real, DataLayout> :: solve_4th_order_Feautrier_non_adaptive (const Size w)
 {
     // Get indices of the block
     const Size rp = w / nfreqs_red;   // raypair index

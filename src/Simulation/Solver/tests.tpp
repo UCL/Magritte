@@ -1,8 +1,8 @@
 #include <algorithm>
 
 
-template <typename Real>
-inline void Solver<Real> :: setup_T (const Size w)
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: setup_T (const Size w)
 {
     const Size N = n_tot[w/nfreqs_red];
 
@@ -25,8 +25,8 @@ inline void Solver<Real> :: setup_T (const Size w)
 
 
 
-template <typename Real>
-inline void Solver<Real> :: setup_L (const Size w)
+template <typename Real, typename DataLayout>
+inline void Solver<Real, DataLayout> :: setup_L (const Size w)
 {
     const Size N = n_tot[w/nfreqs_red];
 
@@ -64,8 +64,8 @@ inline Real abs_rel_diff (const MatrixXd A, const MatrixXd B, const Size i, cons
 
 
 
-template <typename Real>
-inline Real Solver<Real> :: check_L (const Size w)
+template <typename Real, typename DataLayout>
+inline Real Solver<Real, DataLayout> :: check_L (const Size w)
 {
     const Size N = n_tot[w/nfreqs_red];
 

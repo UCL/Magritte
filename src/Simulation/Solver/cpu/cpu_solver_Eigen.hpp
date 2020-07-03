@@ -42,7 +42,7 @@
 ///  Raypair: data structure for a pair of rays
 ///////////////////////////////////////////////
 
-struct cpuSolverEigen : public Solver<VectorXd>
+struct cpuSolverEigen : public Solver<VectorXd, WidthFirstDataLayout>
 {
 
     Size gpuBlockSize = 32;
