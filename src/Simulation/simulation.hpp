@@ -60,15 +60,21 @@ struct Simulation : public Model
 
 //    MatrixXd Lambda;
 
+    Double2 timings;
+    Long2   nrpairs;
+    Long2   depths;
+
 
 #   if (GPU_ACCELERATION)
-        int handleCudaError           (cudaError_t error);
+        int handleCudaError               (cudaError_t error);
         int gpu_get_device_properties     ();
-//      int gpu_compute_radiation_field   ();
+        int gpu_compute_radiation_field   (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
         int gpu_compute_radiation_field_2 (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
+        int compute_radiation_field_gpu   ();
 # endif
 
     int cpu_compute_radiation_field (const size_t nraypairs, const size_t gpuBlockSize, const size_t gpuNumBlocks, const double inverse_dtau_max);
+    int compute_radiation_field_cpu ();
 
 //  int cpu_compute_radiation_field_2 (const size_t nraypairs);
 //    int cpu_compute_radiation_field (const double inverse_dtau_max);
@@ -87,7 +93,6 @@ struct Simulation : public Model
     int compute_boundary_intensities          ();
     int compute_boundary_intensities          (const Double1 &temperatures);
     int compute_radiation_field               ();
-    int compute_radiation_field_cpu           ();
 
     inline double get_dshift_max (
         const long o           ) const;
@@ -137,20 +142,17 @@ struct Simulation : public Model
       const long  max_niterations     );
 
   void compute_Jeff ();
-
   void compute_level_populations_from_stateq ();
 
 
   template <Frame frame>
-  Long1 get_npoints_on_ray (
-      const long r         ) const;
+  Long1 get_npoints_on_ray     (const long r) const;
 
   template <Frame frame>
-  long get_max_npoints_on_ray (
-      const long r            ) const;
+  long  get_max_npoints_on_ray (const long r) const;
 
   template <Frame frame>
-  Long2 get_npoints_on_rays () const;
+  Long2 get_npoints_on_rays    () const;
 
   template <Frame frame>
   long get_max_npoints_on_rays ();

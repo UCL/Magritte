@@ -1,8 +1,8 @@
-#include "cpu_solver.hpp"
+#include "cpu_solver_Eigen.hpp"
 #include "Simulation/simulation.hpp"
 
 
-///  Constructor for cpuSolver
+///  Constructor for cpuSolverEigen
 ///    @param[in] ncells    : number of cells
 ///    @param[in] nfreqs    : number of frequency bins
 ///    @param[in] nlines    : number of lines
@@ -11,15 +11,15 @@
 ///    @param[in] depth     : number of points along the ray pairs
 //////////////////////////////////////////////////////////////////
 
-cpuSolver :: cpuSolver (
+cpuSolverEigen :: cpuSolverEigen (
     const Size ncells,
     const Size nfreqs,
     const Size nlines,
     const Size nboundary,
     const Size nraypairs,
     const Size depth,
-    const Size n_off_diag )
-    : Solver (ncells, nfreqs, nfreqs, nlines, nboundary, nraypairs, depth, n_off_diag)
+    const Size n_off_diag        )
+    : Solver (ncells, nfreqs, 1, nlines, nboundary, nraypairs, depth, n_off_diag)
 {
     n1 = new size_t[nraypairs_max];
     n2 = new size_t[nraypairs_max];
@@ -41,48 +41,90 @@ cpuSolver :: cpuSolver (
     line_opacity    = new double[ncells*nlines];
     line_width      = new double[ncells*nlines];
 
-    frequencies = new double[ncells*nfreqs_red];
+    frequencies = new VectorXd[ncells*nfreqs_red];
+
+    for (size_t p = 0; p < ncells*nfreqs_red; p++)
+    {
+        frequencies[p].resize (nfreqs);
+    }
 
     boundary_condition   = new BoundaryCondition[nboundary];
     boundary_temperature = new double           [nboundary];
 
-    term1              = new double[area];
-    term2              = new double[area];
+    term1              = new VectorXd[area];
+    term2              = new VectorXd[area];
 
-    eta                = new double[area];
-    chi                = new double[area];
+    eta                = new VectorXd[area];
+    chi                = new VectorXd[area];
 
-    A                  = new double[area];
-    a                  = new double[area];
-    C                  = new double[area];
-    c                  = new double[area];
-    F                  = new double[area];
-    G                  = new double[area];
+    A                  = new VectorXd[area];
+    a                  = new VectorXd[area];
+    C                  = new VectorXd[area];
+    c                  = new VectorXd[area];
+    F                  = new VectorXd[area];
+    G                  = new VectorXd[area];
 
-    inverse_A          = new double[area];
-    inverse_C          = new double[area];
-    inverse_one_plus_F = new double[area];
-    inverse_one_plus_G = new double[area];
-     G_over_one_plus_G = new double[area];
+    inverse_A          = new VectorXd[area];
+    inverse_C          = new VectorXd[area];
+    inverse_one_plus_F = new VectorXd[area];
+    inverse_one_plus_G = new VectorXd[area];
+     G_over_one_plus_G = new VectorXd[area];
 
-    Su                 = new double[area];
-    Sv                 = new double[area];
-    dtau               = new double[area];
+    Su                 = new VectorXd[area];
+    Sv                 = new VectorXd[area];
+    dtau               = new VectorXd[area];
 
-    L_diag             = new double[area];
+    L_diag             = new VectorXd[area];
 
     if (n_off_diag > 0)
     {
-        L_upper = new double[n_off_diag*area];
-        L_lower = new double[n_off_diag*area];
+        L_upper = new VectorXd[n_off_diag*area];
+        L_lower = new VectorXd[n_off_diag*area];
+    }
+
+    for (size_t p = 0; p < area; p++)
+    {
+        term1              [p].resize (nfreqs);
+        term2              [p].resize (nfreqs);
+
+        eta                [p].resize (nfreqs);
+        chi                [p].resize (nfreqs);
+
+        A                  [p].resize (nfreqs);
+        a                  [p].resize (nfreqs);
+        C                  [p].resize (nfreqs);
+        c                  [p].resize (nfreqs);
+        F                  [p].resize (nfreqs);
+        G                  [p].resize (nfreqs);
+
+        inverse_A          [p].resize (nfreqs);
+        inverse_C          [p].resize (nfreqs);
+        inverse_one_plus_F [p].resize (nfreqs);
+        inverse_one_plus_G [p].resize (nfreqs);
+         G_over_one_plus_G [p].resize (nfreqs);
+
+        Su                 [p].resize (nfreqs);
+        Sv                 [p].resize (nfreqs);
+        dtau               [p].resize (nfreqs);
+
+        L_diag             [p].resize (nfreqs);
+    }
+
+    if (n_off_diag > 0)
+    {
+        for (size_t p = 0; p < n_off_diag*area; p++)
+        {
+            L_upper[p].resize (nfreqs);
+            L_lower[p].resize (nfreqs);
+        }
     }
 }
 
 
-///  Destructor for cpuSolver
-/////////////////////////////
+///  Destructor for cpuSolverEigen
+//////////////////////////////////
 
-cpuSolver :: ~cpuSolver ()
+cpuSolverEigen :: ~cpuSolverEigen ()
 {
     delete[] n1;
     delete[] n2;
@@ -148,7 +190,7 @@ cpuSolver :: ~cpuSolver ()
 ///    @param[in] model : model from which to copy
 /////////////////////////////////////////////////////////////
 
-void cpuSolver :: copy_model_data (const Model &model)
+void cpuSolverEigen :: copy_model_data (const Model &model)
 {
     memcpy (line,
             model.lines.line.data(),
@@ -180,7 +222,7 @@ void cpuSolver :: copy_model_data (const Model &model)
 
         for (Size f = 0; f < nfreqs; f++)
         {
-            frequencies[V(p,f)] = model.radiation.frequencies.nu[p][f];
+            frequencies[p][f] = model.radiation.frequencies.nu[p][f];
         }
     }
 
@@ -189,11 +231,11 @@ void cpuSolver :: copy_model_data (const Model &model)
 
 
 
-void cpuSolver :: solve (
+void cpuSolverEigen :: solve (
     const ProtoBlock &prb,
     const Size        R,
     const Size        r,
-          Model      &model )
+          Model      &model  )
 {
     // Start timer
     timer.start();
@@ -213,4 +255,36 @@ void cpuSolver :: solve (
 
     // Stop timer
     timer.stop();
+}
+
+
+
+
+///  Store the result of the solver in the model
+///    @param[in/out] model : model object under consideration
+//////////////////////////////////////////////////////////////
+
+inline void cpuSolverEigen :: store (Model &model) const
+{
+    for (Size rp = 0; rp < nraypairs; rp++)
+    {
+        const double weight_ang = 2.0 * model.geometry.rays.weight(origins[rp], rr);
+
+        const Size i0 = model.radiation.index(origins[rp], 0);
+        const Size j0 = I(n1[rp], V(rp, 0));
+
+        for (Size f = 0; f < nfreqs; f++)
+        {
+            model.radiation.J[i0+f] += weight_ang * Su[j0][f];
+        }
+
+        if (model.parameters.use_scattering())
+        {
+            for (Size f = 0; f < nfreqs; f++)
+            {
+                model.radiation.u[RR][i0+f] = Su[j0][f];
+//                model.radiation.v[RR][i0+f] = Sv[j0+f] * reverse[rp];
+            }
+        }
+    }
 }

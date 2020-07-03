@@ -150,12 +150,12 @@ int Simulation :: cpu_compute_radiation_field (
     // Get number of threads
     const size_t nthreads = get_nthreads();
 
-    /// Create and initialize a solver fo each thread
+    /// Create and initialize a solver for each thread
     vector<cpuSolver*> solvers (nthreads);
 
     for (auto &solver : solvers)
     {
-        // Create a sover object
+        // Create a solver object
         solver = new cpuSolver (parameters.ncells(), parameters.nfreqs(),
                                 parameters.nlines(), parameters.nboundary(),
                                 nraypairs,           geometry.max_npoints_on_rays,
@@ -205,7 +205,7 @@ int Simulation :: cpu_compute_radiation_field (
                     bool       completed;
                     ProtoBlock complete_block;
 
-#                   pragma omp critical (update_queue)
+                    #pragma omp critical (update_queue)
                     {
                         queue.add (ray_ar, ray_rr, o, depth);
                         completed = queue.some_are_completed();
@@ -217,12 +217,11 @@ int Simulation :: cpu_compute_radiation_field (
                     {
                         solver->solve (complete_block, RR, rr, *this);
 
-#                       pragma omp critical (update_Lambda)
+                        #pragma omp critical (update_Lambda)
                         {
                             solver->update_Lambda (*this);
                         }
                     }
-
                 }
                 else
                 {
@@ -249,10 +248,7 @@ int Simulation :: cpu_compute_radiation_field (
     // Gather and reduce results of all MPI processes to get Lambda and J
 #   if (MPI_PARALLEL)
         logger.write ("Gathering Lambda operators...");
-        for (LineProducingSpecies &lspec : lines.lineProducingSpecies)
-        {
-            lspec.lambda.MPI_gather ();
-        }
+        for (auto &lspec : lines.lineProducingSpecies) {lspec.lambda.MPI_gather ();}
         logger.write ("Reducing the mean intensities (J's)...");
         radiation.MPI_reduce_J ();
 #   endif
