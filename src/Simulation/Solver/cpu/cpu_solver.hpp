@@ -41,7 +41,7 @@
 ///  Raypair: data structure for a pair of rays
 ///////////////////////////////////////////////
 
-struct cpuSolver : public Solver<double>
+struct cpuSolver : public Solver<double, DepthFirstDataLayout>
 {
 
     Size gpuBlockSize = 32;

@@ -43,8 +43,7 @@
 ///  Raypair: data structure for a pair of rays
 ///////////////////////////////////////////////
 
-//struct simdSolver : public Solver<double>
-struct simdSolver : public Solver<Grid::vRealD>
+struct simdSolver : public Solver<Grid::vRealD, DepthFirstDataLayout>
 {
     typedef Grid::vRealD vReal;
 

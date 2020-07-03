@@ -20,10 +20,42 @@
 #endif
 
 
-//typedef double Real;
+class DepthFirstDataLayout
+{
+    const Size depth_max;   ///< maximum depth of the ray block (lengths of the ray pairs)
+    const Size width_max;   ///< maximum width of the ray block (nraypairs_max * nfreqs)
 
-template <typename Real>
-struct Solver
+public:
+    DepthFirstDataLayout (const Size depth_max, const Size width_max)
+     : depth_max (depth_max)
+     , width_max (width_max) {};
+
+protected:
+    HOST_DEVICE
+    inline Size I (const Size i, const Size w) const {return i + w*depth_max;};
+};
+
+
+class WidthFirstDataLayout
+{
+    const Size depth_max;   ///< maximum depth of the ray block (lengths of the ray pairs)
+    const Size width_max;   ///< maximum width of the ray block (nraypairs_max * nfreqs)
+
+public:
+    WidthFirstDataLayout (const Size depth_max, const Size width_max)
+     : depth_max (depth_max)
+     , width_max (width_max) {};
+
+protected:
+    HOST_DEVICE
+    inline Size I (const Size i, const Size w) const {return w + i*width_max;};
+};
+
+
+
+
+template <typename Real, typename DataLayout>
+struct Solver : private DataLayout
 {
     const Size ncells;           ///< total number of cells
     const Size nfreqs;           ///< total number of frequency bins
@@ -53,7 +85,8 @@ struct Solver
         const Size nraypairs,
         const Size depth,
         const Size n_off_diag )
-    : ncells        (ncells)
+    : DataLayout    (depth, nraypairs * nfreqs_red)
+    , ncells        (ncells)
     , nfreqs        (nfreqs)
     , nfreqs_red    (nfreqs_red)
     , nlines        (nlines)
@@ -144,12 +177,18 @@ struct Solver
 
 
     /// Indices
-    HOST_DEVICE
-    inline Size I (const Size i, const Size w) const {return i + w*depth_max;};
+//    HOST_DEVICE
+//    inline Size I (const Size i, const Size w) const {return i + w*depth_max;};
 //    inline Size I (const Size i, const Size w) const {return w + i*width;     };
 
 //    virtual HOST_DEVICE
 //    Size I (const Size i, const Size w) const = 0;
+// Cannot pass a class with virtual methods to a kernel, see
+// https://stackoverflow.com/questions/12701170/cuda-virtual-class
+// Following Mark Harris' solution of policy classes
+// https://en.wikipedia.org/wiki/Modern_C%2B%2B_Design
+
+    using DataLayout::I;
 
     HOST_DEVICE
     inline Size D (const Size i, const Size d) const {return d + i*depth_max; };
@@ -264,18 +303,7 @@ private:
     HOST_DEVICE
     inline Real planck (const Real temperature, const Real frequency) const;
 
-//    HOST_DEVICE
-//    inline Real expf (const Real x) const;
-//    HOST_DEVICE
-//    inline Real expm1 (const Real x) const;
-
     const Real one = 1.0;
-
-//    const double inverse_index[40] =
-//        {    0.,     1., 1./ 2., 1./ 3., 1./ 4., 1./ 5., 1./ 6, 1./ 7, 1./ 8., 1./ 9.,
-//         1./10., 1./11., 1./12., 1./13., 1./14., 1./15., 1./16, 1./17, 1./18., 1./19.,
-//         1./20., 1./21., 1./22., 1./23., 1./24., 1./25., 1./26, 1./27, 1./28., 1./29.,
-//         1./30., 1./31., 1./32., 1./33., 1./34., 1./35., 1./36, 1./37, 1./38., 1./39. };
 
 };
 

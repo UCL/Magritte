@@ -402,11 +402,6 @@ int Simulation :: gpu_compute_radiation_field_2 (
             // gpu solvers first, then cpu solvers
             const size_t t = omp_get_thread_num();
 
-            Solver<double> *solver;
-            if (t < ngpu) solver = gpuSolvers[t     ];   // It's a gpu solver
-            else          solver = cpuSolvers[t-ngpu];   // It's a cpu solver
-
-
             for (size_t o = omp_get_thread_num(); o < parameters.ncells(); o += omp_get_num_threads())
             {
                 const double dshift_max = get_dshift_max (o);
@@ -432,11 +427,27 @@ int Simulation :: gpu_compute_radiation_field_2 (
 
                     if (completed)
                     {
-                        solver->solve (complete_block, RR, rr, *this);
-
-                        #pragma omp critical (update_Lambda)
+                        if (t < ngpu)
                         {
-                            solver->update_Lambda (*this);
+                            gpuSolver *solver = gpuSolvers[t];
+
+                            solver->solve (complete_block, RR, rr, *this);
+
+                            #pragma omp critical (update_Lambda)
+                            {
+                                solver->update_Lambda (*this);
+                            }
+                        }
+                        else
+                        {
+                            cpuSolver *solver = cpuSolvers[t-ngpu];
+
+                            solver->solve (complete_block, RR, rr, *this);
+
+                            #pragma omp critical (update_Lambda)
+                            {
+                                solver->update_Lambda (*this);
+                            }
                         }
                     }
                 }
@@ -596,10 +607,6 @@ int Simulation :: gpu_compute_radiation_field (
             const Size thread_num = omp_get_thread_num();
             const bool gpu_thread = (thread_num < ngpu);
 
-            Solver<double> *solver;
-            if (gpu_thread) solver = gpuSolvers[thread_num     ];
-            else            solver = cpuSolvers[thread_num-ngpu];
-
             while ((index < ncells) || !queue.queue.empty())
             {
                 bool trace = false;
@@ -652,20 +659,45 @@ int Simulation :: gpu_compute_radiation_field (
 
                     if (avail)
                     {
-                        solver->nraypairs = block.nraypairs();
-                        solver->width     = block.nraypairs() * parameters.nfreqs();
-
-                        timer_compute.start();
-                        solver->solve (block, RR, rr, *this);
-                        timer_compute.stop();
-
-                        timings[rr][solver->origins[0]] = solver->timer.get_interval();
-                        nrpairs[rr][solver->origins[0]] = solver->nraypairs;
-                        depths [rr][solver->origins[0]] = solver->n_tot[0];
-
-                        #pragma omp critical (update_Lambda)
+                        if (gpu_thread)
                         {
-                            solver->update_Lambda (*this);
+                            gpuSolver *solver = gpuSolvers[thread_num];
+
+                            solver->nraypairs = block.nraypairs();
+                            solver->width     = block.nraypairs() * parameters.nfreqs();
+
+                            timer_compute.start();
+                            solver->solve (block, RR, rr, *this);
+                            timer_compute.stop();
+
+                            timings[rr][solver->origins[0]] = solver->timer.get_interval();
+                            nrpairs[rr][solver->origins[0]] = solver->nraypairs;
+                            depths [rr][solver->origins[0]] = solver->n_tot[0];
+
+                            #pragma omp critical (update_Lambda)
+                            {
+                                solver->update_Lambda (*this);
+                            }
+                        }
+                        else
+                        {
+                            cpuSolver *solver = cpuSolvers[thread_num-ngpu];
+
+                            solver->nraypairs = block.nraypairs();
+                            solver->width     = block.nraypairs() * parameters.nfreqs();
+
+                            timer_compute.start();
+                            solver->solve (block, RR, rr, *this);
+                            timer_compute.stop();
+
+                            timings[rr][solver->origins[0]] = solver->timer.get_interval();
+                            nrpairs[rr][solver->origins[0]] = solver->nraypairs;
+                            depths [rr][solver->origins[0]] = solver->n_tot[0];
+
+                            #pragma omp critical (update_Lambda)
+                            {
+                                solver->update_Lambda (*this);
+                            }
                         }
                     }
                 }
